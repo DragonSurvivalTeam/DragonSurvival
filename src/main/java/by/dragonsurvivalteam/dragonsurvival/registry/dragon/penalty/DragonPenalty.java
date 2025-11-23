@@ -2,6 +2,8 @@ package by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscCodecs;
+import by.dragonsurvivalteam.dragonsurvival.mixins.ServerPlayerGameModeAccess;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncAddPenaltySupply;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncRemovePenaltySupply;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
@@ -26,11 +28,11 @@ import net.neoforged.neoforge.registries.DataPackRegistryEvent;
 
 import java.util.Optional;
 
-@EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber
 public record DragonPenalty(Optional<ResourceLocation> icon, Optional<LootItemCondition> condition, PenaltyEffect effect, PenaltyTrigger trigger) {
     public static final Codec<DragonPenalty> DIRECT_CODEC = RecordCodecBuilder.create(instance -> instance.group(
             ResourceLocation.CODEC.optionalFieldOf("icon").forGetter(DragonPenalty::icon),
-            LootItemCondition.DIRECT_CODEC.optionalFieldOf("condition").forGetter(DragonPenalty::condition),
+            MiscCodecs.conditional(LootItemCondition.DIRECT_CODEC).optionalFieldOf("condition").forGetter(DragonPenalty::condition),
             PenaltyEffect.CODEC.fieldOf("effect").forGetter(DragonPenalty::effect),
             PenaltyTrigger.CODEC.fieldOf("trigger").forGetter(DragonPenalty::trigger)
     ).apply(instance, DragonPenalty::new));
@@ -39,16 +41,34 @@ public record DragonPenalty(Optional<ResourceLocation> icon, Optional<LootItemCo
     public static final Codec<Holder<DragonPenalty>> CODEC = RegistryFixedCodec.create(REGISTRY);
 
     public void apply(final ServerPlayer dragon, final Holder<DragonPenalty> penalty) {
-        PenaltySupply penaltySupply = dragon.getData(DSDataAttachments.PENALTY_SUPPLY);
+        if (((ServerPlayerGameModeAccess) dragon.gameMode).dragonSurvival$getGameTicks() == 1) {
+            // In the first tick the resistance / supply related attributes may not have been applied yet
+            // Example: From last session current supply is 1000 - now on the first tick here after login the max supply is 200
+            // Therefor current supply is clamped to 200 and one tick later the actual max supply (1400) is set
+            return;
+        }
+
+        PenaltySupply supply = dragon.getData(DSDataAttachments.PENALTY_SUPPLY);
 
         if (trigger instanceof SupplyTrigger supplyTrigger) {
             AttributeInstance resistance = dragon.getAttribute(supplyTrigger.attributeToUseAsBase());
-            int resistanceTime = resistance != null ? (int) resistance.getValue() : 0;
+            float newMaxSupply = resistance != null ? (float) resistance.getValue() : 0;
+            float oldMaxSupply = supply.getMaxSupply(supplyTrigger.supplyType());
 
-            if (penaltySupply.getMaxSupply(supplyTrigger.supplyType()) != resistanceTime) {
-                float currentSupply = penaltySupply.hasSupply(supplyTrigger.supplyType()) ? penaltySupply.getRawSupply(supplyTrigger.supplyType()) : resistanceTime;
-                penaltySupply.initialize(supplyTrigger.supplyType(), resistanceTime, supplyTrigger.reductionRate(), supplyTrigger.regenerationRate(), currentSupply);
-                PacketDistributor.sendToPlayer(dragon, new SyncAddPenaltySupply(supplyTrigger.supplyType(), resistanceTime, supplyTrigger.reductionRate(), supplyTrigger.regenerationRate(), currentSupply));
+            if (oldMaxSupply != newMaxSupply) {
+                float currentSupply;
+
+                if (oldMaxSupply == PenaltySupply.NO_ENTRY) {
+                    currentSupply = newMaxSupply;
+                } else if (newMaxSupply > 0) {
+                    // Retain the percentage of the supply when the max. changes
+                    currentSupply = supply.getRawSupply(supplyTrigger.supplyType()) / oldMaxSupply * newMaxSupply;
+                } else {
+                    currentSupply = 0;
+                }
+
+                supply.initialize(supplyTrigger.supplyType(), newMaxSupply, supplyTrigger.reductionRate(), supplyTrigger.regenerationRate(), currentSupply, supply.getCurrentTick(supplyTrigger.supplyType()));
+                PacketDistributor.sendToPlayer(dragon, new SyncAddPenaltySupply(supplyTrigger.supplyType(), newMaxSupply, supplyTrigger.reductionRate(), supplyTrigger.regenerationRate(), currentSupply));
             }
         }
 

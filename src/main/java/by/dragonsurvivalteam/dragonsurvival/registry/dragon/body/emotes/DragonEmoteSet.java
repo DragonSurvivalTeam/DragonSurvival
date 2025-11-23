@@ -16,7 +16,7 @@ import net.neoforged.neoforge.registries.DataPackRegistryEvent;
 
 import java.util.List;
 
-@EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber
 public record DragonEmoteSet(List<DragonEmote> emotes) {
     public static final ResourceKey<Registry<DragonEmoteSet>> REGISTRY = ResourceKey.createRegistryKey(DragonSurvival.res("dragon_emote_set"));
 

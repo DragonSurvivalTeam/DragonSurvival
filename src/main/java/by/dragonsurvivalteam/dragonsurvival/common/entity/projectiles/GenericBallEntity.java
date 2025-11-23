@@ -30,6 +30,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.projectile.AbstractHurtingProjectile;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
+import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
@@ -90,7 +91,7 @@ public class GenericBallEntity extends AbstractHurtingProjectile implements GeoE
         if (generalData == null) {
             DragonSurvival.LOGGER.error("Attempted to get generalData for GenericBallEntity, but it was not initialized! Destroying projectile.");
             discard();
-            return new ProjectileData.GeneralData(ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "generic_ball"), Optional.empty(), List.of(), List.of(), List.of(), List.of());
+            return new ProjectileData.GeneralData(DragonSurvival.res("generic_ball"), false, Optional.empty(), List.of(), List.of(), List.of(), List.of());
         }
 
         return generalData;
@@ -452,6 +453,11 @@ public class GenericBallEntity extends AbstractHurtingProjectile implements GeoE
     public boolean fireImmune() {
         // Stops fire from completely smothering the animations
         return true;
+    }
+
+    @Override
+    public boolean mayBreak(@NotNull final Level level) {
+        return getGeneralData().isImpactProjectile() && level.getGameRules().getBoolean(GameRules.RULE_PROJECTILESCANBREAKBLOCKS);
     }
 
     private static final RawAnimation EXPLOSION = RawAnimation.begin().thenLoop("explosion");

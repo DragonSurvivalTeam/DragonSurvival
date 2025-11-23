@@ -56,6 +56,8 @@ public class DurationInstanceBase<B extends Storage<I>, I extends DurationInstan
             return;
         }
 
+        // Doing this separate in updates may cause the client to lose the effect for a frame - however, having a consolidated update packet is not an option
+        // Since some things (like attributes) send packets as well to the client when the server modifies / removes them
         data.remove(target, instance);
         data.add(target, createInstance(dragon, ability, newDuration));
     }

@@ -3,6 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.client;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.extensions.ShakeWhenUsedExtension;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.hud.DragonPenaltyHUD;
+import by.dragonsurvivalteam.dragonsurvival.client.gui.hud.DragonSoulBar;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.hud.GrowthHUD;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.hud.MagicHUD;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.hud.SpinHUD;
@@ -10,6 +11,7 @@ import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.ClientDietCompone
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.ClientTimeComponent;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.DietComponent;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.TimeComponent;
+import by.dragonsurvivalteam.dragonsurvival.client.models.DragonModel;
 import by.dragonsurvivalteam.dragonsurvival.client.models.aligned_armor.DragonBoots;
 import by.dragonsurvivalteam.dragonsurvival.client.models.aligned_armor.DragonChestplate;
 import by.dragonsurvivalteam.dragonsurvival.client.models.aligned_armor.DragonHelmet;
@@ -21,8 +23,8 @@ import by.dragonsurvivalteam.dragonsurvival.client.models.creatures.KnightModel;
 import by.dragonsurvivalteam.dragonsurvival.client.models.creatures.LeaderModel;
 import by.dragonsurvivalteam.dragonsurvival.client.models.creatures.SpearmanModel;
 import by.dragonsurvivalteam.dragonsurvival.client.models.projectiles.GenericBallModel;
-import by.dragonsurvivalteam.dragonsurvival.client.render.ClientDragonRenderer;
 import by.dragonsurvivalteam.dragonsurvival.client.render.blocks.DragonBeaconRenderer;
+import by.dragonsurvivalteam.dragonsurvival.client.render.blocks.DragonSoulRenderer;
 import by.dragonsurvivalteam.dragonsurvival.client.render.blocks.HelmetEntityRenderer;
 import by.dragonsurvivalteam.dragonsurvival.client.render.entity.creatures.AmbusherRenderer;
 import by.dragonsurvivalteam.dragonsurvival.client.render.entity.creatures.GriffinRenderer;
@@ -37,6 +39,8 @@ import by.dragonsurvivalteam.dragonsurvival.client.render.entity.projectiles.Gen
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.loader.DefaultPartLoader;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.loader.DragonPartLoader;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
+import by.dragonsurvivalteam.dragonsurvival.compat.ModCheck;
+import by.dragonsurvivalteam.dragonsurvival.compat.curios.CuriosButtonHandler;
 import by.dragonsurvivalteam.dragonsurvival.mixins.client.LocalPlayerAccessor;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSBlockEntities;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEntities;
@@ -75,8 +79,11 @@ import java.util.Map;
 
 @Mod(value = DragonSurvival.MODID, dist = Dist.CLIENT)
 public class DragonSurvivalClient {
-    public static float timer;
-    public static DragonRenderer dragonRenderer; // Needed for access in LevelRendererMixin
+    public static float TIMER;
+    public static DragonRenderer DRAGON_RENDERER; // Needed for access in LevelRendererMixin
+
+    public static DragonModel DRAGON_MODEL = new DragonModel();
+    public static AmbusherModel AMBUSHER_MODEL = new AmbusherModel();
 
     public DragonSurvivalClient(final IEventBus bus, final ModContainer container) {
         container.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
@@ -90,13 +97,17 @@ public class DragonSurvivalClient {
 
         NeoForge.EVENT_BUS.addListener(this::incrementTimer);
         NeoForge.EVENT_BUS.addListener(this::preventThirdPersonWhenSuffocating);
+
+        if (ModCheck.isModLoaded(ModCheck.CURIOS)) {
+            NeoForge.EVENT_BUS.addListener(CuriosButtonHandler::onInventoryGuiInit);
+        }
     }
 
     private void incrementTimer(final ClientTickEvent.Post event) {
-        timer += 0.01f;
+        TIMER += 0.01f;
 
-        if (timer > 1) {
-            timer = 0;
+        if (TIMER > 1) {
+            TIMER = 0;
         }
     }
 
@@ -107,16 +118,17 @@ public class DragonSurvivalClient {
 
             BlockEntityRenderers.register(DSBlockEntities.HELMET.get(), HelmetEntityRenderer::new);
             BlockEntityRenderers.register(DSBlockEntities.DRAGON_BEACON.get(), DragonBeaconRenderer::new);
+            BlockEntityRenderers.register(DSBlockEntities.DRAGON_SOUL.get(), DragonSoulRenderer::new);
 
             // GeckoLib renderers
             EntityRenderers.register(DSEntities.GENERIC_BALL_ENTITY.get(), manager -> new GenericBallRenderer(manager, new GenericBallModel()));
             EntityRenderers.register(DSEntities.DRAGON.get(), manager -> {
-                dragonRenderer = new DragonRenderer(manager, ClientDragonRenderer.dragonModel);
-                return dragonRenderer;
+                DRAGON_RENDERER = new DragonRenderer(manager, DRAGON_MODEL);
+                return DRAGON_RENDERER;
             });
             EntityRenderers.register(DSEntities.HUNTER_KNIGHT.get(), manager -> new KnightRenderer(manager, new KnightModel()));
             EntityRenderers.register(DSEntities.HUNTER_SPEARMAN.get(), manager -> new SpearmanRenderer(manager, new SpearmanModel()));
-            EntityRenderers.register(DSEntities.HUNTER_AMBUSHER.get(), manager -> new AmbusherRenderer(manager, new AmbusherModel()));
+            EntityRenderers.register(DSEntities.HUNTER_AMBUSHER.get(), manager -> new AmbusherRenderer(manager, AMBUSHER_MODEL));
             EntityRenderers.register(DSEntities.HUNTER_HOUND.get(), manager -> new HoundRenderer(manager, new HoundModel()));
             EntityRenderers.register(DSEntities.HUNTER_GRIFFIN.get(), manager -> new GriffinRenderer(manager, new GriffinModel()));
             EntityRenderers.register(DSEntities.HUNTER_LEADER.get(), manager -> new LeaderRenderer(manager, new LeaderModel()));
@@ -132,6 +144,7 @@ public class DragonSurvivalClient {
         event.registerAbove(VanillaGuiLayers.AIR_LEVEL, DragonPenaltyHUD.ID, DragonPenaltyHUD::render);
         event.registerAbove(DragonPenaltyHUD.ID, MagicHUD.ID, MagicHUD::render);
         event.registerAbove(MagicHUD.ID, GrowthHUD.ID, GrowthHUD::render);
+        event.registerAbove(GrowthHUD.ID, DragonSoulBar.ID, DragonSoulBar::render);
         event.registerAbove(MagicHUD.ID, SpinHUD.ID, SpinHUD::render);
     }
 

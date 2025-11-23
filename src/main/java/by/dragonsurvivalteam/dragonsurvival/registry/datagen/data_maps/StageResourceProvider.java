@@ -4,8 +4,8 @@ import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.StageResources;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSConditions;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSDataMaps;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.datapacks.AncientDatapacks;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.BuiltInDragonSpecies;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.datapacks.AncientDatapack;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStages;
 import net.minecraft.core.HolderLookup;
@@ -24,7 +24,7 @@ public class StageResourceProvider extends DataMapProvider {
     }
 
     @Override
-    protected void gather() {
+    protected void gather(HolderLookup.@NotNull Provider provider) {
         builder(DSDataMaps.STAGE_RESOURCES)
                 .add(BuiltInDragonSpecies.CAVE_DRAGON, caveDragon(), false, DSConditions.CAVE_DRAGON_LOADED)
                 .add(BuiltInDragonSpecies.FOREST_DRAGON, forestDragon(), false, DSConditions.FOREST_DRAGON_LOADED)
@@ -67,7 +67,7 @@ public class StageResourceProvider extends DataMapProvider {
                 )
         ));
 
-        resources.put(AncientDatapack.ancient, new StageResources.StageResource(
+        resources.put(AncientDatapacks.ancient, new StageResources.StageResource(
                 new StageResources.GrowthIcon(
                         DragonSurvival.res("textures/gui/custom/stage/cave/ancient_stage_hover.png"),
                         DragonSurvival.res("textures/gui/custom/stage/cave/ancient_stage_main.png")
@@ -117,7 +117,7 @@ public class StageResourceProvider extends DataMapProvider {
                 )
         ));
 
-        resources.put(AncientDatapack.ancient, new StageResources.StageResource(
+        resources.put(AncientDatapacks.ancient, new StageResources.StageResource(
                 new StageResources.GrowthIcon(
                         DragonSurvival.res("textures/gui/custom/stage/forest/ancient_stage_hover.png"),
                         DragonSurvival.res("textures/gui/custom/stage/forest/ancient_stage_main.png")
@@ -167,7 +167,7 @@ public class StageResourceProvider extends DataMapProvider {
                 )
         ));
 
-        resources.put(AncientDatapack.ancient, new StageResources.StageResource(
+        resources.put(AncientDatapacks.ancient, new StageResources.StageResource(
                 new StageResources.GrowthIcon(
                         DragonSurvival.res("textures/gui/custom/stage/sea/ancient_stage_hover.png"),
                         DragonSurvival.res("textures/gui/custom/stage/sea/ancient_stage_main.png")

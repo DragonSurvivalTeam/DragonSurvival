@@ -32,7 +32,7 @@ public record SyncAddPenaltySupply(
     public static void handleClient(final SyncAddPenaltySupply packet, final IPayloadContext context) {
         context.enqueueWork(() -> {
             PenaltySupply penaltySupply = context.player().getData(DSDataAttachments.PENALTY_SUPPLY);
-            penaltySupply.initialize(packet.id(), packet.maximumSupply(), packet.reductionRateMultiplier(), packet.regenerationRate(), packet.currentSupply());
+            penaltySupply.initialize(packet.id(), packet.maximumSupply(), packet.reductionRateMultiplier(), packet.regenerationRate(), packet.currentSupply(), /* Not relevant to the client */ 0);
         });
     }
 

@@ -72,7 +72,8 @@ public class DSDamageTypeTags extends DamageTypeTagsProvider {
     private void addToVanillaTags() {
         tag(DamageTypeTags.BYPASSES_ARMOR)
                 .add(DSDamageTypes.DRAIN)
-                .add(DSDamageTypes.BURN);
+                .add(DSDamageTypes.BURN)
+                .add(DSDamageTypes.DEHYDRATION);
 
         tag(DamageTypeTags.BYPASSES_COOLDOWN)
                 .add(DSDamageTypes.SPIKE);

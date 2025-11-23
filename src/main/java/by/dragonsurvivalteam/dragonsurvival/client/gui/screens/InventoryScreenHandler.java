@@ -2,6 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.client.gui.screens;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
+import by.dragonsurvivalteam.dragonsurvival.compat.ModCheck;
 import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
@@ -31,6 +32,7 @@ import net.neoforged.neoforge.client.event.ScreenEvent;
 import net.neoforged.neoforge.client.gui.widget.ExtendedButton;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
+import top.theillusivec4.curios.client.gui.CuriosScreen;
 
 import java.util.Objects;
 
@@ -133,10 +135,21 @@ public class InventoryScreenHandler {
             return;
         }
 
-        // Dragon only UI
+        Integer width = null;
+        Integer height = null;
+
         if (sc instanceof InventoryScreen screen) {
+            width = screen.getGuiLeft();
+            height = screen.height;
+        } else if (ModCheck.isModLoaded(ModCheck.CURIOS) && sc instanceof CuriosScreen screen) {
+            width = screen.getGuiLeft();
+            height = screen.height;
+        }
+
+        // Dragon only UI
+        if (width != null) {
             if (inventoryToggle) {
-                dragonInventoryButton = new ExtendedButton(screen.getGuiLeft() + 128, screen.height / 2 - 22, 20, 18, Component.empty(), p_onPress_1_ -> {
+                dragonInventoryButton = new ExtendedButton(width + 128, height / 2 - 22, 20, 18, Component.empty(), p_onPress_1_ -> {
                     openDragonInventory();
                 }) {
                     @Override

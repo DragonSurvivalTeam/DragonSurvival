@@ -11,11 +11,11 @@ import net.minecraft.core.RegistryCodecs;
 
 import java.util.Optional;
 
-public record DragonStagePredicate(Optional<HolderSet<DragonStage>> dragonStage, Optional<MinMaxBounds.Doubles> growthPercentage, Optional<MinMaxBounds.Doubles> size) {
+public record DragonStagePredicate(Optional<HolderSet<DragonStage>> dragonStage, Optional<MinMaxBounds.Doubles> growthPercentage, Optional<MinMaxBounds.Doubles> growth) {
     public static final Codec<DragonStagePredicate> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             RegistryCodecs.homogeneousList(DragonStage.REGISTRY).optionalFieldOf("dragon_stage").forGetter(DragonStagePredicate::dragonStage),
             MiscCodecs.percentageBounds().optionalFieldOf("growth_percentage").forGetter(DragonStagePredicate::growthPercentage),
-            MinMaxBounds.Doubles.CODEC.optionalFieldOf("growth").forGetter(DragonStagePredicate::size)
+            MinMaxBounds.Doubles.CODEC.optionalFieldOf("growth").forGetter(DragonStagePredicate::growth)
     ).apply(instance, DragonStagePredicate::new));
 
     @SuppressWarnings("RedundantIfStatement") // ignore for clarity
@@ -32,7 +32,7 @@ public record DragonStagePredicate(Optional<HolderSet<DragonStage>> dragonStage,
             return false;
         }
 
-        if (size().isPresent() && !size().get().matches(growth)) {
+        if (growth().isPresent() && !growth().get().matches(growth)) {
             return false;
         }
 

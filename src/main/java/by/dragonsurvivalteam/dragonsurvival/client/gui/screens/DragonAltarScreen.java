@@ -1,6 +1,5 @@
 package by.dragonsurvivalteam.dragonsurvival.client.gui.screens;
 
-import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.AltarTypeButton;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic.HoverButton;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic.HoverDisableable;
@@ -42,6 +41,7 @@ import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.core.Holder;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -73,8 +73,10 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
 
     @Translation(comments = {
             "§6■ Welcome to Dragon Survival!§r",
-            "■ You can choose which dragon §6species§r§r you want to become. This decision is not permanent, but you may lose progress if you change your mind.",
-            "■§7 Don't forget to read patch notes and delete old configs if you update our mod to avoid bugs! Enjoy the game! :3"
+            "■ You can choose which §6species§r§r you want to become. You can change your selection using the Altar, but you may lose progress.",
+            "■§7 Don't forget to read patch notes if you update our mod to avoid bugs!",
+            "■§7 If you want to play as other species (griffins, eastern dragons, bees, and others), install add-ons or create them yourself via datapacks!",
+            "■§7 Enjoy the game! :3"
     })
     private static final String HELP = Translation.Type.GUI.wrap("altar.help");
 
@@ -112,10 +114,11 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
     public DragonAltarScreen(final List<UnlockableBehavior.SpeciesEntry> entries) {
         super(Component.translatable(CHOOSE_SPECIES));
 
-        //noinspection DataFlowIssue -> access is expected to be present
-        DragonSurvival.PROXY.getAccess().registryOrThrow(DragonSpecies.REGISTRY).getTag(DSDragonSpeciesTags.ORDER).ifPresent(order -> {
+        //noinspection DataFlowIssue -> 'minecraft' (from 'Screen') is null at this point because it gets set in 'init'
+        Minecraft.getInstance().player.registryAccess().registryOrThrow(DragonSpecies.REGISTRY).getTag(DSDragonSpeciesTags.ORDER).ifPresent(order -> {
             //noinspection unchecked -> cast is valid
             List<Holder<DragonSpecies>> list = ((HolderSet$NamedAccess<DragonSpecies>) order).dragonSurvival$contents();
+
             Comparator<UnlockableBehavior.SpeciesEntry> comparator = Comparator.comparingInt(entry -> {
                 int index = list.indexOf(entry.species());
                 // Sort entries that are not present to the end
@@ -134,7 +137,7 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
         LocalPlayer player = Minecraft.getInstance().player;
         //noinspection DataFlowIssue -> player should not be null
         AltarData data = AltarData.getData(player);
-        data.isInAltar = false;
+        data.isInAltar = false; // TODO :: should maybe also be sent to the server
 
         if (!data.hasUsedAltar) {
             // In case the altar was closed without making a choice
@@ -211,12 +214,15 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
 
             // FIXME :: for some reason at this point the species may not be set
             if (handler1.species() != null && handler2.species() != null) {
+                //noinspection DataFlowIssue -> player is present
+                RegistryAccess access = getMinecraft().player.registryAccess();
+
                 if (handler1.body() == null) {
-                    handler1.setBody(null, DragonBody.getRandom(null, handler1.species()));
+                    handler1.setBody(null, DragonBody.getRandom(access, handler1.species()));
                 }
 
                 handler2.setBody(null, handler1.body());
-                handler1.setBody(null, DragonBody.getRandom(null, handler1.species()));
+                handler1.setBody(null, DragonBody.getRandom(access, handler1.species()));
 
                 if (animation1 >= animations.length) {
                     animation1 = 0;

@@ -34,6 +34,7 @@ import net.minecraft.world.entity.projectile.ProjectileDeflection;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
+import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
@@ -75,7 +76,7 @@ public class GenericArrowEntity extends AbstractArrow implements IEntityWithComp
         if (generalData == null) {
             DragonSurvival.LOGGER.error("Attempted to get generalData for GenericArrowEntity, but it was not initialized! Destroying projectile.");
             discard();
-            return new ProjectileData.GeneralData(ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "generic_ball"), Optional.empty(), List.of(), List.of(), List.of(), List.of());
+            return new ProjectileData.GeneralData(DragonSurvival.res("generic_ball"), false, Optional.empty(), List.of(), List.of(), List.of(), List.of());
         }
 
         return generalData;
@@ -294,6 +295,11 @@ public class GenericArrowEntity extends AbstractArrow implements IEntityWithComp
         ItemStack stack = Items.ARROW.getDefaultInstance();
         stack.set(DataComponents.INTANGIBLE_PROJECTILE, Unit.INSTANCE);
         return stack;
+    }
+
+    @Override
+    public boolean mayBreak(@NotNull final Level level) {
+        return getGeneralData().isImpactProjectile() && level.getGameRules().getBoolean(GameRules.RULE_PROJECTILESCANBREAKBLOCKS);
     }
 
     private static final String GENERAL_DATA = "general_data";

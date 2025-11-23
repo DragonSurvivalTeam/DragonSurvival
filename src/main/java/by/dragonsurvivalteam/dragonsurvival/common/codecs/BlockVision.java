@@ -26,6 +26,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
@@ -51,25 +52,31 @@ public class BlockVision extends DurationInstanceBase<BlockVisionData, BlockVisi
 
     public static final int NO_RANGE = 0;
 
+    public static final int DEFAULT_PARTICLE_RATE = 10;
+    public static final int NO_PARTICLE_RATE = -1;
+
     public static final Codec<BlockVision> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             DurationInstanceBase.CODEC.fieldOf("base").forGetter(identity -> identity),
             RegistryCodecs.homogeneousList(Registries.BLOCK).fieldOf("blocks").forGetter(BlockVision::blocks),
             LevelBasedValue.CODEC.fieldOf("range").forGetter(BlockVision::range),
             DisplayType.CODEC.fieldOf("display_type").forGetter(BlockVision::displayType),
-            TextColor.CODEC.listOf().fieldOf("colors").forGetter(BlockVision::colors)
+            TextColor.CODEC.listOf().fieldOf("colors").forGetter(BlockVision::colors),
+            ExtraCodecs.intRange(1, Integer.MAX_VALUE).optionalFieldOf("particle_rate", DEFAULT_PARTICLE_RATE).forGetter(BlockVision::particleRate)
     ).apply(instance, BlockVision::new));
 
     private final HolderSet<Block> blocks;
     private final LevelBasedValue range;
     private final DisplayType displayType;
     private final List<TextColor> colors;
+    private final int particleRate;
 
-    public BlockVision(final DurationInstanceBase<?, ?> base, final HolderSet<Block> blocks, final LevelBasedValue range, final DisplayType displayType, final List<TextColor> colors) {
+    public BlockVision(final DurationInstanceBase<?, ?> base, final HolderSet<Block> blocks, final LevelBasedValue range, final DisplayType displayType, final List<TextColor> colors, final int particleRate) {
         super(base);
         this.blocks = blocks;
         this.range = range;
         this.displayType = displayType;
         this.colors = colors;
+        this.particleRate = particleRate;
     }
 
     public MutableComponent getDescription(final int abilityLevel) {
@@ -103,6 +110,10 @@ public class BlockVision extends DurationInstanceBase<BlockVisionData, BlockVisi
 
     public List<TextColor> colors() {
         return colors;
+    }
+
+    public int particleRate() {
+        return particleRate;
     }
 
     @Override
@@ -150,6 +161,15 @@ public class BlockVision extends DurationInstanceBase<BlockVisionData, BlockVisi
             }
 
             return DisplayType.NONE;
+        }
+
+        public int getParticleRate(final Block block) {
+            //noinspection deprecation -> ignore
+            if (baseData().blocks().contains(block.builtInRegistryHolder())) {
+                return baseData().particleRate();
+            }
+
+            return NO_PARTICLE_RATE;
         }
 
         @Override

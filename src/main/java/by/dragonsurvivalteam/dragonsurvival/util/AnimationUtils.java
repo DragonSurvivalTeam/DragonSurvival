@@ -6,6 +6,9 @@ import net.minecraft.world.entity.LivingEntity;
 import software.bernie.geckolib.animatable.GeoAnimatable;
 import software.bernie.geckolib.animation.AnimationController;
 import software.bernie.geckolib.animation.RawAnimation;
+import software.bernie.geckolib.cache.GeckoLibCache;
+import software.bernie.geckolib.loading.object.BakedAnimations;
+import software.bernie.geckolib.model.GeoModel;
 
 public class AnimationUtils {
     /** Time in MS of 1 frame for 60 FPS */
@@ -43,5 +46,29 @@ public class AnimationUtils {
     public static float getDeltaSeconds() {
         //noinspection DataFlowIssue -> level is present
         return (Minecraft.getInstance().getTimer().getRealtimeDeltaTicks() * Minecraft.getInstance().level.tickRateManager().millisecondsPerTick()) / 1000f;
+    }
+
+    public static <A extends GeoAnimatable, T extends GeoModel<A>> boolean doesAnimationExist(final T model, final A animatable, final String animation) {
+        BakedAnimations bakedAnimations = GeckoLibCache.getBakedAnimations().get(model.getAnimationResource(animatable));
+
+        if (bakedAnimations == null) {
+            return false;
+        }
+
+        return bakedAnimations.getAnimation(animation) != null;
+    }
+
+    public static <A extends GeoAnimatable, T extends GeoModel<A>> boolean doesAnimationExist(final T model, final A animatable, final RawAnimation animation) {
+        assert (animation.getAnimationStages().size() == 1);
+
+        return doesAnimationExist(model, animatable, animation.getAnimationStages().getFirst().animationName());
+    }
+
+    public static <A extends GeoAnimatable, T extends GeoModel<A>> double animationDuration(final T model, final A animatable, final String animation) {
+        if (!doesAnimationExist(model, animatable, animation)) {
+            return 0;
+        }
+
+        return GeckoLibCache.getBakedAnimations().get(model.getAnimationResource(animatable)).getAnimation(animation).length();
     }
 }

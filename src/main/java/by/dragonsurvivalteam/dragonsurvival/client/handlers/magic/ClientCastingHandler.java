@@ -6,8 +6,10 @@ import by.dragonsurvivalteam.dragonsurvival.input.Keybind;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncBeginCast;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncStopCast;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -15,8 +17,16 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.InputEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 
+import java.util.Optional;
+
 @EventBusSubscriber(Dist.CLIENT)
 public class ClientCastingHandler {
+    @Translation(comments = "Dragon ability bar enabled")
+    public static final String ABILITY_BAR_ENABLED = Translation.Type.GUI.wrap("display.toggle_ability_bar.enabled");
+
+    @Translation(comments = "Dragon ability bar disabled")
+    public static final String ABILITY_BAR_DISABLED = Translation.Type.GUI.wrap("display.toggle_ability_bar.disabled");
+
     private static final Keybind[] slotKeybinds = new Keybind[]{
             Keybind.ABILITY1,
             Keybind.ABILITY2,
@@ -61,6 +71,8 @@ public class ClientCastingHandler {
         // Toggle HUD visibility
         if (Keybind.TOGGLE_ABILITIES.matches(input)) {
             magicData.setRenderAbilities(!magicData.shouldRenderAbilities());
+            String message = magicData.shouldRenderAbilities() ? ABILITY_BAR_ENABLED : ABILITY_BAR_DISABLED;
+            player.displayClientMessage(Component.translatable(message), true);
         }
     }
 
@@ -88,7 +100,7 @@ public class ClientCastingHandler {
         if (selectedSlot != lastSelectedSlot) {
             if (magicData.isCasting()) {
                 magicData.stopCasting(player);
-                PacketDistributor.sendToServer(new SyncStopCast(player.getId(), false));
+                PacketDistributor.sendToServer(new SyncStopCast(player.getId(), Optional.empty()));
             }
 
             magicData.setSelectedAbilitySlot(selectedSlot);
@@ -113,7 +125,7 @@ public class ClientCastingHandler {
         if (getKey(magicData.getSelectedAbilitySlot()).isReleased(input)) {
             if (magicData.isCasting()) {
                 magicData.stopCasting(player);
-                PacketDistributor.sendToServer(new SyncStopCast(player.getId(), false));
+                PacketDistributor.sendToServer(new SyncStopCast(player.getId(), Optional.empty()));
             }
 
             magicData.setErrorMessageSent(false);

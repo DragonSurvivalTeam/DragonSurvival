@@ -19,6 +19,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
@@ -66,7 +67,7 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
 
     /**
      * Note: Position does not work in first person <br>
-     * - GeckoLib cannot update the bone positions iff ClientDragonRenderer#renderInFirstPerson is not enabled <br>
+     * - GeckoLib cannot update the bone positions if ClientDragonRenderer#renderInFirstPerson is not enabled <br>
      * - Even if it is enabled the position won't be correct - unsure as to why
      */
     public static Vec3 getBonePosition(final Player player, final String name) {
@@ -124,7 +125,7 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
         // Since the model is a singleton, and it stores the bones
         BONES.forEach(name -> model.getBone(name).ifPresent(bone -> {
             Vector3d worldPosition = bone.getWorldPosition();
-            Vec3 position = new Vec3(worldPosition.x(), worldPosition.y(), worldPosition.z()).subtract(ClientDragonRenderer.getModelOffset(animatable, 1));
+            Vec3 position = new Vec3(worldPosition.x(), worldPosition.y(), worldPosition.z()).subtract(getModelOffset(animatable, 1));
             BONE_POSITIONS.computeIfAbsent(animatable.getId(), key -> new HashMap<>()).put(bone.getName(), position);
         }));
 
@@ -151,13 +152,17 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
         }
 
         super.actuallyRender(poseStack, animatable, model, renderType, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, color);
+
+        // If a body refresh was requested, all the animations will have been reset once we are post-render
+        handler.refreshBody = false;
+
         poseStack.popPose();
     }
 
     private void setupRender(final DragonEntity dragon, final Player player, final PoseStack pose, final float partialTick) {
         MovementData movement = MovementData.getData(player);
 
-        // This is normally used in EntityRenderDispatcher#render but that isn't triggered for 'DragonEntity'
+        // This is normally used in 'EntityRenderDispatcher#render', but that isn't triggered for 'DragonEntity'
         Vec3 offset = getRenderOffset(dragon, partialTick);
         pose.translate(-offset.x(), -offset.y(), -offset.z());
 
@@ -169,6 +174,23 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
             // Responsible for the roll (rotating entity to the side)
             pose.mulPose(Axis.ZP.rotation(dragon.prevZRot));
         }
+    }
+
+    private Vec3 getModelOffset(final DragonEntity dragon, float partialTicks) {
+        Player player = dragon.getPlayer();
+
+        if (player == null) {
+            return Vec3.ZERO;
+        }
+
+        float angle = -(float) MovementData.getData(player).bodyYaw * ((float) Math.PI / 180);
+        float x = Mth.sin(angle);
+        float z = Mth.cos(angle);
+
+        DragonStateHandler handler = DragonStateProvider.getData(player);
+        float scale = (float) handler.getVisualScale(player, partialTicks) * (float) handler.body().value().scalingProportions().scaleMultiplier();
+
+        return new Vec3(x * scale, 0, z * scale);
     }
 
     @Override // Also used by the layers
@@ -188,6 +210,6 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
 
     @Override
     public @NotNull Vec3 getRenderOffset(@NotNull final DragonEntity dragon, final float partialTicks) {
-        return ClientDragonRenderer.getModelOffset(dragon, partialTicks);
+        return getModelOffset(dragon, partialTicks);
     }
 }

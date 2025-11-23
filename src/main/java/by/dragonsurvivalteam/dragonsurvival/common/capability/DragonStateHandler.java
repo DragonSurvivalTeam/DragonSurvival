@@ -373,7 +373,7 @@ public class DragonStateHandler extends EntityStateHandler {
         PacketDistributor.sendToPlayer(player, new SyncMagicData(magic.serializeNBT(player.registryAccess())));
     }
 
-    public void setSpecies(@Nullable final Player player, final Holder<DragonSpecies> species, boolean savedForSoul) {
+    public void setSpecies(@Nullable final Player player, @Nullable final Holder<DragonSpecies> species, boolean savedForSoul) {
         Holder<DragonSpecies> oldSpecies = dragonSpecies;
         double oldGrowth = growth;
         dragonSpecies = species;
@@ -400,7 +400,6 @@ public class DragonStateHandler extends EntityStateHandler {
                 }
             }
         }
-
 
         if (oldSpecies != null && !savedForSoul) {
             // Save the growth for the previous species if we have changed and it isn't due to a soul save
@@ -480,7 +479,12 @@ public class DragonStateHandler extends EntityStateHandler {
         AttributeInstance instance = Objects.requireNonNull(player.getAttribute(Attributes.SCALE));
         double partialVisualGrowth = Mth.lerp(partialTick, visualGrowthLastTick, visualGrowth);
 
-        if (partialVisualGrowth == visualGrowth || DragonSurvival.PROXY.isFakePlayer(player)) {
+        if (DragonSurvival.PROXY.isFakePlayer(player)) {
+            double scale = DragonSurvival.PROXY.getFakePlayerScale(player);
+            return scale == -1 ? instance.getValue() : scale;
+        }
+
+        if (partialVisualGrowth == visualGrowth) {
             return instance.getValue();
         }
 
@@ -833,10 +837,10 @@ public class DragonStateHandler extends EntityStateHandler {
 
     // Used by the dragon soul item
     public static final String DRAGON_SPECIES = "dragon_species";
+    public static final String DRAGON_STAGE = "dragon_stage";
     public static final String GROWTH = "growth";
 
     private static final String DRAGON_BODY = "dragon_body";
-    private static final String DRAGON_STAGE = "dragon_stage";
 
     private static final String ENTITY_STATE = "entity_state";
     private static final String SKIN_DATA = "skin_data";

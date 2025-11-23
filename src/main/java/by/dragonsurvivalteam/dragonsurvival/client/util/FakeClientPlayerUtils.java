@@ -31,10 +31,15 @@ public class FakeClientPlayerUtils {
                 AnimationController<DragonEntity> controller = new AnimationController<>(this, "fake_player_controller", 2, state -> {
                     if (fakePlayer.handler.refreshBody) {
                         fakePlayer.animationController.forceAnimationReset();
-                        fakePlayer.handler.refreshBody = false;
                     }
 
                     if (fakePlayer.animationSupplier != null) {
+                        if (state.getController().getCurrentAnimation() == null) {
+                            // Sometimes it happens that this turns to null and the set animation below will do nothing
+                            // Because the controller still has the same raw animation stored (no change = no update)
+                            state.resetCurrentAnimation();
+                        }
+
                         return state.setAndContinue(RawAnimation.begin().thenLoop(fakePlayer.animationSupplier.get()));
                     }
 
@@ -52,15 +57,26 @@ public class FakeClientPlayerUtils {
         });
     }
 
-    public static FakeClientPlayer getFakePlayer(int index, DragonStateHandler handler) {
+    public static FakeClientPlayer getFakePlayer(int index, final DragonStateHandler handler) {
         FAKE_PLAYERS.computeIfAbsent(index, FakeClientPlayer::new);
         FAKE_PLAYERS.get(index).handler = handler;
         FAKE_PLAYERS.get(index).lastAccessed = System.currentTimeMillis();
         return FAKE_PLAYERS.get(index);
     }
 
+    public static int getNextIndex() {
+        // 0 and 1 are reserved for the dragon altar, editor, smithing screen, etc.
+        int index = 2;
+
+        while (FAKE_PLAYERS.containsKey(index)) {
+            index++;
+        }
+
+        return index;
+    }
+
     @SubscribeEvent
-    public static void clientTick(ClientTickEvent.Pre event) {
+    public static void clientTick(final ClientTickEvent.Pre event) {
         FAKE_PLAYERS.forEach((index, player) -> {
             if (System.currentTimeMillis() - player.lastAccessed >= TimeUnit.MILLISECONDS.convert(10, TimeUnit.MINUTES)) {
                 player.remove(RemovalReason.DISCARDED);

@@ -1,4 +1,5 @@
 {
+  "replace": false,
   "entries": [
     "dragonsurvival:dragon_chest_loot",
     "dragonsurvival:dragon_ore",

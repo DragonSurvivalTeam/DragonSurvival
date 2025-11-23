@@ -2,7 +2,7 @@
     "type": "minecraft:crafting_shapeless",
     "ingredients": [
         {
-            "tag": "c:ingots/copper"
+            "item": "minecraft:raw_copper"
         },
         {
             "tag": "c:gunpowders"

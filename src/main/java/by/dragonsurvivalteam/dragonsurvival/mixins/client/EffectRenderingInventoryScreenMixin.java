@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.mixins.client;
 
+import by.dragonsurvivalteam.dragonsurvival.compat.emi.EmiCompat;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.ClientEffectProvider;
 import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
@@ -49,6 +50,10 @@ public class EffectRenderingInventoryScreenMixin {
 
     @ModifyExpressionValue(method = "renderEffects", at = @At(value = "INVOKE", target = "Ljava/util/Collection;size()I"))
     private int dragonSurvival$adjustRenderedEffectsSize(int original) {
+        if (EmiCompat.hideEffects()) {
+            return original;
+        }
+
         return original + dragonSurvival$providers.size();
     }
 
@@ -95,6 +100,10 @@ public class EffectRenderingInventoryScreenMixin {
 
     @Inject(method = "renderEffects", at = @At(value = "TAIL"))
     private void dragonSurvival$renderAbilityEffects(final GuiGraphics graphics, int mouseX, int mouseY, final CallbackInfo callback, @Share("stored_event") final LocalRef<ScreenEvent.RenderInventoryMobEffects> storedEvent) {
+        if (EmiCompat.hideEffects()) {
+            return;
+        }
+
         EffectRenderingInventoryScreen<?> self = (EffectRenderingInventoryScreen<?>) (Object) this;
         int offset = ((AbstractContainerScreenAccessor) self).dragonSurvival$getLeftPos() + ((AbstractContainerScreenAccessor) self).dragonSurvival$imageWidth() + 2;
         int width = self.width;

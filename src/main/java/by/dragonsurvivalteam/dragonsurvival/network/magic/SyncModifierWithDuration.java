@@ -28,7 +28,9 @@ public record SyncModifierWithDuration(int playerId, ModifierWithDuration.Instan
                 ModifiersWithDuration data = player.getData(DSDataAttachments.MODIFIERS_WITH_DURATION);
 
                 if (packet.remove()) {
-                    data.remove(player, packet.modifierInstance());
+                    // The stored server and client ids (used to remove the effects) may be different
+                    // Therefor we retrieve the actual client instance and remove that not the encoded server instance
+                    data.remove(player, data.get(packet.modifierInstance().id()));
                 } else {
                     data.add(player, packet.modifierInstance());
                 }

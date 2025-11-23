@@ -107,6 +107,7 @@ public class ServerConfig {
     @ConfigOption(side = ConfigSide.SERVER, category = "dragon_hunters", key = "pillage_cooldown")
     public static int PILLAGE_COOLDOWN = Functions.secondsToTicks(300);
 
+    // This is a server config because there is a certain balance aspect to it
     @Translation(key = "max_pillage_render_distance", type = Translation.Type.CONFIGURATION, comments = "Max. distance the pillage icon will be rendered at (0 means it will be disabled)")
     @ConfigOption(side = ConfigSide.SERVER, category = "dragon_hunters", key = "max_pillage_render_distance")
     public static int MAX_RENDER_DISTANCE = 32;

@@ -74,9 +74,10 @@ public class ToolUtils {
 
     public static int toolToHarvestLevel(final ItemStack stack) {
         Item item = stack.getItem();
+        int level = 0;
 
         if (item instanceof TieredItem tiered) {
-            return switch (tiered.getTier()) {
+            level = switch (tiered.getTier()) {
                 case Tiers.WOOD, Tiers.GOLD -> 1;
                 case Tiers.STONE -> 2;
                 case Tiers.IRON -> 3;
@@ -86,7 +87,34 @@ public class ToolUtils {
             };
         }
 
-        return 0;
+        if (level == 0) {
+            // Fallback for modded tools
+            Tool tool = stack.get(DataComponents.TOOL);
+
+            if (tool == null) {
+                return level;
+            }
+
+            for (Tool.Rule rule : tool.rules()) {
+                // Basically - if a tool has this tag, it means it can be considered to be of that tier
+                // Because it says "this tool cannot mine these blocks"
+                if (rule.blocks() instanceof HolderSet.Named<Block> set) {
+                    if (set.key() == BlockTags.INCORRECT_FOR_WOODEN_TOOL || set.key() == BlockTags.INCORRECT_FOR_GOLD_TOOL) {
+                        level = 1;
+                    } else if (set.key() == BlockTags.INCORRECT_FOR_STONE_TOOL) {
+                        level = 2;
+                    } else if (set.key() == BlockTags.INCORRECT_FOR_IRON_TOOL) {
+                        level = 3;
+                    } else if (set.key() == BlockTags.INCORRECT_FOR_DIAMOND_TOOL) {
+                        level = 4;
+                    } else if (set.key() == BlockTags.INCORRECT_FOR_NETHERITE_TOOL) {
+                        level = 5;
+                    }
+                }
+            }
+        }
+
+        return level;
     }
 
     /** Skips exclusion rules related to requiring a higher tier of the tool */
@@ -102,7 +130,9 @@ public class ToolUtils {
         }
 
         for (Tool.Rule rule : tool.rules()) {
-            if (shouldSkipRule(rule)) {
+            if (isIncorrectRule(rule)) {
+                // Skip these since we just want to know if this tool is the correct type (defined by the rule that has a speed component)
+                // We don't skip all rules in case the tool is some sort of custom tool
                 continue;
             }
 
@@ -116,10 +146,8 @@ public class ToolUtils {
         return false;
     }
 
-    private static boolean shouldSkipRule(final Tool.Rule rule) {
+    private static boolean isIncorrectRule(final Tool.Rule rule) {
         if (rule.blocks() instanceof HolderSet.Named<Block> set) {
-            // Skip these since we just want to know if this tool is the correct type (defined by the rule that has a speed component)
-            // We don't skip all rules in case the tool is some sort of custom tool
             return set.key() == BlockTags.INCORRECT_FOR_WOODEN_TOOL ||
                     set.key() == BlockTags.INCORRECT_FOR_GOLD_TOOL ||
                     set.key() == BlockTags.INCORRECT_FOR_STONE_TOOL ||

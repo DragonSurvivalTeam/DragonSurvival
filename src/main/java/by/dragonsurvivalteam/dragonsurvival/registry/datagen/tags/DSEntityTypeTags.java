@@ -35,6 +35,9 @@ public class DSEntityTypeTags extends EntityTypeTagsProvider {
     @Translation(comments = "Dragons")
     public static final TagKey<EntityType<?>> DRAGONS = key("dragons");
 
+    @Translation(comments = "Can fly")
+    public static final TagKey<EntityType<?>> CAN_FLY = key("can_fly");
+
     @Translation(comments = "Drops Dragon Heart Shard")
     public static final TagKey<EntityType<?>> DROPS_DRAGON_HEART_SHARD = key("drops_dragon_heart_shard");
     @Translation(comments = "Drops Weak Dragon Heart")
@@ -50,7 +53,11 @@ public class DSEntityTypeTags extends EntityTypeTagsProvider {
     protected void addTags(@NotNull final HolderLookup.Provider provider) {
         tag(ANIMAL_AVOID_BLACKLIST)
                 .add(EntityType.WOLF)
-                .add(EntityType.HOGLIN);
+                .add(EntityType.HOGLIN)
+                .add(EntityType.BEE)
+                .addOptional(ResourceLocation.fromNamespaceAndPath("cobblemon", "pokemon"))
+                .addOptional(ResourceLocation.fromNamespaceAndPath("bee_queen_ds", "bee_guard"))
+                .addOptional(ResourceLocation.fromNamespaceAndPath("bee_queen_ds", "tamed_bee"));
 
         tag(VEHICLE_WHITELIST)
                 .addTag(Tags.EntityTypes.BOATS)
@@ -109,6 +116,18 @@ public class DSEntityTypeTags extends EntityTypeTagsProvider {
                 .add(DSEntities.HUNTER_SPEARMAN.value());
 
         tag(DRAGONS).add(EntityType.ENDER_DRAGON);
+
+        tag(CAN_FLY)
+                .add(EntityType.ALLAY)
+                .add(EntityType.BAT)
+                .add(EntityType.BEE)
+                .add(EntityType.BLAZE)
+                .add(EntityType.ENDER_DRAGON)
+                .add(EntityType.GHAST)
+                .add(EntityType.PARROT)
+                .add(EntityType.PHANTOM)
+                .add(EntityType.VEX)
+                .add(EntityType.WITHER);
 
         tag(DROPS_DRAGON_HEART_SHARD).add(EntityType.ARMOR_STAND);
         tag(DROPS_WEAK_DRAGON_HEART).add(EntityType.ARMOR_STAND);

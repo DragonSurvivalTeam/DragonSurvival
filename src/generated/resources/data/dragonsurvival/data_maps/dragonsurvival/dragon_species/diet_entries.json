@@ -405,8 +405,9 @@
         {
           "items": "additionaldragons:cursed_marrow",
           "properties": {
-            "nutrition": 0,
-            "saturation": 0.0
+            "eat_seconds": 0.8,
+            "nutrition": 4,
+            "saturation": 2.0
           }
         },
         {
@@ -1077,6 +1078,19 @@
         {
           "items": "additionaldragons:slippery_sushi",
           "properties": {
+            "effects": [
+              {
+                "effect": {
+                  "duration": 400,
+                  "id": "minecraft:dolphins_grace",
+                  "neoforge:cures": [
+                    "protected_by_totem",
+                    "milk"
+                  ],
+                  "show_icon": true
+                }
+              }
+            ],
             "nutrition": 10,
             "saturation": 8.0
           }

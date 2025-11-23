@@ -38,7 +38,7 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @SuppressWarnings("OptionalUsedAsFieldOrParameterType") // ignore
-@EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber
 public class DragonSpecies implements AttributeModifierSupplier {
     public static final ResourceKey<Registry<DragonSpecies>> REGISTRY = ResourceKey.createRegistryKey(DragonSurvival.res("dragon_species"));
 
@@ -180,7 +180,7 @@ public class DragonSpecies implements AttributeModifierSupplier {
 
     /**
      * Returns the configured starting size or the smallest size of the configured stages <br>
-     * If no configured stages are present it will return the smallest growth of the default stages
+     * If no configured stages are present, it will return the smallest growth of the default stages
      */
     public double getStartingGrowth(@Nullable final HolderLookup.Provider provider) {
         return startingGrowth.orElseGet(() -> DragonStage.getStartingGrowth(getStages(provider)));
@@ -227,7 +227,7 @@ public class DragonSpecies implements AttributeModifierSupplier {
     }
 
     public boolean isValidForBody(final Holder<DragonBody> body) {
-        return bodies.size() == 0 && body.value().model().equals(DragonBody.DEFAULT_MODEL) || bodies.contains(body);
+        return DragonBody.bodyIsValidForSpecies(body, this);
     }
 
     public static boolean isBuiltIn(final ResourceKey<DragonSpecies> speciesKey) {

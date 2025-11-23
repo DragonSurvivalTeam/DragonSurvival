@@ -47,7 +47,7 @@ public record DiscTarget(Either<BlockTargeting, EntityTargeting> target, LevelBa
 
     @Override
     public void apply(final ServerPlayer dragon, final DragonAbilityInstance ability) {
-        int radius = (int) this.radius.calculate(ability.level());
+        int radius = (int) getDistance(dragon, ability);
         int height = (int) this.height.calculate(ability.level());
 
         target.ifLeft(blockTarget -> {
@@ -65,6 +65,11 @@ public record DiscTarget(Either<BlockTargeting, EntityTargeting> target, LevelBa
 
     public AABB calculateAffectedArea(final Vec3 origin, int radius, int height) {
         return new AABB(origin.subtract(radius, heightStartsBelow ? 1 : 0, radius), origin.add(radius, heightStartsBelow ? height - 1 : height, radius));
+    }
+
+    @Override
+    public float getDistance(final Player dragon, final DragonAbilityInstance instance) {
+        return radius.calculate(instance.level());
     }
 
     @Override

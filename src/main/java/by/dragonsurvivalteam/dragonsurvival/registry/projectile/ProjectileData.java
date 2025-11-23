@@ -27,7 +27,7 @@ import net.neoforged.neoforge.registries.DataPackRegistryEvent;
 import java.util.List;
 import java.util.Optional;
 
-@EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber
 public record ProjectileData(GeneralData generalData, Either<GenericBallData, GenericArrowData> typeData) {
     public static final ResourceKey<Registry<ProjectileData>> REGISTRY = ResourceKey.createRegistryKey(DragonSurvival.res("projectile_data"));
 
@@ -49,6 +49,7 @@ public record ProjectileData(GeneralData generalData, Either<GenericBallData, Ge
     //  projectiles then may target entities with lower values
     public record GeneralData(
             ResourceLocation name,
+            boolean isImpactProjectile,
             Optional<LootItemCondition> entityHitCondition,
             List<ProjectileTargeting> tickingEffects,
             List<ProjectileTargeting> commonHitEffects,
@@ -57,6 +58,7 @@ public record ProjectileData(GeneralData generalData, Either<GenericBallData, Ge
     ) {
         public static final Codec<GeneralData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 ResourceLocation.CODEC.fieldOf("name").forGetter(GeneralData::name),
+                Codec.BOOL.optionalFieldOf("is_impact_projectile", false).forGetter(GeneralData::isImpactProjectile),
                 LootItemCondition.DIRECT_CODEC.optionalFieldOf("entity_hit_condition").forGetter(GeneralData::entityHitCondition),
                 ProjectileTargeting.CODEC.listOf().fieldOf("ticking_effects").forGetter(GeneralData::tickingEffects),
                 ProjectileTargeting.CODEC.listOf().fieldOf("common_hit_effects").forGetter(GeneralData::commonHitEffects),

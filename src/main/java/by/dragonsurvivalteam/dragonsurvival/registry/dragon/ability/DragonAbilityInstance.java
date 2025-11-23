@@ -6,9 +6,11 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.ManaCost;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.ManaHandler;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncDisableAbility;
+import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncStopCast;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.Activation;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.ChanneledActivation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.PassiveActivation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.trigger.ActivationTrigger;
 import com.mojang.serialization.Codec;
@@ -44,6 +46,7 @@ public class DragonAbilityInstance {
     public static final Codec<DragonAbilityInstance> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             DragonAbility.CODEC.fieldOf("ability").forGetter(DragonAbilityInstance::ability),
             Codec.INT.fieldOf("level").forGetter(DragonAbilityInstance::level),
+            Codec.INT.optionalFieldOf("cooldown", NO_COOLDOWN).forGetter(DragonAbilityInstance::cooldown),
             Codec.BOOL.optionalFieldOf("is_manually_disabled", false).forGetter(ability -> ability.isManuallyDisabled)
     ).apply(instance, DragonAbilityInstance::new));
 
@@ -60,12 +63,13 @@ public class DragonAbilityInstance {
     private int cooldown;
 
     public DragonAbilityInstance(final Holder<DragonAbility> ability, int level) {
-        this(ability, level, false);
+        this(ability, level, 0, false);
     }
 
-    public DragonAbilityInstance(final Holder<DragonAbility> ability, int level, boolean isManuallyDisabled) {
+    public DragonAbilityInstance(final Holder<DragonAbility> ability, int level, int cooldown, boolean isManuallyDisabled) {
         this.ability = ability;
         this.level = level;
+        this.cooldown = cooldown;
         this.isManuallyDisabled = isManuallyDisabled;
 
         if (isEnabled() && isPassive()) {
@@ -88,6 +92,8 @@ public class DragonAbilityInstance {
             if (isAutomaticallyDisabled && !this.isAutomaticallyDisabled) {
                 setDisabled(serverPlayer, true, false);
                 PacketDistributor.sendToPlayer(serverPlayer, new SyncDisableAbility(ability.getKey(), true, false));
+
+                stopCasting(dragon, /* This is only needed server-side (client is notified by the packet above) */ false);
             } else if (!isAutomaticallyDisabled && (this.isAutomaticallyDisabled || /* Need to re-activate passive abilities */ isPassive() && !isActive && !isManuallyDisabled)) {
                 setDisabled(serverPlayer, false, false);
                 PacketDistributor.sendToPlayer(serverPlayer, new SyncDisableAbility(ability.getKey(), false, false));
@@ -117,49 +123,71 @@ public class DragonAbilityInstance {
                 value().activation().playStartAndChargingAnimation(dragon);
             }
 
+            if (dragon instanceof ServerPlayer serverPlayer) {
+                value().tickChargingActions(serverPlayer, this, currentTick);
+            }
+
             return;
         }
 
         if (currentTick == castTime) {
             value().activation().playStartAndLoopingSound(dragon, this);
             value().activation().playLoopingAnimation(dragon);
-        }
-
-        if (currentTick < castTime) {
-            return;
-        }
-
-        if (currentTick == castTime) {
             ManaHandler.consumeMana(dragon, value().activation().getInitialManaCost(level));
         }
 
         if (currentTick > castTime) {
+            if (value().activation() instanceof ChanneledActivation channeled && channeled.hasReachedMaxDuration(level, currentTick - castTime)) {
+                if (dragon instanceof ServerPlayer serverPlayer) {
+                    value().tickChannelCompletionActions(serverPlayer, this, currentTick);
+                }
+
+                // It is possible for the client to reach this point first
+                // We don't notify the server since it may lead to the tick (and therefor the actions) to be skipped
+                stopCasting(dragon, false);
+                return;
+            }
+
             float manaCost = getContinuousManaCost(ManaCost.ManaCostType.TICKING);
 
             if (ManaHandler.hasEnoughMana(dragon, manaCost)) {
                 // TODO :: make this return a boolean and remove 'hasEnoughMana'?
                 ManaHandler.consumeMana(dragon, manaCost);
             } else {
-                stopCasting(dragon);
+                stopCasting(dragon, true);
                 return;
             }
         }
 
         if (dragon instanceof ServerPlayer serverPlayer) {
-            ability.value().actions().forEach(action -> action.tick(serverPlayer, this, currentTick));
+            value().tickDefaultActions(serverPlayer, this, currentTick);
         }
 
+        // Now that stopCasting gives the client the power to tell the server
+        // to stop the cast, this can result in the client cancelling the cast before the server has had time to actually process it
+        // So just do a clientside stop cast instead in this case
         if (value().activation().type() == Activation.Type.SIMPLE || isPassive() && value().activation().getCooldown(level) > 0) {
-            stopCasting(dragon);
+            stopCasting(dragon, false);
         }
     }
 
-    private void stopCasting(final Player dragon) {
-        value().activation().playEndSound(dragon);
-        value().activation().playEndAnimation(dragon);
+    /**
+     * @param dragon Player whose cast will be stopped
+     * @param notifyServer Whether to send a packet to inform the server about the cast stop
+     */
+    private void stopCasting(final Player dragon, boolean notifyServer) {
+        // Make sure to notify the server that the casting of this ability has actually stopped; otherwise you'll end up with desyncs
+        // where, for example, the continuous audio of a channeled ability will continue to play
+        if (dragon.level().isClientSide()) {
+            MagicData magic = MagicData.getData(dragon);
+            magic.stopCasting(dragon, this);
 
-        MagicData magic = MagicData.getData(dragon);
-        magic.stopCasting(dragon, this);
+            if (notifyServer) {
+                PacketDistributor.sendToServer(new SyncStopCast(dragon.getId(), Optional.of(key())));
+            }
+        } else {
+            SyncStopCast.handleServer(dragon, key());
+        }
     }
 
     public float getContinuousManaCost(final ManaCost.ManaCostType manaCostType) {
@@ -217,7 +245,7 @@ public class DragonAbilityInstance {
         this.isActive = isActive;
 
         if (!isActive && player instanceof ServerPlayer serverPlayer && value().activation() instanceof PassiveActivation passive && passive.trigger().type() == ActivationTrigger.TriggerType.CONSTANT) {
-            // Also makes sure to remove any affects that are applied by the ability
+            // Also makes sure to remove any effects that are applied by the ability
             ability.value().actions().forEach(action -> action.remove(serverPlayer, this));
         }
 
@@ -229,19 +257,29 @@ public class DragonAbilityInstance {
     public void release(final Player dragon) {
         currentTick = 0;
 
-        if (dragon.hasInfiniteMaterials() && !(this.isPassive() && this.getCooldown() > 0)) {
+        // Passive abilities keep their cooldown since some effects can affect creative mode gameplay in a confusing way
+        // (e.g. a revival effect - since the player does not actively cast it, it may seem like there is a bug)
+        if (dragon.hasInfiniteMaterials() && !this.isPassive()) {
             cooldown = NO_COOLDOWN;
         } else {
             cooldown = ability.value().activation().getCooldown(level);
         }
     }
 
-    public void tickCooldown(final Player entity) { // TODO :: sync cooldown to client (maybe only relevant for passive?)
-        if (entity.hasInfiniteMaterials() && !(this.isPassive() && this.getCooldown() > 0)) {
+    /** This does not sync the change to the client */
+    public void tickCooldown(final Player player) {
+        // Passive abilities keep their cooldown since some effects can affect creative mode gameplay in a confusing way
+        // (e.g. a revival effect - since the player does not actively cast it, it may seem like there is a bug)
+        if (player.hasInfiniteMaterials() && !this.isPassive()) {
             cooldown = NO_COOLDOWN;
         } else {
             cooldown = Math.max(NO_COOLDOWN, cooldown - 1);
         }
+    }
+
+    /** This does not sync the change to the client */
+    public void setCooldown(int cooldown) {
+        this.cooldown = Math.clamp(cooldown, NO_COOLDOWN, value().activation().getCooldown(level));
     }
 
     public boolean isPassive() {
@@ -258,10 +296,6 @@ public class DragonAbilityInstance {
 
     public boolean isUsable() {
         return isEnabled() && level > 0;
-    }
-
-    public int getCooldown() {
-        return cooldown;
     }
 
     public DragonAbility value() {
@@ -296,6 +330,11 @@ public class DragonAbilityInstance {
     /** Returns the field in an unmodified way (also used by the codec) */
     public int level() {
         return level;
+    }
+
+    /** Returns the field in an unmodified way (also used by the codec) */
+    public int cooldown() {
+        return cooldown;
     }
 
     /**

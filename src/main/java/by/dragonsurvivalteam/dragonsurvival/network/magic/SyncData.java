@@ -25,7 +25,7 @@ public record SyncData(int targetEntityId, ResourceLocation attachmentType, Comp
             SyncData::new
     );
 
-    public static void handleClient(final SyncData packet, final IPayloadContext context) {
+    public static void handleCommon(final SyncData packet, final IPayloadContext context) {
         context.enqueueWork(() -> {
             try {
                 AttachmentType<?> type = NeoForgeRegistries.ATTACHMENT_TYPES.get(packet.attachmentType());

@@ -8,6 +8,8 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.BuiltInDragonSpecies
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -25,7 +27,7 @@ public class DietEntryProvider extends DataMapProvider {
     }
 
     @Override
-    protected void gather() {
+    protected void gather(HolderLookup.@NotNull Provider provider) {
         builder(DSDataMaps.DIET_ENTRIES)
                 .add(BuiltInDragonSpecies.CAVE_DRAGON, caveDiet(), false, DSConditions.CAVE_DRAGON_LOADED)
                 .add(BuiltInDragonSpecies.FOREST_DRAGON, forestDiet(), false, DSConditions.FOREST_DRAGON_LOADED)
@@ -92,7 +94,7 @@ public class DietEntryProvider extends DataMapProvider {
                 DietEntry.from(DSItems.DIAMOND_CHORUS.value(), new FoodProperties(15, 12, false, DietEntry.DEFAULT_EAT_SECONDS, Optional.empty(), List.of())),
                 DietEntry.from(DSItems.LUMINOUS_OINTMENT.value(), new FoodProperties(5, 3, false, DietEntry.DEFAULT_EAT_SECONDS, Optional.empty(), List.of())),
                 DietEntry.from(DSItems.SWEET_SOUR_RABBIT.value(), new FoodProperties(10, 6, false, DietEntry.DEFAULT_EAT_SECONDS, Optional.empty(), List.of())),
-                DietEntry.from("additionaldragons:cursed_marrow", new FoodProperties(0, 0, false, DietEntry.DEFAULT_EAT_SECONDS, Optional.empty(), List.of())),
+                DietEntry.from("additionaldragons:cursed_marrow", new FoodProperties(4, 2, false, 0.8f, Optional.empty(), List.of())),
                 DietEntry.from("aquaculture:turtle_soup", new FoodProperties(8, 8, false, DietEntry.DEFAULT_EAT_SECONDS, Optional.empty(), List.of())),
                 DietEntry.from("netherdepthsupgrade:wither_bonefish", new FoodProperties(4, 6, false, DietEntry.DEFAULT_EAT_SECONDS, Optional.empty(), List.of())),
                 DietEntry.from("netherdepthsupgrade:bonefish", new FoodProperties(4, 6, false, DietEntry.DEFAULT_EAT_SECONDS, Optional.empty(), List.of())),
@@ -191,7 +193,7 @@ public class DietEntryProvider extends DataMapProvider {
                 DietEntry.from(DSItems.GOLDEN_CORAL_PUFFERFISH.value(), new FoodProperties(12, 14, false, DietEntry.DEFAULT_EAT_SECONDS, Optional.empty(), List.of())),
                 DietEntry.from(DSItems.FROZEN_RAW_FISH.value(), new FoodProperties(2, 1, true, DietEntry.DEFAULT_EAT_SECONDS, Optional.empty(), List.of())),
                 DietEntry.from(DSItems.GOLDEN_TURTLE_EGG.value(), new FoodProperties(15, 12, false, DietEntry.DEFAULT_EAT_SECONDS, Optional.empty(), List.of())),
-                DietEntry.from("additionaldragons:slippery_sushi", new FoodProperties(10, 8, false, DietEntry.DEFAULT_EAT_SECONDS, Optional.empty(), List.of())),
+                DietEntry.from("additionaldragons:slippery_sushi", new FoodProperties(10, 8, false, DietEntry.DEFAULT_EAT_SECONDS, Optional.empty(), List.of(new FoodProperties.PossibleEffect(() -> new MobEffectInstance(MobEffects.DOLPHINS_GRACE, 400), 1.0f)))),
                 DietEntry.from("aoa3:raw_candlefish", new FoodProperties(9, 9, false, DietEntry.DEFAULT_EAT_SECONDS, Optional.empty(), List.of())),
                 DietEntry.from("aoa3:raw_crimson_skipper", new FoodProperties(8, 8, false, DietEntry.DEFAULT_EAT_SECONDS, Optional.empty(), List.of())),
                 DietEntry.from("aoa3:raw_fingerfish", new FoodProperties(4, 4, false, DietEntry.DEFAULT_EAT_SECONDS, Optional.empty(), List.of())),

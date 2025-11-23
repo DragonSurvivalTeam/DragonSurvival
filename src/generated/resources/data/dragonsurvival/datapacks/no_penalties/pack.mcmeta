@@ -1,0 +1,11 @@
+{
+  "features": {
+    "enabled": []
+  },
+  "pack": {
+    "description": {
+      "translate": "dragonsurvival.gui.datapack.no_penalties"
+    },
+    "pack_format": 48
+  }
+}

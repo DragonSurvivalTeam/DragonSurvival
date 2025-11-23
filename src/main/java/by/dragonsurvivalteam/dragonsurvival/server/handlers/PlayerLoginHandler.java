@@ -158,6 +158,8 @@ public class PlayerLoginHandler {
 
             // Make sure to sync the FLIGHT data, otherwise the flight animation will be displayed incorrectly when tracking begins
             syncFrom.getExistingData(DSDataAttachments.FLIGHT).ifPresent(data -> data.sync(source, target));
+            // Same for MOVEMENT data
+            syncFrom.getExistingData(DSDataAttachments.MOVEMENT).ifPresent(data -> data.sync(source, target));
         }
     }
 
@@ -184,6 +186,7 @@ public class PlayerLoginHandler {
         player.getExistingData(DSDataAttachments.CLAW_INVENTORY).ifPresent(data -> data.sync(player));
         player.getExistingData(DSDataAttachments.FLIGHT).ifPresent(data -> data.sync(player));
         player.getExistingData(DSDataAttachments.SWIM).ifPresent(data -> data.sync(player));
+        player.getExistingData(DSDataAttachments.MOVEMENT).ifPresent(data -> data.sync(player));
         DSDataAttachments.getStorages(player).forEach(storage -> storage.sync(player));
     }
 }

@@ -10,6 +10,8 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Optional;
+
 public record SyncBeginCast(int playerId, int abilitySlot) implements CustomPacketPayload {
     public static final Type<SyncBeginCast> TYPE = new Type<>(DragonSurvival.res("sync_begin_cast"));
 
@@ -26,7 +28,7 @@ public record SyncBeginCast(int playerId, int abilitySlot) implements CustomPack
             // The server can deny the cast if the player doesn't meet the entity predicate for the casting
             if (!magic.attemptCast(context.player(), packet.abilitySlot())) {
                 // Send this deny packet to all players involved, not just the caster, as we may need to stop ticking sounds
-                PacketDistributor.sendToPlayersTrackingEntityAndSelf(context.player(), new SyncStopCast(context.player().getId(), false));
+                PacketDistributor.sendToPlayersTrackingEntityAndSelf(context.player(), new SyncStopCast(context.player().getId(), Optional.empty()));
             }
         });
     }

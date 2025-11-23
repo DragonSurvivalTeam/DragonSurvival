@@ -96,7 +96,7 @@ public class FlightData implements INBTSerializable<CompoundTag> {
     }
 
     public static final ClientEffectProvider FLIGHT_EFFECT = new ClientEffectProvider() {
-        @Translation(type = Translation.Type.GUI, comments = "Dragon Wings")
+        @Translation(type = Translation.Type.GUI, comments = "Wings")
         private static final ResourceLocation NAME = DragonSurvival.res("dragon_wings");
 
         private static final ResourceLocation ID = DragonSurvival.res("dragon_wings");

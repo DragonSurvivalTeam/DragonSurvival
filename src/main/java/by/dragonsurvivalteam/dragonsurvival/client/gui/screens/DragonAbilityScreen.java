@@ -1,6 +1,5 @@
 package by.dragonsurvivalteam.dragonsurvival.client.gui.screens;
 
-import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.AbilityButton;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.LevelButton;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.TabButton;
@@ -36,20 +35,21 @@ import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 
 public class DragonAbilityScreen extends Screen {
     @Translation(comments = {
+            "§f■ §cUSE THE MOUSE WHEEL TO SCROLL THROUGH THE SKILL COLUMNS.",
             "§f■ §6Active skills§r§f are used in combat or to apply buffs.",
             "§f- §9Skill power§r§8 scales off your current experience level.",
             "§f- §9Experience or mana§r§8 points are used to cast spells.",
-            "§f- §9Disable§r§8 the skill by ctrl+right click.",
             "",
             "§f■ §aPassive skills§r§f are upgraded by spending experience levels or just give bonuses.",
-            "§f- §9To scroll skills use the mouse wheel.",
-            "§f- §9More information§r§8 can be found on Curseforge mod page."
+            "§f- §9Disable§r§8 the skill by ctrl+right click.",
+            "§f- §9More information§r§8 can be found on Curseforge mod page or Github Wiki."
     })
     private static final String HELP_PASSIVE_ACTIVE = Translation.Type.GUI.wrap("help.passive_active_abilities");
 
     @Translation(comments = {
-            "■ §dAbility assignment§r§f - drag and drop §6Active skills§r to the §9hotbar§r.",
-            "§f- §9Hotbar§r§8 is used to quickly access your active skills.",
+            "■ §cUSE THE MOUSE WHEEL TO SCROLL THROUGH THE SKILL COLUMNS.",
+            "§f■ §dAbility assignment§r§f - drag and drop §6Active skills§r§f from right to the §9left column§r§f.",
+            "§f- §9Left Column§r§8 is used to quickly access your active skills via magic hotbar.",
             "§f- §8Check in-game Minecraft §r§9control§r§8 settings!"
     })
     private static final String HELP_ABILITY_ASSIGNMENT = Translation.Type.GUI.wrap("help.ability_assignment");
@@ -64,7 +64,7 @@ public class DragonAbilityScreen extends Screen {
     private static final ResourceLocation INFO_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/ability_screen/info_hover.png");
     private static final ResourceLocation INFO_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/ability_screen/info_main.png");
 
-    public LevelButton hoveredLevelButton;
+    public LevelButton lastHoveredLevelButton;
 
     private Holder<DragonSpecies> dragonSpecies;
     private int guiLeft;
@@ -131,10 +131,10 @@ public class DragonAbilityScreen extends Screen {
 
             int experienceModification;
 
-            if (hoveredLevelButton == null || !hoveredLevelButton.canModifyLevel()) {
+            if (lastHoveredLevelButton == null || !lastHoveredLevelButton.isHovered() || !lastHoveredLevelButton.canModify()) {
                 experienceModification = 0;
             } else {
-                experienceModification = hoveredLevelButton.getExperienceModification();
+                experienceModification = lastHoveredLevelButton.getExperienceModification();
             }
 
             int newExperience = totalExperience + experienceModification;
@@ -209,8 +209,7 @@ public class DragonAbilityScreen extends Screen {
         List<DragonAbilityInstance> upgradablePassives = data.filterPassiveByUpgrade(UpgradeType.IS_MANUAL);
         List<DragonAbilityInstance> constantPassives = data.filterPassiveByUpgrade(UpgradeType.IS_MANUAL.negate());
 
-        //noinspection DataFlowIssue -> access is expected to be present
-        DragonSurvival.PROXY.getAccess().registryOrThrow(DragonAbility.REGISTRY).getTag(DSDragonAbilityTags.ORDER).ifPresent(order -> {
+        minecraft.player.registryAccess().registryOrThrow(DragonAbility.REGISTRY).getTag(DSDragonAbilityTags.ORDER).ifPresent(order -> {
             //noinspection unchecked -> cast is valid
             List<Holder<DragonAbility>> list = ((HolderSet$NamedAccess<DragonAbility>) order).dragonSurvival$contents();
             Comparator<DragonAbilityInstance> comparator = Comparator.comparingInt(instance -> {

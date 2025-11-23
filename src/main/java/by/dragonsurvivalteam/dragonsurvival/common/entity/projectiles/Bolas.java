@@ -13,13 +13,9 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-@EventBusSubscriber
 public class Bolas extends AbstractArrow {
     public Bolas(Level world) {
         super(DSEntities.BOLAS_ENTITY.get(), world);
@@ -29,40 +25,37 @@ public class Bolas extends AbstractArrow {
         super(DSEntities.BOLAS_ENTITY.value(), x, y, z, level, pickup, firedFrom);
     }
 
-    @SubscribeEvent
-    public static void causeFall(final EntityTickEvent.Pre event) {
-        if (event.getEntity() instanceof LivingEntity entity && entity.hasEffect(DSEffects.TRAPPED)) {
-            entity.setDeltaMovement(entity.getDeltaMovement().add(0, -0.25, 0));
-        }
+    public Bolas(LivingEntity owner, Level level, ItemStack pickupItemStack, @Nullable ItemStack firedFromWeapon) {
+        super(DSEntities.BOLAS_ENTITY.value(), owner, level, pickupItemStack, firedFromWeapon);
     }
 
     @Override
     protected void onHit(@NotNull final HitResult result) {
         super.onHit(result);
-
-        if (!level().isClientSide()) {
-            remove(RemovalReason.DISCARDED);
-        }
     }
 
+    @Override
     protected void onHitEntity(final EntityHitResult entityHitResult) {
         Entity entity = entityHitResult.getEntity();
 
-        if (entity.level().isClientSide()) {
-            return;
-        }
+        if (!entity.level().isClientSide()) {
+            if (entity instanceof LivingEntity living) {
+                living.hurt(damageSources().arrow(this, getOwner()), 1);
 
-        if (entity instanceof LivingEntity living) {
-            living.hurt(damageSources().arrow(this, getOwner()), 1);
-
-            if (ServerConfig.hunterTrappedDebuffDuration > 0) {
-                living.addEffect(new MobEffectInstance(DSEffects.TRAPPED, Functions.secondsToTicks(ServerConfig.hunterTrappedDebuffDuration), 0, false, false), getOwner());
+                if (ServerConfig.hunterTrappedDebuffDuration > 0) {
+                    living.addEffect(new MobEffectInstance(DSEffects.TRAPPED, Functions.secondsToTicks(ServerConfig.hunterTrappedDebuffDuration), 0, false, false), getOwner());
+                }
             }
         }
+
+        super.onHitEntity(entityHitResult);
     }
 
     @Override
     protected @NotNull ItemStack getDefaultPickupItem() {
+        // TODO :: Now that we've actually fixed the arrow behavior, the user can actually pickup arrows fired with the bolas enchantment
+        // Ideally we would store the original arrow fired somewhere and make that the pickup item, but it is a lot of work for a very small detail
+        // Maybe just remove the bolas enchantment altogether in 1.22 and move it to a proper item?
         return new ItemStack(Items.ARROW);
     }
 }

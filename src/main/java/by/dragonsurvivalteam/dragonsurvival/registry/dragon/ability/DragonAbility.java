@@ -2,6 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.LevelBasedResource;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscCodecs;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.ActionContainer;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.DSLanguageProvider;
@@ -24,10 +25,12 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.RegistryFixedCodec;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.common.conditions.ConditionalOps;
 import net.neoforged.neoforge.registries.DataPackRegistryEvent;
 
 import java.util.ArrayList;
@@ -35,7 +38,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-@EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber
 public record DragonAbility(
         Activation activation,
         Optional<UpgradeType<?>> upgrade,
@@ -52,8 +55,8 @@ public record DragonAbility(
     public static final Codec<DragonAbility> DIRECT_CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Activation.CODEC.fieldOf("activation").forGetter(DragonAbility::activation),
             UpgradeType.CODEC.optionalFieldOf("upgrade").forGetter(DragonAbility::upgrade),
-            LootItemCondition.DIRECT_CODEC.optionalFieldOf("usage_blocked").forGetter(DragonAbility::usageBlocked),
-            ActionContainer.CODEC.listOf().optionalFieldOf("actions", List.of()).forGetter(DragonAbility::actions),
+            MiscCodecs.conditional(LootItemCondition.DIRECT_CODEC).optionalFieldOf("usage_blocked").forGetter(DragonAbility::usageBlocked),
+            ConditionalOps.decodeListWithElementConditions(ActionContainer.CODEC).optionalFieldOf("actions", List.of()).forGetter(DragonAbility::actions),
             Codec.BOOL.optionalFieldOf("can_be_manually_disabled", true).forGetter(DragonAbility::canBeManuallyDisabled),
             LevelBasedResource.CODEC.fieldOf("icon").forGetter(DragonAbility::icon)
     ).apply(instance, instance.stable(DragonAbility::new)));
@@ -65,14 +68,34 @@ public record DragonAbility(
         return upgrade.map(UpgradeType::maxLevel).orElse(1);
     }
 
+    /**
+     * Handle validation that cannot be done through the codec </br>
+     * Since they require more context
+     */
     public static void validate(final RegistryAccess access) {
-        StringBuilder validationError = new StringBuilder("The following stages are incorrectly defined:");
-        AtomicBoolean areStagesValid = new AtomicBoolean(true);
+        StringBuilder errorMessage = new StringBuilder("The following abilities are incorrectly defined:");
+        AtomicBoolean isDefinitionValid = new AtomicBoolean(true);
 
-        ResourceHelper.keys(access, REGISTRY).forEach(key -> {});
+        ResourceHelper.keys(access, REGISTRY).forEach(key -> {
+            //noinspection OptionalGetWithoutIsPresent -> ignore
+            Holder.Reference<DragonAbility> ability = ResourceHelper.get(access, key).get();
 
-        if (!areStagesValid.get()) {
-            throw new IllegalStateException(validationError.toString());
+            ability.value().actions.forEach(action -> {
+                if (ability.value().activation().type() == Activation.Type.PASSIVE && action.triggerPoint() != ActionContainer.TriggerPoint.DEFAULT) {
+                    // Passive abilities have no cast / charge time and no channeling
+                    errorMessage.append("\n").append(key).append(" has a non-default action trigger point set on a passive ability");
+                    isDefinitionValid.set(false);
+                }
+
+                if (ability.value().activation().type() != Activation.Type.CHANNELED && action.triggerPoint() == ActionContainer.TriggerPoint.CHANNEL_COMPLETION) {
+                    errorMessage.append("\n").append(key).append(" has a channel completion action trigger point set on a non-channeling ability");
+                    isDefinitionValid.set(false);
+                }
+            });
+        });
+
+        if (!isDefinitionValid.get()) {
+            throw new IllegalStateException(errorMessage.toString());
         }
     }
 
@@ -116,6 +139,30 @@ public record DragonAbility(
         }
 
         return info;
+    }
+
+    public void tickDefaultActions(final ServerPlayer player, final DragonAbilityInstance instance, final int currentTick) {
+        actions.forEach(action -> {
+            if (action.triggerPoint() == ActionContainer.TriggerPoint.DEFAULT) {
+                action.tick(player, instance, currentTick);
+            }
+        });
+    }
+
+    public void tickChargingActions(final ServerPlayer player, final DragonAbilityInstance instance, final int currentTick) {
+        actions.forEach(action -> {
+            if (action.triggerPoint() == ActionContainer.TriggerPoint.CHARGING) {
+                action.tick(player, instance, currentTick);
+            }
+        });
+    }
+
+    public void tickChannelCompletionActions(final ServerPlayer player, final DragonAbilityInstance instance, final int currentTick) {
+        actions.forEach(action -> {
+            if (action.triggerPoint() == ActionContainer.TriggerPoint.CHANNEL_COMPLETION) {
+                action.tick(player, instance, currentTick);
+            }
+        });
     }
 
     @SubscribeEvent

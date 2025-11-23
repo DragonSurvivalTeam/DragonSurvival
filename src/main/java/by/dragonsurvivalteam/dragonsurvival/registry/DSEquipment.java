@@ -19,7 +19,6 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.common.SimpleTier;
-import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.EnumMap;
@@ -28,7 +27,7 @@ import java.util.List;
 import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.res;
 
-@EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
+@EventBusSubscriber(Dist.CLIENT)
 public class DSEquipment {
     public static final DeferredRegister<ArmorMaterial> REGISTRY = DeferredRegister.create(BuiltInRegistries.ARMOR_MATERIAL, MODID);
 
@@ -42,8 +41,8 @@ public class DSEquipment {
                         map.put(ArmorItem.Type.BODY, 11);
                     }),
                     30,
-                    Holder.direct(SoundEvents.BELL_BLOCK),
-                    () -> Ingredient.of(Tags.Items.BARRELS),
+                    Holder.direct(SoundEvents.IRON_GOLEM_STEP),
+                    () -> Ingredient.of(DSItems.ELDER_DRAGON_HEART.value()),
                     List.of(new ArmorMaterial.Layer(res("light_dragon"))),
                     3,
                     0.1f
@@ -59,8 +58,8 @@ public class DSEquipment {
                         map.put(ArmorItem.Type.BODY, 11);
                     }),
                     30,
-                    Holder.direct(SoundEvents.FOX_SCREECH),
-                    () -> Ingredient.of(Tags.Items.BARRELS),
+                    Holder.direct(SoundEvents.IRON_GOLEM_STEP),
+                    () -> Ingredient.of(DSItems.ELDER_DRAGON_HEART.value()),
                     List.of(new ArmorMaterial.Layer(res("dark_dragon"))),
                     3,
                     0.1f

@@ -44,6 +44,9 @@ public class DragonBeacon extends Block implements SimpleWaterloggedBlock, Entit
     @Translation(comments = "Not enough experience to gain the beacon effects (%s / %s)")
     private static final String NOT_ENOUGH_EXPERIENCE = Translation.Type.GUI.wrap("message.not_enough_experience");
 
+    @Translation(comments = "You require a §6beacon activator§r to unlock the effects")
+    private static final String USE_ACTIVATOR = Translation.Type.GUI.wrap("message.beacon.use_activator");
+
     public DragonBeacon(final Properties properties) {
         super(properties);
         registerDefaultState(getStateDefinition().any().setValue(BlockStateProperties.LIT, false).setValue(BlockStateProperties.WATERLOGGED, false));
@@ -91,6 +94,10 @@ public class DragonBeacon extends Block implements SimpleWaterloggedBlock, Entit
         }
 
         if (!stack.is(DSItemTags.ACTIVATES_DRAGON_BEACON)) {
+            if (player.level().isClientSide()) {
+                player.displayClientMessage(Component.translatable(USE_ACTIVATOR), true);
+            }
+
             return ItemInteractionResult.FAIL;
         }
 

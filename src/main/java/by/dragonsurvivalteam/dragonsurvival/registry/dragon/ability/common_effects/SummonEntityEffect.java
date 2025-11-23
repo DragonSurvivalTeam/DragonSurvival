@@ -8,6 +8,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.duration_instance.Dura
 import by.dragonsurvivalteam.dragonsurvival.common.entity.goals.FollowSummonerGoal;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.goals.SummonerHurtByTargetGoal;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.goals.SummonerHurtTargetGoal;
+import by.dragonsurvivalteam.dragonsurvival.common.entity.goals.SummonerTargetedGoal;
 import by.dragonsurvivalteam.dragonsurvival.mixins.PrimedTntAccess;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncSummonedEntity;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
@@ -15,6 +16,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SummonData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SummonedEntities;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSEntityTypeTags;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.block_effects.AbilityBlockEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.AbilityEntityEffect;
@@ -68,10 +70,12 @@ import org.jetbrains.annotations.Nullable;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Function;
 
+@SuppressWarnings("OptionalUsedAsFieldOrParameterType") // ignore
 public class SummonEntityEffect extends DurationInstanceBase<SummonedEntities, SummonEntityEffect.Instance> implements AbilityEntityEffect, AbilityBlockEffect {
     @Translation(comments = "§6■ Summon§r up to %s entities:")
     private static final String SUMMON = Translation.Type.GUI.wrap("summon_entity_effect.summon");
@@ -84,9 +88,13 @@ public class SummonEntityEffect extends DurationInstanceBase<SummonedEntities, S
 
     public static final MapCodec<SummonEntityEffect> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
                     DurationInstanceBase.CODEC.fieldOf("base").forGetter(identity -> identity),
-                    Codec.either(SimpleWeightedRandomList.wrappedCodec(BuiltInRegistries.ENTITY_TYPE.byNameCodec()), RegistryCodecs.homogeneousList(Registries.ENTITY_TYPE)).fieldOf("entities").forGetter(SummonEntityEffect::entities),
+                    Codec.either(
+                            SimpleWeightedRandomList.wrappedCodec(BuiltInRegistries.ENTITY_TYPE.byNameCodec()),
+                            RegistryCodecs.homogeneousList(Registries.ENTITY_TYPE)
+                    ).fieldOf("entities").forGetter(SummonEntityEffect::entities),
                     LevelBasedValue.CODEC.fieldOf("max_summons").forGetter(SummonEntityEffect::maxSummons),
                     AttributeScale.CODEC.listOf().optionalFieldOf("attribute_scales", List.of()).forGetter(SummonEntityEffect::attributeScales),
+                    CompoundTag.CODEC.optionalFieldOf("nbt").forGetter(SummonEntityEffect::nbt),
                     Codec.BOOL.optionalFieldOf("is_allied", true).forGetter(SummonEntityEffect::isAllied)
             ).apply(instance, SummonEntityEffect::new)
     );
@@ -118,13 +126,22 @@ public class SummonEntityEffect extends DurationInstanceBase<SummonedEntities, S
     private final Either<SimpleWeightedRandomList<EntityType<?>>, HolderSet<EntityType<?>>> entities;
     private final LevelBasedValue maxSummons;
     private final List<AttributeScale> attributeScales;
+    private final Optional<CompoundTag> nbt;
     private final boolean isAllied;
 
-    public SummonEntityEffect(final DurationInstanceBase<?, ?> base, final Either<SimpleWeightedRandomList<EntityType<?>>, HolderSet<EntityType<?>>> entities, final LevelBasedValue maxSummons, final List<AttributeScale> attributeScales, final boolean isAllied) {
+    public SummonEntityEffect(
+            final DurationInstanceBase<?, ?> base,
+            final Either<SimpleWeightedRandomList<EntityType<?>>, HolderSet<EntityType<?>>> entities,
+            final LevelBasedValue maxSummons,
+            final List<AttributeScale> attributeScales,
+            final Optional<CompoundTag> nbt,
+            final boolean isAllied
+    ) {
         super(base);
         this.entities = entities;
         this.maxSummons = maxSummons;
         this.attributeScales = attributeScales;
+        this.nbt = nbt;
         this.isAllied = isAllied;
     }
 
@@ -218,6 +235,10 @@ public class SummonEntityEffect extends DurationInstanceBase<SummonedEntities, S
 
     public List<AttributeScale> attributeScales() {
         return attributeScales;
+    }
+
+    public Optional<CompoundTag> nbt() {
+        return nbt;
     }
 
     public boolean isAllied() {
@@ -323,8 +344,10 @@ public class SummonEntityEffect extends DurationInstanceBase<SummonedEntities, S
             // Currently not checking 'BlockState#isValidSpawn' to allow spawning any type of entity
             BlockState state = storageHolder.level().getBlockState(spawnPosition);
 
+            // No explicit check for 'FlyingAnimal' or 'FlyingMob' to give full control to the entity type tag
+            // Also avoids having to create an entity twice (would've been needed to utilize 'instanceof' checks)
             //noinspection deprecation -> ignore
-            if (!state.blocksMotion()) {
+            if (!type.is(DSEntityTypeTags.CAN_FLY) && !state.blocksMotion()) {
                 return;
             }
 
@@ -358,6 +381,12 @@ public class SummonEntityEffect extends DurationInstanceBase<SummonedEntities, S
 
             setAllied(storageHolder, entity);
 
+            if (baseData().nbt().isPresent()) {
+                CompoundTag entityTag = entity.saveWithoutId(new CompoundTag());
+                entityTag.merge(baseData().nbt().get());
+                entity.load(entityTag);
+            }
+
             SummonData summon = entity.getData(DSDataAttachments.SUMMON);
             summon.setOwnerUUID(storageHolder);
             summon.isAllied = baseData().isAllied();
@@ -384,6 +413,7 @@ public class SummonEntityEffect extends DurationInstanceBase<SummonedEntities, S
             if (entity instanceof Mob mob) {
                 mob.goalSelector.addGoal(1, new SummonerHurtByTargetGoal(mob));
                 mob.goalSelector.addGoal(2, new SummonerHurtTargetGoal(mob));
+                mob.goalSelector.addGoal(3, new SummonerTargetedGoal(mob));
                 mob.goalSelector.addGoal(3, new FollowSummonerGoal(mob, 1, 10, 2));
             }
         }

@@ -23,6 +23,7 @@
         "entity_effect": "dragonsurvival:damage"
       }
     ],
+    "is_impact_projectile": true,
     "name": "dragonsurvival:spike",
     "ticking_effects": []
   },

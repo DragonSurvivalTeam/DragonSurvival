@@ -86,8 +86,7 @@
         },
         "range_multiplier": 1.0,
         "target_type": "dragonsurvival:dragon_breath"
-      },
-      "trigger_rate": 1.0
+      }
     },
     {
       "target_selection": {
@@ -112,8 +111,7 @@
           "targeting_mode": "all"
         },
         "target_type": "dragonsurvival:self"
-      },
-      "trigger_rate": 1.0
+      }
     }
   ],
   "activation": {

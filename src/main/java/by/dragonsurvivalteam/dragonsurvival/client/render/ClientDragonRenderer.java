@@ -1,6 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.client.render;
 
-import by.dragonsurvivalteam.dragonsurvival.client.models.DragonModel;
+import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.render.entity.dragon.DragonRenderer;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
@@ -14,6 +14,7 @@ import by.dragonsurvivalteam.dragonsurvival.mixins.client.EntityRendererAccessor
 import by.dragonsurvivalteam.dragonsurvival.mixins.client.LivingRendererAccessor;
 import by.dragonsurvivalteam.dragonsurvival.network.flight.SyncDeltaMovement;
 import by.dragonsurvivalteam.dragonsurvival.network.player.SyncDragonMovement;
+import by.dragonsurvivalteam.dragonsurvival.network.player.SyncPitchAndYaw;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEntities;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
@@ -69,8 +70,6 @@ import java.util.function.Consumer;
 
 @EventBusSubscriber(Dist.CLIENT)
 public class ClientDragonRenderer {
-    // FIXME :: remove this completely (currently only used for override texture)
-    public static DragonModel dragonModel = new DragonModel();
 
     // FIXME :: figure out at what point it can be called from other threads - that shouldn't happen but it does?
     //  See: https://github.com/DragonSurvivalTeam/DragonSurvival/issues/763
@@ -86,7 +85,7 @@ public class ClientDragonRenderer {
     @ConfigOption(side = ConfigSide.CLIENT, category = "rendering", key = "render_first_person_flight")
     public static Boolean renderFirstPersonFlight = false;
 
-    @Translation(key = "render_items_in_mouth", type = Translation.Type.CONFIGURATION, comments = {"If enabled held items will be rendered neat the mouth of the dragon", "If disabled held items will be displayed on the side of the dragon"})
+    @Translation(key = "render_items_in_mouth", type = Translation.Type.CONFIGURATION, comments = {"If enabled held items will be rendered near the mouth of the dragon", "If disabled held items will be displayed on the side of the dragon"})
     @ConfigOption(side = ConfigSide.CLIENT, category = "rendering", key = "render_items_in_mouth")
     public static Boolean renderItemsInMouth = false;
 
@@ -358,23 +357,6 @@ public class ClientDragonRenderer {
         }
     }
 
-    public static Vec3 getModelOffset(final DragonEntity dragon, float partialTicks) {
-        Player player = dragon.getPlayer();
-
-        if (player == null) {
-            return Vec3.ZERO;
-        }
-
-        float angle = -(float) MovementData.getData(player).bodyYaw * ((float) Math.PI / 180);
-        float x = Mth.sin(angle);
-        float z = Mth.cos(angle);
-
-        DragonStateHandler handler = DragonStateProvider.getData(player);
-        float scale = (float) handler.getVisualScale(player, partialTicks) * (float) handler.body().value().scalingProportions().scaleMultiplier();
-
-        return new Vec3(x * scale, 0, z * scale);
-    }
-
     public static Vector3f getModelShadowOffset(final Player player, float partialRenderTick) {
         float angle = -(float) MovementData.getData(player).bodyYaw * ((float) Math.PI / 180);
         float x = Mth.sin(angle);
@@ -384,19 +366,6 @@ public class ClientDragonRenderer {
         float scale = (float) handler.getVisualScale(player, partialRenderTick) * (float) handler.body().value().scalingProportions().shadowMultiplier();
 
         return new Vector3f(x * scale, 0, z * scale);
-    }
-
-    @SubscribeEvent
-    public static void spin(InputEvent.InteractionKeyMappingTriggered keyInputEvent) {
-        LocalPlayer player = Minecraft.getInstance().player;
-        if (!DragonStateProvider.isDragon(player)) {
-            return;
-        }
-
-        MovementData movement = MovementData.getData(player);
-        if (keyInputEvent.isAttack() && keyInputEvent.shouldSwingHand() && !movement.dig) {
-            movement.bite = true;
-        }
     }
 
     public static void setDragonMovementData(Player player, float realtimeDeltaTick) {
@@ -421,7 +390,20 @@ public class ClientDragonRenderer {
     }
 
     @SubscribeEvent
-    public static void updateFirstPersonDataAndSendMovementData(final ClientTickEvent.Pre event) {
+    public static void updateBiteInput(InputEvent.InteractionKeyMappingTriggered event)
+    {
+        LocalPlayer player = Minecraft.getInstance().player;
+
+        if (!DragonStateProvider.isDragon(player)) {
+            return;
+        }
+
+        MovementData movement = MovementData.getData(player);
+        movement.bite = event.shouldSwingHand();
+    }
+
+    @SubscribeEvent
+    public static void updateFirstPersonDataAndSendMovementData(final ClientTickEvent.Post event) {
         LocalPlayer player = Minecraft.getInstance().player;
 
         if (!DragonStateProvider.isDragon(player)) {
@@ -442,7 +424,10 @@ public class ClientDragonRenderer {
             PacketDistributor.sendToServer(new SyncDeltaMovement(player.getId(), player.getDeltaMovement()));
         }
 
-        PacketDistributor.sendToServer(new SyncDragonMovement(player.getId(), movement.isFirstPerson, movement.bite, movement.isFreeLook, movement.desiredMoveVec));
+        movement.dig = DragonSurvival.PROXY.isMining(player);
+
+        PacketDistributor.sendToServer(new SyncDragonMovement(player.getId(), movement.isFirstPerson, movement.bite, movement.dig, movement.isFreeLook, movement.desiredMoveVec));
+        PacketDistributor.sendToServer(new SyncPitchAndYaw(player.getId(), movement.headYaw, movement.headPitch, movement.bodyYaw));
     }
 
     @SubscribeEvent // Don't render the fire overlay when fire immune

@@ -16,10 +16,7 @@ import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
 
-public record PushEffect(
-        TargetDirection targetDirection,
-        LevelBasedValue pushForce
-) implements AbilityEntityEffect {
+public record PushEffect(TargetDirection targetDirection, LevelBasedValue pushForce) implements AbilityEntityEffect {
     @Translation(comments = "Pulls targets towards you with a strength of %s.")
     public static final String TOWARDS = Translation.Type.GUI.wrap("push_effect.towards");
 

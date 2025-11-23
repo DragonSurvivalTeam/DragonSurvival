@@ -61,22 +61,25 @@ public record SupplyTrigger(
     }
 
     public boolean matches(final ServerPlayer dragon, boolean conditionMatched) {
-        PenaltySupply penaltySupply = dragon.getData(DSDataAttachments.PENALTY_SUPPLY);
+        PenaltySupply supply = dragon.getData(DSDataAttachments.PENALTY_SUPPLY);
+        supply.tick(supplyType);
 
         if (conditionMatched) {
-            penaltySupply.reduce(dragon, supplyType);
+            supply.reduce(dragon, supplyType);
         } else {
-            penaltySupply.regenerate(dragon, supplyType);
+            supply.regenerate(dragon, supplyType);
             return false;
         }
 
-        if (dragon.level().getGameTime() % triggerRate() == 0) {
+        if (supply.getCurrentTick(supplyType) >= triggerRate) {
             particlesOnTrigger.ifPresent(particle -> {
                 for (int i = 0; i < 2; i++) {
                     ((ServerLevel) dragon.level()).sendParticles(particle, dragon.getX() + (dragon.getRandom().nextDouble() - 0.5D) * 0.5D, dragon.getEyeY() + (dragon.getRandom().nextDouble() - 0.5D) * 0.5D, dragon.getZ() + (dragon.getRandom().nextDouble() - 0.5D) * 0.5D, 1, 0, -dragon.getRandom().nextDouble() * 0.25D, 0, 0.025F);
                 }
             });
-            return !penaltySupply.hasSupply(supplyType);
+
+            supply.resetTick(supplyType);
+            return !supply.hasSupply(supplyType);
         } else {
             return false;
         }

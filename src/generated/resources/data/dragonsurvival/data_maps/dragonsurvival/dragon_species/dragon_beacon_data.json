@@ -1,5 +1,17 @@
 {
   "values": {
+    "#dragonsurvival:all": {
+      "effects": [
+        {
+          "duration": 400,
+          "effect": "dragonsurvival:empowered_soul"
+        }
+      ],
+      "payment_data": {
+        "duration_multiplier": 30,
+        "experience_cost": 60
+      }
+    },
     "dragonsurvival:cave_dragon": {
       "neoforge:conditions": [
         {
@@ -16,6 +28,10 @@
         {
           "duration": 400,
           "effect": "dragonsurvival:sturdy_skin"
+        },
+        {
+          "duration": 400,
+          "effect": "dragonsurvival:empowered_soul"
         }
       ],
       "payment_data": {
@@ -39,6 +55,10 @@
         {
           "duration": 400,
           "effect": "dragonsurvival:animal_peace"
+        },
+        {
+          "duration": 400,
+          "effect": "dragonsurvival:empowered_soul"
         }
       ],
       "payment_data": {
@@ -62,6 +82,10 @@
         {
           "duration": 400,
           "effect": "minecraft:haste"
+        },
+        {
+          "duration": 400,
+          "effect": "dragonsurvival:empowered_soul"
         }
       ],
       "payment_data": {

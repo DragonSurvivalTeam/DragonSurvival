@@ -61,7 +61,7 @@ public class BlockVisionHandler {
     private static boolean isSearching;
     private static boolean hasPendingUpdate;
 
-    private record Data(Block block, int range, BlockVision.DisplayType displayType, float x, float y, float z) {
+    private record Data(Block block, int range, BlockVision.DisplayType displayType, int particleRate, float x, float y, float z) {
         public boolean isInRange(final Vec3 position, final int visibleRange) {
             return position.distanceToSqr(x + 0.5, y + 0.5, z + 0.5) <= visibleRange * visibleRange;
         }
@@ -80,7 +80,7 @@ public class BlockVisionHandler {
         LocalPlayer player = Objects.requireNonNull(Minecraft.getInstance().player);
         vision = player.getExistingData(DSDataAttachments.BLOCK_VISION).orElse(null);
 
-        if (vision == null) {
+        if (vision == null || vision.isEmpty()) {
             clear();
             return;
         }
@@ -145,15 +145,20 @@ public class BlockVisionHandler {
                 }
 
                 if (Minecraft.getInstance().isPaused()) {
-                    // Newly added particles will only render once the game is un-paused
+                    // Newly added particles will only render once the game is unpaused
                     // Meaning if we don't skip here, all the added particles will be shown at once
                     continue;
                 }
 
-                if (data.displayType() == BlockVision.DisplayType.PARTICLES && player.tickCount % 10 == 0) {
+                if (data.particleRate() == BlockVision.NO_PARTICLE_RATE) {
+                    // It should not really be possible for this to occur with the particle display type
+                    continue;
+                }
+
+                if (data.displayType() == BlockVision.DisplayType.PARTICLES && player.tickCount % data.particleRate() == 0) {
                     // Increase the bounding box to make the particles more visible for blocks in walls etc.
                     // TODO :: Maybe there is a somewhat reasonable way to only show particles / focus particles on non-occluded faces?
-                    // TODO :: currently also spawns particles behind blocks (even though it doesn't have a x-ray "feature") - unsure if it's a problem
+                    // TODO :: currently also spawns particles behind blocks (even though it doesn't have a x-ray "feature") - unsure about the performance impact
                     double xPos = PARTICLE_POSITION.getCoordinate(data.x(), data.x() + 0.5, 2, player.getRandom());
                     double yPos = PARTICLE_POSITION.getCoordinate(data.y(), data.y() + 0.5, 2, player.getRandom());
                     double zPos = PARTICLE_POSITION.getCoordinate(data.z(), data.z() + 0.5, 2, player.getRandom());
@@ -183,7 +188,7 @@ public class BlockVisionHandler {
 
     public static void updateEntry(final BlockPos position, final BlockState oldState, final BlockState newState) {
         if (oldState == null || newState == null) {
-            // Should not be the case but mods do weird things
+            // Should not be the case, but mods do weird things
             return;
         }
 
@@ -214,10 +219,11 @@ public class BlockVisionHandler {
         int range = vision.getRange(newBlock);
 
         if (range != BlockVision.NO_RANGE) {
-            RENDER_DATA.add(new Data(newBlock, range, vision.getDisplayType(newBlock), position.getX(), position.getY(), position.getZ()));
+            RENDER_DATA.add(new Data(newBlock, range, vision.getDisplayType(newBlock), vision.getParticleRate(newBlock), position.getX(), position.getY(), position.getZ()));
         }
     }
 
+    /** The searching algorithm is referenced from <a href="https://github.com/TelepathicGrunt/Bumblezone/blob/d4b2a29d7075749e1f4e8289debbc4cef3fc74c4/common/src/main/java/com/telepathicgrunt/the_bumblezone/items/essence/LifeEssence.java#L127">TelepathicGrunt</a> */
     private static void collect(final Player player, int searchRange) {
         BlockPos startPosition = player.blockPosition();
         ChunkPos currentChunkPosition = new ChunkPos(startPosition);
@@ -230,11 +236,14 @@ public class BlockVisionHandler {
         int minChunkZ = startPosition.getZ() - searchRange;
         int maxChunkZ = startPosition.getZ() + searchRange;
 
-        boolean foundSection = false;
         BlockPos.MutableBlockPos mutablePosition = BlockPos.ZERO.mutable();
 
         for (int x = minChunkX; x <= maxChunkX; x++) {
+            boolean foundXSection = false;
+
             for (int z = minChunkZ; z <= maxChunkZ; z++) {
+                boolean foundZSection = false;
+
                 int sectionX = SectionPos.blockToSectionCoord(x);
                 int sectionZ = SectionPos.blockToSectionCoord(z);
 
@@ -243,16 +252,15 @@ public class BlockVisionHandler {
                     currentChunk = player.level().getChunk(sectionX, sectionZ);
                 }
 
-                foundSection = false;
-
                 for (int y = maxChunkY; y >= minChunkY; y--) {
                     int sectionIndex = currentChunk.getSectionIndex(y);
                     LevelChunkSection section = currentChunk.getSection(sectionIndex);
 
                     mutablePosition.set(x, y, z);
 
-                    if (foundSection || containsOres(currentChunk, section, sectionIndex)) {
-                        foundSection = true;
+                    if (foundXSection || foundZSection || containsOres(currentChunk, section, sectionIndex)) {
+                        foundXSection = true;
+                        foundZSection = true;
 
                         BlockState state = getState(currentChunk, mutablePosition);
 
@@ -264,23 +272,21 @@ public class BlockVisionHandler {
                         int range = vision.getRange(block);
 
                         if (range != BlockVision.NO_RANGE) {
-                            SEARCH_RESULT.add(new Data(block, range, vision.getDisplayType(block), x, y, z));
+                            SEARCH_RESULT.add(new Data(block, range, vision.getDisplayType(block), vision.getParticleRate(block), x, y, z));
                         }
-                    }
-
-                    if (!foundSection && y != minChunkY) {
+                    } else if (y != minChunkY) {
                         // Move to the next section (the bit shifting truncates the y value)
                         y = Math.max(minChunkY, SectionPos.sectionToBlockCoord(SectionPos.blockToSectionCoord(y)));
                     }
                 }
 
-                if (!foundSection && z != maxChunkZ) {
+                if (!foundZSection && z != maxChunkZ) {
                     // Move to the next section
                     z = Math.min(maxChunkZ, SectionPos.sectionToBlockCoord(SectionPos.blockToSectionCoord(z) + 1));
                 }
             }
 
-            if (!foundSection && x != maxChunkX) {
+            if (!foundXSection && x != maxChunkX) {
                 // Move to the next section
                 x = Math.min(maxChunkX, SectionPos.sectionToBlockCoord(SectionPos.blockToSectionCoord(x) + 1));
             }

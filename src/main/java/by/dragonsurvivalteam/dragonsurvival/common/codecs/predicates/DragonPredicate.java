@@ -5,6 +5,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvide
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
+import by.dragonsurvivalteam.dragonsurvival.server.handlers.ServerFlightHandler;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -29,7 +30,8 @@ public record DragonPredicate(
         Optional<Boolean> isGrowthStopped,
         Optional<Boolean> markedByEnderDragon,
         Optional<Boolean> flightWasGranted,
-        Optional<Boolean> spinWasGranted
+        Optional<Boolean> spinWasGranted,
+        Optional<Boolean> isFlying
 ) implements EntitySubPredicate {
     public static final MapCodec<DragonPredicate> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             RegistryCodecs.homogeneousList(DragonSpecies.REGISTRY).optionalFieldOf("dragon_species").forGetter(DragonPredicate::dragonSpecies),
@@ -38,7 +40,8 @@ public record DragonPredicate(
             Codec.BOOL.optionalFieldOf("is_growth_stopped").forGetter(DragonPredicate::isGrowthStopped),
             Codec.BOOL.optionalFieldOf("marked_by_ender_dragon").forGetter(DragonPredicate::markedByEnderDragon),
             Codec.BOOL.optionalFieldOf("flight_was_granted").forGetter(DragonPredicate::flightWasGranted),
-            Codec.BOOL.optionalFieldOf("spin_was_granted").forGetter(DragonPredicate::spinWasGranted)
+            Codec.BOOL.optionalFieldOf("spin_was_granted").forGetter(DragonPredicate::spinWasGranted),
+            Codec.BOOL.optionalFieldOf("is_flying").forGetter(DragonPredicate::isFlying)
     ).apply(instance, DragonPredicate::new));
 
     @Override
@@ -82,6 +85,10 @@ public record DragonPredicate(
             return false;
         }
 
+        if (isFlying().isPresent() && isFlying().get() != ServerFlightHandler.isFlying(player)) {
+            return false;
+        }
+
         return true;
     }
 
@@ -99,6 +106,7 @@ public record DragonPredicate(
         private Optional<Boolean> markedByEnderDragon = Optional.empty();
         private Optional<Boolean> flightWasGranted = Optional.empty();
         private Optional<Boolean> spinWasGranted = Optional.empty();
+        private Optional<Boolean> isFlying = Optional.empty();
 
         public static DragonPredicate.Builder dragon() {
             return new DragonPredicate.Builder();
@@ -154,8 +162,13 @@ public record DragonPredicate(
             return this;
         }
 
+        public DragonPredicate.Builder isFlying(final boolean isFlying) {
+            this.isFlying = Optional.of(isFlying);
+            return this;
+        }
+
         public DragonPredicate build() {
-            return new DragonPredicate(dragonSpecies, dragonStage, dragonBody, isGrowthStopped, markedByEnderDragon, flightWasGranted, spinWasGranted);
+            return new DragonPredicate(dragonSpecies, dragonStage, dragonBody, isGrowthStopped, markedByEnderDragon, flightWasGranted, spinWasGranted, isFlying);
         }
     }
 }

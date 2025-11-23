@@ -38,7 +38,7 @@ import org.joml.Matrix4f;
 import java.awt.Color;
 import java.io.IOException;
 
-@EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
+@EventBusSubscriber(Dist.CLIENT)
 public class RenderingUtils {
     @Translation(key = "min_near_plane", type = Translation.Type.CONFIGURATION, comments = {
             "Lower values prevent x-ray through blocks when using a small entity scale",
@@ -273,7 +273,8 @@ public class RenderingUtils {
     }
 
     public static float getNearPlane(float original) {
-        // There are some cases where mods call this function when the player is still null. We can't provide anything valid in this situation anyways, so just give the original and don't crash.
+        // There are some cases where mods call this function when the player is still null.
+        // We can't provide anything valid in this situation anyways, so just give the original and don't crash.
         if (Minecraft.getInstance().player == null) {
             return original;
         }

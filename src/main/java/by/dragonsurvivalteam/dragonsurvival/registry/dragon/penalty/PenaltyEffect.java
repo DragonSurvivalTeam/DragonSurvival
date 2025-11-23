@@ -17,7 +17,7 @@ import net.neoforged.neoforge.registries.RegistryBuilder;
 
 import java.util.function.Function;
 
-@EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber
 public interface PenaltyEffect {
     ResourceKey<Registry<MapCodec<? extends PenaltyEffect>>> REGISTRY_KEY = ResourceKey.createRegistryKey(DragonSurvival.res("penalty_effect"));
     Registry<MapCodec<? extends PenaltyEffect>> REGISTRY = new RegistryBuilder<>(REGISTRY_KEY).create();
@@ -46,8 +46,9 @@ public interface PenaltyEffect {
             event.register(REGISTRY_KEY, DragonSurvival.res("damage_modification"), () -> DamageModificationPenalty.CODEC);
             event.register(REGISTRY_KEY, DragonSurvival.res("fear"), () -> FearPenalty.CODEC);
             event.register(REGISTRY_KEY, DragonSurvival.res("informational"), () -> InformationalPenalty.CODEC);
-
-            // TODO :: attribute modification, effect modification
+            event.register(REGISTRY_KEY, DragonSurvival.res("modifier"), () -> ModifierPenalty.CODEC);
+            event.register(REGISTRY_KEY, DragonSurvival.res("effect_modification"), () -> EffectModificationPenalty.CODEC);
+            event.register(REGISTRY_KEY, DragonSurvival.res("run_function"), () -> RunFunctionPenalty.CODEC);
         }
     }
 }

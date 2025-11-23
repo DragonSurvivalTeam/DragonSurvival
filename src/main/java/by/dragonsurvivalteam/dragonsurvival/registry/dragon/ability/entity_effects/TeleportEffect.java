@@ -5,6 +5,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
@@ -20,10 +21,7 @@ import net.minecraft.world.phys.Vec3;
 import java.util.ArrayList;
 import java.util.List;
 
-public record TeleportEffect(
-        TargetDirection targetDirection,
-        LevelBasedValue maxDistance
-) implements AbilityEntityEffect {
+public record TeleportEffect(TargetDirection targetDirection, LevelBasedValue maxDistance) implements AbilityEntityEffect {
     @Translation(comments = "Teleport up to %s blocks.")
     public static final String FACING = Translation.Type.GUI.wrap("teleport.facing");
 
@@ -47,6 +45,7 @@ public record TeleportEffect(
                                 serverLevel, target.getPosition(0), target.getDeltaMovement(), target.getYRot(), target.getXRot(), DimensionTransition.DO_NOTHING
                         )
                 );
+                return;
             }
             Vec3 direction = null;
 
@@ -57,21 +56,26 @@ public record TeleportEffect(
             }
 
             if (direction != null) {
-                BlockHitResult res = target.level().clip(new ClipContext(
-                        dragon.getEyePosition(),
-                        direction,
-                        ClipContext.Block.COLLIDER,
-                        ClipContext.Fluid.NONE,
-                        dragon));
+                for (float mult = 1f; mult > 0; mult -= 0.1f) {
+                    BlockHitResult res = target.level().clip(new ClipContext(
+                            dragon.getEyePosition(),
+                            direction.multiply(mult, mult, mult),
+                            ClipContext.Block.COLLIDER,
+                            ClipContext.Fluid.NONE,
+                            dragon));
 
-                // Displace the teleport point back 1 block to avoid teleporting entities into blocks
-                Vec3 destination = new Vec3(res.getLocation().toVector3f()).add(new Vec3(res.getDirection().step()));
+                    // Displace the teleport point back 1 block to avoid teleporting entities into blocks
+                    Vec3 destination = new Vec3(res.getLocation().toVector3f()).add(new Vec3(res.getDirection().step()));
 
-                target.changeDimension(
-                        new DimensionTransition(
-                                serverLevel, destination, target.getDeltaMovement(), target.getYRot(), target.getXRot(), DimensionTransition.DO_NOTHING
-                        )
-                );
+                    if (dragon.level().isLoaded(BlockPos.containing(destination))) {
+                        target.changeDimension(
+                                new DimensionTransition(
+                                        serverLevel, destination, target.getDeltaMovement(), target.getYRot(), target.getXRot(), DimensionTransition.DO_NOTHING
+                                )
+                        );
+                        break;
+                    }
+                }
             }
         }
     }

@@ -128,7 +128,7 @@ public class ClientFlightHandler {
     private static boolean lastJumpInputState; // We need to track the rising edge manually
 
     // Run this somewhat early, but not extremely early so that if another mod messes with camera rendering, it will recieve DS's changes first.
-    @SubscribeEvent(priority = EventPriority.LOW)
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void flightCamera(CalculateDetachedCameraDistanceEvent event) {
         if (DragonSurvival.PROXY.dragonRenderingWasCancelled(DragonSurvival.PROXY.getLocalPlayer())) {
             return;

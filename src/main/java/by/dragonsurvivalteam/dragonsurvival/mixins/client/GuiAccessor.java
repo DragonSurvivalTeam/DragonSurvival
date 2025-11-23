@@ -7,6 +7,6 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 
 @Mixin(Gui.class)
 public interface GuiAccessor {
-    @Accessor("EFFECT_BACKGROUND_SPRITE")
+    @Accessor("EFFECT_BACKGROUND_SPRITE") // FIXME :: make static
     ResourceLocation dragonSurvival$getEffectBackgroundSprite();
 }

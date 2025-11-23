@@ -1,6 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.client.gui.screens;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.client.DragonSurvivalClient;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.dragon_editor.DragonEditorScreen;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.dragon_editor.buttons.DragonBodyButton;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.TabButton;
@@ -18,12 +19,12 @@ import by.dragonsurvivalteam.dragonsurvival.config.ConfigHandler;
 import by.dragonsurvivalteam.dragonsurvival.network.client.ClientProxy;
 import by.dragonsurvivalteam.dragonsurvival.network.dragon_editor.SyncDragonSkinSettings;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.datapacks.AncientDatapacks;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSDragonBodyTags;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.BuiltInDragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.datapacks.AncientDatapack;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStages;
 import by.dragonsurvivalteam.dragonsurvival.util.ResourceHelper;
@@ -197,10 +198,10 @@ public class DragonSkinsScreen extends Screen {
         EntityRenderer<? super DragonEntity> dragonRenderer = Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(dragon);
 
         if (noSkin && Objects.equals(playerName, minecraft.player.getGameProfile().getName())) {
-            ClientDragonRenderer.dragonModel.setOverrideTexture(null);
+            DragonSurvivalClient.DRAGON_MODEL.setOverrideTexture(null);
             ((DragonRenderer) dragonRenderer).glowTexture = null;
         } else {
-            ClientDragonRenderer.dragonModel.setOverrideTexture(skinTexture);
+            DragonSurvivalClient.DRAGON_MODEL.setOverrideTexture(skinTexture);
             ((DragonRenderer) dragonRenderer).glowTexture = glowTexture;
         }
 
@@ -291,6 +292,7 @@ public class DragonSkinsScreen extends Screen {
         handler.deserializeNBT(minecraft.player.registryAccess(), playerHandler.serializeNBT(minecraft.player.registryAccess()));
 
         if (!DragonSpecies.isBuiltIn(handler.speciesKey())) {
+            // TODO :: maybe don't throw and find some alternative, in case cave species is removed?
             handler.setSpecies(null, player.registryAccess().holderOrThrow(BuiltInDragonSpecies.CAVE_DRAGON));
         }
 
@@ -334,7 +336,7 @@ public class DragonSkinsScreen extends Screen {
         HoverButton leftArrowButton = new HoverButton(startX - 62, startY + 153, 9, 16, 18, 18, STAGE_ARROW_LEFT_MAIN, STAGE_ARROW_LEFT_HOVER, button -> {
             ResourceKey<DragonStage> nextLevel = dragonStage.getKey();
 
-            if (dragonStage.is(AncientDatapack.ancient)) {
+            if (dragonStage.is(AncientDatapacks.ancient)) {
                 nextLevel = DragonStages.adult;
             } else if (dragonStage.is(DragonStages.adult)) {
                 nextLevel = DragonStages.young;
@@ -354,9 +356,9 @@ public class DragonSkinsScreen extends Screen {
 
         HoverButton rightArrowButton = new HoverButton(startX + 92, startY + 153, 9, 16, 18, 18, STAGE_ARROW_RIGHT_MAIN, STAGE_ARROW_RIGHT_HOVER, button -> {
             ResourceKey<DragonStage> nextLevel = dragonStage.getKey();
-            boolean ancientDataPackExists = ResourceHelper.get(Objects.requireNonNull(player).registryAccess(), AncientDatapack.ancient).isPresent();
+            boolean ancientDataPackExists = ResourceHelper.get(Objects.requireNonNull(player).registryAccess(), AncientDatapacks.ancient).isPresent();
 
-            if (ancientDataPackExists && dragonStage.is(AncientDatapack.ancient)) {
+            if (ancientDataPackExists && dragonStage.is(AncientDatapacks.ancient)) {
                 nextLevel = DragonStages.newborn;
             } else if (dragonStage.is(DragonStages.newborn)) {
                 nextLevel = DragonStages.young;

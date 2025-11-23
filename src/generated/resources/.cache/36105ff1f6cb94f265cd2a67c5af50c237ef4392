@@ -1,5 +1,6 @@
-// 1.21.1	2025-04-17T17:57:37.7787501	Tags for minecraft:entity_type mod id dragonsurvival
-d20b8324d465721a7db9daae924ec01a4038df71 data/dragonsurvival/tags/entity_type/animal_avoid_blacklist.json
+// 1.21.1	2025-10-28T09:07:04.3877537	Tags for minecraft:entity_type mod id dragonsurvival
+45756ef0fe22153733dba53a829e33acb4e30beb data/dragonsurvival/tags/entity_type/animal_avoid_blacklist.json
+a4f6e3d52d68769113e22077030c2597ae94f2a3 data/dragonsurvival/tags/entity_type/can_fly.json
 4cf72c424dcd8484399dd32f9d6fba9dd92777e6 data/dragonsurvival/tags/entity_type/charged_spread_blacklist.json
 e00f2931577049b9a4400a87ed9c249373be376c data/dragonsurvival/tags/entity_type/dragons.json
 40edf96c0f7fd391ccce6bdd1e4c2e5ba63417a2 data/dragonsurvival/tags/entity_type/drops_dragon_heart_shard.json

@@ -31,8 +31,7 @@
           "targeting_mode": "allies_and_self"
         },
         "target_type": "dragonsurvival:self"
-      },
-      "trigger_rate": 1.0
+      }
     },
     {
       "target_selection": {
@@ -103,8 +102,7 @@
           "targeting_mode": "allies_and_self"
         },
         "target_type": "dragonsurvival:self"
-      },
-      "trigger_rate": 1.0
+      }
     }
   ],
   "activation": {

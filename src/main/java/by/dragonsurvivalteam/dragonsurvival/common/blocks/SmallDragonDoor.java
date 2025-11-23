@@ -32,6 +32,7 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.DoorHingeSide;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.pathfinder.PathComputationType;
@@ -169,6 +170,7 @@ public class SmallDragonDoor extends Block implements SimpleWaterloggedBlock {
         if (hasPower != state.getValue(POWERED)) {
             if (hasPower != state.getValue(OPEN)) {
                 playSound(null, level, position, state, hasPower);
+                level.gameEvent(null, hasPower ? GameEvent.BLOCK_OPEN : GameEvent.BLOCK_CLOSE, position);
             }
 
             level.setBlock(position, state.setValue(POWERED, hasPower).setValue(OPEN, hasPower), Block.UPDATE_CLIENTS);
@@ -187,6 +189,10 @@ public class SmallDragonDoor extends Block implements SimpleWaterloggedBlock {
         return isOpening ? SoundEvents.IRON_DOOR_OPEN : SoundEvents.IRON_DOOR_CLOSE;
     }
 
+    public boolean isOpen(BlockState state) {
+        return state.getValue(OPEN);
+    }
+
     @Override
     public @NotNull InteractionResult useWithoutItem(@NotNull final BlockState state, @NotNull final Level level, @NotNull final BlockPos position, @NotNull final Player player, @NotNull final BlockHitResult hitResult) {
         DragonStateHandler data = DragonStateProvider.getData(player);
@@ -202,6 +208,7 @@ public class SmallDragonDoor extends Block implements SimpleWaterloggedBlock {
             BlockState newState = state.cycle(OPEN);
             level.setBlock(position, newState, /* Block.UPDATE_CLIENTS + Block.UPDATE_IMMEDIATE */ 10);
             playSound(player, level, position, newState, newState.getValue(OPEN));
+            level.gameEvent(player, this.isOpen(state) ? GameEvent.BLOCK_OPEN : GameEvent.BLOCK_CLOSE, position);
             return InteractionResult.SUCCESS;
         }
 

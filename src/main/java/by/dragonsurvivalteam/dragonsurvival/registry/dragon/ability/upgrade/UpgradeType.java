@@ -27,7 +27,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 /** The type cannot be a parameterized type because the parameter from the input cannot be validated to match (due to type erasure) */
-@EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber
 public interface UpgradeType<T> {
     ResourceKey<Registry<MapCodec<? extends UpgradeType<?>>>> REGISTRY_KEY = ResourceKey.createRegistryKey(DragonSurvival.res("upgrade_type"));
     Registry<MapCodec<? extends UpgradeType<?>>> REGISTRY = new RegistryBuilder<>(REGISTRY_KEY).create();

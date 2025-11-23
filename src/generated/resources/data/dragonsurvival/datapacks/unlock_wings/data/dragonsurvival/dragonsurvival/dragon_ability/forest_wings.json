@@ -13,8 +13,7 @@
           "targeting_mode": "allies_and_self"
         },
         "target_type": "dragonsurvival:self"
-      },
-      "trigger_rate": 1.0
+      }
     }
   ],
   "activation": {
@@ -23,12 +22,12 @@
   "icon": {
     "texture_entries": [
       {
-        "from_level": 1,
-        "texture_resource": "dragonsurvival:abilities/forest/forest_wings_1"
-      },
-      {
         "from_level": 0,
         "texture_resource": "dragonsurvival:abilities/forest/forest_wings_0"
+      },
+      {
+        "from_level": 1,
+        "texture_resource": "dragonsurvival:abilities/forest/forest_wings_1"
       }
     ]
   }

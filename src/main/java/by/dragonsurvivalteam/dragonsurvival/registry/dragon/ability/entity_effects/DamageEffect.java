@@ -14,21 +14,23 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
 
 import java.util.List;
 
-public record DamageEffect(Holder<DamageType> damageType, LevelBasedValue amount) implements AbilityEntityEffect {
+public record DamageEffect(Holder<DamageType> damageType, LevelBasedValue amount, Holder<Attribute> scale) implements AbilityEntityEffect {
     public static final MapCodec<DamageEffect> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             DamageType.CODEC.fieldOf("damage_type").forGetter(DamageEffect::damageType),
-            LevelBasedValue.CODEC.fieldOf("amount").forGetter(DamageEffect::amount)
+            LevelBasedValue.CODEC.fieldOf("amount").forGetter(DamageEffect::amount),
+            Attribute.CODEC.optionalFieldOf("scale", DSAttributes.DRAGON_ABILITY_DAMAGE).forGetter(DamageEffect::scale)
     ).apply(instance, DamageEffect::new));
 
     @Override
     public void apply(final ServerPlayer dragon, final DragonAbilityInstance ability, final Entity target) {
         float damageAmount = amount().calculate(ability.level());
-        damageAmount *= (float) dragon.getAttributeValue(DSAttributes.DRAGON_ABILITY_DAMAGE);
+        damageAmount *= (float) dragon.getAttributeValue(scale);
         target.hurt(new DamageSource(damageType, dragon), damageAmount);
 
         // Used by 'OwnerHurtTargetGoal'
@@ -42,7 +44,8 @@ public record DamageEffect(Holder<DamageType> damageType, LevelBasedValue amount
         float damage = amount.calculate(ability.level());
         MutableComponent abilityDamage = Component.translatable(LangKey.ABILITY_DAMAGE, DSColors.dynamicValue(damage), DSColors.dynamicValue(damageType));
 
-        float additionalDamage = damage * (float) dragon.getAttributeValue(DSAttributes.DRAGON_ABILITY_DAMAGE) - damage;
+        float additionalDamage = damage * (float) dragon.getAttributeValue(scale) - damage;
+
         if (additionalDamage != 0) {
             abilityDamage.append(Component.translatable(LangKey.ABILITY_ADDITIONAL_DAMAGE, DSColors.dynamicValue(additionalDamage)));
         }

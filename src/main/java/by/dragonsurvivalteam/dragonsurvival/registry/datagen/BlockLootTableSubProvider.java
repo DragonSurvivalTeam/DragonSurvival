@@ -2,6 +2,8 @@ package by.dragonsurvivalteam.dragonsurvival.registry.datagen;
 
 import by.dragonsurvivalteam.dragonsurvival.common.blocks.DragonBeacon;
 import by.dragonsurvivalteam.dragonsurvival.common.blocks.DragonDoor;
+import by.dragonsurvivalteam.dragonsurvival.common.blocks.DragonSoulBlock;
+import by.dragonsurvivalteam.dragonsurvival.common.blocks.ModCompat;
 import by.dragonsurvivalteam.dragonsurvival.common.blocks.PrimordialAnchorBlock;
 import by.dragonsurvivalteam.dragonsurvival.common.blocks.SkeletonPieceBlock;
 import by.dragonsurvivalteam.dragonsurvival.common.blocks.SourceOfMagicBlock;
@@ -20,6 +22,7 @@ import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.AlternativesEntry;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.entries.LootPoolSingletonContainer;
+import net.minecraft.world.level.storage.loot.functions.CopyComponentsFunction;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.predicates.LootItemBlockStatePropertyCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemEntityPropertyCondition;
@@ -33,41 +36,27 @@ import java.util.Collections;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static by.dragonsurvivalteam.dragonsurvival.registry.DSBlocks.REGISTRY;
-
 public class BlockLootTableSubProvider extends BlockLootSubProvider {
-
     public BlockLootTableSubProvider(HolderLookup.Provider provider) {
         super(Collections.emptySet(), FeatureFlags.REGISTRY.allFlags(), provider);
     }
 
     @Override
     protected void generate() {
-        REGISTRY.getEntries().forEach((key) -> {
+        DSBlocks.REGISTRY.getEntries().forEach((key) -> {
+            if (key.get() instanceof ModCompat compat && compat.getCompatId() != null) {
+                // Added as separate datapack to avoid errors
+                // Since there is no current support to conditionally load loot tables at the moment
+                return;
+            }
+
             Function<Block, LootTable.Builder> builder = block -> {
                 if (block instanceof DragonDoor) {
                     return createSinglePropConditionTable(block, DragonDoor.PART, DragonDoor.Part.BOTTOM);
                 } else if (block instanceof SourceOfMagicBlock) {
                     return LootTable.lootTable().withPool(applyExplosionCondition(block, LootPool.lootPool().setRolls(ConstantValue.exactly(1.0F)).add(LootItem.lootTableItem(block).when(LootItemBlockStatePropertyCondition.hasBlockStateProperties(block).setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(SourceOfMagicBlock.PRIMARY_BLOCK, true))))));
                 } else if (block instanceof TreasureBlock) {
-                    ArrayList<LootPoolSingletonContainer.Builder<?>> list = new ArrayList<>();
-
-                    for (Integer possibleValue : TreasureBlock.LAYERS.getPossibleValues()) {
-                        LootPoolSingletonContainer.Builder<?> entry = LootItem.lootTableItem(block)
-                                .when(LootItemBlockStatePropertyCondition.hasBlockStateProperties(block)
-                                        .setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(TreasureBlock.LAYERS, possibleValue)))
-                                .apply(SetItemCountFunction.setCount(ConstantValue.exactly(possibleValue)));
-
-                        list.add(entry);
-                    }
-
-                    LootPoolSingletonContainer.Builder<?>[] arr = list.toArray(new LootPoolSingletonContainer.Builder[0]);
-
-                    return LootTable.lootTable()
-                            .withPool(LootPool.lootPool().setRolls(ConstantValue.exactly(1.0F))
-                                    .when(LootItemEntityPropertyCondition.entityPresent(LootContext.EntityTarget.THIS))
-                                    .add(AlternativesEntry.alternatives(AlternativesEntry.alternatives(arr))
-                                            .when(LootItemBlockStatePropertyCondition.hasBlockStateProperties(block))));
+                    return createTreasureBlockLoot(block);
                 } else if (block instanceof SkeletonPieceBlock skeleton) {
                     return switch (skeleton.type()) {
                         case SkeletonPieceBlock.Type.CHEST -> createSingleItemTable(DSItems.STAR_BONE.value(), UniformGenerator.between(3, 6));
@@ -85,6 +74,13 @@ public class BlockLootTableSubProvider extends BlockLootSubProvider {
                 } else if (block instanceof VaultBlock || block instanceof PrimordialAnchorBlock) {
                     // Vaults and Primordial Anchors should not drop anything
                     return LootTable.lootTable();
+                } else if (block instanceof DragonSoulBlock) {
+                    return LootTable.lootTable().withPool(
+                            applyExplosionCondition(block, LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    // Make sure it copies the soul data back into the dropped item
+                                    .add(LootItem.lootTableItem(block).apply(CopyComponentsFunction.copyComponents(CopyComponentsFunction.Source.BLOCK_ENTITY)))
+                            ));
                 }
 
                 return createSingleItemTable(key.get().asItem());
@@ -94,8 +90,31 @@ public class BlockLootTableSubProvider extends BlockLootSubProvider {
         });
     }
 
+    public static LootTable.Builder createTreasureBlockLoot(final Block block) {
+        ArrayList<LootPoolSingletonContainer.Builder<?>> list = new ArrayList<>();
+
+        for (Integer possibleValue : TreasureBlock.LAYERS.getPossibleValues()) {
+            LootPoolSingletonContainer.Builder<?> entry = LootItem.lootTableItem(block)
+                    .when(LootItemBlockStatePropertyCondition.hasBlockStateProperties(block)
+                            .setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(TreasureBlock.LAYERS, possibleValue)))
+                    .apply(SetItemCountFunction.setCount(ConstantValue.exactly(possibleValue)));
+
+            list.add(entry);
+        }
+
+        LootPoolSingletonContainer.Builder<?>[] arr = list.toArray(new LootPoolSingletonContainer.Builder[0]);
+
+        return LootTable.lootTable()
+                .withPool(LootPool.lootPool().setRolls(ConstantValue.exactly(1.0F))
+                        .when(LootItemEntityPropertyCondition.entityPresent(LootContext.EntityTarget.THIS))
+                        .add(AlternativesEntry.alternatives(AlternativesEntry.alternatives(arr))
+                                .when(LootItemBlockStatePropertyCondition.hasBlockStateProperties(block))));
+    }
+
     @Override
     protected @NotNull Iterable<Block> getKnownBlocks() {
-        return REGISTRY.getEntries().stream().map(DeferredHolder::get).collect(Collectors.toList());
+        return DSBlocks.REGISTRY.getEntries().stream().map(DeferredHolder::get)
+                .filter(block -> !(block instanceof ModCompat compat) || compat.getCompatId() == null)
+                .collect(Collectors.toList());
     }
 }

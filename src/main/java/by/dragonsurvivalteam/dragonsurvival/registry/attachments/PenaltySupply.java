@@ -1,14 +1,19 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.attachments;
 
+import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncPenaltySupply;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncPenaltySupplyAmount;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty.DragonPenalty;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty.SupplyTrigger;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -26,6 +31,8 @@ import java.util.Optional;
 
 @EventBusSubscriber
 public class PenaltySupply implements INBTSerializable<CompoundTag> {
+    public static final int NO_ENTRY = -1;
+
     private final HashMap<ResourceLocation, Data> supplyData = new HashMap<>();
 
     public boolean hasSupply(final ResourceLocation supplyType) {
@@ -35,7 +42,7 @@ public class PenaltySupply implements INBTSerializable<CompoundTag> {
             return false;
         }
 
-        return data.getSupply() > 0;
+        return data.currentSupply() > 0;
     }
 
     public void setSupply(final ResourceLocation supplyType, float supply) {
@@ -53,7 +60,7 @@ public class PenaltySupply implements INBTSerializable<CompoundTag> {
             return 0;
         }
 
-        return (data.getSupply() / data.getMaximumSupply());
+        return (data.currentSupply() / data.maximumSupply());
     }
 
     public float getRawSupply(final ResourceLocation supplyType) {
@@ -63,17 +70,47 @@ public class PenaltySupply implements INBTSerializable<CompoundTag> {
             return 0;
         }
 
-        return data.getSupply();
+        return data.currentSupply();
     }
 
     public int getMaxSupply(final ResourceLocation supplyType) {
         Data data = supplyData.get(supplyType);
 
         if (data == null) {
-            return -1;
+            return NO_ENTRY;
         }
 
-        return (int) data.getMaximumSupply();
+        return (int) data.maximumSupply();
+    }
+
+    public int getCurrentTick(final ResourceLocation supplyType) {
+        Data data = supplyData.get(supplyType);
+
+        if (data == null) {
+            return 0;
+        }
+
+        return data.currentTick();
+    }
+
+    public void tick(final ResourceLocation supplyType) {
+        Data data = supplyData.get(supplyType);
+
+        if (data == null) {
+            return;
+        }
+
+        data.tick();
+    }
+
+    public void resetTick(final ResourceLocation supplyType) {
+        Data data = supplyData.get(supplyType);
+
+        if (data == null) {
+            return;
+        }
+
+        data.resetTick();
     }
 
     public void reduce(final ServerPlayer player, final ResourceLocation supplyType) {
@@ -84,7 +121,7 @@ public class PenaltySupply implements INBTSerializable<CompoundTag> {
         }
 
         if (data.reduce()) {
-            PacketDistributor.sendToPlayer(player, new SyncPenaltySupplyAmount(supplyType, data.getSupply()));
+            PacketDistributor.sendToPlayer(player, new SyncPenaltySupplyAmount(supplyType, data.currentSupply()));
         }
     }
 
@@ -96,7 +133,7 @@ public class PenaltySupply implements INBTSerializable<CompoundTag> {
         }
 
         if (data.regenerate()) {
-            PacketDistributor.sendToPlayer(player, new SyncPenaltySupplyAmount(supplyType, data.getSupply()));
+            PacketDistributor.sendToPlayer(player, new SyncPenaltySupplyAmount(supplyType, data.currentSupply()));
         }
     }
 
@@ -115,8 +152,8 @@ public class PenaltySupply implements INBTSerializable<CompoundTag> {
         return Optional.empty();
     }
 
-    public void initialize(final ResourceLocation supplyType, float maximumSupply, float reductionRate, float regenerationRate, float currentSupply) {
-        supplyData.put(supplyType, new Data(maximumSupply, Math.min(currentSupply, maximumSupply), reductionRate, regenerationRate));
+    public void initialize(final ResourceLocation supplyType, float maximumSupply, float reductionRate, float regenerationRate, float currentSupply, int currentTick) {
+        supplyData.put(supplyType, new Data(maximumSupply, currentSupply, reductionRate, regenerationRate, currentTick));
     }
 
     public void sync(final ServerPlayer player) {
@@ -190,13 +227,13 @@ public class PenaltySupply implements INBTSerializable<CompoundTag> {
         }
 
         data.regeneratePercentage(amount);
-        PacketDistributor.sendToPlayer(player, new SyncPenaltySupplyAmount(supplyType, data.getSupply()));
+        PacketDistributor.sendToPlayer(player, new SyncPenaltySupplyAmount(supplyType, data.currentSupply()));
     }
 
     @Override
     public CompoundTag serializeNBT(@NotNull final HolderLookup.Provider provider) {
         CompoundTag tag = new CompoundTag();
-        supplyData.forEach((supplyType, value) -> tag.put(supplyType.toString(), value.serializeNBT()));
+        supplyData.forEach((supplyType, value) -> tag.put(supplyType.toString(), value.serializeNBT(provider)));
         return tag;
     }
 
@@ -207,36 +244,41 @@ public class PenaltySupply implements INBTSerializable<CompoundTag> {
             ResourceLocation resource = ResourceLocation.tryParse(supplyType);
 
             if (resource != null) {
-                supplyData.put(resource, Data.deserializeNBT(tag.getCompound(supplyType)));
+                supplyData.put(resource, Data.deserializeNBT(provider, tag.get(supplyType)));
             }
         });
     }
 
     private static class Data {
-        private static final String MAXIMUM_SUPPLY = "maximum_supply";
-        private static final String CURRENT_SUPPLY = "current_supply";
-        private static final String REDUCTION_RATE = "reduction_rate";
-        private static final String REGENERATION_RATE = "regeneration_rate";
+        public static final Codec<Data> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            Codec.FLOAT.fieldOf("maximum_supply").forGetter(Data::maximumSupply),
+                Codec.FLOAT.optionalFieldOf("current_supply", Float.MAX_VALUE).forGetter(Data::currentSupply),
+                Codec.FLOAT.fieldOf("reduction_rate").forGetter(Data::reductionRate),
+                Codec.FLOAT.fieldOf("regeneration_rate").forGetter(Data::regenerationRate),
+                Codec.INT.optionalFieldOf("current_tick", 0).forGetter(Data::currentTick)
+        ).apply(instance, Data::new));
 
         private final float maximumSupply;
-        private float currentSupply;
-
         private final float reductionRate;
         private final float regenerationRate;
 
-        public Data(float maximumSupply, float currentSupply, float reductionRate, float regenerationRate) {
+        private float currentSupply;
+        private int currentTick;
+
+        public Data(float maximumSupply, float currentSupply, float reductionRate, float regenerationRate, int currentTick) {
             this.maximumSupply = maximumSupply;
-            this.currentSupply = currentSupply;
+            this.currentSupply = Math.min(maximumSupply, currentSupply);
             this.reductionRate = reductionRate;
             this.regenerationRate = regenerationRate;
+            this.currentTick = currentTick;
         }
 
-        public float getSupply() {
-            return currentSupply;
+        public void tick() {
+            currentTick++;
         }
 
-        public float getMaximumSupply() {
-            return maximumSupply;
+        public void resetTick() {
+            currentTick = 0;
         }
 
         public boolean reduce() {
@@ -255,23 +297,45 @@ public class PenaltySupply implements INBTSerializable<CompoundTag> {
             currentSupply = Math.min(maximumSupply, currentSupply + maximumSupply * amount);
         }
 
-        public CompoundTag serializeNBT() {
-            CompoundTag tag = new CompoundTag();
-            tag.putFloat(MAXIMUM_SUPPLY, maximumSupply);
-            tag.putFloat(CURRENT_SUPPLY, currentSupply);
-            tag.putFloat(REDUCTION_RATE, reductionRate);
-            tag.putFloat(REGENERATION_RATE, regenerationRate);
-
-            return tag;
+        public float maximumSupply() {
+            return maximumSupply;
         }
 
-        public static Data deserializeNBT(@NotNull final CompoundTag tag) {
-            float maximumSupply = tag.getFloat(MAXIMUM_SUPPLY);
-            float currentSupply = tag.getFloat(CURRENT_SUPPLY);
-            float reductionRate = tag.getFloat(REDUCTION_RATE);
-            float regenerationRate = tag.getFloat(REGENERATION_RATE);
+        public float reductionRate() {
+            return reductionRate;
+        }
 
-            return new Data(maximumSupply, currentSupply, reductionRate, regenerationRate);
+        public float regenerationRate() {
+            return regenerationRate;
+        }
+
+        public float currentSupply() {
+            return currentSupply;
+        }
+
+        public int currentTick() {
+            return currentTick;
+        }
+
+        public Tag serializeNBT(final HolderLookup.Provider provider) {
+            return CODEC.encodeStart(provider.createSerializationContext(NbtOps.INSTANCE), this)
+                    .resultOrPartial(DragonSurvival.LOGGER::error).orElseThrow();
+        }
+
+        public static Data deserializeNBT(final HolderLookup.Provider provider, final Tag tag) {
+            return CODEC.decode(provider.createSerializationContext(NbtOps.INSTANCE), tag)
+                    .resultOrPartial(DragonSurvival.LOGGER::error).orElseThrow().getFirst();
+        }
+
+        @Override
+        public String toString() {
+            return "Data{" +
+                    "maximumSupply=" + maximumSupply +
+                    ", reductionRate=" + reductionRate +
+                    ", regenerationRate=" + regenerationRate +
+                    ", currentSupply=" + currentSupply +
+                    ", currentTick=" + currentTick +
+                    '}';
         }
     }
 }

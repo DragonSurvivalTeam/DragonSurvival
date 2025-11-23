@@ -16,9 +16,9 @@ import org.jetbrains.annotations.Nullable;
 
 public record ExplodeBlockEffect(LevelBasedValue probability, LevelBasedValue power, boolean fire, Holder<DamageType> damageType) implements AbilityBlockEffect {
     public static final MapCodec<ExplodeBlockEffect> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            LevelBasedValue.CODEC.fieldOf("probability").forGetter(ExplodeBlockEffect::probability),
+            LevelBasedValue.CODEC.optionalFieldOf("probability", LevelBasedValue.constant(1)).forGetter(ExplodeBlockEffect::probability),
             LevelBasedValue.CODEC.fieldOf("power").forGetter(ExplodeBlockEffect::power),
-            Codec.BOOL.fieldOf("fire").orElse(true).forGetter(ExplodeBlockEffect::fire),
+            Codec.BOOL.optionalFieldOf("fire", true).forGetter(ExplodeBlockEffect::fire),
             DamageType.CODEC.fieldOf("damage_type").forGetter(ExplodeBlockEffect::damageType)
         ).apply(instance, ExplodeBlockEffect::new)
     );

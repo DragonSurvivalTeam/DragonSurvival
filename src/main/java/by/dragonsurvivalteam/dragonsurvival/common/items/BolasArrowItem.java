@@ -18,8 +18,8 @@ public class BolasArrowItem extends ArrowItem {
         super(pProperties);
     }
 
-    public @NotNull AbstractArrow createArrow(@NotNull Level level, @NotNull ItemStack ammo, LivingEntity shooter, @Nullable ItemStack weapon) {
-        return new Bolas(shooter.getX(), shooter.getEyeY() - 0.1F, shooter.getZ(), shooter.level(), new ItemStack(Items.ARROW), weapon);
+    public @NotNull AbstractArrow createArrow(@NotNull Level level, @NotNull ItemStack ammo, @NotNull LivingEntity shooter, @Nullable ItemStack weapon) {
+        return new Bolas(shooter, level, new ItemStack(Items.ARROW), weapon);
     }
 
     @Override

@@ -30,7 +30,7 @@ public class ItemInHandRendererMixin {
     private UseAnim dragonSurvival$dragonRenderArmWithItem(UseAnim original, AbstractClientPlayer player, float partialTicks, float pitch, InteractionHand hand, float swingProgress, ItemStack stack, float equippedProgress, PoseStack poseStack, MultiBufferSource buffer, int combinedLight) {
         DragonStateHandler data = DragonStateProvider.getData(player);
 
-        if (data.isDragon()) {
+        if (!DragonFoodHandler.dragonFoodHandlingIsDisabled() && data.isDragon()) {
             return (DragonFoodHandler.isEdible(player, stack) && original != UseAnim.DRINK) ? UseAnim.EAT : original;
         }
 
@@ -40,7 +40,7 @@ public class ItemInHandRendererMixin {
     /** If we made an item edible we need to supply the duration it takes to eat the item */
     @ModifyExpressionValue(method = "applyEatTransform", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;getUseDuration(Lnet/minecraft/world/entity/LivingEntity;)I"))
     private int dragonSurvival$dragonUseDuration(int original, @Local(argsOnly = true) ItemStack stack) {
-        if (DragonStateProvider.isDragon(minecraft.player)) {
+        if (!DragonFoodHandler.dragonFoodHandlingIsDisabled() && DragonStateProvider.isDragon(minecraft.player)) {
             return DragonFoodHandler.getUseDuration(stack, minecraft.player, original);
         }
 

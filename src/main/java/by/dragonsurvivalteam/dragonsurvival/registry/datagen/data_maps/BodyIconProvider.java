@@ -18,7 +18,7 @@ public class BodyIconProvider extends DataMapProvider {
     }
 
     @Override
-    protected void gather() {
+    protected void gather(HolderLookup.@NotNull Provider provider) {
         builder(DSDataMaps.BODY_ICONS)
                 .add(DragonBodies.CENTER, Map.of(
                         BuiltInDragonSpecies.CAVE_DRAGON, DragonSurvival.res("textures/gui/custom/body/center/cave_dragon.png"),
@@ -44,7 +44,7 @@ public class BodyIconProvider extends DataMapProvider {
                         BuiltInDragonSpecies.CAVE_DRAGON, DragonSurvival.res("textures/gui/custom/body/west/cave_dragon.png"),
                         BuiltInDragonSpecies.FOREST_DRAGON, DragonSurvival.res("textures/gui/custom/body/west/forest_dragon.png"),
                         BuiltInDragonSpecies.SEA_DRAGON, DragonSurvival.res("textures/gui/custom/body/west/sea_dragon.png")
-                ), false, new RegisteredCondition<>(DragonBodies.EAST));
+                ), false, new RegisteredCondition<>(DragonBodies.WEST));
     }
 
     @Override

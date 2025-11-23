@@ -14,6 +14,7 @@ public record ChanneledActivation(
         Optional<ManaCost> continuousManaCost,
         Optional<LevelBasedValue> castTime,
         Optional<LevelBasedValue> cooldown,
+        Optional<LevelBasedValue> maxDuration,
         Notification notification,
         boolean canMoveWhileCasting,
         Optional<Sound> sound,
@@ -26,6 +27,7 @@ public record ChanneledActivation(
                     .optionalFieldOf("continuous_mana_cost").forGetter(ChanneledActivation::continuousManaCost),
             LevelBasedValue.CODEC.optionalFieldOf("cast_time").forGetter(ChanneledActivation::castTime),
             LevelBasedValue.CODEC.optionalFieldOf("cooldown").forGetter(ChanneledActivation::cooldown),
+            LevelBasedValue.CODEC.optionalFieldOf("max_duration").forGetter(ChanneledActivation::maxDuration),
             Notification.CODEC.optionalFieldOf("notification", Notification.DEFAULT).forGetter(ChanneledActivation::notification),
             Codec.BOOL.optionalFieldOf("can_move_while_casting", true).forGetter(ChanneledActivation::canMoveWhileCasting),
             Sound.CODEC.optionalFieldOf("sound").forGetter(ChanneledActivation::sound),
@@ -48,6 +50,10 @@ public record ChanneledActivation(
     public int getCooldown(final int level) {
         return cooldown.map(cooldown -> (int) cooldown.calculate(level))
                 .orElseGet(() -> Activation.super.getCooldown(level));
+    }
+
+    public boolean hasReachedMaxDuration(final int level, final int currentTick) {
+        return maxDuration.map(duration -> currentTick > (int) duration.calculate(level)).orElse(false);
     }
 
     @Override

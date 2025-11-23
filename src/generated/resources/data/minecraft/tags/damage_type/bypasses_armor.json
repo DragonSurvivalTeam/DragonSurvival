@@ -1,6 +1,7 @@
 {
   "values": [
     "dragonsurvival:drain",
-    "dragonsurvival:burn"
+    "dragonsurvival:burn",
+    "dragonsurvival:dehydration"
   ]
 }

@@ -42,8 +42,7 @@
         },
         "radius": 5.0,
         "target_type": "dragonsurvival:area"
-      },
-      "trigger_rate": 1.0
+      }
     }
   ],
   "activation": {

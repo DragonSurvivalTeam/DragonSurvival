@@ -5,6 +5,7 @@ import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.loader.Def
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.loader.DragonPartLoader;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
+import by.dragonsurvivalteam.dragonsurvival.util.Copyable;
 import com.mojang.datafixers.util.Either;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -18,7 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /** Saved customization per dragon level */
-public class DragonStageCustomization implements INBTSerializable<CompoundTag> {
+public class DragonStageCustomization implements INBTSerializable<CompoundTag>, Copyable<DragonStageCustomization> {
     public static final String HAS_WINGS = "wings";
     public static final String IS_DEFAULT_SKIN = "defaultSkin";
 

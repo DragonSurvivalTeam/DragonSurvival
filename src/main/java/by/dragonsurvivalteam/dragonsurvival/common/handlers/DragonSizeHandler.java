@@ -75,8 +75,8 @@ public class DragonSizeHandler {
         return applyPose(eyeHeight * scale, overridePose(player), handler.body().value().crouchHeightRatio());
     }
 
-    public static EntityDimensions calculateDimensions(final DragonStateHandler handler, final Player player, @Nullable final Pose overridePose) {
-        double scale = player.getAttributeValue(Attributes.SCALE);
+    public static EntityDimensions calculateDimensions(final DragonStateHandler handler, @Nullable final Player player, @Nullable final Pose overridePose) {
+        double scale = player != null ? player.getAttributeValue(Attributes.SCALE) : 1;
         double height = handler.body().value().scalingProportions().height();
         double eyeHeight = handler.body().value().scalingProportions().eyeHeight();
         double width = handler.body().value().scalingProportions().width();

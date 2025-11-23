@@ -17,7 +17,7 @@ import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.Collection;
-import java.util.function.BiConsumer;
+import java.util.function.BiPredicate;
 
 public class DragonAbilityCommand {
     @Translation(comments = "%s of %s players processed (non-dragons are skipped)")
@@ -28,7 +28,7 @@ public class DragonAbilityCommand {
                 .requires(sourceStack -> sourceStack.hasPermission(Commands.LEVEL_GAMEMASTERS))
                 .then(Commands.literal("remove")
                         .then(Commands.argument("targets", EntityArgument.players())
-                                .executes(source -> handleCommand(source, EntityArgument.getPlayers(source, "targets"), (player, data) -> data.clear(player)))
+                                .executes(source -> handleCommand(source, EntityArgument.getPlayers(source, "targets"), (player, data) -> data.clear(player) > 0))
                                 .then(Commands.argument(DragonAbilityArgument.ID, new DragonAbilityArgument(event.getBuildContext()))
                                         .executes(source -> handleCommand(source, EntityArgument.getPlayers(source, "targets"), (player, data) -> data.removeAbility(player, DragonAbilityArgument.get(source).getKey())))
                                 )))
@@ -41,12 +41,15 @@ public class DragonAbilityCommand {
                 )
                 .then(Commands.literal("refresh")
                         .then(Commands.argument("targets", EntityArgument.players())
-                                .executes(source -> handleCommand(source, EntityArgument.getPlayers(source, "targets"), (player, data) -> data.refresh(player, DragonStateProvider.getData(player).species()))))
+                                .executes(source -> handleCommand(source, EntityArgument.getPlayers(source, "targets"), (player, data) -> {
+                                    data.refresh(player, DragonStateProvider.getData(player).species());
+                                    return true;
+                                })))
                 )
         );
     }
 
-    private static int handleCommand(final CommandContext<CommandSourceStack> source, final Collection<? extends Player> targets, final BiConsumer<ServerPlayer, MagicData> logic) {
+    private static int handleCommand(final CommandContext<CommandSourceStack> source, final Collection<? extends Player> targets, final BiPredicate<ServerPlayer, MagicData> logic) {
         int processed = 0;
 
         for (Player target : targets) {
@@ -58,10 +61,12 @@ public class DragonAbilityCommand {
                 }
 
                 MagicData data = MagicData.getData(player);
-                logic.accept(player, data);
-                PacketDistributor.sendToPlayer(player, new SyncMagicData(data.serializeNBT(target.registryAccess())));
 
-                processed++;
+                if (logic.test(player, data)) {
+                    processed++;
+                }
+
+                PacketDistributor.sendToPlayer(player, new SyncMagicData(data.serializeNBT(target.registryAccess())));
             }
         }
 

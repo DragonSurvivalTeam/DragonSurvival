@@ -171,6 +171,7 @@ public class SeaDragonAbilities {
                         Optional.of(ManaCost.ticking(LevelBasedValue.constant(0.025f))),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(1))),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(2))),
+                        Optional.empty(),
                         Notification.DEFAULT,
                         true,
                         Sound.create().start(DSSounds.STORM_BREATH_START.get()).looping(DSSounds.STORM_BREATH_LOOP.get()).end(DSSounds.STORM_BREATH_END.get()).optional(),
@@ -184,11 +185,11 @@ public class SeaDragonAbilities {
                 List.of(new ActionContainer(new DragonBreathTarget(AbilityTargeting.entity(
                                 Condition.thisEntity(EntityCondition.isLiving()).build(),
                                 List.of(
-                                        new DamageEffect(context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.LIGHTNING_BREATH), LevelBasedValue.perLevel(1)),
+                                        new DamageEffect(context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.LIGHTNING_BREATH), LevelBasedValue.perLevel(1), DSAttributes.DRAGON_ABILITY_DAMAGE),
                                         new PotionEffect(PotionData.create(DSEffects.CHARGED).duration(30).probability(0.5f).build())
                                 ),
                                 TargetingMode.NON_ALLIES
-                        ), LevelBasedValue.constant(1)), LevelBasedValue.constant(10)),
+                        ), LevelBasedValue.constant(1)), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(10)),
                         new ActionContainer(new DragonBreathTarget(AbilityTargeting.block(
                                 List.of(new AreaCloudEffect(
                                         PotionData.create(DSEffects.CHARGED).duration(30).build(),
@@ -198,7 +199,7 @@ public class SeaDragonAbilities {
                                         Optional.empty(),
                                         new LargeLightningParticleOption(37, false)
                                 ))
-                        ), LevelBasedValue.constant(1)), LevelBasedValue.constant(10)),
+                        ), LevelBasedValue.constant(1)), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(10)),
                         new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                                 List.of(new BreathParticlesEffect(
                                         0.04f,
@@ -207,7 +208,7 @@ public class SeaDragonAbilities {
                                         new LargeLightningParticleOption(37, false)
                                 )),
                                 TargetingMode.ALL
-                        )), LevelBasedValue.constant(1))),
+                        )), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(1))),
                 true,
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/storm_breath_0"), 0),
@@ -240,7 +241,7 @@ public class SeaDragonAbilities {
                                 LevelBasedValue.constant(1)
                         )),
                         TargetingMode.ALL
-                )), LevelBasedValue.constant(1))),
+                )), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(1))),
                 true,
                 new LevelBasedResource(
                         List.of(
@@ -273,7 +274,7 @@ public class SeaDragonAbilities {
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         PotionEffect.only(PotionData.create(DSEffects.WATER_VISION).durationPer(30).build()),
                         TargetingMode.ALLIES_AND_SELF
-                )), LevelBasedValue.constant(1))),
+                )), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(1))),
                 true,
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/sea_eyes_0"), 0),
@@ -312,42 +313,48 @@ public class SeaDragonAbilities {
                                         TextColor.fromLegacyFormat(ChatFormatting.GREEN),
                                         TextColor.fromLegacyFormat(ChatFormatting.RED),
                                         TextColor.fromLegacyFormat(ChatFormatting.BLUE)
-                                )
+                                ),
+                                BlockVision.DEFAULT_PARTICLE_RATE
                         )),
                         BlockVisionEffect.single(new BlockVision(
                                 DurationInstanceBase.create(DragonSurvival.res("lapis_vision")).duration(LevelBasedValue.perLevel(Functions.secondsToTicks(260))).hidden().build(),
                                 context.lookup(Registries.BLOCK).getOrThrow(Tags.Blocks.ORES_LAPIS),
                                 LevelBasedValue.constant(16),
                                 BlockVision.DisplayType.PARTICLES,
-                                List.of(TextColor.fromLegacyFormat(ChatFormatting.BLUE))
+                                List.of(TextColor.fromLegacyFormat(ChatFormatting.BLUE)),
+                                BlockVision.DEFAULT_PARTICLE_RATE
                         )),
                         BlockVisionEffect.single(new BlockVision(
                                 DurationInstanceBase.create(DragonSurvival.res("gold_vision")).duration(LevelBasedValue.perLevel(Functions.secondsToTicks(260))).hidden().build(),
                                 context.lookup(Registries.BLOCK).getOrThrow(Tags.Blocks.ORES_GOLD),
                                 LevelBasedValue.constant(22),
                                 BlockVision.DisplayType.PARTICLES,
-                                List.of(TextColor.fromLegacyFormat(ChatFormatting.GOLD))
+                                List.of(TextColor.fromLegacyFormat(ChatFormatting.GOLD)),
+                                BlockVision.DEFAULT_PARTICLE_RATE
                         )),
                         BlockVisionEffect.single(new BlockVision(
                                 DurationInstanceBase.create(DragonSurvival.res("redstone_vision")).duration(LevelBasedValue.perLevel(Functions.secondsToTicks(260))).hidden().build(),
                                 context.lookup(Registries.BLOCK).getOrThrow(Tags.Blocks.ORES_REDSTONE),
                                 LevelBasedValue.constant(16),
                                 BlockVision.DisplayType.PARTICLES,
-                                List.of(TextColor.fromLegacyFormat(ChatFormatting.DARK_RED))
+                                List.of(TextColor.fromLegacyFormat(ChatFormatting.DARK_RED)),
+                                BlockVision.DEFAULT_PARTICLE_RATE
                         )),
                         BlockVisionEffect.single(new BlockVision(
                                 DurationInstanceBase.create(DragonSurvival.res("coal_vision")).duration(LevelBasedValue.perLevel(Functions.secondsToTicks(260))).hidden().build(),
                                 context.lookup(Registries.BLOCK).getOrThrow(Tags.Blocks.ORES_COAL),
                                 LevelBasedValue.constant(16),
                                 BlockVision.DisplayType.PARTICLES,
-                                List.of(TextColor.fromLegacyFormat(ChatFormatting.BLACK))
+                                List.of(TextColor.fromLegacyFormat(ChatFormatting.BLACK)),
+                                BlockVision.DEFAULT_PARTICLE_RATE
                         )),
                         BlockVisionEffect.single(new BlockVision(
                                 DurationInstanceBase.create(DragonSurvival.res("emerald_vision")).duration(LevelBasedValue.perLevel(Functions.secondsToTicks(260))).hidden().build(),
                                 context.lookup(Registries.BLOCK).getOrThrow(Tags.Blocks.ORES_EMERALD),
                                 LevelBasedValue.constant(26),
                                 BlockVision.DisplayType.PARTICLES,
-                                List.of(TextColor.fromLegacyFormat(ChatFormatting.GREEN))
+                                List.of(TextColor.fromLegacyFormat(ChatFormatting.GREEN)),
+                                BlockVision.DEFAULT_PARTICLE_RATE
                         )),
                         BlockVisionEffect.single(new BlockVision(
                                 DurationInstanceBase.create(DragonSurvival.res("quartz_vision")).duration(LevelBasedValue.perLevel(Functions.secondsToTicks(260))).hidden().build(),
@@ -357,7 +364,8 @@ public class SeaDragonAbilities {
                                 List.of(
                                         TextColor.fromLegacyFormat(ChatFormatting.DARK_RED),
                                         TextColor.fromLegacyFormat(ChatFormatting.GRAY)
-                                )
+                                ),
+                                BlockVision.DEFAULT_PARTICLE_RATE
                         )),
                         BlockVisionEffect.single(new BlockVision(
                                 DurationInstanceBase.create(DragonSurvival.res("copper_vision")).duration(LevelBasedValue.perLevel(Functions.secondsToTicks(260))).hidden().build(),
@@ -367,7 +375,8 @@ public class SeaDragonAbilities {
                                 List.of(
                                         TextColor.fromLegacyFormat(ChatFormatting.GOLD),
                                         TextColor.fromLegacyFormat(ChatFormatting.DARK_GREEN)
-                                )
+                                ),
+                                BlockVision.DEFAULT_PARTICLE_RATE
                         )),
                         BlockVisionEffect.single(new BlockVision(
                                 DurationInstanceBase.create(DragonSurvival.res("netherite_vision")).duration(LevelBasedValue.perLevel(Functions.secondsToTicks(260))).hidden().build(),
@@ -379,7 +388,8 @@ public class SeaDragonAbilities {
                                         TextColor.fromLegacyFormat(ChatFormatting.BLACK),
                                         TextColor.fromLegacyFormat(ChatFormatting.AQUA),
                                         TextColor.fromLegacyFormat(ChatFormatting.DARK_GRAY)
-                                )
+                                ),
+                                BlockVision.DEFAULT_PARTICLE_RATE
                         )),
                         BlockVisionEffect.single(new BlockVision(
                                 DurationInstanceBase.create(DragonSurvival.res("iron_vision")).duration(LevelBasedValue.perLevel(Functions.secondsToTicks(260))).hidden().build(),
@@ -390,16 +400,18 @@ public class SeaDragonAbilities {
                                         TextColor.fromLegacyFormat(ChatFormatting.DARK_GRAY),
                                         TextColor.fromLegacyFormat(ChatFormatting.GRAY),
                                         TextColor.fromLegacyFormat(ChatFormatting.WHITE)
-                                )
+                                ),
+                                BlockVision.DEFAULT_PARTICLE_RATE
                         )),
                         BlockVisionEffect.single(new BlockVision(
                                 DurationInstanceBase.create(DragonSurvival.res("general_ore_vision")).duration(LevelBasedValue.perLevel(Functions.secondsToTicks(260))).customIcon(DragonSurvival.res("textures/ability_effect/general_ore_vision.png")).build(),
                                 context.lookup(Registries.BLOCK).getOrThrow(DSBlockTags.GENERAL_ORES),
                                 LevelBasedValue.constant(16),
                                 BlockVision.DisplayType.PARTICLES,
-                                List.of(TextColor.fromLegacyFormat(ChatFormatting.WHITE))
+                                List.of(TextColor.fromLegacyFormat(ChatFormatting.WHITE)),
+                                BlockVision.DEFAULT_PARTICLE_RATE
                         ))
-                ), TargetingMode.NON_ENEMIES), LevelBasedValue.constant(5)), LevelBasedValue.constant(1))),
+                ), TargetingMode.NON_ENEMIES), LevelBasedValue.constant(5)), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(1))),
                 true,
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/ore_glow_0"), 0),
@@ -437,7 +449,7 @@ public class SeaDragonAbilities {
                                         LevelBasedValue.constant(20)
                                 )),
                         TargetingMode.NON_ENEMIES
-                ), LevelBasedValue.constant(5)), LevelBasedValue.constant(1))),
+                ), LevelBasedValue.constant(5)), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(1))),
                 true,
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/revealing_the_soul_0"), 0),
@@ -460,7 +472,7 @@ public class SeaDragonAbilities {
                                         List.of(Modifier.per(DSAttributes.MANA, 1, AttributeModifier.Operation.ADD_VALUE))
                                 )),
                                 TargetingMode.ALLIES_AND_SELF
-                        )), LevelBasedValue.constant(1)),
+                        )), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(1)),
                         new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                                 // Enable when on (or within) said block tag or when in water
                                 Condition.thisEntity(EntityCondition.isOnBlock(DSBlockTags.IS_WET))
@@ -471,7 +483,7 @@ public class SeaDragonAbilities {
                                         List.of(Modifier.per(DSAttributes.MANA_REGENERATION, 0.02f, AttributeModifier.Operation.ADD_VALUE))
                                 )),
                                 TargetingMode.ALLIES_AND_SELF
-                        )), LevelBasedValue.constant(1))
+                        )), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(1))
                 ),
                 true,
                 new LevelBasedResource(List.of(
@@ -498,7 +510,7 @@ public class SeaDragonAbilities {
                         Condition.thisEntity(EntityCondition.isOnBlock(DSBlockTags.SPEEDS_UP_SEA_DRAGON)).build(),
                         PotionEffect.only(PotionData.create(MobEffects.MOVEMENT_SPEED).amplifierPer(0.2f).durationPer(1).build()),
                         TargetingMode.ALLIES_AND_SELF
-                )), LevelBasedValue.constant(Functions.secondsToTicks(1)))),
+                )), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(Functions.secondsToTicks(1)))),
                 true,
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/sea_athletics_0"), 0),
@@ -520,7 +532,7 @@ public class SeaDragonAbilities {
                                 List.of(Modifier.per(DSAttributes.PENALTY_RESISTANCE_TIME, Functions.secondsToTicks(60), AttributeModifier.Operation.ADD_VALUE))
                         )),
                         TargetingMode.ALLIES_AND_SELF
-                )), LevelBasedValue.constant(1))),
+                )), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(1))),
                 true,
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/water_0"), 0),
@@ -544,7 +556,7 @@ public class SeaDragonAbilities {
                                 List.of(Modifier.per(DSAttributes.ARMOR_IGNORE_CHANCE, 0.15f, AttributeModifier.Operation.ADD_VALUE))
                         )),
                         TargetingMode.ALLIES_AND_SELF
-                )), LevelBasedValue.constant(1))),
+                )), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(1))),
                 true,
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/spectral_impact_0"), 0),
@@ -570,7 +582,7 @@ public class SeaDragonAbilities {
                                 LevelBasedValue.perLevel(0.25f)
                         )),
                         TargetingMode.ALLIES_AND_SELF
-                )), LevelBasedValue.constant(1))),
+                )), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(1))),
                 true,
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/sea_claws_and_teeth_0"), 0),
@@ -581,21 +593,7 @@ public class SeaDragonAbilities {
                 ))
         ));
 
-        context.register(SEA_WINGS, new DragonAbility(
-                PassiveActivation.DEFAULT,
-                Optional.of(new ConditionUpgrade(List.of(Condition.thisEntity(EntityCondition.flightWasGranted(true)).build()), false)),
-                // Disable when marked by the ender dragon
-                Optional.of(Condition.thisEntity(EntityCondition.isMarked(true)).build()),
-                List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
-                        List.of(new FlightEffect(1, DragonSurvival.res("textures/ability_effect/sea_dragon_wings.png"))),
-                        TargetingMode.ALLIES_AND_SELF
-                )), LevelBasedValue.constant(1))),
-                true,
-                new LevelBasedResource(List.of(
-                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/sea_wings_0"), 0),
-                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/sea_wings_1"), 1)
-                ))
-        ));
+        registerWings(context);
 
         context.register(SEA_SPIN, new DragonAbility(
                 PassiveActivation.DEFAULT,
@@ -605,7 +603,7 @@ public class SeaDragonAbilities {
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         List.of(new SpinEffect(1, Optional.of(HolderSet.direct(NeoForgeMod.WATER_TYPE)))),
                         TargetingMode.ALLIES_AND_SELF
-                )), LevelBasedValue.constant(1))),
+                )), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(1))),
                 true,
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/sea_spin_0"), 0),
@@ -624,7 +622,7 @@ public class SeaDragonAbilities {
                                 LevelBasedValue.constant(0)
                         )),
                         TargetingMode.ALL
-                )), LevelBasedValue.constant(1))),
+                )), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(1))),
                 true,
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/sea_dragon_0"), 0),
@@ -640,14 +638,14 @@ public class SeaDragonAbilities {
                         new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                                 List.of(new SwimEffect(LevelBasedValue.constant(SwimData.UNLIMITED_OXYGEN), NeoForgeMod.WATER_TYPE)),
                                 TargetingMode.ALL
-                        )), LevelBasedValue.constant(1)),
+                        )), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(1)),
                         new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                                 ModifierEffect.only(new ModifierWithDuration(
                                         DurationInstanceBase.create(DragonSurvival.res("amphibious")).infinite().removeAutomatically().hidden().build(),
                                         List.of(Modifier.constant(NeoForgeMod.SWIM_SPEED, 1, AttributeModifier.Operation.ADD_VALUE))
                                 )),
                                 TargetingMode.ALL
-                        )), LevelBasedValue.constant(1)),
+                        )), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(1)),
                         // FIXME :: Put in a separate ability? Put in a different ability from this one? Just needed to move it since we deleted built in modifiers for dragon species
                         //  unlock the first level of the resistance abilities? (i.e. set it to exp 0)
                         //  would also need auto leveling logic? only for 0 experience though
@@ -659,7 +657,7 @@ public class SeaDragonAbilities {
                                         List.of(Modifier.constant(DSAttributes.PENALTY_RESISTANCE_TIME, Functions.secondsToTicks(60), AttributeModifier.Operation.ADD_VALUE))
                                 )),
                                 TargetingMode.ALL
-                        )), LevelBasedValue.constant(1))
+                        )), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(1))
                 ),
                 true,
                 new LevelBasedResource(List.of(
@@ -679,12 +677,30 @@ public class SeaDragonAbilities {
                                         List.of(Modifier.constant(Attributes.SUBMERGED_MINING_SPEED, 0.8f, AttributeModifier.Operation.ADD_VALUE))
                                 )),
                                 TargetingMode.ALLIES_AND_SELF
-                        )), LevelBasedValue.constant(1))
+                        )), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(1))
                 ),
                 true,
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/diver_0"), 0),
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/diver_1"), 1)
+                ))
+        ));
+    }
+
+    public static void registerWings(final BootstrapContext<DragonAbility> context) {
+        context.register(SEA_WINGS, new DragonAbility(
+                PassiveActivation.DEFAULT,
+                Optional.of(new ConditionUpgrade(List.of(Condition.thisEntity(EntityCondition.flightWasGranted(true)).build()), false)),
+                // Disable when marked by the ender dragon
+                Optional.of(Condition.thisEntity(EntityCondition.isMarked(true)).build()),
+                List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
+                        List.of(new FlightEffect(1, DragonSurvival.res("textures/ability_effect/sea_dragon_wings.png"))),
+                        TargetingMode.ALLIES_AND_SELF
+                )), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(1))),
+                true,
+                new LevelBasedResource(List.of(
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/sea_wings_0"), 0),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/sea_wings_1"), 1)
                 ))
         ));
     }

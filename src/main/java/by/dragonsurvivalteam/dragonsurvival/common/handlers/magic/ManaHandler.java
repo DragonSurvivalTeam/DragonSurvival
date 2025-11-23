@@ -37,15 +37,16 @@ public class ManaHandler {
     }
 
     public static boolean hasEnoughMana(final Player player, float manaCost) {
-        if (player.hasEffect(DSEffects.SOURCE_OF_MAGIC) || player.hasInfiniteMaterials()) {
+        if (manaCost == 0 || player.hasEffect(DSEffects.SOURCE_OF_MAGIC) || player.hasInfiniteMaterials()) {
             return true;
         }
 
-        float currentMana = getCurrentMana(player) + getManaFromExperience(player);
+        if (getMaxMana(player) == 0) {
+            // The player does not have any mana or reserved too much of it
+            return false;
+        }
 
-        // If we query by mana cost and the player has no mana we should consider them as not having enough
-        // No mana should be a state of not being able to cast magic
-        return currentMana - manaCost > 0;
+        return getCurrentMana(player) + getManaFromExperience(player) - manaCost >= 0;
     }
 
     public static float getMaxMana(final Player player) {

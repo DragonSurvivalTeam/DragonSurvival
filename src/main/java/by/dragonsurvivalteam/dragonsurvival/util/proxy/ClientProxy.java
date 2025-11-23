@@ -4,10 +4,14 @@ import by.dragonsurvivalteam.dragonsurvival.client.DragonSurvivalClient;
 import by.dragonsurvivalteam.dragonsurvival.client.render.ClientDragonRenderer;
 import by.dragonsurvivalteam.dragonsurvival.client.sounds.FollowEntitySound;
 import by.dragonsurvivalteam.dragonsurvival.client.util.FakeClientPlayer;
+import by.dragonsurvivalteam.dragonsurvival.client.util.FakeClientPlayerUtils;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.AbilityAnimation;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.AnimationType;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
+import by.dragonsurvivalteam.dragonsurvival.network.dragon_soul_block.SyncDragonSoulAnimation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.emotes.DragonEmote;
+import by.dragonsurvivalteam.dragonsurvival.server.tileentity.DragonSoulBlockEntity;
+import by.dragonsurvivalteam.dragonsurvival.util.AnimationUtils;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.Minecraft;
@@ -23,6 +27,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
@@ -127,7 +132,7 @@ public class ClientProxy implements Proxy {
 
     @Override
     public float getTimer() {
-        return DragonSurvivalClient.timer;
+        return DragonSurvivalClient.TIMER;
     }
 
     @Override
@@ -147,6 +152,15 @@ public class ClientProxy implements Proxy {
         }
 
         return player instanceof FakeClientPlayer;
+    }
+
+    @Override
+    public double getFakePlayerScale(final Player player) {
+        if (player instanceof FakeClientPlayer fake && fake.useVisualScale) {
+            return fake.getScale();
+        }
+
+        return Proxy.super.getFakePlayerScale(player);
     }
 
     @Override
@@ -174,5 +188,17 @@ public class ClientProxy implements Proxy {
         }
 
         return dragon.renderingWasCancelled;
+    }
+
+    @Override
+    public boolean updateDragonSoulBlockAnimation(final DragonSoulBlockEntity soul, final String animation) {
+        DragonEntity dragon = FakeClientPlayerUtils.getFakeDragon(soul.fakePlayerIndex, soul.getHandler());
+
+        if (AnimationUtils.doesAnimationExist(DragonSurvivalClient.DRAGON_MODEL, dragon, animation)) {
+            PacketDistributor.sendToServer(new SyncDragonSoulAnimation(soul.getBlockPos(), animation));
+            return true;
+        }
+
+        return false;
     }
 }

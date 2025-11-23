@@ -4,11 +4,8 @@ import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.DragonAbilityScreen;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic.ClickHoverButton;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.AttemptManualUpgrade;
-import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.ExperiencePointsUpgrade;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.UpgradeType;
-import by.dragonsurvivalteam.dragonsurvival.util.ExperienceUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.LocalPlayer;
@@ -28,8 +25,8 @@ public class LevelButton extends ClickHoverButton {
     private static final ResourceLocation UPGRADE_HOVER = DragonSurvival.res("textures/gui/ability_screen/arrow_right_upgrade_hover.png");
     private static final ResourceLocation UPGRADE_MAIN = DragonSurvival.res("textures/gui/ability_screen/arrow_right_upgrade_main.png");
 
-    private static final int WIDTH = 9;
-    private static final int HEIGHT = 14;
+    private static final int WIDTH = 16;
+    private static final int HEIGHT = 16;
 
     private final Type type;
     private final DragonAbilityInstance ability;
@@ -66,49 +63,48 @@ public class LevelButton extends ClickHoverButton {
         this.ability = ability;
     }
 
-    @SuppressWarnings("DataFlowIssue") // player is present
     public int getExperienceModification() {
-        ExperiencePointsUpgrade.Type upgradeType = type == Type.UPGRADE ? ExperiencePointsUpgrade.Type.UPGRADE : ExperiencePointsUpgrade.Type.DOWNGRADE;
-        return MagicData.getData(Minecraft.getInstance().player).getCost(Minecraft.getInstance().player, ability.key(), upgradeType);
-    }
+        LocalPlayer player = Objects.requireNonNull(Minecraft.getInstance().player);
 
-    public boolean canModifyLevel() {
-        return isHovered() && canModify();
-    }
+        if (player.hasInfiniteMaterials()) {
+            return 0;
+        }
 
-    public boolean isMinOrMaxLevel() {
-        //noinspection OptionalGetWithoutIsPresent -> upgrade is present
-        UpgradeType<?> upgrade = ability.value().upgrade().get();
+        return ability.value().upgrade().map(type -> {
+            if (type instanceof ExperiencePointsUpgrade upgrade) {
+                return upgrade.getExperience(ability, getExperienceType());
+            }
 
-        return switch (type) {
-            case DOWNGRADE -> ability.level() == DragonAbilityInstance.MIN_LEVEL;
-            case UPGRADE -> ability.level() == upgrade.maxLevel();
-        };
+            return 0;
+        }).orElse(0);
     }
 
     public boolean canModify() {
-        if (isMinOrMaxLevel()) {
-            return false;
-        }
-
-        if (type == Type.DOWNGRADE) {
-            return true;
-        }
-
         LocalPlayer player = Objects.requireNonNull(Minecraft.getInstance().player);
-        return ExperienceUtils.getTotalExperience(Minecraft.getInstance().player) >= Math.abs(MagicData.getData(player).getCost(player, ability.key(), ExperiencePointsUpgrade.Type.UPGRADE));
+
+        return ability.value().upgrade().map(type -> {
+            if (type instanceof ExperiencePointsUpgrade upgrade) {
+               return upgrade.canModifyLevel(player, ability, getExperienceType());
+            }
+
+            return false;
+        }).orElse(false);
+    }
+
+    private ExperiencePointsUpgrade.Type getExperienceType() {
+        return type == Type.UPGRADE ? ExperiencePointsUpgrade.Type.UPGRADE : ExperiencePointsUpgrade.Type.DOWNGRADE;
     }
 
     @Override
     public void renderWidget(@NotNull final GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        if (isMinOrMaxLevel()) {
+        if (!canModify()) {
             return;
         }
 
         super.renderWidget(graphics, mouseX, mouseY, partialTick);
 
         if (Minecraft.getInstance().screen instanceof DragonAbilityScreen abilityScreen && isHovered()) {
-            abilityScreen.hoveredLevelButton = this;
+            abilityScreen.lastHoveredLevelButton = this;
         }
     }
 

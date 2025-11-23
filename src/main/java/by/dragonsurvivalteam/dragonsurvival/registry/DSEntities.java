@@ -33,7 +33,7 @@ import net.neoforged.neoforge.event.entity.RegisterSpawnPlacementsEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
-@EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber
 public class DSEntities {
     public static final DeferredRegister<EntityType<?>> REGISTRY = DeferredRegister.create(BuiltInRegistries.ENTITY_TYPE, DragonSurvival.MODID);
 
@@ -46,14 +46,16 @@ public class DSEntities {
 
     // --- Fake entities --- //
 
+    // Properties copied from the ARROW entity that Minecraft uses
     @Translation(type = Translation.Type.ENTITY, comments = "Bolas")
     public static DeferredHolder<EntityType<?>, EntityType<Bolas>> BOLAS_ENTITY = REGISTRY.register(
             "bolas",
             () -> EntityType.Builder.<Bolas>of((entity, level) ->
                             new Bolas(level), MobCategory.MISC)
-                    .sized(0.25F, 0.25F)
+                    .sized(0.5F, 0.5F)
+                    .eyeHeight(0.13F)
                     .clientTrackingRange(4)
-                    .updateInterval(10)
+                    .updateInterval(20)
                     .build("bolas"));
 
     @Translation(type = Translation.Type.ENTITY, comments = "Generic Ball Entity")
