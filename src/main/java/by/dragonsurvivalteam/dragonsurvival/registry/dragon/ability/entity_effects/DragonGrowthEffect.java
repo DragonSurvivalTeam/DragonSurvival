@@ -4,6 +4,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscCodecs;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
 import com.mojang.serialization.Codec;
@@ -22,16 +23,16 @@ import java.text.NumberFormat;
 import java.util.List;
 
 public record DragonGrowthEffect(GrowthType growth_type, ActionType action_type, LevelBasedValue amount, LevelBasedValue probability) implements AbilityEntityEffect {
-    @Translation(comments = "Adjust the growth by setting it to %s of the current stage")
+    @Translation(comments = "§6■ Adjust the growth§r by setting it to %s of the current stage")
     public static final String ADJUST_SET_PERCENT = Translation.Type.GUI.wrap("growth_effect.adjust_set.percent");
 
-    @Translation(comments = "Adjust the growth by setting it to %s")
+    @Translation(comments = "§6■ Adjust the growth§r by setting it to %s")
     public static final String ADJUST_SET_FLAT = Translation.Type.GUI.wrap("growth_effect.adjust_set.flat");
 
-    @Translation(comments = "Adjust the growth by adding %s of the current stage bounds to it")
+    @Translation(comments = "§6■ Adjust the growth§r by adding %s of the current stage bounds to it")
     public static final String ADJUST_ADD_PERCENT = Translation.Type.GUI.wrap("growth_effect.adjust_add.percent");
 
-    @Translation(comments = "Adjust the growth by adding %s to it")
+    @Translation(comments = "§6■ Adjust the growth§r by adding %s to it")
     public static final String ADJUST_ADD_FLAT = Translation.Type.GUI.wrap("growth_effect.adjust_add.flat");
 
     public static final MapCodec<DragonGrowthEffect> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
@@ -82,7 +83,7 @@ public record DragonGrowthEffect(GrowthType growth_type, ActionType action_type,
 
     @Override
     public List<MutableComponent> getDescription(final Player dragon, final DragonAbilityInstance ability) {
-        MutableComponent adjustment = switch (growth_type) {
+        MutableComponent component = switch (growth_type) {
             case SET -> switch (action_type) {
                 case PERCENT -> Component.translatable(ADJUST_SET_PERCENT, DSColors.dynamicValue(NumberFormat.getPercentInstance().format(amount.calculate(ability.level()))));
                 case FLAT -> Component.translatable(ADJUST_SET_FLAT, DSColors.dynamicValue(amount.calculate(ability.level())));
@@ -93,7 +94,13 @@ public record DragonGrowthEffect(GrowthType growth_type, ActionType action_type,
             };
         };
 
-        return List.of(adjustment);
+        float probability = this.probability.calculate(ability.level());
+
+        if (probability < 1) {
+            component.append(Component.translatable(LangKey.ABILITY_EFFECT_CHANCE, DSColors.dynamicValue(NumberFormat.getPercentInstance().format(probability))));
+        }
+
+        return List.of(component);
     }
 
     public enum GrowthType implements StringRepresentable {

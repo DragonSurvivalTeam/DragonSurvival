@@ -1,6 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects;
 
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
 import by.dragonsurvivalteam.dragonsurvival.util.ExperienceUtils;
@@ -16,14 +17,15 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
 import org.jetbrains.annotations.NotNull;
 
+import java.text.NumberFormat;
 import java.util.List;
 
-public record ExperienceEffect(ActionType actionType, ExperienceType experienceType, LevelBasedValue amount, LevelBasedValue probability) implements AbilityEntityEffect {
-    @Translation(comments = "Adjusts the current experience %s, setting them to %s")
-    public static final String ADJUST_SET = Translation.Type.GUI.wrap("experience.adjust_set");
+public record ExperienceEffect(ExperienceType experienceType, LevelBasedValue amount, LevelBasedValue probability) implements AbilityEntityEffect {
+    @Translation(comments = "§6■ Adjusts the current experience§r %s, increasing them by %s")
+    public static final String ADJUST_POSITIVE = Translation.Type.GUI.wrap("experience.adjust_positive");
 
-    @Translation(comments = "Adjusts the current experience %s, adding %s to them")
-    public static final String ADJUST_ADD = Translation.Type.GUI.wrap("experience.adjust_add");
+    @Translation(comments = "§6■ Adjusts the current experience§r %s, reducing them by %s")
+    public static final String ADJUST_NEGATIVE = Translation.Type.GUI.wrap("experience.adjust_negative");
 
     @Translation(comments = "levels")
     public static final String LEVELS = Translation.Type.GUI.wrap("experience.points");
@@ -32,7 +34,6 @@ public record ExperienceEffect(ActionType actionType, ExperienceType experienceT
     public static final String POINTS = Translation.Type.GUI.wrap("experience.levels");
 
     public static final MapCodec<ExperienceEffect> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            ActionType.CODEC.fieldOf("action_type").forGetter(ExperienceEffect::actionType),
             ExperienceType.CODEC.fieldOf("experience_type").forGetter(ExperienceEffect::experienceType),
             LevelBasedValue.CODEC.fieldOf("amount").forGetter(ExperienceEffect::amount),
             LevelBasedValue.CODEC.optionalFieldOf("probability", LevelBasedValue.constant(1)).forGetter(ExperienceEffect::probability)
@@ -51,37 +52,32 @@ public record ExperienceEffect(ActionType actionType, ExperienceType experienceT
         int amount = (int) this.amount.calculate(ability.level());
 
         // The only method that properly handles the experience progress and total experience fields is 'giveExperiencePoints'
-        switch (actionType) {
-            case ADD -> {
-                switch (experienceType) {
-                    case LEVELS -> player.giveExperiencePoints(ExperienceUtils.getTotalExperience(amount));
-                    case POINTS -> player.giveExperiencePoints(amount);
-                }
-            }
-            case SET -> {
-                player.setExperienceLevels(0);
-                player.setExperiencePoints(0);
-
-                int actualAmount = switch (experienceType) {
-                    case LEVELS -> ExperienceUtils.getTotalExperience(amount);
-                    case POINTS -> amount;
-                };
-
-                player.giveExperiencePoints(actualAmount);
-            }
+        switch (experienceType) {
+            case LEVELS -> player.giveExperiencePoints(ExperienceUtils.getTotalExperience(amount));
+            case POINTS -> player.giveExperiencePoints(amount);
         }
     }
 
     @Override
     public List<MutableComponent> getDescription(final Player dragon, final DragonAbilityInstance ability) {
         int amount = (int) this.amount.calculate(ability.level());
+        String translationKey;
 
-        String translationKey = switch (actionType) {
-            case SET -> ADJUST_SET;
-            case ADD -> ADJUST_ADD;
-        };
+        if (amount > 0) {
+            translationKey = ADJUST_NEGATIVE;
+        } else {
+            translationKey = ADJUST_POSITIVE;
+            amount = -amount;
+        }
 
-        return List.of(Component.translatable(translationKey, DSColors.dynamicValue(experienceType.getTranslation()), DSColors.dynamicValue(amount)));
+        MutableComponent component = Component.translatable(translationKey, DSColors.dynamicValue(experienceType.getTranslation()), DSColors.dynamicValue(amount));
+        float probability = this.probability.calculate(ability.level());
+
+        if (probability < 1) {
+            component.append(Component.translatable(LangKey.ABILITY_EFFECT_CHANCE, DSColors.dynamicValue(NumberFormat.getPercentInstance().format(probability))));
+        }
+
+        return List.of(component);
     }
 
     public enum ExperienceType implements StringRepresentable {
@@ -99,22 +95,6 @@ public record ExperienceEffect(ActionType actionType, ExperienceType experienceT
 
         public MutableComponent getTranslation() {
             return translation;
-        }
-
-        @Override
-        public @NotNull String getSerializedName() {
-            return name;
-        }
-    }
-
-    public enum ActionType implements StringRepresentable {
-        SET("set"), ADD("add");
-
-        public static final Codec<ActionType> CODEC = StringRepresentable.fromEnum(ActionType::values);
-        private final String name;
-
-        ActionType(final String name) {
-            this.name = name;
         }
 
         @Override

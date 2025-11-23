@@ -5,14 +5,18 @@
         "applied_effects": {
           "entity_effect": [
             {
-              "action_type": "add",
               "amount": {
                 "type": "minecraft:linear",
-                "base": 3.0,
-                "per_level_above_first": 1.0
+                "base": 25.0,
+                "per_level_above_first": 15.0
               },
               "effect_type": "dragonsurvival:experience",
-              "experience_type": "levels"
+              "experience_type": "points",
+              "probability": {
+                "type": "minecraft:linear",
+                "base": 0.25,
+                "per_level_above_first": 0.15
+              }
             }
           ],
           "targeting_mode": "allies_and_self"

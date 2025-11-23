@@ -103,26 +103,13 @@ public class DragonAbilities {
 
         // --- experience --- //
 
-        context.register(ResourceKey.create(DragonAbility.REGISTRY, DragonSurvival.res("test_experience_points_set")), new DragonAbility(
-                new PassiveActivation(Optional.empty(), Optional.empty(), new OnSelfHit(Optional.empty())),
-                Optional.of(new ExperiencePointsUpgrade(5, LevelBasedValue.constant(10))),
-                Optional.empty(),
-                List.of(
-                        new ActionContainer(new AreaTarget(AbilityTargeting.entity(List.of(
-                                new ExperienceEffect(ExperienceEffect.ActionType.SET, ExperienceEffect.ExperienceType.POINTS, LevelBasedValue.perLevel(25, 25), LevelBasedValue.constant(1))
-                        ), TargetingMode.ALLIES_AND_SELF), LevelBasedValue.constant(5)), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(1))
-                ),
-                true,
-                new LevelBasedResource(List.of(new LevelBasedResource.Entry(DragonSurvival.res("test"), 0)))
-        ));
-
-        context.register(ResourceKey.create(DragonAbility.REGISTRY, DragonSurvival.res("test_experience_levels_add")), new DragonAbility(
+        context.register(ResourceKey.create(DragonAbility.REGISTRY, DragonSurvival.res("test_experience_points_add")), new DragonAbility(
                 new PassiveActivation(Optional.empty(), Optional.empty(), new OnTargetKilled(Optional.empty())),
                 Optional.of(new ExperiencePointsUpgrade(5, LevelBasedValue.constant(10))),
                 Optional.empty(),
                 List.of(
                         new ActionContainer(new AreaTarget(AbilityTargeting.entity(List.of(
-                                new ExperienceEffect(ExperienceEffect.ActionType.ADD, ExperienceEffect.ExperienceType.LEVELS, LevelBasedValue.perLevel(3, 1), LevelBasedValue.constant(1))
+                                new ExperienceEffect(ExperienceEffect.ExperienceType.POINTS, LevelBasedValue.perLevel(25, 15), LevelBasedValue.perLevel(0.25f, 0.15f))
                         ), TargetingMode.ALLIES_AND_SELF), LevelBasedValue.constant(5)), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(1))
                 ),
                 true,

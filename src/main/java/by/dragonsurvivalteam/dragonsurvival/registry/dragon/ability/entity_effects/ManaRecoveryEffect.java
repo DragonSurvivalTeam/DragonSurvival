@@ -5,6 +5,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.ManaHandler;
 import by.dragonsurvivalteam.dragonsurvival.network.syncing.SyncMana;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
 import com.mojang.serialization.Codec;
@@ -24,10 +25,10 @@ import java.text.NumberFormat;
 import java.util.List;
 
 public record ManaRecoveryEffect(ActionType actionType, AdjustmentType adjustmentType, LevelBasedValue amount, LevelBasedValue probability) implements AbilityEntityEffect {
-    @Translation(comments = "Adjust current mana by setting it to %s")
+    @Translation(comments = "§6■ Adjust current mana§r by setting it to %s")
     public static final String ADJUST_SET = Translation.Type.GUI.wrap("mana_recovery.adjust_set");
 
-    @Translation(comments = "Adjust current mana by adding %s to it")
+    @Translation(comments = "§6■ Adjust current mana§r by adding %s to it")
     public static final String ADJUST_ADD = Translation.Type.GUI.wrap("mana_recovery.adjust_add");
 
     public static final MapCodec<ManaRecoveryEffect> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
@@ -74,12 +75,18 @@ public record ManaRecoveryEffect(ActionType actionType, AdjustmentType adjustmen
             case FLAT -> String.valueOf(amount.calculate(ability.level()));
         };
 
-        MutableComponent adjustment = switch (actionType) {
+        MutableComponent component = switch (actionType) {
             case SET -> Component.translatable(ADJUST_SET, DSColors.dynamicValue(value));
             case ADD -> Component.translatable(ADJUST_ADD, DSColors.dynamicValue(value));
         };
 
-        return List.of(adjustment);
+        float probability = this.probability.calculate(ability.level());
+
+        if (probability < 1) {
+            component.append(Component.translatable(LangKey.ABILITY_EFFECT_CHANCE, DSColors.dynamicValue(NumberFormat.getPercentInstance().format(probability))));
+        }
+
+        return List.of(component);
     }
 
     public enum ActionType implements StringRepresentable {

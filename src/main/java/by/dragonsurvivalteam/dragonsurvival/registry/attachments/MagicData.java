@@ -422,9 +422,9 @@ public class MagicData implements INBTSerializable<CompoundTag> {
     }
 
     /** This does not automatically synchronize the change to the client */
-    public void removeAbility(final Player player, final ResourceKey<DragonAbility> key) {
+    public boolean removeAbility(final Player player, final ResourceKey<DragonAbility> key) {
         if (currentSpecies == null) {
-            return;
+            return false;
         }
 
         DragonAbilityInstance removed = getAbilities().remove(key);
@@ -438,13 +438,15 @@ public class MagicData implements INBTSerializable<CompoundTag> {
         if (slot != NO_SLOT) {
             getHotbar().remove(slot);
         }
+
+        return removed != null;
     }
 
     /** This does not automatically synchronize the change to the client */
-    public void addAbility(final ServerPlayer player, final Holder<DragonAbility> ability) {
+    public boolean addAbility(final ServerPlayer player, final Holder<DragonAbility> ability) {
         // Don't do anything if we already have this ability
         if (getAbilities().containsKey(ability.getKey())) {
-            return;
+            return false;
         }
 
         UpgradeType<?> upgrade = ability.value().upgrade().orElse(null);
@@ -469,6 +471,7 @@ public class MagicData implements INBTSerializable<CompoundTag> {
         }
 
         getAbilities().put(ability.getKey(), instance);
+        return true;
     }
 
     /** This does not automatically synchronize the change to the client */

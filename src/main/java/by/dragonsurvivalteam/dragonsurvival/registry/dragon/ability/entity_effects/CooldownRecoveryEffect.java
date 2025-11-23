@@ -4,6 +4,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvide
 import by.dragonsurvivalteam.dragonsurvival.network.syncing.SyncCooldown;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbility;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
@@ -39,10 +40,10 @@ public record CooldownRecoveryEffect(
         LevelBasedValue probability,
         boolean excludeThis
 ) implements AbilityEntityEffect {
-    @Translation(comments = "Adjusts the cooldown of %s, setting it to %s")
+    @Translation(comments = "§6■ Adjusts the cooldown§r of %s, setting it to %s")
     public static final String ADJUST_SET = Translation.Type.GUI.wrap("cooldown.adjust_set");
 
-    @Translation(comments = "Adjusts the cooldown of %s, reducing it by %s")
+    @Translation(comments = "§6■ Adjusts the cooldown§r of %s, reducing it by %s")
     public static final String ADJUST_REDUCE = Translation.Type.GUI.wrap("cooldown.adjust_reduce");
 
     @Translation(comments = "every ability")
@@ -123,7 +124,14 @@ public record CooldownRecoveryEffect(
             case REDUCE -> ADJUST_REDUCE;
         };
 
-        return List.of(Component.translatable(translationKey, DSColors.dynamicValue(target), DSColors.dynamicValue(value)));
+        MutableComponent component = Component.translatable(translationKey, DSColors.dynamicValue(target), DSColors.dynamicValue(value));
+        float probability = this.probability.calculate(ability.level());
+
+        if (probability < 1) {
+            component.append(Component.translatable(LangKey.ABILITY_EFFECT_CHANCE, DSColors.dynamicValue(NumberFormat.getPercentInstance().format(probability))));
+        }
+
+        return List.of(component);
     }
 
     public enum ActionType implements StringRepresentable {
