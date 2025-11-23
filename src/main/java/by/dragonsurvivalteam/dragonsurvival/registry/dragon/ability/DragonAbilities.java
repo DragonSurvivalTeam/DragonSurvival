@@ -27,6 +27,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.t
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.common_effects.ParticleEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.common_effects.RunFunctionEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.common_effects.SummonEntityEffect;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.ExperienceEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.GlowEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.HealEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.ItemConversionEffect;
@@ -37,6 +38,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.Ar
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.SelfTarget;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.TargetingMode;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.ExperienceLevelUpgrade;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.ExperiencePointsUpgrade;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import com.mojang.datafixers.util.Either;
 import net.minecraft.ChatFormatting;
@@ -65,6 +67,34 @@ public class DragonAbilities {
         CaveDragonAbilities.registerAbilities(context);
         ForestDragonAbilities.registerAbilities(context);
         SeaDragonAbilities.registerAbilities(context);
+
+        // --- experience --- //
+
+        context.register(ResourceKey.create(DragonAbility.REGISTRY, DragonSurvival.res("test_experience_points_set")), new DragonAbility(
+                new PassiveActivation(Optional.empty(), Optional.empty(), new OnSelfHit(Optional.empty())),
+                Optional.of(new ExperiencePointsUpgrade(5, LevelBasedValue.constant(10))),
+                Optional.empty(),
+                List.of(
+                        new ActionContainer(new AreaTarget(AbilityTargeting.entity(List.of(
+                                new ExperienceEffect(ExperienceEffect.ActionType.SET, ExperienceEffect.ExperienceType.POINTS, LevelBasedValue.perLevel(25, 25), LevelBasedValue.constant(1))
+                        ), TargetingMode.ALLIES_AND_SELF), LevelBasedValue.constant(5)), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(1))
+                ),
+                true,
+                new LevelBasedResource(List.of(new LevelBasedResource.Entry(DragonSurvival.res("test"), 0)))
+        ));
+
+        context.register(ResourceKey.create(DragonAbility.REGISTRY, DragonSurvival.res("test_experience_levels_add")), new DragonAbility(
+                new PassiveActivation(Optional.empty(), Optional.empty(), new OnTargetKilled(Optional.empty())),
+                Optional.of(new ExperiencePointsUpgrade(5, LevelBasedValue.constant(10))),
+                Optional.empty(),
+                List.of(
+                        new ActionContainer(new AreaTarget(AbilityTargeting.entity(List.of(
+                                new ExperienceEffect(ExperienceEffect.ActionType.ADD, ExperienceEffect.ExperienceType.LEVELS, LevelBasedValue.perLevel(3, 1), LevelBasedValue.constant(1))
+                        ), TargetingMode.ALLIES_AND_SELF), LevelBasedValue.constant(5)), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(1))
+                ),
+                true,
+                new LevelBasedResource(List.of(new LevelBasedResource.Entry(DragonSurvival.res("test"), 0)))
+        ));
 
         // --- Glow --- //
 

@@ -1,0 +1,44 @@
+{
+  "actions": [
+    {
+      "target_selection": {
+        "applied_effects": {
+          "entity_effect": [
+            {
+              "action_type": "add",
+              "amount": {
+                "type": "minecraft:linear",
+                "base": 3.0,
+                "per_level_above_first": 1.0
+              },
+              "effect_type": "dragonsurvival:experience",
+              "experience_type": "levels"
+            }
+          ],
+          "targeting_mode": "allies_and_self"
+        },
+        "radius": 5.0,
+        "target_type": "dragonsurvival:area"
+      }
+    }
+  ],
+  "activation": {
+    "activation_type": "dragonsurvival:passive",
+    "trigger": {
+      "trigger_type": "dragonsurvival:on_target_killed"
+    }
+  },
+  "icon": {
+    "texture_entries": [
+      {
+        "from_level": 0,
+        "texture_resource": "dragonsurvival:test"
+      }
+    ]
+  },
+  "upgrade": {
+    "experience_cost": 10.0,
+    "maximum_level": 5,
+    "upgrade_type": "dragonsurvival:experience_points"
+  }
+}

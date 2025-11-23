@@ -38,6 +38,15 @@ public interface AbilityEntityEffect {
         return List.of();
     }
 
+    /**
+     * Currently only called for {@link by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.SelfTarget} </br>
+     * Since we can reliably remove this effect once the conditions no longer match in this case </br>
+     * (In other area targets the initial entity may no longer be in reach, and therefore this remove part would never be called on it) </br>
+     *
+     * TODO :: Currently I'm unsure how much of this is needed anymore, especially with the 'isAutoRemoval' parameter </br>
+     *         Since most overrides seem to exit early if that is set to true - why even call it in the first place with that value then
+     *         Maybe we should just remove the parameter and with that remove the self-target specific removal case
+     */
     default void remove(final ServerPlayer dragon, final DragonAbilityInstance ability, final Entity entity, boolean isAutoRemoval) { /* Nothing to do */ }
 
     default boolean shouldRemoveAutomatically() {
@@ -83,6 +92,7 @@ public interface AbilityEntityEffect {
             event.register(REGISTRY_KEY, DragonSurvival.res("use_item"), () -> UseItemOnLivingEntityEffect.CODEC);
             event.register(REGISTRY_KEY, DragonSurvival.res("dragon_growth"), () -> DragonGrowthEffect.CODEC);
             event.register(REGISTRY_KEY, DragonSurvival.res("mana_recovery"), () -> ManaRecoveryEffect.CODEC);
+            event.register(REGISTRY_KEY, DragonSurvival.res("experience"), () -> ExperienceEffect.CODEC);
         }
     }
 }
