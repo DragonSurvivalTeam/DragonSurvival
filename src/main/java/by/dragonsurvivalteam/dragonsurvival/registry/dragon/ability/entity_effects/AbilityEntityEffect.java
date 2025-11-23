@@ -93,6 +93,7 @@ public interface AbilityEntityEffect {
             event.register(REGISTRY_KEY, DragonSurvival.res("dragon_growth"), () -> DragonGrowthEffect.CODEC);
             event.register(REGISTRY_KEY, DragonSurvival.res("mana_recovery"), () -> ManaRecoveryEffect.CODEC);
             event.register(REGISTRY_KEY, DragonSurvival.res("experience"), () -> ExperienceEffect.CODEC);
+            event.register(REGISTRY_KEY, DragonSurvival.res("cooldown_recovery"), () -> CooldownRecoveryEffect.CODEC);
         }
     }
 }

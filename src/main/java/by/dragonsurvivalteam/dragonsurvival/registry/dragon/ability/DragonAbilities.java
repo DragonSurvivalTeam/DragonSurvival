@@ -16,6 +16,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.conditions.ItemCondition;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.abilities.CaveDragonAbilities;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.abilities.ForestDragonAbilities;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.abilities.SeaDragonAbilities;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSDragonAbilityTags;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.Animations;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.Notification;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.PassiveActivation;
@@ -27,6 +28,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.t
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.common_effects.ParticleEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.common_effects.RunFunctionEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.common_effects.SummonEntityEffect;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.CooldownRecoveryEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.ExperienceEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.GlowEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.HealEffect;
@@ -67,6 +69,37 @@ public class DragonAbilities {
         CaveDragonAbilities.registerAbilities(context);
         ForestDragonAbilities.registerAbilities(context);
         SeaDragonAbilities.registerAbilities(context);
+
+        // --- cooldown --- //
+
+        context.register(ResourceKey.create(DragonAbility.REGISTRY, DragonSurvival.res("test_cooldown_recovery")), new DragonAbility(
+                new SimpleActivation(
+                        Optional.of(LevelBasedValue.constant(1)),
+                        Optional.of(LevelBasedValue.constant(15)),
+                        Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(5))),
+                        Notification.DEFAULT,
+                        true,
+                        Optional.empty(),
+                        Animations.create()
+                                .startAndCharging(SimpleAbilityAnimation.create(AnimationKey.CAST_MAGIC_ALT, AnimationLayer.BASE).transitionLength(5).build())
+                                .end(SimpleAbilityAnimation.create(AnimationKey.MAGIC_ALT, AnimationLayer.BASE).build())
+                                .optional()
+                ),
+                Optional.of(new ExperienceLevelUpgrade(3, LevelBasedValue.lookup(List.of(12f, 24f, 36f), LevelBasedValue.perLevel(15)))),
+                Optional.empty(),
+                List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(List.of(
+                        new CooldownRecoveryEffect(
+                                Optional.of(context.lookup(DragonAbility.REGISTRY).getOrThrow(DSDragonAbilityTags.CAVE)),
+                                CooldownRecoveryEffect.ActionType.REDUCE,
+                                CooldownRecoveryEffect.AdjustmentType.PERCENT,
+                                LevelBasedValue.perLevel(0.1f, 0.05f),
+                                LevelBasedValue.constant(1),
+                                true
+                        )
+                ), TargetingMode.ALLIES_AND_SELF)), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(1))),
+                true,
+                new LevelBasedResource(List.of(new LevelBasedResource.Entry(DragonSurvival.res("test"), 0)))
+        ));
 
         // --- experience --- //
 

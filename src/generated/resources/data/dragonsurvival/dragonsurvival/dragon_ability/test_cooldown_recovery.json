@@ -1,0 +1,71 @@
+{
+  "actions": [
+    {
+      "target_selection": {
+        "applied_effects": {
+          "entity_effect": [
+            {
+              "abilities": "#dragonsurvival:cave_dragon",
+              "action_type": "reduce",
+              "adjustment_type": "percent",
+              "amount": {
+                "type": "minecraft:linear",
+                "base": 0.1,
+                "per_level_above_first": 0.05
+              },
+              "effect_type": "dragonsurvival:cooldown_recovery"
+            }
+          ],
+          "targeting_mode": "allies_and_self"
+        },
+        "target_type": "dragonsurvival:self"
+      }
+    }
+  ],
+  "activation": {
+    "activation_type": "dragonsurvival:simple",
+    "animations": {
+      "end": {
+        "animation_key": "magic_alt",
+        "layer": "BASE",
+        "locks_neck": false,
+        "locks_tail": false
+      },
+      "start_and_charging": {
+        "animation_key": "cast_magic_alt",
+        "layer": "BASE",
+        "locks_neck": false,
+        "locks_tail": false,
+        "transition_length": 5
+      }
+    },
+    "cast_time": 15.0,
+    "cooldown": 100.0,
+    "initial_mana_cost": 1.0
+  },
+  "icon": {
+    "texture_entries": [
+      {
+        "from_level": 0,
+        "texture_resource": "dragonsurvival:test"
+      }
+    ]
+  },
+  "upgrade": {
+    "level_requirement": {
+      "type": "minecraft:lookup",
+      "fallback": {
+        "type": "minecraft:linear",
+        "base": 15.0,
+        "per_level_above_first": 15.0
+      },
+      "values": [
+        12.0,
+        24.0,
+        36.0
+      ]
+    },
+    "maximum_level": 3,
+    "upgrade_type": "dragonsurvival:experience_levels"
+  }
+}

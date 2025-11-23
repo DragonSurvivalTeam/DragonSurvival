@@ -19,10 +19,10 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 public record ExperienceEffect(ActionType actionType, ExperienceType experienceType, LevelBasedValue amount, LevelBasedValue probability) implements AbilityEntityEffect {
-    @Translation(comments = "Adjust current experience %s by setting it to %s")
+    @Translation(comments = "Adjusts the current experience %s, setting them to %s")
     public static final String ADJUST_SET = Translation.Type.GUI.wrap("experience.adjust_set");
 
-    @Translation(comments = "Adjust current experience %s by adding %s to it")
+    @Translation(comments = "Adjusts the current experience %s, adding %s to them")
     public static final String ADJUST_ADD = Translation.Type.GUI.wrap("experience.adjust_add");
 
     @Translation(comments = "levels")

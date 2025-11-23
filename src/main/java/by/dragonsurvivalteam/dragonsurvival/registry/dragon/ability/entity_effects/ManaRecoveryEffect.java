@@ -70,7 +70,7 @@ public record ManaRecoveryEffect(ActionType actionType, AdjustmentType adjustmen
     @Override
     public List<MutableComponent> getDescription(final Player dragon, final DragonAbilityInstance ability) {
         String value = switch (adjustmentType) {
-            case PERCENT -> NumberFormat.getCurrencyInstance().format(amount.calculate(ability.level()));
+            case PERCENT -> NumberFormat.getPercentInstance().format(amount.calculate(ability.level()));
             case FLAT -> String.valueOf(amount.calculate(ability.level()));
         };
 
