@@ -2,7 +2,10 @@ package by.dragonsurvivalteam.dragonsurvival.common.codecs.predicates;
 
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbility;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import by.dragonsurvivalteam.dragonsurvival.server.handlers.ServerFlightHandler;
@@ -14,6 +17,7 @@ import net.minecraft.advancements.critereon.MinMaxBounds;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.RegistryCodecs;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -21,12 +25,15 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.Optional;
 
 public record DragonPredicate(
         Optional<HolderSet<DragonSpecies>> dragonSpecies,
         Optional<DragonStagePredicate> dragonStage,
         Optional<HolderSet<DragonBody>> dragonBody,
+        Optional<List<AbilityLevel>> abilityLevels,
+        // TODO :: check for ability level
         Optional<Boolean> isGrowthStopped,
         Optional<Boolean> markedByEnderDragon,
         Optional<Boolean> flightWasGranted,
@@ -37,12 +44,20 @@ public record DragonPredicate(
             RegistryCodecs.homogeneousList(DragonSpecies.REGISTRY).optionalFieldOf("dragon_species").forGetter(DragonPredicate::dragonSpecies),
             DragonStagePredicate.CODEC.optionalFieldOf("stage_specific").forGetter(DragonPredicate::dragonStage),
             RegistryCodecs.homogeneousList(DragonBody.REGISTRY).optionalFieldOf("dragon_body").forGetter(DragonPredicate::dragonBody),
+            AbilityLevel.CODEC.listOf().optionalFieldOf("ability_levels").forGetter(DragonPredicate::abilityLevels),
             Codec.BOOL.optionalFieldOf("is_growth_stopped").forGetter(DragonPredicate::isGrowthStopped),
             Codec.BOOL.optionalFieldOf("marked_by_ender_dragon").forGetter(DragonPredicate::markedByEnderDragon),
             Codec.BOOL.optionalFieldOf("flight_was_granted").forGetter(DragonPredicate::flightWasGranted),
             Codec.BOOL.optionalFieldOf("spin_was_granted").forGetter(DragonPredicate::spinWasGranted),
             Codec.BOOL.optionalFieldOf("is_flying").forGetter(DragonPredicate::isFlying)
     ).apply(instance, DragonPredicate::new));
+
+    public record AbilityLevel(ResourceKey<DragonAbility> ability, MinMaxBounds.Ints level) {
+        public static final Codec<AbilityLevel> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+                ResourceKey.codec(DragonAbility.REGISTRY).fieldOf("ability").forGetter(AbilityLevel::ability),
+                MinMaxBounds.Ints.CODEC.fieldOf("level").forGetter(AbilityLevel::level)
+        ).apply(instance, AbilityLevel::new));
+    }
 
     @Override
     @SuppressWarnings("RedundantIfStatement") // ignore for clarity
@@ -67,6 +82,18 @@ public record DragonPredicate(
 
         if (dragonBody().isPresent() && !dragonBody().get().contains(handler.body())) {
             return false;
+        }
+
+        if (abilityLevels().isPresent()) {
+            MagicData magic = MagicData.getData(player);
+
+            for (AbilityLevel abilityLevel : abilityLevels.get()) {
+                DragonAbilityInstance instance = magic.getAbility(abilityLevel.ability());
+
+                if (instance == null || !abilityLevel.level().matches(instance.level())) {
+                    return false;
+                }
+            }
         }
 
         if (isGrowthStopped().isPresent() && isGrowthStopped().get() != handler.isGrowthStopped) {
@@ -102,6 +129,7 @@ public record DragonPredicate(
         private Optional<HolderSet<DragonSpecies>> dragonSpecies = Optional.empty();
         private Optional<DragonStagePredicate> dragonStage = Optional.empty();
         private Optional<HolderSet<DragonBody>> dragonBody = Optional.empty();
+        private Optional<List<AbilityLevel>> abilityLevels = Optional.empty();
         private Optional<Boolean> isGrowthStopped = Optional.empty();
         private Optional<Boolean> markedByEnderDragon = Optional.empty();
         private Optional<Boolean> flightWasGranted = Optional.empty();
@@ -142,6 +170,11 @@ public record DragonPredicate(
             return this;
         }
 
+        public DragonPredicate.Builder abilityLevels(final AbilityLevel... abilityLevels) {
+            this.abilityLevels = Optional.of(List.of(abilityLevels));
+            return this;
+        }
+
         public DragonPredicate.Builder growthStopped(final boolean isGrowthStopped) {
             this.isGrowthStopped = Optional.of(isGrowthStopped);
             return this;
@@ -168,7 +201,7 @@ public record DragonPredicate(
         }
 
         public DragonPredicate build() {
-            return new DragonPredicate(dragonSpecies, dragonStage, dragonBody, isGrowthStopped, markedByEnderDragon, flightWasGranted, spinWasGranted, isFlying);
+            return new DragonPredicate(dragonSpecies, dragonStage, dragonBody, abilityLevels, isGrowthStopped, markedByEnderDragon, flightWasGranted, spinWasGranted, isFlying);
         }
     }
 }
