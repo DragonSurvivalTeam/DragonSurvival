@@ -33,7 +33,6 @@ public record DragonPredicate(
         Optional<DragonStagePredicate> dragonStage,
         Optional<HolderSet<DragonBody>> dragonBody,
         Optional<List<AbilityLevel>> abilityLevels,
-        // TODO :: check for ability level
         Optional<Boolean> isGrowthStopped,
         Optional<Boolean> markedByEnderDragon,
         Optional<Boolean> flightWasGranted,
