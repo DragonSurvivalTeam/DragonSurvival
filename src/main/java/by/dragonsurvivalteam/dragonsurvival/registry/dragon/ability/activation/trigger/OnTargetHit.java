@@ -27,7 +27,13 @@ public record OnTargetHit(Optional<LootItemCondition> condition) implements Acti
             }
 
             LootContext context = Condition.damageContext(player.serverLevel(), event.getEntity(), event.getSource(), player.getMainHandItem());
-            MagicData.getData(player).filterPassiveByTrigger(trigger -> trigger.type() == TriggerType.ON_TARGET_HIT && trigger.test(context)).forEach(ability -> ability.tick(player));
+            MagicData.getData(player).filterPassiveByTrigger(trigger -> trigger.type() == TriggerType.ON_TARGET_HIT && trigger.test(context))
+                    .forEach(ability -> {
+                        if (!ability.triggered) {
+                            ability.triggered = true;
+                            ability.tick(player);
+                        }
+                    });
         }
     }
 

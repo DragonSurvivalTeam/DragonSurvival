@@ -1,0 +1,46 @@
+{
+  "actions": [
+    {
+      "target_selection": {
+        "applied_effects": {
+          "entity_effect": [
+            {
+              "amount": {
+                "type": "minecraft:linear",
+                "base": 1.0,
+                "per_level_above_first": 1.0
+              },
+              "damage_type": "minecraft:generic",
+              "effect_type": "dragonsurvival:damage",
+              "expression": "amount * scale * 10",
+              "scale": "minecraft:generic.attack_damage",
+              "use_claw": true
+            }
+          ],
+          "targeting_mode": "enemies"
+        },
+        "radius": 5.0,
+        "target_type": "dragonsurvival:area"
+      }
+    }
+  ],
+  "activation": {
+    "activation_type": "dragonsurvival:passive",
+    "trigger": {
+      "trigger_type": "dragonsurvival:on_target_hit"
+    }
+  },
+  "icon": {
+    "texture_entries": [
+      {
+        "from_level": 0,
+        "texture_resource": "dragonsurvival:test"
+      }
+    ]
+  },
+  "upgrade": {
+    "experience_cost": 10.0,
+    "maximum_level": 5,
+    "upgrade_type": "dragonsurvival:experience_points"
+  }
+}

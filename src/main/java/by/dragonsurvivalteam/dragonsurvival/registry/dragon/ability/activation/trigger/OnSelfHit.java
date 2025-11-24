@@ -29,7 +29,13 @@ public record OnSelfHit(Optional<LootItemCondition> condition) implements Activa
             }
 
             LootContext context = Condition.damageContext(player.serverLevel(), player, event.getSource(), event.getSource().getEntity() instanceof LivingEntity livingEntity ? livingEntity.getMainHandItem() : ItemStack.EMPTY);
-            MagicData.getData(player).filterPassiveByTrigger(trigger -> trigger.type() == TriggerType.ON_SELF_HIT && trigger.test(context)).forEach(ability -> ability.tick(player));
+            MagicData.getData(player).filterPassiveByTrigger(trigger -> trigger.type() == TriggerType.ON_SELF_HIT && trigger.test(context))
+                    .forEach(ability -> {
+                        if (!ability.triggered) {
+                            ability.triggered = true;
+                            ability.tick(player);
+                        }
+                    });
         }
     }
 
