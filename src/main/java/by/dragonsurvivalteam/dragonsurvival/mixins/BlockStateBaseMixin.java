@@ -62,17 +62,8 @@ public abstract class BlockStateBaseMixin extends StateHolder<Block, BlockState>
         return !PowerHolderComponent.hasPower(entity, PhasingPower.class, p -> p.doesApply(blockPos));
     }*/
 
-    // We also might not need this, and it seems like this method wasn't protected in prior versions
-    /*
     @Override
-    public VoxelShape dragonSurvival$getOriginalCollisionShape(BlockGetter world, BlockPos pos, CollisionContext context) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        Class<?> reflectedClass = this.getBlock().getClass();
-        Method reflectedShape = ObfuscationReflectionHelper.findMethod(reflectedClass, "...");  // SRG name for getCollisionShape would go here
-        reflectedShape.setAccessible(true);
-        VoxelShape result = (VoxelShape) reflectedShape.invoke(this.asState(), world, pos, context);
-        reflectedShape.setAccessible(false);
-
-        return result;
+    public VoxelShape dragonSurvival$getOriginalCollisionShape(BlockGetter world, BlockPos pos, CollisionContext context) {
+        return ((BlockBehaviourAccessor) this.getBlock()).callGetCollisionShape(this.asState(), world, pos, context);
     }
-    */
 }
