@@ -51,6 +51,7 @@ public class DSDataAttachments {
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<OxygenBonuses>> OXYGEN_BONUSES = REGISTRY.register("oxygen_bonuses", () -> AttachmentType.serializable(OxygenBonuses::new).build());
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<BlockVisionData>> BLOCK_VISION = REGISTRY.register("block_vision_data", () -> AttachmentType.serializable(BlockVisionData::new).build());
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<FearData>> FEAR = REGISTRY.register("fear_data", () -> AttachmentType.serializable(FearData::new).build());
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<PhasingData>> PHASING = REGISTRY.register("phasing_data", () -> AttachmentType.serializable(PhasingData::new).build());
 
     /** Does not return empty storages */
     public static <T> List<Storage<? extends T>> getStorages(final Entity entity, final Class<T> type) {

@@ -1,0 +1,78 @@
+package by.dragonsurvivalteam.dragonsurvival.mixins;
+
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
+import com.mojang.serialization.MapCodec;
+import it.unimi.dsi.fastutil.objects.Reference2ObjectArrayMap;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateHolder;
+import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.EntityCollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import net.neoforged.fml.util.ObfuscationReflectionHelper;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
+@Mixin(BlockBehaviour.BlockStateBase.class)
+public abstract class BlockStateBaseMixin extends StateHolder<Block, BlockState> implements BlockStateCollisionShapeAccess {
+    // Code adapted from https://github.com/apace100/apoli/blob/1.20/src/main/java/io/github/apace100/apoli/mixin/AbstractBlockStateMixin.java
+
+    @Shadow public abstract Block getBlock();
+
+    @Shadow
+    protected abstract BlockState asState();
+
+    protected BlockStateBaseMixin(Block owner, Reference2ObjectArrayMap<Property<?>, Comparable<?>> values, MapCodec<BlockState> propertiesCodec) {
+        super(owner, values, propertiesCodec);
+    }
+    @Inject(
+            method = {"getCollisionShape(Lnet/minecraft/world/level/BlockGetter;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/phys/shapes/CollisionContext;)Lnet/minecraft/world/phys/shapes/VoxelShape;"},
+            at = {@At("RETURN")},
+            cancellable = true
+    )
+    public void dragonSurvival$phaseThroughBlocks(BlockGetter world, BlockPos pos, CollisionContext context, CallbackInfoReturnable<VoxelShape> cir)  {
+        VoxelShape original = cir.getReturnValue();
+        Entity entity;
+        if (original.isEmpty() || !(context instanceof EntityCollisionContext esc) || (entity = esc.getEntity()) == null) {
+            return;
+        }
+
+        Level level = entity.level();
+        boolean result = entity.getExistingData(DSDataAttachments.PHASING).map(phasing -> phasing.testValidBlocks(level, pos)).orElse(false);
+
+       cir.setReturnValue(result ? Shapes.empty() : original);
+    }
+
+    /* Potentially is pushEntitiesUp in this version?  Unsure if even necessary anymore
+    @WrapWithCondition(method = "onEntityCollision", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Block;onEntityCollision(Lnet/minecraft/block/BlockState;Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/entity/Entity;)V"))
+    private boolean apoli$preventOnEntityCollisionCallWhenPhasing(Block instance, BlockState state, World world, BlockPos blockPos, Entity entity) {
+        return !PowerHolderComponent.hasPower(entity, PhasingPower.class, p -> p.doesApply(blockPos));
+    }*/
+
+    // We also might not need this, and it seems like this method wasn't protected in prior versions
+    /*
+    @Override
+    public VoxelShape dragonSurvival$getOriginalCollisionShape(BlockGetter world, BlockPos pos, CollisionContext context) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        Class<?> reflectedClass = this.getBlock().getClass();
+        Method reflectedShape = ObfuscationReflectionHelper.findMethod(reflectedClass, "...");  // SRG name for getCollisionShape would go here
+        reflectedShape.setAccessible(true);
+        VoxelShape result = (VoxelShape) reflectedShape.invoke(this.asState(), world, pos, context);
+        reflectedShape.setAccessible(false);
+
+        return result;
+    }
+    */
+}
