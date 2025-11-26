@@ -8,6 +8,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.attachment.AttachmentType;
@@ -20,12 +21,12 @@ import org.jetbrains.annotations.NotNull;
 @EventBusSubscriber
 public class PhasingData extends Storage<Phasing.Instance> {
 
-    public boolean testValidBlocks(Level t, BlockPos u) {
+    public boolean testValidBlocks(Level t, BlockPos u, Vec3 v, Vec3 w) {
         if (isEmpty()) {
             return false;
         }
 
-        return all().stream().anyMatch(phasing -> phasing.testValidBlocks(t, u));
+        return all().stream().anyMatch(phasing -> phasing.testValidBlocks(t, u, v, w));
     }
 
     @SubscribeEvent

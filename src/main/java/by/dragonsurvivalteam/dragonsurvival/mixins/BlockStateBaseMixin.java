@@ -13,6 +13,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateHolder;
 import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.EntityCollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -48,7 +49,10 @@ public abstract class BlockStateBaseMixin extends StateHolder<Block, BlockState>
         }
 
         Level level = entity.level();
-        boolean result = entity.getExistingData(DSDataAttachments.PHASING).map(phasing -> phasing.testValidBlocks(level, pos)).orElse(false);
+        Vec3 upVector = entity.getUpVector(1.0F);
+        Vec3 entityPos = entity.getPosition(1.0F);
+
+        boolean result = entity.getExistingData(DSDataAttachments.PHASING).map(phasing -> phasing.testValidBlocks(level, pos, upVector, entityPos)).orElse(false);
 
        cir.setReturnValue(result ? Shapes.empty() : original);
     }

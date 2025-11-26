@@ -23,6 +23,7 @@ import net.minecraft.world.item.enchantment.LevelBasedValue;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.levelgen.blockpredicates.BlockPredicate;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
@@ -72,8 +73,11 @@ public class Phasing extends DurationInstanceBase<PhasingData, Phasing.Instance>
             super(baseData, commonData, currentDuration);
         }
 
-        public boolean testValidBlocks(Level t, BlockPos u) {  // Angle check here instead of in the mixin?
-            return baseData().validBlocks().test((WorldGenLevel) t, u);
+        public boolean testValidBlocks(Level t, BlockPos u, Vec3 v, Vec3 w) {
+            // Test for if block position is above the plane angle in addition to predicate
+            // Looking 45 degrees up or down should result in 'stairs' of collision when phasing
+            double d = v.dot(u.getCenter().subtract(w));
+            return baseData().validBlocks().test((WorldGenLevel) t, u) && d > 0;
         }
 
         @Override
