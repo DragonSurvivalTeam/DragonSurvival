@@ -51,8 +51,9 @@ public abstract class BlockStateBaseMixin extends StateHolder<Block, BlockState>
         Level level = entity.level();
         Vec3 upVector = entity.getUpVector(1.0F);
         Vec3 entityPos = entity.getPosition(1.0F);
+        float entityDownRot = entity.getXRot();
 
-        boolean result = entity.getExistingData(DSDataAttachments.PHASING).map(phasing -> phasing.testValidBlocks(level, pos, upVector, entityPos)).orElse(false);
+        boolean result = entity.getExistingData(DSDataAttachments.PHASING).map(phasing -> phasing.testValidBlocks(level, pos, upVector, entityPos, entityDownRot)).orElse(false);
 
        cir.setReturnValue(result ? Shapes.empty() : original);
     }

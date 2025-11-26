@@ -73,11 +73,14 @@ public class Phasing extends DurationInstanceBase<PhasingData, Phasing.Instance>
             super(baseData, commonData, currentDuration);
         }
 
-        public boolean testValidBlocks(Level t, BlockPos u, Vec3 v, Vec3 w) {
+        public boolean testValidBlocks(Level t, BlockPos u, Vec3 v, Vec3 w, float x) {
             // Test for if block position is above the plane angle in addition to predicate
             // Looking 45 degrees up or down should result in 'stairs' of collision when phasing
+            // Looking within 10 degrees of 'down' should result in no collision at all
+            // Maybe instead of this possibly expensive calculation, get angle from vector between BlockPos and Player pos
+            // Then compare that angle to the amount the player is looking down
             double d = v.dot(u.getCenter().subtract(w));
-            return baseData().validBlocks().test((WorldGenLevel) t, u) && d > 0;
+            return baseData().validBlocks().test((WorldGenLevel) t, u) && ( d < 0 || x < 0.174533 );
         }
 
         @Override

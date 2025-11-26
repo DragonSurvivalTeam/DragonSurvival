@@ -21,12 +21,12 @@ import org.jetbrains.annotations.NotNull;
 @EventBusSubscriber
 public class PhasingData extends Storage<Phasing.Instance> {
 
-    public boolean testValidBlocks(Level t, BlockPos u, Vec3 v, Vec3 w) {
+    public boolean testValidBlocks(Level t, BlockPos u, Vec3 v, Vec3 w, float x) {
         if (isEmpty()) {
             return false;
         }
 
-        return all().stream().anyMatch(phasing -> phasing.testValidBlocks(t, u, v, w));
+        return all().stream().anyMatch(phasing -> phasing.testValidBlocks(t, u, v, w, x));
     }
 
     @SubscribeEvent
