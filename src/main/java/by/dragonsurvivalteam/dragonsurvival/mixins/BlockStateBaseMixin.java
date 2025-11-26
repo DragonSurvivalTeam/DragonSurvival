@@ -1,6 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.mixins;
 
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.data_maps.BlockStateBaseExtension;
 import com.mojang.serialization.MapCodec;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectArrayMap;
 import net.minecraft.core.BlockPos;
@@ -16,18 +17,14 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.EntityCollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.fml.util.ObfuscationReflectionHelper;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-
 @Mixin(BlockBehaviour.BlockStateBase.class)
-public abstract class BlockStateBaseMixin extends StateHolder<Block, BlockState> implements BlockStateCollisionShapeAccess {
+public abstract class BlockStateBaseMixin extends StateHolder<Block, BlockState> implements BlockStateBaseExtension {
     // Code adapted from https://github.com/apace100/apoli/blob/1.20/src/main/java/io/github/apace100/apoli/mixin/AbstractBlockStateMixin.java
 
     @Shadow public abstract Block getBlock();
@@ -64,6 +61,6 @@ public abstract class BlockStateBaseMixin extends StateHolder<Block, BlockState>
 
     @Override
     public VoxelShape dragonSurvival$getOriginalCollisionShape(BlockGetter world, BlockPos pos, CollisionContext context) {
-        return ((BlockBehaviourAccessor) this.getBlock()).callGetCollisionShape(this.asState(), world, pos, context);
+        return ((BlockBehaviourAccessor) this.getBlock()).dragonSurvival$getCollisionShape(this.asState(), world, pos, context);
     }
 }

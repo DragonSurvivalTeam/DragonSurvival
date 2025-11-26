@@ -12,6 +12,6 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 @Mixin(BlockBehaviour.class)
 public interface BlockBehaviourAccessor {
 
-    @Invoker
-    VoxelShape callGetCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context);
+    @Invoker("getCollisionShape")
+    VoxelShape dragonSurvival$getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context);
 }
