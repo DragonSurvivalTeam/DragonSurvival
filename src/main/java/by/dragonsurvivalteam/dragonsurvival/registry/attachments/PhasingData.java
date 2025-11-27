@@ -6,6 +6,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -26,7 +27,11 @@ public class PhasingData extends Storage<Phasing.Instance> {
             return false;
         }
 
-        return all().stream().anyMatch(phasing -> phasing.testValidBlocks(t, u, v, w, x));
+        if (t instanceof ServerLevel l) {  // This is a bad way to do this, a predicate that works on both client/server would be better
+            return all().stream().anyMatch(phasing -> phasing.testValidBlocks(l, u, v, w, x));
+        }
+        double d = v.dot(u.getCenter().subtract(w));
+        return ( d > 0 || x > 80 );
     }
 
     @SubscribeEvent

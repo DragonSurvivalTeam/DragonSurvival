@@ -433,6 +433,13 @@ public class ClientDragonRenderer {
     @SubscribeEvent // Don't render the fire overlay when fire immune
     public static void removeFireOverlay(final RenderBlockScreenEffectEvent event) {
         if (event.getOverlayType() != RenderBlockScreenEffectEvent.OverlayType.FIRE) {
+            // Either move this or rename
+            if (event.getOverlayType() != RenderBlockScreenEffectEvent.OverlayType.BLOCK) {
+                return;
+            }
+            Minecraft.getInstance().player.getExistingData(DSDataAttachments.PHASING).ifPresent(data -> {
+                event.setCanceled(true);
+            });
             return;
         }
 
