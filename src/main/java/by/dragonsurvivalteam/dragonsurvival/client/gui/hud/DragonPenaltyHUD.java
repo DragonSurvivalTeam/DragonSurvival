@@ -4,6 +4,7 @@ import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.PenaltySupply;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty.DragonPenalty;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty.SupplyTrigger;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
@@ -18,11 +19,12 @@ public class DragonPenaltyHUD {
     public static final ResourceLocation ID = DragonSurvival.res("penalty_hud");
 
     public static void render(@NotNull final GuiGraphics graphics, @NotNull final DeltaTracker tracker) {
-        if (Minecraft.getInstance().options.hideGui) {
+        if (Minecraft.getInstance().options.hideGui || !DragonPenalty.ENABLE_PENALTIES) {
             return;
         }
 
         LocalPlayer player = Minecraft.getInstance().player;
+
         //noinspection DataFlowIssue -> game mode is expected to be present
         if (player == null || !Minecraft.getInstance().gameMode.canHurtPlayer()) {
             return;

@@ -689,6 +689,8 @@
   "dragonsurvival.configuration.enable_dragon_soul_placement.tooltip": "Enables the placement of dragon souls",
   "dragonsurvival.configuration.enable_flight_fall_damage": "Enable Flight Fall Damage",
   "dragonsurvival.configuration.enable_flight_fall_damage.tooltip": "Dragons will take fall damage from colliding whilst glide-flying (similar to elytra).",
+  "dragonsurvival.configuration.enable_penalties": "Enable Penalties",
+  "dragonsurvival.configuration.enable_penalties.tooltip": "Enable / Disable the penalty system",
   "dragonsurvival.configuration.enable_soul_block_indicator": "Enable Soul Block Indicator",
   "dragonsurvival.configuration.enable_soul_block_indicator.tooltip": "Renders the soul block base if enabled, as a visual indicator for the actual block",
   "dragonsurvival.configuration.enchantment_descriptions": "Enchantment Descriptions",

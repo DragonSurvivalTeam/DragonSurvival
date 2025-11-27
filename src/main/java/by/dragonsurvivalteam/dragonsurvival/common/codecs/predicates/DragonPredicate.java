@@ -71,19 +71,19 @@ public record DragonPredicate(
             return false;
         }
 
-        if (dragonSpecies().isPresent() && !dragonSpecies().get().contains(handler.species())) {
+        if (dragonSpecies.isPresent() && !dragonSpecies.get().contains(handler.species())) {
             return false;
         }
 
-        if (dragonStage().isPresent() && !dragonStage().get().matches(handler.stage(), handler.getGrowth())) {
+        if (dragonStage.isPresent() && !dragonStage.get().matches(handler.stage(), handler.getGrowth())) {
             return false;
         }
 
-        if (dragonBody().isPresent() && !dragonBody().get().contains(handler.body())) {
+        if (dragonBody.isPresent() && !dragonBody.get().contains(handler.body())) {
             return false;
         }
 
-        if (abilityLevels().isPresent()) {
+        if (abilityLevels.isPresent()) {
             MagicData magic = MagicData.getData(player);
 
             for (AbilityLevel abilityLevel : abilityLevels.get()) {
@@ -95,23 +95,23 @@ public record DragonPredicate(
             }
         }
 
-        if (isGrowthStopped().isPresent() && isGrowthStopped().get() != handler.isGrowthStopped) {
+        if (isGrowthStopped.isPresent() && isGrowthStopped.get() != handler.isGrowthStopped) {
             return false;
         }
 
-        if (markedByEnderDragon().isPresent() && markedByEnderDragon().get() != handler.markedByEnderDragon) {
+        if (markedByEnderDragon.isPresent() && markedByEnderDragon.get() != handler.markedByEnderDragon) {
             return false;
         }
 
-        if (flightWasGranted().isPresent() && flightWasGranted().get() != handler.flightWasGranted) {
+        if (flightWasGranted.isPresent() && flightWasGranted.get() != handler.flightWasGranted) {
             return false;
         }
 
-        if (spinWasGranted().isPresent() && spinWasGranted().get() != handler.spinWasGranted) {
+        if (spinWasGranted.isPresent() && spinWasGranted.get() != handler.spinWasGranted) {
             return false;
         }
 
-        if (isFlying().isPresent() && isFlying().get() != ServerFlightHandler.isFlying(player)) {
+        if (isFlying.isPresent() && isFlying.get() != ServerFlightHandler.isFlying(player)) {
             return false;
         }
 
