@@ -26,7 +26,8 @@ public record DragonPart(
         float averageHue,
         boolean isColorable,
         boolean includeInRandomizer,
-        boolean isHueRandomizable
+        boolean isHueRandomizable,
+        boolean isGlowing
 ) {
     public static final Codec<DragonPart> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.STRING.fieldOf("key").forGetter(DragonPart::key),
@@ -37,7 +38,8 @@ public record DragonPart(
             Codec.FLOAT.optionalFieldOf("average_hue", 0f).forGetter(DragonPart::averageHue),
             Codec.BOOL.optionalFieldOf("is_colorable", true).forGetter(DragonPart::isColorable),
             Codec.BOOL.optionalFieldOf("include_in_randomizer", true).forGetter(DragonPart::includeInRandomizer),
-            Codec.BOOL.optionalFieldOf("is_hue_randomizable", true).forGetter(DragonPart::isHueRandomizable)
+            Codec.BOOL.optionalFieldOf("is_hue_randomizable", true).forGetter(DragonPart::isHueRandomizable),
+            Codec.BOOL.optionalFieldOf("is_glowing", false).forGetter(DragonPart::isGlowing)
     ).apply(instance, DragonPart::new));
 
     public static DragonPart load(final JsonObject json) {

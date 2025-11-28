@@ -85,7 +85,7 @@ public class DragonEditorHandler {
 
                     AbstractTexture texture = Minecraft.getInstance().getTextureManager().getTexture(part.texture());
 
-                    if (settings.glowing) {
+                    if (settings.isGlowing) {
                         glowTarget.bindWrite(true);
                     } else {
                         normalTarget.bindWrite(true);
@@ -102,7 +102,7 @@ public class DragonEditorHandler {
                     skinGenerationShader.getUniform("SatVal").set(satVal);
                     skinGenerationShader.getUniform("BrightVal").set(brightVal);
                     skinGenerationShader.getUniform("Colorable").set(skinTexture.isColorable() ? 1.0f : 0.0f);
-                    skinGenerationShader.getUniform("Glowing").set(settings.glowing ? 1.0f : 0.0f);
+                    skinGenerationShader.getUniform("Glowing").set(settings.isGlowing ? 1.0f : 0.0f);
                     skinGenerationShader.apply();
 
                     BufferBuilder bufferbuilder = RenderSystem.renderThreadTesselator().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.BLIT_SCREEN);
@@ -112,7 +112,7 @@ public class DragonEditorHandler {
                     bufferbuilder.addVertex(0.0F, 1.0F, 0.0F);
                     BufferUploader.draw(bufferbuilder.buildOrThrow());
 
-                    if (settings.glowing && layer == SkinLayer.BASE) {
+                    if (settings.isGlowing && layer == SkinLayer.BASE) {
                         normalTarget.bindWrite(true);
                         bufferbuilder = RenderSystem.renderThreadTesselator().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.BLIT_SCREEN);
                         bufferbuilder.addVertex(0.0F, 0.0F, 0.0F);
@@ -124,7 +124,7 @@ public class DragonEditorHandler {
                     }
 
                     skinGenerationShader.clear();
-                    if (settings.glowing) {
+                    if (settings.isGlowing) {
                         glowTarget.unbindWrite();
                     } else {
                         normalTarget.unbindWrite();
