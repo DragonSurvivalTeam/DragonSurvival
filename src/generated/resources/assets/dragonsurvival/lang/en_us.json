@@ -129,6 +129,8 @@
   "block.dragonsurvival.warped_dragon_door": "Warped Dragon Door",
   "block.dragonsurvival.white_diamond_dragon_treasure": "White Diamond Dragon Treasure",
   "command.dragonsurvival.ability.processed": "%s of %s players processed (non-dragons are skipped)",
+  "command.dragonsurvival.ability.query_result": "%s of the ability %s has the value %s",
+  "command.dragonsurvival.ability.unknown": "[%s] does not have the ability [%s]",
   "command.dragonsurvival.clear_mark.from_players": "Mark cleared from %s players.",
   "command.dragonsurvival.clear_mark.from_single_player": "Mark cleared from %s.",
   "command.dragonsurvival.clear_modifiers.from_entities": "%s modifiers cleared from %s entities.",

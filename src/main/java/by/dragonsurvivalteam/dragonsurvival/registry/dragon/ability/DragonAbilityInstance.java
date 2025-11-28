@@ -296,7 +296,7 @@ public class DragonAbilityInstance {
         return value().getMaxLevel();
     }
 
-    public int getCurrentCastTime() {
+    public int getCurrentTick() {
         return currentTick;
     }
 

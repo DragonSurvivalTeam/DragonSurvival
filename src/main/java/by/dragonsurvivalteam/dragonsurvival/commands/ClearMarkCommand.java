@@ -46,6 +46,6 @@ public class ClearMarkCommand {
             source.sendSuccess(() -> Component.translatable(FROM_PLAYERS, targets.size()), true);
         }
 
-        return 1;
+        return targets.size();
     }
 }
