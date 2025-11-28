@@ -33,7 +33,7 @@ public class DragonAbilityCommand {
     @Translation(comments = "[%s] does not have the ability [%s]")
     private static final String UNKNOWN_ABILITY = Translation.Type.COMMAND.wrap("ability.unknown");
 
-    @Translation(comments = "%s of the ability %s has the value %s")
+    @Translation(comments = "%s of the ability %s from player %s has the value %s")
     private static final String QUERY_RESULT = Translation.Type.COMMAND.wrap("ability.query_result");
 
     private static final DynamicNCommandExceptionType UNKNOWN_ABILITY_EXCEPTION = new DynamicNCommandExceptionType(data -> Component.translatable(UNKNOWN_ABILITY, data));
@@ -140,6 +140,7 @@ public class DragonAbilityCommand {
                 QUERY_RESULT,
                 DSColors.withColor(source.getNodes().getLast().getNode().getName(), DSColors.GOLD),
                 DSColors.withColor(ability.getRegisteredName(), DSColors.GOLD),
+                DSColors.withColor(player.getDisplayName(), DSColors.GOLD),
                 DSColors.withColor(result, DSColors.GOLD)
         ), false);
 
