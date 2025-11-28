@@ -72,8 +72,21 @@ public record DietEntry(String items, Optional<FoodProperties> properties, boole
         return diet;
     }
 
-    public static Builder create() {
-        return new Builder();
+    public static Builder create(final String items) {
+        return new Builder(items);
+    }
+
+    public static Builder create(final TagKey<Item> tag) {
+        return create("#" + tag.location());
+    }
+
+    public static Builder create(final ResourceLocation location) {
+        return create(location.toString());
+    }
+
+    public static Builder create(final Item item) {
+        //noinspection deprecation, DataFlowIssue -> ignore deprecated / key is present
+        return create(item.builtInRegistryHolder().getKey().location());
     }
 
     @Override
@@ -99,7 +112,7 @@ public record DietEntry(String items, Optional<FoodProperties> properties, boole
         // Copied from FoodProperties.java. Trying to AT this didn't work out well.
         private static final float DEFAULT_EAT_SECONDS = 1.6f;
 
-        private String items;
+        private final String items;
         private Optional<FoodProperties> properties = Optional.empty();
         private boolean retainEffects = true;
 
@@ -113,22 +126,8 @@ public record DietEntry(String items, Optional<FoodProperties> properties, boole
         private final List<FoodProperties.PossibleEffect> effects = new ArrayList<>();
         private Optional<ItemStack> convertsTo = Optional.empty();
 
-        public Builder items(final String items) {
+        public Builder(final String items) {
             this.items = items;
-            return this;
-        }
-
-        public Builder items(final TagKey<Item> tag) {
-            return items("#" + tag.location());
-        }
-
-        public Builder items(final ResourceLocation location) {
-            return items(location.toString());
-        }
-
-        public Builder items(final Item item) {
-            //noinspection deprecation, DataFlowIssue -> ignore deprecated / key is present
-            return items(item.builtInRegistryHolder().getKey().location());
         }
 
         public Builder nutrition(final int nutrition) {
