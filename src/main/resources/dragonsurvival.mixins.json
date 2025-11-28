@@ -8,6 +8,7 @@
   "mixins": [
     "AttributeMapAccessor",
     "BlockMixin",
+    "BlockStateBaseMixin",
     "ConditionContextMixin",
     "DeferredHolderMixin",
     "EndPortalBlockMixin",
