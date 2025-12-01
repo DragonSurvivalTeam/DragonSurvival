@@ -9,7 +9,6 @@
     "AttributeMapAccessor",
     "BlockMixin",
     "ConditionContextMixin",
-    "DeferredHolderMixin",
     "EndPortalBlockMixin",
     "EntityAccessor",
     "EntityMixin",
