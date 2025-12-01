@@ -191,7 +191,7 @@ public class DietEntryProvider extends DataMapProvider {
                 DietEntry.create(DSItems.GOLDEN_CORAL_PUFFERFISH.value()).nutrition(12).saturation(14).build(),
                 DietEntry.create(DSItems.FROZEN_RAW_FISH.value()).nutrition(2).saturation(1).canAlwaysEat().build(),
                 DietEntry.create(DSItems.GOLDEN_TURTLE_EGG.value()).nutrition(15).saturation(12).build(),
-                DietEntry.create("additionaldragons:slippery_sushi").nutrition(10).saturation(8).effect(() -> new MobEffectInstance(MobEffects.DOLPHINS_GRACE, Functions.secondsToTicks(20)), 1).build(),
+                DietEntry.create("additionaldragons:slippery_sushi").nutrition(10).saturation(8).retainEffects().build(),
                 DietEntry.create("aoa3:raw_candlefish").nutrition(9).saturation(9).build(),
                 DietEntry.create("aoa3:raw_crimson_skipper").nutrition(8).saturation(8).build(),
                 DietEntry.create("aoa3:raw_fingerfish").nutrition(4).saturation(4).build(),

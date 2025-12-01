@@ -1,6 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.common.codecs;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -17,13 +18,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
-public record DietEntry(String items, Optional<FoodProperties> properties, boolean retainEffects) {
+public record DietEntry(String items, Optional<FoodProperties> properties, Optional<Either<Boolean, RetainEffects>> retainEffects) {
     public static final Codec<DietEntry> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             ResourceLocationWrapper.validatedCodec().fieldOf("items").forGetter(DietEntry::items),
             FoodProperties.DIRECT_CODEC.optionalFieldOf("properties").forGetter(DietEntry::properties),
-            Codec.BOOL.optionalFieldOf("retain_effects", true).forGetter(DietEntry::retainEffects)
+            Codec.either(Codec.BOOL, RetainEffects.CODEC).optionalFieldOf("retain_effects").forGetter(DietEntry::retainEffects)
     ).apply(instance, DietEntry::new));
 
     public static Map<Item, FoodProperties> map(final List<DietEntry> entries) {
@@ -43,15 +45,21 @@ public record DietEntry(String items, Optional<FoodProperties> properties, boole
 
                     List<FoodProperties.PossibleEffect> effects = new ArrayList<>(properties.effects());
 
-                    if (entry.retainEffects() && entry.properties().isPresent()) {
-                        // Custom food properties were specified -> retain the effects of the original properties
+                    if (entry.retainEffects().isPresent() && entry.properties().isPresent()) {
                         FoodProperties original = item.getDefaultInstance().getFoodProperties(null);
 
                         if (original != null) {
-                            effects.addAll(original.effects());
+                            for (FoodProperties.PossibleEffect effect : original.effects()) {
+                                if (entry.retainEffects().get().map(Function.identity(), check -> check.retain(effect.effect()))) {
+                                    effects.add(effect);
+                                }
+                            }
                         }
-                    } else if (!entry.retainEffects() && entry.properties().isEmpty()) {
-                        // Remove the original effects
+                    } else if (entry.retainEffects().isPresent()) {
+                        // Only retain specific effects of the original item
+                        effects.removeIf(effect -> !entry.retainEffects().get().map(Function.identity(), check -> check.retain(effect.effect())));
+                    } else if (entry.properties().isEmpty()) {
+                        // Don't retain effects of the original item
                         effects.clear();
                     }
 
@@ -106,6 +114,22 @@ public record DietEntry(String items, Optional<FoodProperties> properties, boole
     public int hashCode() {
         return items.hashCode();
     }
+    
+    public record RetainEffects(boolean beneficial, boolean neutral, boolean harmful) {
+        public static final Codec<RetainEffects> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+                Codec.BOOL.optionalFieldOf("beneficial", false).forGetter(RetainEffects::beneficial),
+                Codec.BOOL.optionalFieldOf("neutral", false).forGetter(RetainEffects::neutral),
+                Codec.BOOL.optionalFieldOf("harmful", false).forGetter(RetainEffects::harmful)
+        ).apply(instance, RetainEffects::new));
+
+        public boolean retain(final MobEffectInstance effect) {
+            return switch (effect.getEffect().value().getCategory()) {
+                case BENEFICIAL -> beneficial;
+                case HARMFUL -> harmful;
+                case NEUTRAL -> neutral;
+            };
+        }
+    }
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     public static class Builder {
@@ -114,7 +138,10 @@ public record DietEntry(String items, Optional<FoodProperties> properties, boole
 
         private final String items;
         private Optional<FoodProperties> properties = Optional.empty();
-        private boolean retainEffects = true;
+        private boolean retainEffects = false;
+        private boolean retainBeneficial = false;
+        private boolean retainNeutral = false;
+        private boolean retainHarmful = false;
 
         private boolean customProperties;
         
@@ -177,8 +204,23 @@ public record DietEntry(String items, Optional<FoodProperties> properties, boole
             return this;
         }
 
-        public Builder removeOriginalEffects() {
-            this.retainEffects = false;
+        public Builder retainEffects() {
+            this.retainEffects = true;
+            return this;
+        }
+
+        public Builder retainBeneficial() {
+            this.retainBeneficial = true;
+            return this;
+        }
+
+        public Builder retainNeutral() {
+            this.retainNeutral = true;
+            return this;
+        }
+
+        public Builder retainHarmful() {
+            this.retainHarmful = true;
             return this;
         }
 
@@ -187,7 +229,17 @@ public record DietEntry(String items, Optional<FoodProperties> properties, boole
                 properties = Optional.of(new FoodProperties(nutriton, saturation, canAlwaysEat, seconds, convertsTo, effects));
             }
 
-            return new DietEntry(items, properties, retainEffects);
+            Either<Boolean, RetainEffects> retainEffects;
+
+            if (retainBeneficial || retainNeutral || retainHarmful) {
+                retainEffects = Either.right(new RetainEffects(retainBeneficial, retainNeutral, retainHarmful));
+            } else if (this.retainEffects) {
+                retainEffects = Either.left(true);
+            } else {
+                retainEffects = null;
+            }
+
+            return new DietEntry(items, properties, Optional.ofNullable(retainEffects));
         }
     }
 }

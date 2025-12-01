@@ -1078,22 +1078,10 @@
         {
           "items": "additionaldragons:slippery_sushi",
           "properties": {
-            "effects": [
-              {
-                "effect": {
-                  "duration": 400,
-                  "id": "minecraft:dolphins_grace",
-                  "neoforge:cures": [
-                    "milk",
-                    "protected_by_totem"
-                  ],
-                  "show_icon": true
-                }
-              }
-            ],
             "nutrition": 10,
             "saturation": 8.0
-          }
+          },
+          "retain_effects": true
         },
         {
           "items": "aoa3:raw_candlefish",
