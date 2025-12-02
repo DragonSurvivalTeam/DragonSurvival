@@ -103,6 +103,7 @@ public class ConfigHandler {
 
                 if (side == FMLEnvironment.dist || side == Dist.DEDICATED_SERVER) {
                     try {
+                        DragonSurvival.LOGGER.debug("Loading class [{}] for config option [{}]", annotationData.clazz().getClassName(), annotationData.memberName());
                         Class<?> classType = Class.forName(annotationData.clazz().getClassName());
                         Field field = classType.getDeclaredField(annotationData.memberName());
                         instances.add(field);

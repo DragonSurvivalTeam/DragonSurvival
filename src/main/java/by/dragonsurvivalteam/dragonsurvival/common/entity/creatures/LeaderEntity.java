@@ -1,11 +1,8 @@
 package by.dragonsurvivalteam.dragonsurvival.common.entity.creatures;
 
 import by.dragonsurvivalteam.dragonsurvival.client.render.util.RandomAnimationPicker;
-import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
-import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigRange;
-import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
+import by.dragonsurvivalteam.dragonsurvival.config.entity.LeaderEntityConfig;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSTrades;
-import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.util.AnimationUtils;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import com.mojang.serialization.Dynamic;
@@ -47,54 +44,29 @@ import software.bernie.geckolib.animation.RawAnimation;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 public class LeaderEntity extends Villager implements GeoEntity, ConfigurableAttributes {
-    @ConfigRange(min = 1)
-    @Translation(key = "leader_health", type = Translation.Type.CONFIGURATION, comments = "Base value for the max health attribute")
-    @ConfigOption(side = ConfigSide.SERVER, category = {"dragon_hunters", "leader"}, key = "leader_health")
-    public static double MAX_HEALTH = 24;
-
     @Override
     public double maxHealthConfig() {
-        return MAX_HEALTH;
+        return LeaderEntityConfig.MAX_HEALTH;
     }
-
-    @ConfigRange(min = 0)
-    @Translation(key = "leader_movement_speed", type = Translation.Type.CONFIGURATION, comments = "Base value for the movement speed attribute")
-    @ConfigOption(side = ConfigSide.SERVER, category = {"dragon_hunters", "leader"}, key = "leader_movement_speed")
-    public static double MOVEMENT_SPEED = 0.35;
 
     @Override
     public double movementSpeedConfig() {
-        return MOVEMENT_SPEED;
+        return LeaderEntityConfig.MOVEMENT_SPEED;
     }
-
-    @ConfigRange(min = 0)
-    @Translation(key = "leader_armor", type = Translation.Type.CONFIGURATION, comments = "Base value for the armor attribute")
-    @ConfigOption(side = ConfigSide.SERVER, category = {"dragon_hunters", "leader"}, key = "leader_armor")
-    public static double ARMOR = 0;
 
     @Override
     public double armorConfig() {
-        return ARMOR;
+        return LeaderEntityConfig.ARMOR;
     }
-
-    @ConfigRange(min = 0)
-    @Translation(key = "leader_armor_toughness", type = Translation.Type.CONFIGURATION, comments = "Base value for the armor toughness attribute")
-    @ConfigOption(side = ConfigSide.SERVER, category = {"dragon_hunters", "leader"}, key = "leader_armor_toughness")
-    public static double ARMOR_TOUGHNESS = 0;
 
     @Override
     public double armorToughnessConfig() {
-        return ARMOR_TOUGHNESS;
+        return LeaderEntityConfig.ARMOR_TOUGHNESS;
     }
-
-    @ConfigRange(min = 0)
-    @Translation(key = "leader_knockback_resistance", type = Translation.Type.CONFIGURATION, comments = "Base value for the knockback resistance attribute")
-    @ConfigOption(side = ConfigSide.SERVER, category = {"dragon_hunters", "leader"}, key = "leader_knockback_resistance")
-    public static double KNOCKBACK_RESISTANCE = 0;
 
     @Override
     public double knockbackResistanceConfig() {
-        return KNOCKBACK_RESISTANCE;
+        return LeaderEntityConfig.KNOCKBACK_RESISTANCE;
     }
 
     private static final EntityDataAccessor<Integer> RESTOCK_TIMER = SynchedEntityData.defineId(LeaderEntity.class, EntityDataSerializers.INT);
