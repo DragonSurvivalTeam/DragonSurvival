@@ -75,6 +75,9 @@ public class KeyHandler {
 
         // TODO :: trigger for KeyHeldDown or a predicate?
 
+        // TODO :: parse registered abilities on data reload and cache the relevant keys
+        //         then ignore any keys that are not relevant to abilities
+
         KeyMapping mapping = KeyMappingAccess.dragonSurvival$getAllKeymappings().get(input.getName());
 
         if (mapping != null && !mapping.isUnbound() && mapping.getKeyConflictContext().conflicts(KeyConflictContext.GUI)) {

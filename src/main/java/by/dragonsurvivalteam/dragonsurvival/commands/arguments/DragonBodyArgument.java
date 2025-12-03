@@ -50,9 +50,11 @@ public class DragonBodyArgument implements ArgumentType<Holder<DragonBody>> {
 
         try {
             species = DragonSpeciesArgument.get(context);
-        } catch (IllegalArgumentException ignored){
+        } catch (IllegalArgumentException ignored) {
             // Mixins do not apply to this library, so we cannot check properly before accessing the argument
         }
+
+        // TODO :: is there a way to parse for a player to retrieve the species and check against that?
 
         if (species != null) {
             Holder<DragonSpecies> finalSpecies = species;
