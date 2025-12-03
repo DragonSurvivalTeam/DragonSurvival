@@ -1,6 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.trigger;
 
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.DSLanguageProvider;
 import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
@@ -31,7 +32,7 @@ public record OnKeyReleased(HashSet<String> keys) implements ActivationTrigger<S
 
     @Override
     public Component translation() {
-        return Component.translatable(TRANSLATION, DSColors.dynamicValue(keys));
+        return Component.translatable(TRANSLATION, DSColors.dynamicValue(DSLanguageProvider.translateKeyMappings(keys)));
     }
 
     @Override

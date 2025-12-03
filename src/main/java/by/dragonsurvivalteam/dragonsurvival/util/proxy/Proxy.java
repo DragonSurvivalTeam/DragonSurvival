@@ -6,6 +6,8 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.emotes.DragonEm
 import by.dragonsurvivalteam.dragonsurvival.server.tileentity.DragonSoulBlockEntity;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
@@ -69,6 +71,10 @@ public interface Proxy {
 
     default boolean updateDragonSoulBlockAnimation(final DragonSoulBlockEntity soul, final String animation) {
         return false;
+    }
+
+    default MutableComponent translateKeyMapping(final String key) {
+        return Component.translatable(key);
     }
 
     @Nullable RegistryAccess getAccess();

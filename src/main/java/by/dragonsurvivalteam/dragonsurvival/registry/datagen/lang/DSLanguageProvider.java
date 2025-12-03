@@ -6,11 +6,13 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSItemTags;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.BuiltInDragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.util.ResourceHelper;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
@@ -29,6 +31,7 @@ import org.objectweb.asm.Type;
 import java.lang.annotation.ElementType;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -51,6 +54,26 @@ public class DSLanguageProvider extends LanguageProvider {
 
     public static Component enumValue(final Enum<?> enumValue) {
         return Component.translatable(enumClassKey(enumValue) + "." + enumValue.name().toLowerCase(Locale.ENGLISH));
+    }
+
+    public static Component translateKeyMappings(final HashSet<String> keys) {
+        if (keys.isEmpty()) {
+            return Component.empty();
+        }
+
+        MutableComponent list = null;
+
+        for (String key : keys) {
+            MutableComponent name = DragonSurvival.PROXY.translateKeyMapping(key);
+
+            if (list == null) {
+                list = name;
+            } else {
+                list.append(Component.literal(", ").withStyle(ChatFormatting.GRAY)).append(name);
+            }
+        }
+
+        return list;
     }
 
     /** See {@link DSLanguageProvider#enumClassKey(Class)} */
