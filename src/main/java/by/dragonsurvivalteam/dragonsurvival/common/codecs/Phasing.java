@@ -81,6 +81,7 @@ public class Phasing extends DurationInstanceBase<PhasingData, Phasing.Instance>
 
         private final List<BlockPos> cachedBlocks = new ArrayList<>();
         // This doesn't track the dimension, which might be problematic?  Probably fully clear the cache when changing dimension
+        // We also need to clear it if the test result changes
 
         public boolean testValidBlocks(Player s, Level t, BlockPos u, Vec3 v, Vec3 w, float x) {
             // Test for if block position is above the plane angle in addition to predicate
@@ -89,12 +90,16 @@ public class Phasing extends DurationInstanceBase<PhasingData, Phasing.Instance>
             // Maybe instead of this possibly expensive calculation, get angle from vector between BlockPos and Player pos
             // Then compare that angle to the amount the player is looking down
             double d = v.dot(u.getCenter().subtract(w));
+            // Also this calculation result is incorrect, will need to review...
             if (t instanceof ServerLevel l && s instanceof ServerPlayer p) {
                 boolean result = baseData().validBlocks().test(l, u);
                 if (result && !cachedBlocks.contains(u)) {
                     // May need to track entity?  I don't know if client needs the result of every person phasing or if the server will suffice
                     addToCache(u);
-                    PacketDistributor.sendToPlayer(p, new AttemptPhasingUpdate(this.id().toString(), u.getX(), u.getY(), u.getZ()));
+                    PacketDistributor.sendToPlayer(p, new AttemptPhasingUpdate(this.id().toString(), u.getX(), u.getY(), u.getZ(), false));
+                } else if (!result && cachedBlocks.contains(u)) {
+                    removeFromCache(u);
+                    PacketDistributor.sendToPlayer(p, new AttemptPhasingUpdate(this.id().toString(), u.getX(), u.getY(), u.getZ(), true));
                 }
                 return result && (d > 0 || x > 80);
             }
@@ -107,6 +112,10 @@ public class Phasing extends DurationInstanceBase<PhasingData, Phasing.Instance>
 
         public void addToCache(BlockPos location) {
             cachedBlocks.add(location);
+        }
+
+        public void removeFromCache(BlockPos location){
+            cachedBlocks.remove(location);
         }
 
         public void cleanCache(BlockPos location) {

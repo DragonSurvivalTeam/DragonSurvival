@@ -14,7 +14,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
-public record AttemptPhasingUpdate(String resourceLocation, int x, int y, int z) implements CustomPacketPayload {
+public record AttemptPhasingUpdate(String resourceLocation, int x, int y, int z, boolean isRemoval) implements CustomPacketPayload {
     public static final Type<AttemptPhasingUpdate> TYPE = new Type<>(DragonSurvival.res("attempt_phasing_update"));
 
     public static final StreamCodec<FriendlyByteBuf, AttemptPhasingUpdate> STREAM_CODEC = StreamCodec.composite(
@@ -22,6 +22,7 @@ public record AttemptPhasingUpdate(String resourceLocation, int x, int y, int z)
             ByteBufCodecs.VAR_INT, AttemptPhasingUpdate::x,
             ByteBufCodecs.VAR_INT, AttemptPhasingUpdate::y,
             ByteBufCodecs.VAR_INT, AttemptPhasingUpdate::z,
+            ByteBufCodecs.BOOL, AttemptPhasingUpdate::isRemoval,
             AttemptPhasingUpdate::new
     );
 
@@ -34,7 +35,11 @@ public record AttemptPhasingUpdate(String resourceLocation, int x, int y, int z)
                 return;
             }
             BlockPos location = BlockPosHelper.get(packet.x(), packet.y(), packet.z());
-            instance.addToCache(location);
+            if (packet.isRemoval()) {
+                instance.removeFromCache(location);
+            } else {
+                instance.addToCache(location);
+            }
         });
     }
 
