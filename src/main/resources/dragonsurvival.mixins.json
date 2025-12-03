@@ -73,6 +73,7 @@
     "client.ItemBlockRenderTypesMixin",
     "client.ItemInHandRendererMixin",
     "client.ItemRendererMixin",
+    "client.KeyMappingAccess",
     "client.LevelRendererAccess",
     "client.LevelRendererMixin",
     "client.LightTextureMixin",

@@ -82,7 +82,7 @@ public class DragonCommand {
         dragonStage.addChild(target);
     }
 
-    private static int runCommand(Holder<DragonSpecies> species, @Nullable Holder<DragonBody> dragonBody, @Nullable Holder<DragonStage> dragonStage, ServerPlayer player) {
+    private static int runCommand(final Holder<DragonSpecies> species, @Nullable final Holder<DragonBody> dragonBody, @Nullable final Holder<DragonStage> dragonStage, final ServerPlayer player) {
         DragonStateHandler handler = DragonStateProvider.getData(player);
         boolean wasDragon = handler.isDragon();
 
@@ -95,12 +95,7 @@ public class DragonCommand {
         }
 
         handler.setSpecies(player, species);
-
-        if (dragonBody == null) {
-            dragonBody = DragonBody.getRandomUnlocked(player);
-        }
-
-        handler.setBody(player, dragonBody);
+        handler.setBody(player, dragonBody == null ? DragonBody.getRandomUnlocked(player) : dragonBody);
 
         // Need to use 'setSize' since the desired size call doesn't set the stage
         if (dragonStage == null) {

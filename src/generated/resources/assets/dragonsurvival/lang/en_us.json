@@ -1378,12 +1378,6 @@
   "enum.tiers.netherite": "Netherite",
   "enum.tiers.stone": "Stone",
   "enum.tiers.wood": "Wood",
-  "enum.trigger_type.constant": "Constant",
-  "enum.trigger_type.on_block_break": "On Block Break",
-  "enum.trigger_type.on_death": "On Death",
-  "enum.trigger_type.on_self_hit": "On Self Hit",
-  "enum.trigger_type.on_target_hit": "On Target Hit",
-  "enum.trigger_type.on_target_killed": "On Target Killed",
   "item.dragonsurvival.ambusher_spawn_egg": "Hunter Ambusher Spawn Egg",
   "item.dragonsurvival.beacon_activator": "Beacon Activator",
   "item.dragonsurvival.cave_dragon_treat": "Cave Dragon Treat",
@@ -2239,5 +2233,13 @@
   "tag.item.dragonsurvival.small_wooden_dragon_doors": "Small Wooden Dragon Doors",
   "tag.item.dragonsurvival.uncommon_armor": "Uncommon Armor (Texture)",
   "tag.item.dragonsurvival.wooden_dragon_doors": "Wooden Dragon Doors",
-  "tag.villager_profession.dragonsurvival.pillage_blacklist": "Professions that cannot be pillaged"
+  "tag.villager_profession.dragonsurvival.pillage_blacklist": "Professions that cannot be pillaged",
+  "trigger_type.dragonsurvival.constant": "Constant",
+  "trigger_type.dragonsurvival.on_block_break": "On Block Break",
+  "trigger_type.dragonsurvival.on_death": "On Death",
+  "trigger_type.dragonsurvival.on_key_pressed": "On Key Pressed: %s",
+  "trigger_type.dragonsurvival.on_key_released": "On Key Released: %s",
+  "trigger_type.dragonsurvival.on_self_hit": "On Self Hit",
+  "trigger_type.dragonsurvival.on_target_hit": "On Target Hit",
+  "trigger_type.dragonsurvival.on_target_killed": "On Target Killed"
 }

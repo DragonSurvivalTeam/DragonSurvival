@@ -3,8 +3,10 @@ package by.dragonsurvivalteam.dragonsurvival.client.handlers;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.input.Keybind;
-import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncData;
+import by.dragonsurvivalteam.dragonsurvival.mixins.client.KeyMappingAccess;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncSummonedEntitiesBehaviour;
+import by.dragonsurvivalteam.dragonsurvival.network.syncing.SyncDragonSoulPlacement;
+import by.dragonsurvivalteam.dragonsurvival.network.syncing.SyncKey;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.PlayerData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
@@ -12,6 +14,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.DSLanguageProv
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.datafixers.util.Pair;
+import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
@@ -20,6 +23,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.InputEvent;
+import net.neoforged.neoforge.client.settings.KeyConflictContext;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
 
@@ -59,6 +63,43 @@ public class KeyHandler {
 
         toggleSummonBehaviour(checkAndGet(input, action, Keybind.TOGGLE_SUMMON_BEHAVIOUR, false));
         toggleDragonSoulPlacement(checkAndGet(input, action, Keybind.TOGGLE_DRAGON_SOUL_PLACEMENT, false));
+
+        handleKey(input, action);
+    }
+
+    public static void handleKey(final InputConstants.Key input, final int action) {
+        if (Minecraft.getInstance().getConnection() == null) {
+            // Player has not joined a world yet
+            return;
+        }
+
+        // TODO :: trigger for KeyHeldDown or a predicate?
+
+        KeyMapping mapping = KeyMappingAccess.dragonSurvival$getAllKeymappings().get(input.getName());
+
+        if (mapping != null && !mapping.isUnbound() && mapping.getKeyConflictContext().conflicts(KeyConflictContext.GUI)) {
+            // Don't bother with keys that interact with GUIs
+            return;
+        }
+
+        boolean isDown;
+
+        if (action == InputConstants.PRESS && Minecraft.getInstance().screen == null) {
+            // Only consider it a key press if it happens outside a GUI
+            isDown = true;
+        } else if (action == InputConstants.RELEASE) {
+            // If a player presses a key and then opens a GUI, we need to know when the key is released
+            // Meaning we may trigger effects within GUIs, but this might be the preferred approach?
+            isDown = false;
+        } else {
+            return;
+        }
+
+        PlayerData data = Minecraft.getInstance().player.getData(DSDataAttachments.PLAYER_DATA);
+
+        if (data.updateKey(input.getName(), isDown)) {
+            PacketDistributor.sendToServer(new SyncKey(input.getName(), isDown));
+        }
     }
 
     public static void toggleSummonBehaviour(@Nullable final Pair<Player, DragonStateHandler> data) {
@@ -89,7 +130,7 @@ public class KeyHandler {
         String message = playerData.enabledDragonSoulPlacement ? DRAGON_SOUL_PLACEMENT_ENABLED : DRAGON_SOUL_PLACEMENT_DISABLED;
         data.getFirst().displayClientMessage(Component.translatable(message), true);
 
-        PacketDistributor.sendToServer(new SyncData(data.getFirst().getId(), DSDataAttachments.PLAYER_DATA.getId(), playerData.serializeNBT(data.getFirst().registryAccess())));
+        PacketDistributor.sendToServer(new SyncDragonSoulPlacement(playerData.enabledDragonSoulPlacement));
     }
 
     /**

@@ -103,7 +103,7 @@ public record DragonAbility(
         List<Component> info = new ArrayList<>();
 
         if (activation instanceof PassiveActivation passive) {
-            info.add(Component.translatable(ACTIVATION_TRIGGER, DSLanguageProvider.enumValue(passive.trigger().type())));
+            info.add(Component.translatable(ACTIVATION_TRIGGER, passive.trigger().translation()));
         }
 
         int castTime = activation.getCastTime(instance.level());

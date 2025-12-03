@@ -61,6 +61,9 @@ public class PlayerLoginHandler {
             return;
         }
 
+        // Clear the state from the previous session
+        player.getData(DSDataAttachments.PLAYER_DATA).clearKeys();
+
         DragonStateHandler handler = DragonStateProvider.getData(player);
 
         // Remove any existing penalty supplies that may no longer be relevant (due to datapack changes)

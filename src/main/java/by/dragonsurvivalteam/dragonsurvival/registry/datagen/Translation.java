@@ -108,6 +108,8 @@ public @interface Translation {
         COMMAND("command." + DragonSurvival.MODID + ".", ""), // TODO :: replace with 'gui'
         VILLAGER_PROFESSION("entity.minecraft.villager." + DragonSurvival.MODID + ".", ""),
 
+        TRIGGER_TYPE("trigger_type." + DragonSurvival.MODID + ".", ""),
+
         /**
          * When used on {@link String} and no specified key it's expected that the string contains the translation key <br>
          * Otherwise it generally means the key is being handled in a special way / no prefix is required <br>

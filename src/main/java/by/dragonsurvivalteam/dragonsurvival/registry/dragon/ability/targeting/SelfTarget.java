@@ -3,7 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.PassiveActivation;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.trigger.ActivationTrigger;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.trigger.ConstantTrigger;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -27,7 +27,7 @@ public record SelfTarget(Either<BlockTargeting, EntityTargeting> target) impleme
         }).ifRight(entityTarget -> {
             if (entityTarget.matches(dragon, dragon, dragon.position())) {
                 entityTarget.effects().forEach(target -> target.apply(dragon, ability, dragon));
-            } else if (ability.value().activation() instanceof PassiveActivation passive && passive.trigger().type() == ActivationTrigger.TriggerType.CONSTANT) {
+            } else if (ability.value().activation() instanceof PassiveActivation passive && passive.trigger() instanceof ConstantTrigger) {
                 entityTarget.effects().forEach(target -> target.remove(dragon, ability, dragon, true));
             }
         });

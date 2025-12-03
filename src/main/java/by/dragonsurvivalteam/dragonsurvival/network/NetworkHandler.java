@@ -71,6 +71,8 @@ import by.dragonsurvivalteam.dragonsurvival.network.status.SyncPlayerJump;
 import by.dragonsurvivalteam.dragonsurvival.network.status.SyncResting;
 import by.dragonsurvivalteam.dragonsurvival.network.syncing.SyncComplete;
 import by.dragonsurvivalteam.dragonsurvival.network.syncing.SyncCooldown;
+import by.dragonsurvivalteam.dragonsurvival.network.syncing.SyncDragonSoulPlacement;
+import by.dragonsurvivalteam.dragonsurvival.network.syncing.SyncKey;
 import by.dragonsurvivalteam.dragonsurvival.network.syncing.SyncMana;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -179,6 +181,9 @@ public class NetworkHandler {
         registrar.playToClient(SyncBreathParticles.TYPE, SyncBreathParticles.STREAM_CODEC, SyncBreathParticles::handleClient);
         registrar.playToClient(SyncMana.TYPE, SyncMana.STREAM_CODEC, SyncMana::handleClient);
         registrar.playToClient(SyncCooldown.TYPE, SyncCooldown.STREAM_CODEC, SyncCooldown::handleClient);
+
+        registrar.playToServer(SyncDragonSoulPlacement.TYPE, SyncDragonSoulPlacement.STREAM_CODEC, SyncDragonSoulPlacement::handleServer);
+        registrar.playToServer(SyncKey.TYPE, SyncKey.STREAM_CODEC, SyncKey::handleServer);
 
         registrar.playBidirectional(SyncDragonSoulAnimation.TYPE, SyncDragonSoulAnimation.STREAM_CODEC, new DirectionalPayloadHandler<>(SyncDragonSoulAnimation::handleClient, SyncDragonSoulAnimation::handleServer));
         registrar.playBidirectional(SyncPlayerSkinPreset.TYPE, SyncPlayerSkinPreset.STREAM_CODEC, new DirectionalPayloadHandler<>(SyncPlayerSkinPreset::handleClient, SyncPlayerSkinPreset::handleServer));
