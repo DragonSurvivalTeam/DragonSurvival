@@ -79,7 +79,8 @@ public class Phasing extends DurationInstanceBase<PhasingData, Phasing.Instance>
             super(baseData, commonData, currentDuration);
         }
 
-        private final List<BlockPos> clientCachedBlocks = new ArrayList<>();  // This should always be empty on server side
+        private final List<BlockPos> cachedBlocks = new ArrayList<>();
+        // This doesn't track the dimension, which might be problematic?  Probably fully clear the cache when changing dimension
 
         public boolean testValidBlocks(Player s, Level t, BlockPos u, Vec3 v, Vec3 w, float x) {
             // Test for if block position is above the plane angle in addition to predicate
@@ -90,27 +91,28 @@ public class Phasing extends DurationInstanceBase<PhasingData, Phasing.Instance>
             double d = v.dot(u.getCenter().subtract(w));
             if (t instanceof ServerLevel l && s instanceof ServerPlayer p) {
                 boolean result = baseData().validBlocks().test(l, u);
-                if (result) {
+                if (result && !cachedBlocks.contains(u)) {
                     // May need to track entity?  I don't know if client needs the result of every person phasing or if the server will suffice
+                    addToCache(u);
                     PacketDistributor.sendToPlayer(p, new AttemptPhasingUpdate(this.id().toString(), u.getX(), u.getY(), u.getZ()));
                 }
                 return result && (d > 0 || x > 80);
             }
             cleanCache(u);
-            if (clientCachedBlocks.contains(u)) {
+            if (cachedBlocks.contains(u)) {
                 return (d > 0 || x > 80);
             }
             return false;
         }
 
         public void addToCache(BlockPos location) {
-            clientCachedBlocks.add(location);
+            cachedBlocks.add(location);
         }
 
         public void cleanCache(BlockPos location) {
             Vec3i blockLocation = new Vec3i(location.getX(), location.getY(), location.getZ());
-            // TODO: Might cause problems at ancient sizes, should be based on player size and not a static 50
-            clientCachedBlocks.removeIf(inst -> inst.distManhattan(blockLocation) > 50);
+            // TODO: Might cause problems at ancient sizes or lag at small sizes, should be based on player size and not a static 50
+            cachedBlocks.removeIf(inst -> inst.distManhattan(blockLocation) > 50);
         }
 
         @Override
