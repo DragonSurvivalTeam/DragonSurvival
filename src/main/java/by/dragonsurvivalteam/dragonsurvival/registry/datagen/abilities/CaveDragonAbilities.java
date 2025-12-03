@@ -423,7 +423,7 @@ public class CaveDragonAbilities {
                 List.of(
                         new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                                 ModifierEffect.only(new ModifierWithDuration(
-                                        DurationInstanceBase.create(DragonSurvival.res("cave_magic")).infinite().removeAutomatically().hidden().build(),
+                                        DurationInstanceBase.create(DragonSurvival.res("cave_magic")).removeAutomatically().hidden().build(),
                                         List.of(Modifier.per(DSAttributes.MANA, 1, AttributeModifier.Operation.ADD_VALUE))
                                 )),
                                 TargetingMode.ALLIES_AND_SELF
@@ -441,7 +441,7 @@ public class CaveDragonAbilities {
                                         Condition.thisEntity(EntityCondition.isOnBlock(Blocks.BLAST_FURNACE, BlockStateProperties.LIT, true))
                                 ).build(),
                                 ModifierEffect.only(new ModifierWithDuration(
-                                        DurationInstanceBase.create(DragonSurvival.res("good_mana_condition")).infinite().removeAutomatically().hidden().build(),
+                                        DurationInstanceBase.create(DragonSurvival.res("good_mana_condition")).removeAutomatically().hidden().build(),
                                         List.of(Modifier.per(DSAttributes.MANA_REGENERATION, 0.03f, AttributeModifier.Operation.ADD_VALUE))
                                 )),
                                 TargetingMode.ALLIES_AND_SELF
@@ -490,7 +490,7 @@ public class CaveDragonAbilities {
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         ModifierEffect.only(new ModifierWithDuration(
-                                DurationInstanceBase.create(DragonSurvival.res("contrast_shower")).infinite().removeAutomatically().hidden().build(),
+                                DurationInstanceBase.create(DragonSurvival.res("contrast_shower")).removeAutomatically().hidden().build(),
                                 List.of(Modifier.per(DSAttributes.PENALTY_RESISTANCE_TIME, Functions.secondsToTicks(10), AttributeModifier.Operation.ADD_VALUE))
                         )),
                         TargetingMode.ALLIES_AND_SELF
@@ -533,7 +533,7 @@ public class CaveDragonAbilities {
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         HarvestBonusEffect.only(new HarvestBonus(
-                                DurationInstanceBase.create(DragonSurvival.res("cave_claws_and_teeth")).infinite().removeAutomatically().customIcon(DragonSurvival.res("textures/ability_effect/cave_claw.png")).build(),
+                                DurationInstanceBase.create(DragonSurvival.res("cave_claws_and_teeth")).removeAutomatically().customIcon(DragonSurvival.res("textures/ability_effect/cave_claw.png")).build(),
                                 Optional.of(context.lookup(Registries.BLOCK).getOrThrow(BlockTags.MINEABLE_WITH_PICKAXE)),
                                 Optional.of(new LevelBasedTier(List.of(
                                         new LevelBasedTier.Entry(Tiers.WOOD, 1),
@@ -578,7 +578,7 @@ public class CaveDragonAbilities {
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         DamageModificationEffect.only(new DamageModification(
-                                DurationInstanceBase.create(DragonSurvival.res("fire_immunity")).infinite().removeAutomatically().customIcon(DragonSurvival.res("textures/ability_effect/fire_immunity.png")).build(),
+                                DurationInstanceBase.create(DragonSurvival.res("fire_immunity")).removeAutomatically().customIcon(DragonSurvival.res("textures/ability_effect/fire_immunity.png")).build(),
                                 context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DamageTypeTags.IS_FIRE),
                                 LevelBasedValue.constant(0)
                         )),

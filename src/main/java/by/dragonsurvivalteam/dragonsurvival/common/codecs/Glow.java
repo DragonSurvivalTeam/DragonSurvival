@@ -39,7 +39,7 @@ public class Glow extends DurationInstanceBase<GlowData, Glow.Instance> {
     }
 
     public static Glow create(final ResourceLocation id, final TextColor color) {
-        return new Glow(DurationInstanceBase.create(id).infinite().removeAutomatically().hidden().build(), color);
+        return new Glow(DurationInstanceBase.create(id).removeAutomatically().hidden().build(), color);
     }
 
     public static Glow create(final ResourceLocation id, final LevelBasedValue duration, final TextColor color) {

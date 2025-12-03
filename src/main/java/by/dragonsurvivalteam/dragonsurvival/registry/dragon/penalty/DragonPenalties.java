@@ -178,7 +178,7 @@ public class DragonPenalties {
                 Optional.of(DragonSurvival.res("penalties/general/fear")),
                 Optional.of(Condition.thisEntity(EntityCondition.hasEffect(DSEffects.ANIMAL_PEACE)).invert().build()),
                 new FearPenalty(List.of(new Fear(
-                        DurationInstanceBase.create(DragonSurvival.res("animals")).infinite().removeAutomatically().hidden().build(),
+                        DurationInstanceBase.create(DragonSurvival.res("animals")).removeAutomatically().hidden().build(),
                         Optional.of(
                                 Condition.thisEntity(EntityCondition.isType(EntityCheckPredicate.Type.ANIMAL))
                                         .and(Condition.thisEntity(EntityCondition.isType(DSEntityTypeTags.ANIMAL_AVOID_BLACKLIST)).invert()).build()
