@@ -6,6 +6,7 @@ import com.mojang.serialization.MapCodec;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectArrayMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -44,7 +45,7 @@ public abstract class BlockStateBaseMixin extends StateHolder<Block, BlockState>
     public void dragonSurvival$phaseThroughBlocks(BlockGetter world, BlockPos pos, CollisionContext context, CallbackInfoReturnable<VoxelShape> cir)  {
         VoxelShape original = cir.getReturnValue();
         Entity entity;
-        if (original.isEmpty() || !(context instanceof EntityCollisionContext esc) || (entity = esc.getEntity()) == null) {
+        if (original.isEmpty() || !(context instanceof EntityCollisionContext esc) || (entity = esc.getEntity()) == null || !(entity instanceof Player player)) {
             return;
         }
 
@@ -53,7 +54,7 @@ public abstract class BlockStateBaseMixin extends StateHolder<Block, BlockState>
         Vec3 entityPos = entity.getPosition(1.0F);
         float entityDownRot = entity.getXRot();
 
-        boolean result = entity.getExistingData(DSDataAttachments.PHASING).map(phasing -> phasing.testValidBlocks(level, pos, upVector, entityPos, entityDownRot)).orElse(false);
+        boolean result = entity.getExistingData(DSDataAttachments.PHASING).map(phasing -> phasing.testValidBlocks(player, level, pos, upVector, entityPos, entityDownRot)).orElse(false);
 
        cir.setReturnValue(result ? Shapes.empty() : original);
     }

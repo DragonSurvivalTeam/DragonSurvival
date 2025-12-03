@@ -6,8 +6,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -22,16 +22,12 @@ import org.jetbrains.annotations.NotNull;
 @EventBusSubscriber
 public class PhasingData extends Storage<Phasing.Instance> {
 
-    public boolean testValidBlocks(Level t, BlockPos u, Vec3 v, Vec3 w, float x) {
+    public boolean testValidBlocks(Player s, Level t, BlockPos u, Vec3 v, Vec3 w, float x) {
         if (isEmpty()) {
             return false;
         }
 
-        if (t instanceof ServerLevel l) {  // This is a bad way to do this, a predicate that works on both client/server would be better
-            return all().stream().anyMatch(phasing -> phasing.testValidBlocks(l, u, v, w, x));
-        }
-        double d = v.dot(u.getCenter().subtract(w));
-        return ( d > 0 || x > 80 );
+        return all().stream().anyMatch(phasing -> phasing.testValidBlocks(s, t, u, v, w, x));
     }
 
     @SubscribeEvent
