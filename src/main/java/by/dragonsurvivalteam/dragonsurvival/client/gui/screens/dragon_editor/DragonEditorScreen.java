@@ -328,11 +328,12 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
         partComponents.get(layer).setSelectedPart(value);
         preset.get(stage.getKey()).get().layerSettings.get(layer).get().partKey = value;
 
-        // Make sure that when we change a part, the color is properly updated to the default color of the new part
         LayerSettings settings = preset.get(stage.getKey()).get().layerSettings.get(layer).get();
-
         DragonPart part = DragonPartLoader.getDragonPart(layer, species.getKey(), body, settings.partKey);
-        if (part != null && !settings.modifiedColor) {
+
+        if (part != null && !settings.isModified) {
+            // Do not reset the part if a user has customized it
+            settings.isGlowing = part.isGlowing();
             settings.hue = part.averageHue();
         }
 
@@ -880,7 +881,11 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
                     settings.brightness = 0.5f;
                 }
 
-                settings.modifiedColor = true;
+                if (part != null) {
+                    settings.isGlowing = part.isGlowing();
+                }
+
+                settings.isModified = true;
             }
 
             actionHistory.add(new EditorAction<>(setSkinPresetAction, preset.serializeNBT(access)));

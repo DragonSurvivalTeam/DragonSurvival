@@ -40,10 +40,10 @@ public class DragonStageCustomization implements INBTSerializable<CompoundTag>, 
             DragonPart defaultPart = parts.get(partKey);
 
             if (defaultPart != null) {
-                layerSettings.put(layer, Lazy.of(() -> new LayerSettings(partKey, defaultPart.averageHue())));
+                layerSettings.put(layer, Lazy.of(() -> new LayerSettings(partKey, defaultPart.averageHue(), defaultPart.isGlowing())));
             } else {
                 // TODO :: Why exactly are we doing this?
-                layerSettings.put(layer, Lazy.of(() -> new LayerSettings(partKey, 0.5f)));
+                layerSettings.put(layer, Lazy.of(() -> new LayerSettings(partKey, 0.5f, false)));
             }
         }
     }

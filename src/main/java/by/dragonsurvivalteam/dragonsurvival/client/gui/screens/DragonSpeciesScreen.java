@@ -21,6 +21,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.data_maps.DietEntryCache;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.FlightEffect;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty.DragonPenalty;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import by.dragonsurvivalteam.dragonsurvival.server.handlers.DragonRidingHandler;
 import com.mojang.blaze3d.platform.InputConstants;
@@ -307,8 +308,14 @@ public class DragonSpeciesScreen extends Screen {
         DragonBodyButton bodyTypeButton = new DragonBodyButton(this, startX + 29, startY + 101, 25, 25, data.body(), DragonBodyButton.LockedReason.NONE, button -> {});
         addRenderableWidget(bodyTypeButton);
 
-        // Penalties bar
-        List<AbstractWidget> penalties = data.species().value().penalties().stream().filter(penalty -> penalty.value().icon().isPresent()).map(penalty -> (AbstractWidget) new PenaltyButton(0, 0, penalty)).toList();
+        // Penalty bar
+        List<AbstractWidget> penalties;
+
+        if (DragonPenalty.ENABLE_PENALTIES) {
+            penalties = data.species().value().penalties().stream().filter(penalty -> penalty.value().icon().isPresent()).map(penalty -> (AbstractWidget) new PenaltyButton(0, 0, penalty)).toList();
+        } else {
+            penalties = List.of();
+        }
 
         if (!penalties.isEmpty()) {
             scrollableComponents.add(new BarComponent(this,

@@ -3,11 +3,14 @@ package by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscCodecs;
+import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
+import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
 import by.dragonsurvivalteam.dragonsurvival.mixins.ServerPlayerGameModeAccess;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncAddPenaltySupply;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncRemovePenaltySupply;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.PenaltySupply;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
@@ -30,6 +33,10 @@ import java.util.Optional;
 
 @EventBusSubscriber
 public record DragonPenalty(Optional<ResourceLocation> icon, Optional<LootItemCondition> condition, PenaltyEffect effect, PenaltyTrigger trigger) {
+    @Translation(key = "enable_penalties", type = Translation.Type.CONFIGURATION, comments = "Enable / Disable the penalty system")
+    @ConfigOption(side = ConfigSide.SERVER, category = "penalties", key = "enable_penalties")
+    public static boolean ENABLE_PENALTIES = true;
+
     public static final Codec<DragonPenalty> DIRECT_CODEC = RecordCodecBuilder.create(instance -> instance.group(
             ResourceLocation.CODEC.optionalFieldOf("icon").forGetter(DragonPenalty::icon),
             MiscCodecs.conditional(LootItemCondition.DIRECT_CODEC).optionalFieldOf("condition").forGetter(DragonPenalty::condition),
@@ -41,6 +48,10 @@ public record DragonPenalty(Optional<ResourceLocation> icon, Optional<LootItemCo
     public static final Codec<Holder<DragonPenalty>> CODEC = RegistryFixedCodec.create(REGISTRY);
 
     public void apply(final ServerPlayer dragon, final Holder<DragonPenalty> penalty) {
+        if (!ENABLE_PENALTIES) {
+            return;
+        }
+
         if (((ServerPlayerGameModeAccess) dragon.gameMode).dragonSurvival$getGameTicks() == 1) {
             // In the first tick the resistance / supply related attributes may not have been applied yet
             // Example: From last session current supply is 1000 - now on the first tick here after login the max supply is 200

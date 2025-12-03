@@ -57,7 +57,7 @@ public class ColorSelectorButton extends ExtendedButton {
         if (visible) {
             LayerSettings layerSettings = screen.preset.get(screen.stage.getKey()).get().layerSettings.get(layer).get();
 
-            if (layerSettings.modifiedColor || layerSettings.glowing) {
+            if (layerSettings.isModified) {
                 guiGraphics.blit(BUTTON_HUE_CHANGED, getX(), getY(), 0, 0, width, height, width, height);
             } else {
                 guiGraphics.blit(BUTTON_HUE_UNCHANGED, getX(), getY(), 0, 0, width, height, width, height);

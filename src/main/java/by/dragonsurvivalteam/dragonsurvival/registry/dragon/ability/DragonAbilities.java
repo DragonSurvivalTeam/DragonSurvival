@@ -24,11 +24,13 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.S
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.Sound;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.trigger.OnDeath;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.trigger.OnSelfHit;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.trigger.OnTargetHit;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.trigger.OnTargetKilled;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.common_effects.ParticleEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.common_effects.RunFunctionEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.common_effects.SummonEntityEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.CooldownRecoveryEffect;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.DamageEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.ExperienceEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.GlowEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.HealEffect;
@@ -41,12 +43,14 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.Se
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.TargetingMode;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.ExperienceLevelUpgrade;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.ExperiencePointsUpgrade;
+import by.dragonsurvivalteam.dragonsurvival.util.Expression;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import com.mojang.datafixers.util.Either;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.TextColor;
@@ -55,7 +59,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.random.WeightedRandomList;
 import net.minecraft.util.valueproviders.ConstantFloat;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
 
@@ -69,6 +75,21 @@ public class DragonAbilities {
         CaveDragonAbilities.registerAbilities(context);
         ForestDragonAbilities.registerAbilities(context);
         SeaDragonAbilities.registerAbilities(context);
+
+        // --- cooldown --- //
+
+        context.register(ResourceKey.create(DragonAbility.REGISTRY, DragonSurvival.res("test_damage_expression")), new DragonAbility(
+                new PassiveActivation(Optional.empty(), Optional.empty(), new OnTargetHit(Optional.empty())),
+                Optional.of(new ExperiencePointsUpgrade(5, LevelBasedValue.constant(10))),
+                Optional.empty(),
+                List.of(
+                        new ActionContainer(new AreaTarget(AbilityTargeting.entity(List.of(
+                                new DamageEffect(context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DamageTypes.GENERIC), LevelBasedValue.perLevel(1), Attributes.ATTACK_DAMAGE, new Expression("amount * scale * 10"), true)
+                        ), TargetingMode.ENEMIES), LevelBasedValue.constant(5)), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(1))
+                ),
+                true,
+                new LevelBasedResource(List.of(new LevelBasedResource.Entry(DragonSurvival.res("test"), 0)))
+        ));
 
         // --- cooldown --- //
 

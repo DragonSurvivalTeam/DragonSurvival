@@ -73,17 +73,19 @@ public class HueSelectorComponent extends AbstractContainerEventHandler implemen
 
         glowing = new ExtendedButton(x + 4, y - 25, 27, 25, Component.empty(), button -> {
             final Function<Boolean, Boolean> setGlowingAction = value -> {
-                settingsSupplier.get().glowing = value;
+                LayerSettings supplier = settingsSupplier.get();
+                supplier.isGlowing = value;
+                supplier.isModified = true;
                 DragonEditorScreen.HANDLER.recompileCurrentSkin();
                 screen.update();
                 return !value;
             };
 
-            screen.actionHistory.add(new DragonEditorScreen.EditorAction<>(setGlowingAction, !settingsSupplier.get().glowing));
+            screen.actionHistory.add(new DragonEditorScreen.EditorAction<>(setGlowingAction, !settingsSupplier.get().isGlowing));
         }) {
             @Override
             public void renderWidget(@NotNull final GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-                ResourceLocation texture = settingsSupplier.get().glowing ? GLOW_ON : GLOW_OFF;
+                ResourceLocation texture = settingsSupplier.get().isGlowing ? GLOW_ON : GLOW_OFF;
                 guiGraphics.pose().pushPose();
                 guiGraphics.pose().translate(0, 0, 100);
                 guiGraphics.blit(texture, getX(), getY(), 0, 0, 27, 25, 27, 25);
@@ -97,7 +99,7 @@ public class HueSelectorComponent extends AbstractContainerEventHandler implemen
             hsb[0] = 0.5f;
             hsb[1] = 0.5f;
             hsb[2] = 0.5f;
-        } else if (!settings.modifiedColor) {
+        } else if (!settings.isModified) {
             hsb[0] = dragonPart.averageHue();
             hsb[1] = 0.5f;
             hsb[2] = 0.5f;
@@ -108,7 +110,7 @@ public class HueSelectorComponent extends AbstractContainerEventHandler implemen
 
             private final Function<Integer, Integer> setHueAction = value -> {
                 settingsSupplier.get().hue = value / 360f;
-                settingsSupplier.get().modifiedColor = hasModifiedColor(dragonPart);
+                settingsSupplier.get().isModified = hasModifiedColor(dragonPart);
                 DragonEditorScreen.HANDLER.recompileCurrentSkin();
                 screen.update();
 
@@ -162,7 +164,7 @@ public class HueSelectorComponent extends AbstractContainerEventHandler implemen
 
             private final Function<Integer, Integer> setSaturationAction = value -> {
                 settingsSupplier.get().saturation = value / 360f;
-                settingsSupplier.get().modifiedColor = hasModifiedColor(dragonPart);
+                settingsSupplier.get().isModified = hasModifiedColor(dragonPart);
                 DragonEditorScreen.HANDLER.recompileCurrentSkin();
                 screen.update();
 
@@ -221,7 +223,7 @@ public class HueSelectorComponent extends AbstractContainerEventHandler implemen
 
             private final Function<Integer, Integer> setBrightnessAction = value -> {
                 settingsSupplier.get().brightness = value / 360f;
-                settingsSupplier.get().modifiedColor = hasModifiedColor(dragonPart);
+                settingsSupplier.get().isModified = hasModifiedColor(dragonPart);
                 DragonEditorScreen.HANDLER.recompileCurrentSkin();
                 screen.update();
 

@@ -51,6 +51,6 @@ public class ClearModifiersCommand {
             source.sendSuccess(() -> Component.translatable(FROM_ENTITES, totalRemoved.get(), targets.size()), true);
         }
 
-        return 1;
+        return targets.size();
     }
 }

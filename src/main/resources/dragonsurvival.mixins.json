@@ -10,7 +10,6 @@
     "BlockMixin",
     "BlockStateBaseMixin",
     "ConditionContextMixin",
-    "DeferredHolderMixin",
     "EndPortalBlockMixin",
     "EntityAccessor",
     "EntityMixin",

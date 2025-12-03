@@ -201,6 +201,7 @@ public class MagicData implements INBTSerializable<CompoundTag> {
             }
 
             ability.tickCooldown(event.getEntity());
+            ability.triggered = false;
 
             if (ability.value().activation() instanceof PassiveActivation passive && passive.trigger().type() != ActivationTrigger.TriggerType.CONSTANT) {
                 // Passive activations with non-constant triggers are handled elsewhere

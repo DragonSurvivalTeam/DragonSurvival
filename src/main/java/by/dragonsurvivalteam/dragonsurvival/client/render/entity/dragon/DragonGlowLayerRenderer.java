@@ -77,7 +77,7 @@ public class DragonGlowLayerRenderer extends GeoRenderLayer<DragonEntity> {
 
         dragonRenderer.isRenderingLayer = true;
 
-        if (glowTexture == null && customization.layerSettings.values().stream().anyMatch(layerSettings -> layerSettings.get().glowing)) {
+        if (glowTexture == null && customization.layerSettings.values().stream().anyMatch(layerSettings -> layerSettings.get().isGlowing)) {
             glowTexture = DragonModel.dynamicTexture(player, handler, true);
         }
 

@@ -59,6 +59,12 @@ public class DragonAbilityInstance {
     /** Indicates that the ability is able to apply its effects */
     private boolean isActive;
 
+    /**
+     * Exists for passive triggers like on_target_hit to avoid infinite loops </br>
+     * (e.g. if you trigger a damage effect, which in turn would trigger this ability again)
+     */
+    public boolean triggered;
+
     private int currentTick;
     private int cooldown;
 
@@ -290,7 +296,7 @@ public class DragonAbilityInstance {
         return value().getMaxLevel();
     }
 
-    public int getCurrentCastTime() {
+    public int getCurrentTick() {
         return currentTick;
     }
 

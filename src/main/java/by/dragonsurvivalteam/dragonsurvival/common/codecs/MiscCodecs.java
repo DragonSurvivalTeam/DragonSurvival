@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.common.codecs;
 
+import by.dragonsurvivalteam.dragonsurvival.util.Expression;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -13,6 +14,7 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.conditions.ConditionalOps;
 import org.jetbrains.annotations.NotNull;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Optional;
 
@@ -50,6 +52,24 @@ public class MiscCodecs {
             buffer.writeFloat(input.y);
         }
     };
+
+    public static Codec<Expression> expressionCodec(final String... variables) {
+        return Codec.STRING.validate(value -> {
+            try {
+                Expression expression = new Expression(value);
+
+                for (String variable : variables) {
+                    expression.setVariable(variable, new BigDecimal(Math.random()));
+                }
+
+                expression.eval();
+            } catch (Exception exception) {
+                return DataResult.error(() -> "[" + value + "] is not a valid expression: [" + exception.getMessage() + "]");
+            }
+
+            return DataResult.success(value);
+        }).xmap(Expression::new, Expression::getExpression);
+    }
 
     public static <T> Codec<T> optionalCodec(final Codec<Optional<T>> codec) {
         return codec.xmap(optional -> optional.orElse(null), Optional::ofNullable);
