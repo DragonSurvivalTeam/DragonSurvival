@@ -6,6 +6,7 @@ import by.dragonsurvivalteam.dragonsurvival.commands.arguments.DragonStageArgume
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.network.syncing.SyncComplete;
+import by.dragonsurvivalteam.dragonsurvival.registry.DSCommands;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
@@ -25,7 +26,6 @@ import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
 
 public class DragonCommand {
     @Translation(comments = "There are no available (unlocked) species present")
@@ -65,13 +65,11 @@ public class DragonCommand {
             return runCommand(species, body, level, serverPlayer);
         }).build();
 
-        ArgumentCommandNode<CommandSourceStack, EntitySelector> target = Commands.argument("target", EntityArgument.players()).executes(context -> {
+        ArgumentCommandNode<CommandSourceStack, EntitySelector> target = Commands.argument(DSCommands.TARGETS, EntityArgument.players()).executes(context -> {
             Holder<DragonSpecies> species = DragonSpeciesArgument.get(context);
             Holder<DragonBody> body = DragonBodyArgument.get(context);
             Holder<DragonStage> level = DragonStageArgument.get(context);
-            EntitySelector selector = context.getArgument("target", EntitySelector.class);
-            List<ServerPlayer> serverPlayers = selector.findPlayers(context.getSource());
-            serverPlayers.forEach(player -> runCommand(species, body, level, player));
+            EntityArgument.getPlayers(context, DSCommands.TARGETS).forEach(player -> runCommand(species, body, level, player));
             return 1;
         }).build();
 

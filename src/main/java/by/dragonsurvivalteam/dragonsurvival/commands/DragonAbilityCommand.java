@@ -4,6 +4,7 @@ import by.dragonsurvivalteam.dragonsurvival.commands.arguments.DragonAbilityArgu
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncMagicData;
+import by.dragonsurvivalteam.dragonsurvival.registry.DSCommands;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbility;
@@ -27,9 +28,6 @@ import java.util.function.BiPredicate;
 import java.util.function.Function;
 
 public class DragonAbilityCommand {
-    @Translation(comments = "%s of %s players processed (non-dragons are skipped)")
-    private static final String PROCESSED = Translation.Type.COMMAND.wrap("ability.processed");
-
     @Translation(comments = "[%s] does not have the ability [%s]")
     private static final String UNKNOWN_ABILITY = Translation.Type.COMMAND.wrap("ability.unknown");
 
@@ -42,51 +40,51 @@ public class DragonAbilityCommand {
         event.getDispatcher().register(Commands.literal("dragon-ability")
                 .requires(sourceStack -> sourceStack.hasPermission(Commands.LEVEL_GAMEMASTERS))
                 .then(Commands.literal("remove")
-                        .then(Commands.argument("targets", EntityArgument.players())
-                                .executes(source -> handleCommand(source, EntityArgument.getPlayers(source, "targets"), (player, data) -> data.clear(player) > 0))
+                        .then(Commands.argument(DSCommands.TARGETS, EntityArgument.players())
+                                .executes(source -> handleCommand(source, EntityArgument.getPlayers(source, DSCommands.TARGETS), (player, data) -> data.clear(player) > 0))
                                 .then(Commands.argument(DragonAbilityArgument.ID, new DragonAbilityArgument(event.getBuildContext()))
-                                        .executes(source -> handleCommand(source, EntityArgument.getPlayers(source, "targets"), (player, data) -> data.removeAbility(player, DragonAbilityArgument.get(source).getKey())))
+                                        .executes(source -> handleCommand(source, EntityArgument.getPlayers(source, DSCommands.TARGETS), (player, data) -> data.removeAbility(player, DragonAbilityArgument.get(source).getKey())))
                                 )))
                 .then(Commands.literal("add")
-                        .then(Commands.argument("targets", EntityArgument.players())
+                        .then(Commands.argument(DSCommands.TARGETS, EntityArgument.players())
                                 .then(Commands.argument(DragonAbilityArgument.ID, new DragonAbilityArgument(event.getBuildContext()))
-                                        .executes(source -> handleCommand(source, EntityArgument.getPlayers(source, "targets"), (player, data) -> data.addAbility(player, DragonAbilityArgument.get(source))))
+                                        .executes(source -> handleCommand(source, EntityArgument.getPlayers(source, DSCommands.TARGETS), (player, data) -> data.addAbility(player, DragonAbilityArgument.get(source))))
                                 )
                         )
                 )
                 .then(Commands.literal("refresh")
-                        .then(Commands.argument("targets", EntityArgument.players())
-                                .executes(source -> handleCommand(source, EntityArgument.getPlayers(source, "targets"), (player, data) -> {
+                        .then(Commands.argument(DSCommands.TARGETS, EntityArgument.players())
+                                .executes(source -> handleCommand(source, EntityArgument.getPlayers(source, DSCommands.TARGETS), (player, data) -> {
                                     data.refresh(player, DragonStateProvider.getData(player).species());
                                     return true;
                                 })))
                 )
                 .then(Commands.literal("query")
-                        .then(Commands.argument("target", EntityArgument.player())
+                        .then(Commands.argument(DSCommands.TARGET, EntityArgument.player())
                                 .then(Commands.argument(DragonAbilityArgument.ID, new DragonAbilityArgument(event.getBuildContext()))
                                         .then(Commands.literal("level")
-                                                .executes(source -> query(source, EntityArgument.getPlayer(source, "target"), DragonAbilityArgument.get(source), DragonAbilityInstance::level))
+                                                .executes(source -> query(source, EntityArgument.getPlayer(source, DSCommands.TARGET), DragonAbilityArgument.get(source), DragonAbilityInstance::level))
                                         )
                                         .then(Commands.literal("max_level")
-                                                .executes(source -> query(source, EntityArgument.getPlayer(source, "target"), DragonAbilityArgument.get(source), DragonAbilityInstance::getMaxLevel))
+                                                .executes(source -> query(source, EntityArgument.getPlayer(source, DSCommands.TARGET), DragonAbilityArgument.get(source), DragonAbilityInstance::getMaxLevel))
                                         )
                                         .then(Commands.literal("current_cooldown")
-                                                .executes(source -> query(source, EntityArgument.getPlayer(source, "target"), DragonAbilityArgument.get(source), DragonAbilityInstance::cooldown))
+                                                .executes(source -> query(source, EntityArgument.getPlayer(source, DSCommands.TARGET), DragonAbilityArgument.get(source), DragonAbilityInstance::cooldown))
                                         )
                                         .then(Commands.literal("current_tick")
-                                                .executes(source -> query(source, EntityArgument.getPlayer(source, "target"), DragonAbilityArgument.get(source), DragonAbilityInstance::getCurrentTick))
+                                                .executes(source -> query(source, EntityArgument.getPlayer(source, DSCommands.TARGET), DragonAbilityArgument.get(source), DragonAbilityInstance::getCurrentTick))
                                         )
                                         .then(Commands.literal("cooldown")
-                                                .executes(source -> query(source, EntityArgument.getPlayer(source, "target"), DragonAbilityArgument.get(source), instance -> instance.value().activation().getCooldown(instance.level())))
+                                                .executes(source -> query(source, EntityArgument.getPlayer(source, DSCommands.TARGET), DragonAbilityArgument.get(source), instance -> instance.value().activation().getCooldown(instance.level())))
                                         )
                                         .then(Commands.literal("cast_time")
-                                                .executes(source -> query(source, EntityArgument.getPlayer(source, "target"), DragonAbilityArgument.get(source), instance -> instance.value().activation().getCastTime(instance.level())))
+                                                .executes(source -> query(source, EntityArgument.getPlayer(source, DSCommands.TARGET), DragonAbilityArgument.get(source), instance -> instance.value().activation().getCastTime(instance.level())))
                                         )
                                         .then(Commands.literal("is_applying_effects")
-                                                .executes(source -> query(source, EntityArgument.getPlayer(source, "target"), DragonAbilityArgument.get(source), instance -> instance.isApplyingEffects() ? 1 : 0))
+                                                .executes(source -> query(source, EntityArgument.getPlayer(source, DSCommands.TARGET), DragonAbilityArgument.get(source), instance -> instance.isApplyingEffects() ? 1 : 0))
                                         )
                                         .then(Commands.literal("is_enabled")
-                                                .executes(source -> query(source, EntityArgument.getPlayer(source, "target"), DragonAbilityArgument.get(source), instance -> instance.isEnabled() ? 1 : 0))
+                                                .executes(source -> query(source, EntityArgument.getPlayer(source, DSCommands.TARGET), DragonAbilityArgument.get(source), instance -> instance.isEnabled() ? 1 : 0))
                                         )
                                 )
                         )
@@ -116,7 +114,7 @@ public class DragonAbilityCommand {
         }
 
         int finalProcessed = processed;
-        source.getSource().sendSuccess(() -> Component.translatable(PROCESSED, finalProcessed, targets.size()), true);
+        source.getSource().sendSuccess(() -> Component.translatable(DSCommands.PROCESSED, finalProcessed, targets.size()), true);
 
         return processed;
     }

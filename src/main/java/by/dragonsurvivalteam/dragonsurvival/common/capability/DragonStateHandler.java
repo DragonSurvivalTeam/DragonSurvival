@@ -393,7 +393,7 @@ public class DragonStateHandler extends EntityStateHandler {
             updateGrowthAndStage(player != null ? player.registryAccess() : null, getSavedDragonAge(speciesKey()));
 
             // The server doesn't need to check for skin preset refreshes; the client handles this
-            if(FMLLoader.getDist().isClient()) {
+            if (FMLLoader.getDist().isClient()) {
                 if (skinData.skinPresets.get().get(speciesKey()).isEmpty()) {
                     refreshSkinPresetForSpecies(dragonSpecies, dragonBody);
                     recompileCurrentSkin();
@@ -430,6 +430,7 @@ public class DragonStateHandler extends EntityStateHandler {
         setSpecies(player, species, false);
     }
 
+    /** Does *not* synchronize the change to the client */
     public void setBody(@Nullable final Player player, final Holder<DragonBody> dragonBody) {
         Holder<DragonBody> oldBody = this.dragonBody;
         this.dragonBody = dragonBody;

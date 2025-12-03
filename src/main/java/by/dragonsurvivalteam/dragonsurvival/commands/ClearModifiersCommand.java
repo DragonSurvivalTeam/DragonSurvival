@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.commands;
 
+import by.dragonsurvivalteam.dragonsurvival.registry.DSCommands;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import com.google.common.collect.ImmutableList;
@@ -28,8 +29,8 @@ public class ClearModifiersCommand {
                 .requires(source -> source.hasPermission(Commands.LEVEL_GAMEMASTERS))
                 .then(literal("clear")
                         .executes(source -> clearModifiers(source.getSource(), ImmutableList.of(source.getSource().getEntityOrException())))
-                        .then(argument("targets", EntityArgument.entities())
-                                .executes(source -> clearModifiers(source.getSource(), EntityArgument.getEntities(source, "targets")))
+                        .then(argument(DSCommands.TARGETS, EntityArgument.entities())
+                                .executes(source -> clearModifiers(source.getSource(), EntityArgument.getEntities(source, DSCommands.TARGETS)))
                         )
                 )
         );
