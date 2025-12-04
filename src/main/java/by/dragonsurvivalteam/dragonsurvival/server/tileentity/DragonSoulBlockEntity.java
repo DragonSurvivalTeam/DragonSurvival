@@ -68,7 +68,7 @@ public class DragonSoulBlockEntity extends BlockEntity {
     }
 
     public boolean canInteract(final Player player) {
-        if (!locked) {
+        if (!locked || player.isCreative()) {
             return true;
         }
 
