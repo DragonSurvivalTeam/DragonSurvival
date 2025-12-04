@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.common.items;
 
+import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
@@ -19,6 +20,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import by.dragonsurvivalteam.dragonsurvival.server.handlers.PlayerLoginHandler;
+import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import by.dragonsurvivalteam.dragonsurvival.util.ResourceHelper;
 import net.minecraft.core.Holder;
@@ -67,7 +69,7 @@ public class DragonSoulItem extends BlockItem {
 
     @Translation(comments = {
             "■§7 This vessel holds the dragon's soul. Use it to become a dragon. Replaces your current stats if you are a dragon.§r",
-            "■§7 You can place it as a block while crouching (a behaviour you can disable by using a hotkey)\n"
+            "■§7 You can place it as a block while crouching (a behaviour you can disable by pressing %s§7)\n"
     })
     private static final String DESCRIPTION = Translation.Type.DESCRIPTION.wrap("dragon_soul");
 
@@ -252,7 +254,7 @@ public class DragonSoulItem extends BlockItem {
 
         if (stack.has(DSDataComponents.DRAGON_SOUL)) {
             CompoundTag handlerData = getHandlerData(stack);
-            tooltips.add(Component.translatable(DESCRIPTION));
+            tooltips.add(Component.translatable(DESCRIPTION, DSColors.dynamicValue(DragonSurvival.PROXY.getDragonSoulPlacementKeybind())));
 
             ResourceKey<DragonSpecies> species = ResourceHelper.decodeKey(provider, DragonSpecies.REGISTRY, handlerData, DragonStateHandler.DRAGON_SPECIES);
             Component name;

@@ -83,6 +83,10 @@ public interface Proxy {
         return Set.of();
     }
 
+    default Component getDragonSoulPlacementKeybind() {
+        return Component.empty();
+    }
+
     @Nullable RegistryAccess getAccess();
 
     boolean isMining(final Player player);

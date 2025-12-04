@@ -8,6 +8,7 @@ import by.dragonsurvivalteam.dragonsurvival.client.util.FakeClientPlayerUtils;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.AbilityAnimation;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.AnimationType;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
+import by.dragonsurvivalteam.dragonsurvival.input.Keybind;
 import by.dragonsurvivalteam.dragonsurvival.network.dragon_soul_block.SyncDragonSoulAnimation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.emotes.DragonEmote;
 import by.dragonsurvivalteam.dragonsurvival.server.tileentity.DragonSoulBlockEntity;
@@ -21,6 +22,7 @@ import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.client.resources.sounds.TickableSoundInstance;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
@@ -218,5 +220,10 @@ public class ClientProxy implements Proxy {
         ResourceLocation resource = DragonSurvivalClient.DRAGON_MODEL.getAnimationResource(dragon);
         BakedAnimations animations = GeckoLibCache.getBakedAnimations().get(resource);
         return animations.animations().keySet();
+    }
+
+    @Override
+    public Component getDragonSoulPlacementKeybind() {
+        return Keybind.TOGGLE_DRAGON_SOUL_PLACEMENT.get().getTranslatedKeyMessage();
     }
 }
