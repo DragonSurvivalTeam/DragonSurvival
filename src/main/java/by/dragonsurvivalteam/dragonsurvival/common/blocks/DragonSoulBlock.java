@@ -66,11 +66,12 @@ public class DragonSoulBlock extends Block implements SimpleWaterloggedBlock, En
     public static final String UNLOCKED = Translation.Type.GUI.wrap("message.soul.unlocked");
 
     @Translation(comments = {
-            "Item usages:",
-            "- Nametag named after a valid animation to apply it",
-            "- Empty nametag to reset animation to default (%s)",
-            "- Paper to list the applicable animations",
-            "Shift-click to lock / unlock, safeguarding it against other players"
+            "§7■ §2Soul Statue usages:§r§7",
+            "§7- §fBreak§r§7 it to return the soul§r§7",
+            "§7- §fPaper§r§7 to list all available animation names§r§7",
+            "§7- §fName Tag§r§7 with a valid animation name to apply it§r§7.",
+            "§7- §fEmpty Name Tag§r§7 to reset the animation to default (%s§7)§r§7",
+            "§7- §fShift-click§r§7 to lock or unlock, protecting it from other players§r§7"
     })
     public static final String INFO = Translation.Type.GUI.wrap("message.soul.info");
 
