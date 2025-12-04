@@ -31,6 +31,8 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Optional;
+
 public class Phasing extends DurationInstanceBase<PhasingData, Phasing.Instance> {
     @Translation(comments = {
             "§6■ Block Phasing:§r",
@@ -42,18 +44,21 @@ public class Phasing extends DurationInstanceBase<PhasingData, Phasing.Instance>
     public static Codec<Phasing> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             DurationInstanceBase.CODEC.fieldOf("base").forGetter(identity -> identity),
             RegistryCodecs.homogeneousList(Registries.BLOCK).fieldOf("blocks").forGetter(Phasing::blocks),
-            LevelBasedValue.CODEC.fieldOf("range").forGetter(Phasing::range)
+            LevelBasedValue.CODEC.fieldOf("range").forGetter(Phasing::range),
+            Codec.BOOL.optionalFieldOf("invert").forGetter(Phasing::invert)
     ).apply(instance, Phasing::new));
 
     public static final int NO_RANGE = 0;
 
     private final HolderSet<Block> blocks;
     private final LevelBasedValue range;
+    private final Optional<Boolean> invert;
     
-    public Phasing(final DurationInstanceBase<?, ?> base, final HolderSet<Block> blocks, final LevelBasedValue range) {
+    public Phasing(final DurationInstanceBase<?, ?> base, final HolderSet<Block> blocks, final LevelBasedValue range, final Optional<Boolean> invert) {
         super(base);
         this.blocks = blocks;
         this.range = range;
+        this.invert = invert;
     }
 
     public MutableComponent getDescription(final int abilityLevel) {
@@ -63,12 +68,12 @@ public class Phasing extends DurationInstanceBase<PhasingData, Phasing.Instance>
         return Component.translatable(PHASE_DATA, DSColors.dynamicValue(range), DSColors.dynamicValue(appliesTo));
     }
 
-    public static Phasing create(final ResourceLocation id, final HolderSet<Block> validBlocks, final LevelBasedValue range) {
-        return new Phasing(DurationInstanceBase.create(id).infinite().removeAutomatically().hidden().build(), validBlocks, range);
+    public static Phasing create(final ResourceLocation id, final HolderSet<Block> validBlocks, final LevelBasedValue range, final Optional<Boolean> invert) {
+        return new Phasing(DurationInstanceBase.create(id).infinite().removeAutomatically().hidden().build(), validBlocks, range, invert);
     }
 
-    public static Phasing create(final ResourceLocation id, final LevelBasedValue duration, final HolderSet<Block> validBlocks, final LevelBasedValue range) {
-        return new Phasing(DurationInstanceBase.create(id).duration(duration).hidden().build(), validBlocks, range);
+    public static Phasing create(final ResourceLocation id, final LevelBasedValue duration, final HolderSet<Block> validBlocks, final LevelBasedValue range, final Optional<Boolean> invert) {
+        return new Phasing(DurationInstanceBase.create(id).duration(duration).hidden().build(), validBlocks, range, invert);
     }
 
     @Override
@@ -88,6 +93,8 @@ public class Phasing extends DurationInstanceBase<PhasingData, Phasing.Instance>
     public LevelBasedValue range() {
         return range;
     }
+
+    public Optional<Boolean> invert() { return invert; }
 
     public static class Instance extends DurationInstance<Phasing> {
         public static final Codec<Instance> CODEC = RecordCodecBuilder.create(instance -> DurationInstance.codecStart(
@@ -114,7 +121,7 @@ public class Phasing extends DurationInstanceBase<PhasingData, Phasing.Instance>
             // Looking within 10 degrees of 'down' should result in no collision at all
             // We need angle above/below, not flat - mult by -1 if y is greater than player pos
             // We also need in front of/behind - if in front 180 degrees of view, compare against playerXRot, if behind compare against -playerXRot
-            if (block == null || baseData().blocks().contains(block.builtInRegistryHolder())) {
+            if (block == null || ( baseData().blocks().contains(block.builtInRegistryHolder()) ^ baseData().invert.orElse(false))) {
                 int aboveMult = 1;
                 if (above) {
                     aboveMult = -1;
@@ -122,7 +129,7 @@ public class Phasing extends DurationInstanceBase<PhasingData, Phasing.Instance>
                 double dotXProd = blockVec.dot(blockStraightVec);
                 double magXSqBlock = blockVec.dot(blockVec);
                 double magSqStraight = blockStraightVec.dot(blockStraightVec);
-                double dXSqrt = dotXProd / (Math.sqrt(magXSqBlock) * Math.sqrt(magSqStraight));
+                double dXSqrt = dotXProd / (Math.sqrt(magXSqBlock) * Math.sqrt(magSqStraight));  // If this is too slow, compare the square
                 double dXDegrees = Math.acos(dXSqrt) * 180/Math.PI * aboveMult;
                 double dotYProd = entityLookVec.dot(blockStraightVec); // If > 0, in front, else behind
                 float compareRot = playerXRot;
