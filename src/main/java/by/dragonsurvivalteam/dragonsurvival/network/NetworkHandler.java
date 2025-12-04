@@ -156,7 +156,6 @@ public class NetworkHandler {
         registrar.playToClient(SyncBreathParticles.TYPE, SyncBreathParticles.STREAM_CODEC, SyncBreathParticles::handleClient);
         registrar.playToClient(SyncMana.TYPE, SyncMana.STREAM_CODEC, SyncMana::handleClient);
         registrar.playToClient(SyncCooldown.TYPE, SyncCooldown.STREAM_CODEC, SyncCooldown::handleClient);
-        registrar.playToClient(AttemptPhasingUpdate.TYPE, AttemptPhasingUpdate.STREAM_CODEC, AttemptPhasingUpdate::handleClient);
 
         registrar.playBidirectional(SyncDragonSoulAnimation.TYPE, SyncDragonSoulAnimation.STREAM_CODEC, new DirectionalPayloadHandler<>(SyncDragonSoulAnimation::handleClient, SyncDragonSoulAnimation::handleServer));
         registrar.playBidirectional(SyncPlayerSkinPreset.TYPE, SyncPlayerSkinPreset.STREAM_CODEC, new DirectionalPayloadHandler<>(SyncPlayerSkinPreset::handleClient, SyncPlayerSkinPreset::handleServer));

@@ -4,9 +4,11 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.Phasing;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +30,17 @@ public record BlockPhasingEffect(List<Phasing> phases) implements AbilityEntityE
                 phase.remove(entity);
             }
         });
+    }
+
+    @Override
+    public List<MutableComponent> getDescription(final Player dragon, final DragonAbilityInstance ability) {
+        List<MutableComponent> components = new ArrayList<>();
+
+        for (Phasing phase : phases) {
+            components.add(phase.getDescription(ability.level()));
+        }
+
+        return components;
     }
 
     @Override

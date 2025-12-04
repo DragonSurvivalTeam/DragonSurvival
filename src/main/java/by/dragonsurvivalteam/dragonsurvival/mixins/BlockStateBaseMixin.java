@@ -6,9 +6,7 @@ import com.mojang.serialization.MapCodec;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectArrayMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
@@ -45,16 +43,24 @@ public abstract class BlockStateBaseMixin extends StateHolder<Block, BlockState>
     public void dragonSurvival$phaseThroughBlocks(BlockGetter world, BlockPos pos, CollisionContext context, CallbackInfoReturnable<VoxelShape> cir)  {
         VoxelShape original = cir.getReturnValue();
         Entity entity;
-        if (original.isEmpty() || !(context instanceof EntityCollisionContext esc) || (entity = esc.getEntity()) == null || !(entity instanceof Player player)) {
+        if (original.isEmpty() || !(context instanceof EntityCollisionContext esc) || (entity = esc.getEntity()) == null) {
             return;
         }
 
-        Level level = entity.level();
-        Vec3 upVector = entity.getUpVector(1.0F);
+        Block block = world.getBlockState(pos).getBlock();
         Vec3 entityPos = entity.getPosition(1.0F);
-        float entityDownRot = entity.getXRot();
+        float entityXRot = entity.getXRot();
+        Vec3 blockPos = pos.getCenter();
+        Vec3 blockVec = blockPos.subtract(entityPos);
+        Vec3 blockStraightPos = new Vec3(blockPos.x(), entityPos.y(), blockPos.z());
+        Vec3 blockStraightVec = blockStraightPos.subtract(entityPos);
+        float entityYRot = entity.getYRot() * (float) (Math.PI / 180.0);
+        double entityYCos = Math.cos(entityYRot);
+        double entityYSin = Math.sin(entityYRot);
+        Vec3 entityLookVec = new Vec3(entityYCos-entityYSin, 0, entityYSin+entityYCos);
+        boolean above = blockPos.y() > entityPos.y();
 
-        boolean result = entity.getExistingData(DSDataAttachments.PHASING).map(phasing -> phasing.testValidBlocks(player, level, pos, upVector, entityPos, entityDownRot)).orElse(false);
+        boolean result = entity.getExistingData(DSDataAttachments.PHASING).map(phasing -> phasing.testValidBlocks(block, blockVec, blockStraightVec, above, entityLookVec, entityXRot)).orElse(false);
 
        cir.setReturnValue(result ? Shapes.empty() : original);
     }

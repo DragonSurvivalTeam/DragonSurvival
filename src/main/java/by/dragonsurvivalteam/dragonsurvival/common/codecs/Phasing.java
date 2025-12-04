@@ -4,56 +4,71 @@ import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.duration_instance.CommonData;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.duration_instance.DurationInstance;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.duration_instance.DurationInstanceBase;
-import by.dragonsurvivalteam.dragonsurvival.network.magic.AttemptPhasingUpdate;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncPhasingInstance;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.PhasingData;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
+import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
+import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.Vec3i;
+import net.minecraft.core.*;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.levelgen.blockpredicates.BlockPredicate;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Phasing extends DurationInstanceBase<PhasingData, Phasing.Instance> {
+    @Translation(comments = {
+            "§6■ Block Phasing:§r",
+            " - Vision Range: %s",
+            " - Applies to: %s"
+    })
+    private static final String PHASE_DATA = Translation.Type.GUI.wrap("block_phasing");
+
     public static Codec<Phasing> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             DurationInstanceBase.CODEC.fieldOf("base").forGetter(identity -> identity),
-            BlockPredicate.CODEC.fieldOf("valid_blocks").forGetter(Phasing::validBlocks)
+            RegistryCodecs.homogeneousList(Registries.BLOCK).fieldOf("blocks").forGetter(Phasing::blocks),
+            LevelBasedValue.CODEC.fieldOf("range").forGetter(Phasing::range)
     ).apply(instance, Phasing::new));
 
-    private final BlockPredicate validBlocks;
+    public static final int NO_RANGE = 0;
+
+    private final HolderSet<Block> blocks;
+    private final LevelBasedValue range;
     
-    public Phasing(final DurationInstanceBase<?, ?> base, BlockPredicate validBlocks) {
+    public Phasing(final DurationInstanceBase<?, ?> base, final HolderSet<Block> blocks, final LevelBasedValue range) {
         super(base);
-        this.validBlocks = validBlocks;
+        this.blocks = blocks;
+        this.range = range;
     }
 
-    public static Phasing create(final ResourceLocation id, final BlockPredicate validBlocks) {
-        return new Phasing(DurationInstanceBase.create(id).infinite().removeAutomatically().hidden().build(), validBlocks);
+    public MutableComponent getDescription(final int abilityLevel) {
+        int range = (int) this.range.calculate(abilityLevel);
+
+        MutableComponent appliesTo = Functions.translateHolderSet(blocks, Holder::getRegisteredName);
+        return Component.translatable(PHASE_DATA, DSColors.dynamicValue(range), DSColors.dynamicValue(appliesTo));
     }
 
-    public static Phasing create(final ResourceLocation id, final LevelBasedValue duration, final BlockPredicate validBlocks) {
-        return new Phasing(DurationInstanceBase.create(id).duration(duration).hidden().build(), validBlocks);
+    public static Phasing create(final ResourceLocation id, final HolderSet<Block> validBlocks, final LevelBasedValue range) {
+        return new Phasing(DurationInstanceBase.create(id).infinite().removeAutomatically().hidden().build(), validBlocks, range);
+    }
+
+    public static Phasing create(final ResourceLocation id, final LevelBasedValue duration, final HolderSet<Block> validBlocks, final LevelBasedValue range) {
+        return new Phasing(DurationInstanceBase.create(id).duration(duration).hidden().build(), validBlocks, range);
     }
 
     @Override
@@ -66,8 +81,12 @@ public class Phasing extends DurationInstanceBase<PhasingData, Phasing.Instance>
         return DSDataAttachments.PHASING.value();
     }
 
-    public BlockPredicate validBlocks() {
-        return validBlocks;
+    public HolderSet<Block> blocks() {
+        return blocks;
+    }
+
+    public LevelBasedValue range() {
+        return range;
     }
 
     public static class Instance extends DurationInstance<Phasing> {
@@ -79,54 +98,45 @@ public class Phasing extends DurationInstanceBase<PhasingData, Phasing.Instance>
             super(baseData, commonData, currentDuration);
         }
 
-        private final List<BlockPos> cachedBlocks = new ArrayList<>();
-        // This doesn't track the dimension, which might be problematic?  Probably fully clear the cache when changing dimension
-        // We also need to clear it if the test result changes
+        /** If the passed state is 'null' it will return the range as well */
+        public int getRange(@Nullable final Block block) {
+            //noinspection deprecation -> ignore
+            if (block == null || baseData().blocks().contains(block.builtInRegistryHolder())) {
+                return (int) Math.max(NO_RANGE, baseData().range().calculate(appliedAbilityLevel()));
+            }
 
-        public boolean testValidBlocks(Player s, Level t, BlockPos u, Vec3 v, Vec3 w, float x) {
-            // Test for if block position is above the plane angle in addition to predicate
+            return 0;
+        }
+
+        public boolean getAngleCheck(Block block, Vec3 blockVec, Vec3 blockStraightVec, boolean above, Vec3 entityLookVec, float playerXRot) {
+            // Up is -90, down is 90
             // Looking 45 degrees up or down should result in 'stairs' of collision when phasing
             // Looking within 10 degrees of 'down' should result in no collision at all
-            // Maybe instead of this possibly expensive calculation, get angle from vector between BlockPos and Player pos
-            // Then compare that angle to the amount the player is looking down
-            double d = v.dot(u.getCenter().subtract(w));
-            // Also this calculation result is incorrect, will need to review...
-            if (t instanceof ServerLevel l && s instanceof ServerPlayer p) {
-                boolean result = baseData().validBlocks().test(l, u);
-                if (result && !cachedBlocks.contains(u)) {
-                    // May need to track entity?  I don't know if client needs the result of every person phasing or if the server will suffice
-                    addToCache(u);
-                    PacketDistributor.sendToPlayer(p, new AttemptPhasingUpdate(this.id().toString(), u.getX(), u.getY(), u.getZ(), false));
-                } else if (!result && cachedBlocks.contains(u)) {
-                    removeFromCache(u);
-                    PacketDistributor.sendToPlayer(p, new AttemptPhasingUpdate(this.id().toString(), u.getX(), u.getY(), u.getZ(), true));
+            // We need angle above/below, not flat - mult by -1 if y is greater than player pos
+            // We also need in front of/behind - if in front 180 degrees of view, compare against playerXRot, if behind compare against -playerXRot
+            if (block == null || baseData().blocks().contains(block.builtInRegistryHolder())) {
+                int aboveMult = 1;
+                if (above) {
+                    aboveMult = -1;
                 }
-                return result && (d > 0 || x > 80);
-            }
-            cleanCache(u);
-            if (cachedBlocks.contains(u)) {
-                return (d > 0 || x > 80);
+                double dotXProd = blockVec.dot(blockStraightVec);
+                double magXSqBlock = blockVec.dot(blockVec);
+                double magSqStraight = blockStraightVec.dot(blockStraightVec);
+                double dXSqrt = dotXProd / (Math.sqrt(magXSqBlock) * Math.sqrt(magSqStraight));
+                double dXDegrees = Math.acos(dXSqrt) * 180/Math.PI * aboveMult;
+                double dotYProd = entityLookVec.dot(blockStraightVec); // If > 0, in front, else behind
+                float compareRot = playerXRot;
+                if (dotYProd < 0) {
+                    compareRot = -playerXRot;
+                }
+                return (dXDegrees < compareRot || playerXRot > 80);
             }
             return false;
         }
 
-        public void addToCache(BlockPos location) {
-            cachedBlocks.add(location);
-        }
-
-        public void removeFromCache(BlockPos location){
-            cachedBlocks.remove(location);
-        }
-
-        public void cleanCache(BlockPos location) {
-            Vec3i blockLocation = new Vec3i(location.getX(), location.getY(), location.getZ());
-            // TODO: Might cause problems at ancient sizes or lag at small sizes, should be based on player size and not a static 50
-            cachedBlocks.removeIf(inst -> inst.distManhattan(blockLocation) > 50);
-        }
-
         @Override
         public Component getDescription() {
-            return Component.empty();
+            return baseData().getDescription(appliedAbilityLevel());
         }
 
         @Override
