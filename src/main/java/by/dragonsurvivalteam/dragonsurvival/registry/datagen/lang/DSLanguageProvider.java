@@ -31,12 +31,13 @@ import org.objectweb.asm.Type;
 import java.lang.annotation.ElementType;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
 
 public class DSLanguageProvider extends LanguageProvider {
     private final String locale;
@@ -56,15 +57,19 @@ public class DSLanguageProvider extends LanguageProvider {
         return Component.translatable(enumClassKey(enumValue) + "." + enumValue.name().toLowerCase(Locale.ENGLISH));
     }
 
-    public static Component translateKeyMappings(final HashSet<String> keys) {
-        if (keys.isEmpty()) {
+    public static Component translateKeyMappings(final Set<String> keys) {
+        return translateList(keys, key -> DragonSurvival.PROXY.translateKeyMapping(key));
+    }
+
+    public static Component translateList(final Collection<String> entries, final Function<String, MutableComponent> translator) {
+        if (entries.isEmpty()) {
             return Component.empty();
         }
 
         MutableComponent list = null;
 
-        for (String key : keys) {
-            MutableComponent name = DragonSurvival.PROXY.translateKeyMapping(key);
+        for (String entry : entries) {
+            MutableComponent name = translator.apply(entry);
 
             if (list == null) {
                 list = name;

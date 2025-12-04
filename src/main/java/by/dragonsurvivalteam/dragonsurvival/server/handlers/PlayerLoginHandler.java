@@ -63,6 +63,7 @@ public class PlayerLoginHandler {
 
         // Clear the state from the previous session
         player.getData(DSDataAttachments.PLAYER_DATA).clearKeys();
+        PacketDistributor.sendToPlayer(player, new SyncData(player.getId(), DSDataAttachments.PLAYER_DATA.getId(), player.getData(DSDataAttachments.PLAYER_DATA).serializeNBT(player.registryAccess())));
 
         DragonStateHandler handler = DragonStateProvider.getData(player);
 

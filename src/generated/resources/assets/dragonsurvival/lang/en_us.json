@@ -1179,6 +1179,8 @@
   "dragonsurvival.gui.message.pillage_on_cooldown": "You have to wait %s seconds until you can steal from this villager",
   "dragonsurvival.gui.message.pillage_unsuccessful": "This villager had no items you could steal",
   "dragonsurvival.gui.message.self_too_big": "You are too big to mount on this creature. You must be at most %s the scale of the creature you are trying to ride or smaller, but you are scale %s and the creature is scale %s.",
+  "dragonsurvival.gui.message.soul.applicable_animations": "The applicable animations are: %s",
+  "dragonsurvival.gui.message.soul.info": "Item usages:\n- Nametag named after a valid animation to apply it\n- Empty nametag to reset animation to default (%s)\n- Paper to list the applicable animations\nShift-click to lock / unlock, safeguarding it against other players",
   "dragonsurvival.gui.message.soul.invalid_animation": "The animation %s is not known.",
   "dragonsurvival.gui.message.soul.locked": "This statue is now §2locked§r and can only be broken by you.",
   "dragonsurvival.gui.message.soul.unlocked": "This statue is now §4unlocked§r and everyone can break it.",

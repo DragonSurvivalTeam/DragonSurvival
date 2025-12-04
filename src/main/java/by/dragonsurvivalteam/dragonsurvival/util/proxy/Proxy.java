@@ -17,6 +17,8 @@ import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.util.FakePlayer;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Set;
+
 public interface Proxy {
     default @Nullable Player getLocalPlayer() {
         return null;
@@ -75,6 +77,10 @@ public interface Proxy {
 
     default MutableComponent translateKeyMapping(final String key) {
         return Component.translatable(key);
+    }
+
+    default Set<String> getAnimations(final DragonSoulBlockEntity soul) {
+        return Set.of();
     }
 
     @Nullable RegistryAccess getAccess();

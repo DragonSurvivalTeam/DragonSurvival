@@ -31,9 +31,12 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
+import software.bernie.geckolib.cache.GeckoLibCache;
+import software.bernie.geckolib.loading.object.BakedAnimations;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class ClientProxy implements Proxy {
     private final Map<ResourceLocation, TickableSoundInstance> soundInstances = new HashMap<>();
@@ -207,5 +210,13 @@ public class ClientProxy implements Proxy {
     @Override
     public MutableComponent translateKeyMapping(final String key) {
         return InputConstants.getKey(key).getDisplayName().copy();
+    }
+
+    @Override
+    public Set<String> getAnimations(final DragonSoulBlockEntity soul) {
+        DragonEntity dragon = FakeClientPlayerUtils.getFakeDragon(soul.fakePlayerIndex, soul.getHandler());
+        ResourceLocation resource = DragonSurvivalClient.DRAGON_MODEL.getAnimationResource(dragon);
+        BakedAnimations animations = GeckoLibCache.getBakedAnimations().get(resource);
+        return animations.animations().keySet();
     }
 }

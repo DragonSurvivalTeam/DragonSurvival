@@ -6,6 +6,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.DSBlockEntities;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSBlocks;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSItems;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.DSLanguageProvider;
 import by.dragonsurvivalteam.dragonsurvival.server.tileentity.DragonSoulBlockEntity;
 import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
 import net.minecraft.core.BlockPos;
@@ -20,7 +21,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.NameTagItem;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
@@ -64,6 +65,18 @@ public class DragonSoulBlock extends Block implements SimpleWaterloggedBlock, En
     @Translation(comments = "This statue is now §4unlocked§r and everyone can break it.")
     public static final String UNLOCKED = Translation.Type.GUI.wrap("message.soul.unlocked");
 
+    @Translation(comments = {
+            "Item usages:",
+            "- Nametag named after a valid animation to apply it",
+            "- Empty nametag to reset animation to default (%s)",
+            "- Paper to list the applicable animations",
+            "Shift-click to lock / unlock, safeguarding it against other players"
+    })
+    public static final String INFO = Translation.Type.GUI.wrap("message.soul.info");
+
+    @Translation(comments = "The applicable animations are: %s")
+    public static final String APPLICABLE_ANIMATIONS = Translation.Type.GUI.wrap("message.soul.applicable_animations");
+
     public DragonSoulBlock(final Properties properties) {
         super(properties);
         registerDefaultState(getStateDefinition().any().setValue(BlockStateProperties.HORIZONTAL_FACING, Direction.NORTH));
@@ -75,14 +88,18 @@ public class DragonSoulBlock extends Block implements SimpleWaterloggedBlock, En
             return;
         }
 
-        if (event.getLevel().getBlockEntity(event.getPos()) instanceof DragonSoulBlockEntity soul && soul.locked && !event.getPlayer().getUUID().equals(soul.playerUUID)) {
+        if (event.getLevel().getBlockEntity(event.getPos()) instanceof DragonSoulBlockEntity soul && !soul.canInteract(event.getPlayer())) {
             event.setCanceled(true);
         }
     }
 
     @Override
     protected @NotNull ItemInteractionResult useItemOn(@NotNull final ItemStack stack, @NotNull final BlockState state, @NotNull final Level level, @NotNull final BlockPos position, @NotNull final Player player, @NotNull final InteractionHand hand, @NotNull final BlockHitResult hitResult) {
-        if (stack.getItem() instanceof NameTagItem && level.getBlockEntity(position) instanceof DragonSoulBlockEntity soul) {
+        if (!(level.getBlockEntity(position) instanceof DragonSoulBlockEntity soul)) {
+            return super.useItemOn(stack, state, level, position, player, hand, hitResult);
+        }
+
+        if (stack.is(Items.NAME_TAG) && soul.canInteract(player)) {
             Component name = stack.get(DataComponents.CUSTOM_NAME);
             String animation = name == null ? DragonSoulBlockEntity.DEFAULT_ANIMATION : name.getString();
 
@@ -96,6 +113,13 @@ public class DragonSoulBlock extends Block implements SimpleWaterloggedBlock, En
             } else {
                 return ItemInteractionResult.sidedSuccess(level.isClientSide());
             }
+        } else if (stack.is(Items.PAPER)) {
+            if (level.isClientSide()) {
+                Component animations = DSLanguageProvider.translateList(DragonSurvival.PROXY.getAnimations(soul), Component::literal);
+                player.displayClientMessage(Component.translatable(APPLICABLE_ANIMATIONS, DSColors.withColor(animations, DSColors.GOLD)), false);
+            }
+
+            return ItemInteractionResult.sidedSuccess(level.isClientSide());
         }
 
         return super.useItemOn(stack, state, level, position, player, hand, hitResult);
@@ -104,6 +128,10 @@ public class DragonSoulBlock extends Block implements SimpleWaterloggedBlock, En
     @Override
     protected @NotNull InteractionResult useWithoutItem(@NotNull final BlockState state, @NotNull final Level level, @NotNull final BlockPos position, @NotNull final Player player, @NotNull final BlockHitResult hitResult) {
         if (!player.getMainHandItem().isEmpty() || !player.isCrouching()) {
+            if (level.isClientSide()) {
+                player.displayClientMessage(Component.translatable(INFO, DSColors.withColor(DragonSoulBlockEntity.DEFAULT_ANIMATION, DSColors.GOLD)), false);
+            }
+
             return InteractionResult.PASS;
         }
 
@@ -125,9 +153,10 @@ public class DragonSoulBlock extends Block implements SimpleWaterloggedBlock, En
     @Override // Similar to 'ShulkerBoxBlock' we will drop the soul in creative mode
     public @NotNull BlockState playerWillDestroy(@NotNull final Level level, @NotNull final BlockPos position, @NotNull final BlockState state, @NotNull final Player player) {
         if (!level.isClientSide() && player.isCreative()) {
-            ItemStack stack = DSItems.DRAGON_SOUL.value().getDefaultInstance();
             level.getBlockEntity(position, DSBlockEntities.DRAGON_SOUL.get()).ifPresent(soul -> {
+                ItemStack stack = DSItems.DRAGON_SOUL.value().getDefaultInstance();
                 soul.saveToItem(stack, level.registryAccess());
+
                 ItemEntity item = new ItemEntity(level, position.getX(), position.getY(), position.getZ(), stack);
                 item.setDefaultPickUpDelay();
                 level.addFreshEntity(item);
