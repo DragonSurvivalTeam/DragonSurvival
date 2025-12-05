@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.common.handlers;
 
+import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
@@ -13,7 +14,7 @@ import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.bus.api.EventPriority;
@@ -25,8 +26,8 @@ import net.neoforged.neoforge.event.entity.EntityLeaveLevelEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.StreamSupport;
 
 @EventBusSubscriber
 public class DragonSizeHandler {
@@ -144,24 +145,53 @@ public class DragonSizeHandler {
     }
 
     /** Modified version of {@link Entity#fudgePositionAfterSizeChange(EntityDimensions)} */
-    public static void fudgePositionAfterSizeChange(final Entity entity, final EntityDimensions newDimensions) {
-        EntityDimensions oldDimensions = ((EntityAccessor) entity).dragonSurvival$getDimensions();
-        double widthChange = Math.max(0, oldDimensions.width() - newDimensions.width()) + Shapes.BIG_EPSILON;
-        double heightChange = Math.max(0, oldDimensions.height() - newDimensions.height()) + Shapes.BIG_EPSILON;
-
-        Vec3 halfHeightPosition = entity.position().add(0, newDimensions.height() / 2, 0);
-        VoxelShape fullHeightVoxelShape = Shapes.create(AABB.ofSize(halfHeightPosition, widthChange, heightChange, widthChange));
-        Optional<Vec3> fullHeightFreePosition = entity.level().findFreePosition(entity, fullHeightVoxelShape, halfHeightPosition, oldDimensions.width(), oldDimensions.height(), oldDimensions.width());
-
-        if (fullHeightFreePosition.isPresent()) {
-            entity.setPos(fullHeightFreePosition.get().add(0, -oldDimensions.height() / 2, 0));
-        } else {
-            VoxelShape deltaHeightVoxelShape = Shapes.create(AABB.ofSize(halfHeightPosition, widthChange, Shapes.BIG_EPSILON, widthChange));
-
-            entity.level().findFreePosition(entity, deltaHeightVoxelShape, halfHeightPosition, oldDimensions.width(), newDimensions.height(), oldDimensions.width()).ifPresent(freePosition -> {
-                entity.setPos(freePosition.add(0, (double) (-newDimensions.height()) / 20 + Shapes.BIG_EPSILON, 0));
-            });
+    public static void fudgePositionAfterSizeChange(final Entity entity, final EntityDimensions currentDimension) {
+        if (entity.isSpectator()) {
+            return;
         }
+
+        // At this point the new dimensions have already been applied
+        // (Since this gets called at the end of 'refreshDimensions')
+        EntityDimensions newDimensions = ((EntityAccessor) entity).dragonSurvival$getDimensions();
+        float newWidth = newDimensions.width();
+        float newHeight = newDimensions.height();
+
+        if (currentDimension.width() > newWidth && currentDimension.height() > newHeight) {
+            return;
+        }
+
+        AABB boundingBox = createPlayerBounds(entity, currentDimension, newDimensions);
+        VoxelShape collisionShape = createCollisionShape(entity, boundingBox, newWidth, newHeight);
+
+        // Don't bother optimizing, since the shape is just discarded anyway
+        Shapes.joinUnoptimized(Shapes.create(boundingBox), collisionShape, BooleanOp.ONLY_FIRST)
+                .closestPointTo(entity.position().add(0, newHeight / 2, 0))
+                .ifPresentOrElse(
+                        position -> entity.setPos(position.add(0, -newHeight / 2 + Shapes.BIG_EPSILON, 0)),
+                        () -> DragonSurvival.LOGGER.debug("Could not find a proper position after size change for [{}]", entity)
+                );
+    }
+
+    public static AABB createPlayerBounds(final Entity entity, final EntityDimensions currentDimensions, final EntityDimensions newDimensions) {
+        double widthDifference = newDimensions.width() - currentDimensions.width();
+        double heightDifference = newDimensions.height() - currentDimensions.height();
+        double width = widthDifference + newDimensions.width() + Shapes.BIG_EPSILON;
+        double height = heightDifference + newDimensions.height() + Shapes.BIG_EPSILON;
+
+        AABB boundingBox = AABB.ofSize(entity.position().add(0, newDimensions.height() / 2, 0), widthDifference, heightDifference, widthDifference);
+        return boundingBox.inflate(width, height, width);
+    }
+
+    public static VoxelShape createCollisionShape(final Entity entity, final AABB boundingBox, double width, double height) {
+        return StreamSupport.stream(entity.level().getCollisions(entity, boundingBox).spliterator(), false)
+                .filter(shape -> entity.level().getWorldBorder().isWithinBounds(shape.bounds()))
+                .flatMap(shape -> shape.toAabbs().stream())
+                // Increase the area in which it can find suitable positions
+                // The use a lower height value since usually we'd need to adjust to a horizontal plane
+                .map(aabb -> aabb.inflate(width / 2, height / 4, width / 2))
+                .map(Shapes::create)
+                // Make sure we don't add any unnecessary optimization calls
+                .reduce(Shapes.empty(), (first,second) -> Shapes.joinUnoptimized(first, second, BooleanOp.OR));
     }
 
     public static boolean canPoseFit(final Player player, @Nullable final Pose pose) {

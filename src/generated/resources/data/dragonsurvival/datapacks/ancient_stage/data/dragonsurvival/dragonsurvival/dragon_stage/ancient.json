@@ -17,6 +17,10 @@
     {
       "growth_in_ticks": -72000,
       "items": "dragonsurvival:star_bone"
+    },
+    {
+      "growth_in_ticks": 0,
+      "items": "dragonsurvival:star_heart"
     }
   ],
   "growth_range": {
@@ -24,7 +28,12 @@
     "min": 60.0
   },
   "is_default": true,
-  "is_natural_growth_stopped": {},
+  "is_natural_growth_stopped": {
+    "type_specific": {
+      "type": "dragonsurvival:dragon_predicate",
+      "is_growth_stopped": true
+    }
+  },
   "modifiers": [
     {
       "amount": 0.02,

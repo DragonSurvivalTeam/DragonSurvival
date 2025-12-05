@@ -223,7 +223,7 @@ public abstract class EntityMixin {
     // After a size refresh, vanilla normally prevents fudgePosition from being called. So we force it to be called, then *only* override the pose after all position fudging has completed
     // to prevent a pose change from triggering based on an incorrect position (which would cause stuttering otherwise).
     @Inject(method = "refreshDimensions", at = @At("TAIL"))
-    private void dragonSurvival$fudgePositionAfterDragonSizeChange(CallbackInfo callback, @Local(ordinal = 0) EntityDimensions entitydimensions) {
+    private void dragonSurvival$fudgePositionAfterDragonSizeChange(final CallbackInfo callback, @Local(ordinal = 0) final EntityDimensions currentDimension) {
         if ((Object) this instanceof Player player) {
             DragonStateHandler handler = DragonStateProvider.getData(player);
 
@@ -232,7 +232,7 @@ public abstract class EntityMixin {
             }
 
             if (handler.shouldFudgePosition) {
-                DragonSizeHandler.fudgePositionAfterSizeChange(player, entitydimensions);
+                DragonSizeHandler.fudgePositionAfterSizeChange(player, currentDimension);
             }
 
             DragonSizeHandler.overridePose(player);
