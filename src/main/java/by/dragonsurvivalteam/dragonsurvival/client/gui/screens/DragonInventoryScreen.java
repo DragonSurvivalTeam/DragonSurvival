@@ -42,6 +42,7 @@ import net.neoforged.neoforge.client.gui.widget.ExtendedButton;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforgespi.language.IModInfo;
 import org.jetbrains.annotations.NotNull;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -130,7 +131,7 @@ public class DragonInventoryScreen extends EffectRenderingInventoryScreen<Dragon
         super.init();
 
         if (mouseX != -1 && mouseY != -1) {
-            InputConstants.grabOrReleaseMouse(minecraft.getWindow().getWindow(), 212993, mouseX, mouseY);
+            InputConstants.grabOrReleaseMouse(minecraft.getWindow().getWindow(), GLFW.GLFW_CURSOR_NORMAL, mouseX, mouseY);
             mouseX = -1;
             mouseY = -1;
         }

@@ -99,7 +99,7 @@ public class DragonSurvivalClient {
         NeoForge.EVENT_BUS.addListener(this::preventThirdPersonWhenSuffocating);
 
         if (ModCheck.isModLoaded(ModCheck.CURIOS)) {
-            NeoForge.EVENT_BUS.addListener(CuriosButtonHandler::onInventoryGuiInit);
+            NeoForge.EVENT_BUS.addListener(CuriosButtonHandler::handleCurios);
         }
     }
 

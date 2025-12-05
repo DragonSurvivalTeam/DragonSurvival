@@ -89,6 +89,7 @@
     "client.RenderTypeHelperMixin",
     "client.ScreenAccessor",
     "client.SmithingScreenMixin",
+    "curios.CuriosButtonMixin",
     "iris.GameRendererMixin",
     "multimine.MultiMineClientMixin",
     "sodium.ClientNeoForgeModMixin",
