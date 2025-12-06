@@ -2227,7 +2227,7 @@
   "tag.item.dragonsurvival.small_wooden_dragon_doors": "木质幼龙门",
   "tag.item.dragonsurvival.uncommon_armor": "非凡龙铠（材质）",
   "tag.item.dragonsurvival.wooden_dragon_doors": "木质龙之门",
-  "tag.villager_profession.dragonsurvival.pillage_blacklist": "无法被掠夺的职业"
+  "tag.villager_profession.dragonsurvival.pillage_blacklist": "无法被掠夺的职业",
   "trigger_type.dragonsurvival.constant": "被动",
   "trigger_type.dragonsurvival.on_block_break": "破坏方块时",
   "trigger_type.dragonsurvival.on_death": "死亡时",
