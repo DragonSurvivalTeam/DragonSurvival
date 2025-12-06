@@ -39,6 +39,9 @@ public class DragonGrowthHandler {
     @Translation(comments = "You have reached the smallest growth")
     private static final String REACHED_SMALLEST = Translation.Type.GUI.wrap("system.reached_smallest");
 
+    @Translation(comments = "Your surroundings prevent you from increasing your growth")
+    private static final String ENCLOSED_SPACE = Translation.Type.GUI.wrap("system.enclosed_space");
+
     private static final int INTERVAL = Functions.secondsToTicks(1);
 
     @SubscribeEvent
@@ -72,10 +75,23 @@ public class DragonGrowthHandler {
 
         handler.incrementGrowthUses(event.getItemStack().getItem());
         double oldGrowth = handler.getDesiredGrowth();
-        handler.setDesiredGrowth(player, handler.getDesiredGrowth() + growth);
+        double desiredGrowth = handler.getDesiredGrowth() + growth;
+
+        if (!isGrowthAllowed(player, handler, desiredGrowth)) {
+            if (player.level().isClientSide()) {
+                player.displayClientMessage(Component.translatable(ENCLOSED_SPACE).withStyle(ChatFormatting.RED), true);
+            }
+
+            return;
+        }
+
+        handler.setDesiredGrowth(player, desiredGrowth);
 
         if (handler.getDesiredGrowth() == oldGrowth) {
-            player.sendSystemMessage(Component.translatable(growth > 0 ? REACHED_LARGEST : REACHED_SMALLEST).withStyle(ChatFormatting.RED));
+            if (player.level().isClientSide()) {
+                player.displayClientMessage(Component.translatable(growth > 0 ? REACHED_LARGEST : REACHED_SMALLEST).withStyle(ChatFormatting.RED), true);
+            }
+
             return;
         }
 
@@ -116,26 +132,9 @@ public class DragonGrowthHandler {
             double oldGrowth = handler.getDesiredGrowth();
             double desiredGrowth = handler.getDesiredGrowth() + dragonStage.ticksToGrowth(INTERVAL);
 
-            boolean stopGrowth = false;
+            boolean isGrowthAllowed = isGrowthAllowed(player, handler, desiredGrowth);
 
-            float currentScale = player.getScale();
-            float newScale = handler.calculateScale(player.getAttribute(Attributes.SCALE), desiredGrowth);
-            float difference = newScale - currentScale;
-
-            if (difference > 0) {
-                EntityDimensions dimensions = ((EntityAccessor) player).dragonSurvival$getDimensions();
-                AABB playerBounds = dimensions.scale(1 + difference).makeBoundingBox(player.position()).inflate(Shapes.BIG_EPSILON);
-
-                WorldBorder border = player.level().getWorldBorder();
-
-                if (playerBounds.minX < border.getMinX() || playerBounds.maxX > border.getMaxX() || playerBounds.minZ < border.getMinZ() || playerBounds.maxZ > border.getMaxZ()) {
-                    stopGrowth = true;
-                } else if (!player.level().noBlockCollision(player, playerBounds)) {
-                    stopGrowth = true;
-                }
-            }
-
-            if (stopGrowth || oldGrowth == desiredGrowth || dragonStage.isNaturalGrowthStopped().map(condition -> condition.matches(player.serverLevel(), player.position(), player)).orElse(false)) {
+            if (!isGrowthAllowed || oldGrowth == desiredGrowth || dragonStage.isNaturalGrowthStopped().map(condition -> condition.matches(player.serverLevel(), player.position(), player)).orElse(false)) {
                 if (handler.isGrowing) {
                     handler.isGrowing = false;
                     PacketDistributor.sendToPlayer(player, new SyncGrowthState(false));
@@ -149,5 +148,27 @@ public class DragonGrowthHandler {
 
             handler.setDesiredGrowth(player, desiredGrowth);
         }
+    }
+
+    public static boolean isGrowthAllowed(final Player player, final DragonStateHandler handler, final double desiredGrowth) {
+        float currentScale = player.getScale();
+        float newScale = handler.calculateScale(player.getAttribute(Attributes.SCALE), desiredGrowth);
+        float difference = newScale - currentScale;
+
+        if (difference > 0) {
+            EntityDimensions dimensions = ((EntityAccessor) player).dragonSurvival$getDimensions();
+            AABB playerBounds = dimensions.scale(1 + difference).makeBoundingBox(player.position()).inflate(Shapes.BIG_EPSILON);
+
+            WorldBorder border = player.level().getWorldBorder();
+
+            if (playerBounds.minX < border.getMinX() || playerBounds.maxX > border.getMaxX() || playerBounds.minZ < border.getMinZ() || playerBounds.maxZ > border.getMaxZ()) {
+                return false;
+            } else if (!player.level().noBlockCollision(player, playerBounds.move(0, 0.25, 0))) {
+                // Move y position slightly upwards to prevent false-positives with floor collisions
+                return false;
+            }
+        }
+
+        return true;
     }
 }

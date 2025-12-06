@@ -1,8 +1,10 @@
 package by.dragonsurvivalteam.dragonsurvival.commands;
 
+import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.commands.arguments.DragonGrowthArgument;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
+import by.dragonsurvivalteam.dragonsurvival.common.handlers.DragonGrowthHandler;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSCommands;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import net.minecraft.commands.Commands;
@@ -20,7 +22,7 @@ public class DragonGrowthCommand {
     @Translation(comments = "Set growth to %s for %s.")
     private static final String SET_GROWTH_TO_PLAYER = Translation.Type.COMMAND.wrap("growth.clear_from_single_entity");
 
-    @Translation(comments = "Failed to set growth since player was not a dragon.")
+    @Translation(comments = "Failed to set growth (not a dragon or in an enclosed space)")
     private static final String FAILED_TO_SET_GROWTH = Translation.Type.COMMAND.wrap("growth.failed_to_set_growth");
 
     public static void register(final RegisterCommandsEvent event) {
@@ -38,6 +40,11 @@ public class DragonGrowthCommand {
                                         DragonStateHandler handler = DragonStateProvider.getData(player);
 
                                         if (handler.isDragon()) {
+                                            if (!DragonGrowthHandler.isGrowthAllowed(player, handler, growth)) {
+                                                DragonSurvival.LOGGER.debug("Growth of [{}] cannot be set by command due to player being in a too enclosed space", player);
+                                                continue;
+                                            }
+
                                             handler.setDesiredGrowth(player, growth);
                                             count++;
                                         }
