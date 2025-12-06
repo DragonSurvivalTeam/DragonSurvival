@@ -65,7 +65,6 @@ public class DragonSizeHandler {
             handler.previousPose = overridePose(player);
         }
 
-
         EntityDimensions newDimensions = calculateDimensions(handler, player, handler.previousPose);
         event.setNewSize(new EntityDimensions(newDimensions.width(), newDimensions.height(), newDimensions.eyeHeight(), event.getOldSize().attachments(), event.getOldSize().fixed()));
     }
@@ -211,7 +210,7 @@ public class DragonSizeHandler {
                 .map(aabb -> aabb.inflate(width, height, width))
                 .map(Shapes::create)
                 // Make sure we don't add any unnecessary optimization calls
-                .reduce(Shapes.empty(), (first,second) -> Shapes.joinUnoptimized(first, second, BooleanOp.OR));
+                .reduce(Shapes.empty(), (first, second) -> Shapes.joinUnoptimized(first, second, BooleanOp.OR));
     }
 
     public static boolean canPoseFit(final Player player, @Nullable final Pose pose) {

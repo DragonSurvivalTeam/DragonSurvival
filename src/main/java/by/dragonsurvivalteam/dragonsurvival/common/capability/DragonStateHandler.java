@@ -489,10 +489,14 @@ public class DragonStateHandler extends EntityStateHandler {
             return instance.getValue();
         }
 
-        List<AttributeModifier> attributeModifiers = stage().value().filterModifiers(instance);
+        return calculateScale(instance, partialVisualGrowth);
+    }
+
+    public float calculateScale(final AttributeInstance scale, final double growth) {
+        List<AttributeModifier> attributeModifiers = stage().value().filterModifiers(scale);
         List<Modifier> modifiers = stage().value().modifiers().stream().filter(modifier -> modifier.attribute().is(Attributes.SCALE)).toList();
 
-        return Functions.calculateAttributeValue(instance, partialVisualGrowth - stage().value().growthRange().min(), attributeModifiers, modifiers);
+        return (float) Functions.calculateAttributeValue(scale, growth - stage().value().growthRange().min(), attributeModifiers, modifiers);
     }
 
     public double getGrowth() {
