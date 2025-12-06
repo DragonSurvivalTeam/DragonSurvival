@@ -33,6 +33,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(Entity.class)
 public abstract class EntityMixin {
+    @Shadow private EntityDimensions dimensions;
 
     /** Correctly position the passenger when riding a player dragon */
     @ModifyReturnValue(method = "getPassengerAttachmentPoint", at = @At("RETURN"))
@@ -67,10 +68,11 @@ public abstract class EntityMixin {
         return original;
     }
 
-    @ModifyReturnValue(method = "getPassengerRidingPosition", at = @At("RETURN"))
     // TODO :: might be enough to add our offset only to this one (since 'getPassengerAttachmentPoint' seems to only be called by it and nowhere else)
-    protected Vec3 dragonSurvival$modifyPassengerRidingPosition(Vec3 original, @Local(argsOnly = true, index = 0) Entity entity) {
+    @ModifyReturnValue(method = "getPassengerRidingPosition", at = @At("RETURN"))
+    protected Vec3 dragonSurvival$modifyPassengerRidingPosition(Vec3 original, @Local(argsOnly = true) Entity entity) {
         Entity mount = (Entity) (Object) this;
+
         if (entity instanceof Player passenger && hasPassenger(passenger) && DragonStateProvider.isDragon(passenger) && !DragonStateProvider.isDragon(mount)) {
             // FIXME :: I did this is both places since different entities seem to possibly use either path... not sure how to reconcile this
             // Handle dragon riding normal mounts (e.g. boats)
@@ -223,7 +225,7 @@ public abstract class EntityMixin {
     // After a size refresh, vanilla normally prevents fudgePosition from being called. So we force it to be called, then *only* override the pose after all position fudging has completed
     // to prevent a pose change from triggering based on an incorrect position (which would cause stuttering otherwise).
     @Inject(method = "refreshDimensions", at = @At("TAIL"))
-    private void dragonSurvival$fudgePositionAfterDragonSizeChange(CallbackInfo callback, @Local(ordinal = 0) EntityDimensions entitydimensions) {
+    private void dragonSurvival$fudgePositionAfterDragonSizeChange(final CallbackInfo callback, @Local(ordinal = 0) final EntityDimensions currentDimension) {
         if ((Object) this instanceof Player player) {
             DragonStateHandler handler = DragonStateProvider.getData(player);
 
@@ -232,7 +234,7 @@ public abstract class EntityMixin {
             }
 
             if (handler.shouldFudgePosition) {
-                DragonSizeHandler.fudgePositionAfterSizeChange(player, entitydimensions);
+                DragonSizeHandler.fudgePositionAfterSizeChange(player, currentDimension, dimensions);
             }
 
             DragonSizeHandler.overridePose(player);

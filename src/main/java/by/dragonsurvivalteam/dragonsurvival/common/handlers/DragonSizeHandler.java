@@ -14,6 +14,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.bus.api.EventPriority;
@@ -25,8 +26,8 @@ import net.neoforged.neoforge.event.entity.EntityLeaveLevelEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.StreamSupport;
 
 @EventBusSubscriber
 public class DragonSizeHandler {
@@ -143,25 +144,74 @@ public class DragonSizeHandler {
         return Pose.STANDING;
     }
 
-    /** Modified version of {@link Entity#fudgePositionAfterSizeChange(EntityDimensions)} */
-    public static void fudgePositionAfterSizeChange(final Entity entity, final EntityDimensions newDimensions) {
-        EntityDimensions oldDimensions = ((EntityAccessor) entity).dragonSurvival$getDimensions();
-        double widthChange = Math.max(0, oldDimensions.width() - newDimensions.width()) + Shapes.BIG_EPSILON;
-        double heightChange = Math.max(0, oldDimensions.height() - newDimensions.height()) + Shapes.BIG_EPSILON;
-
-        Vec3 halfHeightPosition = entity.position().add(0, newDimensions.height() / 2, 0);
-        VoxelShape fullHeightVoxelShape = Shapes.create(AABB.ofSize(halfHeightPosition, widthChange, heightChange, widthChange));
-        Optional<Vec3> fullHeightFreePosition = entity.level().findFreePosition(entity, fullHeightVoxelShape, halfHeightPosition, oldDimensions.width(), oldDimensions.height(), oldDimensions.width());
-
-        if (fullHeightFreePosition.isPresent()) {
-            entity.setPos(fullHeightFreePosition.get().add(0, -oldDimensions.height() / 2, 0));
-        } else {
-            VoxelShape deltaHeightVoxelShape = Shapes.create(AABB.ofSize(halfHeightPosition, widthChange, Shapes.BIG_EPSILON, widthChange));
-
-            entity.level().findFreePosition(entity, deltaHeightVoxelShape, halfHeightPosition, oldDimensions.width(), newDimensions.height(), oldDimensions.width()).ifPresent(freePosition -> {
-                entity.setPos(freePosition.add(0, (double) (-newDimensions.height()) / 20 + Shapes.BIG_EPSILON, 0));
-            });
+    /**
+     * Modified version of {@link Entity#fudgePositionAfterSizeChange(EntityDimensions)} </br>
+     * Note that the smooth growth may cause this to be called very often, usually related to: </br>
+     * - Growth command / Anything that sets a new stage </br>
+     * - High natural growth value </br>
+     * - Growth item with a high value </br>
+     */
+    public static void fudgePositionAfterSizeChange(final Entity entity, final EntityDimensions currentDimension, final EntityDimensions newDimensions) {
+        if (entity.noPhysics || ((EntityAccessor) entity).dragonSurvival$isFirstTick()) {
+            // Reasonable checks that vanilla is also doing
+            return;
         }
+
+        float newWidth = newDimensions.width();
+        float newHeight = newDimensions.height();
+
+        if (currentDimension.width() > newWidth && currentDimension.height() > newHeight) {
+            return;
+        }
+
+        if (entity.level().noBlockCollision(entity, newDimensions.makeBoundingBox(entity.position()))) {
+            // Do a minimal check to see if the player is phasing into any blocks
+            // It doesn't seem to have a big impact when actual collision happens and skips unneeded shape calculations
+            return;
+        }
+
+        double yOffset = newHeight / 2;
+        AABB expandedBounds = createPlayerBounds(entity, currentDimension, newDimensions, yOffset);
+        // We expand the shape of each collision with a smaller height since we usually don't need to adjust the position on the y level
+        // The height has a big impact on the performance
+        Vec3 newPosition = findNewPosition(entity, expandedBounds, createCollisionShape(entity, expandedBounds, newWidth, newHeight), yOffset);
+
+        if (newPosition != null) {
+            // Technically the position should never be null
+            // Since it should at least be the original position
+            entity.setPos(newPosition.add(0, -yOffset, 0));
+        }
+    }
+
+    private static Vec3 findNewPosition(final Entity entity, final AABB boundingBox, final VoxelShape collisionShape, final double yOffset) {
+        // Don't bother optimizing, since the shape is just discarded anyway
+        return Shapes.joinUnoptimized(Shapes.create(boundingBox), collisionShape, BooleanOp.ONLY_FIRST)
+                .closestPointTo(entity.position().add(0, yOffset, 0))
+                .orElse(null);
+    }
+
+    public static AABB createPlayerBounds(final Entity entity, final EntityDimensions currentDimensions, final EntityDimensions newDimensions, final double yOffset) {
+        double widthDifference = newDimensions.width() - currentDimensions.width() + Shapes.BIG_EPSILON;
+        double heightDifference = newDimensions.height() - currentDimensions.height() + Shapes.BIG_EPSILON;
+
+        AABB boundingBox = AABB.ofSize(entity.position().add(0, yOffset, 0), widthDifference, heightDifference, widthDifference);
+        // Inflate adds the sizes fully to min and max, meaning it doubles the size of the actual shape
+        // This is used to catch more blocks and therefore collect more positions that the player can be moved to
+        return boundingBox.inflate(newDimensions.width(), newDimensions.height(), newDimensions.width());
+    }
+
+    public static VoxelShape createCollisionShape(final Entity entity, final AABB boundingBox, double widthExpansion, double heightExpansion) {
+        double width = widthExpansion / 2;
+        double height = heightExpansion / 2;
+
+        return StreamSupport.stream(entity.level().getBlockCollisions(entity, boundingBox).spliterator(), false)
+                .filter(shape -> entity.level().getWorldBorder().isWithinBounds(shape.bounds()))
+                .flatMap(shape -> shape.toAabbs().stream())
+                // Increase the area in which it can find suitable positions
+                .map(aabb -> aabb.inflate(width, height, width))
+                .map(Shapes::create)
+                // Make sure we don't add any unnecessary optimization calls
+                .reduce(Shapes.empty(), (first,second) -> Shapes.joinUnoptimized(first, second, BooleanOp.OR));
     }
 
     public static boolean canPoseFit(final Player player, @Nullable final Pose pose) {
