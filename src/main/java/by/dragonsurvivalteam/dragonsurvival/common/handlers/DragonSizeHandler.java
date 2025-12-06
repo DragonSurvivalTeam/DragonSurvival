@@ -179,7 +179,7 @@ public class DragonSizeHandler {
         if (newPosition != null) {
             // Technically the position should never be null
             // Since it should at least be the original position
-            entity.setPos(newPosition.add(0, -yOffset + Shapes.BIG_EPSILON, 0));
+            entity.setPos(newPosition.add(0, -yOffset, 0));
         }
     }
 
