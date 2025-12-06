@@ -31,6 +31,7 @@ import by.dragonsurvivalteam.dragonsurvival.server.handlers.ServerFlightHandler;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.Input;
@@ -48,6 +49,7 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -169,12 +171,24 @@ public class ClientDragonRenderer {
         }
     }
 
+    private static double lastUpdate = Double.MIN_VALUE;
+    private static VoxelShape shape;
+
+    /** See {@link net.minecraft.client.renderer.debug.CollisionBoxRenderer} */
     private static void renderCollisionBox(final PoseStack pose, final LocalPlayer player, final VertexConsumer buffer, final Vec3 camera) {
         EntityDimensions dimensions = player.getDimensions(player.getPose());
         double width = dimensions.width();
         double height = dimensions.height();
-        AABB boundingBox = DragonSizeHandler.createPlayerBounds(player, dimensions, dimensions);
-        LevelRenderer.renderVoxelShape(pose, buffer, DragonSizeHandler.createCollisionShape(player, boundingBox, width, height), -camera.x(), -camera.y(), -camera.z(), 1, 1, 1, 1, true);
+
+        double current = Util.getNanos();
+
+        if (current - lastUpdate > 1.0E8) {
+            AABB boundingBox = DragonSizeHandler.createPlayerBounds(player, dimensions, dimensions, height);
+            shape = DragonSizeHandler.createCollisionShape(player, boundingBox, width, height);
+            lastUpdate = current;
+        }
+
+        LevelRenderer.renderVoxelShape(pose, buffer, shape, -camera.x(), -camera.y(), -camera.z(), 1, 1, 1, 0.5f, true);
     }
 
     private static void renderAbilityHitbox(final LocalPlayer player, final PoseStack pose, final VertexConsumer buffer) {
