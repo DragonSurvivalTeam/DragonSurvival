@@ -79,6 +79,8 @@ import java.util.Map;
 
 @Mod(value = DragonSurvival.MODID, dist = Dist.CLIENT)
 public class DragonSurvivalClient {
+    private static final float TIMER_INCREMENT = 0.01f;
+
     public static float TIMER;
     public static DragonRenderer DRAGON_RENDERER; // Needed for access in LevelRendererMixin
 
@@ -104,10 +106,10 @@ public class DragonSurvivalClient {
     }
 
     private void incrementTimer(final ClientTickEvent.Post event) {
-        TIMER += 0.01f;
-
-        if (TIMER > 1) {
+        if (TIMER + TIMER_INCREMENT > Float.MAX_VALUE) {
             TIMER = 0;
+        } else {
+            TIMER += TIMER_INCREMENT;
         }
     }
 

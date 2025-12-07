@@ -343,11 +343,14 @@ public class Functions {
     }
 
     public static int lerpColor(final List<Integer> colors) {
-        return lerpColor(colors, 0);
+        return lerpColor(colors, 1, 0);
     }
 
-    /** @param offset Offsets the index of the color to be used (expected to be between 0 and 1) */
-    public static int lerpColor(final List<Integer> colors, final double offset) {
+    /**
+     * @param speed Determines how quickly the colors are shifted through
+     * @param offset Offsets the index of the color to be used (expected to be between 0 and 1)
+     */
+    public static int lerpColor(final List<Integer> colors, final double speed, final double offset) {
         if (colors.isEmpty()) {
             return DSColors.NONE;
         }
@@ -356,17 +359,22 @@ public class Functions {
             return colors.getFirst();
         }
 
-        float timer = (float) (DragonSurvival.PROXY.getTimer() + offset);
+        // Determine by how much % we have shifted through the color so far
+        double timer = (DragonSurvival.PROXY.getTimer() * speed + offset) % 1;
 
-        if (timer > 1) {
-            timer -= 1;
+        if (timer < 0) {
+            timer = 0;
         }
 
-        float sizeIndex = timer * colors.size();
+        float sizeIndex = (float) (timer * colors.size());
         int currentIndex = (int) (Math.floor(sizeIndex) % colors.size());
         int nextIndex = (currentIndex + 1) % colors.size();
 
-        return FastColor.ARGB32.lerp(sizeIndex - currentIndex, DSColors.withAlpha(colors.get(currentIndex), 255), DSColors.withAlpha(colors.get(nextIndex), 255));
+        return FastColor.ARGB32.lerp(
+                sizeIndex - currentIndex,
+                DSColors.withAlpha(colors.get(currentIndex), 255),
+                DSColors.withAlpha(colors.get(nextIndex), 255)
+        );
     }
 
     /** Makes sure to return an enum value (instead of an exception) */

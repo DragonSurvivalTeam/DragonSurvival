@@ -55,7 +55,7 @@ public class BlockVision extends DurationInstanceBase<BlockVisionData, BlockVisi
 
     public static final int DEFAULT_PARTICLE_RATE = 10;
     public static final double DEFAULT_COLOR_SHIFT_RATE = 1;
-    public static final int NO_PARTICLE_RATE = -1;
+    public static final int NO_VALUE = -1;
 
     public static final Codec<BlockVision> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             DurationInstanceBase.CODEC.fieldOf("base").forGetter(identity -> identity),
@@ -64,7 +64,7 @@ public class BlockVision extends DurationInstanceBase<BlockVisionData, BlockVisi
             DisplayType.CODEC.fieldOf("display_type").forGetter(BlockVision::displayType),
             TextColor.CODEC.listOf().fieldOf("colors").forGetter(BlockVision::colors),
             ExtraCodecs.intRange(1, Integer.MAX_VALUE).optionalFieldOf("particle_rate", DEFAULT_PARTICLE_RATE).forGetter(BlockVision::particleRate),
-            MiscCodecs.doubleRange(0.1, 10).optionalFieldOf("particle_rate", DEFAULT_COLOR_SHIFT_RATE).forGetter(BlockVision::colorShiftRate)
+            MiscCodecs.doubleRange(0, 10).optionalFieldOf("color_shift_rate", DEFAULT_COLOR_SHIFT_RATE).forGetter(BlockVision::colorShiftRate)
     ).apply(instance, BlockVision::new));
 
     private final HolderSet<Block> blocks;
@@ -100,7 +100,7 @@ public class BlockVision extends DurationInstanceBase<BlockVisionData, BlockVisi
         if (colors.size() == 1) {
             color = DSColors.withColor(colors.getFirst().serialize(), colors.getFirst().getValue());
         } else if (colors.size() > 1) {
-            color = DSColors.withColor(Component.translatable(MULTIPLE_COLORS), Functions.lerpColor(colors.stream().map(TextColor::getValue).toList()));
+            color = DSColors.withColor(Component.translatable(MULTIPLE_COLORS), Functions.lerpColor(colors.stream().map(TextColor::getValue).toList(), colorShiftRate, 0));
         } else {
             color = DSColors.dynamicValue(Component.translatable(LangKey.NONE));
         }
@@ -190,7 +190,16 @@ public class BlockVision extends DurationInstanceBase<BlockVisionData, BlockVisi
                 return baseData().particleRate();
             }
 
-            return NO_PARTICLE_RATE;
+            return NO_VALUE;
+        }
+
+        public double getColorShiftRate(final Block block) {
+            //noinspection deprecation -> ignore
+            if (baseData().blocks().contains(block.builtInRegistryHolder())) {
+                return baseData().colorShiftRate();
+            }
+
+            return NO_VALUE;
         }
 
         @Override

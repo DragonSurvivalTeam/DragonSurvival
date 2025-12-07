@@ -69,6 +69,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
+import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.Tags;
 
 import java.util.List;
@@ -93,6 +94,29 @@ public class DragonAbilities {
                 List.of(
                         new ActionContainer(new SelfTarget(AbilityTargeting.entity(List.of(
                                 BlockVisionEffect.single(BlockVision.create(
+                                                        DurationInstanceBase.create(DragonSurvival.res("plant_treasure_shader"))
+                                                                .hidden().build()
+                                                )
+                                                .blocks(HolderSet.direct(
+                                                        Blocks.TALL_GRASS.builtInRegistryHolder(),
+                                                        Blocks.FERN.builtInRegistryHolder(),
+                                                        Blocks.LILY_PAD.builtInRegistryHolder(),
+                                                        Blocks.KELP_PLANT.builtInRegistryHolder()
+                                                ))
+                                                .range(LevelBasedValue.constant(36))
+                                                .displayType(BlockVision.DisplayType.TREASURE_SHADER)
+                                                .colors(List.of(
+                                                        TextColor.fromLegacyFormat(ChatFormatting.DARK_BLUE),
+                                                        TextColor.fromLegacyFormat(ChatFormatting.BLUE),
+                                                        TextColor.fromLegacyFormat(ChatFormatting.DARK_AQUA),
+                                                        TextColor.fromLegacyFormat(ChatFormatting.AQUA),
+                                                        TextColor.fromLegacyFormat(ChatFormatting.GREEN),
+                                                        TextColor.fromLegacyFormat(ChatFormatting.DARK_GREEN)
+                                                ))
+                                                .colorShiftRate(0.7)
+                                                .build()
+                                ),
+                                BlockVisionEffect.single(BlockVision.create(
                                                         DurationInstanceBase.create(DragonSurvival.res("diamond_vision_treasure_shader"))
                                                                 .hidden().build()
                                                 )
@@ -105,7 +129,9 @@ public class DragonAbilities {
                                                         TextColor.fromLegacyFormat(ChatFormatting.GREEN),
                                                         TextColor.fromLegacyFormat(ChatFormatting.RED),
                                                         TextColor.fromLegacyFormat(ChatFormatting.BLUE)
-                                                )).build()
+                                                ))
+                                                .colorShiftRate(0.3)
+                                                .build()
                                 ),
                                 BlockVisionEffect.single(BlockVision.create(
                                                         DurationInstanceBase.create(DragonSurvival.res("lapis_vision_treasure_shader"))
@@ -196,6 +222,7 @@ public class DragonAbilities {
                                                         TextColor.fromLegacyFormat(ChatFormatting.AQUA),
                                                         TextColor.fromLegacyFormat(ChatFormatting.DARK_GRAY)
                                                 ))
+                                                .colorShiftRate(3)
                                                 .build()
                                 ),
                                 BlockVisionEffect.single(BlockVision.create(

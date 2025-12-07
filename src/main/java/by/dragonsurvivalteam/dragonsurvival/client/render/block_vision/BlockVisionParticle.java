@@ -19,7 +19,7 @@ public class BlockVisionParticle {
             return;
         }
 
-        if (data.particleRate() == BlockVision.NO_PARTICLE_RATE) {
+        if (data.particleRate() == BlockVision.NO_VALUE) {
             // It should not really be possible for this to occur with the particle display type
             return;
         }

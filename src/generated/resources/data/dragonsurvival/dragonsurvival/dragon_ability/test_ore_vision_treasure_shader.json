@@ -8,10 +8,39 @@
               "block_visions": [
                 {
                   "base": {
+                    "id": "dragonsurvival:plant_treasure_shader",
+                    "is_hidden": true
+                  },
+                  "blocks": [
+                    "minecraft:tall_grass",
+                    "minecraft:fern",
+                    "minecraft:lily_pad",
+                    "minecraft:kelp_plant"
+                  ],
+                  "color_shift_rate": 0.7,
+                  "colors": [
+                    "dark_blue",
+                    "blue",
+                    "dark_aqua",
+                    "aqua",
+                    "green",
+                    "dark_green"
+                  ],
+                  "display_type": "treasure_shader",
+                  "range": 36.0
+                }
+              ],
+              "effect_type": "dragonsurvival:block_vision"
+            },
+            {
+              "block_visions": [
+                {
+                  "base": {
                     "id": "dragonsurvival:diamond_vision_treasure_shader",
                     "is_hidden": true
                   },
                   "blocks": "#c:ores/diamond",
+                  "color_shift_rate": 0.3,
                   "colors": [
                     "gold",
                     "dark_purple",
@@ -154,6 +183,7 @@
                     "is_hidden": true
                   },
                   "blocks": "#c:ores/netherite_scrap",
+                  "color_shift_rate": 3.0,
                   "colors": [
                     "dark_aqua",
                     "black",
