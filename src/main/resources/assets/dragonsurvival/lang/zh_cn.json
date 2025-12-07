@@ -136,7 +136,7 @@
   "command.dragonsurvival.clear_modifiers.from_single_entity": "已从%s清除%s个属性修正。",
   "command.dragonsurvival.growth.clear_from_entities": "已将成长设置为%s给%s玩家。",
   "command.dragonsurvival.growth.clear_from_single_entity": "已将成长设置为%s给%s。",
-  "command.dragonsurvival.growth.failed_to_set_growth": "设置成长失败，该玩家不是龙类。",
+  "command.dragonsurvival.growth.failed_to_set_growth": "设置成长失败（不是龙玩家或空间受限）",
   "damage_type.dragonsurvival.anti_dragon": "弑龙者",
   "damage_type.dragonsurvival.ball_lightning": "龙霆弹",
   "damage_type.dragonsurvival.blast_dust": "爆燃尘覆",
@@ -1231,6 +1231,7 @@
   "dragonsurvival.gui.teleport.facing": "传送最多 %s 格。",
   "dragonsurvival.gui.teleport.towards": "向实体方向传送最多 %s 格。",
   "dragonsurvival.gui.time_of": "%s %s",
+  "dragonsurvival.gui.system.enclosed_space": "所处空间过小，无法成长",
   "dragonsurvival.gui.tooltip.adds_abilities": "§7■赋予以下技能：%s",
   "dragonsurvival.gui.tooltip.applicable_to": "§7■适用于：%s",
   "dragonsurvival.gui.tooltip.dragon_food": "■%s 食物：%s",
@@ -2235,5 +2236,5 @@
   "trigger_type.dragonsurvival.on_key_released": "松开 %s 时 ",
   "trigger_type.dragonsurvival.on_self_hit": "受击时",
   "trigger_type.dragonsurvival.on_target_hit": "命中时",
-  "trigger_type.dragonsurvival.on_target_killed": "击杀时",
+  "trigger_type.dragonsurvival.on_target_killed": "击杀时"
 }
