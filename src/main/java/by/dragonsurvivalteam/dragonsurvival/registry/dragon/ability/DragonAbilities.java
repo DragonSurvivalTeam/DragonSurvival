@@ -1,7 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.BlockVision;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Glow;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.LevelBasedResource;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ParticleData;
@@ -11,6 +10,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.ActionContaine
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.AnimationKey;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.AnimationLayer;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.SimpleAbilityAnimation;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.block_vision.BlockVision;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.duration_instance.DurationInstance;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.duration_instance.DurationInstanceBase;
 import by.dragonsurvivalteam.dragonsurvival.common.conditions.ItemCondition;
@@ -82,35 +82,6 @@ public class DragonAbilities {
         ForestDragonAbilities.registerAbilities(context);
         SeaDragonAbilities.registerAbilities(context);
 
-        // --- Ore Vision (Outline) --- //
-
-        //noinspection DataFlowIssue -> ChatFormatting entries exist
-        context.register(ResourceKey.create(DragonAbility.REGISTRY, DragonSurvival.res("test_ore_vision_outline")), new DragonAbility(
-                PassiveActivation.DEFAULT,
-                Optional.empty(),
-                Optional.empty(),
-                List.of(
-                        new ActionContainer(new SelfTarget(AbilityTargeting.entity(List.of(
-                                BlockVisionEffect.single(new BlockVision(
-                                        DurationInstanceBase.create(DragonSurvival.res("diamond_vision_outline")).hidden().build(),
-                                        context.lookup(Registries.BLOCK).getOrThrow(Tags.Blocks.ORES_DIAMOND),
-                                        LevelBasedValue.constant(36),
-                                        BlockVision.DisplayType.OUTLINE,
-                                        List.of(
-                                                TextColor.fromLegacyFormat(ChatFormatting.GOLD),
-                                                TextColor.fromLegacyFormat(ChatFormatting.DARK_PURPLE),
-                                                TextColor.fromLegacyFormat(ChatFormatting.GREEN),
-                                                TextColor.fromLegacyFormat(ChatFormatting.RED),
-                                                TextColor.fromLegacyFormat(ChatFormatting.BLUE)
-                                        ),
-                                        BlockVision.DEFAULT_PARTICLE_RATE
-                                ))
-                        ), TargetingMode.ALLIES_AND_SELF)), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(1))
-                ),
-                true,
-                new LevelBasedResource(List.of(new LevelBasedResource.Entry(DragonSurvival.res("test"), 0)))
-        ));
-
         // --- Ore Vision (Treasure Shader) --- //
 
         //noinspection DataFlowIssue -> ChatFormatting entries exist
@@ -120,101 +91,136 @@ public class DragonAbilities {
                 Optional.empty(),
                 List.of(
                         new ActionContainer(new SelfTarget(AbilityTargeting.entity(List.of(
-                                BlockVisionEffect.single(new BlockVision(
-                                        DurationInstanceBase.create(DragonSurvival.res("lapis_vision_treasure_shader")).hidden().build(),
-                                        context.lookup(Registries.BLOCK).getOrThrow(Tags.Blocks.ORES_LAPIS),
-                                        LevelBasedValue.constant(16),
-                                        BlockVision.DisplayType.TREASURE_SHADER,
-                                        List.of(TextColor.fromLegacyFormat(ChatFormatting.BLUE)),
-                                        BlockVision.DEFAULT_PARTICLE_RATE
-                                )),
-                                BlockVisionEffect.single(new BlockVision(
-                                        DurationInstanceBase.create(DragonSurvival.res("gold_vision_treasure_shader")).hidden().build(),
-                                        context.lookup(Registries.BLOCK).getOrThrow(Tags.Blocks.ORES_GOLD),
-                                        LevelBasedValue.constant(22),
-                                        BlockVision.DisplayType.TREASURE_SHADER,
-                                        List.of(TextColor.fromLegacyFormat(ChatFormatting.GOLD)),
-                                        BlockVision.DEFAULT_PARTICLE_RATE
-                                )),
-                                BlockVisionEffect.single(new BlockVision(
-                                        DurationInstanceBase.create(DragonSurvival.res("redstone_vision_treasure_shader")).hidden().build(),
-                                        context.lookup(Registries.BLOCK).getOrThrow(Tags.Blocks.ORES_REDSTONE),
-                                        LevelBasedValue.constant(16),
-                                        BlockVision.DisplayType.TREASURE_SHADER,
-                                        List.of(TextColor.fromLegacyFormat(ChatFormatting.DARK_RED)),
-                                        BlockVision.DEFAULT_PARTICLE_RATE
-                                )),
-                                BlockVisionEffect.single(new BlockVision(
-                                        DurationInstanceBase.create(DragonSurvival.res("coal_vision_treasure_shader")).hidden().build(),
-                                        context.lookup(Registries.BLOCK).getOrThrow(Tags.Blocks.ORES_COAL),
-                                        LevelBasedValue.constant(16),
-                                        BlockVision.DisplayType.TREASURE_SHADER,
-                                        List.of(TextColor.fromLegacyFormat(ChatFormatting.BLACK)),
-                                        BlockVision.DEFAULT_PARTICLE_RATE
-                                )),
-                                BlockVisionEffect.single(new BlockVision(
-                                        DurationInstanceBase.create(DragonSurvival.res("emerald_vision_treasure_shader")).hidden().build(),
-                                        context.lookup(Registries.BLOCK).getOrThrow(Tags.Blocks.ORES_EMERALD),
-                                        LevelBasedValue.constant(26),
-                                        BlockVision.DisplayType.TREASURE_SHADER,
-                                        List.of(TextColor.fromLegacyFormat(ChatFormatting.GREEN)),
-                                        BlockVision.DEFAULT_PARTICLE_RATE
-                                )),
-                                BlockVisionEffect.single(new BlockVision(
-                                        DurationInstanceBase.create(DragonSurvival.res("quartz_vision_treasure_shader")).hidden().build(),
-                                        context.lookup(Registries.BLOCK).getOrThrow(Tags.Blocks.ORES_QUARTZ),
-                                        LevelBasedValue.constant(12),
-                                        BlockVision.DisplayType.TREASURE_SHADER,
-                                        List.of(
-                                                TextColor.fromLegacyFormat(ChatFormatting.DARK_RED),
-                                                TextColor.fromLegacyFormat(ChatFormatting.GRAY)
-                                        ),
-                                        BlockVision.DEFAULT_PARTICLE_RATE
-                                )),
-                                BlockVisionEffect.single(new BlockVision(
-                                        DurationInstanceBase.create(DragonSurvival.res("copper_vision_treasure_shader")).hidden().build(),
-                                        context.lookup(Registries.BLOCK).getOrThrow(Tags.Blocks.ORES_COPPER),
-                                        LevelBasedValue.constant(16),
-                                        BlockVision.DisplayType.TREASURE_SHADER,
-                                        List.of(
-                                                TextColor.fromLegacyFormat(ChatFormatting.GOLD),
-                                                TextColor.fromLegacyFormat(ChatFormatting.DARK_GREEN)
-                                        ),
-                                        BlockVision.DEFAULT_PARTICLE_RATE
-                                )),
-                                BlockVisionEffect.single(new BlockVision(
-                                        DurationInstanceBase.create(DragonSurvival.res("netherite_vision_treasure_shader")).hidden().build(),
-                                        context.lookup(Registries.BLOCK).getOrThrow(Tags.Blocks.ORES_NETHERITE_SCRAP),
-                                        LevelBasedValue.constant(36),
-                                        BlockVision.DisplayType.TREASURE_SHADER,
-                                        List.of(
-                                                TextColor.fromLegacyFormat(ChatFormatting.DARK_AQUA),
-                                                TextColor.fromLegacyFormat(ChatFormatting.BLACK),
-                                                TextColor.fromLegacyFormat(ChatFormatting.AQUA),
-                                                TextColor.fromLegacyFormat(ChatFormatting.DARK_GRAY)
-                                        ),
-                                        BlockVision.DEFAULT_PARTICLE_RATE
-                                )),
-                                BlockVisionEffect.single(new BlockVision(
-                                        DurationInstanceBase.create(DragonSurvival.res("iron_vision_treasure_shader")).hidden().build(),
-                                        context.lookup(Registries.BLOCK).getOrThrow(Tags.Blocks.ORES_IRON),
-                                        LevelBasedValue.constant(22),
-                                        BlockVision.DisplayType.TREASURE_SHADER,
-                                        List.of(
-                                                TextColor.fromLegacyFormat(ChatFormatting.DARK_GRAY),
-                                                TextColor.fromLegacyFormat(ChatFormatting.GRAY),
-                                                TextColor.fromLegacyFormat(ChatFormatting.WHITE)
-                                        ),
-                                        BlockVision.DEFAULT_PARTICLE_RATE
-                                )),
-                                BlockVisionEffect.single(new BlockVision(
-                                        DurationInstanceBase.create(DragonSurvival.res("general_ore_vision_treasure_shader")).customIcon(DragonSurvival.res("textures/ability_effect/general_ore_vision.png")).build(),
-                                        context.lookup(Registries.BLOCK).getOrThrow(DSBlockTags.GENERAL_ORES),
-                                        LevelBasedValue.constant(16),
-                                        BlockVision.DisplayType.TREASURE_SHADER,
-                                        List.of(TextColor.fromLegacyFormat(ChatFormatting.WHITE)),
-                                        BlockVision.DEFAULT_PARTICLE_RATE
-                                ))
+                                BlockVisionEffect.single(BlockVision.create(
+                                                        DurationInstanceBase.create(DragonSurvival.res("diamond_vision_treasure_shader"))
+                                                                .hidden().build()
+                                                )
+                                                .blocks(context.lookup(Registries.BLOCK).getOrThrow(Tags.Blocks.ORES_DIAMOND))
+                                                .range(LevelBasedValue.constant(36))
+                                                .displayType(BlockVision.DisplayType.TREASURE_SHADER)
+                                                .colors(List.of(
+                                                        TextColor.fromLegacyFormat(ChatFormatting.GOLD),
+                                                        TextColor.fromLegacyFormat(ChatFormatting.DARK_PURPLE),
+                                                        TextColor.fromLegacyFormat(ChatFormatting.GREEN),
+                                                        TextColor.fromLegacyFormat(ChatFormatting.RED),
+                                                        TextColor.fromLegacyFormat(ChatFormatting.BLUE)
+                                                )).build()
+                                ),
+                                BlockVisionEffect.single(BlockVision.create(
+                                                        DurationInstanceBase.create(DragonSurvival.res("lapis_vision_treasure_shader"))
+                                                                .hidden().build()
+                                                )
+                                                .blocks(context.lookup(Registries.BLOCK).getOrThrow(Tags.Blocks.ORES_LAPIS))
+                                                .range(LevelBasedValue.constant(16))
+                                                .displayType(BlockVision.DisplayType.TREASURE_SHADER)
+                                                .colors(List.of(TextColor.fromLegacyFormat(ChatFormatting.BLUE)))
+                                                .build()
+                                ),
+                                BlockVisionEffect.single(BlockVision.create(
+                                                        DurationInstanceBase.create(DragonSurvival.res("gold_vision_treasure_shader"))
+                                                                .hidden().build()
+                                                )
+                                                .blocks(context.lookup(Registries.BLOCK).getOrThrow(Tags.Blocks.ORES_GOLD))
+                                                .range(LevelBasedValue.constant(22))
+                                                .displayType(BlockVision.DisplayType.TREASURE_SHADER)
+                                                .colors(List.of(TextColor.fromLegacyFormat(ChatFormatting.GOLD)))
+                                                .build()
+                                ),
+                                BlockVisionEffect.single(BlockVision.create(
+                                                        DurationInstanceBase.create(DragonSurvival.res("redstone_vision_treasure_shader"))
+                                                                .hidden().build()
+                                                )
+                                                .blocks(context.lookup(Registries.BLOCK).getOrThrow(Tags.Blocks.ORES_REDSTONE))
+                                                .range(LevelBasedValue.constant(16))
+                                                .displayType(BlockVision.DisplayType.TREASURE_SHADER)
+                                                .colors(List.of(TextColor.fromLegacyFormat(ChatFormatting.DARK_RED)))
+                                                .build()
+                                ),
+                                BlockVisionEffect.single(BlockVision.create(
+                                                        DurationInstanceBase.create(DragonSurvival.res("coal_vision_treasure_shader"))
+                                                                .hidden().build()
+                                                )
+                                                .blocks(context.lookup(Registries.BLOCK).getOrThrow(Tags.Blocks.ORES_COAL))
+                                                .range(LevelBasedValue.constant(16))
+                                                .displayType(BlockVision.DisplayType.TREASURE_SHADER)
+                                                .colors(List.of(TextColor.fromLegacyFormat(ChatFormatting.BLACK)))
+                                                .build()
+                                ),
+                                BlockVisionEffect.single(BlockVision.create(
+                                                        DurationInstanceBase.create(DragonSurvival.res("emerald_vision_treasure_shader"))
+                                                                .hidden().build()
+                                                )
+                                                .blocks(context.lookup(Registries.BLOCK).getOrThrow(Tags.Blocks.ORES_EMERALD))
+                                                .range(LevelBasedValue.constant(26))
+                                                .displayType(BlockVision.DisplayType.TREASURE_SHADER)
+                                                .colors(List.of(TextColor.fromLegacyFormat(ChatFormatting.GREEN)))
+                                                .build()
+                                ),
+                                BlockVisionEffect.single(BlockVision.create(
+                                                        DurationInstanceBase.create(DragonSurvival.res("quartz_vision_treasure_shader"))
+                                                                .hidden().build()
+                                                )
+                                                .blocks(context.lookup(Registries.BLOCK).getOrThrow(Tags.Blocks.ORES_QUARTZ))
+                                                .range(LevelBasedValue.constant(12))
+                                                .displayType(BlockVision.DisplayType.TREASURE_SHADER)
+                                                .colors(List.of(
+                                                        TextColor.fromLegacyFormat(ChatFormatting.DARK_RED),
+                                                        TextColor.fromLegacyFormat(ChatFormatting.GRAY)
+                                                ))
+                                                .build()
+                                ),
+                                BlockVisionEffect.single(BlockVision.create(
+                                                        DurationInstanceBase.create(DragonSurvival.res("copper_vision_treasure_shader"))
+                                                                .hidden().build()
+                                                )
+                                                .blocks(context.lookup(Registries.BLOCK).getOrThrow(Tags.Blocks.ORES_COPPER))
+                                                .range(LevelBasedValue.constant(16))
+                                                .displayType(BlockVision.DisplayType.TREASURE_SHADER)
+                                                .colors(List.of(
+                                                        TextColor.fromLegacyFormat(ChatFormatting.GOLD),
+                                                        TextColor.fromLegacyFormat(ChatFormatting.DARK_GREEN)
+                                                ))
+                                                .build()
+                                ),
+                                BlockVisionEffect.single(BlockVision.create(
+                                                        DurationInstanceBase.create(DragonSurvival.res("netherite_vision_treasure_shader"))
+                                                                .hidden().build()
+                                                )
+                                                .blocks(context.lookup(Registries.BLOCK).getOrThrow(Tags.Blocks.ORES_NETHERITE_SCRAP))
+                                                .range(LevelBasedValue.constant(36))
+                                                .displayType(BlockVision.DisplayType.TREASURE_SHADER)
+                                                .colors(List.of(
+                                                        TextColor.fromLegacyFormat(ChatFormatting.DARK_AQUA),
+                                                        TextColor.fromLegacyFormat(ChatFormatting.BLACK),
+                                                        TextColor.fromLegacyFormat(ChatFormatting.AQUA),
+                                                        TextColor.fromLegacyFormat(ChatFormatting.DARK_GRAY)
+                                                ))
+                                                .build()
+                                ),
+                                BlockVisionEffect.single(BlockVision.create(
+                                                        DurationInstanceBase.create(DragonSurvival.res("iron_vision_treasure_shader"))
+                                                                .hidden().build()
+                                                )
+                                                .blocks(context.lookup(Registries.BLOCK).getOrThrow(Tags.Blocks.ORES_IRON))
+                                                .range(LevelBasedValue.constant(22))
+                                                .displayType(BlockVision.DisplayType.TREASURE_SHADER)
+                                                .colors(List.of(
+                                                        TextColor.fromLegacyFormat(ChatFormatting.DARK_GRAY),
+                                                        TextColor.fromLegacyFormat(ChatFormatting.GRAY),
+                                                        TextColor.fromLegacyFormat(ChatFormatting.WHITE)
+                                                ))
+                                                .build()
+                                ),
+                                BlockVisionEffect.single(BlockVision.create(
+                                                        DurationInstanceBase.create(DragonSurvival.res("general_ore_vision_treasure_shader"))
+                                                                .customIcon(DragonSurvival.res("textures/ability_effect/general_ore_vision.png")).build()
+                                                )
+                                                .blocks(context.lookup(Registries.BLOCK).getOrThrow(DSBlockTags.GENERAL_ORES))
+                                                .range(LevelBasedValue.constant(16))
+                                                .displayType(BlockVision.DisplayType.TREASURE_SHADER)
+                                                .colors(List.of(TextColor.fromLegacyFormat(ChatFormatting.WHITE)))
+                                                .build()
+                                )
                         ), TargetingMode.ALLIES_AND_SELF)), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(1))
                 ),
                 true,

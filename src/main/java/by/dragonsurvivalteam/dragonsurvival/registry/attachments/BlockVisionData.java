@@ -1,6 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.attachments;
 
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.BlockVision;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.block_vision.BlockVision;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;

@@ -48,6 +48,7 @@ public interface Activation {
         }
     }
 
+    // TODO :: move away from enum
     Type type();
 
     MapCodec<? extends Activation> codec();

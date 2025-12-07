@@ -1,6 +1,7 @@
-package by.dragonsurvivalteam.dragonsurvival.common.codecs;
+package by.dragonsurvivalteam.dragonsurvival.common.codecs.block_vision;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscCodecs;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.duration_instance.CommonData;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.duration_instance.DurationInstance;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.duration_instance.DurationInstanceBase;
@@ -53,6 +54,7 @@ public class BlockVision extends DurationInstanceBase<BlockVisionData, BlockVisi
     public static final int NO_RANGE = 0;
 
     public static final int DEFAULT_PARTICLE_RATE = 10;
+    public static final double DEFAULT_COLOR_SHIFT_RATE = 1;
     public static final int NO_PARTICLE_RATE = -1;
 
     public static final Codec<BlockVision> CODEC = RecordCodecBuilder.create(instance -> instance.group(
@@ -61,7 +63,8 @@ public class BlockVision extends DurationInstanceBase<BlockVisionData, BlockVisi
             LevelBasedValue.CODEC.fieldOf("range").forGetter(BlockVision::range),
             DisplayType.CODEC.fieldOf("display_type").forGetter(BlockVision::displayType),
             TextColor.CODEC.listOf().fieldOf("colors").forGetter(BlockVision::colors),
-            ExtraCodecs.intRange(1, Integer.MAX_VALUE).optionalFieldOf("particle_rate", DEFAULT_PARTICLE_RATE).forGetter(BlockVision::particleRate)
+            ExtraCodecs.intRange(1, Integer.MAX_VALUE).optionalFieldOf("particle_rate", DEFAULT_PARTICLE_RATE).forGetter(BlockVision::particleRate),
+            MiscCodecs.doubleRange(0.1, 10).optionalFieldOf("particle_rate", DEFAULT_COLOR_SHIFT_RATE).forGetter(BlockVision::colorShiftRate)
     ).apply(instance, BlockVision::new));
 
     private final HolderSet<Block> blocks;
@@ -69,14 +72,24 @@ public class BlockVision extends DurationInstanceBase<BlockVisionData, BlockVisi
     private final DisplayType displayType;
     private final List<TextColor> colors;
     private final int particleRate;
+    private final double colorShiftRate;
 
-    public BlockVision(final DurationInstanceBase<?, ?> base, final HolderSet<Block> blocks, final LevelBasedValue range, final DisplayType displayType, final List<TextColor> colors, final int particleRate) {
+    public BlockVision(
+            final DurationInstanceBase<?, ?> base,
+            final HolderSet<Block> blocks,
+            final LevelBasedValue range,
+            final DisplayType displayType,
+            final List<TextColor> colors,
+            final int particleRate,
+            final double colorShiftRate
+    ) {
         super(base);
         this.blocks = blocks;
         this.range = range;
         this.displayType = displayType;
         this.colors = colors;
         this.particleRate = particleRate;
+        this.colorShiftRate = colorShiftRate;
     }
 
     public MutableComponent getDescription(final int abilityLevel) {
@@ -94,6 +107,10 @@ public class BlockVision extends DurationInstanceBase<BlockVisionData, BlockVisi
 
         MutableComponent appliesTo = Functions.translateHolderSet(blocks, Holder::getRegisteredName);
         return Component.translatable(HARVEST_BONUS, DSColors.dynamicValue(range), color, DSColors.dynamicValue(appliesTo));
+    }
+
+    public static BlockVision.Builder create(final DurationInstanceBase<?, ?> base) {
+        return new BlockVision.Builder(base);
     }
 
     public HolderSet<Block> blocks() {
@@ -114,6 +131,10 @@ public class BlockVision extends DurationInstanceBase<BlockVisionData, BlockVisi
 
     public int particleRate() {
         return particleRate;
+    }
+
+    public double colorShiftRate() {
+        return colorShiftRate;
     }
 
     @Override
@@ -203,7 +224,8 @@ public class BlockVision extends DurationInstanceBase<BlockVisionData, BlockVisi
     public enum DisplayType implements StringRepresentable {
         OUTLINE("outline"),
         PARTICLES("particles"),
-        TREASURE_SHADER("treasure"),
+        TREASURE("treasure"),
+        TREASURE_SHADER("treasure_shader"),
         NONE("none");
 
         public static final Codec<DisplayType> CODEC = StringRepresentable.fromEnum(DisplayType::values);
@@ -216,6 +238,54 @@ public class BlockVision extends DurationInstanceBase<BlockVisionData, BlockVisi
         @Override
         public @NotNull String getSerializedName() {
             return name;
+        }
+    }
+    
+    public static class Builder {
+        private final DurationInstanceBase<?, ?> base;
+        private HolderSet<Block> blocks = HolderSet.empty();
+        private LevelBasedValue range = LevelBasedValue.constant(1);
+        private DisplayType displayType = DisplayType.NONE;
+        private List<TextColor> colors = List.of();
+        private int particleRate = DEFAULT_PARTICLE_RATE;
+        private double colorShiftRate = DEFAULT_COLOR_SHIFT_RATE;
+
+        public Builder(final DurationInstanceBase<?, ?> base) {
+            this.base = base;
+        }
+
+        public Builder blocks(final HolderSet<Block> blocks) {
+            this.blocks = blocks;
+            return this;
+        }
+
+        public Builder range(final LevelBasedValue range) {
+            this.range = range;
+            return this;
+        }
+
+        public Builder displayType(final DisplayType displayType) {
+            this.displayType = displayType;
+            return this;
+        }
+
+        public Builder colors(final List<TextColor> colors) {
+            this.colors = colors;
+            return this;
+        }
+
+        public Builder particleRate(final int particleRate) {
+            this.particleRate = particleRate;
+            return this;
+        }
+
+        public Builder colorShiftRate(final double colorShiftRate) {
+            this.colorShiftRate = colorShiftRate;
+            return this;
+        }
+
+        public BlockVision build() {
+            return new BlockVision(base, blocks, range, displayType, colors, particleRate, colorShiftRate);
         }
     }
 }
