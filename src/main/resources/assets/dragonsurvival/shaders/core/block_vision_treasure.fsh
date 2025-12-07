@@ -10,6 +10,7 @@ in vec2 texCoord;        // face-local UV in [0,1]
 uniform float Time;      // animation time in seconds
 uniform float BlockSeed; // per-block phase/variation
 uniform vec3 OreColor;   // ore RGB color (from visions.getColor)
+uniform sampler2D Sampler0; // bound block texture atlas (unit 0)
 
 // Standard pipeline outputs
 out vec4 fragColor;
@@ -129,7 +130,17 @@ float sparkleStitched(vec2 uv) {
 }
 
 void main() {
-    // Compute stitched sparkle in current face UV space
+    // Sample block atlas alpha for masking to the real block texels
+    // Use explicit LOD 0 to avoid mipmap alpha bleeding that can make cutout quads
+    // appear to fill as distance increases (common on cross-plant textures)
+    vec4 baseSample = textureLod(Sampler0, texCoord, 0.0);
+
+    // Early discard for cutout-style blocks to match vanilla silhouettes
+    if (baseSample.a < 0.1) {
+        discard;
+    }
+
+    // Compute stitched sparkle in current face UV space (UVs provided from baked quad)
     float combinedSparkle = sparkleStitched(texCoord);
 
     // Minimum coverage so the face is never empty
@@ -137,6 +148,6 @@ void main() {
     combined = clamp(combined, 0.0, 1.0);
 
     // Final color: base ore RGB, animated alpha
-    float finalAlpha = BASE_ALPHA * combined;
+    float finalAlpha = BASE_ALPHA * combined * baseSample.a;
     fragColor = vec4(OreColor, finalAlpha);
 }

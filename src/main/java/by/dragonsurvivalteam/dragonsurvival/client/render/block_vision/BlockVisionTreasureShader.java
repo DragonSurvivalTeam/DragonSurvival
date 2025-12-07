@@ -7,15 +7,18 @@ import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.BufferUploader;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.ShaderInstance;
+import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.util.FastColor;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RegisterShadersEvent;
-import org.joml.Matrix4f;
+import net.neoforged.neoforge.client.model.data.ModelData;
 
 import java.io.IOException;
 
@@ -31,7 +34,7 @@ public class BlockVisionTreasureShader {
         float blue = FastColor.ARGB32.blue(colorARGB) / 255f;
 
         float blockSeed = (data.x() * 0.73f + data.y() * 0.41f + data.z() * 0.29f);
-        renderTreasureShader(pose.last().pose(), animationTime, blockSeed, red, green, blue);
+        renderTreasureShader(data, pose, animationTime, blockSeed, red, green, blue);
     }
 
     @SubscribeEvent
@@ -41,13 +44,15 @@ public class BlockVisionTreasureShader {
 
     @SuppressWarnings("DataFlowIssue") // Referenced shader variables should be present
     private static void renderTreasureShader(
-            final Matrix4f modelViewMatrix,
+            final BlockVisionHandler.Data data,
+            final PoseStack pose,
             final float timeSeconds,
             final float blockSeed,
             final float red, final float green, final float blue
     ) {
-        // Configure uniforms on the shader instance. We rely on ShaderInstance.apply()
-        // to bind the program, mirroring how growth_circle is drawn.
+        // Bind our custom shader through RenderSystem, then upload uniforms (matches vanilla pattern)
+        RenderSystem.setShader(() -> treasureShader);
+        // Configure uniforms on the shader instance
         treasureShader.getUniform("Time").set(timeSeconds);
         treasureShader.getUniform("BlockSeed").set(blockSeed);
         // Pass the ore color as a uniform to allow using POSITION_TEX format (pack-friendly like growth_circle)
@@ -55,7 +60,9 @@ public class BlockVisionTreasureShader {
         // Set standard matrices expected by the shader
         // Use the current pose stack's model-view matrix and the active projection
         treasureShader.getUniform("ProjMat").set(RenderSystem.getProjectionMatrix());
-        treasureShader.getUniform("ModelViewMat").set(modelViewMatrix);
+        treasureShader.getUniform("ModelViewMat").set(pose.last().pose());
+        // Disable vertex Z bias (set to 0) — we'll rely on polygon offset to avoid distance-scaling artifacts
+        treasureShader.getUniform("ZBias").set(0.0f);
         treasureShader.apply();
 
         // Local render state for translucent coplanar quads
@@ -71,19 +78,19 @@ public class BlockVisionTreasureShader {
         RenderSystem.enablePolygonOffset();
         RenderSystem.polygonOffset(-1.0f, -1.0f);
 
+        // Bind the block atlas for alpha masking in the shader
+        RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_BLOCKS);
+
+        // Draw the actual baked model quads with atlas UVs so the shader can mask by texture alpha
         BufferBuilder buffer = RenderSystem.renderThreadTesselator().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
 
-        // Z faces
-        faceZTexPT(buffer, 0f, 0f, 0f, 1f, 1f);
-        faceZTexPT(buffer, 1f, 1f, 0f, 0f, 1f);
-        // X faces
-        faceXTexPT(buffer, 0f, 1f, 0f, 0f, 1f);
-        faceXTexPT(buffer, 1f, 0f, 0f, 1f, 1f);
-        // Y faces
-        faceYTexPT(buffer, 0f, 0f, 1f, 1f, 0f);
-        faceYTexPT(buffer, 1f, 0f, 0f, 1f, 1f);
+        var state = data.block().defaultBlockState();
+        BakedModel model = Minecraft.getInstance().getBlockRenderer().getBlockModel(state);
 
-        BufferUploader.draw(buffer.buildOrThrow());
+        Minecraft.getInstance().getBlockRenderer().getModelRenderer()
+                .renderModel(pose.last(), buffer, state, model, 1, 1, 1,-1, -1, ModelData.EMPTY, RenderType.translucent());
+
+        BufferUploader.drawWithShader(buffer.buildOrThrow());
 
         // Restore polygon offset state
         RenderSystem.polygonOffset(0.0f, 0.0f);
@@ -93,29 +100,5 @@ public class BlockVisionTreasureShader {
         RenderSystem.enableCull();
         RenderSystem.depthMask(true);
         RenderSystem.disableBlend();
-
-        // Clear to avoid leaking state
-        treasureShader.clear();
-    }
-
-    private static void faceZTexPT(final VertexConsumer buffer, final float z, final float uMin, final float vMin, final float uMax, final float vMax) {
-        buffer.addVertex(0f, 0f, z).setUv(uMin, vMin);
-        buffer.addVertex(1f, 0f, z).setUv(uMax, vMin);
-        buffer.addVertex(1f, 1f, z).setUv(uMax, vMax);
-        buffer.addVertex(0f, 1f, z).setUv(uMin, vMax);
-    }
-
-    private static void faceXTexPT(final VertexConsumer buffer, final float x, final float uMin, final float vMin, final float uMax, final float vMax) {
-        buffer.addVertex(x, 0f, 0f).setUv(uMin, vMin);
-        buffer.addVertex(x, 0f, 1f).setUv(uMax, vMin);
-        buffer.addVertex(x, 1f, 1f).setUv(uMax, vMax);
-        buffer.addVertex(x, 1f, 0f).setUv(uMin, vMax);
-    }
-
-    private static void faceYTexPT(final VertexConsumer buffer, final float y, final float uMin, final float vMin, final float uMax, final float vMax) {
-        buffer.addVertex(0f, y, 0f).setUv(uMin, vMin);
-        buffer.addVertex(1f, y, 0f).setUv(uMax, vMin);
-        buffer.addVertex(1f, y, 1f).setUv(uMax, vMax);
-        buffer.addVertex(0f, y, 1f).setUv(uMin, vMax);
     }
 }
