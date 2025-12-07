@@ -38,7 +38,8 @@ public class Phasing extends DurationInstanceBase<PhasingData, Phasing.Instance>
     @Translation(comments = {
             "§6■ Block Phasing:§r",
             " - Vision Range: %s",
-            " - Applies to: %s"
+            " - Applies to: %s",
+            " - Inverted: %s"
     })
     private static final String PHASE_DATA = Translation.Type.GUI.wrap("block_phasing");
 
@@ -67,7 +68,7 @@ public class Phasing extends DurationInstanceBase<PhasingData, Phasing.Instance>
         int range = (int) this.range.calculate(abilityLevel);
 
         MutableComponent appliesTo = Functions.translateHolderSet(blocks, Holder::getRegisteredName);
-        return Component.translatable(PHASE_DATA, DSColors.dynamicValue(range), DSColors.dynamicValue(appliesTo));
+        return Component.translatable(PHASE_DATA, DSColors.dynamicValue(range), DSColors.dynamicValue(appliesTo), DSColors.dynamicValue(this.invert.orElse(false)));
     }
 
     public static Phasing create(final ResourceLocation id, final HolderSet<Block> validBlocks, final LevelBasedValue range, final Optional<Boolean> invert) {
