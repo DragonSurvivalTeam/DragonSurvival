@@ -6,6 +6,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachmen
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.PhasingData;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import net.minecraft.Util;
@@ -18,15 +19,20 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunkSection;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 import net.neoforged.neoforge.event.entity.EntityLeaveLevelEvent;
+import org.joml.Matrix4f;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL32;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,7 +69,7 @@ public class PhasingHandler {
 
     @SubscribeEvent
     public static void handlePhasing(final RenderLevelStageEvent event) {
-        if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_LEVEL) {  // We want to be one of the last things to render
+        if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_LEVEL) {  // If we use AFTER_TRIPWIRE_BLOCKS we can use depth test
             return;
         }
 
@@ -110,6 +116,8 @@ public class PhasingHandler {
 
         RenderStateShard.TRANSLUCENT_TRANSPARENCY.setupRenderState();
         RenderSystem.setShader(GameRenderer::getPositionColorShader);
+        //RenderSystem.enableDepthTest();
+        //GlStateManager._disableCull();
         RenderSystem.disableDepthTest();
 
         BufferBuilder buffer = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
@@ -142,7 +150,8 @@ public class PhasingHandler {
 
         pose.popPose();
 
-        RenderStateShard.ADDITIVE_TRANSPARENCY.clearRenderState();
+        RenderStateShard.TRANSLUCENT_TRANSPARENCY.clearRenderState();
+        //RenderSystem.disableDepthTest();
         RenderSystem.enableDepthTest();
         RenderType.translucent().clearRenderState();
     }
@@ -279,6 +288,7 @@ public class PhasingHandler {
     private static void drawQuads(final VertexConsumer buffer, final PoseStack pose, final float minX, final float minY, final float minZ, final float maxX, final float maxY, final float maxZ, final int alpha) {
         // We should probably only draw quads the player can see - check all normals and if facing > 90 degrees away, cull
         // But that would be difficult to cache
+        // Maybe add normals to these? - currently not using any
         Direction.stream().forEach(
                 direction -> {
                     LevelRenderer.renderFace(pose, buffer, direction, minX, minY, minZ, maxX, maxY, maxZ, 0, 0, 0, alpha);
