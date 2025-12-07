@@ -2,10 +2,12 @@ package by.dragonsurvivalteam.dragonsurvival.registry.attachments;
 
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Phasing;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncData;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -53,12 +55,12 @@ public class PhasingData extends Storage<Phasing.Instance> {
         return cache.computeIfAbsent(block, this::storeData).alpha();
     }
 
-    public boolean testValidBlocks(Block block, Vec3 blockVec, Vec3 blockStraightVec, boolean above, Vec3 entityLookVec, float playerXRot) {
+    public boolean testValidBlocks(Block block, BlockPos blockPos, Vec3 blockVec, Vec3 blockStraightVec, boolean above, Vec3 entityLookVec, float playerXRot, Player player) {
         if (isEmpty()) {
             return false;
         }
 
-        return all().stream().anyMatch(phasing -> phasing.getAngleCheck(block, blockVec, blockStraightVec, above, entityLookVec, playerXRot));
+        return all().stream().anyMatch(phasing -> phasing.getAngleCheck(block, blockPos, blockVec, blockStraightVec, above, entityLookVec, playerXRot, player));
     }
 
     private PhasingData.CacheEntry storeData(final Block block) {

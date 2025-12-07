@@ -23,6 +23,7 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.Vec3;
@@ -127,18 +128,21 @@ public class Phasing extends DurationInstanceBase<PhasingData, Phasing.Instance>
             return NO_ALPHA;
         }
 
-        public boolean getAngleCheck(Block block, Vec3 blockVec, Vec3 blockStraightVec, boolean above, Vec3 entityLookVec, float playerXRot) {
+        public boolean getAngleCheck(Block block, BlockPos blockPos, Vec3 blockVec, Vec3 blockStraightVec, boolean above, Vec3 entityLookVec, float playerXRot, Player player) {
             // Up is -90, down is 90
             // Looking 45 degrees up or down should result in 'stairs' of collision when phasing
             // Looking within 10 degrees of 'down' should result in no collision at all
             // We need angle above/below, not flat - mult by -1 if y is greater than player pos
             // We also need in front of/behind - if in front 180 degrees of view, compare against playerXRot, if behind compare against -playerXRot
             if (block == null || ( baseData().blocks().contains(block.builtInRegistryHolder()) ^ baseData().invert.orElse(false))) {
+                boolean inBounding = player.getBoundingBox().intersects(blockPos.getX(), blockPos.getY(), blockPos.getZ(), blockPos.getX() + 1, blockPos.getY() + 1, blockPos.getZ() + 1);
+                if (inBounding) {
+                    return true;
+                }
                 int aboveMult = 1;
                 if (above) {
                     aboveMult = -1;
                 }
-                // TODO: Add check for if player is inside of block and exclude those from the check
                 double dotXProd = blockVec.dot(blockStraightVec);
                 double magXSqBlock = blockVec.dot(blockVec);
                 double magSqStraight = blockStraightVec.dot(blockStraightVec);
@@ -146,7 +150,7 @@ public class Phasing extends DurationInstanceBase<PhasingData, Phasing.Instance>
                 double dXDegrees = Math.acos(dXSqrt) * 180/Math.PI * aboveMult;
                 double dotYProd = entityLookVec.dot(blockStraightVec); // If > 0, in front, else behind
                 float compareRot = playerXRot;
-                if (dotYProd < 0) {
+                if (dotYProd < 0.1) {
                     compareRot = -playerXRot;
                 }
                 return (dXDegrees < compareRot || playerXRot > 80);
