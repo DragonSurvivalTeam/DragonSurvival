@@ -1,56 +1,37 @@
 package by.dragonsurvivalteam.dragonsurvival.client.render;
 
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Phasing;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.Phasing;
 import by.dragonsurvivalteam.dragonsurvival.mixins.client.FrustumAccess;
-import by.dragonsurvivalteam.dragonsurvival.registry.DSParticles;
-import by.dragonsurvivalteam.dragonsurvival.registry.attachments.PhasingData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.PhasingData;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.BufferUploader;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.MeshData;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.blaze3d.vertex.*;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.LevelRenderer;
+import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.SectionPos;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.enchantment.effects.SpawnParticlesEffect;
-import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.chunk.LevelChunkSection;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.phys.shapes.Shapes;
-import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 import net.neoforged.neoforge.event.entity.EntityLeaveLevelEvent;
-import org.joml.Matrix4f;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @EventBusSubscriber(Dist.CLIENT)
@@ -70,19 +51,19 @@ public class PhasingHandler {
     private static boolean isSearching;
     private static boolean hasPendingUpdate;
 
-    private record Data(Block block, Map<Direction, Boolean> validFaces, int range, float x, float y, float z, int alpha) {
+    private record Data(Block block, int range, float x, float y, float z, int alpha) {
         public boolean isInRange(final Vec3 position, final int visibleRange) {
             return position.distanceToSqr(x + 0.5, y + 0.5, z + 0.5) <= visibleRange * visibleRange;
         }
 
         public void render(final VertexConsumer buffer, final PoseStack pose) {
-            drawQuads(buffer, validFaces, pose, x, y, z, x + 1, y + 1, z + 1, alpha);
+            drawQuads(buffer, pose, x, y, z, x + 1, y + 1, z + 1, alpha);
         }
     }
 
     @SubscribeEvent
     public static void handlePhasing(final RenderLevelStageEvent event) {
-        if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_CUTOUT_BLOCKS) {
+        if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_LEVEL) {  // We want to be one of the last things to render
             return;
         }
 
@@ -127,13 +108,11 @@ public class PhasingHandler {
         pose.mulPose(event.getModelViewMatrix());
         pose.translate(-camera.x(), -camera.y(), -camera.z());
 
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
+        RenderStateShard.TRANSLUCENT_TRANSPARENCY.setupRenderState();
         RenderSystem.setShader(GameRenderer::getPositionColorShader);
         RenderSystem.disableDepthTest();
 
         BufferBuilder buffer = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
-        // VertexConsumer buffer = Minecraft.getInstance().renderBuffers().bufferSource().getBuffer(RenderType.TRANSLUCENT);
 
         for (int index = 0; index < RENDER_DATA.size(); index++) {
             Data data = RENDER_DATA.get(index);
@@ -163,8 +142,8 @@ public class PhasingHandler {
 
         pose.popPose();
 
+        RenderStateShard.ADDITIVE_TRANSPARENCY.clearRenderState();
         RenderSystem.enableDepthTest();
-        RenderSystem.disableBlend();
         RenderType.translucent().clearRenderState();
     }
 
@@ -211,13 +190,18 @@ public class PhasingHandler {
         int y = position.getY();
         int z = position.getZ();
 
-        // We only want to render faces that aren't already
-        Map<Direction, Boolean> validFaces = Direction.stream().collect(Collectors.toMap(direction -> direction, direction ->
+        boolean onEdge = Direction.stream().anyMatch(direction ->
+                !getState(position.offset(direction.getNormal())).isSolidRender(player.level(), position.offset(direction.getNormal()))
+                // I don't know why the other two below this don't work
+                //newState.skipRendering(getState(position.offset(direction.getNormal())), direction)
                 //newBlock.hidesNeighborFace(player.level(), position, newState, getState(position.offset(direction.getNormal())), direction)
-                true
-        ));
+        );
 
-        RENDER_DATA.add(new Data(newBlock, validFaces, range, x, y, z, alpha));
+        if (onEdge) {
+            return;
+        }
+
+        RENDER_DATA.add(new Data(newBlock, range, x, y, z, alpha));
     }
 
     private static void collect(final Player player, int searchRange) {
@@ -241,18 +225,19 @@ public class PhasingHandler {
             int y = blockPos.getY();
             int z = blockPos.getZ();
 
-            // We only want to render faces that aren't already
-            Map<Direction, Boolean> validFaces = Direction.stream().collect(Collectors.toMap(direction -> direction, direction ->
-                //block.hidesNeighborFace(player.level(), blockPos, state, getState(blockPos.offset(direction.getNormal())), direction)
-                true
-            ));
+            boolean onEdge = Direction.stream().anyMatch(direction ->
+                    !getState(blockPos.offset(direction.getNormal())).isSolidRender(player.level(), blockPos.offset(direction.getNormal()))
+                    // I don't know why the other two below this don't work
+                    //newState.skipRendering(getState(position.offset(direction.getNormal())), direction)
+                    //newBlock.hidesNeighborFace(player.level(), position, newState, getState(position.offset(direction.getNormal())), direction)
+            );
 
-            SEARCH_RESULT.add(new Data(block, validFaces, range, x, y, z, alpha));
+            if (onEdge) {
+                return;
+            }
+
+            SEARCH_RESULT.add(new Data(block, range, x, y, z, alpha));
         });
-    }
-
-    private static boolean isWithin(final BlockPos position, int xMin, int yMin, int zMin, int xMax, int yMax, int zMax) {
-        return position.getX() >= xMin && position.getX() <= xMax && position.getY() >= yMin && position.getY() <= yMax && position.getZ() >= zMin && position.getZ() <= zMax;
     }
 
     private static BlockState getState(final BlockPos position) {
@@ -291,33 +276,14 @@ public class PhasingHandler {
         return currentPosition.distanceToSqr(lastScanCenter) > halfRange * halfRange;
     }
 
-    private static void drawQuads(final VertexConsumer buffer, final Map<Direction, Boolean> validFaces, final PoseStack pose, final float minX, final float minY, final float minZ, final float maxX, final float maxY, final float maxZ, final int alpha) {
+    private static void drawQuads(final VertexConsumer buffer, final PoseStack pose, final float minX, final float minY, final float minZ, final float maxX, final float maxY, final float maxZ, final int alpha) {
         // We should probably only draw quads the player can see - check all normals and if facing > 90 degrees away, cull
         // But that would be difficult to cache
-        Direction.stream().filter(validFaces::get).forEach(
+        Direction.stream().forEach(
                 direction -> {
                     LevelRenderer.renderFace(pose, buffer, direction, minX, minY, minZ, maxX, maxY, maxZ, 0, 0, 0, alpha);
                 }
         );
-        //LevelRenderer.renderFace(pose, buffer, Direction.DOWN, minX, minY, minZ, maxX, maxY, maxZ, 0, 0, 0, alpha);
-        //LevelRenderer.renderFace(pose, buffer, Direction.UP, minX, minY, minZ, maxX, maxY, maxZ, 0, 0, 0, alpha);
-        //LevelRenderer.renderFace(pose, buffer, Direction.NORTH, minX, minY, minZ, maxX, maxY, maxZ, 0, 0, 0, alpha);
-        //LevelRenderer.renderFace(pose, buffer, Direction.EAST, minX, minY, minZ, maxX, maxY, maxZ, 0, 0, 0, alpha);
-        //LevelRenderer.renderFace(pose, buffer, Direction.SOUTH, minX, minY, minZ, maxX, maxY, maxZ, 0, 0, 0, alpha);
-        //LevelRenderer.renderFace(pose, buffer, Direction.WEST, minX, minY, minZ, maxX, maxY, maxZ, 0, 0, 0, alpha);
-        //drawQuad(buffer, pose, minX, minY, minZ, maxX, maxY, minZ, 0, 0, -1, alpha); // Bottom
-        //drawQuad(buffer, pose, minX, minY, minZ, maxX, minY, maxZ, 0, -1, 0, alpha); // Left
-        //drawQuad(buffer, pose, minX, minY, minZ, minX, maxY, maxZ, -1, 0, 0, alpha); // Front
-        //drawQuad(buffer, pose, maxX, maxY, maxZ, minX, minY, maxZ, 0, 0, 1, alpha); // Top
-        //drawQuad(buffer, pose, maxX, maxY, maxZ, minX, maxY, minZ, 0, 1, 0, alpha); // Right
-        //drawQuad(buffer, pose, maxX, maxY, maxZ, maxX, minY, minZ, 1, 0, 0, alpha); // Back
-    }
-
-    private static void drawQuad(final VertexConsumer buffer, final Matrix4f pose, float fromX, float fromY, float fromZ, float toX, float toY, float toZ, int normalX, int normalY, int normalZ, final int alpha) {
-        buffer.addVertex(pose, fromX, fromY, fromZ).setColor(0, 0, 0, alpha);
-        buffer.addVertex(pose, fromX, fromY, toZ).setColor(0, 0, 0, alpha);
-        buffer.addVertex(pose, fromX, toY, toZ).setColor(0, 0, 0, alpha);
-        buffer.addVertex(pose, toX, toY, fromZ).setColor(0, 0, 0, alpha);
     }
 
     private static void clear() {
