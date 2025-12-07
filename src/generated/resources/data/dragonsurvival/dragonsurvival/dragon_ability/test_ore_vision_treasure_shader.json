@@ -1,0 +1,202 @@
+{
+  "actions": [
+    {
+      "target_selection": {
+        "applied_effects": {
+          "entity_effect": [
+            {
+              "block_visions": [
+                {
+                  "base": {
+                    "id": "dragonsurvival:lapis_vision_treasure_shader",
+                    "is_hidden": true
+                  },
+                  "blocks": "#c:ores/lapis",
+                  "colors": [
+                    "blue"
+                  ],
+                  "display_type": "treasure",
+                  "range": 16.0
+                }
+              ],
+              "effect_type": "dragonsurvival:block_vision"
+            },
+            {
+              "block_visions": [
+                {
+                  "base": {
+                    "id": "dragonsurvival:gold_vision_treasure_shader",
+                    "is_hidden": true
+                  },
+                  "blocks": "#c:ores/gold",
+                  "colors": [
+                    "gold"
+                  ],
+                  "display_type": "treasure",
+                  "range": 22.0
+                }
+              ],
+              "effect_type": "dragonsurvival:block_vision"
+            },
+            {
+              "block_visions": [
+                {
+                  "base": {
+                    "id": "dragonsurvival:redstone_vision_treasure_shader",
+                    "is_hidden": true
+                  },
+                  "blocks": "#c:ores/redstone",
+                  "colors": [
+                    "dark_red"
+                  ],
+                  "display_type": "treasure",
+                  "range": 16.0
+                }
+              ],
+              "effect_type": "dragonsurvival:block_vision"
+            },
+            {
+              "block_visions": [
+                {
+                  "base": {
+                    "id": "dragonsurvival:coal_vision_treasure_shader",
+                    "is_hidden": true
+                  },
+                  "blocks": "#c:ores/coal",
+                  "colors": [
+                    "black"
+                  ],
+                  "display_type": "treasure",
+                  "range": 16.0
+                }
+              ],
+              "effect_type": "dragonsurvival:block_vision"
+            },
+            {
+              "block_visions": [
+                {
+                  "base": {
+                    "id": "dragonsurvival:emerald_vision_treasure_shader",
+                    "is_hidden": true
+                  },
+                  "blocks": "#c:ores/emerald",
+                  "colors": [
+                    "green"
+                  ],
+                  "display_type": "treasure",
+                  "range": 26.0
+                }
+              ],
+              "effect_type": "dragonsurvival:block_vision"
+            },
+            {
+              "block_visions": [
+                {
+                  "base": {
+                    "id": "dragonsurvival:quartz_vision_treasure_shader",
+                    "is_hidden": true
+                  },
+                  "blocks": "#c:ores/quartz",
+                  "colors": [
+                    "dark_red",
+                    "gray"
+                  ],
+                  "display_type": "treasure",
+                  "range": 12.0
+                }
+              ],
+              "effect_type": "dragonsurvival:block_vision"
+            },
+            {
+              "block_visions": [
+                {
+                  "base": {
+                    "id": "dragonsurvival:copper_vision_treasure_shader",
+                    "is_hidden": true
+                  },
+                  "blocks": "#c:ores/copper",
+                  "colors": [
+                    "gold",
+                    "dark_green"
+                  ],
+                  "display_type": "treasure",
+                  "range": 16.0
+                }
+              ],
+              "effect_type": "dragonsurvival:block_vision"
+            },
+            {
+              "block_visions": [
+                {
+                  "base": {
+                    "id": "dragonsurvival:netherite_vision_treasure_shader",
+                    "is_hidden": true
+                  },
+                  "blocks": "#c:ores/netherite_scrap",
+                  "colors": [
+                    "dark_aqua",
+                    "black",
+                    "aqua",
+                    "dark_gray"
+                  ],
+                  "display_type": "treasure",
+                  "range": 36.0
+                }
+              ],
+              "effect_type": "dragonsurvival:block_vision"
+            },
+            {
+              "block_visions": [
+                {
+                  "base": {
+                    "id": "dragonsurvival:iron_vision_treasure_shader",
+                    "is_hidden": true
+                  },
+                  "blocks": "#c:ores/iron",
+                  "colors": [
+                    "dark_gray",
+                    "gray",
+                    "white"
+                  ],
+                  "display_type": "treasure",
+                  "range": 22.0
+                }
+              ],
+              "effect_type": "dragonsurvival:block_vision"
+            },
+            {
+              "block_visions": [
+                {
+                  "base": {
+                    "custom_icon": "dragonsurvival:textures/ability_effect/general_ore_vision.png",
+                    "id": "dragonsurvival:general_ore_vision_treasure_shader"
+                  },
+                  "blocks": "#dragonsurvival:general_ores",
+                  "colors": [
+                    "white"
+                  ],
+                  "display_type": "treasure",
+                  "range": 16.0
+                }
+              ],
+              "effect_type": "dragonsurvival:block_vision"
+            }
+          ],
+          "targeting_mode": "allies_and_self"
+        },
+        "target_type": "dragonsurvival:self"
+      }
+    }
+  ],
+  "activation": {
+    "activation_type": "dragonsurvival:passive"
+  },
+  "icon": {
+    "texture_entries": [
+      {
+        "from_level": 0,
+        "texture_resource": "dragonsurvival:test"
+      }
+    ]
+  }
+}

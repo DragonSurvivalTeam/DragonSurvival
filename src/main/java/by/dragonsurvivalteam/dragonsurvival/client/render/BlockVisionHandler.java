@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.client.render;
 
+import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.BlockVision;
 import by.dragonsurvivalteam.dragonsurvival.mixins.client.FrustumAccess;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSParticles;
@@ -20,10 +21,11 @@ import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.util.FastColor;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.enchantment.effects.SpawnParticlesEffect;
 import net.minecraft.world.level.ChunkPos;
@@ -35,9 +37,13 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.GlStateBackup;
+import net.neoforged.neoforge.client.event.RegisterShadersEvent;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 import net.neoforged.neoforge.event.entity.EntityLeaveLevelEvent;
+import org.joml.Matrix4f;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -58,8 +64,12 @@ public class BlockVisionHandler {
     private static BlockVisionData vision;
     private static Vec3 lastScanCenter;
 
+    private static int previousStorage;
     private static boolean isSearching;
     private static boolean hasPendingUpdate;
+
+    /** GPU shader for the aura. Rendering is skipped if this fails to load. */
+    private static ShaderInstance treasureShader;
 
     private record Data(Block block, int range, BlockVision.DisplayType displayType, int particleRate, float x, float y, float z) {
         public boolean isInRange(final Vec3 position, final int visibleRange) {
@@ -85,6 +95,12 @@ public class BlockVisionHandler {
             return;
         }
 
+        if (previousStorage != vision.size()) {
+            // Reset the data since entries have been adjusted
+            clear();
+        }
+
+        previousStorage = vision.size();
         initCache();
 
         if (!isSearching && hasPendingUpdate) {
@@ -118,10 +134,20 @@ public class BlockVisionHandler {
         pose.mulPose(event.getModelViewMatrix());
         pose.translate(-camera.x(), -camera.y(), -camera.z());
 
-        RenderSystem.setShader(GameRenderer::getPositionColorShader);
-        RenderSystem.disableDepthTest();
+        GlStateBackup state = new GlStateBackup();
+        RenderSystem.backupGlState(state);
+        RenderSystem.backupProjectionMatrix();
 
-        BufferBuilder buffer = Tesselator.getInstance().begin(VertexFormat.Mode.DEBUG_LINES, DefaultVertexFormat.POSITION_COLOR);
+        // Keep depth test enabled so the effect is occluded by walls
+        RenderSystem.enableDepthTest();
+        RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
+        // Draw translucent without writing to depth, so we don't block other translucency
+        RenderSystem.depthMask(false);
+        // Render all faces (front/back) so exposed blocks show a full shell
+        RenderSystem.disableCull();
+
+        BufferBuilder outlineBuffer = Tesselator.getInstance().begin(VertexFormat.Mode.DEBUG_LINES, DefaultVertexFormat.POSITION_COLOR);
 
         for (int index = 0; index < RENDER_DATA.size(); index++) {
             Data data = RENDER_DATA.get(index);
@@ -140,7 +166,13 @@ public class BlockVisionHandler {
 
             if (((FrustumAccess) event.getFrustum()).dragonSurvival$cubeInFrustum(data.x(), data.y(), data.z(), data.x() + 1, data.y() + 1, data.z() + 1)) {
                 if (data.displayType() == BlockVision.DisplayType.OUTLINE) {
-                    data.render(buffer, pose.last());
+                    RenderSystem.setShader(GameRenderer::getPositionColorShader);
+                    data.render(outlineBuffer, pose.last());
+                    continue;
+                }
+
+                if (data.displayType() == BlockVision.DisplayType.TREASURE_SHADER && treasureShader != null) {
+                    renderTreasureShader(data, pose, event.getRenderTick(), event.getPartialTick().getRealtimeDeltaTicks());
                     continue;
                 }
 
@@ -167,16 +199,123 @@ public class BlockVisionHandler {
             }
         }
 
+        pose.popPose();
+
+        upload(outlineBuffer);
+
+        // Restore state affected above
+        RenderSystem.enableCull();
+        RenderSystem.depthMask(true);
+
+        RenderSystem.restoreProjectionMatrix();
+        RenderSystem.restoreGlState(state);
+    }
+
+    private static void upload(final BufferBuilder buffer) {
         MeshData meshData = buffer.build();
 
         if (meshData != null) {
             BufferUploader.drawWithShader(meshData);
         }
+    }
+
+    private static void renderTreasureShader(final Data data, final PoseStack pose, final int tick, final float partialTick) {
+        float animationTime = (tick + partialTick) * 0.02f;
+
+        int color = vision.getColor(data.block());
+        float red = FastColor.ARGB32.red(color) / 255f;
+        float green = FastColor.ARGB32.green(color) / 255f;
+        float blue = FastColor.ARGB32.blue(color) / 255f;
+        float alpha = 0.50f;
+
+        pose.pushPose();
+        pose.translate(data.x(), data.y(), data.z());
+
+        float blockSeed = (data.x() * 0.73f + data.y() * 0.41f + data.z() * 0.29f);
+        renderTreasureShader(pose.last().pose(), animationTime, blockSeed, red, green, blue, alpha);
 
         pose.popPose();
+    }
 
-        RenderSystem.enableDepthTest();
-        RenderType.cutout().clearRenderState();
+    /** Render the ore aura using the GPU shader. Emits 6 quads (1 per face) with UVs. */
+    private static void renderTreasureShader(
+            final Matrix4f modelViewMatrix,
+            final float timeSeconds, 
+            final float blockSeed,
+            final float red, final float green, final float blue, final float baseAlpha
+    ) {
+        // Ensure our shader is the active program for the draw below
+        RenderSystem.setShader(() -> treasureShader);
+
+        // Configure uniforms on the shader instance
+        treasureShader.getUniform("Time").set(timeSeconds);
+        treasureShader.getUniform("BlockSeed").set(blockSeed);
+        treasureShader.getUniform("BaseAlpha").set(baseAlpha);
+        // Set standard matrices expected by the shader
+        // Use the current pose stack's model-view matrix and the active projection
+        treasureShader.getUniform("ProjMat").set(RenderSystem.getProjectionMatrix());
+        treasureShader.getUniform("ModelViewMat").set(modelViewMatrix);
+        treasureShader.apply();
+
+        // Use polygon offset to bias depth slightly toward the camera so coplanar quads
+        // do not z-fight with the block faces, without introducing a visible spatial gap
+//        RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+        RenderSystem.enablePolygonOffset();
+        RenderSystem.polygonOffset(-1.0f, -1.0f);
+
+        BufferBuilder buffer = RenderSystem.renderThreadTesselator().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
+
+        // Z faces
+        faceZTex(buffer, 0f, 0f, 0f, 1f, 1f, red, green, blue, 1f);
+        faceZTex(buffer, 1f, 1f, 0f, 0f, 1f, red, green, blue, 1f);
+        // X faces
+        faceXTex(buffer, 0f, 1f, 0f, 0f, 1f, red, green, blue, 1f);
+        faceXTex(buffer, 1f, 0f, 0f, 1f, 1f, red, green, blue, 1f);
+        // Y faces
+        faceYTex(buffer, 0f, 0f, 1f, 1f, 0f, red, green, blue, 1f);
+        faceYTex(buffer, 1f, 0f, 0f, 1f, 1f, red, green, blue, 1f);
+
+        BufferUploader.draw(buffer.buildOrThrow());
+
+        // Restore polygon offset state
+        RenderSystem.polygonOffset(0.0f, 0.0f);
+        RenderSystem.disablePolygonOffset();
+
+        // Clear to avoid leaking state
+        treasureShader.clear();
+    }
+
+    // Textured face builders (with UVs 0..1). We supply model-space positions; the shader's ModelViewMat handles transforms.
+    private static void faceZTex(final VertexConsumer buffer, final float z,
+                                 final float uMin, final float vMin, final float uMax, final float vMax,
+                                 final float red, final float green, final float blue, final float alpha) {
+        buffer.addVertex(0f, 0f, z).setColor(red, green, blue, alpha).setUv(uMin, vMin);
+        buffer.addVertex(1f, 0f, z).setColor(red, green, blue, alpha).setUv(uMax, vMin);
+        buffer.addVertex(1f, 1f, z).setColor(red, green, blue, alpha).setUv(uMax, vMax);
+        buffer.addVertex(0f, 1f, z).setColor(red, green, blue, alpha).setUv(uMin, vMax);
+    }
+
+    private static void faceXTex(final VertexConsumer buffer, final float x,
+                                 final float uMin, final float vMin, final float uMax, final float vMax,
+                                 final float red, final float green, final float blue, final float alpha) {
+        buffer.addVertex(x, 0f, 0f).setColor(red, green, blue, alpha).setUv(uMin, vMin);
+        buffer.addVertex(x, 0f, 1f).setColor(red, green, blue, alpha).setUv(uMax, vMin);
+        buffer.addVertex(x, 1f, 1f).setColor(red, green, blue, alpha).setUv(uMax, vMax);
+        buffer.addVertex(x, 1f, 0f).setColor(red, green, blue, alpha).setUv(uMin, vMax);
+    }
+
+    private static void faceYTex(final VertexConsumer buffer, final float y,
+                                 final float uMin, final float vMin, final float uMax, final float vMax,
+                                 final float red, final float green, final float blue, final float alpha) {
+        buffer.addVertex(0f, y, 0f).setColor(red, green, blue, alpha).setUv(uMin, vMin);
+        buffer.addVertex(1f, y, 0f).setColor(red, green, blue, alpha).setUv(uMax, vMin);
+        buffer.addVertex(1f, y, 1f).setColor(red, green, blue, alpha).setUv(uMax, vMax);
+        buffer.addVertex(0f, y, 1f).setColor(red, green, blue, alpha).setUv(uMin, vMax);
+    }
+
+    @SubscribeEvent
+    public static void registerShaders(final RegisterShadersEvent event) throws IOException {
+        event.registerShader(new ShaderInstance(event.getResourceProvider(), DragonSurvival.res("block_vision_treasure"), DefaultVertexFormat.POSITION_TEX_COLOR), instance -> treasureShader = instance);
     }
 
     @SubscribeEvent

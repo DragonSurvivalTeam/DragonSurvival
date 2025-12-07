@@ -1,0 +1,46 @@
+{
+  "actions": [
+    {
+      "target_selection": {
+        "applied_effects": {
+          "entity_effect": [
+            {
+              "block_visions": [
+                {
+                  "base": {
+                    "id": "dragonsurvival:diamond_vision_outline",
+                    "is_hidden": true
+                  },
+                  "blocks": "#c:ores/diamond",
+                  "colors": [
+                    "gold",
+                    "dark_purple",
+                    "green",
+                    "red",
+                    "blue"
+                  ],
+                  "display_type": "outline",
+                  "range": 36.0
+                }
+              ],
+              "effect_type": "dragonsurvival:block_vision"
+            }
+          ],
+          "targeting_mode": "allies_and_self"
+        },
+        "target_type": "dragonsurvival:self"
+      }
+    }
+  ],
+  "activation": {
+    "activation_type": "dragonsurvival:passive"
+  },
+  "icon": {
+    "texture_entries": [
+      {
+        "from_level": 0,
+        "texture_resource": "dragonsurvival:test"
+      }
+    ]
+  }
+}
