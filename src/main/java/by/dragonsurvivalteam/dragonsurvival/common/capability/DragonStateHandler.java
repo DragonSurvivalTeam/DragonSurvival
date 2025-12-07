@@ -393,7 +393,7 @@ public class DragonStateHandler extends EntityStateHandler {
             updateGrowthAndStage(player != null ? player.registryAccess() : null, getSavedDragonAge(speciesKey()));
 
             // The server doesn't need to check for skin preset refreshes; the client handles this
-            if(FMLLoader.getDist().isClient()) {
+            if (FMLLoader.getDist().isClient()) {
                 if (skinData.skinPresets.get().get(speciesKey()).isEmpty()) {
                     refreshSkinPresetForSpecies(dragonSpecies, dragonBody);
                     recompileCurrentSkin();
@@ -430,6 +430,7 @@ public class DragonStateHandler extends EntityStateHandler {
         setSpecies(player, species, false);
     }
 
+    /** Does *not* synchronize the change to the client */
     public void setBody(@Nullable final Player player, final Holder<DragonBody> dragonBody) {
         Holder<DragonBody> oldBody = this.dragonBody;
         this.dragonBody = dragonBody;
@@ -488,10 +489,14 @@ public class DragonStateHandler extends EntityStateHandler {
             return instance.getValue();
         }
 
-        List<AttributeModifier> attributeModifiers = stage().value().filterModifiers(instance);
+        return calculateScale(instance, partialVisualGrowth);
+    }
+
+    public float calculateScale(final AttributeInstance scale, final double growth) {
+        List<AttributeModifier> attributeModifiers = stage().value().filterModifiers(scale);
         List<Modifier> modifiers = stage().value().modifiers().stream().filter(modifier -> modifier.attribute().is(Attributes.SCALE)).toList();
 
-        return Functions.calculateAttributeValue(instance, partialVisualGrowth - stage().value().growthRange().min(), attributeModifiers, modifiers);
+        return (float) Functions.calculateAttributeValue(scale, growth - stage().value().growthRange().min(), attributeModifiers, modifiers);
     }
 
     public double getGrowth() {

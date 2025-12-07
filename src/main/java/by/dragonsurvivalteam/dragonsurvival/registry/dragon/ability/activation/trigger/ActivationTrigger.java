@@ -1,12 +1,11 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.trigger;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
-import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.Registry;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.level.storage.loot.LootContext;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.registries.NewRegistryEvent;
@@ -16,26 +15,11 @@ import net.neoforged.neoforge.registries.RegistryBuilder;
 import java.util.function.Function;
 
 @EventBusSubscriber
-public interface ActivationTrigger {
-    ResourceKey<Registry<MapCodec<? extends ActivationTrigger>>> REGISTRY_KEY = ResourceKey.createRegistryKey(DragonSurvival.res("activation_trigger"));
-    Registry<MapCodec<? extends ActivationTrigger>> REGISTRY = new RegistryBuilder<>(REGISTRY_KEY).create();
+public interface ActivationTrigger<T> {
+    ResourceKey<Registry<MapCodec<? extends ActivationTrigger<?>>>> REGISTRY_KEY = ResourceKey.createRegistryKey(DragonSurvival.res("activation_trigger"));
+    Registry<MapCodec<? extends ActivationTrigger<?>>> REGISTRY = new RegistryBuilder<>(REGISTRY_KEY).create();
 
-    Codec<ActivationTrigger> CODEC = REGISTRY.byNameCodec().dispatch("trigger_type", ActivationTrigger::codec, Function.identity());
-
-    enum TriggerType {
-        @Translation(comments = "Constant")
-        CONSTANT,
-        @Translation(comments = "On Self Hit")
-        ON_SELF_HIT,
-        @Translation(comments = "On Target Hit")
-        ON_TARGET_HIT,
-        @Translation(comments = "On Target Killed")
-        ON_TARGET_KILLED,
-        @Translation(comments = "On Death")
-        ON_DEATH,
-        @Translation(comments = "On Block Break")
-        ON_BLOCK_BREAK
-    }
+    Codec<ActivationTrigger<?>> CODEC = REGISTRY.byNameCodec().dispatch("trigger_type", ActivationTrigger::codec, Function.identity());
 
     @SubscribeEvent
     static void register(final NewRegistryEvent event) {
@@ -51,14 +35,16 @@ public interface ActivationTrigger {
             event.register(REGISTRY_KEY, DragonSurvival.res("on_target_killed"), () -> OnTargetKilled.CODEC);
             event.register(REGISTRY_KEY, DragonSurvival.res("on_death"), () -> OnDeath.CODEC);
             event.register(REGISTRY_KEY, DragonSurvival.res("on_block_break"), () -> OnBlockBreak.CODEC);
+            event.register(REGISTRY_KEY, DragonSurvival.res("on_key_pressed"), () -> OnKeyPressed.CODEC);
+            event.register(REGISTRY_KEY, DragonSurvival.res("on_key_released"), () -> OnKeyPressed.CODEC);
         }
     }
 
-    default boolean test(final LootContext context) {
+    default boolean test(final T testContext) {
         return true;
     }
 
-    TriggerType type();
+    Component translation();
 
-    MapCodec<? extends ActivationTrigger> codec();
+    MapCodec<? extends ActivationTrigger<?>> codec();
 }

@@ -283,7 +283,7 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
                                 // There is no trim on this pixel and we can ignore it safely
                                 if (dyeHSB[0] != 0 && dyeHSB[1] != 0) {
                                     // Get the armor's brightness, and the dye's hue and saturation
-                                    image.setPixelRGBA(x, y, Color.HSBtoRGB(dyeHSB[0], dyeHSB[1], Color.RGBtoHSB(armorColor.getRed(), armorColor.getGreen(), armorColor.getBlue(), null)[1]));
+                                    image.setPixelRGBA(x, y, Color.HSBtoRGB(dyeHSB[0], dyeHSB[1], Color.RGBtoHSB(armorColor.getRed(), armorColor.getGreen(), armorColor.getBlue(), null)[2]));
                                 } else {
                                     image.setPixelRGBA(x, y, armorColor.getRGB());
                                 }
@@ -292,7 +292,7 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
                             // No armor trim, just the armor
                             Color.RGBtoHSB(armorColor.getRed(), armorColor.getGreen(), armorColor.getBlue(), armorHSB);
 
-                            if ((dyeHSB[0] != 0 || dyeHSB[1] != 0) && armorHSB[1] == 0) {
+                            if ((dyeHSB[0] != 0 || dyeHSB[1] != 0) && armorHSB[2] != 0) {
                                 // Get the armor's brightness, and the dye's hue and saturation
                                 image.setPixelRGBA(x, y, Color.HSBtoRGB(dyeHSB[0], dyeHSB[1], armorHSB[2]));
                             } else {

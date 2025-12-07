@@ -142,8 +142,8 @@ dependencies {
 //	implementation "curse.maven:flerovium-1142875:6547097" // 1.0.6
 //	implementation "maven.modrinth:c2me-neoforge:0.3.0+alpha.0.72+1.21.1"
 
-//	implementation "curse.maven:apothic-attributes-898963:5751458" // 2.4.0
-//	implementation "curse.maven:placebo-283644:5869769" // 9.5.4
+//	implementation "curse.maven:apothic-attributes-898963:6751650" // 2.9.0
+//	implementation "curse.maven:placebo-283644:6926281" // 9.9.1
 
 	// Immersive portals
 //    implementation "curse.maven:immersive-portals-for-forge-355440:6667779" // 2.4.0

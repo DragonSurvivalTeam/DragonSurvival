@@ -1,6 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.commands;
 
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
+import by.dragonsurvivalteam.dragonsurvival.registry.DSCommands;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import com.mojang.brigadier.CommandDispatcher;
 import net.minecraft.commands.CommandSourceStack;
@@ -28,8 +29,8 @@ public class ClearMarkCommand {
                 .requires(commandSourceStack -> commandSourceStack.hasPermission(Commands.LEVEL_GAMEMASTERS))
                 .then(literal("clear")
                         .executes(commandSourceStack -> clearMark(commandSourceStack.getSource(), List.of(commandSourceStack.getSource().getPlayerOrException())))
-                        .then(argument("targets", EntityArgument.players())
-                                .executes(commandSourceStack -> clearMark(commandSourceStack.getSource(), EntityArgument.getPlayers(commandSourceStack, "targets")))
+                        .then(argument(DSCommands.TARGETS, EntityArgument.players())
+                                .executes(commandSourceStack -> clearMark(commandSourceStack.getSource(), EntityArgument.getPlayers(commandSourceStack, DSCommands.TARGETS)))
                         )
                 )
         );

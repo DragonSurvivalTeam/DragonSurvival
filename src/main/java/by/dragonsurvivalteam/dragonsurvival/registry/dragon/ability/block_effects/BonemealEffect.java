@@ -19,16 +19,17 @@ public record BonemealEffect(LevelBasedValue attempts, LevelBasedValue probabili
 
     @Override
     public void apply(final ServerPlayer dragon, final DragonAbilityInstance ability, final BlockPos position, final Direction direction) {
-        if (dragon.getRandom().nextDouble() > probability().calculate(ability.level())) {
+        if (dragon.getRandom().nextDouble() > probability.calculate(ability.level())) {
             return;
         }
 
-        BlockState state = dragon.serverLevel().getBlockState(position);
+        for (int i = 0; i < attempts.calculate(ability.level()); i++) {
+            // We need to re-fetch the state every time since some blocks may modify the block at the current position
+            // For example: Saplings grow a tree and always return 'true' for being a valid bonemeal target
+            // This results in another attempt to grow the tree, which fails and re-places the sapling into the trunk of the grown tree
+            BlockState state = dragon.serverLevel().getBlockState(position);
 
-        if (state.getBlock() instanceof BonemealableBlock bonemealableBlock) {
-            float attempts = attempts().calculate(ability.level());
-
-            for (int i = 0; i < attempts; i++) {
+            if (state.getBlock() instanceof BonemealableBlock bonemealableBlock) {
                 if (!bonemealableBlock.isValidBonemealTarget(dragon.level(), position, state)) {
                     return;
                 }

@@ -12,6 +12,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -64,6 +65,14 @@ public class DragonSoulBlockEntity extends BlockEntity {
         }
 
         return data.scale();
+    }
+
+    public boolean canInteract(final Player player) {
+        if (!locked || player.isCreative()) {
+            return true;
+        }
+
+        return playerUUID == null || playerUUID.equals(player.getUUID());
     }
 
     private void initializeHandler(final HolderLookup.Provider provider, final CompoundTag tag) {

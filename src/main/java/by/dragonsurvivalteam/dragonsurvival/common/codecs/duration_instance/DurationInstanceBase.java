@@ -105,7 +105,7 @@ public class DurationInstanceBase<B extends Storage<I>, I extends DurationInstan
 
     public static class Builder {
         private final ResourceLocation id;
-        private LevelBasedValue duration;
+        private LevelBasedValue duration = DragonAbilities.INFINITE_DURATION;
         private boolean shouldRemoveAutomatically = false;
         private Optional<LootItemCondition> earlyRemovalCondition = Optional.empty();
         private Optional<ResourceLocation> customIcon = Optional.empty();
@@ -113,11 +113,6 @@ public class DurationInstanceBase<B extends Storage<I>, I extends DurationInstan
 
         public Builder(final ResourceLocation id) {
             this.id = id;
-        }
-
-        public Builder infinite() {
-            this.duration = DragonAbilities.INFINITE_DURATION;
-            return this;
         }
 
         public Builder duration(final LevelBasedValue duration) {

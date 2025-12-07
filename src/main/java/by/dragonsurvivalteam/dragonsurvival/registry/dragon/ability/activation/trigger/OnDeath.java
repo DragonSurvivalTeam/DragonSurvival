@@ -3,11 +3,16 @@ package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import com.mojang.serialization.MapCodec;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 
-public record OnDeath() implements ActivationTrigger {
+public record OnDeath() implements ActivationTrigger<Void> {
+    @Translation(comments = "On Death")
+    private static final String TRANSLATION = Translation.Type.TRIGGER_TYPE.wrap("on_death");
+
     public static final OnDeath INSTANCE = new OnDeath();
     public static final MapCodec<OnDeath> CODEC = MapCodec.unit(INSTANCE);
 
@@ -20,7 +25,7 @@ public record OnDeath() implements ActivationTrigger {
             }
 
             float previousHealth = player.getHealth();
-            MagicData.getData(player).filterPassiveByTrigger(trigger -> trigger.type() == TriggerType.ON_DEATH).forEach(ability -> ability.tick(player));
+            MagicData.getData(player).filterPassiveByTrigger(trigger -> trigger instanceof OnDeath).forEach(ability -> ability.tick(player));
 
             if (previousHealth <= 0 && player.getHealth() > 0) {
                 // An effect healed the player, so we assume that the death should not occur
@@ -30,12 +35,12 @@ public record OnDeath() implements ActivationTrigger {
     }
 
     @Override
-    public TriggerType type() {
-        return TriggerType.ON_DEATH;
+    public Component translation() {
+        return Component.translatable(TRANSLATION);
     }
 
     @Override
-    public MapCodec<? extends ActivationTrigger> codec() {
+    public MapCodec<? extends ActivationTrigger<?>> codec() {
         return CODEC;
     }
 }

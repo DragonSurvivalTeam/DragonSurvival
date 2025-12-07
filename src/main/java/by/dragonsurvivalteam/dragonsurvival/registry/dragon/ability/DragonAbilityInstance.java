@@ -12,7 +12,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.Activation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.ChanneledActivation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.PassiveActivation;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.trigger.ActivationTrigger;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.trigger.ConstantTrigger;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
@@ -250,7 +250,7 @@ public class DragonAbilityInstance {
     public void setActive(final Player player, boolean isActive) {
         this.isActive = isActive;
 
-        if (!isActive && player instanceof ServerPlayer serverPlayer && value().activation() instanceof PassiveActivation passive && passive.trigger().type() == ActivationTrigger.TriggerType.CONSTANT) {
+        if (!isActive && player instanceof ServerPlayer serverPlayer && value().activation() instanceof PassiveActivation passive && passive.trigger() instanceof ConstantTrigger) {
             // Also makes sure to remove any effects that are applied by the ability
             ability.value().actions().forEach(action -> action.remove(serverPlayer, this));
         }

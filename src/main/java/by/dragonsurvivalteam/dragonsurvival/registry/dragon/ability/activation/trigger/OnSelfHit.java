@@ -1,11 +1,14 @@
+
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.trigger;
 
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
@@ -15,7 +18,10 @@ import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 
 import java.util.Optional;
 
-public record OnSelfHit(Optional<LootItemCondition> condition) implements ActivationTrigger {
+public record OnSelfHit(Optional<LootItemCondition> condition) implements ActivationTrigger<LootContext> {
+    @Translation(comments = "On Self Hit")
+    private static final String TRANSLATION = Translation.Type.TRIGGER_TYPE.wrap("on_self_hit");
+
     public static final MapCodec<OnSelfHit> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             LootItemCondition.DIRECT_CODEC.optionalFieldOf("condition").forGetter(OnSelfHit::condition)
     ).apply(instance, OnSelfHit::new));
@@ -29,7 +35,7 @@ public record OnSelfHit(Optional<LootItemCondition> condition) implements Activa
             }
 
             LootContext context = Condition.damageContext(player.serverLevel(), player, event.getSource(), event.getSource().getEntity() instanceof LivingEntity livingEntity ? livingEntity.getMainHandItem() : ItemStack.EMPTY);
-            MagicData.getData(player).filterPassiveByTrigger(trigger -> trigger.type() == TriggerType.ON_SELF_HIT && trigger.test(context))
+            MagicData.getData(player).filterPassiveByTrigger(trigger -> trigger instanceof OnSelfHit onSelfHit && onSelfHit.test(context))
                     .forEach(ability -> {
                         if (!ability.triggered) {
                             ability.triggered = true;
@@ -45,12 +51,12 @@ public record OnSelfHit(Optional<LootItemCondition> condition) implements Activa
     }
 
     @Override
-    public TriggerType type() {
-        return TriggerType.ON_SELF_HIT;
+    public Component translation() {
+        return Component.translatable(TRANSLATION);
     }
 
     @Override
-    public MapCodec<? extends ActivationTrigger> codec() {
+    public MapCodec<? extends ActivationTrigger<?>> codec() {
         return CODEC;
     }
 }

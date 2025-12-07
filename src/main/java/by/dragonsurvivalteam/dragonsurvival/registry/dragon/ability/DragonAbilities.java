@@ -23,9 +23,11 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.P
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.SimpleActivation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.Sound;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.trigger.OnDeath;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.trigger.OnKeyPressed;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.trigger.OnSelfHit;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.trigger.OnTargetHit;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.trigger.OnTargetKilled;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.block_effects.ExplodeBlockEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.common_effects.ParticleEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.common_effects.RunFunctionEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.common_effects.SummonEntityEffect;
@@ -76,7 +78,27 @@ public class DragonAbilities {
         ForestDragonAbilities.registerAbilities(context);
         SeaDragonAbilities.registerAbilities(context);
 
-        // --- cooldown --- //
+        // --- Key Pressed --- //
+
+        context.register(ResourceKey.create(DragonAbility.REGISTRY, DragonSurvival.res("test_on_key_pressed")), new DragonAbility(
+                new PassiveActivation(Optional.empty(), Optional.empty(), OnKeyPressed.create("key.keyboard.g")),
+                Optional.empty(),
+                Optional.empty(),
+                List.of(
+                        new ActionContainer(new SelfTarget(AbilityTargeting.block(List.of(
+                                new ExplodeBlockEffect(
+                                        LevelBasedValue.constant(1),
+                                        LevelBasedValue.constant(3),
+                                        false,
+                                        context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DamageTypes.EXPLOSION)
+                                )
+                        ))), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(1))
+                ),
+                true,
+                new LevelBasedResource(List.of(new LevelBasedResource.Entry(DragonSurvival.res("test"), 0)))
+        ));
+
+        // --- Damage Expression --- //
 
         context.register(ResourceKey.create(DragonAbility.REGISTRY, DragonSurvival.res("test_damage_expression")), new DragonAbility(
                 new PassiveActivation(Optional.empty(), Optional.empty(), new OnTargetHit(Optional.empty())),
@@ -91,7 +113,7 @@ public class DragonAbilities {
                 new LevelBasedResource(List.of(new LevelBasedResource.Entry(DragonSurvival.res("test"), 0)))
         ));
 
-        // --- cooldown --- //
+        // --- Cooldown --- //
 
         context.register(ResourceKey.create(DragonAbility.REGISTRY, DragonSurvival.res("test_cooldown_recovery")), new DragonAbility(
                 new SimpleActivation(

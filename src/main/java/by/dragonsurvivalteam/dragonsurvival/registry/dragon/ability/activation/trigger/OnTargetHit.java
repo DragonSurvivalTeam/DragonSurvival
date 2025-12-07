@@ -4,8 +4,10 @@ import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
@@ -13,7 +15,10 @@ import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 
 import java.util.Optional;
 
-public record OnTargetHit(Optional<LootItemCondition> condition) implements ActivationTrigger {
+public record OnTargetHit(Optional<LootItemCondition> condition) implements ActivationTrigger<LootContext> {
+    @Translation(comments = "On Target Hit")
+    private static final String TRANSLATION = Translation.Type.TRIGGER_TYPE.wrap("on_target_hit");
+
     public static final MapCodec<OnTargetHit> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             LootItemCondition.DIRECT_CODEC.optionalFieldOf("condition").forGetter(OnTargetHit::condition)
     ).apply(instance, OnTargetHit::new));
@@ -27,7 +32,7 @@ public record OnTargetHit(Optional<LootItemCondition> condition) implements Acti
             }
 
             LootContext context = Condition.damageContext(player.serverLevel(), event.getEntity(), event.getSource(), player.getMainHandItem());
-            MagicData.getData(player).filterPassiveByTrigger(trigger -> trigger.type() == TriggerType.ON_TARGET_HIT && trigger.test(context))
+            MagicData.getData(player).filterPassiveByTrigger(trigger -> trigger instanceof OnTargetHit onTargetHit && onTargetHit.test(context))
                     .forEach(ability -> {
                         if (!ability.triggered) {
                             ability.triggered = true;
@@ -43,12 +48,12 @@ public record OnTargetHit(Optional<LootItemCondition> condition) implements Acti
     }
 
     @Override
-    public TriggerType type() {
-        return TriggerType.ON_TARGET_HIT;
+    public Component translation() {
+        return Component.translatable(TRANSLATION);
     }
 
     @Override
-    public MapCodec<? extends ActivationTrigger> codec() {
+    public MapCodec<? extends ActivationTrigger<?>> codec() {
         return CODEC;
     }
 }

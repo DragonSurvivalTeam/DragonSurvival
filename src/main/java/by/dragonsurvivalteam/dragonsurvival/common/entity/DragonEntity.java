@@ -735,7 +735,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
             // Let the jump animation complete
         } else if (!player.onGround()) {
             state.setAnimation(DragonAnimations.FALL_LOOP.getAnimation());
-            animationController.transitionLength(2);
+            animationController.transitionLength(5);
         } else if (player.isShiftKeyDown() || !DragonSizeHandler.canPoseFit(player, Pose.STANDING) && DragonSizeHandler.canPoseFit(player, Pose.CROUCHING)) {
             // Player is Sneaking
             if (movement.isMovingHorizontally()) {
@@ -745,10 +745,10 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
                 animationController.transitionLength(5);
             } else if (movement.dig) {
                 state.setAnimation(DragonAnimations.DIG_SNEAK.getAnimation());
-                animationController.transitionLength(5);
+                animationController.transitionLength(3);
             } else {
                 state.setAnimation(DragonAnimations.SNEAK.getAnimation());
-                animationController.transitionLength(5);
+                animationController.transitionLength(3);
             }
         } else if (player.isSprinting()) {
             useDynamicScaling = true;
@@ -758,20 +758,20 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
         } else if (movement.isMovingHorizontally()) {
             useDynamicScaling = true;
             state.setAnimation(DragonAnimations.WALK.getAnimation());
-            animationController.transitionLength(2);
+            animationController.transitionLength(3);
         } else if (movement.dig) {
             state.setAnimation(DragonAnimations.DIG.getAnimation());
             animationController.transitionLength(6);
         } else {
             state.setAnimation(DragonAnimations.IDLE.getAnimation());
-            animationController.transitionLength(2);
+            animationController.transitionLength(3);
         }
 
         // If the animation was null, that means we were T-Posing before this animation was triggered
         // So instantly transition to prevent the player from seeing a T-Pose -> animation transition
         // This usually happens when changing dimensions, or new clientside dragons are initialized in the UI
         if(animationWasNullBeforePredicate) {
-            animationController.transitionLength(0);
+            animationController.transitionLength(10);
         }
 
         double finalAnimationSpeed = animationSpeed;

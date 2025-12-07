@@ -8,10 +8,12 @@ import by.dragonsurvivalteam.dragonsurvival.client.util.FakeClientPlayerUtils;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.AbilityAnimation;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.AnimationType;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
+import by.dragonsurvivalteam.dragonsurvival.input.Keybind;
 import by.dragonsurvivalteam.dragonsurvival.network.dragon_soul_block.SyncDragonSoulAnimation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.emotes.DragonEmote;
 import by.dragonsurvivalteam.dragonsurvival.server.tileentity.DragonSoulBlockEntity;
 import by.dragonsurvivalteam.dragonsurvival.util.AnimationUtils;
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.Minecraft;
@@ -20,6 +22,8 @@ import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.client.resources.sounds.TickableSoundInstance;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
@@ -29,9 +33,12 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
+import software.bernie.geckolib.cache.GeckoLibCache;
+import software.bernie.geckolib.loading.object.BakedAnimations;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class ClientProxy implements Proxy {
     private final Map<ResourceLocation, TickableSoundInstance> soundInstances = new HashMap<>();
@@ -200,5 +207,23 @@ public class ClientProxy implements Proxy {
         }
 
         return false;
+    }
+
+    @Override
+    public MutableComponent translateKeyMapping(final String key) {
+        return InputConstants.getKey(key).getDisplayName().copy();
+    }
+
+    @Override
+    public Set<String> getAnimations(final DragonSoulBlockEntity soul) {
+        DragonEntity dragon = FakeClientPlayerUtils.getFakeDragon(soul.fakePlayerIndex, soul.getHandler());
+        ResourceLocation resource = DragonSurvivalClient.DRAGON_MODEL.getAnimationResource(dragon);
+        BakedAnimations animations = GeckoLibCache.getBakedAnimations().get(resource);
+        return animations.animations().keySet();
+    }
+
+    @Override
+    public Component getDragonSoulPlacementKeybind() {
+        return Keybind.TOGGLE_DRAGON_SOUL_PLACEMENT.get().getTranslatedKeyMessage();
     }
 }

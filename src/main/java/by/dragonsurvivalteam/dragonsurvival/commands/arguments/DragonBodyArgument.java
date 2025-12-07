@@ -46,11 +46,21 @@ public class DragonBodyArgument implements ArgumentType<Holder<DragonBody>> {
     @Override
     public <S> CompletableFuture<Suggestions> listSuggestions(final CommandContext<S> context, final SuggestionsBuilder builder) {
         List<String> suggestions = new ArrayList<>();
-        Holder<DragonSpecies> species = DragonSpeciesArgument.get(context);
+        Holder<DragonSpecies> species = null;
+
+        try {
+            species = DragonSpeciesArgument.get(context);
+        } catch (IllegalArgumentException ignored) {
+            // Mixins do not apply to this library, so we cannot check properly before accessing the argument
+        }
+
+        // TODO :: is there a way to parse for a player to retrieve the species and check against that?
 
         if (species != null) {
+            Holder<DragonSpecies> finalSpecies = species;
+
             this.context.lookupOrThrow(DragonBody.REGISTRY).listElements().forEach(body -> {
-                if (DragonBody.bodyIsValidForSpecies(body, species)) {
+                if (DragonBody.bodyIsValidForSpecies(body, finalSpecies)) {
                     suggestions.add(body.getRegisteredName());
                 }
             });

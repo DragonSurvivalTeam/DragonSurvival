@@ -18,6 +18,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilit
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.PassiveActivation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.trigger.ActivationTrigger;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.trigger.ConstantTrigger;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.ExperiencePointsUpgrade;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.InputData;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.UpgradeType;
@@ -203,7 +204,7 @@ public class MagicData implements INBTSerializable<CompoundTag> {
             ability.tickCooldown(event.getEntity());
             ability.triggered = false;
 
-            if (ability.value().activation() instanceof PassiveActivation passive && passive.trigger().type() != ActivationTrigger.TriggerType.CONSTANT) {
+            if (ability.value().activation() instanceof PassiveActivation passive && !(passive.trigger() instanceof ConstantTrigger)) {
                 // Passive activations with non-constant triggers are handled elsewhere
                 continue;
             }
@@ -519,7 +520,7 @@ public class MagicData implements INBTSerializable<CompoundTag> {
         return getAbilities().values().stream().filter(instance -> instance.isPassive() && predicate.test(instance.value().upgrade())).collect(Collectors.toList());
     }
 
-    public List<DragonAbilityInstance> filterPassiveByTrigger(final Predicate<ActivationTrigger> predicate) {
+    public List<DragonAbilityInstance> filterPassiveByTrigger(final Predicate<ActivationTrigger<?>> predicate) {
         // TODO :: cache the passive abilities
         return getAbilities().values().stream().filter(instance -> instance.value().activation() instanceof PassiveActivation passive && predicate.test(passive.trigger())).collect(Collectors.toList());
     }

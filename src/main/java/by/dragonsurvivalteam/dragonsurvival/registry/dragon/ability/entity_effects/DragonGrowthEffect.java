@@ -1,8 +1,10 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects;
 
+import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscCodecs;
+import by.dragonsurvivalteam.dragonsurvival.common.handlers.DragonGrowthHandler;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
@@ -77,7 +79,14 @@ public record DragonGrowthEffect(GrowthType growth_type, ActionType action_type,
                 }
             }
 
-            handler.setDesiredGrowth(player, base + difference);
+            double desiredGrowth = base + difference;
+
+            if (!DragonGrowthHandler.isGrowthAllowed(player, handler, desiredGrowth)) {
+                DragonSurvival.LOGGER.debug("Growth of [{}] cannot be set by ability [{}] due to player being in a too enclosed space", player, ability.id());
+                return;
+            }
+
+            handler.setDesiredGrowth(player, desiredGrowth);
         }
     }
 

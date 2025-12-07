@@ -4,8 +4,10 @@ import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
@@ -15,7 +17,10 @@ import net.neoforged.neoforge.event.level.BlockEvent;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public record OnBlockBreak(Optional<LootItemCondition> condition) implements ActivationTrigger {
+public record OnBlockBreak(Optional<LootItemCondition> condition) implements ActivationTrigger<LootContext> {
+    @Translation(comments = "On Block Break")
+    private static final String TRANSLATION = Translation.Type.TRIGGER_TYPE.wrap("on_block_break");
+
     public static final MapCodec<OnBlockBreak> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             LootItemCondition.DIRECT_CODEC.optionalFieldOf("condition").forGetter(OnBlockBreak::condition)
     ).apply(instance, OnBlockBreak::new));
@@ -31,7 +36,7 @@ public record OnBlockBreak(Optional<LootItemCondition> condition) implements Act
             AtomicBoolean triggeredAbility = new AtomicBoolean(false);
             Lazy<LootContext> context = Lazy.of(() -> Condition.blockContext(player, event.getPos(), event.getState()));
 
-            MagicData.getData(player).filterPassiveByTrigger(trigger -> trigger.type() == TriggerType.ON_BLOCK_BREAK && trigger.test(context.get()))
+            MagicData.getData(player).filterPassiveByTrigger(trigger -> trigger instanceof OnBlockBreak onBlockBreak && onBlockBreak.test(context.get()))
                     .forEach(ability -> {
                         ability.tick(player);
                         triggeredAbility.set(true);
@@ -50,12 +55,12 @@ public record OnBlockBreak(Optional<LootItemCondition> condition) implements Act
     }
 
     @Override
-    public TriggerType type() {
-        return TriggerType.ON_BLOCK_BREAK;
+    public Component translation() {
+        return Component.translatable(TRANSLATION);
     }
 
     @Override
-    public MapCodec<? extends ActivationTrigger> codec() {
+    public MapCodec<? extends ActivationTrigger<?>> codec() {
         return CODEC;
     }
 
