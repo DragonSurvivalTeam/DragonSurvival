@@ -1,6 +1,6 @@
 {
-  "vertex": "block_vision_treasure",
-  "fragment": "block_vision_treasure",
+  "vertex": "dragonsurvival:block_vision_treasure",
+  "fragment": "dragonsurvival:block_vision_treasure",
   "uniforms": [
     { "name": "ModelViewMat", "type": "matrix4x4", "count": 16, "values": [ 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0 ] },
     { "name": "ProjMat", "type": "matrix4x4", "count": 16, "values": [ 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0 ] },

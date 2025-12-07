@@ -883,6 +883,8 @@
   "dragonsurvival.configuration.skill_bar_x_offset.tooltip": "Offset for the x position of the skill bar",
   "dragonsurvival.configuration.skill_bar_y_offset": "Skill Bar Y Offset",
   "dragonsurvival.configuration.skill_bar_y_offset.tooltip": "Offset for the x position of the skill bar",
+  "dragonsurvival.configuration.skip_shader_shadows": "Skip Shader Shadows",
+  "dragonsurvival.configuration.skip_shader_shadows.tooltip": "Disables rendering of dragon shadows if a shader from Iris is active\nRendering shadows have a heavy performance impact due to the complexity of the dragon model",
   "dragonsurvival.configuration.small_size_animation_speed_factor": "Small Size Animation Speed Factor",
   "dragonsurvival.configuration.small_size_animation_speed_factor.tooltip": "The factor by which the additional animation speed from being smaller is multiplied. 1.0 represents the speed accurately reflecting the size of the dragon.",
   "dragonsurvival.configuration.soul_block_default_animation": "Soul Block Default Animation",

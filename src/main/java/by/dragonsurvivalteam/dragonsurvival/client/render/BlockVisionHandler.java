@@ -36,6 +36,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Currently, these effects are rendered for blocks that are in the players' vision but hidden behind other blocks </br>
+ * TODO :: find a performant way to check and potentially skip such blocks
+ */
 @EventBusSubscriber(Dist.CLIENT)
 public class BlockVisionHandler {
     /** Extend the search as a buffer while the background thread is searching */
@@ -44,6 +48,7 @@ public class BlockVisionHandler {
     private static Cache<LevelChunkSection, Boolean[]> CHUNK_CACHE;
 
     private static final List<Data> RENDER_DATA = new ArrayList<>();
+    private static final List<Data> SHADER_RENDER_DATA = new ArrayList<>();
     private static final List<Data> SEARCH_RESULT = new ArrayList<>();
     private static final List<BlockPos> REMOVAL = new ArrayList<>();
 
@@ -60,8 +65,12 @@ public class BlockVisionHandler {
         }
     }
 
+    /**
+     * Handles normal effects </br>
+     * This allows for x-ray effects that do not render over the entity, since this tage occurs before entities are rendered
+     */
     @SubscribeEvent
-    public static void handleBlockVision(final RenderLevelStageEvent event) {
+    public static void handleCore(final RenderLevelStageEvent event) {
         if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_CUTOUT_BLOCKS) {
             return;
         }
@@ -117,8 +126,6 @@ public class BlockVisionHandler {
         pose.mulPose(event.getModelViewMatrix());
         pose.translate(-camera.x(), -camera.y(), -camera.z());
 
-        int count = 0;
-
         for (int index = 0; index < RENDER_DATA.size(); index++) {
             Data data = RENDER_DATA.get(index);
 
@@ -146,16 +153,9 @@ public class BlockVisionHandler {
                     case OUTLINE -> BlockVisionOutline.render(data, pose, colorARGB);
                     case PARTICLES -> BlockVisionParticle.spawnParticle(data, player);
                     case TREASURE -> BlockVisionTreasure.render(data, pose, colorARGB, tick, partialTick);
-                    case TREASURE_SHADER -> {
-                        if (isShaderActive()) {
-                            BlockVisionTreasure.render(data, pose, colorARGB, tick, partialTick);
-                        } else {
-                            BlockVisionTreasureShader.render(data, pose, colorARGB, tick, partialTick);
-                        }
-                    }
+                    case TREASURE_SHADER -> SHADER_RENDER_DATA.add(data);
                 }
 
-                count++;
                 pose.popPose();
             }
         }
@@ -163,12 +163,49 @@ public class BlockVisionHandler {
         pose.popPose();
     }
 
-    private static boolean isShaderActive() {
-        if (ModCheck.isModLoaded(ModCheck.IRIS)) {
-            return IrisApi.getInstance().isShaderPackInUse();
+    /**
+     * Renders effects that rely on core shaders </br>
+     * When shaders from Iris are enabled they won't appear on the {@link RenderLevelStageEvent.Stage#AFTER_CUTOUT_BLOCKS} stage </br>
+     * This also means we can't allow x-ray functionality for these because otherwise they'd render over entities
+     */
+    @SubscribeEvent
+    public static void handleShader(final RenderLevelStageEvent event) {
+        if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_LEVEL) {
+            return;
         }
 
-        return false;
+        if (ModCheck.isModLoaded(ModCheck.IRIS) && IrisApi.getInstance().isRenderingShadowPass()) {
+            return;
+        }
+
+        if (SHADER_RENDER_DATA.isEmpty()) {
+            return;
+        }
+
+        PoseStack pose = event.getPoseStack();
+        pose.pushPose();
+
+        Vec3 camera = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
+        pose.mulPose(event.getModelViewMatrix());
+        pose.translate(-camera.x(), -camera.y(), -camera.z());
+
+        for (Data data : SHADER_RENDER_DATA) {
+            pose.pushPose();
+            pose.translate(data.x(), data.y(), data.z());
+
+            int colorARGB = vision.getColor(data.block());
+            int tick = event.getRenderTick();
+            float partialTick = event.getPartialTick().getRealtimeDeltaTicks();
+
+            switch (data.displayType()) {
+                case TREASURE_SHADER -> BlockVisionTreasureShader.render(data, pose, colorARGB, tick, partialTick);
+            }
+
+            pose.popPose();
+        }
+
+        pose.popPose();
+        SHADER_RENDER_DATA.clear();
     }
 
     @SubscribeEvent

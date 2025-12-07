@@ -1,30 +1,33 @@
 #version 150
 
 // Pixelated treasure aura — small popping sparkles
-// Clean and simple per-cell shader:
-// 1) Quantize UVs to a coarse grid to achieve a pixelated aesthetic.
-// 2) A sparse set of cells periodically emit a tiny sparkle that pops and fades.
-// 3) Each sparkle consists of a small square core and short cross-shaped rays.
-// 4) A coverage floor ensures the face is always faintly visible.
+// Matches DefaultVertexFormat.POSITION_TEX and mirrors the structure of growth_circle.
 
-in vec4 vColor;    // per-vertex color (ore color RGB, alpha usually 1)
-in vec2 vUV;       // face UVs in 0..1
+// Inputs
+in vec2 texCoord;        // face-local UV in [0,1]
 
-// Uniforms configured from Java
-uniform float Time;            // animation time in seconds
-uniform float BlockSeed;       // per-block phase/variation
-uniform float BaseAlpha;       // overall transparency multiplier
+// Uniforms
+uniform float Time;      // animation time in seconds
+uniform float BlockSeed; // per-block phase/variation
+uniform vec3 OreColor;   // ore RGB color (from visions.getColor)
 
-// Static parameters baked into the shader for clarity and fewer Java-side uniforms
-const float COVERAGE_FLOOR = 0.35;          // minimum coverage to avoid empty patches
-const float PIXEL_GRID = 14.0;              // number of cells along one axis (e.g., 12–18)
-const float EDGE_NEIGHBOR_FEATHER = 0.6 / PIXEL_GRID; // neighbor stitch width near cell borders
-const float SPARKLE_DENSITY = 0.30;         // fraction of cells that can sparkle (0..1)
-const float SPARKLE_LIFE = 1.35;            // duration (seconds) of one sparkle cycle
-const float EDGE_FEATHER = 0.07;            // softening near edges inside the cell (0..~0.25)
-const float SPARKLE_BRIGHTNESS = 0.75;      // brightness scaling for sparkle contribution
-
+// Standard pipeline outputs
 out vec4 fragColor;
+
+// Tunable constants kept inside the shader (pack-friendly and minimal Java uniforms)
+// Keep the pixel grid aligned with vanilla texels (16x16 per block face) to avoid "mixels".
+const float PIXEL_GRID = 16.0;                     // vanilla pixel grid alignment
+const float BASE_ALPHA = 0.50;                     // overall transparency multiplier
+const float COVERAGE_FLOOR = 0.35;                 // minimum coverage to avoid empty patches
+const float EDGE_NEIGHBOR_FEATHER = 0.6 / PIXEL_GRID; // neighbor stitch width near cell borders
+// Make the effect less busy by lowering density and lengthening each sparkle slightly.
+const float SPARKLE_DENSITY = 0.15;                // fraction of cells that can sparkle (0..1)
+const float SPARKLE_LIFE = 1.80;                   // seconds per sparkle cycle
+const float EDGE_FEATHER = 0.06;                   // softening near edges inside the cell (0..~0.25)
+const float SPARKLE_BRIGHTNESS = 0.65;             // brightness scaling for sparkle contribution
+// Temporal bucketing to prevent too many cells popping at once
+const float ACTIVE_BUCKETS = 4.0;                  // 4 alternating groups
+const float BUCKET_SPEED = 0.35;                   // how fast we cycle buckets
 
 // Hash utilities for stable cell randomness
 float hash12(vec2 p) {
@@ -54,6 +57,15 @@ float sparkleAlphaRaw(vec2 cellIndex, vec2 cellUV) {
     // Decide if this cell participates
     float participation = step(1.0 - SPARKLE_DENSITY, hash12(cellIndex + 13.79));
 
+    // Smooth activity gate per cell:
+    // Instead of discrete buckets (which can end a sparkle abruptly at high intensity),
+    // use a per-cell phased pulse that rises and falls smoothly over time.
+    float gatePhase = fract(Time * BUCKET_SPEED + hash12(cellIndex + 5.123) + BlockSeed * 0.13);
+    float gateIn  = smoothstep(0.00, 0.20, gatePhase);
+    float gateOut = 1.0 - smoothstep(0.80, 1.00, gatePhase);
+    float gate    = gateIn * gateOut; // bell-shaped 0..1..0 window
+    participation *= gate;
+
     // Per-cell timing: randomized phase to desynchronize sparkles across the face
     float phaseJitter = hash12(cellIndex + 91.17);
     float localTime = Time + phaseJitter * SPARKLE_LIFE + BlockSeed * 0.37;
@@ -74,7 +86,7 @@ float sparkleAlphaRaw(vec2 cellIndex, vec2 cellUV) {
     float rayThicknessX = mix(0.03, 0.05, rand2.x); // vertical bar half-width in X
     float rayThicknessY = mix(0.03, 0.05, rand2.y); // horizontal bar half-width in Y
 
-    float maxReach = 0.35; // fraction of cell from center to each side
+    float maxReach = 0.25; // slightly shorter rays for a subtler look
     float reach = maxReach * intensityEnvelope;
 
     // Horizontal and vertical rays
@@ -117,14 +129,14 @@ float sparkleStitched(vec2 uv) {
 }
 
 void main() {
-    // Compute stitched sparkle only in the current face UV space
-    float combinedSparkle = sparkleStitched(vUV);
+    // Compute stitched sparkle in current face UV space
+    float combinedSparkle = sparkleStitched(texCoord);
 
-    // Combine with coverage floor to guarantee minimum visibility
+    // Minimum coverage so the face is never empty
     float combined = COVERAGE_FLOOR + combinedSparkle * (1.0 - COVERAGE_FLOOR);
     combined = clamp(combined, 0.0, 1.0);
 
-    // Output final color uses per-vertex RGB (ore color)
-    float finalAlpha = vColor.a * BaseAlpha * combined;
-    fragColor = vec4(vColor.rgb, finalAlpha);
+    // Final color: base ore RGB, animated alpha
+    float finalAlpha = BASE_ALPHA * combined;
+    fragColor = vec4(OreColor, finalAlpha);
 }

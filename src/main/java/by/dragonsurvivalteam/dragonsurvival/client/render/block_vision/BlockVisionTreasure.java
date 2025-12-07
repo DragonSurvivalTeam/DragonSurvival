@@ -22,6 +22,7 @@ public class BlockVisionTreasure {
     private static final float CPU_ACTIVE_BUCKETS = 4.0f;
     private static final float CPU_BUCKET_SPEED = 0.35f;
 
+    // FIXME :: has pretty bad performance
     public static void render(final BlockVisionHandler.Data data, final PoseStack pose, int colorARGB, final int tick, final float partialTick) {
         setup();
 
