@@ -76,6 +76,7 @@ import java.util.Optional;
 
 public class DragonAbilities {
     public static final LevelBasedValue INFINITE_DURATION = LevelBasedValue.constant(DurationInstance.INFINITE_DURATION);
+    public static final String TEST_PREFIX = "test_";
 
     public static void registerAbilities(final BootstrapContext<DragonAbility> context) {
         CaveDragonAbilities.registerAbilities(context);
@@ -85,7 +86,7 @@ public class DragonAbilities {
         // --- Ore Vision (Treasure Shader) --- //
 
         //noinspection DataFlowIssue -> ChatFormatting entries exist
-        context.register(ResourceKey.create(DragonAbility.REGISTRY, DragonSurvival.res("test_ore_vision_treasure_shader")), new DragonAbility(
+        context.register(ResourceKey.create(DragonAbility.REGISTRY, DragonSurvival.res(TEST_PREFIX + "ore_vision_treasure_shader")), new DragonAbility(
                 PassiveActivation.DEFAULT,
                 Optional.empty(),
                 Optional.empty(),
@@ -229,7 +230,7 @@ public class DragonAbilities {
 
         // --- Key Pressed --- //
 
-        context.register(ResourceKey.create(DragonAbility.REGISTRY, DragonSurvival.res("test_on_key_pressed")), new DragonAbility(
+        context.register(ResourceKey.create(DragonAbility.REGISTRY, DragonSurvival.res(TEST_PREFIX + "on_key_pressed")), new DragonAbility(
                 new PassiveActivation(Optional.empty(), Optional.empty(), OnKeyPressed.create("key.keyboard.g")),
                 Optional.empty(),
                 Optional.empty(),
@@ -249,7 +250,7 @@ public class DragonAbilities {
 
         // --- Damage Expression --- //
 
-        context.register(ResourceKey.create(DragonAbility.REGISTRY, DragonSurvival.res("test_damage_expression")), new DragonAbility(
+        context.register(ResourceKey.create(DragonAbility.REGISTRY, DragonSurvival.res(TEST_PREFIX + "damage_expression")), new DragonAbility(
                 new PassiveActivation(Optional.empty(), Optional.empty(), new OnTargetHit(Optional.empty())),
                 Optional.of(new ExperiencePointsUpgrade(5, LevelBasedValue.constant(10))),
                 Optional.empty(),
@@ -264,7 +265,7 @@ public class DragonAbilities {
 
         // --- Cooldown --- //
 
-        context.register(ResourceKey.create(DragonAbility.REGISTRY, DragonSurvival.res("test_cooldown_recovery")), new DragonAbility(
+        context.register(ResourceKey.create(DragonAbility.REGISTRY, DragonSurvival.res(TEST_PREFIX + "cooldown_recovery")), new DragonAbility(
                 new SimpleActivation(
                         Optional.of(LevelBasedValue.constant(1)),
                         Optional.of(LevelBasedValue.constant(15)),
@@ -295,7 +296,7 @@ public class DragonAbilities {
 
         // --- experience --- //
 
-        context.register(ResourceKey.create(DragonAbility.REGISTRY, DragonSurvival.res("test_experience_points_add")), new DragonAbility(
+        context.register(ResourceKey.create(DragonAbility.REGISTRY, DragonSurvival.res(TEST_PREFIX + "experience_points_add")), new DragonAbility(
                 new PassiveActivation(Optional.empty(), Optional.empty(), new OnTargetKilled(Optional.empty())),
                 Optional.of(new ExperiencePointsUpgrade(5, LevelBasedValue.constant(10))),
                 Optional.empty(),
@@ -310,7 +311,7 @@ public class DragonAbilities {
 
         // --- Glow --- //
 
-        context.register(ResourceKey.create(DragonAbility.REGISTRY, DragonSurvival.res("test_glow")), new DragonAbility(
+        context.register(ResourceKey.create(DragonAbility.REGISTRY, DragonSurvival.res(TEST_PREFIX + "glow")), new DragonAbility(
                 PassiveActivation.DEFAULT,
                 Optional.empty(),
                 Optional.empty(),
@@ -325,7 +326,7 @@ public class DragonAbilities {
 
         // --- Smelt --- //
 
-        context.register(ResourceKey.create(DragonAbility.REGISTRY, DragonSurvival.res("test_smelt")), new DragonAbility(
+        context.register(ResourceKey.create(DragonAbility.REGISTRY, DragonSurvival.res(TEST_PREFIX + "smelt")), new DragonAbility(
                 new PassiveActivation(Optional.empty(), Optional.empty(), new OnTargetKilled(Optional.empty())),
                 Optional.empty(),
                 Optional.empty(),
@@ -340,7 +341,7 @@ public class DragonAbilities {
 
         // --- Heal --- //
 
-        context.register(ResourceKey.create(DragonAbility.REGISTRY, DragonSurvival.res("test_heal")), new DragonAbility(
+        context.register(ResourceKey.create(DragonAbility.REGISTRY, DragonSurvival.res(TEST_PREFIX + "heal")), new DragonAbility(
                 new PassiveActivation(Optional.empty(), Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(30))), OnDeath.INSTANCE),
                 Optional.empty(),
                 Optional.empty(),
@@ -355,7 +356,7 @@ public class DragonAbilities {
 
         // --- Function --- //
 
-        context.register(ResourceKey.create(DragonAbility.REGISTRY, DragonSurvival.res("test_function")), new DragonAbility(
+        context.register(ResourceKey.create(DragonAbility.REGISTRY, DragonSurvival.res(TEST_PREFIX + "function")), new DragonAbility(
                 new PassiveActivation(Optional.empty(), Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(5))), new OnSelfHit(Optional.empty())),
                 Optional.empty(),
                 Optional.empty(),
@@ -370,7 +371,7 @@ public class DragonAbilities {
 
         // --- Teleport --- //
 
-        context.register(ResourceKey.create(DragonAbility.REGISTRY, DragonSurvival.res("test_teleport")), new DragonAbility(
+        context.register(ResourceKey.create(DragonAbility.REGISTRY, DragonSurvival.res(TEST_PREFIX + "teleport")), new DragonAbility(
                 new SimpleActivation(
                         Optional.of(LevelBasedValue.constant(1)),
                         Optional.of(LevelBasedValue.constant(15)),
@@ -409,7 +410,7 @@ public class DragonAbilities {
                 new LevelBasedResource(List.of(new LevelBasedResource.Entry(DragonSurvival.res("test"), 0)))
         ));
 
-        context.register(ResourceKey.create(DragonAbility.REGISTRY, DragonSurvival.res("test_teleport_directional")), new DragonAbility(
+        context.register(ResourceKey.create(DragonAbility.REGISTRY, DragonSurvival.res(TEST_PREFIX + "teleport_directional")), new DragonAbility(
                 new SimpleActivation(
                         Optional.of(LevelBasedValue.constant(1)),
                         Optional.of(LevelBasedValue.constant(15)),
@@ -446,7 +447,7 @@ public class DragonAbilities {
         CompoundTag beeNBT = new CompoundTag();
         beeNBT.putInt("CannotEnterHiveTicks", Integer.MAX_VALUE);
 
-        context.register(ResourceKey.create(DragonAbility.REGISTRY, DragonSurvival.res("test_summon")), new DragonAbility(
+        context.register(ResourceKey.create(DragonAbility.REGISTRY, DragonSurvival.res(TEST_PREFIX + "summon")), new DragonAbility(
                 new SimpleActivation(
                         Optional.of(LevelBasedValue.constant(1)),
                         Optional.of(LevelBasedValue.constant(15)),
@@ -465,7 +466,7 @@ public class DragonAbilities {
                         new ActionContainer(new AreaTarget(AbilityTargeting.block(
                                 List.of(
                                         new SummonEntityEffect(
-                                                DurationInstanceBase.create(DragonSurvival.res("test_summon")).duration(LevelBasedValue.constant(Functions.secondsToTicks(60))).build(),
+                                                DurationInstanceBase.create(DragonSurvival.res(TEST_PREFIX + "summon")).duration(LevelBasedValue.constant(Functions.secondsToTicks(60))).build(),
                                                 Either.right(HolderSet.direct(EntityType.BEE.builtInRegistryHolder())),
                                                 LevelBasedValue.constant(6),
                                                 List.of(),
@@ -480,7 +481,7 @@ public class DragonAbilities {
 
         // --- Item Conversion --- //
 
-        context.register(ResourceKey.create(DragonAbility.REGISTRY, DragonSurvival.res("test_convert_items")), new DragonAbility(
+        context.register(ResourceKey.create(DragonAbility.REGISTRY, DragonSurvival.res(TEST_PREFIX + "convert_items")), new DragonAbility(
                 new SimpleActivation(
                         Optional.of(LevelBasedValue.constant(1)),
                         Optional.of(LevelBasedValue.constant(15)),

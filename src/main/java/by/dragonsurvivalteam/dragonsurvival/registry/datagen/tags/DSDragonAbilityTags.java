@@ -5,6 +5,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.abilities.CaveDragonAbilities;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.abilities.ForestDragonAbilities;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.abilities.SeaDragonAbilities;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilities;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbility;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
@@ -27,12 +28,23 @@ public class DSDragonAbilityTags extends TagsProvider<DragonAbility> {
     @Translation(comments = "Forest Dragon Abilities")
     public static final TagKey<DragonAbility> FOREST = key("forest_dragon");
 
+    @Translation(comments = "Test Abilities")
+    public static final TagKey<DragonAbility> TEST_ABILITIES = key("test_abilities");
+
     public DSDragonAbilityTags(final PackOutput output, final CompletableFuture<HolderLookup.Provider> provider, @Nullable final ExistingFileHelper helper) {
         super(output, DragonAbility.REGISTRY, provider, DragonSurvival.MODID, helper);
     }
 
     @Override
     protected void addTags(@NotNull final HolderLookup.Provider provider) {
+        provider.lookupOrThrow(DragonAbility.REGISTRY).listElements().forEach(ability -> {
+                    //noinspection DataFlowIssue -> key is present
+                    if (ability.getKey().location().getPath().startsWith(DragonAbilities.TEST_PREFIX)) {
+                        tag(TEST_ABILITIES).add(ability.getKey());
+                    }
+                }
+        );
+
         tag(CAVE)
                 // Active
                 .add(CaveDragonAbilities.NETHER_BREATH)

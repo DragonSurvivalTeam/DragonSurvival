@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.common.codecs;
 
+import by.dragonsurvivalteam.dragonsurvival.util.Triple;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import net.minecraft.core.HolderSet;
@@ -79,6 +80,36 @@ public class ResourceLocationWrapper {
         }
 
         return keys;
+    }
+
+    public static String convert(final TagKey<?> tag) {
+        return "#" + tag.location();
+    }
+
+    public static String convert(final ResourceKey<?> key) {
+        return convert(key.location());
+    }
+
+    public static String convert(final ResourceLocation location) {
+        return location.toString();
+    }
+
+    /**
+     * May return one of the following: </br>
+     * - {@link net.minecraft.tags.TagKey} if the resource starts with '#' </br>
+     * - {@link net.minecraft.resources.ResourceKey} if the resource is a valid resource location </br>
+     * - {@link java.util.Set} of {@link net.minecraft.resources.ResourceKey} otherwise (since it is a regex entry)
+     */
+    public static <T> Triple<TagKey<T>, ResourceKey<T>, Set<ResourceKey<T>>> convert(final String resource, final Registry<T> registry) {
+        if (resource.startsWith("#")) {
+            return Triple.of(TagKey.create(registry.key(), ResourceLocation.parse(resource.substring(1))), null, null);
+        }
+
+        if (ResourceLocation.tryParse(resource) != null) {
+            return Triple.of(null, ResourceKey.create(registry.key(), ResourceLocation.parse(resource)), null);
+        }
+
+        return Triple.of(null, null, map(resource, registry));
     }
 
     public static Codec<String> validatedCodec() {

@@ -114,8 +114,8 @@ dependencies {
 	runtimeOnly "curse.maven:silentlib-242998:6285150" // 10.4.0
 
 	// Sodium & Iris
-	compileOnly "curse.maven:sodium-394468:6382651" // 0.6.13
-	compileOnly "curse.maven:irisshaders-455508:6661598" // 1.8.12
+	implementation "curse.maven:sodium-394468:6382651" // 0.6.13
+	implementation "curse.maven:irisshaders-455508:6661598" // 1.8.12
 
 //	implementation "curse.maven:embeddium-908741:6118392" // 1.0.15
 //	implementation "curse.maven:neoculus-1200907:6394928" // 1.8.6
@@ -149,7 +149,7 @@ dependencies {
 //    implementation "curse.maven:immersive-portals-for-forge-355440:6667779" // 2.4.0
 //    implementation "curse.maven:cloth-config-348521:5729127" // 15.0.140
 
-//    implementation "curse.maven:additional-dragons-982609:7006999" // 1.2.2
+//    implementation "curse.maven:additional-dragons-982609:7184517" // 1.2.8
 
 //    runtimeOnly "curse.maven:terrafirmacraft-302973:7150812" // 4.0.9
 //    runtimeOnly "curse.maven:patchouli-306770:6842247" // 92

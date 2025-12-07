@@ -24,7 +24,7 @@ public class BlockVisionParticle {
             return;
         }
 
-        if (player.tickCount % data.particleRate() == 0) {
+        if (player.tickCount % data.particleRate() != 0) {
             return;
         }
 

@@ -5,12 +5,15 @@ import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic.H
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.DragonAbilityHolder;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.ResourceLocationWrapper;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
 import by.dragonsurvivalteam.dragonsurvival.registry.data_components.DSDataComponents;
 import by.dragonsurvivalteam.dragonsurvival.registry.data_maps.DietEntryCache;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.DSLanguageProvider;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbility;
 import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import net.minecraft.ChatFormatting;
@@ -36,16 +39,19 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
+import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RenderTooltipEvent;
+import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2ic;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 @EventBusSubscriber(Dist.CLIENT)
 public class ToolTipHandler {
@@ -95,8 +101,25 @@ public class ToolTipHandler {
             return;
         }
 
+        Level level = event.getContext().level();
+
+        if (level == null) {
+            return;
+        }
+
         if (Screen.hasShiftDown()) {
-            event.getToolTip().add(Component.translatable(holder.isRemoval() ? REMOVES_ABILITIES : ADDS_ABILITIES, Functions.translateHolderSet(holder.abilities(), Translation.Type.ABILITY)));
+            List<String> resources = holder.abilities();
+            List<MutableComponent> components = new ArrayList<>();
+
+            for (String resource : resources) {
+                var converted = ResourceLocationWrapper.convert(resource, level.registryAccess().registryOrThrow(DragonAbility.REGISTRY));
+
+                converted.first().ifPresent(tag -> components.add(Component.translatable(Tags.getTagTranslationKey(tag))));
+                converted.second().ifPresent(key -> components.add(Component.translatable(Translation.Type.ABILITY.wrap(key))));
+                converted.third().ifPresent(set -> components.add(DSLanguageProvider.formatList(set, key -> Component.translatable(Translation.Type.ABILITY.wrap(key)))));
+            }
+
+            event.getToolTip().add(Component.translatable(holder.isRemoval() ? REMOVES_ABILITIES : ADDS_ABILITIES, DSLanguageProvider.formatList(components, Function.identity())));
 
             if (holder.applicableSpecies().isPresent()) {
                 event.getToolTip().add(Component.translatable(APPLICABLE_TO, Functions.translateHolderSet(holder.applicableSpecies().get(), Translation.Type.DRAGON_SPECIES)));

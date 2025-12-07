@@ -160,8 +160,6 @@ public class BlockVisionHandler {
             }
         }
 
-        System.out.println("Rendered: " + count);
-
         pose.popPose();
     }
 

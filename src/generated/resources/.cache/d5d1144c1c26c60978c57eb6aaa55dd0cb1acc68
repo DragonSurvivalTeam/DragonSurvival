@@ -1,4 +1,4 @@
-// 1.21.1	2025-11-11T07:31:53.6389836	Dragon Survival Item models
+// 1.21.1	2025-12-07T18:12:22.7686922	Dragon Survival Item models
 a66a6309dc6b29797f46e2ca4ab14ef3a245a65f assets/dragonsurvival/models/item/acacia_dragon_altar.json
 3103bf7bf2acab8c6053dd037bfd4f26275aad26 assets/dragonsurvival/models/item/acacia_dragon_door.json
 4c7b8102022c425a86140eada246eaed8be93446 assets/dragonsurvival/models/item/activated_dragon_beacon.json
@@ -99,6 +99,7 @@ d8b2495c4a84c7abbbd643189ab9d5fb806b3a81 assets/dragonsurvival/models/item/light
 36c4f08598729ca71e30547d31872d75663e4a62 assets/dragonsurvival/models/item/light_upgrade.json
 3dfeea6b711cad5d09438c0e7043d78ac56a19ce assets/dragonsurvival/models/item/light_vault.json
 45fa6a94ab69b361efb506c219d1064f6a1dde7a assets/dragonsurvival/models/item/luminous_ointment.json
+7de9ffe199028fdf113a53b6013ae545264dc1fe assets/dragonsurvival/models/item/magic_stick.json
 5e932859bc1fa16357909aae9a46e9d1ed2cf319 assets/dragonsurvival/models/item/mangrove_dragon_altar.json
 4f29a47f130a227a8bfaf6e3b15fbd4865dc3012 assets/dragonsurvival/models/item/meat_chorus_mix.json
 304ad00ee6263953b48814c4657fb84d40cea695 assets/dragonsurvival/models/item/meat_wild_berries.json

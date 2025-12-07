@@ -131,6 +131,7 @@ public class DSItemTags extends ItemTagsProvider {
                 .add(Items.ELYTRA);
 
         tag(Tags.Items.HIDDEN_FROM_RECIPE_VIEWERS)
+                .add(DSItems.MAGIC_STICK.value())
                 .add(DSItems.BOLAS.value())
                 .add(DSItems.HUNTING_NET.value())
                 .add(DSItems.LIGHTNING_TEXTURE_ITEM.value())
@@ -144,6 +145,7 @@ public class DSItemTags extends ItemTagsProvider {
                 .add(DSItems.CAVE_BEACON.value())
                 .add(DSItems.FOREST_BEACON.value())
                 .add(DSItems.SEA_BEACON.value());
+
         copy(DSBlockTags.DRAGON_BONES, Tags.Items.HIDDEN_FROM_RECIPE_VIEWERS);
 
         copy(DSBlockTags.DRAGON_ALTARS, DRAGON_ALTARS);

@@ -1,6 +1,8 @@
 package by.dragonsurvivalteam.dragonsurvival.registry;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.DragonAbilityHolder;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.ResourceLocationWrapper;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.SourceOfMagicData;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.ManaHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.items.BolasArrowItem;
@@ -19,6 +21,8 @@ import by.dragonsurvivalteam.dragonsurvival.common.items.armor.LightDragonArmorI
 import by.dragonsurvivalteam.dragonsurvival.common.items.food.CustomOnFinishEffectItem;
 import by.dragonsurvivalteam.dragonsurvival.registry.data_components.DSDataComponents;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.abilities.SeaDragonAbilities;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSDragonAbilityTags;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.BuiltInDragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.util.BlockPosHelper;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
@@ -49,6 +53,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import org.joml.Vector3f;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 @SuppressWarnings("unused")
@@ -450,6 +455,24 @@ public class DSItems {
 
     @Translation(type = Translation.Type.ITEM, comments = "Hunter Leader Spawn Egg")
     public static final Holder<Item> LEADER_SPAWN_EGG = REGISTRY.register("leader_spawn_egg", () -> new DeferredSpawnEggItem(DSEntities.HUNTER_LEADER, 0x202020, 0xb3814e, new Properties().rarity(Rarity.COMMON)));
+
+    // --- Test Item --- //
+    @Translation(type = Translation.Type.ITEM, comments = "Magic Stick")
+    public static final Holder<Item> MAGIC_STICK = REGISTRY.register("magic_stick", () -> new Item(
+            new Item.Properties().rarity(Rarity.EPIC)
+                    .component(DSDataComponents.DRAGON_ABILITIES,
+                            new DragonAbilityHolder(
+                                    List.of(
+                                            ResourceLocationWrapper.convert(DSDragonAbilityTags.TEST_ABILITIES),
+                                            ResourceLocationWrapper.convert(SeaDragonAbilities.ORE_GLOW),
+                                            ResourceLocationWrapper.convert(DSDragonAbilityTags.CAVE)
+                                    ),
+                                    Optional.empty(),
+                                    Optional.empty(),
+                                    false
+                            )
+                    )
+    ));
 
     // --- Not shown in creative tab --- //
 
