@@ -49,6 +49,7 @@ public class Phasing extends DurationInstanceBase<PhasingData, Phasing.Instance>
     ).apply(instance, Phasing::new));
 
     public static final int NO_RANGE = 0;
+    public static final int NO_ALPHA = 255;
 
     private final HolderSet<Block> blocks;
     private final LevelBasedValue range;
@@ -112,7 +113,18 @@ public class Phasing extends DurationInstanceBase<PhasingData, Phasing.Instance>
                 return (int) Math.max(NO_RANGE, baseData().range().calculate(appliedAbilityLevel()));
             }
 
-            return 0;
+            return NO_RANGE;
+        }
+
+        /** If the passed state is 'null' it will return the alpha as well */
+        public int getAlpha(@Nullable final Block block) {
+            //noinspection deprecation -> ignore
+            if (block == null || baseData().blocks().contains(block.builtInRegistryHolder())) {
+                // Maybe let them set the alpha instead of it being 255/range?
+                return (int) Math.max(NO_RANGE, Math.min(NO_ALPHA, Math.ceil(255 / baseData().range().calculate(appliedAbilityLevel()))));
+            }
+
+            return NO_ALPHA;
         }
 
         public boolean getAngleCheck(Block block, Vec3 blockVec, Vec3 blockStraightVec, boolean above, Vec3 entityLookVec, float playerXRot) {
@@ -126,6 +138,7 @@ public class Phasing extends DurationInstanceBase<PhasingData, Phasing.Instance>
                 if (above) {
                     aboveMult = -1;
                 }
+                // TODO: Add check for if player is inside of block and exclude those from the check
                 double dotXProd = blockVec.dot(blockStraightVec);
                 double magXSqBlock = blockVec.dot(blockVec);
                 double magSqStraight = blockStraightVec.dot(blockStraightVec);

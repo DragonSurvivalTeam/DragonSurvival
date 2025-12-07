@@ -2,6 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.mixins.client;
 
 import by.dragonsurvivalteam.dragonsurvival.client.handlers.DragonDestructionHandler;
 import by.dragonsurvivalteam.dragonsurvival.client.render.BlockVisionHandler;
+import by.dragonsurvivalteam.dragonsurvival.client.render.PhasingHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.blocks.SourceOfMagicBlock;
 import by.dragonsurvivalteam.dragonsurvival.server.tileentity.SourceOfMagicPlaceholder;
 import net.minecraft.client.Minecraft;
@@ -63,5 +64,11 @@ public abstract class ClientLevelMixin extends Level {
     @Inject(method = "sendBlockUpdated", at = @At("HEAD"))
     private void dragonSurvival$updateBlockVision(final BlockPos position, final BlockState oldState, final BlockState newState, final int flags, final CallbackInfo callback) {
         BlockVisionHandler.updateEntry(position, oldState, newState);
+    }
+
+    /** Update the phasing handler too */
+    @Inject(method = "sendBlockUpdated", at = @At("HEAD"))
+    private void dragonSurvival$updatePhasing(final BlockPos position, final BlockState oldState, final BlockState newState, final int flags, final CallbackInfo callback) {
+        PhasingHandler.updateEntry(position, oldState, newState);
     }
 }
