@@ -71,7 +71,7 @@ public class Phasing extends DurationInstanceBase<PhasingData, Phasing.Instance>
     }
 
     public static Phasing create(final ResourceLocation id, final HolderSet<Block> validBlocks, final LevelBasedValue range, final Optional<Boolean> invert) {
-        return new Phasing(DurationInstanceBase.create(id).infinite().removeAutomatically().hidden().build(), validBlocks, range, invert);
+        return new Phasing(DurationInstanceBase.create(id).removeAutomatically().hidden().build(), validBlocks, range, invert);
     }
 
     public static Phasing create(final ResourceLocation id, final LevelBasedValue duration, final HolderSet<Block> validBlocks, final LevelBasedValue range, final Optional<Boolean> invert) {
