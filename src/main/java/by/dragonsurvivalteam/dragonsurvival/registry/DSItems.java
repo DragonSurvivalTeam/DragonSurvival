@@ -463,13 +463,24 @@ public class DSItems {
                     .component(DSDataComponents.DRAGON_ABILITIES,
                             new DragonAbilityHolder(
                                     List.of(
-                                            ResourceLocationWrapper.convert(DSDragonAbilityTags.TEST_ABILITIES),
-                                            ResourceLocationWrapper.convert(SeaDragonAbilities.ORE_GLOW),
-                                            ResourceLocationWrapper.convert(DSDragonAbilityTags.CAVE)
+                                            new DragonAbilityHolder.AbilityPair(
+                                                    List.of(ResourceLocationWrapper.convert(DSDragonAbilityTags.TEST_ABILITIES)),
+                                                    List.of(),
+                                                    false
+                                            ),
+                                            new DragonAbilityHolder.AbilityPair(
+                                                    List.of(ResourceLocationWrapper.convert(SeaDragonAbilities.ORE_GLOW)),
+                                                    List.of(),
+                                                    true
+                                            ),
+                                            new DragonAbilityHolder.AbilityPair(
+                                                    List.of(ResourceLocationWrapper.convert(DSDragonAbilityTags.CAVE)),
+                                                    List.of(ResourceLocationWrapper.convert(DSDragonAbilityTags.FOREST)),
+                                                    true
+                                            )
                                     ),
                                     Optional.empty(),
-                                    Optional.empty(),
-                                    false
+                                    Optional.empty()
                             )
                     )
     ));

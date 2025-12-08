@@ -45,7 +45,7 @@ public class BlockVisionShaderSimple {
     /**
      * When Iris is installed using this single buffer works fine </br>
      * The alternative (our own render types) have issues and don't render correctly </br>
-     * It might be possible to make them work in all cases but properly testing that is too annoying at the moment
+     * It might be possible to make them work in all cases, but properly testing that is too annoying at the moment
      */
     private static BufferBuilder irisBuffer;
 
@@ -135,7 +135,6 @@ public class BlockVisionShaderSimple {
 
     @SubscribeEvent
     public static void registerShaders(final RegisterShadersEvent event) throws IOException {
-        // Register shader with BLOCK format to align with BufferBuilder data from putBulkData
         event.registerShader(new ShaderInstance(event.getResourceProvider(), DragonSurvival.res("block_vision_simple"), DefaultVertexFormat.BLOCK), instance -> shader = instance);
     }
 

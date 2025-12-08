@@ -114,8 +114,8 @@ dependencies {
 	runtimeOnly "curse.maven:silentlib-242998:6285150" // 10.4.0
 
 	// Sodium & Iris
-    compileOnly "curse.maven:sodium-394468:6382651" // 0.6.13
-    compileOnly "curse.maven:irisshaders-455508:6661598" // 1.8.12
+	compileOnly "curse.maven:sodium-394468:6382651" // 0.6.13
+	compileOnly "curse.maven:irisshaders-455508:6661598" // 1.8.12
 
 //	implementation "curse.maven:embeddium-908741:6118392" // 1.0.15
 //	implementation "curse.maven:neoculus-1200907:6394928" // 1.8.6
