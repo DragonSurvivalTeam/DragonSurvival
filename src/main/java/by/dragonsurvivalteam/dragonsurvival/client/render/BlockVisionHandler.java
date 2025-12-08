@@ -189,6 +189,8 @@ public class BlockVisionHandler {
         pose.mulPose(event.getModelViewMatrix());
         pose.translate(-camera.x(), -camera.y(), -camera.z());
 
+        BlockVisionTreasureShader.beginBatch();
+
         for (Data data : SHADER_RENDER_DATA) {
             pose.pushPose();
             pose.translate(data.x(), data.y(), data.z());
@@ -203,6 +205,8 @@ public class BlockVisionHandler {
 
             pose.popPose();
         }
+
+        BlockVisionTreasureShader.endBatch();
 
         pose.popPose();
         SHADER_RENDER_DATA.clear();
