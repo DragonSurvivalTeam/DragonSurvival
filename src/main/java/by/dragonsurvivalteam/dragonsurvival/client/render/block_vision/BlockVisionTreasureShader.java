@@ -2,6 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.client.render.block_vision;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.render.BlockVisionHandler;
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.BufferUploader;
@@ -10,8 +11,10 @@ import com.mojang.blaze3d.vertex.MeshData;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
@@ -57,7 +60,7 @@ public class BlockVisionTreasureShader {
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.depthMask(false);
-        RenderSystem.disableCull();
+        RenderSystem.enableCull();
         RenderSystem.enablePolygonOffset();
         RenderSystem.polygonOffset(-1.0f, -1.0f);
         RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_BLOCKS);
@@ -102,14 +105,14 @@ public class BlockVisionTreasureShader {
         rand.setSeed(seed);
         // Unculled faces
         for (BakedQuad quad : model.getQuads(state, null, rand, modelData, null)) {
-            buffer.putBulkData(local, quad, red / 255f, green / 255f, blue / 255f, alpha / 255f, -1, -1);
+            buffer.putBulkData(local, quad, red / 255f, green / 255f, blue / 255f, alpha / 255f, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
         }
 
         // Culled faces
         for (Direction dir : Direction.values()) {
             rand.setSeed(seed);
             for (BakedQuad quad : model.getQuads(state, dir, rand, modelData, null)) {
-                buffer.putBulkData(local, quad,red / 255f, green / 255f, blue / 255f, alpha / 255f, -1, -1);
+                buffer.putBulkData(local, quad,red / 255f, green / 255f, blue / 255f, alpha / 255f, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
             }
         }
     }
