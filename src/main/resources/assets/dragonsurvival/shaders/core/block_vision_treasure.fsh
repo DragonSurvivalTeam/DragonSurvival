@@ -131,9 +131,9 @@ float sparkleStitched(vec2 uv) {
 
 void main() {
     // Sample block atlas alpha for masking to the real block texels
-    // Use explicit LOD 0 to avoid mipmap alpha bleeding that can make cutout quads
+    // Bias toward highest detail mip to avoid alpha bleed that can make cutout quads
     // appear to fill as distance increases (common on cross-plant textures)
-    vec4 baseSample = textureLod(Sampler0, texCoord, 0.0);
+    vec4 baseSample = texture(Sampler0, texCoord, -8.0);
 
     // Early discard for cutout-style blocks to match vanilla silhouettes
     if (baseSample.a < 0.1) {

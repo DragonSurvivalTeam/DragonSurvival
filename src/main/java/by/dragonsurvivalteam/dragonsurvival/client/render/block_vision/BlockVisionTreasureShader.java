@@ -7,13 +7,15 @@ import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.BufferUploader;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.core.Direction;
 import net.minecraft.util.FastColor;
+import net.minecraft.util.RandomSource;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -22,7 +24,7 @@ import net.neoforged.neoforge.client.model.data.ModelData;
 
 import java.io.IOException;
 
-@EventBusSubscriber(Dist.CLIENT)
+@EventBusSubscriber(value = Dist.CLIENT)
 public class BlockVisionTreasureShader {
     private static ShaderInstance treasureShader;
 
@@ -84,13 +86,45 @@ public class BlockVisionTreasureShader {
         // Draw the actual baked model quads with atlas UVs so the shader can mask by texture alpha
         BufferBuilder buffer = RenderSystem.renderThreadTesselator().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
 
-        var state = data.block().defaultBlockState();
-        BakedModel model = Minecraft.getInstance().getBlockRenderer().getBlockModel(state);
+        var minecraft = Minecraft.getInstance();
+        var level = minecraft.level;
 
-        Minecraft.getInstance().getBlockRenderer().getModelRenderer()
-                .renderModel(pose.last(), buffer, state, model, 1, 1, 1,-1, -1, ModelData.EMPTY, RenderType.translucent());
+        var pos = net.minecraft.core.BlockPos.containing(data.x(), data.y(), data.z());
+        // TODO :: store it in data instead of Block
+        var state = level.getBlockState(pos);
+        BakedModel model = minecraft.getBlockRenderer().getBlockModel(state);
 
-        BufferUploader.drawWithShader(buffer.buildOrThrow());
+        // Apply per-position model offset used by some cutout blocks (e.g., grass, flowers)
+        var offset = state.getOffset(level, pos);
+        pose.pushPose();
+        pose.translate(offset.x, offset.y, offset.z);
+
+        // TODO :: fix animated sprites not matching up
+
+        // Make sure the adjusted position is passed to the shader
+        treasureShader.getUniform("ModelViewMat").set(pose.last().pose());
+        treasureShader.apply();
+
+        // Obtain model data for dynamic/baked models
+        var modelData = model.getModelData(level, pos, state, ModelData.EMPTY);
+
+        // Use a deterministic random seeded from the state/pos like vanilla, reset per call
+        long seed = state.getSeed(pos);
+        RandomSource rand = RandomSource.create(seed);
+
+        // General (unculled) quads
+        rand.setSeed(seed);
+        emitQuads(model, state, null, modelData, rand, buffer);
+
+        // Directional quads
+        for (Direction dir : Direction.values()) {
+            rand.setSeed(seed);
+            emitQuads(model, state, dir, modelData, rand, buffer);
+        }
+
+        pose.popPose();
+
+        BufferUploader.draw(buffer.buildOrThrow());
 
         // Restore polygon offset state
         RenderSystem.polygonOffset(0.0f, 0.0f);
@@ -100,5 +134,27 @@ public class BlockVisionTreasureShader {
         RenderSystem.enableCull();
         RenderSystem.depthMask(true);
         RenderSystem.disableBlend();
+
+        // Clear to avoid leaking state
+        treasureShader.clear();
+    }
+
+    private static void emitQuads(final BakedModel model, final net.minecraft.world.level.block.state.BlockState state,
+                                  final Direction face, final ModelData modelData, final RandomSource rand,
+                                  final VertexConsumer buffer) {
+        for (var quad : model.getQuads(state, face, rand, modelData, null)) {
+            int[] v = quad.getVertices();
+            // Each vertex uses 8 ints in the vanilla BLOCK format: xyz, color, uv, light, normal
+            // Decode 4 vertices
+            for (int i = 0; i < 4; i++) {
+                int base = i * 8;
+                float x = Float.intBitsToFloat(v[base]);
+                float y = Float.intBitsToFloat(v[base + 1]);
+                float z = Float.intBitsToFloat(v[base + 2]);
+                float u = Float.intBitsToFloat(v[base + 4]);
+                float w = Float.intBitsToFloat(v[base + 5]);
+                buffer.addVertex(x, y, z).setUv(u, w);
+            }
+        }
     }
 }

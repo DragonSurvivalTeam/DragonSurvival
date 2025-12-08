@@ -15,7 +15,6 @@ import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.RegistryCodecs;
@@ -46,7 +45,7 @@ public class BlockVision extends DurationInstanceBase<BlockVisionData, BlockVisi
             " - Color: %s",
             " - Applies to: %s"
     })
-    private static final String HARVEST_BONUS = Translation.Type.GUI.wrap("block_vision");
+    private static final String BLOCK_VISION = Translation.Type.GUI.wrap("block_vision");
 
     @Translation(comments = "Multiple")
     private static final String MULTIPLE_COLORS = Translation.Type.GUI.wrap("block_vision.multiple_colors");
@@ -105,8 +104,8 @@ public class BlockVision extends DurationInstanceBase<BlockVisionData, BlockVisi
             color = DSColors.dynamicValue(Component.translatable(LangKey.NONE));
         }
 
-        MutableComponent appliesTo = Functions.translateHolderSet(blocks, Holder::getRegisteredName);
-        return Component.translatable(HARVEST_BONUS, DSColors.dynamicValue(range), color, DSColors.dynamicValue(appliesTo));
+        MutableComponent appliesTo = Functions.translateHolderSet(blocks, holder -> holder.value().getDescriptionId());
+        return Component.translatable(BLOCK_VISION, DSColors.dynamicValue(range), color, DSColors.dynamicValue(appliesTo));
     }
 
     public static BlockVision.Builder create(final DurationInstanceBase<?, ?> base) {

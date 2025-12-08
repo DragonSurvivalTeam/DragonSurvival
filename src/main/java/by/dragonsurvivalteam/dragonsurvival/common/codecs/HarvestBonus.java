@@ -15,7 +15,6 @@ import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.RegistryCodecs;
@@ -86,7 +85,7 @@ public class HarvestBonus extends DurationInstanceBase<HarvestBonuses, HarvestBo
         if (blocks.isEmpty()) {
             appliesTo = Component.translatable(LangKey.ALL_BLOCKS);
         } else {
-            appliesTo = Functions.translateHolderSet(blocks.get(), Holder::getRegisteredName);
+            appliesTo = Functions.translateHolderSet(blocks.get(), holder -> holder.value().getDescriptionId());
         }
 
         Component baseSpeed = null;
