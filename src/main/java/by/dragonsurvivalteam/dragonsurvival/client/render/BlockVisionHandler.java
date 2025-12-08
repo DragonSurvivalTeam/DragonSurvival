@@ -3,7 +3,6 @@ package by.dragonsurvivalteam.dragonsurvival.client.render;
 import by.dragonsurvivalteam.dragonsurvival.client.render.block_vision.BlockVisionOutline;
 import by.dragonsurvivalteam.dragonsurvival.client.render.block_vision.BlockVisionParticle;
 import by.dragonsurvivalteam.dragonsurvival.client.render.block_vision.BlockVisionShaderSimple;
-import by.dragonsurvivalteam.dragonsurvival.client.render.block_vision.BlockVisionTreasure;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.block_vision.BlockVision;
 import by.dragonsurvivalteam.dragonsurvival.compat.Compat;
 import by.dragonsurvivalteam.dragonsurvival.mixins.client.FrustumAccess;
@@ -125,6 +124,8 @@ public class BlockVisionHandler {
         pose.mulPose(event.getModelViewMatrix());
         pose.translate(-camera.x(), -camera.y(), -camera.z());
 
+        BlockVisionOutline.beginBatch();
+
         for (int index = 0; index < RENDER_DATA.size(); index++) {
             Data data = RENDER_DATA.get(index);
 
@@ -145,13 +146,10 @@ public class BlockVisionHandler {
                 pose.translate(data.x(), data.y(), data.z());
 
                 int colorARGB = vision.getColor(data.state().getBlock());
-                int tick = event.getRenderTick();
-                float partialTick = event.getPartialTick().getRealtimeDeltaTicks();
 
                 switch (data.displayType()) {
-                    case OUTLINE -> BlockVisionOutline.render(data, pose, colorARGB);
+                    case OUTLINE -> BlockVisionOutline.render(pose, colorARGB);
                     case PARTICLES -> BlockVisionParticle.spawnParticle(data, player);
-                    case TREASURE -> BlockVisionTreasure.render(data, pose, colorARGB, tick, partialTick);
                     case SIMPLE_SHADER -> SHADER_RENDER_DATA.add(data);
                 }
 
@@ -159,6 +157,7 @@ public class BlockVisionHandler {
             }
         }
 
+        BlockVisionOutline.endBatch();
         pose.popPose();
     }
 

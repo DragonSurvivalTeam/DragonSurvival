@@ -49,15 +49,6 @@ public class BlockVisionShaderSimple {
      */
     private static BufferBuilder irisBuffer;
 
-    public static void beginBatch() {
-        backup = new GlStateBackup();
-        RenderSystem.backupGlState(backup);
-
-        if (ModCheck.isModLoaded(ModCheck.IRIS)) {
-            irisBuffer = RenderSystem.renderThreadTesselator().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.BLOCK);
-        }
-    }
-
     public static void render(final BlockVisionHandler.Data data, final PoseStack pose, final int colorARGB) {
         prepare();
 
@@ -113,6 +104,15 @@ public class BlockVisionShaderSimple {
         }
     }
 
+    public static void beginBatch() {
+        backup = new GlStateBackup();
+        RenderSystem.backupGlState(backup);
+
+        if (ModCheck.isModLoaded(ModCheck.IRIS)) {
+            irisBuffer = RenderSystem.renderThreadTesselator().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.BLOCK);
+        }
+    }
+
     public static void endBatch() {
         prepare();
 
@@ -130,6 +130,8 @@ public class BlockVisionShaderSimple {
 
         RenderSystem.restoreGlState(backup);
         shader.clear();
+
+        backup = null;
         irisBuffer = null;
     }
 
