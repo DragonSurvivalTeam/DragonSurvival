@@ -152,7 +152,7 @@ public class BlockVisionHandler {
                     case OUTLINE -> BlockVisionOutline.render(data, pose, colorARGB);
                     case PARTICLES -> BlockVisionParticle.spawnParticle(data, player);
                     case TREASURE -> BlockVisionTreasure.render(data, pose, colorARGB, tick, partialTick);
-                    case TREASURE_SHADER -> SHADER_RENDER_DATA.add(data);
+                    case SIMPLE_SHADER -> SHADER_RENDER_DATA.add(data);
                 }
 
                 pose.popPose();
@@ -203,7 +203,7 @@ public class BlockVisionHandler {
             int colorARGB = vision.getColor(data.state().getBlock());
 
             switch (data.displayType()) {
-                case TREASURE_SHADER -> BlockVisionShaderSimple.render(data, pose, colorARGB);
+                case SIMPLE_SHADER -> BlockVisionShaderSimple.render(data, pose, colorARGB);
             }
 
             pose.popPose();

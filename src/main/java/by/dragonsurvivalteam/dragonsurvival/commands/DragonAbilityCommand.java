@@ -5,11 +5,13 @@ import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncMagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSCommands;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbility;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
+import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicNCommandExceptionType;
@@ -54,6 +56,16 @@ public class DragonAbilityCommand {
                 )
                 .then(Commands.literal("refresh")
                         .then(Commands.argument(DSCommands.TARGETS, EntityArgument.players())
+                                .then(Commands.argument("clear_storages", BoolArgumentType.bool())
+                                        .executes(source -> handleCommand(source, EntityArgument.getPlayers(source, DSCommands.TARGETS), (player, data) -> {
+                                            data.refresh(player, DragonStateProvider.getData(player).species());
+
+                                            if (source.getArgument("clear_storages", Boolean.class)) {
+                                                // In some cases if the ability is no longer present, its related storage cannot be properly removed (outside from death)
+                                                DSDataAttachments.getStorages(player).forEach(storage -> storage.clear(player));
+                                            }
+                                            return true;
+                                        })))
                                 .executes(source -> handleCommand(source, EntityArgument.getPlayers(source, DSCommands.TARGETS), (player, data) -> {
                                     data.refresh(player, DragonStateProvider.getData(player).species());
                                     return true;

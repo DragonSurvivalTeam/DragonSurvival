@@ -2,12 +2,18 @@ package by.dragonsurvivalteam.dragonsurvival.client.render.block_vision;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.render.BlockVisionHandler;
+import by.dragonsurvivalteam.dragonsurvival.compat.ModCheck;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.BufferUploader;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.MeshData;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -36,15 +42,25 @@ public class BlockVisionShaderSimple {
     private static ShaderInstance shader;
     private static GlStateBackup backup;
 
+    /**
+     * When Iris is installed using this single buffer works fine </br>
+     * The alternative (our own render types) have issues and don't render correctly </br>
+     * It might be possible to make them work in all cases but properly testing that is too annoying at the moment
+     */
+    private static BufferBuilder irisBuffer;
+
     public static void beginBatch() {
         backup = new GlStateBackup();
         RenderSystem.backupGlState(backup);
+
+        if (ModCheck.isModLoaded(ModCheck.IRIS)) {
+            irisBuffer = RenderSystem.renderThreadTesselator().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.BLOCK);
+        }
     }
 
     public static void render(final BlockVisionHandler.Data data, final PoseStack pose, final int colorARGB) {
         prepare();
 
-        // Prepare per-vertex color (semi-transparent)
         int alpha = FastColor.ARGB32.alpha(colorARGB);
         int red = FastColor.ARGB32.red(colorARGB);
         int green = FastColor.ARGB32.green(colorARGB);
@@ -63,12 +79,21 @@ public class BlockVisionShaderSimple {
         BakedModel model = Minecraft.getInstance().getBlockRenderer().getBlockModel(data.state());
         ModelData modelData = model.getModelData(level, position, data.state(), ModelData.EMPTY);
 
-        RandomSource random = RandomSource.create();
         long seed = data.state().getSeed(position);
-        random.setSeed(seed);
+        RandomSource random = RandomSource.create(seed);
 
         for (RenderType type : model.getRenderTypes(data.state(), random, modelData)) {
-            VertexConsumer buffer = Minecraft.getInstance().renderBuffers().bufferSource().getBuffer(type);
+            RenderType mapped;
+
+            if (irisBuffer != null) {
+                mapped = type;
+            } else if (type == RenderType.cutout() || type == RenderType.cutoutMipped()) {
+                mapped = BlockVisionRenderTypes.blockVisionCutout();
+            } else {
+                mapped = BlockVisionRenderTypes.blockVisionTranslucent();
+            }
+
+            VertexConsumer buffer = irisBuffer == null ? Minecraft.getInstance().renderBuffers().bufferSource().getBuffer(mapped) : irisBuffer;
 
             // Unculled faces
             putData(buffer, random, seed, model.getQuads(data.state(), null, random, modelData, type), lastPose, red, green, blue, alpha);
@@ -89,9 +114,23 @@ public class BlockVisionShaderSimple {
     }
 
     public static void endBatch() {
-        Minecraft.getInstance().renderBuffers().bufferSource().endBatch();
+        prepare();
+
+        MultiBufferSource.BufferSource source = Minecraft.getInstance().renderBuffers().bufferSource();
+        source.endBatch(BlockVisionRenderTypes.blockVisionCutout());
+        source.endBatch(BlockVisionRenderTypes.blockVisionTranslucent());
+
+        if (irisBuffer != null) {
+            MeshData meshData = irisBuffer.build();
+
+            if (meshData != null) {
+                BufferUploader.draw(meshData);
+            }
+        }
+
         RenderSystem.restoreGlState(backup);
         shader.clear();
+        irisBuffer = null;
     }
 
     @SubscribeEvent
@@ -100,11 +139,14 @@ public class BlockVisionShaderSimple {
         event.registerShader(new ShaderInstance(event.getResourceProvider(), DragonSurvival.res("block_vision_simple"), DefaultVertexFormat.BLOCK), instance -> shader = instance);
     }
 
-    @SuppressWarnings("DataFlowIssue") // Shader variables are present
+    public static ShaderInstance getShader() {
+        return shader;
+    }
+
+    @SuppressWarnings("DataFlowIssue") // Shader variables should be present
     private static void prepare() {
         RenderSystem.setShader(() -> shader);
         shader.getUniform("ProjMat").set(RenderSystem.getProjectionMatrix());
-        // Use the current model-view matrix (camera transform) so world-space vertices are positioned correctly
         shader.getUniform("ModelViewMat").set(RenderSystem.getModelViewMatrix());
         shader.apply();
 

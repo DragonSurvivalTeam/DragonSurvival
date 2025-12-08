@@ -251,7 +251,7 @@ public class BlockVision extends DurationInstanceBase<BlockVisionData, BlockVisi
         OUTLINE("outline"),
         PARTICLES("particles"),
         TREASURE("treasure"),
-        TREASURE_SHADER("treasure_shader"),
+        SIMPLE_SHADER("simple_shader"),
         NONE("none");
 
         public static final Codec<DisplayType> CODEC = StringRepresentable.fromEnum(DisplayType::values);

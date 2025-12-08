@@ -8,7 +8,7 @@
               "block_visions": [
                 {
                   "base": {
-                    "id": "dragonsurvival:plant_treasure_shader",
+                    "id": "dragonsurvival:plant_simple_shader",
                     "is_hidden": true
                   },
                   "blocks": [
@@ -22,25 +22,31 @@
                   "color_shift_rate": 0.7,
                   "colors": [
                     {
+                      "alpha": 0.2,
                       "color": "dark_blue"
                     },
                     {
+                      "alpha": 0.2,
                       "color": "blue"
                     },
                     {
+                      "alpha": 0.2,
                       "color": "dark_aqua"
                     },
                     {
+                      "alpha": 0.2,
                       "color": "aqua"
                     },
                     {
+                      "alpha": 0.2,
                       "color": "green"
                     },
                     {
+                      "alpha": 0.2,
                       "color": "dark_green"
                     }
                   ],
-                  "display_type": "treasure_shader",
+                  "display_type": "simple_shader",
                   "range": 36.0
                 }
               ],
@@ -50,29 +56,34 @@
               "block_visions": [
                 {
                   "base": {
-                    "id": "dragonsurvival:diamond_vision_treasure_shader",
+                    "id": "dragonsurvival:diamond_vision_simple_shader",
                     "is_hidden": true
                   },
                   "blocks": "#c:ores/diamond",
                   "color_shift_rate": 0.3,
                   "colors": [
                     {
+                      "alpha": 0.2,
                       "color": "gold"
                     },
                     {
+                      "alpha": 0.2,
                       "color": "dark_purple"
                     },
                     {
+                      "alpha": 0.2,
                       "color": "green"
                     },
                     {
+                      "alpha": 0.2,
                       "color": "red"
                     },
                     {
+                      "alpha": 0.2,
                       "color": "blue"
                     }
                   ],
-                  "display_type": "treasure_shader",
+                  "display_type": "simple_shader",
                   "range": 36.0
                 }
               ],
@@ -82,7 +93,7 @@
               "block_visions": [
                 {
                   "base": {
-                    "id": "dragonsurvival:stair_vision_treasure_shader",
+                    "id": "dragonsurvival:stair_vision_simple_shader",
                     "is_hidden": true
                   },
                   "blocks": "#minecraft:stairs",
@@ -107,7 +118,7 @@
                       "color": "#FF0080"
                     }
                   ],
-                  "display_type": "treasure_shader",
+                  "display_type": "simple_shader",
                   "range": 36.0
                 }
               ],
