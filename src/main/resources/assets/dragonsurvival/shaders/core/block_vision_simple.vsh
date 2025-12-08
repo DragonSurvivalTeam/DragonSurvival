@@ -1,7 +1,7 @@
 #version 150
 
 // Simplified glow-only shader
-// Matches DefaultVertexFormat.POSITION_TEX_COLOR
+// Matches DefaultVertexFormat.BLOCK (we only consume Position, Color, UV0)
 
 in vec3 Position;
 in vec2 UV0;
