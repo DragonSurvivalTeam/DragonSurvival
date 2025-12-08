@@ -2,17 +2,16 @@ package by.dragonsurvivalteam.dragonsurvival.client.render;
 
 import by.dragonsurvivalteam.dragonsurvival.client.render.block_vision.BlockVisionOutline;
 import by.dragonsurvivalteam.dragonsurvival.client.render.block_vision.BlockVisionParticle;
+import by.dragonsurvivalteam.dragonsurvival.client.render.block_vision.BlockVisionShaderSimple;
 import by.dragonsurvivalteam.dragonsurvival.client.render.block_vision.BlockVisionTreasure;
-import by.dragonsurvivalteam.dragonsurvival.client.render.block_vision.BlockVisionTreasureShader;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.block_vision.BlockVision;
-import by.dragonsurvivalteam.dragonsurvival.compat.ModCheck;
+import by.dragonsurvivalteam.dragonsurvival.compat.Compat;
 import by.dragonsurvivalteam.dragonsurvival.mixins.client.FrustumAccess;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.BlockVisionData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.irisshaders.iris.api.v0.IrisApi;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
@@ -59,7 +58,7 @@ public class BlockVisionHandler {
     private static boolean isSearching;
     private static boolean hasPendingUpdate;
 
-    public record Data(Block block, int range, BlockVision.DisplayType displayType, int particleRate, float x, float y, float z) {
+    public record Data(BlockState state, int range, BlockVision.DisplayType displayType, int particleRate, float x, float y, float z) {
         public boolean isInRange(final Vec3 position, final int visibleRange) {
             return position.distanceToSqr(x + 0.5, y + 0.5, z + 0.5) <= visibleRange * visibleRange;
         }
@@ -75,7 +74,7 @@ public class BlockVisionHandler {
             return;
         }
 
-        if (ModCheck.isModLoaded(ModCheck.IRIS) && IrisApi.getInstance().isRenderingShadowPass()) {
+        if (Compat.isRenderingShadows()) {
             return;
         }
 
@@ -145,7 +144,7 @@ public class BlockVisionHandler {
                 pose.pushPose();
                 pose.translate(data.x(), data.y(), data.z());
 
-                int colorARGB = vision.getColor(data.block());
+                int colorARGB = vision.getColor(data.state().getBlock());
                 int tick = event.getRenderTick();
                 float partialTick = event.getPartialTick().getRealtimeDeltaTicks();
 
@@ -170,17 +169,17 @@ public class BlockVisionHandler {
      */
     @SubscribeEvent
     public static void handleShader(final RenderLevelStageEvent event) {
-        boolean isUsingShader = ModCheck.isModLoaded(ModCheck.IRIS) && IrisApi.getInstance().isShaderPackInUse();
+        if (Compat.isRenderingShadows()) {
+            return;
+        }
+
+        boolean isUsingShader = Compat.isShaderActive();
 
         if (isUsingShader && event.getStage() != RenderLevelStageEvent.Stage.AFTER_LEVEL) {
             // Iris does not really support core shaders - the only stage they work at is after it has finished doing its rendering
             return;
         } else if (!isUsingShader && event.getStage() != RenderLevelStageEvent.Stage.AFTER_CUTOUT_BLOCKS) {
             // This stage allows rendering the shader through water
-            return;
-        }
-
-        if (ModCheck.isModLoaded(ModCheck.IRIS) && IrisApi.getInstance().isRenderingShadowPass()) {
             return;
         }
 
@@ -195,24 +194,22 @@ public class BlockVisionHandler {
         pose.mulPose(event.getModelViewMatrix());
         pose.translate(-camera.x(), -camera.y(), -camera.z());
 
-        BlockVisionTreasureShader.beginBatch();
+        BlockVisionShaderSimple.beginBatch();
 
         for (Data data : SHADER_RENDER_DATA) {
             pose.pushPose();
             pose.translate(data.x(), data.y(), data.z());
 
-            int colorARGB = vision.getColor(data.block());
-            int tick = event.getRenderTick();
-            float partialTick = event.getPartialTick().getRealtimeDeltaTicks();
+            int colorARGB = vision.getColor(data.state().getBlock());
 
             switch (data.displayType()) {
-                case TREASURE_SHADER -> BlockVisionTreasureShader.render(data, pose, colorARGB, tick, partialTick);
+                case TREASURE_SHADER -> BlockVisionShaderSimple.render(data, pose, colorARGB);
             }
 
             pose.popPose();
         }
 
-        BlockVisionTreasureShader.endBatch();
+        BlockVisionShaderSimple.endBatch();
 
         pose.popPose();
         SHADER_RENDER_DATA.clear();
@@ -258,7 +255,7 @@ public class BlockVisionHandler {
         int range = vision.getRange(newBlock);
 
         if (range != BlockVision.NO_RANGE) {
-            RENDER_DATA.add(new Data(newBlock, range, vision.getDisplayType(newBlock), vision.getParticleRate(newBlock), position.getX(), position.getY(), position.getZ()));
+            RENDER_DATA.add(new Data(newState, range, vision.getDisplayType(newBlock), vision.getParticleRate(newBlock), position.getX(), position.getY(), position.getZ()));
         }
     }
 
@@ -311,7 +308,7 @@ public class BlockVisionHandler {
                         int range = vision.getRange(block);
 
                         if (range != BlockVision.NO_RANGE) {
-                            SEARCH_RESULT.add(new Data(block, range, vision.getDisplayType(block), vision.getParticleRate(block), x, y, z));
+                            SEARCH_RESULT.add(new Data(state, range, vision.getDisplayType(block), vision.getParticleRate(block), x, y, z));
                         }
                     } else if (y != minChunkY) {
                         // Move to the next section (the bit shifting truncates the y value)

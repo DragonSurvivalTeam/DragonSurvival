@@ -1,17 +1,17 @@
 {
   "values": [
-    "dragonsurvival:test_summon",
-    "dragonsurvival:test_damage_expression",
-    "dragonsurvival:test_experience_points_add",
-    "dragonsurvival:test_on_key_pressed",
     "dragonsurvival:test_teleport_directional",
-    "dragonsurvival:test_function",
-    "dragonsurvival:test_convert_items",
     "dragonsurvival:test_teleport",
-    "dragonsurvival:test_ore_vision_treasure_shader",
-    "dragonsurvival:test_glow",
-    "dragonsurvival:test_heal",
+    "dragonsurvival:test_damage_expression",
+    "dragonsurvival:test_convert_items",
     "dragonsurvival:test_smelt",
+    "dragonsurvival:test_on_key_pressed",
+    "dragonsurvival:test_ore_vision_treasure_shader",
+    "dragonsurvival:test_function",
+    "dragonsurvival:test_glow",
+    "dragonsurvival:test_experience_points_add",
+    "dragonsurvival:test_summon",
+    "dragonsurvival:test_heal",
     "dragonsurvival:test_cooldown_recovery"
   ]
 }

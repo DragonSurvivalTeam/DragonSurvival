@@ -10,11 +10,15 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilit
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.TagsProvider;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public class DSDragonAbilityTags extends TagsProvider<DragonAbility> {
@@ -37,13 +41,19 @@ public class DSDragonAbilityTags extends TagsProvider<DragonAbility> {
 
     @Override
     protected void addTags(@NotNull final HolderLookup.Provider provider) {
+        List<ResourceKey<DragonAbility>> testAbilities = new ArrayList<>();
+
         provider.lookupOrThrow(DragonAbility.REGISTRY).listElements().forEach(ability -> {
                     //noinspection DataFlowIssue -> key is present
                     if (ability.getKey().location().getPath().startsWith(DragonAbilities.TEST_PREFIX)) {
-                        tag(TEST_ABILITIES).add(ability.getKey());
+                        testAbilities.add(ability.getKey());
                     }
                 }
         );
+
+        // Avoid having the order constantly switch, leading to "changes" on every data generation
+        testAbilities.sort(Comparator.naturalOrder());
+        testAbilities.forEach(key -> tag(TEST_ABILITIES).add(key));
 
         tag(CAVE)
                 // Active

@@ -7,7 +7,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvide
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.ActionContainer;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.DragonSizeHandler;
-import by.dragonsurvivalteam.dragonsurvival.compat.ModCheck;
+import by.dragonsurvivalteam.dragonsurvival.compat.Compat;
 import by.dragonsurvivalteam.dragonsurvival.compat.bettercombat.BetterCombat;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
@@ -32,7 +32,6 @@ import by.dragonsurvivalteam.dragonsurvival.server.handlers.ServerFlightHandler;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.irisshaders.iris.api.v0.IrisApi;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
@@ -167,7 +166,7 @@ public class ClientDragonRenderer {
                 return;
             }
 
-            if (ModCheck.isModLoaded(ModCheck.IRIS) && IrisApi.getInstance().isRenderingShadowPass()) {
+            if (Compat.isRenderingShadows()) {
                 return;
             }
 
@@ -282,7 +281,7 @@ public class ClientDragonRenderer {
             event.setCanceled(true);
         }
 
-        if (SKIP_SHADER_SHADOWS && ModCheck.isModLoaded(ModCheck.IRIS) && IrisApi.getInstance().isRenderingShadowPass()) {
+        if (SKIP_SHADER_SHADOWS && Compat.isRenderingShadows()) {
             return;
         }
 

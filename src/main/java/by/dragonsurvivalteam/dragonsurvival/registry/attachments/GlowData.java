@@ -2,6 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.registry.attachments;
 
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Glow;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncData;
+import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -29,7 +30,7 @@ public class GlowData extends Storage<Glow.Instance> {
         }
 
         List<Integer> colors = new ArrayList<>();
-        all().forEach(glow -> colors.add(glow.getColor()));
+        all().forEach(glow -> colors.add(DSColors.withAlpha(glow.getColor(), 1)));
         return Functions.lerpColor(colors);
     }
 

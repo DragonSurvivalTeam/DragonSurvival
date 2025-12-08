@@ -1,6 +1,6 @@
 {
-  "vertex": "dragonsurvival:block_vision_treasure",
-  "fragment": "dragonsurvival:block_vision_treasure",
+  "vertex": "dragonsurvival:block_vision_simple",
+  "fragment": "dragonsurvival:block_vision_simple",
   "samplers": [
     { "name": "Sampler0" }
   ],

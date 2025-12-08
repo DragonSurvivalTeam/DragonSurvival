@@ -13,6 +13,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
+import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.HolderLookup;
@@ -37,6 +38,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.function.Function;
 
 public class BlockVision extends DurationInstanceBase<BlockVisionData, BlockVision.Instance> {
     @Translation(comments = {
@@ -61,15 +63,23 @@ public class BlockVision extends DurationInstanceBase<BlockVisionData, BlockVisi
             RegistryCodecs.homogeneousList(Registries.BLOCK).fieldOf("blocks").forGetter(BlockVision::blocks),
             LevelBasedValue.CODEC.fieldOf("range").forGetter(BlockVision::range),
             DisplayType.CODEC.fieldOf("display_type").forGetter(BlockVision::displayType),
-            TextColor.CODEC.listOf().fieldOf("colors").forGetter(BlockVision::colors),
+            // FIXME 1.22 :: remove either (= breaking change)
+            Codec.either(TextColor.CODEC.listOf(), ColorEntry.CODEC.listOf()).fieldOf("colors").forGetter(BlockVision::colors),
             ExtraCodecs.intRange(1, Integer.MAX_VALUE).optionalFieldOf("particle_rate", DEFAULT_PARTICLE_RATE).forGetter(BlockVision::particleRate),
             MiscCodecs.doubleRange(0, 10).optionalFieldOf("color_shift_rate", DEFAULT_COLOR_SHIFT_RATE).forGetter(BlockVision::colorShiftRate)
     ).apply(instance, BlockVision::new));
 
+    public record ColorEntry(TextColor color, float alpha) {
+        public static final Codec<ColorEntry> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+                TextColor.CODEC.fieldOf("color").forGetter(ColorEntry::color),
+                Codec.FLOAT.optionalFieldOf("alpha", 0.3f).forGetter(ColorEntry::alpha)
+        ).apply(instance, ColorEntry::new));
+    }
+
     private final HolderSet<Block> blocks;
     private final LevelBasedValue range;
     private final DisplayType displayType;
-    private final List<TextColor> colors;
+    private final Either<List<TextColor>, List<ColorEntry>> colors;
     private final int particleRate;
     private final double colorShiftRate;
 
@@ -78,7 +88,7 @@ public class BlockVision extends DurationInstanceBase<BlockVisionData, BlockVisi
             final HolderSet<Block> blocks,
             final LevelBasedValue range,
             final DisplayType displayType,
-            final List<TextColor> colors,
+            final Either<List<TextColor>, List<ColorEntry>> colors,
             final int particleRate,
             final double colorShiftRate
     ) {
@@ -93,6 +103,7 @@ public class BlockVision extends DurationInstanceBase<BlockVisionData, BlockVisi
 
     public MutableComponent getDescription(final int abilityLevel) {
         int range = (int) this.range.calculate(abilityLevel);
+        List<TextColor> colors = this.colors.map(Function.identity(), list -> list.stream().map(ColorEntry::color).toList());
 
         Component color;
 
@@ -112,6 +123,10 @@ public class BlockVision extends DurationInstanceBase<BlockVisionData, BlockVisi
         return new BlockVision.Builder(base);
     }
 
+    public static ColorEntry color(final TextColor color, final float alpha) {
+        return new ColorEntry(color, alpha);
+    }
+
     public HolderSet<Block> blocks() {
         return blocks;
     }
@@ -124,7 +139,7 @@ public class BlockVision extends DurationInstanceBase<BlockVisionData, BlockVisi
         return displayType;
     }
 
-    public List<TextColor> colors() {
+    public Either<List<TextColor>, List<ColorEntry>> colors() {
         return colors;
     }
 
@@ -168,7 +183,10 @@ public class BlockVision extends DurationInstanceBase<BlockVisionData, BlockVisi
         public List<Integer> getColors(final Block block) {
             //noinspection deprecation -> ignore
             if (baseData().blocks().contains(block.builtInRegistryHolder())) {
-                return baseData().colors().stream().map(color -> DSColors.withAlpha(color.getValue(), 1)).toList();
+                return baseData().colors().map(
+                        list -> list.stream().map(color -> DSColors.withAlpha(color.getValue(), 1)),
+                        list -> list.stream().map(entry -> DSColors.withAlpha(entry.color().getValue(), entry.alpha()))
+                ).toList();
             }
 
             return List.of();
@@ -254,7 +272,7 @@ public class BlockVision extends DurationInstanceBase<BlockVisionData, BlockVisi
         private HolderSet<Block> blocks = HolderSet.empty();
         private LevelBasedValue range = LevelBasedValue.constant(1);
         private DisplayType displayType = DisplayType.NONE;
-        private List<TextColor> colors = List.of();
+        private Either<List<TextColor>, List<ColorEntry>> colors = Either.left(List.of());
         private int particleRate = DEFAULT_PARTICLE_RATE;
         private double colorShiftRate = DEFAULT_COLOR_SHIFT_RATE;
 
@@ -278,7 +296,12 @@ public class BlockVision extends DurationInstanceBase<BlockVisionData, BlockVisi
         }
 
         public Builder colors(final List<TextColor> colors) {
-            this.colors = colors;
+            this.colors = Either.left(colors);
+            return this;
+        }
+
+        public Builder colorEntries(final List<ColorEntry> colors) {
+            this.colors = Either.right(colors);
             return this;
         }
 

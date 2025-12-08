@@ -15,16 +15,30 @@
                     "minecraft:tall_grass",
                     "minecraft:fern",
                     "minecraft:lily_pad",
-                    "minecraft:kelp_plant"
+                    "minecraft:kelp_plant",
+                    "minecraft:kelp",
+                    "minecraft:seagrass"
                   ],
                   "color_shift_rate": 0.7,
                   "colors": [
-                    "dark_blue",
-                    "blue",
-                    "dark_aqua",
-                    "aqua",
-                    "green",
-                    "dark_green"
+                    {
+                      "color": "dark_blue"
+                    },
+                    {
+                      "color": "blue"
+                    },
+                    {
+                      "color": "dark_aqua"
+                    },
+                    {
+                      "color": "aqua"
+                    },
+                    {
+                      "color": "green"
+                    },
+                    {
+                      "color": "dark_green"
+                    }
                   ],
                   "display_type": "treasure_shader",
                   "range": 36.0
@@ -42,11 +56,21 @@
                   "blocks": "#c:ores/diamond",
                   "color_shift_rate": 0.3,
                   "colors": [
-                    "gold",
-                    "dark_purple",
-                    "green",
-                    "red",
-                    "blue"
+                    {
+                      "color": "gold"
+                    },
+                    {
+                      "color": "dark_purple"
+                    },
+                    {
+                      "color": "green"
+                    },
+                    {
+                      "color": "red"
+                    },
+                    {
+                      "color": "blue"
+                    }
                   ],
                   "display_type": "treasure_shader",
                   "range": 36.0
@@ -58,176 +82,33 @@
               "block_visions": [
                 {
                   "base": {
-                    "id": "dragonsurvival:lapis_vision_treasure_shader",
+                    "id": "dragonsurvival:stair_vision_treasure_shader",
                     "is_hidden": true
                   },
-                  "blocks": "#c:ores/lapis",
+                  "blocks": "#minecraft:stairs",
+                  "color_shift_rate": 0.3,
                   "colors": [
-                    "blue"
-                  ],
-                  "display_type": "treasure_shader",
-                  "range": 16.0
-                }
-              ],
-              "effect_type": "dragonsurvival:block_vision"
-            },
-            {
-              "block_visions": [
-                {
-                  "base": {
-                    "id": "dragonsurvival:gold_vision_treasure_shader",
-                    "is_hidden": true
-                  },
-                  "blocks": "#c:ores/gold",
-                  "colors": [
-                    "gold"
-                  ],
-                  "display_type": "treasure_shader",
-                  "range": 22.0
-                }
-              ],
-              "effect_type": "dragonsurvival:block_vision"
-            },
-            {
-              "block_visions": [
-                {
-                  "base": {
-                    "id": "dragonsurvival:redstone_vision_treasure_shader",
-                    "is_hidden": true
-                  },
-                  "blocks": "#c:ores/redstone",
-                  "colors": [
-                    "dark_red"
-                  ],
-                  "display_type": "treasure_shader",
-                  "range": 16.0
-                }
-              ],
-              "effect_type": "dragonsurvival:block_vision"
-            },
-            {
-              "block_visions": [
-                {
-                  "base": {
-                    "id": "dragonsurvival:coal_vision_treasure_shader",
-                    "is_hidden": true
-                  },
-                  "blocks": "#c:ores/coal",
-                  "colors": [
-                    "black"
-                  ],
-                  "display_type": "treasure_shader",
-                  "range": 16.0
-                }
-              ],
-              "effect_type": "dragonsurvival:block_vision"
-            },
-            {
-              "block_visions": [
-                {
-                  "base": {
-                    "id": "dragonsurvival:emerald_vision_treasure_shader",
-                    "is_hidden": true
-                  },
-                  "blocks": "#c:ores/emerald",
-                  "colors": [
-                    "green"
-                  ],
-                  "display_type": "treasure_shader",
-                  "range": 26.0
-                }
-              ],
-              "effect_type": "dragonsurvival:block_vision"
-            },
-            {
-              "block_visions": [
-                {
-                  "base": {
-                    "id": "dragonsurvival:quartz_vision_treasure_shader",
-                    "is_hidden": true
-                  },
-                  "blocks": "#c:ores/quartz",
-                  "colors": [
-                    "dark_red",
-                    "gray"
-                  ],
-                  "display_type": "treasure_shader",
-                  "range": 12.0
-                }
-              ],
-              "effect_type": "dragonsurvival:block_vision"
-            },
-            {
-              "block_visions": [
-                {
-                  "base": {
-                    "id": "dragonsurvival:copper_vision_treasure_shader",
-                    "is_hidden": true
-                  },
-                  "blocks": "#c:ores/copper",
-                  "colors": [
-                    "gold",
-                    "dark_green"
-                  ],
-                  "display_type": "treasure_shader",
-                  "range": 16.0
-                }
-              ],
-              "effect_type": "dragonsurvival:block_vision"
-            },
-            {
-              "block_visions": [
-                {
-                  "base": {
-                    "id": "dragonsurvival:netherite_vision_treasure_shader",
-                    "is_hidden": true
-                  },
-                  "blocks": "#c:ores/netherite_scrap",
-                  "color_shift_rate": 3.0,
-                  "colors": [
-                    "dark_aqua",
-                    "black",
-                    "aqua",
-                    "dark_gray"
+                    {
+                      "alpha": 0.7,
+                      "color": "#0040FF"
+                    },
+                    {
+                      "color": "#4030E0"
+                    },
+                    {
+                      "alpha": 0.7,
+                      "color": "#8020C0"
+                    },
+                    {
+                      "color": "#C010A0"
+                    },
+                    {
+                      "alpha": 0.7,
+                      "color": "#FF0080"
+                    }
                   ],
                   "display_type": "treasure_shader",
                   "range": 36.0
-                }
-              ],
-              "effect_type": "dragonsurvival:block_vision"
-            },
-            {
-              "block_visions": [
-                {
-                  "base": {
-                    "id": "dragonsurvival:iron_vision_treasure_shader",
-                    "is_hidden": true
-                  },
-                  "blocks": "#c:ores/iron",
-                  "colors": [
-                    "dark_gray",
-                    "gray",
-                    "white"
-                  ],
-                  "display_type": "treasure_shader",
-                  "range": 22.0
-                }
-              ],
-              "effect_type": "dragonsurvival:block_vision"
-            },
-            {
-              "block_visions": [
-                {
-                  "base": {
-                    "custom_icon": "dragonsurvival:textures/ability_effect/general_ore_vision.png",
-                    "id": "dragonsurvival:general_ore_vision_treasure_shader"
-                  },
-                  "blocks": "#dragonsurvival:general_ores",
-                  "colors": [
-                    "white"
-                  ],
-                  "display_type": "treasure_shader",
-                  "range": 16.0
                 }
               ],
               "effect_type": "dragonsurvival:block_vision"
