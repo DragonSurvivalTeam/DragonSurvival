@@ -114,16 +114,17 @@ public class BlockVisionTreasureShader {
         RenderSystem.setShader(() -> shader);
         shader.getUniform("ProjMat").set(RenderSystem.getProjectionMatrix());
         shader.getUniform("ModelViewMat").set(new Matrix4f().identity());
-        shader.getUniform("ZBias").set(0.0f);
         shader.apply();
 
         RenderSystem.enableDepthTest();
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.depthMask(false);
+        // Don't render both sides of transparent blocks (like plants)
         RenderSystem.enableCull();
         RenderSystem.enablePolygonOffset();
-        RenderSystem.polygonOffset(-1.0f, -1.0f);
+        // Prevents z-fighting issues
+        RenderSystem.polygonOffset(-1, -1);
         //noinspection deprecation -> ignore
         RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_BLOCKS);
 

@@ -1,8 +1,5 @@
 #version 150
 
-// Simplified glow-only fragment shader
-// Matches DefaultVertexFormat.POSITION_COLOR_TEX
-
 in vec2 texCoord;
 in vec4 vertColor;
 
@@ -13,6 +10,7 @@ out vec4 fragColor;
 void main() {
     // Sample alpha from block atlas to match cutout silhouettes
     vec4 baseSample = texture(Sampler0, texCoord, -8.0);
+
     if (baseSample.a < 0.1) {
         discard;
     }
