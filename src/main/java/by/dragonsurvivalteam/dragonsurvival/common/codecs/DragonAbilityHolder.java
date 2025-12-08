@@ -110,9 +110,13 @@ public record DragonAbilityHolder(List<AbilityPair> pairs, Optional<LootItemCond
             }
         }
 
-        if (!pairs.isEmpty() && !applicableSpecies.isEmpty()) {
+        if (!applicableSpecies.isEmpty()) {
             MutableComponent translation = DSLanguageProvider.formatList(ResourceLocationWrapper.getTranslations(applicableSpecies, registry, Translation.Type.DRAGON_SPECIES), Function.identity());
-            consumer.accept(Component.empty());
+
+            if (!pairs.isEmpty()) {
+                consumer.accept(Component.empty());
+            }
+
             consumer.accept(Component.translatable(APPLICABLE_TO, DSColors.dynamicValue(translation)));
         }
     }
