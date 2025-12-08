@@ -68,15 +68,6 @@ public class ToolTipHandler {
     @Translation(comments = "■ %s food: %s")
     private static final String DRAGON_FOOD = Translation.Type.GUI.wrap("tooltip.dragon_food");
 
-    @Translation(comments = "§7■ Adds the following abilities: %s")
-    private static final String ADDS_ABILITIES = Translation.Type.GUI.wrap("tooltip.adds_abilities");
-
-    @Translation(comments = "§7■ Removes the following abilities: %s")
-    private static final String REMOVES_ABILITIES = Translation.Type.GUI.wrap("tooltip.removes_abilities");
-
-    @Translation(comments = "§7■ Applicable to: %s")
-    private static final String APPLICABLE_TO = Translation.Type.GUI.wrap("tooltip.applicable_to");
-
     @Translation(comments = "Press 'SHIFT' for more info")
     private static final String PRESS_SHIFT = Translation.Type.GUI.wrap("tooltip.shift");
 
@@ -103,21 +94,7 @@ public class ToolTipHandler {
         }
 
         if (Screen.hasShiftDown()) {
-            // TODO :: re-add if structure is ok
-//            List<String> resources = holder.abilities();
-//            List<MutableComponent> components = new ArrayList<>();
-
-//            for (String resource : resources) {
-//                var converted = ResourceLocationWrapper.convert(resource, level.registryAccess().registryOrThrow(DragonAbility.REGISTRY));
-//
-//                converted.first().ifPresent(tag -> components.add(Component.translatable(Tags.getTagTranslationKey(tag))));
-//                converted.second().ifPresent(key -> components.add(Component.translatable(Translation.Type.ABILITY.wrap(key))));
-//                converted.third().ifPresent(set -> components.add(DSLanguageProvider.formatList(set, key -> Component.translatable(Translation.Type.ABILITY.wrap(key)))));
-//            }
-
-            if (holder.applicableSpecies().isPresent()) {
-                event.getToolTip().add(Component.translatable(APPLICABLE_TO, Functions.translateHolderSet(holder.applicableSpecies().get(), Translation.Type.DRAGON_SPECIES)));
-            }
+            holder.translate(level.registryAccess(), event.getToolTip()::add);
         } else {
             event.getToolTip().add(Component.translatable(PRESS_SHIFT).withStyle(ChatFormatting.DARK_GRAY));
         }

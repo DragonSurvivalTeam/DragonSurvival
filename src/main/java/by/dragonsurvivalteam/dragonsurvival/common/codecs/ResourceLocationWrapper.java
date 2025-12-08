@@ -1,14 +1,20 @@
 package by.dragonsurvivalteam.dragonsurvival.common.codecs;
 
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.DSLanguageProvider;
 import by.dragonsurvivalteam.dragonsurvival.util.Triple;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
+import net.neoforged.neoforge.common.Tags;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -92,6 +98,20 @@ public class ResourceLocationWrapper {
 
     public static String convert(final ResourceLocation location) {
         return location.toString();
+    }
+
+    public static List<MutableComponent> getTranslations(final List<String> resources, final Registry<?> registry, final Translation.Type type) {
+        List<MutableComponent> components = new ArrayList<>();
+
+        for (String resource : resources) {
+            var converted = ResourceLocationWrapper.convert(resource, registry);
+
+            converted.first().ifPresent(tag -> components.add(Component.translatable(Tags.getTagTranslationKey(tag))));
+            converted.second().ifPresent(key -> components.add(Component.translatable(type.wrap(key))));
+            converted.third().ifPresent(set -> components.add(DSLanguageProvider.formatList(set, key -> Component.translatable(type.wrap(key)))));
+        }
+
+        return components;
     }
 
     /**
