@@ -88,18 +88,25 @@ public class ResourceLocationWrapper {
         return keys;
     }
 
+    /**
+     * Converts the {@link net.minecraft.tags.TagKey} to the format accepted by {@link by.dragonsurvivalteam.dragonsurvival.common.codecs.ResourceLocationWrapper} </br>
+     * (Format example: #minecraft:ores)
+     */
     public static String convert(final TagKey<?> tag) {
         return "#" + tag.location();
     }
 
+    /** Helper method to format the {@link net.minecraft.resources.ResourceKey} into a string in the format of a resource location */
     public static String convert(final ResourceKey<?> key) {
         return convert(key.location());
     }
 
+    /** Helper method to format the resource location into a string */
     public static String convert(final ResourceLocation location) {
         return location.toString();
     }
 
+    /** Returns the translation of the resources by unwrapping them through {@link by.dragonsurvivalteam.dragonsurvival.common.codecs.ResourceLocationWrapper#convert(String, net.minecraft.core.Registry)} */
     public static List<MutableComponent> getTranslations(final List<String> resources, final Registry<?> registry, final Translation.Type type) {
         List<MutableComponent> components = new ArrayList<>();
 

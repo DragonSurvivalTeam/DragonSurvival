@@ -480,7 +480,7 @@ public class DSItems {
                                             )
                                     ),
                                     Optional.empty(),
-                                    Optional.empty()
+                                    List.of(ResourceLocationWrapper.convert(BuiltInDragonSpecies.FOREST_DRAGON))
                             )
                     )
     ));

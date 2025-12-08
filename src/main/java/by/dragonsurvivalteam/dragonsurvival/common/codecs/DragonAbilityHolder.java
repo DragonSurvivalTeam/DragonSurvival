@@ -6,14 +6,12 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.DSLanguageProvider;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbility;
-import by.dragonsurvivalteam.dragonsurvival.util.Functions;
+import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.core.RegistryCodecs;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.contents.PlainTextContents;
@@ -28,7 +26,7 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public record DragonAbilityHolder(List<AbilityPair> pairs, Optional<LootItemCondition> conditions, Optional<HolderSet<DragonSpecies>> applicableSpecies) {
+public record DragonAbilityHolder(List<AbilityPair> pairs, Optional<LootItemCondition> conditions, List<String> applicableSpecies) {
     @Translation(comments = "You do not meet the requirements to use this item")
     private static final String REQUIREMENTS_NOT_MET = Translation.Type.GUI.wrap("ability_holder.requirements_not_met");
 
@@ -51,7 +49,7 @@ public record DragonAbilityHolder(List<AbilityPair> pairs, Optional<LootItemCond
             AbilityPair.CODEC.listOf().fieldOf("pairs").forGetter(DragonAbilityHolder::pairs),
             MiscCodecs.conditional(LootItemCondition.DIRECT_CODEC).optionalFieldOf("conditions").forGetter(DragonAbilityHolder::conditions),
             // This can be handled by the condition, but we are keeping it to make the tooltip more helpful
-            RegistryCodecs.homogeneousList(DragonSpecies.REGISTRY).optionalFieldOf("applicable_species").forGetter(DragonAbilityHolder::applicableSpecies)
+            ResourceLocationWrapper.validatedCodec().listOf().optionalFieldOf("applicable_species", List.of()).forGetter(DragonAbilityHolder::applicableSpecies)
     ).apply(instance, DragonAbilityHolder::new));
 
     public record AbilityPair(List<String> add, List<String> remove, boolean strict) {
@@ -71,11 +69,11 @@ public record DragonAbilityHolder(List<AbilityPair> pairs, Optional<LootItemCond
             MutableComponent removeTranslation = DSLanguageProvider.formatList(remove, Function.identity());
 
             if (addTranslation.getContents() != PlainTextContents.EMPTY) {
-                translation = Component.translatable(ADD, addTranslation);
+                translation = Component.translatable(ADD, DSColors.dynamicValue(addTranslation));
             }
 
             if (removeTranslation.getContents() != PlainTextContents.EMPTY) {
-                MutableComponent component = Component.translatable(REMOVE, removeTranslation);
+                MutableComponent component = Component.translatable(REMOVE, DSColors.dynamicValue(removeTranslation));
 
                 if (translation != null) {
                     translation.append(Component.literal("\n"));
@@ -112,15 +110,19 @@ public record DragonAbilityHolder(List<AbilityPair> pairs, Optional<LootItemCond
             }
         }
 
-        applicableSpecies.ifPresent(holders ->
-                consumer.accept(Component.translatable(APPLICABLE_TO, Functions.translateHolderSet(holders, Translation.Type.DRAGON_SPECIES)))
-        );
+        if (!pairs.isEmpty() && !applicableSpecies.isEmpty()) {
+            MutableComponent translation = DSLanguageProvider.formatList(ResourceLocationWrapper.getTranslations(applicableSpecies, registry, Translation.Type.DRAGON_SPECIES), Function.identity());
+            consumer.accept(Component.empty());
+            consumer.accept(Component.translatable(APPLICABLE_TO, DSColors.dynamicValue(translation)));
+        }
     }
 
     public boolean use(final ServerPlayer player, final DragonStateHandler handler, final MagicData magic) {
-        if (applicableSpecies.map(set -> !set.contains(handler.species())).orElse(false)) {
-            player.sendSystemMessage(Component.translatable(REQUIREMENTS_NOT_MET).withStyle(ChatFormatting.RED));
-            return false;
+        for (String resource : applicableSpecies) {
+            if (!ResourceLocationWrapper.getEntries(resource, player.registryAccess().registryOrThrow(DragonSpecies.REGISTRY)).contains(handler.speciesId())) {
+                player.sendSystemMessage(Component.translatable(REQUIREMENTS_NOT_MET).withStyle(ChatFormatting.RED));
+                return false;
+            }
         }
 
         if (!conditions.map(conditions -> conditions.test(Condition.entityContext(player.serverLevel(), player))).orElse(true)) {
