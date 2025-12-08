@@ -170,7 +170,13 @@ public class BlockVisionHandler {
      */
     @SubscribeEvent
     public static void handleShader(final RenderLevelStageEvent event) {
-        if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_LEVEL) {
+        boolean isUsingShader = ModCheck.isModLoaded(ModCheck.IRIS) && IrisApi.getInstance().isShaderPackInUse();
+
+        if (isUsingShader && event.getStage() != RenderLevelStageEvent.Stage.AFTER_LEVEL) {
+            // Iris does not really support core shaders - the only stage they work at is after it has finished doing its rendering
+            return;
+        } else if (!isUsingShader && event.getStage() != RenderLevelStageEvent.Stage.AFTER_CUTOUT_BLOCKS) {
+            // This stage allows rendering the shader through water
             return;
         }
 

@@ -10,6 +10,7 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.MeshData;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexFormat;
+import com.sun.jna.platform.win32.GL;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.ShaderInstance;
@@ -23,6 +24,7 @@ import net.minecraft.util.RandomSource;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.GlStateBackup;
 import net.neoforged.neoforge.client.event.RegisterShadersEvent;
 import net.neoforged.neoforge.client.model.data.ModelData;
 import org.joml.Matrix4f;
@@ -43,27 +45,10 @@ public class BlockVisionTreasureShader {
         event.registerShader(new ShaderInstance(event.getResourceProvider(), DragonSurvival.res("block_vision_treasure"), DefaultVertexFormat.POSITION_TEX_COLOR), instance -> shader = instance);
     }
 
-    // Begin a batched rendering pass for all treasure blocks in this frame.
-    @SuppressWarnings("DataFlowIssue")
     public static void beginBatch() {
         if (buffer != null) {
             return;
         }
-
-        RenderSystem.setShader(() -> shader);
-        shader.getUniform("ProjMat").set(RenderSystem.getProjectionMatrix());
-        shader.getUniform("ModelViewMat").set(new Matrix4f().identity());
-        shader.getUniform("ZBias").set(0.0f);
-        shader.apply();
-
-        RenderSystem.enableDepthTest();
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
-        RenderSystem.depthMask(false);
-        RenderSystem.enableCull();
-        RenderSystem.enablePolygonOffset();
-        RenderSystem.polygonOffset(-1.0f, -1.0f);
-        RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_BLOCKS);
 
         buffer = RenderSystem.renderThreadTesselator().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
     }
@@ -117,11 +102,30 @@ public class BlockVisionTreasureShader {
         }
     }
 
-    // End the current batched pass and draw once.
+    @SuppressWarnings("DataFlowIssue") // Shader variables are present
     public static void endBatch() {
         if (buffer == null) {
             return;
         }
+
+        GlStateBackup backup = new GlStateBackup();
+        RenderSystem.backupGlState(backup);
+
+        RenderSystem.setShader(() -> shader);
+        shader.getUniform("ProjMat").set(RenderSystem.getProjectionMatrix());
+        shader.getUniform("ModelViewMat").set(new Matrix4f().identity());
+        shader.getUniform("ZBias").set(0.0f);
+        shader.apply();
+
+        RenderSystem.enableDepthTest();
+        RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
+        RenderSystem.depthMask(false);
+        RenderSystem.enableCull();
+        RenderSystem.enablePolygonOffset();
+        RenderSystem.polygonOffset(-1.0f, -1.0f);
+        //noinspection deprecation -> ignore
+        RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_BLOCKS);
 
         MeshData meshData = buffer.build();
 
@@ -129,11 +133,7 @@ public class BlockVisionTreasureShader {
             BufferUploader.draw(meshData);
         }
 
-        RenderSystem.polygonOffset(0.0f, 0.0f);
-        RenderSystem.disablePolygonOffset();
-        RenderSystem.enableCull();
-        RenderSystem.depthMask(true);
-        RenderSystem.disableBlend();
+        RenderSystem.restoreGlState(backup);
         shader.clear();
         buffer = null;
     }
