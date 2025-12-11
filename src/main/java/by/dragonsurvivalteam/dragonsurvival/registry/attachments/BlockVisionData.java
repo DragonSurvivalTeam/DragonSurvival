@@ -1,6 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.attachments;
 
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.BlockVision;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.block_vision.BlockVision;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -23,7 +23,7 @@ public class BlockVisionData extends Storage<BlockVision.Instance> {
     private final Map<Block, CacheEntry> cache = new HashMap<>();
     private int maximumRange = -1;
 
-    record CacheEntry(int range, List<Integer> colors, BlockVision.DisplayType displayType, int particleRate) {}
+    record CacheEntry(int range, List<Integer> colors, BlockVision.DisplayType displayType, int particleRate, double colorShiftRate) {}
 
     public int getRange(@Nullable final Block block) {
         if (block == null) {
@@ -38,7 +38,7 @@ public class BlockVisionData extends Storage<BlockVision.Instance> {
     }
 
     public int getColor(final Block block) {
-        return Functions.lerpColor(cache.computeIfAbsent(block, this::storeData).colors());
+        return Functions.lerpColor(cache.computeIfAbsent(block, this::storeData).colors(), cache.computeIfAbsent(block, this::storeData).colorShiftRate(), 0);
     }
 
     public List<Integer> getColors(final Block block) {
@@ -54,7 +54,7 @@ public class BlockVisionData extends Storage<BlockVision.Instance> {
     }
 
     private CacheEntry storeData(final Block block) {
-        return new CacheEntry(storeRange(block), storeColor(block), storeDisplayType(block), storeParticleRate(block));
+        return new CacheEntry(storeRange(block), storeColor(block), storeDisplayType(block), storeParticleRate(block), storeColorShiftRate(block));
     }
 
     /** If the passed state is 'null' it will return the range as well */
@@ -100,12 +100,24 @@ public class BlockVisionData extends Storage<BlockVision.Instance> {
         for (BlockVision.Instance instance : all()) {
             int particleRate = instance.getParticleRate(block);
 
-            if (particleRate != BlockVision.NO_PARTICLE_RATE) {
+            if (particleRate != BlockVision.NO_VALUE) {
                 return particleRate;
             }
         }
 
-        return BlockVision.NO_PARTICLE_RATE;
+        return BlockVision.NO_VALUE;
+    }
+
+    private double storeColorShiftRate(final Block block) {
+        for (BlockVision.Instance instance : all()) {
+            double colorShiftRate = instance.getColorShiftRate(block);
+
+            if (colorShiftRate != BlockVision.NO_VALUE) {
+                return colorShiftRate;
+            }
+        }
+
+        return BlockVision.NO_VALUE;
     }
 
     @Override

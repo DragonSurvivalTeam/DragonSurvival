@@ -22,6 +22,9 @@ public class DSCreativeTabs {
     public static final DeferredRegister<CreativeModeTab> REGISTRY = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, DragonSurvival.MODID);
 
     private static final List<Holder<Item>> HIDDEN = Arrays.asList(
+            // Test items
+            DSItems.MAGIC_STICK,
+            // Dummy items
             DSItems.HUNTING_NET,
             DSItems.LIGHTNING_TEXTURE_ITEM,
             DSItems.BOLAS,

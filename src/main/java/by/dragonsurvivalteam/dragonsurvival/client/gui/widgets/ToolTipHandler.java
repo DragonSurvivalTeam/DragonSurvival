@@ -36,6 +36,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
+import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -67,15 +68,6 @@ public class ToolTipHandler {
     @Translation(comments = "■ %s food: %s")
     private static final String DRAGON_FOOD = Translation.Type.GUI.wrap("tooltip.dragon_food");
 
-    @Translation(comments = "§7■ Adds the following abilities: %s")
-    private static final String ADDS_ABILITIES = Translation.Type.GUI.wrap("tooltip.adds_abilities");
-
-    @Translation(comments = "§7■ Removes the following abilities: %s")
-    private static final String REMOVES_ABILITIES = Translation.Type.GUI.wrap("tooltip.removes_abilities");
-
-    @Translation(comments = "§7■ Applicable to: %s")
-    private static final String APPLICABLE_TO = Translation.Type.GUI.wrap("tooltip.applicable_to");
-
     @Translation(comments = "Press 'SHIFT' for more info")
     private static final String PRESS_SHIFT = Translation.Type.GUI.wrap("tooltip.shift");
 
@@ -95,12 +87,14 @@ public class ToolTipHandler {
             return;
         }
 
-        if (Screen.hasShiftDown()) {
-            event.getToolTip().add(Component.translatable(holder.isRemoval() ? REMOVES_ABILITIES : ADDS_ABILITIES, Functions.translateHolderSet(holder.abilities(), Translation.Type.ABILITY)));
+        Level level = event.getContext().level();
 
-            if (holder.applicableSpecies().isPresent()) {
-                event.getToolTip().add(Component.translatable(APPLICABLE_TO, Functions.translateHolderSet(holder.applicableSpecies().get(), Translation.Type.DRAGON_SPECIES)));
-            }
+        if (level == null) {
+            return;
+        }
+
+        if (Screen.hasShiftDown()) {
+            holder.translate(level.registryAccess(), event.getToolTip()::add);
         } else {
             event.getToolTip().add(Component.translatable(PRESS_SHIFT).withStyle(ChatFormatting.DARK_GRAY));
         }

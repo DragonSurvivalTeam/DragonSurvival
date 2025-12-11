@@ -22,7 +22,7 @@
       "keys": [
         "key.keyboard.g"
       ],
-      "trigger_type": "dragonsurvival:on_key_released"
+      "trigger_type": "dragonsurvival:on_key_pressed"
     }
   },
   "icon": {

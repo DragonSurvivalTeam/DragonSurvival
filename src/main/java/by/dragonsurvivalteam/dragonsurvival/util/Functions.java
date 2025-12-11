@@ -342,31 +342,36 @@ public class Functions {
         return format;
     }
 
-    public static int lerpColor(final List<Integer> colors) {
-        return lerpColor(colors, 0);
+    public static int lerpColor(final List<Integer> colorsARGB) {
+        return lerpColor(colorsARGB, 1, 0);
     }
 
-    /** @param offset Offsets the index of the color to be used (expected to be between 0 and 1) */
-    public static int lerpColor(final List<Integer> colors, final double offset) {
-        if (colors.isEmpty()) {
+    /**
+     * Expects the colors in the format of {@link net.minecraft.util.FastColor.ARGB32}
+     * @param speed Determines how quickly the colors are shifted through
+     * @param offset Offsets the index of the color to be used (expected to be between 0 and 1)
+     */
+    public static int lerpColor(final List<Integer> colorsARGB, final double speed, final double offset) {
+        if (colorsARGB.isEmpty()) {
             return DSColors.NONE;
         }
 
-        if (colors.size() == 1) {
-            return colors.getFirst();
+        if (colorsARGB.size() == 1) {
+            return colorsARGB.getFirst();
         }
 
-        float timer = (float) (DragonSurvival.PROXY.getTimer() + offset);
+        // Determine by how much % we have shifted through the color so far
+        double timer = (DragonSurvival.PROXY.getTimer() * speed + offset) % 1;
 
-        if (timer > 1) {
-            timer -= 1;
+        if (timer < 0) {
+            timer = 0;
         }
 
-        float sizeIndex = timer * colors.size();
-        int currentIndex = (int) (Math.floor(sizeIndex) % colors.size());
-        int nextIndex = (currentIndex + 1) % colors.size();
+        float sizeIndex = (float) (timer * colorsARGB.size());
+        int currentIndex = (int) (Math.floor(sizeIndex) % colorsARGB.size());
+        int nextIndex = (currentIndex + 1) % colorsARGB.size();
 
-        return FastColor.ARGB32.lerp(sizeIndex - currentIndex, DSColors.withAlpha(colors.get(currentIndex), 255), DSColors.withAlpha(colors.get(nextIndex), 255));
+        return FastColor.ARGB32.lerp(sizeIndex - currentIndex, colorsARGB.get(currentIndex), colorsARGB.get(nextIndex));
     }
 
     /** Makes sure to return an enum value (instead of an exception) */

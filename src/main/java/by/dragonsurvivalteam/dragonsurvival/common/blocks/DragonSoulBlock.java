@@ -116,7 +116,7 @@ public class DragonSoulBlock extends Block implements SimpleWaterloggedBlock, En
             }
         } else if (stack.is(Items.PAPER)) {
             if (level.isClientSide()) {
-                Component animations = DSLanguageProvider.translateList(DragonSurvival.PROXY.getAnimations(soul), Component::literal);
+                Component animations = DSLanguageProvider.formatList(DragonSurvival.PROXY.getAnimations(soul), Component::literal);
                 player.displayClientMessage(Component.translatable(APPLICABLE_ANIMATIONS, DSColors.withColor(animations, DSColors.GOLD)), false);
             }
 

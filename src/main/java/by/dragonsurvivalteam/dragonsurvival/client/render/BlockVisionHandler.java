@@ -1,31 +1,22 @@
 package by.dragonsurvivalteam.dragonsurvival.client.render;
 
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.BlockVision;
+import by.dragonsurvivalteam.dragonsurvival.client.render.block_vision.BlockVisionOutline;
+import by.dragonsurvivalteam.dragonsurvival.client.render.block_vision.BlockVisionParticle;
+import by.dragonsurvivalteam.dragonsurvival.client.render.block_vision.BlockVisionShaderSimple;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.block_vision.BlockVision;
+import by.dragonsurvivalteam.dragonsurvival.compat.Compat;
 import by.dragonsurvivalteam.dragonsurvival.mixins.client.FrustumAccess;
-import by.dragonsurvivalteam.dragonsurvival.registry.DSParticles;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.BlockVisionData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.BufferUploader;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.MeshData;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.enchantment.effects.SpawnParticlesEffect;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -43,37 +34,46 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Currently, these effects are rendered for blocks that are in the players' vision but hidden behind other blocks </br>
+ * TODO :: find a performant way to check and potentially skip such blocks
+ */
 @EventBusSubscriber(Dist.CLIENT)
 public class BlockVisionHandler {
-    private static final SpawnParticlesEffect.PositionSource PARTICLE_POSITION = SpawnParticlesEffect.inBoundingBox();
     /** Extend the search as a buffer while the background thread is searching */
     private static final int EXTENDED_SEARCH_RANGE = 16;
 
     private static Cache<LevelChunkSection, Boolean[]> CHUNK_CACHE;
 
     private static final List<Data> RENDER_DATA = new ArrayList<>();
+    private static final List<Data> SHADER_RENDER_DATA = new ArrayList<>();
     private static final List<Data> SEARCH_RESULT = new ArrayList<>();
     private static final List<BlockPos> REMOVAL = new ArrayList<>();
 
     private static BlockVisionData vision;
     private static Vec3 lastScanCenter;
 
+    private static int previousStorage;
     private static boolean isSearching;
     private static boolean hasPendingUpdate;
 
-    private record Data(Block block, int range, BlockVision.DisplayType displayType, int particleRate, float x, float y, float z) {
+    public record Data(BlockState state, int range, BlockVision.DisplayType displayType, int particleRate, float x, float y, float z) {
         public boolean isInRange(final Vec3 position, final int visibleRange) {
             return position.distanceToSqr(x + 0.5, y + 0.5, z + 0.5) <= visibleRange * visibleRange;
         }
-
-        public void render(final VertexConsumer buffer, final PoseStack.Pose pose) {
-            drawLines(buffer, pose, x, y, z, x + 1, y + 1, z + 1, vision.getColor(block));
-        }
     }
 
+    /**
+     * Handles normal effects </br>
+     * This allows for x-ray effects that do not render over the entity, since this tage occurs before entities are rendered
+     */
     @SubscribeEvent
-    public static void handleBlockVision(final RenderLevelStageEvent event) {
+    public static void handleCore(final RenderLevelStageEvent event) {
         if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_CUTOUT_BLOCKS) {
+            return;
+        }
+
+        if (Compat.isRenderingShadows()) {
             return;
         }
 
@@ -85,6 +85,12 @@ public class BlockVisionHandler {
             return;
         }
 
+        if (previousStorage != vision.size()) {
+            // Reset the data since entries have been adjusted
+            clear();
+        }
+
+        previousStorage = vision.size();
         initCache();
 
         if (!isSearching && hasPendingUpdate) {
@@ -118,10 +124,7 @@ public class BlockVisionHandler {
         pose.mulPose(event.getModelViewMatrix());
         pose.translate(-camera.x(), -camera.y(), -camera.z());
 
-        RenderSystem.setShader(GameRenderer::getPositionColorShader);
-        RenderSystem.disableDepthTest();
-
-        BufferBuilder buffer = Tesselator.getInstance().begin(VertexFormat.Mode.DEBUG_LINES, DefaultVertexFormat.POSITION_COLOR);
+        BlockVisionOutline.beginBatch();
 
         for (int index = 0; index < RENDER_DATA.size(); index++) {
             Data data = RENDER_DATA.get(index);
@@ -139,44 +142,76 @@ public class BlockVisionHandler {
             }
 
             if (((FrustumAccess) event.getFrustum()).dragonSurvival$cubeInFrustum(data.x(), data.y(), data.z(), data.x() + 1, data.y() + 1, data.z() + 1)) {
-                if (data.displayType() == BlockVision.DisplayType.OUTLINE) {
-                    data.render(buffer, pose.last());
-                    continue;
+                pose.pushPose();
+                pose.translate(data.x(), data.y(), data.z());
+
+                int colorARGB = vision.getColor(data.state().getBlock());
+
+                switch (data.displayType()) {
+                    case OUTLINE -> BlockVisionOutline.render(pose, colorARGB);
+                    case PARTICLES -> BlockVisionParticle.spawnParticle(data, player);
+                    case SIMPLE_SHADER -> SHADER_RENDER_DATA.add(data);
                 }
 
-                if (Minecraft.getInstance().isPaused()) {
-                    // Newly added particles will only render once the game is unpaused
-                    // Meaning if we don't skip here, all the added particles will be shown at once
-                    continue;
-                }
-
-                if (data.particleRate() == BlockVision.NO_PARTICLE_RATE) {
-                    // It should not really be possible for this to occur with the particle display type
-                    continue;
-                }
-
-                if (data.displayType() == BlockVision.DisplayType.PARTICLES && player.tickCount % data.particleRate() == 0) {
-                    // Increase the bounding box to make the particles more visible for blocks in walls etc.
-                    // TODO :: Maybe there is a somewhat reasonable way to only show particles / focus particles on non-occluded faces?
-                    // TODO :: currently also spawns particles behind blocks (even though it doesn't have a x-ray "feature") - unsure about the performance impact
-                    double xPos = PARTICLE_POSITION.getCoordinate(data.x(), data.x() + 0.5, 2, player.getRandom());
-                    double yPos = PARTICLE_POSITION.getCoordinate(data.y(), data.y() + 0.5, 2, player.getRandom());
-                    double zPos = PARTICLE_POSITION.getCoordinate(data.z(), data.z() + 0.5, 2, player.getRandom());
-                    player.level().addParticle(DSParticles.GLOW.get(), xPos, yPos, zPos, BuiltInRegistries.BLOCK.getId(data.block()), 0, /* Color offset */ 0);
-                }
+                pose.popPose();
             }
         }
 
-        MeshData meshData = buffer.build();
+        BlockVisionOutline.endBatch();
+        pose.popPose();
+    }
 
-        if (meshData != null) {
-            BufferUploader.drawWithShader(meshData);
+    /**
+     * Renders effects that rely on core shaders </br>
+     * When shaders from Iris are enabled they won't appear on the {@link RenderLevelStageEvent.Stage#AFTER_CUTOUT_BLOCKS} stage </br>
+     * This also means we can't allow x-ray functionality for these because otherwise they'd render over entities
+     */
+    @SubscribeEvent
+    public static void handleShader(final RenderLevelStageEvent event) {
+        if (Compat.isRenderingShadows()) {
+            return;
         }
 
-        pose.popPose();
+        boolean isUsingShader = Compat.isShaderActive();
 
-        RenderSystem.enableDepthTest();
-        RenderType.cutout().clearRenderState();
+        if (isUsingShader && event.getStage() != RenderLevelStageEvent.Stage.AFTER_LEVEL) {
+            // Iris does not really support core shaders - the only stage they work at is after it has finished doing its rendering
+            return;
+        } else if (!isUsingShader && event.getStage() != RenderLevelStageEvent.Stage.AFTER_CUTOUT_BLOCKS) {
+            // This stage allows rendering the shader through water
+            return;
+        }
+
+        if (SHADER_RENDER_DATA.isEmpty()) {
+            return;
+        }
+
+        PoseStack pose = event.getPoseStack();
+        pose.pushPose();
+
+        Vec3 camera = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
+        pose.mulPose(event.getModelViewMatrix());
+        pose.translate(-camera.x(), -camera.y(), -camera.z());
+
+        BlockVisionShaderSimple.beginBatch();
+
+        for (Data data : SHADER_RENDER_DATA) {
+            pose.pushPose();
+            pose.translate(data.x(), data.y(), data.z());
+
+            int colorARGB = vision.getColor(data.state().getBlock());
+
+            switch (data.displayType()) {
+                case SIMPLE_SHADER -> BlockVisionShaderSimple.render(data, pose, colorARGB);
+            }
+
+            pose.popPose();
+        }
+
+        BlockVisionShaderSimple.endBatch();
+
+        pose.popPose();
+        SHADER_RENDER_DATA.clear();
     }
 
     @SubscribeEvent
@@ -219,7 +254,7 @@ public class BlockVisionHandler {
         int range = vision.getRange(newBlock);
 
         if (range != BlockVision.NO_RANGE) {
-            RENDER_DATA.add(new Data(newBlock, range, vision.getDisplayType(newBlock), vision.getParticleRate(newBlock), position.getX(), position.getY(), position.getZ()));
+            RENDER_DATA.add(new Data(newState, range, vision.getDisplayType(newBlock), vision.getParticleRate(newBlock), position.getX(), position.getY(), position.getZ()));
         }
     }
 
@@ -272,7 +307,7 @@ public class BlockVisionHandler {
                         int range = vision.getRange(block);
 
                         if (range != BlockVision.NO_RANGE) {
-                            SEARCH_RESULT.add(new Data(block, range, vision.getDisplayType(block), vision.getParticleRate(block), x, y, z));
+                            SEARCH_RESULT.add(new Data(state, range, vision.getDisplayType(block), vision.getParticleRate(block), x, y, z));
                         }
                     } else if (y != minChunkY) {
                         // Move to the next section (the bit shifting truncates the y value)
@@ -353,26 +388,6 @@ public class BlockVisionHandler {
 
         float halfRange = visibleRange / 2f;
         return currentPosition.distanceToSqr(lastScanCenter) > halfRange * halfRange;
-    }
-
-    private static void drawLines(final VertexConsumer buffer, final PoseStack.Pose pose, final float minX, final float minY, final float minZ, final float maxX, final float maxY, final float maxZ, final int color) {
-        drawLine(buffer, pose, minX, minY, minZ, maxX, minY, minZ, 1, 0, 0, color);
-        drawLine(buffer, pose, minX, minY, minZ, minX, maxY, minZ, 0, 1, 0, color);
-        drawLine(buffer, pose, minX, minY, minZ, minX, minY, maxZ, 0, 0, 1, color);
-        drawLine(buffer, pose, maxX, minY, minZ, maxX, maxY, minZ, 0, 1, 0, color);
-        drawLine(buffer, pose, maxX, maxY, minZ, minX, maxY, minZ, -1, 0, 0, color);
-        drawLine(buffer, pose, minX, maxY, minZ, minX, maxY, maxZ, 0, 0, 1, color);
-        drawLine(buffer, pose, minX, maxY, maxZ, minX, minY, maxZ, 0, -1, 0, color);
-        drawLine(buffer, pose, minX, minY, maxZ, maxX, minY, maxZ, 1, 0, 0, color);
-        drawLine(buffer, pose, maxX, minY, maxZ, maxX, minY, minZ, 0, 0, -1, color);
-        drawLine(buffer, pose, minX, maxY, maxZ, maxX, maxY, maxZ, 1, 0, 0, color);
-        drawLine(buffer, pose, maxX, minY, maxZ, maxX, maxY, maxZ, 0, 1, 0, color);
-        drawLine(buffer, pose, maxX, maxY, minZ, maxX, maxY, maxZ, 0, 0, 1, color);
-    }
-
-    private static void drawLine(final VertexConsumer buffer, final PoseStack.Pose pose, float fromX, float fromY, float fromZ, float toX, float toY, float toZ, int normalX, int normalY, int normalZ, final int color) {
-        buffer.addVertex(pose, fromX, fromY, fromZ).setColor(color).setNormal(pose, normalX, normalY, normalZ);
-        buffer.addVertex(pose, toX, toY, toZ).setColor(color).setNormal(pose, normalX, normalY, normalZ);
     }
 
     private static void clear() {

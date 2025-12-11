@@ -10,6 +10,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.ActionContaine
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.AnimationKey;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.AnimationLayer;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.SimpleAbilityAnimation;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.block_vision.BlockVision;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.duration_instance.DurationInstance;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.duration_instance.DurationInstanceBase;
 import by.dragonsurvivalteam.dragonsurvival.common.conditions.ItemCondition;
@@ -31,6 +32,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.block_effect
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.common_effects.ParticleEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.common_effects.RunFunctionEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.common_effects.SummonEntityEffect;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.BlockVisionEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.CooldownRecoveryEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.DamageEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.ExperienceEffect;
@@ -59,6 +61,7 @@ import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.random.WeightedRandomList;
 import net.minecraft.util.valueproviders.ConstantFloat;
 import net.minecraft.world.damagesource.DamageTypes;
@@ -66,21 +69,98 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
+import net.minecraft.world.level.block.Blocks;
+import net.neoforged.neoforge.common.Tags;
 
 import java.util.List;
 import java.util.Optional;
 
 public class DragonAbilities {
     public static final LevelBasedValue INFINITE_DURATION = LevelBasedValue.constant(DurationInstance.INFINITE_DURATION);
+    public static final String TEST_PREFIX = "test_";
 
     public static void registerAbilities(final BootstrapContext<DragonAbility> context) {
         CaveDragonAbilities.registerAbilities(context);
         ForestDragonAbilities.registerAbilities(context);
         SeaDragonAbilities.registerAbilities(context);
 
+        // --- Ore Vision (Simple Shader) --- //
+
+        //noinspection deprecation -> ignore
+        context.register(ResourceKey.create(DragonAbility.REGISTRY, DragonSurvival.res(TEST_PREFIX + "ore_vision_simple_shader")), new DragonAbility(
+                PassiveActivation.DEFAULT,
+                Optional.empty(),
+                Optional.empty(),
+                List.of(
+                        new ActionContainer(new SelfTarget(AbilityTargeting.entity(List.of(
+                                BlockVisionEffect.single(BlockVision.create(
+                                                        DurationInstanceBase.create(DragonSurvival.res("plant_simple_shader"))
+                                                                .hidden().build()
+                                                )
+                                                .blocks(HolderSet.direct(
+                                                        Blocks.TALL_GRASS.builtInRegistryHolder(),
+                                                        Blocks.FERN.builtInRegistryHolder(),
+                                                        Blocks.LILY_PAD.builtInRegistryHolder(),
+                                                        Blocks.KELP_PLANT.builtInRegistryHolder(),
+                                                        Blocks.KELP.builtInRegistryHolder(),
+                                                        Blocks.SEAGRASS.builtInRegistryHolder()
+                                                ))
+                                                .range(LevelBasedValue.constant(36))
+                                                .displayType(BlockVision.DisplayType.SIMPLE_SHADER)
+                                                .colorEntries(List.of(
+                                                        BlockVision.color(TextColor.fromLegacyFormat(ChatFormatting.DARK_BLUE), 0.2f),
+                                                        BlockVision.color(TextColor.fromLegacyFormat(ChatFormatting.BLUE), 0.2f),
+                                                        BlockVision.color(TextColor.fromLegacyFormat(ChatFormatting.DARK_AQUA), 0.2f),
+                                                        BlockVision.color(TextColor.fromLegacyFormat(ChatFormatting.AQUA), 0.2f),
+                                                        BlockVision.color(TextColor.fromLegacyFormat(ChatFormatting.GREEN), 0.2f),
+                                                        BlockVision.color(TextColor.fromLegacyFormat(ChatFormatting.DARK_GREEN), 0.2f)
+                                                ))
+                                                .colorShiftRate(0.7)
+                                                .build()
+                                ),
+                                BlockVisionEffect.single(BlockVision.create(
+                                                        DurationInstanceBase.create(DragonSurvival.res("diamond_vision_simple_shader"))
+                                                                .hidden().build()
+                                                )
+                                                .blocks(context.lookup(Registries.BLOCK).getOrThrow(Tags.Blocks.ORES_DIAMOND))
+                                                .range(LevelBasedValue.constant(36))
+                                                .displayType(BlockVision.DisplayType.SIMPLE_SHADER)
+                                                .colorEntries(List.of(
+                                                        BlockVision.color(TextColor.fromLegacyFormat(ChatFormatting.GOLD), 0.2f),
+                                                        BlockVision.color(TextColor.fromLegacyFormat(ChatFormatting.DARK_PURPLE), 0.2f),
+                                                        BlockVision.color(TextColor.fromLegacyFormat(ChatFormatting.GREEN), 0.2f),
+                                                        BlockVision.color(TextColor.fromLegacyFormat(ChatFormatting.RED), 0.2f),
+                                                        BlockVision.color(TextColor.fromLegacyFormat(ChatFormatting.BLUE), 0.2f)
+                                                ))
+                                                .colorShiftRate(0.3)
+                                                .build()
+                                ),
+                                BlockVisionEffect.single(BlockVision.create(
+                                                        DurationInstanceBase.create(DragonSurvival.res("stair_vision_simple_shader"))
+                                                                .hidden().build()
+                                                )
+                                                .blocks(context.lookup(Registries.BLOCK).getOrThrow(BlockTags.STAIRS))
+                                                .range(LevelBasedValue.constant(36))
+                                                .displayType(BlockVision.DisplayType.SIMPLE_SHADER)
+                                                .colorEntries(List.of(
+                                                        BlockVision.color(TextColor.parseColor("#0040FF").getOrThrow(), 0.7f),
+                                                        BlockVision.color(TextColor.parseColor("#4030E0").getOrThrow(), 0.3f),
+                                                        BlockVision.color(TextColor.parseColor("#8020C0").getOrThrow(), 0.7f),
+                                                        BlockVision.color(TextColor.parseColor("#C010A0").getOrThrow(), 0.3f),
+                                                        BlockVision.color(TextColor.parseColor("#FF0080").getOrThrow(), 0.7f)
+                                                ))
+                                                .colorShiftRate(0.3)
+                                                .build()
+                                )
+                        ), TargetingMode.ALLIES_AND_SELF)), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(1))
+                ),
+                true,
+                new LevelBasedResource(List.of(new LevelBasedResource.Entry(DragonSurvival.res("test"), 0)))
+        ));
+
         // --- Key Pressed --- //
 
-        context.register(ResourceKey.create(DragonAbility.REGISTRY, DragonSurvival.res("test_on_key_pressed")), new DragonAbility(
+        context.register(ResourceKey.create(DragonAbility.REGISTRY, DragonSurvival.res(TEST_PREFIX + "on_key_pressed")), new DragonAbility(
                 new PassiveActivation(Optional.empty(), Optional.empty(), OnKeyPressed.create("key.keyboard.g")),
                 Optional.empty(),
                 Optional.empty(),
@@ -100,7 +180,7 @@ public class DragonAbilities {
 
         // --- Damage Expression --- //
 
-        context.register(ResourceKey.create(DragonAbility.REGISTRY, DragonSurvival.res("test_damage_expression")), new DragonAbility(
+        context.register(ResourceKey.create(DragonAbility.REGISTRY, DragonSurvival.res(TEST_PREFIX + "damage_expression")), new DragonAbility(
                 new PassiveActivation(Optional.empty(), Optional.empty(), new OnTargetHit(Optional.empty())),
                 Optional.of(new ExperiencePointsUpgrade(5, LevelBasedValue.constant(10))),
                 Optional.empty(),
@@ -115,7 +195,7 @@ public class DragonAbilities {
 
         // --- Cooldown --- //
 
-        context.register(ResourceKey.create(DragonAbility.REGISTRY, DragonSurvival.res("test_cooldown_recovery")), new DragonAbility(
+        context.register(ResourceKey.create(DragonAbility.REGISTRY, DragonSurvival.res(TEST_PREFIX + "cooldown_recovery")), new DragonAbility(
                 new SimpleActivation(
                         Optional.of(LevelBasedValue.constant(1)),
                         Optional.of(LevelBasedValue.constant(15)),
@@ -146,7 +226,7 @@ public class DragonAbilities {
 
         // --- experience --- //
 
-        context.register(ResourceKey.create(DragonAbility.REGISTRY, DragonSurvival.res("test_experience_points_add")), new DragonAbility(
+        context.register(ResourceKey.create(DragonAbility.REGISTRY, DragonSurvival.res(TEST_PREFIX + "experience_points_add")), new DragonAbility(
                 new PassiveActivation(Optional.empty(), Optional.empty(), new OnTargetKilled(Optional.empty())),
                 Optional.of(new ExperiencePointsUpgrade(5, LevelBasedValue.constant(10))),
                 Optional.empty(),
@@ -161,7 +241,7 @@ public class DragonAbilities {
 
         // --- Glow --- //
 
-        context.register(ResourceKey.create(DragonAbility.REGISTRY, DragonSurvival.res("test_glow")), new DragonAbility(
+        context.register(ResourceKey.create(DragonAbility.REGISTRY, DragonSurvival.res(TEST_PREFIX + "glow")), new DragonAbility(
                 PassiveActivation.DEFAULT,
                 Optional.empty(),
                 Optional.empty(),
@@ -176,7 +256,7 @@ public class DragonAbilities {
 
         // --- Smelt --- //
 
-        context.register(ResourceKey.create(DragonAbility.REGISTRY, DragonSurvival.res("test_smelt")), new DragonAbility(
+        context.register(ResourceKey.create(DragonAbility.REGISTRY, DragonSurvival.res(TEST_PREFIX + "smelt")), new DragonAbility(
                 new PassiveActivation(Optional.empty(), Optional.empty(), new OnTargetKilled(Optional.empty())),
                 Optional.empty(),
                 Optional.empty(),
@@ -191,7 +271,7 @@ public class DragonAbilities {
 
         // --- Heal --- //
 
-        context.register(ResourceKey.create(DragonAbility.REGISTRY, DragonSurvival.res("test_heal")), new DragonAbility(
+        context.register(ResourceKey.create(DragonAbility.REGISTRY, DragonSurvival.res(TEST_PREFIX + "heal")), new DragonAbility(
                 new PassiveActivation(Optional.empty(), Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(30))), OnDeath.INSTANCE),
                 Optional.empty(),
                 Optional.empty(),
@@ -206,7 +286,7 @@ public class DragonAbilities {
 
         // --- Function --- //
 
-        context.register(ResourceKey.create(DragonAbility.REGISTRY, DragonSurvival.res("test_function")), new DragonAbility(
+        context.register(ResourceKey.create(DragonAbility.REGISTRY, DragonSurvival.res(TEST_PREFIX + "function")), new DragonAbility(
                 new PassiveActivation(Optional.empty(), Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(5))), new OnSelfHit(Optional.empty())),
                 Optional.empty(),
                 Optional.empty(),
@@ -221,7 +301,7 @@ public class DragonAbilities {
 
         // --- Teleport --- //
 
-        context.register(ResourceKey.create(DragonAbility.REGISTRY, DragonSurvival.res("test_teleport")), new DragonAbility(
+        context.register(ResourceKey.create(DragonAbility.REGISTRY, DragonSurvival.res(TEST_PREFIX + "teleport")), new DragonAbility(
                 new SimpleActivation(
                         Optional.of(LevelBasedValue.constant(1)),
                         Optional.of(LevelBasedValue.constant(15)),
@@ -260,7 +340,7 @@ public class DragonAbilities {
                 new LevelBasedResource(List.of(new LevelBasedResource.Entry(DragonSurvival.res("test"), 0)))
         ));
 
-        context.register(ResourceKey.create(DragonAbility.REGISTRY, DragonSurvival.res("test_teleport_directional")), new DragonAbility(
+        context.register(ResourceKey.create(DragonAbility.REGISTRY, DragonSurvival.res(TEST_PREFIX + "teleport_directional")), new DragonAbility(
                 new SimpleActivation(
                         Optional.of(LevelBasedValue.constant(1)),
                         Optional.of(LevelBasedValue.constant(15)),
@@ -297,7 +377,8 @@ public class DragonAbilities {
         CompoundTag beeNBT = new CompoundTag();
         beeNBT.putInt("CannotEnterHiveTicks", Integer.MAX_VALUE);
 
-        context.register(ResourceKey.create(DragonAbility.REGISTRY, DragonSurvival.res("test_summon")), new DragonAbility(
+        //noinspection deprecation -> ignore
+        context.register(ResourceKey.create(DragonAbility.REGISTRY, DragonSurvival.res(TEST_PREFIX + "summon")), new DragonAbility(
                 new SimpleActivation(
                         Optional.of(LevelBasedValue.constant(1)),
                         Optional.of(LevelBasedValue.constant(15)),
@@ -316,7 +397,7 @@ public class DragonAbilities {
                         new ActionContainer(new AreaTarget(AbilityTargeting.block(
                                 List.of(
                                         new SummonEntityEffect(
-                                                DurationInstanceBase.create(DragonSurvival.res("test_summon")).duration(LevelBasedValue.constant(Functions.secondsToTicks(60))).build(),
+                                                DurationInstanceBase.create(DragonSurvival.res(TEST_PREFIX + "summon")).duration(LevelBasedValue.constant(Functions.secondsToTicks(60))).build(),
                                                 Either.right(HolderSet.direct(EntityType.BEE.builtInRegistryHolder())),
                                                 LevelBasedValue.constant(6),
                                                 List.of(),
@@ -331,7 +412,7 @@ public class DragonAbilities {
 
         // --- Item Conversion --- //
 
-        context.register(ResourceKey.create(DragonAbility.REGISTRY, DragonSurvival.res("test_convert_items")), new DragonAbility(
+        context.register(ResourceKey.create(DragonAbility.REGISTRY, DragonSurvival.res(TEST_PREFIX + "convert_items")), new DragonAbility(
                 new SimpleActivation(
                         Optional.of(LevelBasedValue.constant(1)),
                         Optional.of(LevelBasedValue.constant(15)),

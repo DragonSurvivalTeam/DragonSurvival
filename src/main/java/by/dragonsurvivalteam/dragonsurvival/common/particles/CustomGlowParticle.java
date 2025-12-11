@@ -34,7 +34,7 @@ public class CustomGlowParticle extends GlowParticle {
         super.tick();
 
         if (colors != null) {
-            int argb = DSColors.withAlpha(Functions.lerpColor(colors, colorOffset), 1);
+            int argb = DSColors.withAlpha(Functions.lerpColor(colors, 1, colorOffset), 1);
 
             float red = FastColor.ARGB32.red(argb) / 255f;
             float green = FastColor.ARGB32.green(argb) / 255f;
@@ -67,7 +67,7 @@ public class CustomGlowParticle extends GlowParticle {
                 colors = vision.getColors(BuiltInRegistries.BLOCK.byId((int) blockId));
             }
 
-            int argb = DSColors.withAlpha(Functions.lerpColor(colors), 1);
+            int argb = Functions.lerpColor(colors);
             float red = FastColor.ARGB32.red(argb) / 255f;
             float green = FastColor.ARGB32.green(argb) / 255f;
             float blue = FastColor.ARGB32.blue(argb) / 255f;

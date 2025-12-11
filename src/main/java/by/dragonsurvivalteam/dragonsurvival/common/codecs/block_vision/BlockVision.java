@@ -1,6 +1,7 @@
-package by.dragonsurvivalteam.dragonsurvival.common.codecs;
+package by.dragonsurvivalteam.dragonsurvival.common.codecs.block_vision;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscCodecs;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.duration_instance.CommonData;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.duration_instance.DurationInstance;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.duration_instance.DurationInstanceBase;
@@ -12,9 +13,9 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
+import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.RegistryCodecs;
@@ -37,6 +38,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.function.Function;
 
 public class BlockVision extends DurationInstanceBase<BlockVisionData, BlockVision.Instance> {
     @Translation(comments = {
@@ -45,7 +47,7 @@ public class BlockVision extends DurationInstanceBase<BlockVisionData, BlockVisi
             " - Color: %s",
             " - Applies to: %s"
     })
-    private static final String HARVEST_BONUS = Translation.Type.GUI.wrap("block_vision");
+    private static final String BLOCK_VISION = Translation.Type.GUI.wrap("block_vision");
 
     @Translation(comments = "Multiple")
     private static final String MULTIPLE_COLORS = Translation.Type.GUI.wrap("block_vision.multiple_colors");
@@ -53,47 +55,76 @@ public class BlockVision extends DurationInstanceBase<BlockVisionData, BlockVisi
     public static final int NO_RANGE = 0;
 
     public static final int DEFAULT_PARTICLE_RATE = 10;
-    public static final int NO_PARTICLE_RATE = -1;
+    public static final double DEFAULT_COLOR_SHIFT_RATE = 1;
+    public static final int NO_VALUE = -1;
 
     public static final Codec<BlockVision> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             DurationInstanceBase.CODEC.fieldOf("base").forGetter(identity -> identity),
             RegistryCodecs.homogeneousList(Registries.BLOCK).fieldOf("blocks").forGetter(BlockVision::blocks),
             LevelBasedValue.CODEC.fieldOf("range").forGetter(BlockVision::range),
             DisplayType.CODEC.fieldOf("display_type").forGetter(BlockVision::displayType),
-            TextColor.CODEC.listOf().fieldOf("colors").forGetter(BlockVision::colors),
-            ExtraCodecs.intRange(1, Integer.MAX_VALUE).optionalFieldOf("particle_rate", DEFAULT_PARTICLE_RATE).forGetter(BlockVision::particleRate)
+            // FIXME 1.22 :: remove either (= breaking change)
+            Codec.either(TextColor.CODEC.listOf(), ColorEntry.CODEC.listOf()).fieldOf("colors").forGetter(BlockVision::colors),
+            ExtraCodecs.intRange(1, Integer.MAX_VALUE).optionalFieldOf("particle_rate", DEFAULT_PARTICLE_RATE).forGetter(BlockVision::particleRate),
+            MiscCodecs.doubleRange(0, 10).optionalFieldOf("color_shift_rate", DEFAULT_COLOR_SHIFT_RATE).forGetter(BlockVision::colorShiftRate)
     ).apply(instance, BlockVision::new));
+
+    public record ColorEntry(TextColor color, float alpha) {
+        public static final Codec<ColorEntry> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+                TextColor.CODEC.fieldOf("color").forGetter(ColorEntry::color),
+                Codec.FLOAT.optionalFieldOf("alpha", 0.3f).forGetter(ColorEntry::alpha)
+        ).apply(instance, ColorEntry::new));
+    }
 
     private final HolderSet<Block> blocks;
     private final LevelBasedValue range;
     private final DisplayType displayType;
-    private final List<TextColor> colors;
+    private final Either<List<TextColor>, List<ColorEntry>> colors;
     private final int particleRate;
+    private final double colorShiftRate;
 
-    public BlockVision(final DurationInstanceBase<?, ?> base, final HolderSet<Block> blocks, final LevelBasedValue range, final DisplayType displayType, final List<TextColor> colors, final int particleRate) {
+    public BlockVision(
+            final DurationInstanceBase<?, ?> base,
+            final HolderSet<Block> blocks,
+            final LevelBasedValue range,
+            final DisplayType displayType,
+            final Either<List<TextColor>, List<ColorEntry>> colors,
+            final int particleRate,
+            final double colorShiftRate
+    ) {
         super(base);
         this.blocks = blocks;
         this.range = range;
         this.displayType = displayType;
         this.colors = colors;
         this.particleRate = particleRate;
+        this.colorShiftRate = colorShiftRate;
     }
 
     public MutableComponent getDescription(final int abilityLevel) {
         int range = (int) this.range.calculate(abilityLevel);
+        List<TextColor> colors = this.colors.map(Function.identity(), list -> list.stream().map(ColorEntry::color).toList());
 
         Component color;
 
         if (colors.size() == 1) {
             color = DSColors.withColor(colors.getFirst().serialize(), colors.getFirst().getValue());
         } else if (colors.size() > 1) {
-            color = DSColors.withColor(Component.translatable(MULTIPLE_COLORS), Functions.lerpColor(colors.stream().map(TextColor::getValue).toList()));
+            color = DSColors.withColor(Component.translatable(MULTIPLE_COLORS), Functions.lerpColor(colors.stream().map(TextColor::getValue).toList(), colorShiftRate, 0));
         } else {
             color = DSColors.dynamicValue(Component.translatable(LangKey.NONE));
         }
 
-        MutableComponent appliesTo = Functions.translateHolderSet(blocks, Holder::getRegisteredName);
-        return Component.translatable(HARVEST_BONUS, DSColors.dynamicValue(range), color, DSColors.dynamicValue(appliesTo));
+        MutableComponent appliesTo = Functions.translateHolderSet(blocks, holder -> holder.value().getDescriptionId());
+        return Component.translatable(BLOCK_VISION, DSColors.dynamicValue(range), color, DSColors.dynamicValue(appliesTo));
+    }
+
+    public static BlockVision.Builder create(final DurationInstanceBase<?, ?> base) {
+        return new BlockVision.Builder(base);
+    }
+
+    public static ColorEntry color(final TextColor color, final float alpha) {
+        return new ColorEntry(color, alpha);
     }
 
     public HolderSet<Block> blocks() {
@@ -108,12 +139,16 @@ public class BlockVision extends DurationInstanceBase<BlockVisionData, BlockVisi
         return displayType;
     }
 
-    public List<TextColor> colors() {
+    public Either<List<TextColor>, List<ColorEntry>> colors() {
         return colors;
     }
 
     public int particleRate() {
         return particleRate;
+    }
+
+    public double colorShiftRate() {
+        return colorShiftRate;
     }
 
     @Override
@@ -148,7 +183,10 @@ public class BlockVision extends DurationInstanceBase<BlockVisionData, BlockVisi
         public List<Integer> getColors(final Block block) {
             //noinspection deprecation -> ignore
             if (baseData().blocks().contains(block.builtInRegistryHolder())) {
-                return baseData().colors().stream().map(color -> DSColors.withAlpha(color.getValue(), 1)).toList();
+                return baseData().colors().map(
+                        list -> list.stream().map(color -> DSColors.withAlpha(color.getValue(), 1)),
+                        list -> list.stream().map(entry -> DSColors.withAlpha(entry.color().getValue(), entry.alpha()))
+                ).toList();
             }
 
             return List.of();
@@ -169,7 +207,16 @@ public class BlockVision extends DurationInstanceBase<BlockVisionData, BlockVisi
                 return baseData().particleRate();
             }
 
-            return NO_PARTICLE_RATE;
+            return NO_VALUE;
+        }
+
+        public double getColorShiftRate(final Block block) {
+            //noinspection deprecation -> ignore
+            if (baseData().blocks().contains(block.builtInRegistryHolder())) {
+                return baseData().colorShiftRate();
+            }
+
+            return NO_VALUE;
         }
 
         @Override
@@ -201,7 +248,10 @@ public class BlockVision extends DurationInstanceBase<BlockVisionData, BlockVisi
     }
 
     public enum DisplayType implements StringRepresentable {
-        OUTLINE("outline"), PARTICLES("particles"), NONE("none");
+        OUTLINE("outline"),
+        PARTICLES("particles"),
+        SIMPLE_SHADER("simple_shader"),
+        NONE("none");
 
         public static final Codec<DisplayType> CODEC = StringRepresentable.fromEnum(DisplayType::values);
         private final String name;
@@ -213,6 +263,59 @@ public class BlockVision extends DurationInstanceBase<BlockVisionData, BlockVisi
         @Override
         public @NotNull String getSerializedName() {
             return name;
+        }
+    }
+    
+    public static class Builder {
+        private final DurationInstanceBase<?, ?> base;
+        private HolderSet<Block> blocks = HolderSet.empty();
+        private LevelBasedValue range = LevelBasedValue.constant(1);
+        private DisplayType displayType = DisplayType.NONE;
+        private Either<List<TextColor>, List<ColorEntry>> colors = Either.left(List.of());
+        private int particleRate = DEFAULT_PARTICLE_RATE;
+        private double colorShiftRate = DEFAULT_COLOR_SHIFT_RATE;
+
+        public Builder(final DurationInstanceBase<?, ?> base) {
+            this.base = base;
+        }
+
+        public Builder blocks(final HolderSet<Block> blocks) {
+            this.blocks = blocks;
+            return this;
+        }
+
+        public Builder range(final LevelBasedValue range) {
+            this.range = range;
+            return this;
+        }
+
+        public Builder displayType(final DisplayType displayType) {
+            this.displayType = displayType;
+            return this;
+        }
+
+        public Builder colors(final List<TextColor> colors) {
+            this.colors = Either.left(colors);
+            return this;
+        }
+
+        public Builder colorEntries(final List<ColorEntry> colors) {
+            this.colors = Either.right(colors);
+            return this;
+        }
+
+        public Builder particleRate(final int particleRate) {
+            this.particleRate = particleRate;
+            return this;
+        }
+
+        public Builder colorShiftRate(final double colorShiftRate) {
+            this.colorShiftRate = colorShiftRate;
+            return this;
+        }
+
+        public BlockVision build() {
+            return new BlockVision(base, blocks, range, displayType, colors, particleRate, colorShiftRate);
         }
     }
 }

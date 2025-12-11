@@ -36,7 +36,7 @@ public interface ActivationTrigger<T> {
             event.register(REGISTRY_KEY, DragonSurvival.res("on_death"), () -> OnDeath.CODEC);
             event.register(REGISTRY_KEY, DragonSurvival.res("on_block_break"), () -> OnBlockBreak.CODEC);
             event.register(REGISTRY_KEY, DragonSurvival.res("on_key_pressed"), () -> OnKeyPressed.CODEC);
-            event.register(REGISTRY_KEY, DragonSurvival.res("on_key_released"), () -> OnKeyPressed.CODEC);
+            event.register(REGISTRY_KEY, DragonSurvival.res("on_key_released"), () -> OnKeyReleased.CODEC);
         }
     }
 

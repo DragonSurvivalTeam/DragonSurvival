@@ -58,17 +58,17 @@ public class DSLanguageProvider extends LanguageProvider {
     }
 
     public static Component translateKeyMappings(final Set<String> keys) {
-        return translateList(keys, key -> DragonSurvival.PROXY.translateKeyMapping(key));
+        return formatList(keys, key -> DragonSurvival.PROXY.translateKeyMapping(key));
     }
 
-    public static Component translateList(final Collection<String> entries, final Function<String, MutableComponent> translator) {
+    public static <T> MutableComponent formatList(final Collection<T> entries, final Function<T, MutableComponent> translator) {
         if (entries.isEmpty()) {
             return Component.empty();
         }
 
         MutableComponent list = null;
 
-        for (String entry : entries) {
+        for (T entry : entries) {
             MutableComponent name = translator.apply(entry);
 
             if (list == null) {

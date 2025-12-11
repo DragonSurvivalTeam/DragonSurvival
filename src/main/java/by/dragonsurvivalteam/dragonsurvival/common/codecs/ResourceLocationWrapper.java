@@ -1,13 +1,20 @@
 package by.dragonsurvivalteam.dragonsurvival.common.codecs;
 
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.DSLanguageProvider;
+import by.dragonsurvivalteam.dragonsurvival.util.Triple;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
+import net.neoforged.neoforge.common.Tags;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -79,6 +86,57 @@ public class ResourceLocationWrapper {
         }
 
         return keys;
+    }
+
+    /**
+     * Converts the {@link net.minecraft.tags.TagKey} to the format accepted by {@link by.dragonsurvivalteam.dragonsurvival.common.codecs.ResourceLocationWrapper} </br>
+     * (Format example: #minecraft:ores)
+     */
+    public static String convert(final TagKey<?> tag) {
+        return "#" + tag.location();
+    }
+
+    /** Helper method to format the {@link net.minecraft.resources.ResourceKey} into a string in the format of a resource location */
+    public static String convert(final ResourceKey<?> key) {
+        return convert(key.location());
+    }
+
+    /** Helper method to format the resource location into a string */
+    public static String convert(final ResourceLocation location) {
+        return location.toString();
+    }
+
+    /** Returns the translation of the resources by unwrapping them through {@link by.dragonsurvivalteam.dragonsurvival.common.codecs.ResourceLocationWrapper#convert(String, net.minecraft.core.Registry)} */
+    public static List<MutableComponent> getTranslations(final List<String> resources, final Registry<?> registry, final Translation.Type type) {
+        List<MutableComponent> components = new ArrayList<>();
+
+        for (String resource : resources) {
+            var converted = ResourceLocationWrapper.convert(resource, registry);
+
+            converted.first().ifPresent(tag -> components.add(Component.translatable(Tags.getTagTranslationKey(tag))));
+            converted.second().ifPresent(key -> components.add(Component.translatable(type.wrap(key))));
+            converted.third().ifPresent(set -> components.add(DSLanguageProvider.formatList(set, key -> Component.translatable(type.wrap(key)))));
+        }
+
+        return components;
+    }
+
+    /**
+     * May return one of the following: </br>
+     * - {@link net.minecraft.tags.TagKey} if the resource starts with '#' </br>
+     * - {@link net.minecraft.resources.ResourceKey} if the resource is a valid resource location </br>
+     * - {@link java.util.Set} of {@link net.minecraft.resources.ResourceKey} otherwise (since it is a regex entry)
+     */
+    public static <T> Triple<TagKey<T>, ResourceKey<T>, Set<ResourceKey<T>>> convert(final String resource, final Registry<T> registry) {
+        if (resource.startsWith("#")) {
+            return Triple.of(TagKey.create(registry.key(), ResourceLocation.parse(resource.substring(1))), null, null);
+        }
+
+        if (ResourceLocation.tryParse(resource) != null) {
+            return Triple.of(null, ResourceKey.create(registry.key(), ResourceLocation.parse(resource)), null);
+        }
+
+        return Triple.of(null, null, map(resource, registry));
     }
 
     public static Codec<String> validatedCodec() {
