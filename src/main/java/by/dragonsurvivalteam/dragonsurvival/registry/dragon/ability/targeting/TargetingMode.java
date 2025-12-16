@@ -8,6 +8,7 @@ import com.mojang.serialization.Codec;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -37,6 +38,8 @@ public enum TargetingMode implements StringRepresentable {
     ENEMIES("enemies"),
     @Translation(comments = "items")
     ITEMS("items"),
+    @Translation(comments = "experience orbs")
+    EXPERIENCE_ORBS("experience_orbs"),
     @Translation(comments = "everyone except yourself")
     ALL_EXCEPT_SELF("all_except_self");
 
@@ -49,6 +52,7 @@ public enum TargetingMode implements StringRepresentable {
             "4: Enabled Friendly fire on a team no longer flags players as 'enemy'"
     })
     @ConfigOption(side = ConfigSide.SERVER, category = "abilities", key = "player_targeting_handling")
+    @SuppressWarnings("NonFinalFieldInEnum") // Config fields cannot be final
     public static int PLAYER_FLAG = 0;
 
     public static final Codec<TargetingMode> CODEC = StringRepresentable.fromEnum(TargetingMode::values);
@@ -69,6 +73,10 @@ public enum TargetingMode implements StringRepresentable {
 
         if (target instanceof ItemEntity) {
             return this == TargetingMode.ITEMS;
+        }
+
+        if (target instanceof ExperienceOrb) {
+            return this == TargetingMode.EXPERIENCE_ORBS;
         }
 
         if (isFriendly(player, target)) {

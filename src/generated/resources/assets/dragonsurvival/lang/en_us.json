@@ -1376,6 +1376,7 @@
   "enum.targeting_mode.allies": "allies",
   "enum.targeting_mode.allies_and_self": "allies and yourself",
   "enum.targeting_mode.enemies": "enemies",
+  "enum.targeting_mode.experience_orbs": "experience orbs",
   "enum.targeting_mode.items": "items",
   "enum.targeting_mode.neutral": "neutral entities",
   "enum.targeting_mode.non_allies": "non allies",
