@@ -19,7 +19,6 @@ import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
-
 public record SyncAbilityAnimation(int playerId, AnimationType animationType, Either<CompoundAbilityAnimation, SimpleAbilityAnimation> animation) implements CustomPacketPayload {
 
     public static final Type<SyncAbilityAnimation> TYPE = new Type<>(DragonSurvival.res("sync_ability_animation"));
@@ -45,12 +44,12 @@ public record SyncAbilityAnimation(int playerId, AnimationType animationType, Ei
                 return;
             }
 
-            AbilityAnimation abilityAnimation = packet.animation.map(
+            AbilityAnimation abilityAnimation = packet.animation().map(
                     simple -> simple,
                     compound -> compound
             );
 
-            dragon.setCurrentAbilityAnimation(new Pair<>(abilityAnimation, packet.animationType));
+            dragon.setCurrentAbilityAnimation(new Pair<>(abilityAnimation, packet.animationType()));
         });
     }
 

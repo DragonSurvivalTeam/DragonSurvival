@@ -119,7 +119,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
     private final AnimationTickTimer animationTickTimer = new AnimationTickTimer();
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
-    private Pair<AbilityAnimation, AnimationType> currentAbilityAnimation;
+    private @Nullable Pair<AbilityAnimation, AnimationType> currentAbilityAnimation;
     private boolean begunPlayingAbilityAnimation;
     public boolean renderingWasCancelled;
 
@@ -256,38 +256,48 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
         return Stream.of(currentlyPlayingEmotes).anyMatch(Objects::nonNull);
     }
 
-    public boolean isPlayingEmote(DragonEmote emote) {
+    public boolean isPlayingEmote(final DragonEmote emote) {
         return Stream.of(currentlyPlayingEmotes).anyMatch(e -> e == emote);
     }
 
-    public void setCurrentAbilityAnimation(Pair<AbilityAnimation, AnimationType> currentAbilityAnimation) {
+    public void setCurrentAbilityAnimation(final Pair<AbilityAnimation, AnimationType> currentAbilityAnimation) {
         if (this.currentAbilityAnimation != null) {
-            animationTickTimer.stopAnimation(this.currentAbilityAnimation.getFirst().getName());
+            AbilityAnimation animation = this.currentAbilityAnimation.getFirst();
+
+            if (animation != null) {
+                animationTickTimer.stopAnimation(animation.getName());
+            }
         }
+
         this.currentAbilityAnimation = currentAbilityAnimation;
         begunPlayingAbilityAnimation = false;
     }
 
-    private boolean checkAndPlayAbilityAnimation(final AnimationState<DragonEntity> state, AnimationLayer layer) {
-        AnimationLayer currentAbilityLayer = currentAbilityAnimation != null ? currentAbilityAnimation.getFirst().getLayer() : null;
-        boolean isNotPlayingCurrentAbilityAnimation = currentAbilityAnimation != null && currentAbilityLayer == layer && animationTickTimer.getDuration(currentAbilityAnimation.getFirst().getName()) <= 0;
-        if (!begunPlayingAbilityAnimation && isNotPlayingCurrentAbilityAnimation) {
+    private boolean checkAndPlayAbilityAnimation(final AnimationState<DragonEntity> state, @NotNull final AnimationLayer layer) {
+        AbilityAnimation animation = currentAbilityAnimation != null ? currentAbilityAnimation.getFirst() : null;
+        AnimationLayer currentLayer = animation != null ? animation.getLayer() : null;
+        // Check whether the new animation is on the same layer as the current animation
+        // And whether the current one has finished playing - relevant for deciding to trigger the animation or not
+        boolean finishedCurrent = currentLayer == layer && animationTickTimer.getDuration(animation.getName()) <= 0;
+
+        if (!begunPlayingAbilityAnimation && finishedCurrent) {
             begunPlayingAbilityAnimation = true;
-            state.getController().setAnimationSpeed(1.0);
-            currentAbilityAnimation.getFirst().play(state, currentAbilityAnimation.getSecond());
+            state.getController().setAnimationSpeed(1);
+            animation.play(state, currentAbilityAnimation.getSecond());
+
             if (currentAbilityAnimation.getSecond() == AnimationType.PLAY_ONCE) {
-                // Only trigger use a timer for PLAY_ONCE animations, as the others are intended to await a future packet to stop them
-                animationTickTimer.putAnimation(DRAGON_MODEL, this, currentAbilityAnimation.getFirst().getName());
+                // Only use a timer for PLAY_ONCE animations, as the others are intended to await a future packet to stop them
+                animationTickTimer.putAnimation(DRAGON_MODEL, this, animation.getName());
             }
-        } else if (begunPlayingAbilityAnimation && isNotPlayingCurrentAbilityAnimation && currentAbilityAnimation.getSecond() == AnimationType.PLAY_ONCE) {
+        } else if (begunPlayingAbilityAnimation && finishedCurrent && currentAbilityAnimation.getSecond() == AnimationType.PLAY_ONCE) {
             begunPlayingAbilityAnimation = false;
             currentAbilityAnimation = null;
-        } else if (begunPlayingAbilityAnimation && currentAbilityLayer == layer) {
-            state.getController().setAnimationSpeed(1.0);
+        } else if (begunPlayingAbilityAnimation && currentLayer == layer) {
+            state.getController().setAnimationSpeed(1);
             return true;
         }
 
-        return begunPlayingAbilityAnimation && currentAbilityLayer == layer;
+        return begunPlayingAbilityAnimation && currentLayer == layer;
     }
 
     // For the breath weapon only, we want it to play on a separate controller,
