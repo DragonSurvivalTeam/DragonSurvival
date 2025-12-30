@@ -38,6 +38,7 @@ import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
+import javax.annotation.Nullable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.Input;
@@ -142,6 +143,10 @@ public class ClientDragonRender{
 	public static Boolean rotateCameraWithDragon = true;
 
 	private static boolean wasFreeLook = false;
+
+    public static @Nullable DragonEntity getDragon(final Player player) {
+        return playerDragonHashMap.get(player.getId()) != null ? playerDragonHashMap.get(player.getId()).get() : null;
+    }
 
 	@SubscribeEvent
 	public static void cancelNameplatesFromDummyEntities(final RenderNameTagEvent event) {
@@ -253,7 +258,10 @@ public class ClientDragonRender{
 			}
 
 			renderPlayerEvent.setCanceled(true);
-			setDragonMovementData(player, AnimationUtils.getRealtimeDeltaTicks());
+            boolean isInInventory = getDragon(player) != null && getDragon(player).isInInventory;
+            if (!isInInventory) {
+                setDragonMovementData(player, AnimationUtils.getRealtimeDeltaTicks());
+            }
 			float partialRenderTick = renderPlayerEvent.getPartialTick();
 			float yaw = player.getViewYRot(partialRenderTick);
 

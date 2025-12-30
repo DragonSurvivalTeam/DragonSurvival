@@ -58,6 +58,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity, CommonTrait
 	public float prevZRot = 0;
 	public float prevXRot = 0;
 
+    public boolean isInInventory = false;
 	public boolean clearVerticalVelocity = false;
 
 	ActiveDragonAbility lastCast = null;
