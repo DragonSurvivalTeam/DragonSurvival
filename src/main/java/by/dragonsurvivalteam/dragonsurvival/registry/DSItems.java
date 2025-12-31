@@ -64,21 +64,21 @@ public class DSItems {
     // --- Growth --- //
     @Translation(type = Translation.Type.DESCRIPTION, comments = {
             "§7■ Deformed part of the Elder dragon.§r",
-            "■§f The energy absorbing dragon magic had captured this bone. Makes the dragon smaller."
+            "■§f This bone contains magic that absorbs draconic energy. Makes the user smaller."
     })
     @Translation(type = Translation.Type.ITEM, comments = "Star Bone")
     public static final Holder<Item> STAR_BONE = REGISTRY.register("star_bone", location -> new TooltipItem(new Properties(), location.getPath()));
 
     @Translation(type = Translation.Type.DESCRIPTION, comments = {
             "§7■ Deformed part of the Elder dragon.§r",
-            "■§f The energy absorbing dragon magic had captured this heart. It is able to change the dragon's growth many times."
+            "■§f This heart contains magic that absorbs draconic energy. It is able to stop the natural growth cycle of the user."
     })
     @Translation(type = Translation.Type.ITEM, comments = "Star Heart")
     public static final Holder<Item> STAR_HEART = REGISTRY.register("star_heart", () -> new Item(new Properties()));
 
     @Translation(type = Translation.Type.DESCRIPTION, comments = {
             "§6■ Part of the Elder dragon.§r",
-            "■§7 Dust left from an ancient creature, this is used in many dragon recipes. Can be found in ore and treasure."
+            "■§7 Dust left from an ancient creature. It is used in many dragon recipes. Can be found in ore and treasure."
     })
     @Translation(type = Translation.Type.ITEM, comments = "Elder Dragon Dust")
     public static final Holder<Item> ELDER_DRAGON_DUST = REGISTRY.register("elder_dragon_dust", location -> new TooltipItem(new Item.Properties(), location.getPath()));
