@@ -218,10 +218,11 @@ public class PrimordialAnchorBlock extends Block implements EntityBlock {
     }
 
     /** See {@link TheEndGatewayBlockEntity#findValidSpawnInChunk} */
+    @SuppressWarnings("removal") // ignore
     private @Nullable BlockPos findValidSpawnInChunk(final LevelChunk chunk) {
         ChunkPos chunkPosition = chunk.getPos();
         BlockPos position = new BlockPos(chunkPosition.getMinBlockX(), 30, chunkPosition.getMinBlockZ());
-        //noinspection removal -> ignore
+
         int section = chunk.getHighestSectionPosition() + 16 - 1;
         BlockPos maxPosition = new BlockPos(chunkPosition.getMaxBlockX(), section, chunkPosition.getMaxBlockZ());
 
