@@ -165,7 +165,11 @@ public class DragonStateHandler extends EntityStateHandler {
     public void lerpGrowth(final Player player) {
         if (player.level().isClientSide() && visualGrowth - desiredGrowth == 0) return;
         if (!player.level().isClientSide() && growth - desiredGrowth == 0) return;
-        boolean isGrowthAllowed = DragonGrowthHandler.isGrowthAllowed(player, DragonStateProvider.getData(player), desiredGrowth);
+
+        // Check the marginal growth, not the desired growth, as otherwise you'll end up with your growth stunted if you
+        // can't reach the maximum desired growth, even when there is room to grow to some percentage of the desired growth
+        double growthForNextTick = Mth.lerp(AGE_LERP_SPEED, player.level().isClientSide() ? visualGrowth : growth, desiredGrowth);
+        boolean isGrowthAllowed = DragonGrowthHandler.isGrowthAllowed(player, DragonStateProvider.getData(player), growthForNextTick);
 
         if (player.level().isClientSide()) {
             if (visualGrowth == NO_GROWTH) {
@@ -173,6 +177,7 @@ public class DragonStateHandler extends EntityStateHandler {
             }
 
             visualGrowthLastTick = visualGrowth;
+
             // Need to update the visualGrowthLastTick to prevent weird jittering due to partial tick interpolation, even when growth is blocked
             if (!isGrowthAllowed) return;
 

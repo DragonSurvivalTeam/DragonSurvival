@@ -81,11 +81,6 @@ public record DragonGrowthEffect(GrowthType growth_type, ActionType action_type,
 
             double desiredGrowth = base + difference;
 
-            if (!DragonGrowthHandler.isGrowthAllowed(player, handler, desiredGrowth)) {
-                DragonSurvival.LOGGER.debug("Growth of [{}] cannot be set by ability [{}] due to player being in a too enclosed space", player, ability.id());
-                return;
-            }
-
             handler.setDesiredGrowth(player, desiredGrowth);
         }
     }

@@ -22,7 +22,7 @@ public class DragonGrowthCommand {
     @Translation(comments = "Set growth to %s for %s.")
     private static final String SET_GROWTH_TO_PLAYER = Translation.Type.COMMAND.wrap("growth.clear_from_single_entity");
 
-    @Translation(comments = "Failed to set growth (not a dragon or in an enclosed space)")
+    @Translation(comments = "Failed to set growth due to target not being a dragon.")
     private static final String FAILED_TO_SET_GROWTH = Translation.Type.COMMAND.wrap("growth.failed_to_set_growth");
 
     public static void register(final RegisterCommandsEvent event) {
@@ -40,11 +40,6 @@ public class DragonGrowthCommand {
                                         DragonStateHandler handler = DragonStateProvider.getData(player);
 
                                         if (handler.isDragon()) {
-                                            if (!DragonGrowthHandler.isGrowthAllowed(player, handler, growth)) {
-                                                DragonSurvival.LOGGER.debug("Growth of [{}] cannot be set by command due to player being in a too enclosed space", player);
-                                                continue;
-                                            }
-
                                             handler.setDesiredGrowth(player, growth);
                                             count++;
                                         }

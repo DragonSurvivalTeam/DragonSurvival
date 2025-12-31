@@ -132,6 +132,9 @@ public class DragonGrowthHandler {
             double oldGrowth = handler.getDesiredGrowth();
             double desiredGrowth = handler.getDesiredGrowth() + dragonStage.ticksToGrowth(INTERVAL);
 
+            // This check makes it so that we don't add to natural growth when the dragon is in an enclosed space
+            // If this is removed, we still won't clip into walls due to the check in lerpGrowth, but we would
+            // "accumulate" growth over time and gain it all at once if in an enclosed space
             boolean isGrowthAllowed = isGrowthAllowed(player, handler, desiredGrowth);
 
             if (!isGrowthAllowed || oldGrowth == desiredGrowth || dragonStage.isNaturalGrowthStopped().map(condition -> condition.matches(player.serverLevel(), player.position(), player)).orElse(false)) {
@@ -158,12 +161,19 @@ public class DragonGrowthHandler {
         if (difference > 0) {
             EntityDimensions dimensions = ((EntityAccessor) player).dragonSurvival$getDimensions();
             AABB playerBounds = dimensions.scale(1 + difference).makeBoundingBox(player.position()).inflate(Shapes.BIG_EPSILON);
+            // Move y position slightly upwards to prevent false-positives with floor collisions
+            double verticalBoundsAdjustment = playerBounds.getYsize() * 0.02;
+            AABB adjustedBounds = playerBounds.setMinY(playerBounds.minY + verticalBoundsAdjustment);
 
             WorldBorder border = player.level().getWorldBorder();
+            double borderEpsilon = 1.0E-2;
 
-            if (playerBounds.minX < border.getMinX() || playerBounds.maxX > border.getMaxX() || playerBounds.minZ < border.getMinZ() || playerBounds.maxZ > border.getMaxZ()) {
+            if (playerBounds.minX < border.getMinX() + borderEpsilon
+                || playerBounds.maxX > border.getMaxX() - borderEpsilon
+                || playerBounds.minZ < border.getMinZ() + borderEpsilon
+                || playerBounds.maxZ > border.getMaxZ() - borderEpsilon) {
                 return false;
-            } else if (!player.level().noBlockCollision(player, playerBounds.move(0, 0.25, 0))) {
+            } else if (!player.level().noBlockCollision(player, adjustedBounds)) {
                 // Move y position slightly upwards to prevent false-positives with floor collisions
                 return false;
             }
