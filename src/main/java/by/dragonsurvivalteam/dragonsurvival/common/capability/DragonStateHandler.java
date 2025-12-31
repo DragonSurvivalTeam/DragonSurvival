@@ -6,6 +6,7 @@ import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.Dr
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.SkinPreset;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscCodecs;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Modifier;
+import by.dragonsurvivalteam.dragonsurvival.common.handlers.DragonGrowthHandler;
 import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
 import by.dragonsurvivalteam.dragonsurvival.network.client.ClientProxy;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncMagicData;
@@ -162,12 +163,18 @@ public class DragonStateHandler extends EntityStateHandler {
      * - Client-side: update the visual growth
      */
     public void lerpGrowth(final Player player) {
+        if (player.level().isClientSide() && visualGrowth - desiredGrowth == 0) return;
+        if (!player.level().isClientSide() && growth - desiredGrowth == 0) return;
+        boolean isGrowthAllowed = DragonGrowthHandler.isGrowthAllowed(player, DragonStateProvider.getData(player), desiredGrowth);
+
         if (player.level().isClientSide()) {
             if (visualGrowth == NO_GROWTH) {
                 visualGrowth = growth;
             }
 
             visualGrowthLastTick = visualGrowth;
+            // Need to update the visualGrowthLastTick to prevent weird jittering due to partial tick interpolation, even when growth is blocked
+            if (!isGrowthAllowed) return;
 
             if (Math.abs(visualGrowth - desiredGrowth) < AGE_EPSILON) {
                 visualGrowth = desiredGrowth;
@@ -175,8 +182,10 @@ public class DragonStateHandler extends EntityStateHandler {
                 visualGrowth = Mth.lerp(AGE_LERP_SPEED, visualGrowth, desiredGrowth);
             }
         } else if (Math.abs(growth - desiredGrowth) < AGE_EPSILON) {
+            if (!isGrowthAllowed) return;
             setGrowth(player, desiredGrowth);
         } else {
+            if (!isGrowthAllowed) return;
             setGrowth(player, Mth.lerp(AGE_LERP_SPEED, growth, desiredGrowth));
         }
     }
