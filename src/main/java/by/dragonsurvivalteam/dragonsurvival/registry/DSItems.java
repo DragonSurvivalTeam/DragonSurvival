@@ -45,6 +45,7 @@ import net.minecraft.world.item.Item.Properties;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.Tiers;
+import net.minecraft.world.item.ToolMaterial;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.item.equipment.ArmorMaterials;
 import net.minecraft.world.item.equipment.ArmorType;
@@ -309,51 +310,53 @@ public class DSItems {
 
     @Translation(type = Translation.Type.ITEM, comments = "Sword That Bonks Dragons")
     @Translation(type = Translation.Type.DESCRIPTION, comments = "■§7 The sword of the dragon hunters. Slow, but strong. Can be found in the hunters treasury.")
-    public static final Holder<Item> DRAGON_HUNTER_SWORD = REGISTRY.register("dragon_hunter_sword", location -> new DragonHunterWeapon(
-            DSArmorMaterials.DRAGON_HUNTER,
-            new Item.Properties().rarity(Rarity.EPIC).fireResistant().attributes(SwordItem.createAttributes(Tiers.NETHERITE, 4, -2.8F)),
-            location.getPath(),
-            List.of(Pair.of(DSEnchantments.DRAGONSBANE, 3))
-    ));
+    public static final Holder<Item> DRAGON_HUNTER_SWORD = REGISTRY.registerItem(
+        "dragon_hunter_sword",
+        properties -> new DragonHunterWeapon(properties, "dragon_hunter_sword", List.of(Pair.of(DSEnchantments.DRAGONSBANE, 3))),
+        () -> new Item.Properties().sword(ToolMaterial.NETHERITE, 4.0F, -2.8F).rarity(Rarity.EPIC).fireResistant()
+    );
 
     @Translation(type = Translation.Type.ITEM, comments = "Iron Partisan")
     @Translation(type = Translation.Type.DESCRIPTION, comments = "■§7 A long shafted weapon designed to take out enemies at a distance. Especially good against flying dragons.")
-    public static final Holder<Item> PARTISAN = REGISTRY.register("hunter_partisan", location -> new DragonHunterWeapon(
-            Tiers.IRON, new Item.Properties().component(
-            DataComponents.ATTRIBUTE_MODIFIERS,
-            ItemAttributeModifiers.builder()
-                    .add(Attributes.ATTACK_DAMAGE, new AttributeModifier(Item.BASE_ATTACK_DAMAGE_ID, 6, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
-                    .add(Attributes.ATTACK_SPEED, new AttributeModifier(Item.BASE_ATTACK_SPEED_ID, -2.6f, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
+    public static final Holder<Item> PARTISAN = REGISTRY.registerItem(
+        "hunter_partisan",
+        properties -> new DragonHunterWeapon(properties, "hunter_partisan", List.of()),
+        () -> new Item.Properties()
+            .sword(ToolMaterial.IRON, 6.0F, -2.6F)
+            .component(DataComponents.ATTRIBUTE_MODIFIERS,
+                ItemAttributeModifiers.builder()
                     .add(Attributes.BLOCK_INTERACTION_RANGE, new AttributeModifier(DragonSurvival.res("partisan_block_reach"), 1f, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
                     .add(Attributes.ENTITY_INTERACTION_RANGE, new AttributeModifier(DragonSurvival.res("partisan_attack_reach"), 1f, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
-                    .build()
-    ), location.getPath(), List.of()));
+                    .build())
+    );
 
     @Translation(type = Translation.Type.ITEM, comments = "Diamond Partisan")
     @Translation(type = Translation.Type.DESCRIPTION, comments = "■§7 A long shafted weapon designed to take out enemies at a distance. Especially good against flying dragons.")
-    public static final Holder<Item> HUNTER_PARTISAN_DIAMOND = REGISTRY.register("hunter_partisan_diamond", location -> new DragonHunterWeapon(
-            Tiers.DIAMOND, new Item.Properties().component(
-            DataComponents.ATTRIBUTE_MODIFIERS,
-            ItemAttributeModifiers.builder()
-                    .add(Attributes.ATTACK_DAMAGE, new AttributeModifier(Item.BASE_ATTACK_DAMAGE_ID, 7, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
-                    .add(Attributes.ATTACK_SPEED, new AttributeModifier(Item.BASE_ATTACK_SPEED_ID, -2.6f, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
+    public static final Holder<Item> HUNTER_PARTISAN_DIAMOND = REGISTRY.registerItem(
+        "hunter_partisan_diamond",
+        properties -> new DragonHunterWeapon(properties, "hunter_partisan_diamond", List.of(Pair.of(DSEnchantments.DRAGONSBANE, 3))),
+        () -> new Item.Properties()
+            .sword(ToolMaterial.DIAMOND, 7.0F, -2.6F)
+            .component(DataComponents.ATTRIBUTE_MODIFIERS,
+                ItemAttributeModifiers.builder()
                     .add(Attributes.BLOCK_INTERACTION_RANGE, new AttributeModifier(DragonSurvival.res("partisan_block_reach"), 1f, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
                     .add(Attributes.ENTITY_INTERACTION_RANGE, new AttributeModifier(DragonSurvival.res("partisan_attack_reach"), 1f, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
-                    .build()
-    ), location.getPath(), List.of(Pair.of(DSEnchantments.DRAGONSBANE, 3))));
+                    .build())
+    );
 
     @Translation(type = Translation.Type.ITEM, comments = "Netherite Partisan")
     @Translation(type = Translation.Type.DESCRIPTION, comments = "■§7 A long shafted weapon designed to take out enemies at a distance. Especially good against flying dragons.")
-    public static final Holder<Item> HUNTER_PARTISAN_NETHERITE = REGISTRY.register("hunter_partisan_netherite", location -> new DragonHunterWeapon(
-            Tiers.NETHERITE, new Item.Properties().component(
-            DataComponents.ATTRIBUTE_MODIFIERS,
-            ItemAttributeModifiers.builder()
-                    .add(Attributes.ATTACK_DAMAGE, new AttributeModifier(Item.BASE_ATTACK_DAMAGE_ID, 8, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
-                    .add(Attributes.ATTACK_SPEED, new AttributeModifier(Item.BASE_ATTACK_SPEED_ID, -2.6f, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
+    public static final Holder<Item> HUNTER_PARTISAN_NETHERITE = REGISTRY.registerItem(
+        "hunter_partisan_netherite",
+        properties -> new DragonHunterWeapon(properties, "hunter_partisan_netherite", List.of(Pair.of(DSEnchantments.DRAGONSBANE, 3))),
+        () -> new Item.Properties()
+            .sword(ToolMaterial.NETHERITE, 8.0F, -2.6F)
+            .component(DataComponents.ATTRIBUTE_MODIFIERS,
+                ItemAttributeModifiers.builder()
                     .add(Attributes.BLOCK_INTERACTION_RANGE, new AttributeModifier(DragonSurvival.res("partisan_block_reach"), 1f, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
                     .add(Attributes.ENTITY_INTERACTION_RANGE, new AttributeModifier(DragonSurvival.res("partisan_attack_reach"), 1f, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
-                    .build()
-    ), location.getPath(), List.of(Pair.of(DSEnchantments.DRAGONSBANE, 3))));
+                    .build())
+    );
 
     // --- Block items --- //
 
@@ -501,6 +504,10 @@ public class DSItems {
                             )
                     )
     ));
+
+    private static String getDescriptionKey(String path) {
+        return "item.dragonsurvival." + path;
+    }
 
     // --- Not shown in creative tab --- //
 
