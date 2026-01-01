@@ -11,7 +11,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.DSContainers;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSCreativeTabs;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEntities;
-import by.dragonsurvivalteam.dragonsurvival.registry.DSEquipment;
+import by.dragonsurvivalteam.dragonsurvival.registry.DSArmorMaterials;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSItems;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSLootModifiers;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSMapDecorationTypes;
@@ -57,7 +57,7 @@ public class DragonSurvival {
         DSDataAttachments.REGISTRY.register(bus);
         DSDataComponents.REGISTRY.register(bus);
         DSAttributes.REGISTRY.register(bus);
-        DSEquipment.REGISTRY.register(bus);
+        DSArmorMaterials.REGISTRY.register(bus);
         DSBlocks.REGISTRY.register(bus); // Needs to happen before items
         DSItems.REGISTRY.register(bus);
         DSEffects.REGISTRY.register(bus);

@@ -30,7 +30,6 @@ import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -47,8 +46,9 @@ import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.Tiers;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
+import net.minecraft.world.item.equipment.ArmorMaterials;
+import net.minecraft.world.item.equipment.ArmorType;
 import net.neoforged.neoforge.common.DeferredSpawnEggItem;
-import net.neoforged.neoforge.common.EffectCures;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import org.joml.Vector3f;
 
@@ -58,8 +58,9 @@ import java.util.function.Consumer;
 
 @SuppressWarnings("unused")
 public class DSItems {
-    public static final DeferredRegister<Item> REGISTRY = DeferredRegister.create(BuiltInRegistries.ITEM, DragonSurvival.MODID);
-    private static final Consumer<LivingEntity> REMOVE_EFFECTS_CURED_BY_MILK = entity -> entity.removeEffectsCuredBy(EffectCures.MILK);
+    public static final DeferredRegister.Items REGISTRY = DeferredRegister.Items.createItems(DragonSurvival.MODID);
+    // At some point, the "milk curing" logic was changed to just remove all effects outright. So, change the logic here too.
+    private static final Consumer<LivingEntity> REMOVE_ALL_EFFECTS = LivingEntity::removeAllEffects;
 
     // --- Growth --- //
     @Translation(type = Translation.Type.DESCRIPTION, comments = {
@@ -117,7 +118,7 @@ public class DSItems {
 
     @Translation(type = Translation.Type.ITEM, comments = "Charged Coal")
     @Translation(type = Translation.Type.DESCRIPTION, comments = "■§7 Removes all effects.")
-    public static final Holder<Item> CHARGED_COAL = REGISTRY.register("charged_coal", location -> new ChargedCoalItem(new Properties(), location.getPath(), REMOVE_EFFECTS_CURED_BY_MILK));
+    public static final Holder<Item> CHARGED_COAL = REGISTRY.register("charged_coal", location -> new ChargedCoalItem(new Properties(), location.getPath(), REMOVE_ALL_EFFECTS));
 
     @Translation(type = Translation.Type.ITEM, comments = "Charged Soup")
     @Translation(type = Translation.Type.DESCRIPTION, comments = "■§7 A concoction of various cave dragon delicacies. Heats up the body enough to protect it from the damaging effects of water.")
@@ -168,7 +169,7 @@ public class DSItems {
 
     @Translation(type = Translation.Type.ITEM, comments = "Sweet & Sour Rabbit")
     @Translation(type = Translation.Type.DESCRIPTION, comments = "■§7 Cleanses all active effects. Rabbit, marinated with a mixture of honey and spider eyes. Traditionally served during dragon holidays.")
-    public static final Holder<Item> SWEET_SOUR_RABBIT = REGISTRY.register("sweet_sour_rabbit", location -> new CustomOnFinishEffectItem(new Properties(), location.getPath(), REMOVE_EFFECTS_CURED_BY_MILK));
+    public static final Holder<Item> SWEET_SOUR_RABBIT = REGISTRY.register("sweet_sour_rabbit", location -> new CustomOnFinishEffectItem(new Properties(), location.getPath(), REMOVE_ALL_EFFECTS));
 
     @Translation(type = Translation.Type.ITEM, comments = "Luminous Tincture")
     @Translation(type = Translation.Type.DESCRIPTION, comments = "■§7 A tincture of various glowing ingredients that protects against the darkness when consumed. Dark environments sap a forest dragon's strength as their own plants begin to devour them.")
@@ -208,7 +209,7 @@ public class DSItems {
 
     @Translation(type = Translation.Type.ITEM, comments = "Frozen Fish")
     @Translation(type = Translation.Type.DESCRIPTION, comments = "■§7 Cleanses all effects and replenishes water. Food and water in one convenient package!")
-    public static final Holder<Item> FROZEN_RAW_FISH = REGISTRY.register("frozen_raw_fish", location -> new CustomOnFinishEffectItem(new Properties(), location.getPath(), REMOVE_EFFECTS_CURED_BY_MILK));
+    public static final Holder<Item> FROZEN_RAW_FISH = REGISTRY.register("frozen_raw_fish", location -> new CustomOnFinishEffectItem(new Properties(), location.getPath(), REMOVE_ALL_EFFECTS));
 
     @Translation(type = Translation.Type.ITEM, comments = "Golden Turtle Egg")
     @Translation(type = Translation.Type.DESCRIPTION, comments = "■§7 Removes Wither and Poison effects, and gives Absorption and Regeneration. A turtle egg stuffed with dragon dust and gold. After a while, the dust reacts with the eggshell, changing its color and texture.")
@@ -245,23 +246,31 @@ public class DSItems {
     public static final Holder<Item> LIGHT_UPGRADE = REGISTRY.register("light_upgrade", location -> new TooltipItem(new Properties().rarity(Rarity.RARE), location.getPath()));
 
     @Translation(type = Translation.Type.ITEM, comments = "Light Helmet")
-    public static final Holder<Item> LIGHT_DRAGON_HELMET = REGISTRY.register("light_dragon_helmet", () -> new LightDragonArmorItem(
-            ArmorItem.Type.HELMET, new Item.Properties().durability(ArmorItem.Type.HELMET.getDurability(100)).rarity(Rarity.EPIC).fireResistant())
+    public static final Holder<Item> LIGHT_DRAGON_HELMET = REGISTRY.registerItem(
+        "light_dragon_helmet",
+        LightDragonArmorItem::new,
+        () -> new Item.Properties().humanoidArmor(DSArmorMaterials.DRAGON_ARMOR_MATERIAL, ArmorType.HELMET).rarity(Rarity.EPIC).fireResistant()
     );
 
     @Translation(type = Translation.Type.ITEM, comments = "Light Chestplate")
-    public static final Holder<Item> LIGHT_DRAGON_CHESTPLATE = REGISTRY.register("light_dragon_chestplate", () -> new LightDragonArmorItem(
-            ArmorItem.Type.CHESTPLATE, new Item.Properties().durability(ArmorItem.Type.CHESTPLATE.getDurability(100)).rarity(Rarity.EPIC).fireResistant())
+    public static final Holder<Item> LIGHT_DRAGON_CHESTPLATE = REGISTRY.registerItem(
+        "light_dragon_chestplate",
+        LightDragonArmorItem::new,
+        () -> new Item.Properties().humanoidArmor(DSArmorMaterials.DRAGON_ARMOR_MATERIAL, ArmorType.CHESTPLATE).rarity(Rarity.EPIC).fireResistant()
     );
 
     @Translation(type = Translation.Type.ITEM, comments = "Light Leggings")
-    public static final Holder<Item> LIGHT_DRAGON_LEGGINGS = REGISTRY.register("light_dragon_leggings", () -> new LightDragonArmorItem(
-            ArmorItem.Type.LEGGINGS, new Item.Properties().durability(ArmorItem.Type.LEGGINGS.getDurability(100)).rarity(Rarity.EPIC).fireResistant())
+    public static final Holder<Item> LIGHT_DRAGON_LEGGINGS = REGISTRY.registerItem(
+        "light_dragon_leggings",
+        LightDragonArmorItem::new,
+        () -> new Item.Properties().humanoidArmor(DSArmorMaterials.DRAGON_ARMOR_MATERIAL, ArmorType.LEGGINGS).rarity(Rarity.EPIC).fireResistant()
     );
 
     @Translation(type = Translation.Type.ITEM, comments = "Light Boots")
-    public static final Holder<Item> LIGHT_DRAGON_BOOTS = REGISTRY.register("light_dragon_boots", () -> new LightDragonArmorItem(
-            ArmorItem.Type.BOOTS, new Item.Properties().durability(ArmorItem.Type.BOOTS.getDurability(100)).rarity(Rarity.EPIC).fireResistant())
+    public static final Holder<Item> LIGHT_DRAGON_BOOTS = REGISTRY.registerItem(
+        "light_dragon_boots",
+            LightDragonArmorItem::new,
+            () -> new Item.Properties().humanoidArmor(DSArmorMaterials.DRAGON_ARMOR_MATERIAL, ArmorType.BOOTS).rarity(Rarity.EPIC).fireResistant()
     );
 
     @Translation(type = Translation.Type.ITEM, comments = "Dark Upgrade")
@@ -269,23 +278,31 @@ public class DSItems {
     public static final Holder<Item> DARK_UPGRADE = REGISTRY.register("dark_upgrade", location -> new TooltipItem(new Properties().rarity(Rarity.RARE), location.getPath()));
 
     @Translation(type = Translation.Type.ITEM, comments = "Dark Helmet")
-    public static final Holder<Item> DARK_DRAGON_HELMET = REGISTRY.register("dark_dragon_helmet", () -> new DarkDragonArmorItem(
-            ArmorItem.Type.HELMET, new Item.Properties().durability(ArmorItem.Type.HELMET.getDurability(100)).rarity(Rarity.EPIC).fireResistant())
+    public static final Holder<Item> DARK_DRAGON_HELMET = REGISTRY.registerItem(
+        "dark_dragon_helmet",
+        DarkDragonArmorItem::new,
+        () -> new Item.Properties().humanoidArmor(DSArmorMaterials.DRAGON_ARMOR_MATERIAL, ArmorType.HELMET).rarity(Rarity.EPIC).fireResistant()
     );
 
     @Translation(type = Translation.Type.ITEM, comments = "Dark Chestplate")
-    public static final Holder<Item> DARK_DRAGON_CHESTPLATE = REGISTRY.register("dark_dragon_chestplate", () -> new DarkDragonArmorItem(
-            ArmorItem.Type.CHESTPLATE, new Item.Properties().durability(ArmorItem.Type.CHESTPLATE.getDurability(100)).rarity(Rarity.EPIC).fireResistant())
+    public static final Holder<Item> DARK_DRAGON_CHESTPLATE = REGISTRY.registerItem(
+        "dark_dragon_chestplate",
+        DarkDragonArmorItem::new,
+        () -> new Item.Properties().humanoidArmor(DSArmorMaterials.DRAGON_ARMOR_MATERIAL, ArmorType.CHESTPLATE).rarity(Rarity.EPIC).fireResistant()
     );
 
     @Translation(type = Translation.Type.ITEM, comments = "Dark Leggings")
-    public static final Holder<Item> DARK_DRAGON_LEGGINGS = REGISTRY.register("dark_dragon_leggings", () -> new DarkDragonArmorItem(
-            ArmorItem.Type.LEGGINGS, new Item.Properties().durability(ArmorItem.Type.LEGGINGS.getDurability(100)).rarity(Rarity.EPIC).fireResistant())
+    public static final Holder<Item> DARK_DRAGON_LEGGINGS = REGISTRY.registerItem(
+        "dark_dragon_leggings",
+        DarkDragonArmorItem::new,
+        () -> new Item.Properties().humanoidArmor(DSArmorMaterials.DRAGON_ARMOR_MATERIAL, ArmorType.LEGGINGS).rarity(Rarity.EPIC).fireResistant()
     );
 
     @Translation(type = Translation.Type.ITEM, comments = "Dark Boots")
-    public static final Holder<Item> DARK_DRAGON_BOOTS = REGISTRY.register("dark_dragon_boots", () -> new DarkDragonArmorItem(
-            ArmorItem.Type.BOOTS, new Item.Properties().durability(ArmorItem.Type.BOOTS.getDurability(100)).rarity(Rarity.EPIC).fireResistant())
+    public static final Holder<Item> DARK_DRAGON_BOOTS = REGISTRY.registerItem(
+        "dark_dragon_boots",
+        DarkDragonArmorItem::new,
+        () -> new Item.Properties().humanoidArmor(DSArmorMaterials.DRAGON_ARMOR_MATERIAL, ArmorType.BOOTS).rarity(Rarity.EPIC).fireResistant()
     );
 
     // --- Weapons --- //
@@ -293,7 +310,7 @@ public class DSItems {
     @Translation(type = Translation.Type.ITEM, comments = "Sword That Bonks Dragons")
     @Translation(type = Translation.Type.DESCRIPTION, comments = "■§7 The sword of the dragon hunters. Slow, but strong. Can be found in the hunters treasury.")
     public static final Holder<Item> DRAGON_HUNTER_SWORD = REGISTRY.register("dragon_hunter_sword", location -> new DragonHunterWeapon(
-            DSEquipment.DRAGON_HUNTER,
+            DSArmorMaterials.DRAGON_HUNTER,
             new Item.Properties().rarity(Rarity.EPIC).fireResistant().attributes(SwordItem.createAttributes(Tiers.NETHERITE, 4, -2.8F)),
             location.getPath(),
             List.of(Pair.of(DSEnchantments.DRAGONSBANE, 3))
