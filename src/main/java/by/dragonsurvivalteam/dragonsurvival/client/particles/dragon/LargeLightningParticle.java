@@ -5,7 +5,7 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
-import net.minecraft.util.FastColor;
+import net.minecraft.util.ARGB;
 import org.jetbrains.annotations.NotNull;
 
 
@@ -17,7 +17,7 @@ public class LargeLightningParticle extends DragonParticle {
     @Override
     protected int getLightColor(float partialTick) {
         int color = super.getLightColor(partialTick);
-        int red = FastColor.ARGB32.red(color);
+        int red = ARGB.red(color);
         return 240 | red << 16;
     }
 

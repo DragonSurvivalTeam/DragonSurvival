@@ -10,7 +10,7 @@ import net.minecraft.nbt.DoubleTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.util.FastColor;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
@@ -347,7 +347,7 @@ public class Functions {
     }
 
     /**
-     * Expects the colors in the format of {@link net.minecraft.util.FastColor.ARGB32}
+     * Expects the colors in the format of {@link net.minecraft.util.ARGB}
      * @param speed Determines how quickly the colors are shifted through
      * @param offset Offsets the index of the color to be used (expected to be between 0 and 1)
      */
@@ -371,7 +371,7 @@ public class Functions {
         int currentIndex = (int) (Math.floor(sizeIndex) % colorsARGB.size());
         int nextIndex = (currentIndex + 1) % colorsARGB.size();
 
-        return FastColor.ARGB32.lerp(sizeIndex - currentIndex, colorsARGB.get(currentIndex), colorsARGB.get(nextIndex));
+        return ARGB.lerp(sizeIndex - currentIndex, colorsARGB.get(currentIndex), colorsARGB.get(nextIndex));
     }
 
     /** Makes sure to return an enum value (instead of an exception) */

@@ -10,7 +10,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.attachments.HunterData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSBlockTags;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
-import net.minecraft.util.FastColor;
+import net.minecraft.util.ARGB;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -161,15 +161,15 @@ public class HunterHandler { // FIXME :: disable shadows in EntityRenderDispatch
 
     /** Replaces (and returns) the alpha value of the packed color with the supplied alpha */
     public static int applyAlpha(float alpha, int packedColor) {
-        return FastColor.ARGB32.color((int) (alpha * 255), FastColor.ARGB32.red(packedColor), FastColor.ARGB32.green(packedColor), FastColor.ARGB32.blue(packedColor));
+        return ARGB.color((int) (alpha * 255), ARGB.red(packedColor), ARGB.green(packedColor), ARGB.blue(packedColor));
     }
 
     /** Replaces (and returns) the alpha value of the packed color with the supplied alpha */
     public static int applyAlpha(int alpha, int packedColor) {
-        return FastColor.ARGB32.color(alpha, FastColor.ARGB32.red(packedColor), FastColor.ARGB32.green(packedColor), FastColor.ARGB32.blue(packedColor));
+        return ARGB.color(alpha, ARGB.red(packedColor), ARGB.green(packedColor), ARGB.blue(packedColor));
     }
 
-    /** Returns the packed color in the {@link FastColor.ARGB32#color(int, int, int, int)} format */
+    /** Returns the packed color in the {@link ARGB#color(int, int, int, int)} format */
     public static int modifyAlpha(@Nullable final Entity entity, int packedColor) {
         if (entity == null) {
             return packedColor;
@@ -199,7 +199,7 @@ public class HunterHandler { // FIXME :: disable shadows in EntityRenderDispatch
 
         int packedColor = color.getColor();
         float alpha = calculateAlpha(data, entity == DragonSurvival.PROXY.getLocalPlayer());
-        return Color.ofARGB((int) (alpha * 255), FastColor.ARGB32.red(packedColor), FastColor.ARGB32.green(packedColor), FastColor.ARGB32.blue(packedColor));
+        return Color.ofARGB((int) (alpha * 255), ARGB.red(packedColor), ARGB.green(packedColor), ARGB.blue(packedColor));
     }
 
     public static int calculateAlpha(final Entity entity) {

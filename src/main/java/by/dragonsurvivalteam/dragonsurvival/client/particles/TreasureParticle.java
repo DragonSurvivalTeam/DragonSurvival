@@ -7,7 +7,7 @@ import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.client.particle.TextureSheetParticle;
-import net.minecraft.util.FastColor;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
 
@@ -43,7 +43,7 @@ public class TreasureParticle extends TextureSheetParticle {
     @Override
     protected int getLightColor(float partialTick) {
         int color = super.getLightColor(partialTick);
-        int red = FastColor.ARGB32.red(color);
+        int red = ARGB.red(color);
         return 240 | red << 16;
     }
 

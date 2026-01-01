@@ -22,7 +22,7 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.FastColor;
+import net.minecraft.util.ARGB;
 import net.minecraft.world.damagesource.DamageSources;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -683,7 +683,7 @@ public class DSBlocks {
     @Translation(type = Translation.Type.BLOCK, comments = "Debris Dragon Treasure")
     public static final DeferredHolder<Block, TreasureBlock> DEBRIS_DRAGON_TREASURE = register(
             "debris_dragon_treasure",
-            () -> new TreasureBlock(FastColor.ARGB32.color(255, 148, 120, 114),
+            () -> new TreasureBlock(ARGB.color(255, 148, 120, 114),
                     BlockBehaviour.Properties.of()
                             .mapColor(MapColor.COLOR_BROWN)
                             .noOcclusion()
@@ -694,7 +694,7 @@ public class DSBlocks {
     @Translation(type = Translation.Type.BLOCK, comments = "Diamond Dragon Treasure")
     public static final DeferredHolder<Block, TreasureBlock> DIAMOND_DRAGON_TREASURE = register(
             "diamond_dragon_treasure",
-            () -> new TreasureBlock(FastColor.ARGB32.color(255, 212, 255, 255),
+            () -> new TreasureBlock(ARGB.color(255, 212, 255, 255),
                     BlockBehaviour.Properties.of()
                             .mapColor(MapColor.DIAMOND)
                             .noOcclusion()
@@ -705,7 +705,7 @@ public class DSBlocks {
     @Translation(type = Translation.Type.BLOCK, comments = "Emerald Dragon Treasure")
     public static final DeferredHolder<Block, TreasureBlock> EMERALD_DRAGON_TREASURE = register(
             "emerald_dragon_treasure",
-            () -> new TreasureBlock(FastColor.ARGB32.color(255, 57, 240, 94),
+            () -> new TreasureBlock(ARGB.color(255, 57, 240, 94),
                     BlockBehaviour.Properties.of()
                             .mapColor(MapColor.COLOR_GREEN)
                             .noOcclusion()
@@ -716,7 +716,7 @@ public class DSBlocks {
     @Translation(type = Translation.Type.BLOCK, comments = "Copper Dragon Treasure")
     public static final DeferredHolder<Block, TreasureBlock> COPPER_DRAGON_TREASURE = register(
             "copper_dragon_treasure",
-            () -> new TreasureBlock(FastColor.ARGB32.color(255, 255, 255, 208),
+            () -> new TreasureBlock(ARGB.color(255, 255, 255, 208),
                     BlockBehaviour.Properties.of()
                             .mapColor(MapColor.COLOR_ORANGE)
                             .instrument(NoteBlockInstrument.HAT)
@@ -728,7 +728,7 @@ public class DSBlocks {
     @Translation(type = Translation.Type.BLOCK, comments = "Gold Dragon Treasure")
     public static final DeferredHolder<Block, TreasureBlock> GOLD_DRAGON_TREASURE = register(
             "gold_dragon_treasure",
-            () -> new TreasureBlock(FastColor.ARGB32.color(255, 255, 255, 243),
+            () -> new TreasureBlock(ARGB.color(255, 255, 255, 243),
                     BlockBehaviour.Properties.of()
                             .mapColor(MapColor.GOLD)
                             .noOcclusion()
@@ -739,7 +739,7 @@ public class DSBlocks {
     @Translation(type = Translation.Type.BLOCK, comments = "Iron Dragon Treasure")
     public static final DeferredHolder<Block, TreasureBlock> IRON_DRAGON_TREASURE = register(
             "iron_dragon_treasure",
-            () -> new TreasureBlock(FastColor.ARGB32.color(255, 211, 211, 211),
+            () -> new TreasureBlock(ARGB.color(255, 211, 211, 211),
                     BlockBehaviour.Properties.of()
                             .mapColor(MapColor.METAL)
                             .noOcclusion()
@@ -751,7 +751,7 @@ public class DSBlocks {
     public static final @Nullable DeferredHolder<Block, TreasureBlock> CHOCOLATE_DRAGON_TREASURE = registerModCheck(
             "chocolate_dragon_treasure",
             () -> new TreasureBlock(
-                    FastColor.ARGB32.color(0, 0, 0, 0),
+                    ARGB.color(0, 0, 0, 0),
                     BlockBehaviour.Properties.of()
                             .mapColor(MapColor.DIRT)
                             .noOcclusion()
@@ -766,7 +766,7 @@ public class DSBlocks {
     public static final @Nullable DeferredHolder<Block, TreasureBlock> BEE_HONEY_TREASURE = registerModCheck(
             "bee_honey_treasure",
             () -> new TreasureBlock(
-                    FastColor.ARGB32.color(255, 250, 201, 48),
+                    ARGB.color(255, 250, 201, 48),
                     BlockBehaviour.Properties.of()
                             .mapColor(MapColor.GOLD)
                             .noOcclusion()
@@ -781,7 +781,7 @@ public class DSBlocks {
     public static final @Nullable DeferredHolder<Block, TreasureBlock> RUBY_DRAGON_TREASURE = registerModCheck(
             "ruby_dragon_treasure",
             () -> new TreasureBlock(
-                    FastColor.ARGB32.color(255, 230, 29, 29),
+                    ARGB.color(255, 230, 29, 29),
                     BlockBehaviour.Properties.of()
                             .mapColor(MapColor.FIRE)
                             .noOcclusion()
@@ -796,7 +796,7 @@ public class DSBlocks {
     public static final @Nullable DeferredHolder<Block, TreasureBlock> CARNELIAN_DRAGON_TREASURE = registerModCheck(
             "carnelian_dragon_treasure",
             () -> new TreasureBlock(
-                    FastColor.ARGB32.color(255, 224, 71, 29),
+                    ARGB.color(255, 224, 71, 29),
                     BlockBehaviour.Properties.of()
                             .mapColor(MapColor.NETHER)
                             .noOcclusion()
@@ -811,7 +811,7 @@ public class DSBlocks {
     public static final @Nullable DeferredHolder<Block, TreasureBlock> TOPAZ_DRAGON_TREASURE = registerModCheck(
             "topaz_dragon_treasure",
             () -> new TreasureBlock(
-                    FastColor.ARGB32.color(255, 230, 113, 29),
+                    ARGB.color(255, 230, 113, 29),
                     BlockBehaviour.Properties.of()
                             .mapColor(MapColor.COLOR_YELLOW)
                             .noOcclusion()
@@ -826,7 +826,7 @@ public class DSBlocks {
     public static final @Nullable DeferredHolder<Block, TreasureBlock> CITRINE_DRAGON_TREASURE = registerModCheck(
             "citrine_dragon_treasure",
             () -> new TreasureBlock(
-                    FastColor.ARGB32.color(255, 199, 139, 3),
+                    ARGB.color(255, 199, 139, 3),
                     BlockBehaviour.Properties.of()
                             .mapColor(MapColor.GOLD)
                             .noOcclusion()
@@ -841,7 +841,7 @@ public class DSBlocks {
     public static final @Nullable DeferredHolder<Block, TreasureBlock> HELIODOR_DRAGON_TREASURE = registerModCheck(
             "heliodor_dragon_treasure",
             () -> new TreasureBlock(
-                    FastColor.ARGB32.color(255, 230, 197, 29),
+                    ARGB.color(255, 230, 197, 29),
                     BlockBehaviour.Properties.of()
                             .mapColor(MapColor.COLOR_YELLOW)
                             .noOcclusion()
@@ -856,7 +856,7 @@ public class DSBlocks {
     public static final @Nullable DeferredHolder<Block, TreasureBlock> MOLDAVITE_DRAGON_TREASURE = registerModCheck(
             "moldavite_dragon_treasure",
             () -> new TreasureBlock(
-                    FastColor.ARGB32.color(255, 166, 217, 35),
+                    ARGB.color(255, 166, 217, 35),
                     BlockBehaviour.Properties.of()
                             .mapColor(MapColor.COLOR_LIGHT_GREEN)
                             .noOcclusion()
@@ -871,7 +871,7 @@ public class DSBlocks {
     public static final @Nullable DeferredHolder<Block, TreasureBlock> PERIDOT_DRAGON_TREASURE = registerModCheck(
             "peridot_dragon_treasure",
             () -> new TreasureBlock(
-                    FastColor.ARGB32.color(255, 41, 219, 24),
+                    ARGB.color(255, 41, 219, 24),
                     BlockBehaviour.Properties.of()
                             .mapColor(MapColor.GRASS)
                             .noOcclusion()
@@ -886,7 +886,7 @@ public class DSBlocks {
     public static final @Nullable DeferredHolder<Block, TreasureBlock> TURQUOISE_DRAGON_TREASURE = registerModCheck(
             "turquoise_dragon_treasure",
             () -> new TreasureBlock(
-                    FastColor.ARGB32.color(255, 61, 244, 189),
+                    ARGB.color(255, 61, 244, 189),
                     BlockBehaviour.Properties.of()
                             .mapColor(MapColor.WARPED_WART_BLOCK)
                             .noOcclusion()
@@ -901,7 +901,7 @@ public class DSBlocks {
     public static final @Nullable DeferredHolder<Block, TreasureBlock> KYANITE_DRAGON_TREASURE = registerModCheck(
             "kyanite_dragon_treasure",
             () -> new TreasureBlock(
-                    FastColor.ARGB32.color(255, 65, 196, 243),
+                    ARGB.color(255, 65, 196, 243),
                     BlockBehaviour.Properties.of()
                             .mapColor(MapColor.WARPED_NYLIUM)
                             .noOcclusion()
@@ -916,7 +916,7 @@ public class DSBlocks {
     public static final @Nullable DeferredHolder<Block, TreasureBlock> SAPPHIRE_DRAGON_TREASURE = registerModCheck(
             "sapphire_dragon_treasure",
             () -> new TreasureBlock(
-                    FastColor.ARGB32.color(255, 29, 105, 229),
+                    ARGB.color(255, 29, 105, 229),
                     BlockBehaviour.Properties.of()
                             .mapColor(MapColor.COLOR_BLUE)
                             .noOcclusion()
@@ -931,7 +931,7 @@ public class DSBlocks {
     public static final @Nullable DeferredHolder<Block, TreasureBlock> IOLITE_DRAGON_TREASURE = registerModCheck(
             "iolite_dragon_treasure",
             () -> new TreasureBlock(
-                    FastColor.ARGB32.color(255, 117, 67, 245),
+                    ARGB.color(255, 117, 67, 245),
                     BlockBehaviour.Properties.of()
                             .mapColor(MapColor.TERRACOTTA_BLUE)
                             .noOcclusion()
@@ -946,7 +946,7 @@ public class DSBlocks {
     public static final @Nullable DeferredHolder<Block, TreasureBlock> ALEXANDRITE_DRAGON_TREASURE = registerModCheck(
             "alexandrite_dragon_treasure",
             () -> new TreasureBlock(
-                    FastColor.ARGB32.color(255, 171, 55, 229),
+                    ARGB.color(255, 171, 55, 229),
                     BlockBehaviour.Properties.of()
                             .mapColor(MapColor.TERRACOTTA_PURPLE)
                             .noOcclusion()
@@ -961,7 +961,7 @@ public class DSBlocks {
     public static final @Nullable DeferredHolder<Block, TreasureBlock> AMMOLITE_DRAGON_TREASURE = registerModCheck(
             "ammolite_dragon_treasure",
             () -> new TreasureBlock(
-                    FastColor.ARGB32.color(255, 219, 43, 255),
+                    ARGB.color(255, 219, 43, 255),
                     BlockBehaviour.Properties.of()
                             .mapColor(MapColor.WARPED_HYPHAE)
                             .noOcclusion()
@@ -976,7 +976,7 @@ public class DSBlocks {
     public static final @Nullable DeferredHolder<Block, TreasureBlock> ROSE_QUARTZ_DRAGON_TREASURE = registerModCheck(
             "rose_quartz_dragon_treasure",
             () -> new TreasureBlock(
-                    FastColor.ARGB32.color(255, 255, 78, 171),
+                    ARGB.color(255, 255, 78, 171),
                     BlockBehaviour.Properties.of()
                             .mapColor(MapColor.TERRACOTTA_WHITE)
                             .noOcclusion()
@@ -991,7 +991,7 @@ public class DSBlocks {
     public static final @Nullable DeferredHolder<Block, TreasureBlock> BLACK_DIAMOND_DRAGON_TREASURE = registerModCheck(
             "black_diamond_dragon_treasure",
             () -> new TreasureBlock(
-                    FastColor.ARGB32.color(255, 95, 82, 76),
+                    ARGB.color(255, 95, 82, 76),
                     BlockBehaviour.Properties.of()
                             .mapColor(MapColor.COLOR_GRAY)
                             .noOcclusion()
@@ -1006,7 +1006,7 @@ public class DSBlocks {
     public static final @Nullable DeferredHolder<Block, TreasureBlock> WHITE_DIAMOND_DRAGON_TREASURE = registerModCheck(
             "white_diamond_dragon_treasure",
             () -> new TreasureBlock(
-                    FastColor.ARGB32.color(255, 213, 193, 210),
+                    ARGB.color(255, 213, 193, 210),
                     BlockBehaviour.Properties.of()
                             .mapColor(MapColor.WOOL)
                             .noOcclusion()

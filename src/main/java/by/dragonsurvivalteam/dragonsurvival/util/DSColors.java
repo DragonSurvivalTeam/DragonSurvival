@@ -5,7 +5,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.util.ColorRGBA;
-import net.minecraft.util.FastColor;
+import net.minecraft.util.ARGB;
 
 /** Colors are defined as RGB (no alpha) */
 public class DSColors {
@@ -74,17 +74,17 @@ public class DSColors {
         return rgba >>> 8;
     }
 
-    /** Returns a color in the format of {@link FastColor.ARGB32} */
+    /** Returns a color in the format of {@link ARGB} */
     public static int withAlpha(int rgb, float alpha) {
-        return FastColor.ARGB32.color((int) (255 * alpha), rgb);
+        return ARGB.color((int) (255 * alpha), rgb);
     }
 
-    /** Returns a color in the format of {@link FastColor.ARGB32} */
+    /** Returns a color in the format of {@link ARGB} */
     public static int toARGB(final TextColor color) {
-        return FastColor.ARGB32.color(255, color.getValue());
+        return ARGB.color(255, color.getValue());
     }
 
-    /** Returns a color in the format of {@link FastColor.ARGB32} */
+    /** Returns a color in the format of {@link ARGB} */
     public static int toARGB(final ColorRGBA color) {
         int rgba = color.rgba();
 
@@ -93,6 +93,6 @@ public class DSColors {
         int blue = (rgba >> 8) & 0xFF;
         int alpha = rgba & 0xFF;
 
-        return FastColor.ARGB32.color(alpha, red, green, blue);
+        return ARGB.color(alpha, red, green, blue);
     }
 }

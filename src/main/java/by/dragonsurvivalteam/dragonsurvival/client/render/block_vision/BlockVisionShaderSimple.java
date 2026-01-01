@@ -22,7 +22,7 @@ import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.util.FastColor;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -52,10 +52,10 @@ public class BlockVisionShaderSimple {
     public static void render(final BlockVisionHandler.Data data, final PoseStack pose, final int colorARGB) {
         prepare();
 
-        int alpha = FastColor.ARGB32.alpha(colorARGB);
-        int red = FastColor.ARGB32.red(colorARGB);
-        int green = FastColor.ARGB32.green(colorARGB);
-        int blue = FastColor.ARGB32.blue(colorARGB);
+        int alpha = ARGB.alpha(colorARGB);
+        int red = ARGB.red(colorARGB);
+        int green = ARGB.green(colorARGB);
+        int blue = ARGB.blue(colorARGB);
 
         BlockPos position = BlockPos.containing(data.x(), data.y(), data.z());
         Level level = Objects.requireNonNull(Minecraft.getInstance().level);

@@ -13,7 +13,7 @@ import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.util.FastColor;
+import net.minecraft.util.ARGB;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -36,9 +36,9 @@ public class CustomGlowParticle extends GlowParticle {
         if (colors != null) {
             int argb = DSColors.withAlpha(Functions.lerpColor(colors, 1, colorOffset), 1);
 
-            float red = FastColor.ARGB32.red(argb) / 255f;
-            float green = FastColor.ARGB32.green(argb) / 255f;
-            float blue = FastColor.ARGB32.blue(argb) / 255f;
+            float red = ARGB.red(argb) / 255f;
+            float green = ARGB.green(argb) / 255f;
+            float blue = ARGB.blue(argb) / 255f;
             setColor(red, green, blue);
         }
     }
@@ -68,9 +68,9 @@ public class CustomGlowParticle extends GlowParticle {
             }
 
             int argb = Functions.lerpColor(colors);
-            float red = FastColor.ARGB32.red(argb) / 255f;
-            float green = FastColor.ARGB32.green(argb) / 255f;
-            float blue = FastColor.ARGB32.blue(argb) / 255f;
+            float red = ARGB.red(argb) / 255f;
+            float green = ARGB.green(argb) / 255f;
+            float blue = ARGB.blue(argb) / 255f;
             particle.setColor(red, green, blue);
 
             particle.yd *= 0.2F;

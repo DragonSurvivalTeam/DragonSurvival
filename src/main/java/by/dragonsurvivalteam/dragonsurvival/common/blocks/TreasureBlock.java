@@ -12,7 +12,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
-import net.minecraft.util.FastColor;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EntityType;
@@ -301,7 +301,7 @@ public class TreasureBlock extends FallingBlock implements SimpleWaterloggedBloc
 
         if (level.isEmptyBlock(position.above())) {
             if (random.nextInt(100) < 35) {
-                level.addParticle(new TreasureParticleOption(FastColor.ARGB32.red(effectColor) / 255F, FastColor.ARGB32.green(effectColor) / 255F, FastColor.ARGB32.blue(effectColor) / 255F, 1F), (double) position.getX() + xOffset, (double) position.getY() + yOffset, (double) position.getZ() + zOffset, 0, 0, 0);
+                level.addParticle(new TreasureParticleOption(ARGB.red(effectColor) / 255F, ARGB.green(effectColor) / 255F, ARGB.blue(effectColor) / 255F, 1F), (double) position.getX() + xOffset, (double) position.getY() + yOffset, (double) position.getZ() + zOffset, 0, 0, 0);
             }
         }
     }
