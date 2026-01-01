@@ -658,7 +658,7 @@ public class DSBlocks {
                     .strength(15, 50)
                     .requiresCorrectToolForDrops()
                     .noOcclusion()
-                    .noCollission()
+                    .noCollision()
                     .lightLevel(value -> value.getValue(BlockStateProperties.LIT) ? 15 : 0)
             )
     );
@@ -674,7 +674,7 @@ public class DSBlocks {
                     .pushReaction(PushReaction.IGNORE)
                     .strength(1, 1200)
                     .noOcclusion()
-                    .noCollission()
+                    .noCollision()
             )
     );
 
