@@ -1268,11 +1268,12 @@ public class DSBlocks {
     static {
         for (int i = 1; i < 9; i++) { // 8 total types, one for each color
             for (SkeletonPieceBlock.Type type : SkeletonPieceBlock.Type.values()) {
-                DeferredHolder<Block, SkeletonPieceBlock> block = REGISTRY.register(type.getSerializedName() + "_skin" + i,
-                        () -> new SkeletonPieceBlock(type, BlockBehaviour.Properties.of()
+                DeferredHolder<Block, SkeletonPieceBlock> block = REGISTRY.registerBlock(type.getSerializedName() + "_skin" + i,
+                        properties -> new SkeletonPieceBlock(type, properties),
+                        () -> BlockBehaviour.Properties.of()
                                 .mapColor(MapColor.CLAY)
                                 .strength(1.0F)
-                                .sound(SoundType.BONE_BLOCK)));
+                                .sound(SoundType.BONE_BLOCK));
 
                 DeferredHolder<Item, BlockItem> item = DSItems.REGISTRY.register(type.getSerializedName() + "_skin" + i,
                         () -> new BlockItem(block.value(), new Item.Properties()));
