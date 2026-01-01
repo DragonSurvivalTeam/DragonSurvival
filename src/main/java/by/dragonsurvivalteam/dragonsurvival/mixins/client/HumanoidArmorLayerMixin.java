@@ -15,7 +15,7 @@ import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.entity.layers.HumanoidArmorLayer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.armortrim.ArmorTrim;
 import org.spongepowered.asm.mixin.Mixin;
@@ -28,14 +28,14 @@ import java.util.function.Function;
 /** Apply hunter stack alpha change to armor pieces (for human players) */
 @Mixin(HumanoidArmorLayer.class)
 public abstract class HumanoidArmorLayerMixin {
-    @Unique private static final Function<ResourceLocation, RenderType> dragonSurvival$TRANSLUCENT_ARMOR_CUTOUT_NO_CULL = Util.memoize(texture -> dragonSurvival$createTranslucentArmorCutoutNoCull("translucent_armor_cutout_no_cull", texture, false));
+    @Unique private static final Function<Identifier, RenderType> dragonSurvival$TRANSLUCENT_ARMOR_CUTOUT_NO_CULL = Util.memoize(texture -> dragonSurvival$createTranslucentArmorCutoutNoCull("translucent_armor_cutout_no_cull", texture, false));
 
-    @Unique private static final Function<ResourceLocation, RenderType> dragonSurvival$TRANSLUCENT_ARMOR_DECAL_CUTOUT_NO_CULL = Util.memoize(texture -> dragonSurvival$createTranslucentArmorCutoutNoCull("translucent_armor_decal_cutout_no_cull", texture, true));
+    @Unique private static final Function<Identifier, RenderType> dragonSurvival$TRANSLUCENT_ARMOR_DECAL_CUTOUT_NO_CULL = Util.memoize(texture -> dragonSurvival$createTranslucentArmorCutoutNoCull("translucent_armor_decal_cutout_no_cull", texture, true));
 
     /** Needed because there is no entity context at certain points - not an issue since the game is not multithreaded */
     @Unique private static int dragonSurvival$alpha = HunterHandler.UNMODIFIED;
 
-    @ModifyArg(method = "renderArmorPiece(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/world/entity/EquipmentSlot;ILnet/minecraft/client/model/HumanoidModel;FFFFFF)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/entity/layers/HumanoidArmorLayer;renderModel(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;ILnet/minecraft/client/model/Model;ILnet/minecraft/resources/ResourceLocation;)V"), index = 4)
+    @ModifyArg(method = "renderArmorPiece(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/world/entity/EquipmentSlot;ILnet/minecraft/client/model/HumanoidModel;FFFFFF)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/entity/layers/HumanoidArmorLayer;renderModel(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;ILnet/minecraft/client/model/Model;ILnet/minecraft/resources/Identifier;)V"), index = 4)
     private int dragonSurvival$modifyAlpha(int color, @Local(argsOnly = true) final LivingEntity entity) {
         if (HunterData.hasTransparency(entity)) {
             dragonSurvival$alpha = HunterHandler.calculateAlpha(entity);
@@ -46,8 +46,8 @@ public abstract class HumanoidArmorLayerMixin {
         return color;
     }
 
-    @ModifyArg(method = "renderModel(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;ILnet/minecraft/client/model/Model;ILnet/minecraft/resources/ResourceLocation;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/MultiBufferSource;getBuffer(Lnet/minecraft/client/renderer/RenderType;)Lcom/mojang/blaze3d/vertex/VertexConsumer;"))
-    private RenderType dragonSurvival$getTranslucentRenderType(final RenderType renderType, @Local(argsOnly = true) final ResourceLocation texture) {
+    @ModifyArg(method = "renderModel(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;ILnet/minecraft/client/model/Model;ILnet/minecraft/resources/Identifier;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/MultiBufferSource;getBuffer(Lnet/minecraft/client/renderer/RenderType;)Lcom/mojang/blaze3d/vertex/VertexConsumer;"))
+    private RenderType dragonSurvival$getTranslucentRenderType(final RenderType renderType, @Local(argsOnly = true) final Identifier texture) {
         if (dragonSurvival$alpha != HunterHandler.UNMODIFIED && dragonSurvival$alpha != 1) {
             return dragonSurvival$TRANSLUCENT_ARMOR_CUTOUT_NO_CULL.apply(texture);
         }
@@ -81,7 +81,7 @@ public abstract class HumanoidArmorLayerMixin {
         original.call(instance, poseStack, vertexConsumer, packedLight, packedOverlay);
     }
 
-    @Unique private static RenderType.CompositeRenderType dragonSurvival$createTranslucentArmorCutoutNoCull(final String name, final ResourceLocation texture, boolean equalDepthTest) {
+    @Unique private static RenderType.CompositeRenderType dragonSurvival$createTranslucentArmorCutoutNoCull(final String name, final Identifier texture, boolean equalDepthTest) {
         RenderType.CompositeState state = RenderType.CompositeState.builder()
                 .setShaderState(RenderStateShard.RENDERTYPE_ARMOR_CUTOUT_NO_CULL_SHADER)
                 .setTextureState(new RenderStateShard.TextureStateShard(texture, false, false))

@@ -1,7 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.config;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.ResourceLocationWrapper;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.IdentifierWrapper;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigRange;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
@@ -13,7 +13,7 @@ import com.electronwill.nightconfig.core.EnumGetMethod;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.EntityType;
@@ -349,10 +349,10 @@ public class ConfigHandler {
     private static boolean checkSpecific(final ConfigOption configOption, final Object configValue) {
         switch (configOption.validation()) {
             case RESOURCE_LOCATION -> {
-                return ResourceLocation.tryParse((String) configValue) != null;
+                return Identifier.tryParse((String) configValue) != null;
             }
             case RESOURCE_LOCATION_REGEX -> {
-                return ResourceLocationWrapper.validateRegexResourceLocation(configValue.toString());
+                return IdentifierWrapper.validateRegexIdentifier(configValue.toString());
             }
             case RESOURCE_LOCATION_NUMBER -> {
                 String[] split = ((String) configValue).split(":");
@@ -361,7 +361,7 @@ public class ConfigHandler {
                     return false;
                 }
 
-                if (ResourceLocation.tryParse(split[0] + ":" + split[1]) == null) {
+                if (Identifier.tryParse(split[0] + ":" + split[1]) == null) {
                     return false;
                 }
 
@@ -374,7 +374,7 @@ public class ConfigHandler {
                     return false;
                 }
 
-                if (ResourceLocation.tryParse(split[0] + ":" + split[1]) == null) {
+                if (Identifier.tryParse(split[0] + ":" + split[1]) == null) {
                     return false;
                 }
 
@@ -391,7 +391,7 @@ public class ConfigHandler {
                     return false;
                 }
 
-                if (ResourceLocation.tryParse(split[0] + ":" + split[1]) == null) {
+                if (Identifier.tryParse(split[0] + ":" + split[1]) == null) {
                     return false;
                 }
 
@@ -413,11 +413,11 @@ public class ConfigHandler {
      * @param <T>      Types which can be used in a registry (e.g. Item or Block)
      * @return Either a list of the resolved tag or the resource element
      */
-    private static <T> List<T> parseResourceLocation(@NotNull final Registry<T> registry, final String location) {
+    private static <T> List<T> parseIdentifier(@NotNull final Registry<T> registry, final String location) {
         // There are configuration which have additional information after the resource location (e.g. food configuration)
-        ResourceLocation resourceLocation = ResourceLocation.tryParse(location);
+        Identifier Identifier = Identifier.tryParse(location);
 
-        if (resourceLocation == null) {
+        if (Identifier == null) {
             // Only split the namespace from the (potential) regex path
             String[] splitLocation = location.split(":", 2);
 
@@ -429,7 +429,7 @@ public class ConfigHandler {
             List<T> list = new ArrayList<>();
 
             registry.registryKeySet().forEach(key -> {
-                ResourceLocation keyLocation = key.location();
+                Identifier keyLocation = key.location();
 
                 if (keyLocation.getNamespace().equals(splitLocation[0])) {
                     Pattern pattern = Pattern.compile(splitLocation[1]);
@@ -445,14 +445,14 @@ public class ConfigHandler {
             return list;
         }
 
-        if (registry.containsKey(resourceLocation)) {
-            Optional<Holder.Reference<T>> optional = registry.getHolder(resourceLocation);
+        if (registry.containsKey(Identifier)) {
+            Optional<Holder.Reference<T>> optional = registry.getHolder(Identifier);
 
             if (optional.isPresent() && optional.get().isBound()) {
                 return List.of(optional.get().value());
             }
         } else {
-            Optional<TagKey<T>> tag = registry.getTagNames().filter(registryTag -> registryTag.location().equals(resourceLocation)).findAny();
+            Optional<TagKey<T>> tag = registry.getTagNames().filter(registryTag -> registryTag.location().equals(Identifier)).findAny();
 
             if (tag.isPresent()) {
                 List<T> list = new ArrayList<>();
@@ -503,7 +503,7 @@ public class ConfigHandler {
             Registry<?> registry = REGISTRY_MAP.get(registryType);
 
             if (registry != null) {
-                List<?> list = parseResourceLocation(registry, string);
+                List<?> list = parseIdentifier(registry, string);
 
                 if (field.getGenericType() instanceof List<?>) {
                     return list.isEmpty() ? List.of(string) : list;
@@ -712,12 +712,12 @@ public class ConfigHandler {
         Registry<T> registry = (Registry<T>) REGISTRY_MAP.getOrDefault(type, null);
         HashSet<T> hashSet = new HashSet<>();
 
-        for (String rawResourceLocation : values) {
-            if (rawResourceLocation == null) {
+        for (String rawIdentifier : values) {
+            if (rawIdentifier == null) {
                 continue;
             }
 
-            hashSet.addAll(parseResourceLocation(registry, rawResourceLocation));
+            hashSet.addAll(parseIdentifier(registry, rawIdentifier));
         }
 
         return hashSet;

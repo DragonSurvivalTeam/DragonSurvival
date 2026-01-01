@@ -18,7 +18,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
@@ -40,7 +40,7 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
     private static final Color RENDER_COLOR = Color.ofRGB(255, 255, 255);
     private static final Color TRANSPARENT_RENDER_COLOR = Color.ofRGBA(1, 1, 1, HunterHandler.MIN_ALPHA);
 
-    public ResourceLocation glowTexture;
+    public Identifier glowTexture;
     public boolean isRenderingLayer;
     public boolean shouldRenderLayers = true;
 

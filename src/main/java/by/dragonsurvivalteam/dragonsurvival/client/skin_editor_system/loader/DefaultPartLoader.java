@@ -13,7 +13,7 @@ import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
@@ -27,14 +27,14 @@ public class DefaultPartLoader extends SimpleJsonResourceReloadListener {
     public static final String NO_PART = "none";
 
     private static final Map<ResourceKey<DragonBody>, Map<ResourceKey<DragonSpecies>, Map<ResourceKey<DragonStage>, HashMap<SkinLayer, String>>>> PARTY_BY_BODY = new HashMap<>();
-    private static final Map<ResourceLocation, Map<ResourceKey<DragonSpecies>, Map<ResourceKey<DragonStage>, HashMap<SkinLayer, String>>>> PARTY_BY_MODEL = new HashMap<>();
+    private static final Map<Identifier, Map<ResourceKey<DragonSpecies>, Map<ResourceKey<DragonStage>, HashMap<SkinLayer, String>>>> PARTY_BY_MODEL = new HashMap<>();
 
     public DefaultPartLoader() {
         super(new Gson(), "skin/default_parts");
     }
 
     @Override
-    protected void apply(@NotNull final Map<ResourceLocation, JsonElement> map, @NotNull final ResourceManager manager, @NotNull final ProfilerFiller profiler) {
+    protected void apply(@NotNull final Map<Identifier, JsonElement> map, @NotNull final ResourceManager manager, @NotNull final ProfilerFiller profiler) {
         PARTY_BY_MODEL.clear();
 
         map.forEach((location, value) -> {
@@ -61,7 +61,7 @@ public class DefaultPartLoader extends SimpleJsonResourceReloadListener {
     // TODO :: add a call to also query by body in case people want to define things different defaults for them
     //  idea is body is checked first and then the model if no valid entry was found
     //  this means that 'NO_PART' return might need to be replaced by returning null or sth. like that
-    public static @Nullable String getDefaultPartKey(final ResourceKey<DragonSpecies> species, final ResourceKey<DragonStage> stage, final Either<ResourceKey<DragonBody>, ResourceLocation> partsKey, final SkinLayer layer) {
+    public static @Nullable String getDefaultPartKey(final ResourceKey<DragonSpecies> species, final ResourceKey<DragonStage> stage, final Either<ResourceKey<DragonBody>, Identifier> partsKey, final SkinLayer layer) {
         Map<ResourceKey<DragonSpecies>, Map<ResourceKey<DragonStage>, HashMap<SkinLayer, String>>> entries = partsKey.map(PARTY_BY_BODY::get, PARTY_BY_MODEL::get);
 
         if (entries == null) {

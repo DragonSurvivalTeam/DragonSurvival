@@ -7,17 +7,17 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.Map;
 
 public class BodyIcons {
-    public static final Codec<Map<ResourceKey<DragonSpecies>, ResourceLocation>> CODEC = Codec.unboundedMap(
-            ResourceKey.codec(DragonSpecies.REGISTRY), ResourceLocation.CODEC
+    public static final Codec<Map<ResourceKey<DragonSpecies>, Identifier>> CODEC = Codec.unboundedMap(
+            ResourceKey.codec(DragonSpecies.REGISTRY), Identifier.CODEC
     );
 
-    public static ResourceLocation getIcon(final Holder<DragonBody> body, final ResourceKey<DragonSpecies> species) {
-        Map<ResourceKey<DragonSpecies>, ResourceLocation> data = body.getData(DSDataMaps.BODY_ICONS);
+    public static Identifier getIcon(final Holder<DragonBody> body, final ResourceKey<DragonSpecies> species) {
+        Map<ResourceKey<DragonSpecies>, Identifier> data = body.getData(DSDataMaps.BODY_ICONS);
 
         if (data == null) {
             return body.value().defaultIcon().orElse(DragonSurvival.MISSING_TEXTURE);

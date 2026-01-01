@@ -13,7 +13,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.npc.Villager;
@@ -48,7 +48,7 @@ public class EntityStateHandler implements INBTSerializable<CompoundTag> {
 
     public static boolean cannotPillageProfession(final Villager villager) {
         VillagerProfession profession = villager.getVillagerData().getProfession();
-        ResourceLocation key = BuiltInRegistries.VILLAGER_PROFESSION.getKey(profession);
+        Identifier key = BuiltInRegistries.VILLAGER_PROFESSION.getKey(profession);
         Holder.Reference<VillagerProfession> holder = BuiltInRegistries.VILLAGER_PROFESSION.getHolderOrThrow(ResourceKey.create(BuiltInRegistries.VILLAGER_PROFESSION.key(), key));
         return BuiltInRegistries.VILLAGER_PROFESSION.getOrCreateTag(DSProfessionTags.PILLAGE_BLACKLIST).contains(holder);
     }

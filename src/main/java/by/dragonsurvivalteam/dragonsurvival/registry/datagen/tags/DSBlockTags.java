@@ -9,7 +9,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.DSBlocks;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
@@ -401,7 +401,7 @@ public class DSBlockTags extends BlockTagsProvider {
     }
 
     private static TagKey<Block> key(@NotNull final String name) {
-        return BlockTags.create(ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, name));
+        return BlockTags.create(Identifier.fromNamespaceAndPath(DragonSurvival.MODID, name));
     }
 
     @Override

@@ -15,7 +15,7 @@ import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.ExtraCodecs;
@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Optional;
 
 public record SupplyTrigger(
-        ResourceLocation supplyType,
+        Identifier supplyType,
         Holder<Attribute> attributeToUseAsBase,
         int triggerRate,
         float reductionRate,
@@ -43,7 +43,7 @@ public record SupplyTrigger(
     private static final String PENALTY_SUPPLY_TRIGGER_CONSTANT = Translation.Type.GUI.wrap("penalty.supply_trigger.constant");
 
     public static final MapCodec<SupplyTrigger> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            ResourceLocation.CODEC.fieldOf("supply_type").forGetter(SupplyTrigger::supplyType),
+            Identifier.CODEC.fieldOf("supply_type").forGetter(SupplyTrigger::supplyType),
             Attribute.CODEC.optionalFieldOf("attribute", DSAttributes.PENALTY_RESISTANCE_TIME).forGetter(SupplyTrigger::attributeToUseAsBase),
             ExtraCodecs.intRange(1, Integer.MAX_VALUE).fieldOf("trigger_rate").forGetter(SupplyTrigger::triggerRate),
             Codec.FLOAT.fieldOf("reduction_rate").forGetter(SupplyTrigger::reductionRate),

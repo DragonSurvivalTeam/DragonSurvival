@@ -12,7 +12,7 @@
 //import mezz.jei.api.registration.IGuiHandlerRegistration;
 //import mezz.jei.api.registration.IRecipeTransferRegistration;
 //import mezz.jei.api.runtime.IJeiRuntime;
-//import net.minecraft.resources.ResourceLocation;
+//import net.minecraft.resources.Identifier;
 //import net.minecraft.world.item.ItemStack;
 //import org.jetbrains.annotations.NotNull;
 //
@@ -23,8 +23,8 @@
 //    public static IJeiRuntime runtime;
 //
 //    @Override
-//    public @NotNull ResourceLocation getPluginUid() {
-//        return ResourceLocation.fromNamespaceAndPath(MODID, "fix");
+//    public @NotNull Identifier getPluginUid() {
+//        return Identifier.fromNamespaceAndPath(MODID, "fix");
 //    }
 //
 //    @Override

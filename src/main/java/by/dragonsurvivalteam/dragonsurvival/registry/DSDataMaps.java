@@ -14,7 +14,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.registries.datamaps.AdvancedDataMapType;
@@ -43,7 +43,7 @@ public class DSDataMaps {
     // --- Dragon Body --- //
 
     // TODO :: make it a client resource? server never interacts with it
-    public static final AdvancedDataMapType<DragonBody, Map<ResourceKey<DragonSpecies>, ResourceLocation>, BodyIconRemover> BODY_ICONS = AdvancedDataMapType.builder(DragonSurvival.res("body_icons"), DragonBody.REGISTRY, BodyIcons.CODEC)
+    public static final AdvancedDataMapType<DragonBody, Map<ResourceKey<DragonSpecies>, Identifier>, BodyIconRemover> BODY_ICONS = AdvancedDataMapType.builder(DragonSurvival.res("body_icons"), DragonBody.REGISTRY, BodyIcons.CODEC)
             .merger(DataMapValueMerger.mapMerger()).remover(BodyIconRemover.CODEC).synced(BodyIcons.CODEC, true).build();
 
     @SubscribeEvent

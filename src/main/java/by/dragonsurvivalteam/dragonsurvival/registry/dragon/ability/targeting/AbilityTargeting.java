@@ -17,7 +17,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -89,8 +89,8 @@ public interface AbilityTargeting {
         }
 
         /// Returns the ids of the [by.dragonsurvivalteam.dragonsurvival.common.codecs.duration_instance.DurationInstanceBase] effects
-        public List<ResourceLocation> getEffectIDs() {
-            List<ResourceLocation> ids = new ArrayList<>();
+        public List<Identifier> getEffectIDs() {
+            List<Identifier> ids = new ArrayList<>();
 
             for (AbilityEntityEffect effect : effects) {
                 ids.addAll(effect.getEffectIDs());

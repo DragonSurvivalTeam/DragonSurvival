@@ -23,7 +23,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.TextColor;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
@@ -49,22 +49,22 @@ import java.util.concurrent.CompletableFuture;
 
 public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
     private final GeoEntityRenderer<DragonEntity> renderer;
-    private static final HashMap<ResourceLocation, CompletableFuture<Void>> armorTextures = new HashMap<>();
-    private static final HashMap<ResourceLocation, HashMap<EquipmentSlot, NativeImage>> armorMasksPerModel = new HashMap<>();
+    private static final HashMap<Identifier, CompletableFuture<Void>> armorTextures = new HashMap<>();
+    private static final HashMap<Identifier, HashMap<EquipmentSlot, NativeImage>> armorMasksPerModel = new HashMap<>();
 
     public DragonArmorRenderLayer(final GeoEntityRenderer<DragonEntity> renderer) {
         super(renderer);
         this.renderer = renderer;
     }
 
-    private void initArmorMasks(final ResourceLocation model) {
+    private void initArmorMasks(final Identifier model) {
         armorMasksPerModel.computeIfAbsent(model, key -> {
             HashMap<EquipmentSlot, NativeImage> masks = new HashMap<>();
 
             for (EquipmentSlot slot : EquipmentSlot.values()) {
                 if (slot.getType() == EquipmentSlot.Type.HUMANOID_ARMOR) {
                     String texture = "textures/armor/" + key.getPath() + "/armor_trims/masks/" + slot.getName() + "_mask.png";
-                    ResourceLocation resource = ResourceLocation.fromNamespaceAndPath(key.getNamespace(), texture);
+                    Identifier resource = Identifier.fromNamespaceAndPath(key.getNamespace(), texture);
                     Optional<Resource> armorFile = Minecraft.getInstance().getResourceManager().getResource(resource);
 
                     if (armorFile.isEmpty()) {
@@ -101,7 +101,7 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
         }
 
         if (hasAnyArmorEquipped(player) || ClawInventoryData.getData(player).shouldRenderClaws) {
-            Optional<ResourceLocation> armorTexture = constructTrimmedDragonArmorTexture(player);
+            Optional<Identifier> armorTexture = constructTrimmedDragonArmorTexture(player);
 
             if (armorTexture.isPresent()) {
                 ((DragonRenderer) renderer).isRenderingLayer = true;
@@ -111,7 +111,7 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
         }
     }
 
-    private void renderArmor(final PoseStack poseStack, final DragonEntity animatable, final BakedGeoModel bakedModel, final MultiBufferSource bufferSource, float partialTick, int packedLight, final ResourceLocation texture) {
+    private void renderArmor(final PoseStack poseStack, final DragonEntity animatable, final BakedGeoModel bakedModel, final MultiBufferSource bufferSource, float partialTick, int packedLight, final Identifier texture) {
         if (animatable == null) {
             return;
         }
@@ -129,10 +129,10 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
         DragonSurvivalClient.DRAGON_MODEL.setOverrideTexture(null);
     }
 
-    private static Optional<ResourceLocation> constructTrimmedDragonArmorTexture(final Player player) {
+    private static Optional<Identifier> constructTrimmedDragonArmorTexture(final Player player) {
         String armorUUID = buildUniqueArmorUUID(player);
         // This is an internal (dynamically created) resource, so we can keep it in the DS namespace
-        ResourceLocation imageResource = DragonSurvival.res("armor_" + armorUUID);
+        Identifier imageResource = DragonSurvival.res("armor_" + armorUUID);
 
         if (armorTextures.containsKey(imageResource)) {
             CompletableFuture<Void> future = armorTextures.get(imageResource);
@@ -152,7 +152,7 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
 
     private static NativeImage compileArmorTexture(final Player player) {
         DragonStateHandler handler = DragonStateProvider.getData(player);
-        ResourceLocation currentDragonModel = handler.getModel();
+        Identifier currentDragonModel = handler.getModel();
         DragonBody.TextureSize textureSize = handler.body().value().textureSize();
 
         if (!armorMasksPerModel.containsKey(currentDragonModel)) {
@@ -172,7 +172,7 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
             }
 
             ItemStack stack = CosmeticArmorReworkedHelper.getItemVisibleInSlot(player, equipmentSlot);
-            ResourceLocation existingArmorLocation = generateArmorTextureResourceLocation(player, equipmentSlot);
+            Identifier existingArmorLocation = generateArmorTextureIdentifier(player, equipmentSlot);
             NativeImage armorImage = RenderingUtils.getImageFromResource(existingArmorLocation);
 
             // TODO: This will need to be significantly more flexible for 1.21.2 onwards (since anything can be considered armor)
@@ -195,7 +195,7 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
                     Color trimBaseColor;
                     hasTrim = true;
 
-                    ResourceLocation paletteResource = ResourceLocation.withDefaultNamespace("textures/trims/color_palettes/" + trim.material().value().assetName() + ".png");
+                    Identifier paletteResource = Identifier.withDefaultNamespace("textures/trims/color_palettes/" + trim.material().value().assetName() + ".png");
                     NativeImage colorPalette = RenderingUtils.getImageFromResource(paletteResource);
 
                     if (colorPalette != null) {
@@ -254,7 +254,7 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
                 if (hasTrim) {
                     String patternPath = trim.pattern().value().assetId().getPath();
                     String texture = "textures/armor/" + handler.getModel().getPath() + "/armor_trims/" + patternPath + ".png";
-                    ResourceLocation resource = ResourceLocation.fromNamespaceAndPath(handler.getModel().getNamespace(), texture);
+                    Identifier resource = Identifier.fromNamespaceAndPath(handler.getModel().getNamespace(), texture);
                     trimImage = RenderingUtils.getImageFromResource(resource);
                 }
 
@@ -314,13 +314,13 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
 
         if (ClawInventoryData.getData(player).shouldRenderClaws) {
             // claws and teeth go over the armor, so they are added last
-            ResourceLocation clawResource = ClawsAndTeeth.constructClawTexture(player);
+            Identifier clawResource = ClawsAndTeeth.constructClawTexture(player);
 
             if (clawResource != null) {
                 copyPixels(image, RenderingUtils.getImageFromResource(clawResource));
             }
 
-            ResourceLocation teethResource = ClawsAndTeeth.constructTeethTexture(player);
+            Identifier teethResource = ClawsAndTeeth.constructTeethTexture(player);
 
             if (teethResource != null) {
                 copyPixels(image, RenderingUtils.getImageFromResource(teethResource));
@@ -330,7 +330,7 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
         ArrayList<ItemStack> visibleCurios = CurioAPIHelper.getVisibleCurioItems(player);
         if (visibleCurios != null) {
             for (ItemStack itemStack : visibleCurios) {
-                ResourceLocation curioResource = toArmorResource(handler.getModel(), itemStack.getItem());
+                Identifier curioResource = toArmorResource(handler.getModel(), itemStack.getItem());
                 if (curioResource != null && Minecraft.getInstance().getResourceManager().getResource(curioResource).isPresent()) {
                     copyPixels(image, RenderingUtils.getImageFromResource(curioResource));
                 }
@@ -373,7 +373,7 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
     /**
      * Appends the following elements together to create an id <br>
      * - {@link DragonBody#model} (e.g. dragonsurvival.dragon_model <br>
-     * - {@link ResourceLocation#toLanguageKey()} of each equipped armor item <br>
+     * - {@link Identifier#toLanguageKey()} of each equipped armor item <br>
      * - {@link DataComponents#TRIM} of each equipped armor slot <br>
      * - {@link DataComponents#DYED_COLOR} of each equipped armor slot <br> <br>
      * - What is currently being used in the claw slot and teeth slot (i.e. tools/weapons)
@@ -421,10 +421,10 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
         return UUID.nameUUIDFromBytes(armorTotal.toString().getBytes()).toString();
     }
 
-    private static ResourceLocation generateArmorTextureResourceLocation(Player player, EquipmentSlot equipmentSlot) {
+    private static Identifier generateArmorTextureIdentifier(Player player, EquipmentSlot equipmentSlot) {
         DragonStateHandler handler = DragonStateProvider.getData(player);
         Item item = CosmeticArmorReworkedHelper.getItemVisibleInSlot(player, equipmentSlot).getItem();
-        ResourceLocation armorResource = toArmorResource(handler.getModel(), item);
+        Identifier armorResource = toArmorResource(handler.getModel(), item);
 
         if (armorResource != null && Minecraft.getInstance().getResourceManager().getResource(armorResource).isPresent()) {
             return armorResource;
@@ -434,7 +434,7 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
 
         if (item instanceof ArmorItem armorItem) {
             //noinspection DataFlowIssue -> key is present
-            ResourceLocation materialResource = armorItem.getMaterial().getKey().location();
+            Identifier materialResource = armorItem.getMaterial().getKey().location();
             texture += materialResource.getNamespace() + "/materials/" + materialResource.getPath() + "/" + equipmentSlot.getName();
 
             if (armorItem.getMaterial() == ArmorMaterials.LEATHER && player.getItemBySlot(equipmentSlot).get(DataComponents.DYED_COLOR) == null) {
@@ -442,11 +442,11 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
                 texture += "_undyed";
             }
 
-            ResourceLocation resource = ResourceLocation.fromNamespaceAndPath(handler.getModel().getNamespace(), texture + ".png");
+            Identifier resource = Identifier.fromNamespaceAndPath(handler.getModel().getNamespace(), texture + ".png");
 
             if (Minecraft.getInstance().getResourceManager().getResource(resource).isPresent()) {
                 return resource;
-            } else if (materialResource.getNamespace().equals(ResourceLocation.DEFAULT_NAMESPACE)) {
+            } else if (materialResource.getNamespace().equals(Identifier.DEFAULT_NAMESPACE)) {
                 DragonSurvival.LOGGER.warn("Missing vanilla armor texture for {} in model {}, falling back to generic armor.", resource.getPath(), handler.getModel().getPath());
             }
 
@@ -464,21 +464,21 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
                 prefix = "default";
             }
 
-            return ResourceLocation.fromNamespaceAndPath(handler.getModel().getNamespace(), "textures/armor/" + handler.getModel().getPath() + "/" + prefix + "_" + equipmentSlot.getName() + ".png");
+            return Identifier.fromNamespaceAndPath(handler.getModel().getNamespace(), "textures/armor/" + handler.getModel().getPath() + "/" + prefix + "_" + equipmentSlot.getName() + ".png");
         }
 
         // Since this is just an empty image it should be applicable to all models
         return DragonSurvival.res("textures/armor/empty_armor.png");
     }
 
-    private static ResourceLocation toArmorResource(final ResourceLocation model, final Item item) {
+    private static Identifier toArmorResource(final Identifier model, final Item item) {
         if (item == Items.AIR) {
             return null;
         }
 
         //noinspection deprecation,DataFlowIssue -> ignore deprecated / key is present
-        ResourceLocation itemResource = item.builtInRegistryHolder().getKey().location();
+        Identifier itemResource = item.builtInRegistryHolder().getKey().location();
         String texture = "textures/armor/" + model.getPath() + "/" + itemResource.getNamespace() + "/" + itemResource.getPath() + ".png";
-        return ResourceLocation.fromNamespaceAndPath(model.getNamespace(), texture);
+        return Identifier.fromNamespaceAndPath(model.getNamespace(), texture);
     }
 }

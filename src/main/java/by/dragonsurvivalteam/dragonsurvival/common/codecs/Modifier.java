@@ -7,7 +7,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.TooltipFlag;
@@ -60,7 +60,7 @@ public record Modifier(Holder<Attribute> attribute, Either<LevelBasedValue, Prec
         return amount.map(value -> (double) value.calculate((int) level), value -> value.calculate(level));
     }
 
-    public AttributeModifier getModifier(final ResourceLocation id, double level) {
+    public AttributeModifier getModifier(final Identifier id, double level) {
         return new AttributeModifier(id, calculate(level), operation);
     }
 

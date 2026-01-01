@@ -11,7 +11,7 @@ import by.dragonsurvivalteam.dragonsurvival.mixins.client.ScreenAccessor;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.client.gui.widget.ExtendedButton;
 import org.jetbrains.annotations.NotNull;
 
@@ -29,8 +29,8 @@ public class ColorSelectorButton extends ExtendedButton {
     private final boolean opensRight;
     private final boolean opensUp;
 
-    private static final ResourceLocation BUTTON_HUE_UNCHANGED = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/editor/hue_unchanged.png");
-    private static final ResourceLocation BUTTON_HUE_CHANGED = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/editor/hue_changed.png");
+    private static final Identifier BUTTON_HUE_UNCHANGED = Identifier.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/editor/hue_unchanged.png");
+    private static final Identifier BUTTON_HUE_CHANGED = Identifier.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/editor/hue_changed.png");
 
     public ColorSelectorButton(DragonEditorScreen screen, SkinLayer layer, int x, int y, int xSize, int ySize, boolean opensRight, boolean opensUp) {
         super(x, y, xSize, ySize, Component.empty(), action -> { /* Nothing to do */ });

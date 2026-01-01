@@ -9,7 +9,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.neoforge.common.util.INBTSerializable;
 import net.neoforged.neoforge.common.util.Lazy;
@@ -26,7 +26,7 @@ public class SkinPreset implements INBTSerializable<CompoundTag> {
 
     private final Lazy<HashMap<ResourceKey<DragonStage>, Lazy<DragonStageCustomization>>> skins = Lazy.of(this::initialize);
     private ResourceKey<DragonSpecies> species;
-    private ResourceLocation model = DragonBody.DEFAULT_MODEL;
+    private Identifier model = DragonBody.DEFAULT_MODEL;
 
     public boolean isEmpty() {
         return skins.get().values().stream().allMatch(
@@ -69,7 +69,7 @@ public class SkinPreset implements INBTSerializable<CompoundTag> {
         skins.get().put(dragonStage, customization);
     }
 
-    public void initDefaults(final Holder<DragonSpecies> species, final ResourceLocation model) {
+    public void initDefaults(final Holder<DragonSpecies> species, final Identifier model) {
         if (FMLLoader.getDist().isDedicatedServer()) {
             // Don't try to initialize default data for skin presets when asked by the server, as the server doesn't have the part data
             // to construct this data anyways
@@ -151,7 +151,7 @@ public class SkinPreset implements INBTSerializable<CompoundTag> {
     // The tag encoding of the species was broken and was just giving "minecraft:" as the species instead of what it should be
     public void deserializeNBT(@NotNull final HolderLookup.Provider provider, @NotNull final CompoundTag base, ResourceKey<DragonSpecies> species) {
         this.species = species;
-        ResourceLocation.read(base.getString(MODEL)).ifSuccess(model -> this.model = model);
+        Identifier.read(base.getString(MODEL)).ifSuccess(model -> this.model = model);
 
         List<ResourceKey<DragonStage>> stageKeys;
         if (species != null) {
@@ -175,8 +175,8 @@ public class SkinPreset implements INBTSerializable<CompoundTag> {
 
     @Override
     public void deserializeNBT(@NotNull final HolderLookup.Provider provider, @NotNull final CompoundTag base) {
-        this.species = ResourceKey.create(DragonSpecies.REGISTRY, ResourceLocation.parse(base.getString(SPECIES)));
-        ResourceLocation.read(base.getString(MODEL)).ifSuccess(model -> this.model = model);
+        this.species = ResourceKey.create(DragonSpecies.REGISTRY, Identifier.parse(base.getString(SPECIES)));
+        Identifier.read(base.getString(MODEL)).ifSuccess(model -> this.model = model);
 
         List<ResourceKey<DragonStage>> stageKeys;
         if (species != null) {
@@ -198,7 +198,7 @@ public class SkinPreset implements INBTSerializable<CompoundTag> {
         }
     }
 
-    public ResourceLocation getModel() {
+    public Identifier getModel() {
         return model;
     }
 

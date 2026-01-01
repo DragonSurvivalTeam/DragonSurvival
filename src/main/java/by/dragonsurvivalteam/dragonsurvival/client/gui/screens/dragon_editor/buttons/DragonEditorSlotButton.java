@@ -6,14 +6,14 @@ import by.dragonsurvivalteam.dragonsurvival.client.util.TextRenderUtil;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.DyeColor;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Function;
 
 public class DragonEditorSlotButton extends Button {
-    private static final ResourceLocation SLOT_NUMBER_BACKGROUND = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/editor/slot_number_background.png");
+    private static final Identifier SLOT_NUMBER_BACKGROUND = Identifier.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/editor/slot_number_background.png");
 
     private final DragonEditorScreen screen;
     private final Function<Integer, Integer> setDragonSlotAction;

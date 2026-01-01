@@ -1,6 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.attachments;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 
 public interface StorageEntry {
@@ -11,5 +11,5 @@ public interface StorageEntry {
     /** @return 'true' if the entry should be removed (e.g. the max. duration has been reached) */
     boolean tick(final Entity storageHolder);
 
-    ResourceLocation id();
+    Identifier id();
 }

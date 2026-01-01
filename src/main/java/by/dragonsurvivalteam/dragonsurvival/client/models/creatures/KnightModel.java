@@ -1,7 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.client.models.creatures;
 
 import by.dragonsurvivalteam.dragonsurvival.common.entity.creatures.KnightEntity;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import software.bernie.geckolib.animation.AnimationState;
 import software.bernie.geckolib.constant.DataTickets;
@@ -13,18 +13,18 @@ import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 
 public class KnightModel extends GeoModel<KnightEntity> {
     @Override
-    public ResourceLocation getModelResource(KnightEntity object) {
-        return ResourceLocation.fromNamespaceAndPath(MODID, "geo/hunter_knight.geo.json");
+    public Identifier getModelResource(KnightEntity object) {
+        return Identifier.fromNamespaceAndPath(MODID, "geo/hunter_knight.geo.json");
     }
 
     @Override
-    public ResourceLocation getTextureResource(KnightEntity object) {
-        return ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/hunters/knight_on_horse.png");
+    public Identifier getTextureResource(KnightEntity object) {
+        return Identifier.fromNamespaceAndPath(MODID, "textures/entity/hunters/knight_on_horse.png");
     }
 
     @Override
-    public ResourceLocation getAnimationResource(KnightEntity animatable) {
-        return ResourceLocation.fromNamespaceAndPath(MODID, "animations/hunter_knight.animation.json");
+    public Identifier getAnimationResource(KnightEntity animatable) {
+        return Identifier.fromNamespaceAndPath(MODID, "animations/hunter_knight.animation.json");
     }
 
     @Override

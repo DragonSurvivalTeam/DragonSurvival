@@ -15,7 +15,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
@@ -55,7 +55,7 @@ public class DragonGlowLayerRenderer extends GeoRenderLayer<DragonEntity> {
 
         DragonStateHandler handler = DragonStateProvider.getData(player);
         DragonStageCustomization customization = handler.getCurrentStageCustomization();
-        ResourceLocation glowTexture = null;
+        Identifier glowTexture = null;
 
         // At the moment GitHub only contains textures based on the dragon model
         if (handler.getModel().equals(DragonBody.DEFAULT_MODEL)) {
@@ -68,7 +68,7 @@ public class DragonGlowLayerRenderer extends GeoRenderLayer<DragonEntity> {
         }
 
         if (glowTexture == null && handler.getCurrentStageCustomization().defaultSkin) {
-            ResourceLocation defaultGlowSkin = StageResources.getDefaultSkin(handler.species(), handler.stageKey(), true);
+            Identifier defaultGlowSkin = StageResources.getDefaultSkin(handler.species(), handler.stageKey(), true);
 
             if (Minecraft.getInstance().getResourceManager().getResource(defaultGlowSkin).isPresent()) {
                 glowTexture = defaultGlowSkin;

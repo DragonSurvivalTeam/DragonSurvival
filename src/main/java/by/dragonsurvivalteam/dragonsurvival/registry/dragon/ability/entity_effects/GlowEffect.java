@@ -4,7 +4,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.Glow;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 
@@ -31,8 +31,8 @@ public record GlowEffect(List<Glow> glows) implements AbilityEntityEffect {
     }
 
     @Override
-    public List<ResourceLocation> getEffectIDs() {
-        List<ResourceLocation> ids = new ArrayList<>();
+    public List<Identifier> getEffectIDs() {
+        List<Identifier> ids = new ArrayList<>();
 
         for (Glow glow : glows) {
             ids.add(glow.id());

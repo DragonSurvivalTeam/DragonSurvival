@@ -6,7 +6,7 @@ import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SwimData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import net.minecraft.client.Minecraft;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -33,7 +33,7 @@ public class HUDHandler {
 
         int screenWidth = event.getGuiGraphics().guiWidth();
         int screenHeight = event.getGuiGraphics().guiHeight();
-        ResourceLocation id = event.getName();
+        Identifier id = event.getName();
 
         if (!DragonFoodHandler.dragonFoodHandlingIsDisabled() && !vanillaFoodLevel && id == VanillaGuiLayers.FOOD_LEVEL) {
             boolean wasRendered = FoodBar.render(event.getGuiGraphics(), screenWidth, screenHeight);

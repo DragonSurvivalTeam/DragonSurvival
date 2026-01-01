@@ -16,7 +16,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -99,7 +99,7 @@ public abstract class DurationInstance<B extends DurationInstanceBase<?, ?>> imp
                 }
 
                 for (ActionContainer container : instance.value().actions()) {
-                    Collection<ResourceLocation> ids = container.effect().target().map(
+                    Collection<Identifier> ids = container.effect().target().map(
                             block -> List.of(),
                             AbilityTargeting.EntityTargeting::getEffectIDs
                     );
@@ -138,7 +138,7 @@ public abstract class DurationInstance<B extends DurationInstanceBase<?, ?>> imp
     }
 
     @Override
-    public ResourceLocation id() {
+    public Identifier id() {
         return baseData.id();
     }
 

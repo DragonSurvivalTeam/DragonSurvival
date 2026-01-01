@@ -41,7 +41,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
@@ -333,7 +333,7 @@ public class DragonStateHandler extends EntityStateHandler {
     }
 
     /** Should only be called if the player is a dragon */
-    public ResourceLocation speciesId() {
+    public Identifier speciesId() {
         return speciesKey().location();
     }
 
@@ -351,7 +351,7 @@ public class DragonStateHandler extends EntityStateHandler {
     }
 
     /** Should only be called if the player is a dragon */
-    public ResourceLocation stageId() {
+    public Identifier stageId() {
         return stageKey().location();
     }
 
@@ -365,7 +365,7 @@ public class DragonStateHandler extends EntityStateHandler {
     }
 
     /** Should only be called if the player is a dragon */
-    public ResourceLocation bodyId() {
+    public Identifier bodyId() {
         return bodyKey().location();
     }
 
@@ -533,7 +533,7 @@ public class DragonStateHandler extends EntityStateHandler {
         return skinData;
     }
 
-    public ResourceLocation getModel() {
+    public Identifier getModel() {
         return dragonBody.value().model();
     }
 
@@ -719,7 +719,7 @@ public class DragonStateHandler extends EntityStateHandler {
 
         CompoundTag usedGrowthItems = tag.getCompound(USED_GROWTH_ITEMS);
         usedGrowthItems.getAllKeys().forEach(growthItemStage -> {
-            ResourceLocation stageResource = ResourceLocation.tryParse(growthItemStage);
+            Identifier stageResource = Identifier.tryParse(growthItemStage);
 
             if (stageResource == null) {
                 // Just to be safe - would normally not occur
@@ -730,7 +730,7 @@ public class DragonStateHandler extends EntityStateHandler {
             ResourceKey<DragonStage> stageKey = ResourceKey.create(DragonStage.REGISTRY, stageResource);
 
             perStage.getAllKeys().forEach(itemResource -> {
-                Item item = BuiltInRegistries.ITEM.get(ResourceLocation.tryParse(itemResource));
+                Item item = BuiltInRegistries.ITEM.get(Identifier.tryParse(itemResource));
 
                 if (item != Items.AIR) {
                     this.usedGrowthItems.computeIfAbsent(stageKey, ignored -> new HashMap<>()).put(item, perStage.getInt(itemResource));

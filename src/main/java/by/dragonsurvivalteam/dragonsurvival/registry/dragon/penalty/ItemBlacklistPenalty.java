@@ -1,6 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty;
 
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.ResourceLocationWrapper;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.IdentifierWrapper;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.DataReloadHandler;
 import by.dragonsurvivalteam.dragonsurvival.compat.ModCheck;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ClawInventoryData;
@@ -24,7 +24,7 @@ import java.util.Set;
 
 public class ItemBlacklistPenalty implements PenaltyEffect {
     public static final MapCodec<ItemBlacklistPenalty> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            ResourceLocationWrapper.validatedCodec().listOf().fieldOf("items").forGetter(ItemBlacklistPenalty::items)
+            IdentifierWrapper.validatedCodec().listOf().fieldOf("items").forGetter(ItemBlacklistPenalty::items)
     ).apply(instance, ItemBlacklistPenalty::new));
 
     private final List<String> items;
@@ -106,7 +106,7 @@ public class ItemBlacklistPenalty implements PenaltyEffect {
 
     private Set<ResourceKey<Item>> map(final List<String> entries) {
         Set<ResourceKey<Item>> blacklisted = new HashSet<>();
-        entries.forEach(entry -> blacklisted.addAll(ResourceLocationWrapper.map(entry, BuiltInRegistries.ITEM)));
+        entries.forEach(entry -> blacklisted.addAll(IdentifierWrapper.map(entry, BuiltInRegistries.ITEM)));
         return blacklisted;
     }
 

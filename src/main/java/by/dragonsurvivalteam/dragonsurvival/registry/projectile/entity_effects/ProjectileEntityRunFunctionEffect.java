@@ -4,16 +4,16 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.ServerFunctionManager;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.projectile.Projectile;
 
-public record ProjectileEntityRunFunctionEffect(ResourceLocation function) implements ProjectileEntityEffect {
+public record ProjectileEntityRunFunctionEffect(Identifier function) implements ProjectileEntityEffect {
     public static final MapCodec<ProjectileEntityRunFunctionEffect> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            ResourceLocation.CODEC.fieldOf("function").forGetter(ProjectileEntityRunFunctionEffect::function)
+            Identifier.CODEC.fieldOf("function").forGetter(ProjectileEntityRunFunctionEffect::function)
     ).apply(instance, ProjectileEntityRunFunctionEffect::new));
 
     @Override

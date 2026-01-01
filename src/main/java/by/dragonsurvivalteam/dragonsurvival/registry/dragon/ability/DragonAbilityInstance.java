@@ -23,7 +23,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.contents.PlainTextContents;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
@@ -243,7 +243,7 @@ public class DragonAbilityInstance {
         return isUsable() && cooldown == NO_COOLDOWN;
     }
 
-    public ResourceLocation getIcon() {
+    public Identifier getIcon() {
         return ability.value().icon().get(level);
     }
 
@@ -316,7 +316,7 @@ public class DragonAbilityInstance {
         return ability.getKey();
     }
 
-    public ResourceLocation location() {
+    public Identifier location() {
         return key().location();
     }
 

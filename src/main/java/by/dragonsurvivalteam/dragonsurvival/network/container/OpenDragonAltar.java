@@ -7,7 +7,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
@@ -18,7 +18,7 @@ import java.util.List;
 import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 
 public record OpenDragonAltar(List<UnlockableBehavior.SpeciesEntry> entries) implements CustomPacketPayload {
-    public static final Type<OpenDragonAltar> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(MODID, "open_dragon_altar"));
+    public static final Type<OpenDragonAltar> TYPE = new Type<>(Identifier.fromNamespaceAndPath(MODID, "open_dragon_altar"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, OpenDragonAltar> STREAM_CODEC = StreamCodec.composite(
             UnlockableBehavior.SpeciesEntry.STREAM_CODEC.apply(ByteBufCodecs.list()), OpenDragonAltar::entries,

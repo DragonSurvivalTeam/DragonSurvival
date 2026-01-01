@@ -1,7 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.client.models.creatures;
 
 import by.dragonsurvivalteam.dragonsurvival.common.entity.creatures.SpearmanEntity;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import software.bernie.geckolib.animation.AnimationState;
 import software.bernie.geckolib.constant.DataTickets;
@@ -13,18 +13,18 @@ import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 
 public class SpearmanModel extends GeoModel<SpearmanEntity> {
     @Override
-    public ResourceLocation getModelResource(SpearmanEntity object) {
-        return ResourceLocation.fromNamespaceAndPath(MODID, "geo/hunter_spearman.geo.json");
+    public Identifier getModelResource(SpearmanEntity object) {
+        return Identifier.fromNamespaceAndPath(MODID, "geo/hunter_spearman.geo.json");
     }
 
     @Override
-    public ResourceLocation getTextureResource(SpearmanEntity object) {
-        return ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/hunters/spearman.png");
+    public Identifier getTextureResource(SpearmanEntity object) {
+        return Identifier.fromNamespaceAndPath(MODID, "textures/entity/hunters/spearman.png");
     }
 
     @Override
-    public ResourceLocation getAnimationResource(SpearmanEntity animatable) {
-        return ResourceLocation.fromNamespaceAndPath(MODID, "animations/hunter_spearman.animation.json");
+    public Identifier getAnimationResource(SpearmanEntity animatable) {
+        return Identifier.fromNamespaceAndPath(MODID, "animations/hunter_spearman.animation.json");
     }
 
     @Override

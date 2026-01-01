@@ -10,7 +10,7 @@ import com.mojang.blaze3d.platform.Window;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -26,9 +26,9 @@ public class DragonSoulBar {
     @ConfigOption(side = ConfigSide.CLIENT, category = {"ui", "dragon_soul"}, key = "dragon_soul_bar_y_offset")
     public static int yOffset;
 
-    public static final ResourceLocation ID = DragonSurvival.res("dragon_soul_bar");
+    public static final Identifier ID = DragonSurvival.res("dragon_soul_bar");
 
-    private static final ResourceLocation DRAGON_SOUL_BAR = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/dragon_soul_bar.png");
+    private static final Identifier DRAGON_SOUL_BAR = Identifier.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/dragon_soul_bar.png");
     private static final int WIDTH = 66;
     private static final int HEIGHT = 40;
 

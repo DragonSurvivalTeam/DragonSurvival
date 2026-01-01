@@ -17,7 +17,7 @@ import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.client.gui.widget.ExtendedButton;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
@@ -31,11 +31,11 @@ public class EmoteComponent {
     @Translation(comments = "Set Keybind")
     private static final String UNBOUND = Translation.Type.GUI.wrap("emotes.unbound");
 
-    private static final ResourceLocation PLAY_OFF = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/emote/play_off.png");
-    private static final ResourceLocation PLAY_ON = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/emote/play_on.png");
+    private static final Identifier PLAY_OFF = Identifier.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/emote/play_off.png");
+    private static final Identifier PLAY_ON = Identifier.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/emote/play_on.png");
 
-    private static final ResourceLocation KEYBIND_OFF = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/emote/keybind_off.png");
-    private static final ResourceLocation KEYBIND_ON = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/emote/keybind_on.png");
+    private static final Identifier KEYBIND_OFF = Identifier.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/emote/keybind_off.png");
+    private static final Identifier KEYBIND_ON = Identifier.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/emote/keybind_on.png");
 
     private final ExtendedButton isPlayingButton;
     private final ExtendedButton keybindingButton;
@@ -93,7 +93,7 @@ public class EmoteComponent {
         }) {
             @Override
             public void renderWidget(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-                ResourceLocation texture = DragonSurvival.PROXY.isPlayingEmote(Minecraft.getInstance().player, emote) ? PLAY_ON : PLAY_OFF;
+                Identifier texture = DragonSurvival.PROXY.isPlayingEmote(Minecraft.getInstance().player, emote) ? PLAY_ON : PLAY_OFF;
                 guiGraphics.blit(texture, getX(), getY(), 0, 0, 6, 6, 14, 14);
             }
         };
@@ -102,7 +102,7 @@ public class EmoteComponent {
         }) {
             @Override
             public void renderWidget(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-                ResourceLocation texture = emote.key().equals(screen.currentlyKeybinding) ? KEYBIND_ON : KEYBIND_OFF;
+                Identifier texture = emote.key().equals(screen.currentlyKeybinding) ? KEYBIND_ON : KEYBIND_OFF;
                 guiGraphics.blit(texture, getX(), getY(), 0, 0, 6, 6, 14, 14);
             }
         };

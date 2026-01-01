@@ -25,7 +25,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.valueproviders.ConstantFloat;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
@@ -243,7 +243,7 @@ public class Projectiles {
         return key(DragonSurvival.res(path));
     }
 
-    public static ResourceKey<ProjectileData> key(final ResourceLocation location) {
+    public static ResourceKey<ProjectileData> key(final Identifier location) {
         return ResourceKey.create(ProjectileData.REGISTRY, location);
     }
 }

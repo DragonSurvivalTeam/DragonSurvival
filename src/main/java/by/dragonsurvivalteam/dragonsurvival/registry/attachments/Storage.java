@@ -5,7 +5,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.neoforged.neoforge.attachment.AttachmentType;
@@ -24,7 +24,7 @@ import java.util.Map;
 public abstract class Storage<T extends StorageEntry> implements INBTSerializable<CompoundTag> {
     public static final String STORAGE = "storage";
 
-    @Nullable protected Map<ResourceLocation, T> storage;
+    @Nullable protected Map<Identifier, T> storage;
 
     public void sync(final ServerPlayer player) {
         player.getExistingData(type()).ifPresent(data -> PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new SyncData(player.getId(), NeoForgeRegistries.ATTACHMENT_TYPES.getKey(type()), serializeNBT(player.registryAccess()))));
@@ -32,7 +32,7 @@ public abstract class Storage<T extends StorageEntry> implements INBTSerializabl
 
     public void tick(final Entity storageHolder) {
         if (storage != null) {
-            List<ResourceLocation> finished = new ArrayList<>();
+            List<Identifier> finished = new ArrayList<>();
 
             storage.values().forEach(entry -> {
                 if (entry.tick(storageHolder)) {
@@ -76,7 +76,7 @@ public abstract class Storage<T extends StorageEntry> implements INBTSerializabl
         invalidateCache();
     }
 
-    public @Nullable T get(final ResourceLocation id) {
+    public @Nullable T get(final Identifier id) {
         if (storage == null) {
             return null;
         }
@@ -150,7 +150,7 @@ public abstract class Storage<T extends StorageEntry> implements INBTSerializabl
 
     @Override
     public void deserializeNBT(@NotNull final HolderLookup.Provider provider, @NotNull final CompoundTag tag) {
-        Map<ResourceLocation, T> storage = new HashMap<>();
+        Map<Identifier, T> storage = new HashMap<>();
         ListTag entries = tag.getList(STORAGE, ListTag.TAG_COMPOUND);
 
         for (int i = 0; i < entries.size(); i++) {

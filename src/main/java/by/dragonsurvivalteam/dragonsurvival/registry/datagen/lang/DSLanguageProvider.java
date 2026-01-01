@@ -14,7 +14,7 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.tags.TagKey;
@@ -178,9 +178,9 @@ public class DSLanguageProvider extends LanguageProvider {
                         continue;
                     }
 
-                    if (ResourceLocation.class.isAssignableFrom(field.getType())) {
-                        ResourceLocation resourceLocation = (ResourceLocation) field.get(null);
-                        add(type.wrap(resourceLocation.getPath()), format(comments));
+                    if (Identifier.class.isAssignableFrom(field.getType())) {
+                        Identifier Identifier = (Identifier) field.get(null);
+                        add(type.wrap(Identifier.getPath()), format(comments));
                         continue;
                     }
 

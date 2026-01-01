@@ -10,13 +10,13 @@ import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
 
 /** Render dragon specific hud elements (e.g. time in rain for cave dragons or time without water for sea dragons) */
 public class DragonPenaltyHUD {
-    public static final ResourceLocation ID = DragonSurvival.res("penalty_hud");
+    public static final Identifier ID = DragonSurvival.res("penalty_hud");
 
     public static void render(@NotNull final GuiGraphics graphics, @NotNull final DeltaTracker tracker) {
         if (Minecraft.getInstance().options.hideGui || !DragonPenalty.ENABLE_PENALTIES) {
@@ -40,7 +40,7 @@ public class DragonPenaltyHUD {
             return;
         }
 
-        for (ResourceLocation supplyType : supply.getSupplyTypes()) {
+        for (Identifier supplyType : supply.getSupplyTypes()) {
             boolean displayLikeHungerBar = supply.getMatchingPenalty(supplyType, DragonStateProvider.getData(player)).map(penalty -> {
                 if (penalty.value().trigger() instanceof SupplyTrigger supplyTrigger) {
                     return supplyTrigger.displayLikeHungerBar();
@@ -60,7 +60,7 @@ public class DragonPenaltyHUD {
                 float vanillaSupplyPercentageOffset = (float) 2 / 360;
                 int left = Minecraft.getInstance().getWindow().getGuiScaledWidth() / 2 + 91;
                 int top = Minecraft.getInstance().getWindow().getGuiScaledHeight() - rightHeight;
-                ResourceLocation supplyIcon = supplyType.withPrefix("textures/gui/custom/supply_icons/").withSuffix(".png");
+                Identifier supplyIcon = supplyType.withPrefix("textures/gui/custom/supply_icons/").withSuffix(".png");
 
                 if (displayLikeHungerBar) {
                     int foodLevel = Mth.ceil(supplyPercentage * 20);

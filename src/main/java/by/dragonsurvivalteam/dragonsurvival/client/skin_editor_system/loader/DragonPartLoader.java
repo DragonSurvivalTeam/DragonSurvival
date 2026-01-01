@@ -11,7 +11,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
@@ -34,7 +34,7 @@ public class DragonPartLoader extends SimpleJsonResourceReloadListener {
     }
 
     @Override
-    protected void apply(final @NotNull Map<ResourceLocation, JsonElement> map, @NotNull final ResourceManager manager, @NotNull final ProfilerFiller profiler) {
+    protected void apply(final @NotNull Map<Identifier, JsonElement> map, @NotNull final ResourceManager manager, @NotNull final ProfilerFiller profiler) {
         DRAGON_PARTS.clear();
 
         map.forEach((location, value) -> {

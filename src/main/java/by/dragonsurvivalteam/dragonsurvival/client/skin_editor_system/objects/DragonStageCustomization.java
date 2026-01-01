@@ -10,7 +10,7 @@ import com.mojang.datafixers.util.Either;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.common.util.INBTSerializable;
 import net.neoforged.neoforge.common.util.Lazy;
 import org.jetbrains.annotations.NotNull;
@@ -28,7 +28,7 @@ public class DragonStageCustomization implements INBTSerializable<CompoundTag>, 
     public boolean wings = true;
     public boolean defaultSkin;
 
-    public DragonStageCustomization(final ResourceKey<DragonStage> stage, final ResourceKey<DragonSpecies> species, final ResourceLocation customModel) {
+    public DragonStageCustomization(final ResourceKey<DragonStage> stage, final ResourceKey<DragonSpecies> species, final Identifier customModel) {
         this();
 
         for (SkinLayer layer : SkinLayer.values()) {

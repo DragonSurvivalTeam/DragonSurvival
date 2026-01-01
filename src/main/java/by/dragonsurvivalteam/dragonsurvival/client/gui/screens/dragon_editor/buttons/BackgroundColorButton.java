@@ -10,7 +10,7 @@ import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.client.gui.widget.ExtendedButton;
 import org.jetbrains.annotations.NotNull;
 
@@ -22,8 +22,8 @@ public class BackgroundColorButton extends ExtendedButton {
     @Translation(comments = "Change the background color")
     private static final String BACKGROUND_COLOR = Translation.Type.GUI.wrap("dragon_editor.background_color");
 
-    private static final ResourceLocation BACKGROUND_COLOR_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/editor/gui_color_main.png");
-    private static final ResourceLocation BACKGROUND_COLOR_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/editor/gui_color_hover.png");
+    private static final Identifier BACKGROUND_COLOR_MAIN = Identifier.fromNamespaceAndPath(MODID, "textures/gui/editor/gui_color_main.png");
+    private static final Identifier BACKGROUND_COLOR_HOVER = Identifier.fromNamespaceAndPath(MODID, "textures/gui/editor/gui_color_hover.png");
 
     private final DragonEditorScreen screen;
     private BackgroundColorSelectorComponent colorComponent;

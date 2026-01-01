@@ -24,7 +24,7 @@ import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -54,15 +54,15 @@ public class DragonAbilityScreen extends Screen {
     })
     private static final String HELP_ABILITY_ASSIGNMENT = Translation.Type.GUI.wrap("help.ability_assignment");
 
-    private static final ResourceLocation BACKGROUND_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/ability_screen/background_main.png");
-    private static final ResourceLocation BACKGROUND_SIDE = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/ability_screen/background_side.png");
-    private static final ResourceLocation EXP_EMPTY = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/ability_screen/exp_empty.png");
-    private static final ResourceLocation EXP_FULL = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/ability_screen/exp_full.png");
-    private static final ResourceLocation LEFT_PANEL_ARROW_CLICK = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/ability_screen/addition_arrow_left_click.png");
-    private static final ResourceLocation LEFT_PANEL_ARROW_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/ability_screen/addition_arrow_left_hover.png");
-    private static final ResourceLocation LEFT_PANEL_ARROW_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/ability_screen/addition_arrow_left_main.png");
-    private static final ResourceLocation INFO_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/ability_screen/info_hover.png");
-    private static final ResourceLocation INFO_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/ability_screen/info_main.png");
+    private static final Identifier BACKGROUND_MAIN = Identifier.fromNamespaceAndPath(MODID, "textures/gui/ability_screen/background_main.png");
+    private static final Identifier BACKGROUND_SIDE = Identifier.fromNamespaceAndPath(MODID, "textures/gui/ability_screen/background_side.png");
+    private static final Identifier EXP_EMPTY = Identifier.fromNamespaceAndPath(MODID, "textures/gui/ability_screen/exp_empty.png");
+    private static final Identifier EXP_FULL = Identifier.fromNamespaceAndPath(MODID, "textures/gui/ability_screen/exp_full.png");
+    private static final Identifier LEFT_PANEL_ARROW_CLICK = Identifier.fromNamespaceAndPath(MODID, "textures/gui/ability_screen/addition_arrow_left_click.png");
+    private static final Identifier LEFT_PANEL_ARROW_HOVER = Identifier.fromNamespaceAndPath(MODID, "textures/gui/ability_screen/addition_arrow_left_hover.png");
+    private static final Identifier LEFT_PANEL_ARROW_MAIN = Identifier.fromNamespaceAndPath(MODID, "textures/gui/ability_screen/addition_arrow_left_main.png");
+    private static final Identifier INFO_HOVER = Identifier.fromNamespaceAndPath(MODID, "textures/gui/ability_screen/info_hover.png");
+    private static final Identifier INFO_MAIN = Identifier.fromNamespaceAndPath(MODID, "textures/gui/ability_screen/info_main.png");
 
     public LevelButton lastHoveredLevelButton;
 

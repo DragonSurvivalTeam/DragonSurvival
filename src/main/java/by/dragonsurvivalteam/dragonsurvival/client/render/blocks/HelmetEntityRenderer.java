@@ -15,7 +15,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SkullBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -27,10 +27,10 @@ import java.util.Map;
 import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 
 public class HelmetEntityRenderer implements BlockEntityRenderer<HelmetBlockEntity> {
-    private static final Map<Block, ResourceLocation> TEXTURE_BY_TYPE = Util.make(Maps.newHashMap(), resourceLocationHashMap -> {
-        resourceLocationHashMap.put(DSBlocks.GRAY_KNIGHT_HELMET.get(), ResourceLocation.fromNamespaceAndPath(MODID, "textures/block/gray_knight_helmet.png"));
-        resourceLocationHashMap.put(DSBlocks.GOLDEN_KNIGHT_HELMET.get(), ResourceLocation.fromNamespaceAndPath(MODID, "textures/block/golden_knight_helmet.png"));
-        resourceLocationHashMap.put(DSBlocks.BLACK_KNIGHT_HELMET.get(), ResourceLocation.fromNamespaceAndPath(MODID, "textures/block/black_knight_helmet.png"));
+    private static final Map<Block, Identifier> TEXTURE_BY_TYPE = Util.make(Maps.newHashMap(), IdentifierHashMap -> {
+        IdentifierHashMap.put(DSBlocks.GRAY_KNIGHT_HELMET.get(), Identifier.fromNamespaceAndPath(MODID, "textures/block/gray_knight_helmet.png"));
+        IdentifierHashMap.put(DSBlocks.GOLDEN_KNIGHT_HELMET.get(), Identifier.fromNamespaceAndPath(MODID, "textures/block/golden_knight_helmet.png"));
+        IdentifierHashMap.put(DSBlocks.BLACK_KNIGHT_HELMET.get(), Identifier.fromNamespaceAndPath(MODID, "textures/block/black_knight_helmet.png"));
     });
     static SkullModel humanoidHeadModel = new SkullModel(Minecraft.getInstance().getEntityModels().bakeLayer(ModelLayers.PLAYER_HEAD));
 
@@ -60,7 +60,7 @@ public class HelmetEntityRenderer implements BlockEntityRenderer<HelmetBlockEnti
     }
 
     private static RenderType getRenderType(Block block) {
-        ResourceLocation resourcelocation = TEXTURE_BY_TYPE.get(block);
-        return RenderType.entityCutoutNoCullZOffset(resourcelocation);
+        Identifier Identifier = TEXTURE_BY_TYPE.get(block);
+        return RenderType.entityCutoutNoCullZOffset(Identifier);
     }
 }

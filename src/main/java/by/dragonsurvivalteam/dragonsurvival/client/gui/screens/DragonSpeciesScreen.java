@@ -39,7 +39,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.contents.PlainTextContents;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.client.gui.widget.ExtendedButton;
@@ -80,16 +80,16 @@ public class DragonSpeciesScreen extends Screen {
     @Translation(comments = "This species has no special diet.")
     private static final String NO_DIET = Translation.Type.GUI.wrap("dragon_species_screen.no_diet");
 
-    private static final ResourceLocation BACKGROUND_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/species/species_background.png");
-    private static final ResourceLocation RIDING_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/species/riding_hover.png");
-    private static final ResourceLocation RIDING_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/species/riding_main.png");
-    private static final ResourceLocation WINGS_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/species/wing_hover.png");
-    private static final ResourceLocation WINGS_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/species/wing_main.png");
+    private static final Identifier BACKGROUND_MAIN = Identifier.fromNamespaceAndPath(MODID, "textures/gui/species/species_background.png");
+    private static final Identifier RIDING_HOVER = Identifier.fromNamespaceAndPath(MODID, "textures/gui/species/riding_hover.png");
+    private static final Identifier RIDING_MAIN = Identifier.fromNamespaceAndPath(MODID, "textures/gui/species/riding_main.png");
+    private static final Identifier WINGS_HOVER = Identifier.fromNamespaceAndPath(MODID, "textures/gui/species/wing_hover.png");
+    private static final Identifier WINGS_MAIN = Identifier.fromNamespaceAndPath(MODID, "textures/gui/species/wing_main.png");
 
-    private static final ResourceLocation PENALTIES_LEFT_ARROW_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/species/penalties_left_arrow_hover.png");
-    private static final ResourceLocation PENALTIES_LEFT_ARROW_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/species/penalties_left_arrow_main.png");
-    private static final ResourceLocation PENALTIES_RIGHT_ARROW_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/species/penalties_right_arrow_hover.png");
-    private static final ResourceLocation PENALTIES_RIGHT_ARROW_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/species/penalties_right_arrow_main.png");
+    private static final Identifier PENALTIES_LEFT_ARROW_HOVER = Identifier.fromNamespaceAndPath(MODID, "textures/gui/species/penalties_left_arrow_hover.png");
+    private static final Identifier PENALTIES_LEFT_ARROW_MAIN = Identifier.fromNamespaceAndPath(MODID, "textures/gui/species/penalties_left_arrow_main.png");
+    private static final Identifier PENALTIES_RIGHT_ARROW_HOVER = Identifier.fromNamespaceAndPath(MODID, "textures/gui/species/penalties_right_arrow_hover.png");
+    private static final Identifier PENALTIES_RIGHT_ARROW_MAIN = Identifier.fromNamespaceAndPath(MODID, "textures/gui/species/penalties_right_arrow_main.png");
 
     public Holder<DragonSpecies> species;
     private Holder<DragonStage> stage;

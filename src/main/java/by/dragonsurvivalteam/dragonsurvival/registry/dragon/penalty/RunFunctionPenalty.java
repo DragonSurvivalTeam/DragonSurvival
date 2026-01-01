@@ -5,14 +5,14 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.Holder;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.ServerFunctionManager;
 import net.minecraft.server.level.ServerPlayer;
 
-public record RunFunctionPenalty(ResourceLocation function) implements PenaltyEffect {
+public record RunFunctionPenalty(Identifier function) implements PenaltyEffect {
     public static final MapCodec<RunFunctionPenalty> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            ResourceLocation.CODEC.fieldOf("function").forGetter(RunFunctionPenalty::function)
+            Identifier.CODEC.fieldOf("function").forGetter(RunFunctionPenalty::function)
     ).apply(instance, RunFunctionPenalty::new));
 
     @Override

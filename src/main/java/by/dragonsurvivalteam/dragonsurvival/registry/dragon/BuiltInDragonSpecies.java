@@ -13,7 +13,7 @@ import net.minecraft.core.HolderSet;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.Optional;
 
@@ -170,7 +170,7 @@ public class BuiltInDragonSpecies {
         ));
     }
 
-    public static ResourceKey<DragonSpecies> key(final ResourceLocation location) {
+    public static ResourceKey<DragonSpecies> key(final Identifier location) {
         return ResourceKey.create(DragonSpecies.REGISTRY, location);
     }
 

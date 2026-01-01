@@ -13,7 +13,7 @@ import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -34,7 +34,7 @@ public class DragonBodyArgument implements ArgumentType<Holder<DragonBody>> {
 
     @Override
     public @Nullable Holder<DragonBody> parse(final StringReader reader) throws CommandSyntaxException {
-        Optional<Holder.Reference<DragonBody>> optional = lookup.get(ResourceKey.create(DragonBody.REGISTRY, ResourceLocation.read(reader)));
+        Optional<Holder.Reference<DragonBody>> optional = lookup.get(ResourceKey.create(DragonBody.REGISTRY, Identifier.read(reader)));
         return optional.orElse(null);
     }
 

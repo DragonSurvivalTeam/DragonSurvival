@@ -1,7 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.client.models.creatures;
 
 import by.dragonsurvivalteam.dragonsurvival.common.entity.creatures.LeaderEntity;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import software.bernie.geckolib.animation.AnimationState;
 import software.bernie.geckolib.constant.DataTickets;
@@ -13,18 +13,18 @@ import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 
 public class LeaderModel extends GeoModel<LeaderEntity> {
     @Override
-    public ResourceLocation getModelResource(LeaderEntity object) {
-        return ResourceLocation.fromNamespaceAndPath(MODID, "geo/hunter_leader.geo.json");
+    public Identifier getModelResource(LeaderEntity object) {
+        return Identifier.fromNamespaceAndPath(MODID, "geo/hunter_leader.geo.json");
     }
 
     @Override
-    public ResourceLocation getTextureResource(LeaderEntity object) {
-        return ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/hunters/leader.png");
+    public Identifier getTextureResource(LeaderEntity object) {
+        return Identifier.fromNamespaceAndPath(MODID, "textures/entity/hunters/leader.png");
     }
 
     @Override
-    public ResourceLocation getAnimationResource(LeaderEntity animatable) {
-        return ResourceLocation.fromNamespaceAndPath(MODID, "animations/hunter_leader.animation.json");
+    public Identifier getAnimationResource(LeaderEntity animatable) {
+        return Identifier.fromNamespaceAndPath(MODID, "animations/hunter_leader.animation.json");
     }
 
     @Override

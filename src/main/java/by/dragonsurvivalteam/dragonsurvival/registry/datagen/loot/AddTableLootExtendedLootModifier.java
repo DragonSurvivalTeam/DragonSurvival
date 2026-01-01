@@ -6,7 +6,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.LootTable;
@@ -64,7 +64,7 @@ public class AddTableLootExtendedLootModifier extends LootModifier {
         // Generate the resolved tables list if we haven't already
         if (!hasResolvedTables) {
             for (String table : this.tablesToApply) {
-                ResourceLocation parsedTable = ResourceLocation.tryParse(table);
+                Identifier parsedTable = Identifier.tryParse(table);
                 if (parsedTable != null) {
                     resolvedTables.add(ResourceKey.create(Registries.LOOT_TABLE, parsedTable));
                 } else {

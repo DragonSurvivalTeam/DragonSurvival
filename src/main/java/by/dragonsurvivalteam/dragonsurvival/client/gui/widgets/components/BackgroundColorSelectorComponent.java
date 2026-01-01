@@ -9,7 +9,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.AbstractContainerEventHandler;
 import net.minecraft.client.gui.components.events.GuiEventListener;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.Color;
@@ -19,8 +19,8 @@ public class BackgroundColorSelectorComponent extends AbstractContainerEventHand
     public static final int BACKGROUND_COLOR = -14935012;
     public static final int INNER_BORDER_COLOR = new Color(0x78787880, true).getRGB();
 
-    public static final ResourceLocation COLOR_RESET_HOVER = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/editor/color_reset_hover.png");
-    public static final ResourceLocation COLOR_RESET_MAIN = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/editor/color_reset_main.png");
+    public static final Identifier COLOR_RESET_HOVER = Identifier.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/editor/color_reset_hover.png");
+    public static final Identifier COLOR_RESET_MAIN = Identifier.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/editor/color_reset_main.png");
 
     public final ColorPickerButton colorPicker;
     public final HoverButton resetButton;

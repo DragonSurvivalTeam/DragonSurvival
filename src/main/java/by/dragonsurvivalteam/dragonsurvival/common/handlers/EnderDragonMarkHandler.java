@@ -11,7 +11,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.attachments.EnderDragonDama
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.ClientEffectProvider;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
 import net.minecraft.world.entity.player.Player;
@@ -70,7 +70,7 @@ public class EnderDragonMarkHandler {
 
     public static final ClientEffectProvider MARK_EFFECT = new ClientEffectProvider() {
         @Translation(type = Translation.Type.GUI, comments = "Ender Dragon's Curse")
-        private static final ResourceLocation NAME = DragonSurvival.res("ender_dragon_curse");
+        private static final Identifier NAME = DragonSurvival.res("ender_dragon_curse");
 
         @Translation(comments = "You have been cursed by the ender dragon. You may be unable to use some of your abilities. You can cure this curse by using a Primordial Anchor block after resurrecting the dragon.")
         private static final String DESCRIPTION = Translation.Type.GUI.wrap("ender_dragon_curse.tooltip");

@@ -12,7 +12,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.RegistryCodecs;
 import net.minecraft.core.UUIDUtil;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -34,7 +34,7 @@ public record CustomPredicates(
         Optional<HolderSet<FluidType>> eyeInFluid,
         Optional<WeatherPredicate> weatherPredicate,
         Optional<MinMaxBounds.Ints> sunLightLevel,
-        Optional<ResourceLocation> hasDurationEffect,
+        Optional<Identifier> hasDurationEffect,
         Optional<NearbyEntityPredicate> isNearbyEntity,
         Optional<MinMaxBounds.Ints> playerHunger,
         Optional<MinMaxBounds.Doubles> healthPercentage,
@@ -45,7 +45,7 @@ public record CustomPredicates(
             RegistryCodecs.homogeneousList(NeoForgeRegistries.FLUID_TYPES.key()).optionalFieldOf("eye_in_fluid").forGetter(CustomPredicates::eyeInFluid),
             WeatherPredicate.CODEC.optionalFieldOf("weather_predicate").forGetter(CustomPredicates::weatherPredicate),
             MinMaxBounds.Ints.CODEC.optionalFieldOf("sun_light_level").forGetter(CustomPredicates::sunLightLevel),
-            ResourceLocation.CODEC.optionalFieldOf("has_duration_effect").forGetter(CustomPredicates::hasDurationEffect),
+            Identifier.CODEC.optionalFieldOf("has_duration_effect").forGetter(CustomPredicates::hasDurationEffect),
             NearbyEntityPredicate.CODEC.optionalFieldOf("is_nearby_entity").forGetter(CustomPredicates::isNearbyEntity),
             MinMaxBounds.Ints.CODEC.optionalFieldOf("player_hunger").forGetter(CustomPredicates::playerHunger),
             MinMaxBounds.Doubles.CODEC.optionalFieldOf("health_percentage").forGetter(CustomPredicates::healthPercentage),
@@ -81,7 +81,7 @@ public record CustomPredicates(
         }
 
         if (hasDurationEffect.isPresent()) {
-            ResourceLocation abilityEffect = hasDurationEffect.get();
+            Identifier abilityEffect = hasDurationEffect.get();
             boolean isPresent = false;
 
             for (Storage<?> storage : DSDataAttachments.getStorages(entity)) {
@@ -159,7 +159,7 @@ public record CustomPredicates(
         private Optional<Boolean> isSnowing = Optional.empty();
         private Optional<Boolean> isRainingOrSnowing = Optional.empty();
         private Optional<MinMaxBounds.Ints> sunLightLevel = Optional.empty();
-        private Optional<ResourceLocation> hasDurationEffect = Optional.empty();
+        private Optional<Identifier> hasDurationEffect = Optional.empty();
         private Optional<NearbyEntityPredicate> isNearbyEntity = Optional.empty();
         private Optional<MinMaxBounds.Ints> playerHunger = Optional.empty();
         private Optional<MinMaxBounds.Doubles> healthPercentage = Optional.empty();
@@ -205,7 +205,7 @@ public record CustomPredicates(
             return this;
         }
 
-        public CustomPredicates.Builder hasDurationEffect(final ResourceLocation abilityEffect) {
+        public CustomPredicates.Builder hasDurationEffect(final Identifier abilityEffect) {
             this.hasDurationEffect = Optional.of(abilityEffect);
             return this;
         }

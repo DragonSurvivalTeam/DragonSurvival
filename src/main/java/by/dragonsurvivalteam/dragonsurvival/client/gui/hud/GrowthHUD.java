@@ -15,7 +15,7 @@ import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.Holder;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -24,7 +24,7 @@ import java.awt.Color;
 
 /** HUD that is shown when the dragon is holding an item that can change its growth */
 public class GrowthHUD {
-    public static final ResourceLocation ID = DragonSurvival.res("growth_hud");
+    public static final Identifier ID = DragonSurvival.res("growth_hud");
 
     private static final Color CENTER_COLOR = new Color(125, 125, 125);
     private static final Color OUTLINE_COLOR = new Color(125, 125, 125);

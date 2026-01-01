@@ -25,7 +25,7 @@ import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.ConfirmLinkScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -76,22 +76,22 @@ public class DragonEmoteScreen extends Screen {
     private int guiLeft;
     private int guiTop;
 
-    private static final ResourceLocation BACKGROUND_MAIN = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/emote/emote_main.png");
+    private static final Identifier BACKGROUND_MAIN = Identifier.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/emote/emote_main.png");
 
-    private static final ResourceLocation DISCORD_HOVER = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/emote/discord_hover.png");
-    private static final ResourceLocation DISCORD_MAIN = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/emote/discord_main.png");
+    private static final Identifier DISCORD_HOVER = Identifier.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/emote/discord_hover.png");
+    private static final Identifier DISCORD_MAIN = Identifier.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/emote/discord_main.png");
 
-    private static final ResourceLocation RESET_ALL_KEYBINDS_HOVER = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/emote/reset_all_keybinds_hover.png");
-    private static final ResourceLocation RESET_ALL_KEYBINDS_MAIN = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/emote/reset_all_keybinds_main.png");
+    private static final Identifier RESET_ALL_KEYBINDS_HOVER = Identifier.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/emote/reset_all_keybinds_hover.png");
+    private static final Identifier RESET_ALL_KEYBINDS_MAIN = Identifier.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/emote/reset_all_keybinds_main.png");
 
-    private static final ResourceLocation RESET_EMOTES_HOVER = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/emote/reset_emotes_hover.png");
-    private static final ResourceLocation RESET_EMOTES_MAIN = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/emote/reset_emotes_main.png");
+    private static final Identifier RESET_EMOTES_HOVER = Identifier.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/emote/reset_emotes_hover.png");
+    private static final Identifier RESET_EMOTES_MAIN = Identifier.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/emote/reset_emotes_main.png");
 
-    private static final ResourceLocation WIKI_HOVER = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/emote/wiki_hover.png");
-    private static final ResourceLocation WIKI_MAIN = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/emote/wiki_main.png");
+    private static final Identifier WIKI_HOVER = Identifier.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/emote/wiki_hover.png");
+    private static final Identifier WIKI_MAIN = Identifier.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/emote/wiki_main.png");
 
-    private static final ResourceLocation INFO_HOVER = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/emote/info_hover.png");
-    private static final ResourceLocation INFO_MAIN = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/emote/info_main.png");
+    private static final Identifier INFO_HOVER = Identifier.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/emote/info_hover.png");
+    private static final Identifier INFO_MAIN = Identifier.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/emote/info_main.png");
 
     public DragonEmoteScreen() {
         super(Component.empty());

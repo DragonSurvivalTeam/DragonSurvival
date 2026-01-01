@@ -6,7 +6,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilit
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
@@ -18,26 +18,26 @@ import java.util.Optional;
 @SuppressWarnings("OptionalUsedAsFieldOrParameterType") // ignore
 public class DurationInstanceBase<B extends Storage<I>, I extends DurationInstance<?> & StorageEntry> {
     public static final Codec<DurationInstanceBase<?, ?>> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            ResourceLocation.CODEC.fieldOf("id").forGetter(DurationInstanceBase::id),
+            Identifier.CODEC.fieldOf("id").forGetter(DurationInstanceBase::id),
             LevelBasedValue.CODEC.optionalFieldOf("duration", DragonAbilities.INFINITE_DURATION).forGetter(DurationInstanceBase::duration),
             Codec.BOOL.optionalFieldOf("should_remove_automatically", false).forGetter(DurationInstanceBase::shouldRemoveAutomatically),
             LootItemCondition.DIRECT_CODEC.optionalFieldOf("early_removal_condition").forGetter(DurationInstanceBase::earlyRemovalCondition),
-            ResourceLocation.CODEC.optionalFieldOf("custom_icon").forGetter(DurationInstanceBase::customIcon),
+            Identifier.CODEC.optionalFieldOf("custom_icon").forGetter(DurationInstanceBase::customIcon),
             Codec.BOOL.optionalFieldOf("is_hidden", false).forGetter(DurationInstanceBase::isHidden)
     ).apply(instance, DurationInstanceBase::new));
 
-    private final ResourceLocation id;
+    private final Identifier id;
     private final LevelBasedValue duration;
     private final boolean shouldRemoveAutomatically;
     private final Optional<LootItemCondition> earlyRemovalCondition;
-    private final Optional<ResourceLocation> customIcon;
+    private final Optional<Identifier> customIcon;
     private final boolean isHidden;
 
     public DurationInstanceBase(final DurationInstanceBase<?, ?> base) {
         this(base.id(), base.duration(), base.shouldRemoveAutomatically(), base.earlyRemovalCondition(), base.customIcon(), base.isHidden());
     }
 
-    public DurationInstanceBase(final ResourceLocation id, final LevelBasedValue duration, final boolean shouldRemoveAutomatically, final Optional<LootItemCondition> earlyRemovalCondition, final Optional<ResourceLocation> customIcon, final boolean isHidden) {
+    public DurationInstanceBase(final Identifier id, final LevelBasedValue duration, final boolean shouldRemoveAutomatically, final Optional<LootItemCondition> earlyRemovalCondition, final Optional<Identifier> customIcon, final boolean isHidden) {
         this.id = id;
         this.duration = duration;
         this.shouldRemoveAutomatically = shouldRemoveAutomatically;
@@ -67,11 +67,11 @@ public class DurationInstanceBase<B extends Storage<I>, I extends DurationInstan
         data.remove(target, data.get(id));
     }
 
-    public static Builder create(final ResourceLocation id) {
+    public static Builder create(final Identifier id) {
         return new Builder(id);
     }
 
-    public ResourceLocation id() {
+    public Identifier id() {
         return id;
     }
 
@@ -87,7 +87,7 @@ public class DurationInstanceBase<B extends Storage<I>, I extends DurationInstan
         return earlyRemovalCondition;
     }
 
-    public Optional<ResourceLocation> customIcon() {
+    public Optional<Identifier> customIcon() {
         return customIcon;
     }
 
@@ -104,14 +104,14 @@ public class DurationInstanceBase<B extends Storage<I>, I extends DurationInstan
     }
 
     public static class Builder {
-        private final ResourceLocation id;
+        private final Identifier id;
         private LevelBasedValue duration = DragonAbilities.INFINITE_DURATION;
         private boolean shouldRemoveAutomatically = false;
         private Optional<LootItemCondition> earlyRemovalCondition = Optional.empty();
-        private Optional<ResourceLocation> customIcon = Optional.empty();
+        private Optional<Identifier> customIcon = Optional.empty();
         private boolean isHidden = false;
 
-        public Builder(final ResourceLocation id) {
+        public Builder(final Identifier id) {
             this.id = id;
         }
 
@@ -130,7 +130,7 @@ public class DurationInstanceBase<B extends Storage<I>, I extends DurationInstan
             return this;
         }
 
-        public Builder customIcon(final ResourceLocation icon) {
+        public Builder customIcon(final Identifier icon) {
             this.customIcon = Optional.ofNullable(icon);
             return this;
         }

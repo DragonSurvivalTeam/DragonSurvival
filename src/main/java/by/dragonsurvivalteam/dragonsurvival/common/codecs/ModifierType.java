@@ -3,7 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.common.codecs;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.Holder;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.ai.attributes.Attribute;
@@ -30,7 +30,7 @@ public enum ModifierType implements StringRepresentable {
         return path;
     }
 
-    public ResourceLocation randomId(final Holder<Attribute> attribute, final AttributeModifier.Operation operation, final RandomSource random) {
+    public Identifier randomId(final Holder<Attribute> attribute, final AttributeModifier.Operation operation, final RandomSource random) {
         String attributeId = attribute.getRegisteredName().replace(":", ".");
         int hash = Objects.hash(String.valueOf(random.nextInt(100_000)), operation.getSerializedName());
         return DragonSurvival.res(path() + hash + "/" + attributeId);

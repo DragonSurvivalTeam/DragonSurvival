@@ -8,7 +8,7 @@ import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -22,9 +22,9 @@ import static squeek.appleskin.helpers.TextureHelper.*;
 
 @Mixin(HUDOverlayHandler.class)
 public class HUDOverlayHandlerMixin {
-    @ModifyArgs(method="drawSaturationOverlay(FFLnet/minecraft/world/entity/player/Player;Lnet/minecraft/client/gui/GuiGraphics;IIFI)V", at= @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;blit(Lnet/minecraft/resources/ResourceLocation;IIIIII)V"))
+    @ModifyArgs(method="drawSaturationOverlay(FFLnet/minecraft/world/entity/player/Player;Lnet/minecraft/client/gui/GuiGraphics;IIFI)V", at= @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;blit(Lnet/minecraft/resources/Identifier;IIIIII)V"))
     private static void dragonSurvival$changeSaturationIcons(Args args) {
-        ResourceLocation foodSprites = dragonSurvival$getDragonFoodSprites();
+        Identifier foodSprites = dragonSurvival$getDragonFoodSprites();
 
         if (foodSprites != null) {
             args.set(0, foodSprites);
@@ -43,9 +43,9 @@ public class HUDOverlayHandlerMixin {
             args.set(3, 27);
     }
 
-    @Redirect(method="drawHungerOverlay(IILnet/minecraft/world/entity/player/Player;Lnet/minecraft/client/gui/GuiGraphics;IIFZI)V", at=@At(value = "INVOKE", target="Lnet/minecraft/client/gui/GuiGraphics;blitSprite(Lnet/minecraft/resources/ResourceLocation;IIII)V", ordinal = 1))
-    private static void dragonSurvival$changeAppleSkinFoodIcons(GuiGraphics instance, ResourceLocation sprite, int x, int y, int width, int height, @Local(argsOnly=true) boolean useRottenTextures, @Local(ordinal = 1) ResourceLocation iconSprite) {
-        ResourceLocation foodSprites = dragonSurvival$getDragonFoodSprites();
+    @Redirect(method="drawHungerOverlay(IILnet/minecraft/world/entity/player/Player;Lnet/minecraft/client/gui/GuiGraphics;IIFZI)V", at=@At(value = "INVOKE", target="Lnet/minecraft/client/gui/GuiGraphics;blitSprite(Lnet/minecraft/resources/Identifier;IIII)V", ordinal = 1))
+    private static void dragonSurvival$changeAppleSkinFoodIcons(GuiGraphics instance, Identifier sprite, int x, int y, int width, int height, @Local(argsOnly=true) boolean useRottenTextures, @Local(ordinal = 1) Identifier iconSprite) {
+        Identifier foodSprites = dragonSurvival$getDragonFoodSprites();
 
         if (foodSprites != null) {
             int uOffset = 0;
@@ -70,7 +70,7 @@ public class HUDOverlayHandlerMixin {
         }
     }
 
-    @Unique private static @Nullable ResourceLocation dragonSurvival$getDragonFoodSprites() {
+    @Unique private static @Nullable Identifier dragonSurvival$getDragonFoodSprites() {
         if (DragonFoodHandler.dragonFoodHandlingIsDisabled() || HUDHandler.vanillaFoodLevel) {
             // Same check exists for 'HudHandler' which manages whether the vanilla food icons are to be shown or not
             return null;

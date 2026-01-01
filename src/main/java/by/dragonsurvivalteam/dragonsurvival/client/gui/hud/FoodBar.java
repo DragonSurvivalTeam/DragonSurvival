@@ -7,7 +7,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.data_maps.DietEntryCache;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
@@ -34,7 +34,7 @@ public class FoodBar {
             return false;
         }
 
-        ResourceLocation foodSprites = handler.species().value().miscResources().foodSprites().orElse(null);
+        Identifier foodSprites = handler.species().value().miscResources().foodSprites().orElse(null);
 
         if (foodSprites == null) {
             return false;

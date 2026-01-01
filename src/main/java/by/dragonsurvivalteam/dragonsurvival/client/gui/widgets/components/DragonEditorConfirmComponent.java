@@ -15,7 +15,7 @@ import net.minecraft.client.gui.components.events.AbstractContainerEventHandler;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.DyeColor;
 import net.neoforged.neoforge.client.gui.widget.ExtendedButton;
 import org.jetbrains.annotations.NotNull;
@@ -32,9 +32,9 @@ public class DragonEditorConfirmComponent extends AbstractContainerEventHandler 
     @Translation(comments = "\n§4Your ability progress will be lost!§r§f Use the Dragon Soul to avoid this.\n\nWould you still like to continue?")
     private final static String CONFIRM_LOSE_ABILITIES = Translation.Type.GUI.wrap("dragon_editor.confirm.abilities");
 
-    private static final ResourceLocation WARNING_MAIN = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/editor/warning_main.png");
-    private static final ResourceLocation WARNING_ACCEPT = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/editor/warning_accept.png");
-    private static final ResourceLocation WARNING_CANCEL = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/editor/warning_cancel.png");
+    private static final Identifier WARNING_MAIN = Identifier.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/editor/warning_main.png");
+    private static final Identifier WARNING_ACCEPT = Identifier.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/editor/warning_accept.png");
+    private static final Identifier WARNING_CANCEL = Identifier.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/editor/warning_cancel.png");
 
     private final AbstractWidget confirmButton;
     private final AbstractWidget cancelButton;

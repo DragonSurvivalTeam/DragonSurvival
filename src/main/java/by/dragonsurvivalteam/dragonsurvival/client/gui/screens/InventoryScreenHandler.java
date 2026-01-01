@@ -22,7 +22,7 @@ import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -52,8 +52,8 @@ public class InventoryScreenHandler {
     @ConfigOption(side = ConfigSide.CLIENT, category = "inventory", key = "inventory_toggle")
     public static Boolean inventoryToggle = true;
 
-    private static final ResourceLocation DS_LOGO = DragonSurvival.res("textures/gui/ds_logo.png");
-    public static final ResourceLocation INVENTORY_TOGGLE_BUTTON = DragonSurvival.res("textures/gui/inventory_button.png");
+    private static final Identifier DS_LOGO = DragonSurvival.res("textures/gui/ds_logo.png");
+    public static final Identifier INVENTORY_TOGGLE_BUTTON = DragonSurvival.res("textures/gui/inventory_button.png");
 
     private static ExtendedButton altarOpenButton;
     private static ExtendedButton dragonInventoryButton;

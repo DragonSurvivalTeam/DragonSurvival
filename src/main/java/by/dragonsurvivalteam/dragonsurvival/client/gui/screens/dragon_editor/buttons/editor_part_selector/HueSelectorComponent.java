@@ -13,7 +13,7 @@ import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.AbstractContainerEventHandler;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.client.gui.widget.ExtendedButton;
 import net.neoforged.neoforge.client.gui.widget.ExtendedSlider;
 import org.jetbrains.annotations.NotNull;
@@ -26,14 +26,14 @@ import java.util.function.Supplier;
 import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 
 public class HueSelectorComponent extends AbstractContainerEventHandler implements Renderable {
-    private static final ResourceLocation RESET_SETTINGS_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/editor/color_reset_hover.png");
-    private static final ResourceLocation RESET_SETTINGS_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/editor/color_reset_main.png");
+    private static final Identifier RESET_SETTINGS_HOVER = Identifier.fromNamespaceAndPath(MODID, "textures/gui/editor/color_reset_hover.png");
+    private static final Identifier RESET_SETTINGS_MAIN = Identifier.fromNamespaceAndPath(MODID, "textures/gui/editor/color_reset_main.png");
 
-    private static final ResourceLocation SLIDER_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/editor/color_slider_hover.png");
-    private static final ResourceLocation SLIDER_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/editor/color_slider_main.png");
+    private static final Identifier SLIDER_HOVER = Identifier.fromNamespaceAndPath(MODID, "textures/gui/editor/color_slider_hover.png");
+    private static final Identifier SLIDER_MAIN = Identifier.fromNamespaceAndPath(MODID, "textures/gui/editor/color_slider_main.png");
 
-    private static final ResourceLocation GLOW_ON = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/editor/glow_on.png");
-    private static final ResourceLocation GLOW_OFF = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/editor/glow_off.png");
+    private static final Identifier GLOW_ON = Identifier.fromNamespaceAndPath(MODID, "textures/gui/editor/glow_on.png");
+    private static final Identifier GLOW_OFF = Identifier.fromNamespaceAndPath(MODID, "textures/gui/editor/glow_off.png");
 
     public static final int BACKGROUND_COLOR = -14935012;
     public static final int INNER_BORDER_COLOR = new Color(0x78787880, true).getRGB();
@@ -85,7 +85,7 @@ public class HueSelectorComponent extends AbstractContainerEventHandler implemen
         }) {
             @Override
             public void renderWidget(@NotNull final GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-                ResourceLocation texture = settingsSupplier.get().isGlowing ? GLOW_ON : GLOW_OFF;
+                Identifier texture = settingsSupplier.get().isGlowing ? GLOW_ON : GLOW_OFF;
                 guiGraphics.pose().pushPose();
                 guiGraphics.pose().translate(0, 0, 100);
                 guiGraphics.blit(texture, getX(), getY(), 0, 0, 27, 25, 27, 25);

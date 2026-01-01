@@ -5,7 +5,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.OxygenBonus;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncSwimDataEntry;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -112,8 +112,8 @@ public class SwimData {
         return key(fluid) == NeoForgeMod.EMPTY_TYPE.getKey();
     }
 
-    public static @Nullable ResourceLocation getAirSprite(final FluidType fluid) {
-        ResourceLocation resource = NeoForgeRegistries.FLUID_TYPES.getKey(fluid);
+    public static @Nullable Identifier getAirSprite(final FluidType fluid) {
+        Identifier resource = NeoForgeRegistries.FLUID_TYPES.getKey(fluid);
 
         if (resource == null) {
             return null;
@@ -123,8 +123,8 @@ public class SwimData {
         return DragonSurvival.res("air_meters/" + resource.getPath());
     }
 
-    public static ResourceLocation getAirBurstSprite(final FluidType fluid) {
-        ResourceLocation resource = NeoForgeRegistries.FLUID_TYPES.getKey(fluid);
+    public static Identifier getAirBurstSprite(final FluidType fluid) {
+        Identifier resource = NeoForgeRegistries.FLUID_TYPES.getKey(fluid);
 
         if (resource == null) {
             return null;

@@ -6,7 +6,7 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -337,7 +337,7 @@ public final class SortingHandler {
                 case Block block -> list.add(block.asItem());
                 case ItemStack stack -> list.add(stack.getItem());
                 case String string -> {
-                    Item item = BuiltInRegistries.ITEM.get(ResourceLocation.parse(string));
+                    Item item = BuiltInRegistries.ITEM.get(Identifier.parse(string));
 
                     if (item != Items.AIR) {
                         list.add(item);

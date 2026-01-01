@@ -8,7 +8,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.Map;
 import java.util.Objects;
@@ -38,7 +38,7 @@ public class StageResources {
         return Objects.requireNonNullElse(stageResource.growthIcon(), MISSING);
     }
 
-    public static ResourceLocation getDefaultSkin(final Holder<DragonSpecies> species, final ResourceKey<DragonStage> stage, final boolean glowLayer) {
+    public static Identifier getDefaultSkin(final Holder<DragonSpecies> species, final ResourceKey<DragonStage> stage, final boolean glowLayer) {
         Map<ResourceKey<DragonStage>, StageResource> resources = species.getData(DSDataMaps.STAGE_RESOURCES);
 
         if (resources == null) {
@@ -54,7 +54,7 @@ public class StageResources {
         }
 
         DefaultSkin skin = stageResource.defaultSkin();
-        ResourceLocation texture = glowLayer ? skin.glowSkin() : skin.skin();
+        Identifier texture = glowLayer ? skin.glowSkin() : skin.skin();
 
         return Objects.requireNonNullElse(texture, DragonSurvival.MISSING_TEXTURE);
     }
@@ -66,17 +66,17 @@ public class StageResources {
         ).apply(instance, StageResource::new));
     }
 
-    public record GrowthIcon(ResourceLocation hoverIcon, ResourceLocation icon) {
+    public record GrowthIcon(Identifier hoverIcon, Identifier icon) {
         public static final Codec<GrowthIcon> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                ResourceLocation.CODEC.fieldOf("hover_icon").forGetter(GrowthIcon::hoverIcon),
-                ResourceLocation.CODEC.fieldOf("icon").forGetter(GrowthIcon::icon)
+                Identifier.CODEC.fieldOf("hover_icon").forGetter(GrowthIcon::hoverIcon),
+                Identifier.CODEC.fieldOf("icon").forGetter(GrowthIcon::icon)
         ).apply(instance, GrowthIcon::new));
     }
 
-    public record DefaultSkin(ResourceLocation skin, ResourceLocation glowSkin) {
+    public record DefaultSkin(Identifier skin, Identifier glowSkin) {
         public static final Codec<DefaultSkin> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                ResourceLocation.CODEC.fieldOf("skin").forGetter(DefaultSkin::skin),
-                ResourceLocation.CODEC.fieldOf("glow_skin").forGetter(DefaultSkin::glowSkin)
+                Identifier.CODEC.fieldOf("skin").forGetter(DefaultSkin::skin),
+                Identifier.CODEC.fieldOf("glow_skin").forGetter(DefaultSkin::glowSkin)
         ).apply(instance, DefaultSkin::new));
     }
 }

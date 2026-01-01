@@ -45,7 +45,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.neoforged.neoforge.client.gui.widget.ExtendedButton;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -104,57 +104,57 @@ public class DragonSkinsScreen extends Screen {
     @Translation(comments = "No skin found for this stage")
     private static final String NO_SKIN = Translation.Type.GUI.wrap("skin_screen.no_skin");
 
-    private static final ResourceLocation BACKGROUND_TEXTURE = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/skin_interface.png");
+    private static final Identifier BACKGROUND_TEXTURE = Identifier.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/skin_interface.png");
 
-    private static final ResourceLocation BUTTON_BACKGROUND_BLACK = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/background_black.png");
-    private static final ResourceLocation BUTTON_BACKGROUND_WHITE = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/background_white.png");
+    private static final Identifier BUTTON_BACKGROUND_BLACK = Identifier.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/background_black.png");
+    private static final Identifier BUTTON_BACKGROUND_WHITE = Identifier.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/background_white.png");
 
-    private static final ResourceLocation STAGE_BACKGROUND = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/stage_background.png");
+    private static final Identifier STAGE_BACKGROUND = Identifier.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/stage_background.png");
 
-    private static final ResourceLocation SKIN_ON = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/skin_on.png");
-    private static final ResourceLocation SKIN_OFF = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/skin_off.png");
+    private static final Identifier SKIN_ON = Identifier.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/skin_on.png");
+    private static final Identifier SKIN_OFF = Identifier.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/skin_off.png");
 
-    private static final ResourceLocation RANDOM_SKIN_MAIN = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/random_skin_main.png");
-    private static final ResourceLocation RANDOM_SKIN_HOVER = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/random_skin_hover.png");
+    private static final Identifier RANDOM_SKIN_MAIN = Identifier.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/random_skin_main.png");
+    private static final Identifier RANDOM_SKIN_HOVER = Identifier.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/random_skin_hover.png");
 
-    private static final ResourceLocation RESET_SKIN_HOVER = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/reset_skin_hover.png");
-    private static final ResourceLocation RESET_SKIN_MAIN = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/reset_skin_main.png");
+    private static final Identifier RESET_SKIN_HOVER = Identifier.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/reset_skin_hover.png");
+    private static final Identifier RESET_SKIN_MAIN = Identifier.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/reset_skin_main.png");
 
-    private static final ResourceLocation STAGE_ARROW_LEFT_MAIN = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/stage_arrow_left_main.png");
-    private static final ResourceLocation STAGE_ARROW_LEFT_HOVER = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/stage_arrow_left_hover.png");
+    private static final Identifier STAGE_ARROW_LEFT_MAIN = Identifier.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/stage_arrow_left_main.png");
+    private static final Identifier STAGE_ARROW_LEFT_HOVER = Identifier.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/stage_arrow_left_hover.png");
 
-    private static final ResourceLocation STAGE_ARROW_RIGHT_MAIN = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/stage_arrow_right_main.png");
-    private static final ResourceLocation STAGE_ARROW_RIGHT_HOVER = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/stage_arrow_right_hover.png");
+    private static final Identifier STAGE_ARROW_RIGHT_MAIN = Identifier.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/stage_arrow_right_main.png");
+    private static final Identifier STAGE_ARROW_RIGHT_HOVER = Identifier.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/stage_arrow_right_hover.png");
 
-    private static final ResourceLocation BODY_ARROW_LEFT_MAIN = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/body_arrow_left_main.png");
-    private static final ResourceLocation BODY_ARROW_LEFT_HOVER = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/body_arrow_left_hover.png");
+    private static final Identifier BODY_ARROW_LEFT_MAIN = Identifier.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/body_arrow_left_main.png");
+    private static final Identifier BODY_ARROW_LEFT_HOVER = Identifier.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/body_arrow_left_hover.png");
 
-    private static final ResourceLocation BODY_ARROW_RIGHT_MAIN = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/body_arrow_right_main.png");
-    private static final ResourceLocation BODY_ARROW_RIGHT_HOVER = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/body_arrow_right_hover.png");
+    private static final Identifier BODY_ARROW_RIGHT_MAIN = Identifier.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/body_arrow_right_main.png");
+    private static final Identifier BODY_ARROW_RIGHT_HOVER = Identifier.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/body_arrow_right_hover.png");
 
-    private static final ResourceLocation OPEN_EDITOR_MAIN = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/open_editor_main.png");
-    private static final ResourceLocation OPEN_EDITOR_HOVER = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/open_editor_hover.png");
+    private static final Identifier OPEN_EDITOR_MAIN = Identifier.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/open_editor_main.png");
+    private static final Identifier OPEN_EDITOR_HOVER = Identifier.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/open_editor_hover.png");
 
-    private static final ResourceLocation OLD_TEXTURE_ON = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/texturepack_on.png");
-    private static final ResourceLocation OLD_TEXTURE_OFF = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/texturepack_off.png");
+    private static final Identifier OLD_TEXTURE_ON = Identifier.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/texturepack_on.png");
+    private static final Identifier OLD_TEXTURE_OFF = Identifier.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/texturepack_off.png");
 
-    private static final ResourceLocation INFO_HOVER = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/info_hover.png");
-    private static final ResourceLocation INFO_MAIN = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/info_main.png");
+    private static final Identifier INFO_HOVER = Identifier.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/info_hover.png");
+    private static final Identifier INFO_MAIN = Identifier.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/info_main.png");
 
-    private static final ResourceLocation WIKI_MAIN = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/wiki_main.png");
-    private static final ResourceLocation WIKI_HOVER = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/wiki_hover.png");
+    private static final Identifier WIKI_MAIN = Identifier.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/wiki_main.png");
+    private static final Identifier WIKI_HOVER = Identifier.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/wiki_hover.png");
 
-    private static final ResourceLocation DISCORD_MAIN = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/discord_main.png");
-    private static final ResourceLocation DISCORD_HOVER = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/discord_hover.png");
+    private static final Identifier DISCORD_MAIN = Identifier.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/discord_main.png");
+    private static final Identifier DISCORD_HOVER = Identifier.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/discord_hover.png");
 
-    private static final ResourceLocation ADDITIONS_BACKGROUND = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/additions_background.png");
+    private static final Identifier ADDITIONS_BACKGROUND = Identifier.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/additions_background.png");
     private static final ArrayList<String> SEEN_SKINS = new ArrayList<>();
 
     private static final String SKIN_WIKI_URL = "https://github.com/DragonSurvivalTeam/DragonSurvival/wiki/3.-Customization";
 
     private static Holder<DragonStage> dragonStage;
-    private static ResourceLocation skinTexture;
-    private static ResourceLocation glowTexture;
+    private static Identifier skinTexture;
+    private static Identifier glowTexture;
     private static String playerName;
     private static String lastPlayerName;
     private static boolean noSkin;
@@ -504,8 +504,8 @@ public class DragonSkinsScreen extends Screen {
     }
 
     private void setTextures() {
-        ResourceLocation skinTexture = DragonSkins.getPlayerSkin(playerName, Objects.requireNonNull(dragonStage.getKey()));
-        ResourceLocation glowTexture = null;
+        Identifier skinTexture = DragonSkins.getPlayerSkin(playerName, Objects.requireNonNull(dragonStage.getKey()));
+        Identifier glowTexture = null;
         boolean defaultSkin = false;
 
         if (!DragonSkins.renderCustomSkin(Objects.requireNonNull(minecraft).player) && playerName.equals(Objects.requireNonNull(minecraft.player).getGameProfile().getName()) || skinTexture == null) {

@@ -4,7 +4,7 @@ import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.DSLanguageProvider;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.neoforged.neoforge.common.Tags;
 
@@ -19,10 +19,10 @@ import java.lang.annotation.Target;
  * - {@link Enum} will use {@link DSLanguageProvider#enumClassKey(Class)} and {@link DSLanguageProvider#enumValue(Enum)} <br>
  * - {@link String} annotated with the type {@link Type#NONE} will use its stored value, not wrapping anything <br>
  * - {@link String} annotated with the type {@link Type#EMOTE} will use its stored value, wrapped with emote <br>
- * - {@link Holder} will use {@link Holder#getKey()} -> {@link ResourceKey#location()} -> {@link ResourceLocation#getPath()} to determine the wrapped value <br>
+ * - {@link Holder} will use {@link Holder#getKey()} -> {@link ResourceKey#location()} -> {@link Identifier#getPath()} to determine the wrapped value <br>
  * - {@link TagKey} will use {@link Tags#getTagTranslationKey(TagKey)} <br>
- * - {@link ResourceKey} will use {@link ResourceKey#location()} -> {@link ResourceLocation#getPath()} to determine the wrapped value <br>
- * - {@link ResourceLocation} will use {@link ResourceLocation#getPath()} to determine the wrapped value <br>
+ * - {@link ResourceKey} will use {@link ResourceKey#location()} -> {@link Identifier#getPath()} to determine the wrapped value <br>
+ * - {@link Identifier} will use {@link Identifier#getPath()} to determine the wrapped value <br>
  */
 @Target({ElementType.FIELD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
@@ -113,7 +113,7 @@ public @interface Translation {
         /**
          * When used on {@link String} and no specified key it's expected that the string contains the translation key <br>
          * Otherwise it generally means the key is being handled in a special way / no prefix is required <br>
-         * (Usually meaning that {@link Translation.Type#wrap(ResourceLocation)} is not used)
+         * (Usually meaning that {@link Translation.Type#wrap(Identifier)} is not used)
          */
         NONE("", "");
 
@@ -141,7 +141,7 @@ public @interface Translation {
         }
 
         /** See {@link Translation.Type#wrap(String, String)} */
-        public String wrap(final ResourceLocation location) {
+        public String wrap(final Identifier location) {
             return wrap(location.getNamespace(), location.getPath());
         }
 

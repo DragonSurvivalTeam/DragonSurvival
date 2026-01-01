@@ -7,7 +7,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.EntityTypeTagsProvider;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
 import net.neoforged.neoforge.common.Tags;
@@ -55,20 +55,20 @@ public class DSEntityTypeTags extends EntityTypeTagsProvider {
                 .add(EntityType.WOLF)
                 .add(EntityType.HOGLIN)
                 .add(EntityType.BEE)
-                .addOptional(ResourceLocation.fromNamespaceAndPath("cobblemon", "pokemon"))
-                .addOptional(ResourceLocation.fromNamespaceAndPath("bee_queen_ds", "bee_guard"))
-                .addOptional(ResourceLocation.fromNamespaceAndPath("bee_queen_ds", "tamed_bee"));
+                .addOptional(Identifier.fromNamespaceAndPath("cobblemon", "pokemon"))
+                .addOptional(Identifier.fromNamespaceAndPath("bee_queen_ds", "bee_guard"))
+                .addOptional(Identifier.fromNamespaceAndPath("bee_queen_ds", "tamed_bee"));
 
         tag(VEHICLE_WHITELIST)
                 .addTag(Tags.EntityTypes.BOATS)
                 .addTag(Tags.EntityTypes.MINECARTS)
-                .addOptional(ResourceLocation.fromNamespaceAndPath("littlelogistics", "seater_barge"))
-                .addOptional(ResourceLocation.fromNamespaceAndPath("create", "seat"))
-                .addOptional(ResourceLocation.fromNamespaceAndPath("create", "contraption"))
-                .addOptional(ResourceLocation.fromNamespaceAndPath("create", "gantry_contraption"))
-                .addOptional(ResourceLocation.fromNamespaceAndPath("create", "stationary_contraption"))
-                .addOptional(ResourceLocation.fromNamespaceAndPath("hexerei", "broom"))
-                .addOptional(ResourceLocation.fromNamespaceAndPath("botania", "player_mover"));
+                .addOptional(Identifier.fromNamespaceAndPath("littlelogistics", "seater_barge"))
+                .addOptional(Identifier.fromNamespaceAndPath("create", "seat"))
+                .addOptional(Identifier.fromNamespaceAndPath("create", "contraption"))
+                .addOptional(Identifier.fromNamespaceAndPath("create", "gantry_contraption"))
+                .addOptional(Identifier.fromNamespaceAndPath("create", "stationary_contraption"))
+                .addOptional(Identifier.fromNamespaceAndPath("hexerei", "broom"))
+                .addOptional(Identifier.fromNamespaceAndPath("botania", "player_mover"));
 
         tag(CHARGED_SPREAD_BLACKLIST)
                 .add(EntityType.ARMOR_STAND)
@@ -77,8 +77,8 @@ public class DSEntityTypeTags extends EntityTypeTagsProvider {
                 .add(EntityType.GUARDIAN)
                 .add(EntityType.ELDER_GUARDIAN)
                 .add(EntityType.ENDERMAN)
-                .addOptional(ResourceLocation.fromNamespaceAndPath("upgrade_aquatic", "thrasher"))
-                .addOptional(ResourceLocation.fromNamespaceAndPath("upgrade_aquatic", "great_thrasher"));
+                .addOptional(Identifier.fromNamespaceAndPath("upgrade_aquatic", "thrasher"))
+                .addOptional(Identifier.fromNamespaceAndPath("upgrade_aquatic", "great_thrasher"));
 
         tag(HUNTER_TARGETS)
                 .add(EntityType.EVOKER)
@@ -102,7 +102,7 @@ public class DSEntityTypeTags extends EntityTypeTagsProvider {
                 .add(EntityType.WITCH)
                 .add(EntityType.WITHER_SKELETON)
                 .add(EntityType.WITHER)
-                .addOptionalTag(ResourceLocation.fromNamespaceAndPath("zombiemobs", "zombie_animals"));
+                .addOptionalTag(Identifier.fromNamespaceAndPath("zombiemobs", "zombie_animals"));
 
         // Used in 'curse_of_kindness' enchantment
         tag(HUNTER_FACTION)

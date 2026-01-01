@@ -10,7 +10,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.neoforge.common.util.INBTSerializable;
 import net.neoforged.neoforge.common.util.Lazy;
@@ -73,7 +73,7 @@ public class SkinData implements INBTSerializable<CompoundTag> {
         renderCustomSkin = tag.getBoolean(RENDER_CUSTOM_SKIN);
 
         for (String key : tag.getAllKeys()) {
-            ResourceKey<DragonSpecies> dragonSpecies = ResourceKey.create(DragonSpecies.REGISTRY, ResourceLocation.parse(key));
+            ResourceKey<DragonSpecies> dragonSpecies = ResourceKey.create(DragonSpecies.REGISTRY, Identifier.parse(key));
 
             if (provider.lookup(DragonSpecies.REGISTRY).flatMap(lookup -> lookup.get(dragonSpecies)).isPresent()) {
                 SkinPreset preset = new SkinPreset();
@@ -99,7 +99,7 @@ public class SkinData implements INBTSerializable<CompoundTag> {
         renderCustomSkin = tag.getBoolean(RENDER_CUSTOM_SKIN);
 
         for (String key : tag.getAllKeys()) {
-            ResourceKey<DragonSpecies> dragonSpecies = ResourceKey.create(DragonSpecies.REGISTRY, ResourceLocation.parse(key));
+            ResourceKey<DragonSpecies> dragonSpecies = ResourceKey.create(DragonSpecies.REGISTRY, Identifier.parse(key));
 
             if (provider.lookup(DragonSpecies.REGISTRY).flatMap(lookup -> lookup.get(dragonSpecies)).isPresent()) {
                 SkinPreset preset = new SkinPreset();

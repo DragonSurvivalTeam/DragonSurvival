@@ -24,7 +24,7 @@ import net.minecraft.client.resources.sounds.TickableSoundInstance;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
@@ -41,7 +41,7 @@ import java.util.Map;
 import java.util.Set;
 
 public class ClientProxy implements Proxy {
-    private final Map<ResourceLocation, TickableSoundInstance> soundInstances = new HashMap<>();
+    private final Map<Identifier, TickableSoundInstance> soundInstances = new HashMap<>();
 
     @Override
     public @Nullable Player getLocalPlayer() {
@@ -62,7 +62,7 @@ public class ClientProxy implements Proxy {
     }
 
     @Override
-    public void queueTickingSound(final ResourceLocation id, final SoundEvent soundEvent, final SoundSource soundSource, final Entity entity) {
+    public void queueTickingSound(final Identifier id, final SoundEvent soundEvent, final SoundSource soundSource, final Entity entity) {
         TickableSoundInstance sound = new FollowEntitySound(soundEvent, soundSource, entity);
         TickableSoundInstance previousSound = soundInstances.put(id, sound);
 
@@ -74,7 +74,7 @@ public class ClientProxy implements Proxy {
     }
 
     @Override
-    public void stopTickingSound(final ResourceLocation id) {
+    public void stopTickingSound(final Identifier id) {
         TickableSoundInstance instance = soundInstances.remove(id);
 
         if (instance != null) {
@@ -217,7 +217,7 @@ public class ClientProxy implements Proxy {
     @Override
     public Set<String> getAnimations(final DragonSoulBlockEntity soul) {
         DragonEntity dragon = FakeClientPlayerUtils.getFakeDragon(soul.fakePlayerIndex, soul.getHandler());
-        ResourceLocation resource = DragonSurvivalClient.DRAGON_MODEL.getAnimationResource(dragon);
+        Identifier resource = DragonSurvivalClient.DRAGON_MODEL.getAnimationResource(dragon);
         BakedAnimations animations = GeckoLibCache.getBakedAnimations().get(resource);
         return animations.animations().keySet();
     }

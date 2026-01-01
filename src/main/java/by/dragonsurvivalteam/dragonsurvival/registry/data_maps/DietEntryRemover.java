@@ -1,7 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.data_maps;
 
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.DietEntry;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.ResourceLocationWrapper;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.IdentifierWrapper;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 public record DietEntryRemover(List<String> keys) implements DataMapValueRemover<DragonSpecies, List<DietEntry>> {
-    public static final Codec<DietEntryRemover> CODEC = ResourceLocationWrapper.validatedCodec().listOf().xmap(DietEntryRemover::new, DietEntryRemover::keys);
+    public static final Codec<DietEntryRemover> CODEC = IdentifierWrapper.validatedCodec().listOf().xmap(DietEntryRemover::new, DietEntryRemover::keys);
 
     @Override
     public @NotNull Optional<List<DietEntry>> remove(@NotNull final List<DietEntry> value, @NotNull final Registry<DragonSpecies> registry, @NotNull final Either<TagKey<DragonSpecies>, ResourceKey<DragonSpecies>> source, @NotNull final DragonSpecies species) {

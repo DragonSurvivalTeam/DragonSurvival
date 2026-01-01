@@ -3,7 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.client.render.entity.projectiles;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.projectiles.GenericArrowEntity;
 import net.minecraft.client.renderer.entity.ArrowRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
 public class GenericArrowRenderer extends ArrowRenderer<GenericArrowEntity> {
@@ -12,8 +12,8 @@ public class GenericArrowRenderer extends ArrowRenderer<GenericArrowEntity> {
     }
 
     @Override
-    public @NotNull ResourceLocation getTextureLocation(@NotNull final GenericArrowEntity arrow) {
-        ResourceLocation resource = arrow.getResource();
-        return ResourceLocation.fromNamespaceAndPath(resource.getNamespace(), "textures/entity/projectiles/" + resource.getPath() + ".png");
+    public @NotNull Identifier getTextureLocation(@NotNull final GenericArrowEntity arrow) {
+        Identifier resource = arrow.getResource();
+        return Identifier.fromNamespaceAndPath(resource.getNamespace(), "textures/entity/projectiles/" + resource.getPath() + ".png");
     }
 }

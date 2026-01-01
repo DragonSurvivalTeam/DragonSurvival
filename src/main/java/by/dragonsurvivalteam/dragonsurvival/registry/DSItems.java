@@ -2,7 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.registry;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.DragonAbilityHolder;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.ResourceLocationWrapper;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.IdentifierWrapper;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.SourceOfMagicData;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.ManaHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.items.BolasArrowItem;
@@ -464,23 +464,23 @@ public class DSItems {
                             new DragonAbilityHolder(
                                     List.of(
                                             new DragonAbilityHolder.AbilityPair(
-                                                    List.of(ResourceLocationWrapper.convert(DSDragonAbilityTags.TEST_ABILITIES)),
+                                                    List.of(IdentifierWrapper.convert(DSDragonAbilityTags.TEST_ABILITIES)),
                                                     List.of(),
                                                     false
                                             ),
                                             new DragonAbilityHolder.AbilityPair(
-                                                    List.of(ResourceLocationWrapper.convert(SeaDragonAbilities.ORE_GLOW)),
+                                                    List.of(IdentifierWrapper.convert(SeaDragonAbilities.ORE_GLOW)),
                                                     List.of(),
                                                     true
                                             ),
                                             new DragonAbilityHolder.AbilityPair(
-                                                    List.of(ResourceLocationWrapper.convert(DSDragonAbilityTags.CAVE)),
-                                                    List.of(ResourceLocationWrapper.convert(DSDragonAbilityTags.FOREST)),
+                                                    List.of(IdentifierWrapper.convert(DSDragonAbilityTags.CAVE)),
+                                                    List.of(IdentifierWrapper.convert(DSDragonAbilityTags.FOREST)),
                                                     true
                                             )
                                     ),
                                     Optional.empty(),
-                                    List.of(ResourceLocationWrapper.convert(BuiltInDragonSpecies.FOREST_DRAGON))
+                                    List.of(IdentifierWrapper.convert(BuiltInDragonSpecies.FOREST_DRAGON))
                             )
                     )
     ));

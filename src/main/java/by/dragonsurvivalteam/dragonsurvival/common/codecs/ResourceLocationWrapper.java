@@ -10,7 +10,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.neoforged.neoforge.common.Tags;
 
@@ -26,23 +26,23 @@ import java.util.stream.Collectors;
 
 /**
  * Allows for: <br>
- * - normal {@link ResourceLocation} <br>
- * - tags by prefixing a {@link ResourceLocation} with '#' (e.g. '#minecraft:doors') <br>
+ * - normal {@link Identifier} <br>
+ * - tags by prefixing a {@link Identifier} with '#' (e.g. '#minecraft:doors') <br>
  * - Regex in namespace and / or path (e.g. '.*:.*_bow')
  */
-public class ResourceLocationWrapper {
+public class IdentifierWrapper {
     /** These are the regex meta characters that can start a valid regular expression */
     private static final List<Character> VALID_REGEX_START = List.of('.', '^', '[', '(', '\\');
     private static final int NAMESPACE = 0;
     private static final int PATH = 1;
 
-    public static <T> Set<ResourceLocation> getEntries(final String location, final Registry<T> registry) {
+    public static <T> Set<Identifier> getEntries(final String location, final Registry<T> registry) {
         if (location.startsWith("#")) {
-            Optional<HolderSet.Named<T>> optional = registry.getTag(TagKey.create(registry.key(), ResourceLocation.parse(location.substring(1))));
+            Optional<HolderSet.Named<T>> optional = registry.getTag(TagKey.create(registry.key(), Identifier.parse(location.substring(1))));
             //noinspection DataFlowIssue -> key is expected to be present
             return optional.map(entries -> entries.stream().map(entry -> entry.getKey().location()).collect(Collectors.toSet())).orElse(Set.of());
         } else {
-            ResourceLocation parsed = ResourceLocation.tryParse(location);
+            Identifier parsed = Identifier.tryParse(location);
 
             if (parsed != null) {
                 // The user needs to make sure their regex-based location is not a valid location by itself
@@ -57,13 +57,13 @@ public class ResourceLocationWrapper {
 
                 String namespace = split[NAMESPACE];
 
-                Pattern namespacePattern = ResourceLocation.isValidNamespace(namespace) ? null : Pattern.compile(namespace);
+                Pattern namespacePattern = Identifier.isValidNamespace(namespace) ? null : Pattern.compile(namespace);
                 Pattern pathPattern = Pattern.compile(split[PATH]);
 
-                Set<ResourceLocation> locations = new HashSet<>();
+                Set<Identifier> locations = new HashSet<>();
                 Predicate<String> namespaceValidation = toCheck -> namespacePattern == null ? toCheck.equals(namespace) : namespacePattern.matcher(toCheck).matches();
 
-                for (ResourceLocation key : registry.keySet()) {
+                for (Identifier key : registry.keySet()) {
                     if (namespaceValidation.test(key.getNamespace()) && pathPattern.matcher(key.getPath()).matches()) {
                         locations.add(key);
                     }
@@ -78,10 +78,10 @@ public class ResourceLocationWrapper {
         return map(getEntries(location, registry), registry);
     }
 
-    public static <T> Set<ResourceKey<T>> map(final Set<ResourceLocation> locations, final Registry<T> registry) {
+    public static <T> Set<ResourceKey<T>> map(final Set<Identifier> locations, final Registry<T> registry) {
         Set<ResourceKey<T>> keys = new HashSet<>();
 
-        for (ResourceLocation location : locations) {
+        for (Identifier location : locations) {
             keys.add(ResourceKey.create(registry.key(), location));
         }
 
@@ -89,7 +89,7 @@ public class ResourceLocationWrapper {
     }
 
     /**
-     * Converts the {@link net.minecraft.tags.TagKey} to the format accepted by {@link by.dragonsurvivalteam.dragonsurvival.common.codecs.ResourceLocationWrapper} </br>
+     * Converts the {@link net.minecraft.tags.TagKey} to the format accepted by {@link by.dragonsurvivalteam.dragonsurvival.common.codecs.IdentifierWrapper} </br>
      * (Format example: #minecraft:ores)
      */
     public static String convert(final TagKey<?> tag) {
@@ -102,16 +102,16 @@ public class ResourceLocationWrapper {
     }
 
     /** Helper method to format the resource location into a string */
-    public static String convert(final ResourceLocation location) {
+    public static String convert(final Identifier location) {
         return location.toString();
     }
 
-    /** Returns the translation of the resources by unwrapping them through {@link by.dragonsurvivalteam.dragonsurvival.common.codecs.ResourceLocationWrapper#convert(String, net.minecraft.core.Registry)} */
+    /** Returns the translation of the resources by unwrapping them through {@link by.dragonsurvivalteam.dragonsurvival.common.codecs.IdentifierWrapper#convert(String, net.minecraft.core.Registry)} */
     public static List<MutableComponent> getTranslations(final List<String> resources, final Registry<?> registry, final Translation.Type type) {
         List<MutableComponent> components = new ArrayList<>();
 
         for (String resource : resources) {
-            var converted = ResourceLocationWrapper.convert(resource, registry);
+            var converted = IdentifierWrapper.convert(resource, registry);
 
             converted.first().ifPresent(tag -> components.add(Component.translatable(Tags.getTagTranslationKey(tag))));
             converted.second().ifPresent(key -> components.add(Component.translatable(type.wrap(key))));
@@ -129,11 +129,11 @@ public class ResourceLocationWrapper {
      */
     public static <T> Triple<TagKey<T>, ResourceKey<T>, Set<ResourceKey<T>>> convert(final String resource, final Registry<T> registry) {
         if (resource.startsWith("#")) {
-            return Triple.of(TagKey.create(registry.key(), ResourceLocation.parse(resource.substring(1))), null, null);
+            return Triple.of(TagKey.create(registry.key(), Identifier.parse(resource.substring(1))), null, null);
         }
 
-        if (ResourceLocation.tryParse(resource) != null) {
-            return Triple.of(null, ResourceKey.create(registry.key(), ResourceLocation.parse(resource)), null);
+        if (Identifier.tryParse(resource) != null) {
+            return Triple.of(null, ResourceKey.create(registry.key(), Identifier.parse(resource)), null);
         }
 
         return Triple.of(null, null, map(resource, registry));
@@ -144,9 +144,9 @@ public class ResourceLocationWrapper {
             boolean isValid;
 
             if (value.startsWith("#")) {
-                isValid = ResourceLocation.tryParse(value.substring(1)) != null;
+                isValid = Identifier.tryParse(value.substring(1)) != null;
             } else {
-                isValid = validateRegexResourceLocation(value);
+                isValid = validateRegexIdentifier(value);
             }
 
             if (!isValid) {
@@ -157,7 +157,7 @@ public class ResourceLocationWrapper {
         });
     }
 
-    public static boolean validateRegexResourceLocation(final String location) {
+    public static boolean validateRegexIdentifier(final String location) {
         String[] data = location.split(":", 2);
 
         if (data.length != 2) {
@@ -172,15 +172,15 @@ public class ResourceLocationWrapper {
 
         String path = data[1];
 
-        if (ResourceLocation.tryParse(location) != null) {
+        if (Identifier.tryParse(location) != null) {
             return true;
         }
 
-        if (ResourceLocation.isValidNamespace(namespace) && isValidRegex(path)) {
+        if (Identifier.isValidNamespace(namespace) && isValidRegex(path)) {
             return true;
         }
 
-        if (ResourceLocation.isValidPath(path) && isValidRegex(namespace)) {
+        if (Identifier.isValidPath(path) && isValidRegex(namespace)) {
             return true;
         }
 
@@ -190,7 +190,7 @@ public class ResourceLocationWrapper {
     private static boolean isValidRegex(final String string) {
         char firstCharacter = string.charAt(0);
 
-        if (!ResourceLocation.isAllowedInResourceLocation(firstCharacter) && !VALID_REGEX_START.contains(firstCharacter)) {
+        if (!Identifier.isAllowedInIdentifier(firstCharacter) && !VALID_REGEX_START.contains(firstCharacter)) {
             // If the regex starts with an invalid resource location character it needs to be a valid regex start character
             return false;
         }

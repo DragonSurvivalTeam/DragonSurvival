@@ -5,7 +5,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.ItemStack;
@@ -17,8 +17,8 @@ import java.util.List;
 import java.util.function.Supplier;
 
 public class HoverButton extends ExtendedButton implements HoverDisableable {
-    private final ResourceLocation main;
-    private final ResourceLocation hover;
+    private final Identifier main;
+    private final Identifier hover;
     private final Supplier<List<Either<FormattedText, TooltipComponent>>> customTooltip;
 
     private boolean disableHover;
@@ -31,19 +31,19 @@ public class HoverButton extends ExtendedButton implements HoverDisableable {
     private Vec2 scale = new Vec2(1, 1);
     private Vec2 offset = new Vec2(0, 0);
 
-    public HoverButton(int x, int y, int size, final ResourceLocation main, final ResourceLocation hover) {
+    public HoverButton(int x, int y, int size, final Identifier main, final Identifier hover) {
         this(x, y, size, size, size, size, 0, 0, main, hover, button -> { /* Nothing to do */ }, null);
     }
 
-    public HoverButton(int x, int y, int size, final ResourceLocation main, final ResourceLocation hover, final Supplier<List<Either<FormattedText, TooltipComponent>>> customTooltip) {
+    public HoverButton(int x, int y, int size, final Identifier main, final Identifier hover, final Supplier<List<Either<FormattedText, TooltipComponent>>> customTooltip) {
         this(x, y, size, size, size, size, 0, 0, main, hover, button -> { /* Nothing to do */ }, customTooltip);
     }
 
-    public HoverButton(int x, int y, int width, int height, int textureWidth, int textureHeight, final ResourceLocation main, final ResourceLocation hover, final OnPress onPress) {
+    public HoverButton(int x, int y, int width, int height, int textureWidth, int textureHeight, final Identifier main, final Identifier hover, final OnPress onPress) {
         this(x, y, width, height, textureWidth, textureHeight, 0, 0, main, hover, onPress, null);
     }
 
-    public HoverButton(int x, int y, int width, int height, int textureWidth, int textureHeight, int uOffset, int vOffset, final ResourceLocation main, final ResourceLocation hover, final OnPress onPress, final Supplier<List<Either<FormattedText, TooltipComponent>>> customTooltip) {
+    public HoverButton(int x, int y, int width, int height, int textureWidth, int textureHeight, int uOffset, int vOffset, final Identifier main, final Identifier hover, final OnPress onPress, final Supplier<List<Either<FormattedText, TooltipComponent>>> customTooltip) {
         super(x, y, width, height, Component.empty(), onPress);
         this.main = main;
         this.hover = hover;
@@ -94,7 +94,7 @@ public class HoverButton extends ExtendedButton implements HoverDisableable {
         float scaleYDiff = (scale.y - 1) * originalHeight / 2;
         graphics.pose().translate(offset.x - scaleXDiff, offset.y - scaleYDiff, 0);
 
-        ResourceLocation texture = isHovered() ? hover : main;
+        Identifier texture = isHovered() ? hover : main;
         graphics.blit(texture, getX(), getY(), uOffset, vOffset, originalWidth, originalHeight, textureWidth, textureHeight);
         graphics.pose().popPose();
 

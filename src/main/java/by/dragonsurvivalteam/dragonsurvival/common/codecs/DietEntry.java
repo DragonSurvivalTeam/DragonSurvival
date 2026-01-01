@@ -5,7 +5,7 @@ import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.food.FoodProperties;
@@ -23,7 +23,7 @@ import java.util.function.Supplier;
 
 public record DietEntry(String items, Optional<FoodProperties> properties, Optional<Either<Boolean, RetainEffects>> retainEffects) {
     public static final Codec<DietEntry> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            ResourceLocationWrapper.validatedCodec().fieldOf("items").forGetter(DietEntry::items),
+            IdentifierWrapper.validatedCodec().fieldOf("items").forGetter(DietEntry::items),
             FoodProperties.DIRECT_CODEC.optionalFieldOf("properties").forGetter(DietEntry::properties),
             Codec.either(Codec.BOOL, RetainEffects.CODEC).optionalFieldOf("retain_effects").forGetter(DietEntry::retainEffects)
     ).apply(instance, DietEntry::new));
@@ -32,7 +32,7 @@ public record DietEntry(String items, Optional<FoodProperties> properties, Optio
         Map<Item, FoodProperties> diet = new HashMap<>();
 
         for (DietEntry entry : entries) {
-            ResourceLocationWrapper.map(entry.items(), BuiltInRegistries.ITEM).forEach(resource -> {
+            IdentifierWrapper.map(entry.items(), BuiltInRegistries.ITEM).forEach(resource -> {
                 Item item = BuiltInRegistries.ITEM.get(resource);
 
                 if (item != null) {
@@ -88,7 +88,7 @@ public record DietEntry(String items, Optional<FoodProperties> properties, Optio
         return create("#" + tag.location());
     }
 
-    public static Builder create(final ResourceLocation location) {
+    public static Builder create(final Identifier location) {
         return create(location.toString());
     }
 

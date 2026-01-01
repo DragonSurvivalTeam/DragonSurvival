@@ -22,7 +22,7 @@ import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.api.distmarker.Dist;
@@ -81,13 +81,13 @@ public class MagicHUD {
     @ConfigOption(side = ConfigSide.CLIENT, category = {"ui", "magic"}, key = "mana_bar_y_offset")
     public static Integer manabarYOffset = 0;
 
-    public static final ResourceLocation ID = DragonSurvival.res("magic_hud");
+    public static final Identifier ID = DragonSurvival.res("magic_hud");
 
     // 1.20.6 moved a bunch of widgets around, so to keep compatibility with older versions, we need to use the old widgets texture
-    public static final ResourceLocation WIDGET_TEXTURES = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/widgets.png");
+    public static final Identifier WIDGET_TEXTURES = Identifier.fromNamespaceAndPath(MODID, "textures/gui/widgets.png");
 
-    private static final ResourceLocation VANILLA_WIDGETS = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/pre-1.20.1-widgets.png");
-    private static final ResourceLocation CAST_BAR_FILL = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/cast_bar_fill.png");
+    private static final Identifier VANILLA_WIDGETS = Identifier.fromNamespaceAndPath(MODID, "textures/gui/pre-1.20.1-widgets.png");
+    private static final Identifier CAST_BAR_FILL = Identifier.fromNamespaceAndPath(MODID, "textures/gui/cast_bar_fill.png");
 
     public static class OutlineColorData {
         private Color color;
@@ -432,7 +432,7 @@ public class MagicHUD {
     }
 
     @SuppressWarnings("SameParameterValue") // ignore
-    private static void blit(final GuiGraphics graphics, final ResourceLocation resource, int x, int y, int size, float alpha, float red, float green, float blue) {
+    private static void blit(final GuiGraphics graphics, final Identifier resource, int x, int y, int size, float alpha, float red, float green, float blue) {
         ((GuiGraphicsAccess) graphics).dragonSurvival$innerBlit(resource, x, x + size, y, y + size, 0, 0, 1, 0, 1, red, green, blue, alpha);
     }
 }

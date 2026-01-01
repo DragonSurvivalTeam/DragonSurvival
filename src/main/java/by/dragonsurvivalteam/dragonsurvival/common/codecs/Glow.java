@@ -16,7 +16,7 @@ import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextColor;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
@@ -38,11 +38,11 @@ public class Glow extends DurationInstanceBase<GlowData, Glow.Instance> {
         this.color = color;
     }
 
-    public static Glow create(final ResourceLocation id, final TextColor color) {
+    public static Glow create(final Identifier id, final TextColor color) {
         return new Glow(DurationInstanceBase.create(id).removeAutomatically().hidden().build(), color);
     }
 
-    public static Glow create(final ResourceLocation id, final LevelBasedValue duration, final TextColor color) {
+    public static Glow create(final Identifier id, final LevelBasedValue duration, final TextColor color) {
         return new Glow(DurationInstanceBase.create(id).duration(duration).hidden().build(), color);
     }
 

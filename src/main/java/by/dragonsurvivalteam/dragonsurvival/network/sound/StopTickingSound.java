@@ -4,15 +4,15 @@ import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
-public record StopTickingSound(ResourceLocation id) implements CustomPacketPayload {
+public record StopTickingSound(Identifier id) implements CustomPacketPayload {
     public static final CustomPacketPayload.Type<StopTickingSound> TYPE = new CustomPacketPayload.Type<>(DragonSurvival.res("stop_ticking_sound"));
 
     public static final StreamCodec<FriendlyByteBuf, StopTickingSound> STREAM_CODEC = StreamCodec.composite(
-            ResourceLocation.STREAM_CODEC, StopTickingSound::id,
+            Identifier.STREAM_CODEC, StopTickingSound::id,
             StopTickingSound::new
     );
 

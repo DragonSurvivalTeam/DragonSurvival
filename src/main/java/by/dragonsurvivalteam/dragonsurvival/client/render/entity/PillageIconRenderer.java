@@ -13,7 +13,7 @@ import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.npc.Villager;
@@ -22,7 +22,7 @@ import net.neoforged.neoforge.client.GlStateBackup;
 import org.joml.Matrix4f;
 
 public class PillageIconRenderer {
-    private static final ResourceLocation ICON = DragonSurvival.res("textures/icons/pillage_icon.png");
+    private static final Identifier ICON = DragonSurvival.res("textures/icons/pillage_icon.png");
     private static final int SIZE = 16;
 
     public static void renderIcon(final Entity entity, final PoseStack pose, final double distance) {

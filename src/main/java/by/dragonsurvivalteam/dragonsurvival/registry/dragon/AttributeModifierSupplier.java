@@ -5,7 +5,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.ModifierType;
 import by.dragonsurvivalteam.dragonsurvival.mixins.AttributeMapAccessor;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import net.minecraft.core.Holder;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
@@ -37,7 +37,7 @@ public interface AttributeModifierSupplier {
         List<AttributeModifier> modifiers = new ArrayList<>();
 
         if (getModifierType() == ModifierType.CUSTOM) {
-            List<ResourceLocation> ids = getStoredIds().getOrDefault(instance.getAttribute(), List.of());
+            List<Identifier> ids = getStoredIds().getOrDefault(instance.getAttribute(), List.of());
 
             for (AttributeModifier modifier : instance.getModifiers()) {
                 if (!ids.contains(modifier.id())) {
@@ -72,7 +72,7 @@ public interface AttributeModifierSupplier {
             return;
         }
 
-        Map<Holder<Attribute>, List<ResourceLocation>> ids = getStoredIds();
+        Map<Holder<Attribute>, List<Identifier>> ids = getStoredIds();
 
         ids.forEach((attribute, modifiers) -> {
             AttributeInstance instance = entity.getAttribute(attribute);
@@ -91,7 +91,7 @@ public interface AttributeModifierSupplier {
         }
 
         ModifierType type = getModifierType();
-        ResourceLocation id;
+        Identifier id;
 
         do {
             id = type.randomId(modifier.attribute(), modifier.operation(), random);
@@ -102,9 +102,9 @@ public interface AttributeModifierSupplier {
         storeId(instance.getAttribute(), attributeModifier.id());
     }
 
-    default void storeId(final Holder<Attribute> attribute, final ResourceLocation id) { /* Nothing to do */ }
+    default void storeId(final Holder<Attribute> attribute, final Identifier id) { /* Nothing to do */ }
 
-    default Map<Holder<Attribute>, List<ResourceLocation>> getStoredIds() {
+    default Map<Holder<Attribute>, List<Identifier>> getStoredIds() {
         return Collections.emptyMap();
     }
 

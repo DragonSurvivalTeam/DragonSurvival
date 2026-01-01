@@ -23,7 +23,7 @@ import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.api.distmarker.Dist;
@@ -159,7 +159,7 @@ public class RenderingUtils {
         RenderSystem.disableBlend();
     }
 
-    public static void uploadTexture(NativeImage image, ResourceLocation key) {
+    public static void uploadTexture(NativeImage image, Identifier key) {
         try (image) {
             // DEBUG :: Export the texture
             //if (key.toString().contains("dynamic_normal")) {
@@ -185,14 +185,14 @@ public class RenderingUtils {
         }
     }
 
-    public static void copyTextureFromRenderTarget(RenderTarget target, ResourceLocation key) {
+    public static void copyTextureFromRenderTarget(RenderTarget target, Identifier key) {
         NativeImage image = new NativeImage(target.width, target.height, true);
         RenderSystem.bindTexture(target.getColorTextureId());
         image.downloadTexture(0, false);
         uploadTexture(image, key);
     }
 
-    public static @Nullable NativeImage getImageFromResource(ResourceLocation location) {
+    public static @Nullable NativeImage getImageFromResource(Identifier location) {
         NativeImage image = null;
 
         try {
@@ -204,7 +204,7 @@ public class RenderingUtils {
         return image;
     }
 
-    public static boolean hasTexture(final ResourceLocation resource) {
+    public static boolean hasTexture(final Identifier resource) {
         DynamicTexture missing = MissingTextureAtlasSprite.getTexture();
         if (resource != null) {
             // TODO: Why does this not fetch the texture properly if you don't call this method at least once first?

@@ -10,20 +10,20 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
 public class LevelButton extends ClickHoverButton {
-    private static final ResourceLocation DOWNGRADE_CLICK = DragonSurvival.res("textures/gui/ability_screen/arrow_left_upgrade_click.png");
-    private static final ResourceLocation DOWNGRADE_HOVER = DragonSurvival.res("textures/gui/ability_screen/arrow_left_upgrade_hover.png");
-    private static final ResourceLocation DOWNGRADE_MAIN = DragonSurvival.res("textures/gui/ability_screen/arrow_left_upgrade_main.png");
+    private static final Identifier DOWNGRADE_CLICK = DragonSurvival.res("textures/gui/ability_screen/arrow_left_upgrade_click.png");
+    private static final Identifier DOWNGRADE_HOVER = DragonSurvival.res("textures/gui/ability_screen/arrow_left_upgrade_hover.png");
+    private static final Identifier DOWNGRADE_MAIN = DragonSurvival.res("textures/gui/ability_screen/arrow_left_upgrade_main.png");
 
-    public static final ResourceLocation UPGRADE_CLICK = DragonSurvival.res("textures/gui/ability_screen/arrow_right_upgrade_click.png");
-    private static final ResourceLocation UPGRADE_HOVER = DragonSurvival.res("textures/gui/ability_screen/arrow_right_upgrade_hover.png");
-    private static final ResourceLocation UPGRADE_MAIN = DragonSurvival.res("textures/gui/ability_screen/arrow_right_upgrade_main.png");
+    public static final Identifier UPGRADE_CLICK = DragonSurvival.res("textures/gui/ability_screen/arrow_right_upgrade_click.png");
+    private static final Identifier UPGRADE_HOVER = DragonSurvival.res("textures/gui/ability_screen/arrow_right_upgrade_hover.png");
+    private static final Identifier UPGRADE_MAIN = DragonSurvival.res("textures/gui/ability_screen/arrow_right_upgrade_main.png");
 
     private static final int WIDTH = 16;
     private static final int HEIGHT = 16;
@@ -35,11 +35,11 @@ public class LevelButton extends ClickHoverButton {
         DOWNGRADE(DOWNGRADE_CLICK, DOWNGRADE_HOVER, DOWNGRADE_MAIN),
         UPGRADE(UPGRADE_CLICK, UPGRADE_HOVER, UPGRADE_MAIN);
 
-        public final ResourceLocation click;
-        public final ResourceLocation hover;
-        public final ResourceLocation main;
+        public final Identifier click;
+        public final Identifier hover;
+        public final Identifier main;
 
-        Type(final ResourceLocation click, final ResourceLocation hover, final ResourceLocation main) {
+        Type(final Identifier click, final Identifier hover, final Identifier main) {
             this.click = click;
             this.hover = hover;
             this.main = main;

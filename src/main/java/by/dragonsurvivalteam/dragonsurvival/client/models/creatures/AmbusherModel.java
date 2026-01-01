@@ -1,7 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.client.models.creatures;
 
 import by.dragonsurvivalteam.dragonsurvival.common.entity.creatures.AmbusherEntity;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import software.bernie.geckolib.animation.AnimationState;
 import software.bernie.geckolib.constant.DataTickets;
@@ -13,18 +13,18 @@ import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 
 public class AmbusherModel extends GeoModel<AmbusherEntity> {
     @Override
-    public ResourceLocation getModelResource(AmbusherEntity animatable) {
-        return ResourceLocation.fromNamespaceAndPath(MODID, "geo/hunter_ambusher.geo.json");
+    public Identifier getModelResource(AmbusherEntity animatable) {
+        return Identifier.fromNamespaceAndPath(MODID, "geo/hunter_ambusher.geo.json");
     }
 
     @Override
-    public ResourceLocation getTextureResource(AmbusherEntity animatable) {
-        return ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/hunters/ambusher_on_horse.png");
+    public Identifier getTextureResource(AmbusherEntity animatable) {
+        return Identifier.fromNamespaceAndPath(MODID, "textures/entity/hunters/ambusher_on_horse.png");
     }
 
     @Override
-    public ResourceLocation getAnimationResource(AmbusherEntity animatable) {
-        return ResourceLocation.fromNamespaceAndPath(MODID, "animations/hunter_ambusher.animation.json");
+    public Identifier getAnimationResource(AmbusherEntity animatable) {
+        return Identifier.fromNamespaceAndPath(MODID, "animations/hunter_ambusher.animation.json");
     }
 
     @Override

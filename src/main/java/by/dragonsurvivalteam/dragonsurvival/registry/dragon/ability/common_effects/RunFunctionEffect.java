@@ -10,7 +10,7 @@ import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.ServerFunctionManager;
 import net.minecraft.server.level.ServerPlayer;
@@ -25,9 +25,9 @@ import org.joml.Vector3f;
 import java.util.List;
 
 /** See {@link RunFunction} */
-public record RunFunctionEffect(ResourceLocation function) implements AbilityEntityEffect, AbilityBlockEffect {
+public record RunFunctionEffect(Identifier function) implements AbilityEntityEffect, AbilityBlockEffect {
     public static final MapCodec<RunFunctionEffect> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            ResourceLocation.CODEC.fieldOf("function").forGetter(RunFunctionEffect::function)
+            Identifier.CODEC.fieldOf("function").forGetter(RunFunctionEffect::function)
     ).apply(instance, RunFunctionEffect::new));
 
     @Override

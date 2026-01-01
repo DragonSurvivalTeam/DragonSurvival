@@ -4,18 +4,18 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.common.conditions.ICondition;
 import org.jetbrains.annotations.NotNull;
 
 // TODO :: Remove in 1.21.4
 public record RegisteredCondition<T>(ResourceKey<T> registryKey) implements ICondition {
     public static final MapCodec<RegisteredCondition<?>> CODEC = RecordCodecBuilder.mapCodec(instance -> instance
-            .group(ResourceLocation.CODEC.fieldOf("registry").forGetter(condition -> condition.registryKey().registry()),
-                    ResourceLocation.CODEC.fieldOf("value").forGetter(condition -> condition.registryKey().location()))
+            .group(Identifier.CODEC.fieldOf("registry").forGetter(condition -> condition.registryKey().registry()),
+                    Identifier.CODEC.fieldOf("value").forGetter(condition -> condition.registryKey().location()))
             .apply(instance, RegisteredCondition::new));
 
-    private RegisteredCondition(final ResourceLocation registryType, final ResourceLocation registryName) {
+    private RegisteredCondition(final Identifier registryType, final Identifier registryName) {
         this(ResourceKey.create(ResourceKey.createRegistryKey(registryType), registryName));
     }
 

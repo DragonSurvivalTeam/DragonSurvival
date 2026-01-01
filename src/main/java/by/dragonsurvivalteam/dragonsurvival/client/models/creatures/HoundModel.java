@@ -1,19 +1,19 @@
 package by.dragonsurvivalteam.dragonsurvival.client.models.creatures;
 
 import by.dragonsurvivalteam.dragonsurvival.common.entity.creatures.HoundEntity;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import software.bernie.geckolib.model.GeoModel;
 
 import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 
 public class HoundModel extends GeoModel<HoundEntity> {
     @Override
-    public ResourceLocation getModelResource(HoundEntity animatable) {
-        return ResourceLocation.fromNamespaceAndPath(MODID, "geo/hunter_hound.geo.json");
+    public Identifier getModelResource(HoundEntity animatable) {
+        return Identifier.fromNamespaceAndPath(MODID, "geo/hunter_hound.geo.json");
     }
 
     @Override
-    public ResourceLocation getTextureResource(HoundEntity animatable) {
+    public Identifier getTextureResource(HoundEntity animatable) {
         String houndName = switch (animatable.getVariety()) {
             case 0 -> "hound_1";
             case 1 -> "hound_2";
@@ -25,11 +25,11 @@ public class HoundModel extends GeoModel<HoundEntity> {
             case 7 -> "hound_8";
             default -> "hound_hector";
         };
-        return ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/hunters/hounds/" + houndName + ".png");
+        return Identifier.fromNamespaceAndPath(MODID, "textures/entity/hunters/hounds/" + houndName + ".png");
     }
 
     @Override
-    public ResourceLocation getAnimationResource(HoundEntity animatable) {
-        return ResourceLocation.fromNamespaceAndPath(MODID, "animations/hunter_hound.animation.json");
+    public Identifier getAnimationResource(HoundEntity animatable) {
+        return Identifier.fromNamespaceAndPath(MODID, "animations/hunter_hound.animation.json");
     }
 }

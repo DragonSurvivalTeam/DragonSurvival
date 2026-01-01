@@ -13,7 +13,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.client.gui.widget.ExtendedButton;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -23,10 +23,10 @@ import org.jetbrains.annotations.Nullable;
 import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 
 public class AbilityButton extends ExtendedButton {
-    public static final ResourceLocation ACTIVE_BACKGROUND = ResourceLocation.fromNamespaceAndPath(MODID, "ability_screen/skill_main");
-    public static final ResourceLocation PASSIVE_BACKGROUND = ResourceLocation.fromNamespaceAndPath(MODID, "ability_screen/skill_main");
-    public static final ResourceLocation DISABLED_BACKGROUND = ResourceLocation.fromNamespaceAndPath(MODID, "ability_screen/skill_disabled");
-    public static final ResourceLocation AUTO_UPGRADE_ORNAMENTATION = ResourceLocation.fromNamespaceAndPath(MODID, "ability_screen/skill_autoupgrade");
+    public static final Identifier ACTIVE_BACKGROUND = Identifier.fromNamespaceAndPath(MODID, "ability_screen/skill_main");
+    public static final Identifier PASSIVE_BACKGROUND = Identifier.fromNamespaceAndPath(MODID, "ability_screen/skill_main");
+    public static final Identifier DISABLED_BACKGROUND = Identifier.fromNamespaceAndPath(MODID, "ability_screen/skill_disabled");
+    public static final Identifier AUTO_UPGRADE_ORNAMENTATION = Identifier.fromNamespaceAndPath(MODID, "ability_screen/skill_autoupgrade");
 
     private static final int SIZE = 34;
     private static final int ORNAMENTATION_SIZE = 38;
@@ -285,7 +285,7 @@ public class AbilityButton extends ExtendedButton {
         return isHovered;
     }
 
-    private void blit(final GuiGraphics graphics, final ResourceLocation texture, int x, int y, int size) {
+    private void blit(final GuiGraphics graphics, final Identifier texture, int x, int y, int size) {
         graphics.blit(x, y, 0, size, size, Minecraft.getInstance().getGuiSprites().getSprite(texture), 1, 1, 1, alpha);
     }
 

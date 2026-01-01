@@ -15,7 +15,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.blocks.SourceOfMagicBlock;
 import by.dragonsurvivalteam.dragonsurvival.common.blocks.TreasureBlock;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSBlocks;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.VaultBlock;
 import net.minecraft.world.level.block.entity.vault.VaultState;
@@ -50,10 +50,10 @@ public class DataBlockStateProvider extends BlockStateProvider {
                             String name = holder.getId().getPath();
                             String suffix = (partTop ? "_top" : partMiddle ? "_middle" : "_bottom") + (hingeRight ? "_hinge" : "") + (open ? "_open" : "");
                             String modelName = BLOCK_FOLDER + "/" + name + suffix;
-                            ResourceLocation bottom = modLoc(BLOCK_FOLDER + "/" + name + "_bottom");
-                            ResourceLocation center = modLoc(BLOCK_FOLDER + "/" + name + "_center");
-                            ResourceLocation top = modLoc(BLOCK_FOLDER + "/" + name + "_top");
-                            ResourceLocation selected = partTop ? top : partMiddle ? center : bottom;
+                            Identifier bottom = modLoc(BLOCK_FOLDER + "/" + name + "_bottom");
+                            Identifier center = modLoc(BLOCK_FOLDER + "/" + name + "_center");
+                            Identifier top = modLoc(BLOCK_FOLDER + "/" + name + "_top");
+                            Identifier selected = partTop ? top : partMiddle ? center : bottom;
                             ModelFile door;
                             if (hingeRight) {
                                 if (partTop) {
@@ -98,7 +98,7 @@ public class DataBlockStateProvider extends BlockStateProvider {
                             boolean open = state.getValue(SmallDragonDoor.OPEN);
                             String name = holder.getId().getPath();
                             String suffix = (hingeRight && !open || !hingeRight && open ? "_hinge" : "");
-                            ResourceLocation texture = modLoc(BLOCK_FOLDER + "/" + name);
+                            Identifier texture = modLoc(BLOCK_FOLDER + "/" + name);
                             ModelFile door = models()
                                     .withExistingParent(name + suffix, DragonSurvival.res(BLOCK_FOLDER + "/" + "small_dragon_door" + (suffix.equals("_hinge") ? "_rh" : "")))
                                     .texture("bottom", texture)
@@ -120,7 +120,7 @@ public class DataBlockStateProvider extends BlockStateProvider {
                         });
             } else if (holder.get() instanceof DragonPressurePlates plate) {
                 String name = holder.getId().getPath();
-                ResourceLocation texture = modLoc("block/" + name);
+                Identifier texture = modLoc("block/" + name);
                 ModelFile pressurePlate = models().pressurePlate(name, texture);
                 ModelFile pressurePlateDown = models().pressurePlateDown(name + "_down", texture);
                 horizontalFacingPressurePlate(plate, pressurePlateDown, pressurePlate);

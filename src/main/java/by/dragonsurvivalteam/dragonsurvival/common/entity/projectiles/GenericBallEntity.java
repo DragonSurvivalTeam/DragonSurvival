@@ -22,7 +22,7 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.RegistryOps;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
@@ -400,15 +400,15 @@ public class GenericBallEntity extends AbstractHurtingProjectile implements GeoE
         return PlayState.CONTINUE;
     }
 
-    public ResourceLocation getTextureResource() {
+    public Identifier getTextureResource() {
         return getTypeData().resources().get(projectileLevel);
     }
 
-    public ResourceLocation getAnimationResource() {
+    public Identifier getAnimationResource() {
         return getTypeData().resources().get(projectileLevel);
     }
 
-    public ResourceLocation getModelResource() {
+    public Identifier getModelResource() {
         return getTypeData().resources().get(projectileLevel);
     }
 

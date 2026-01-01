@@ -4,7 +4,7 @@ import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic.H
 import by.dragonsurvivalteam.dragonsurvival.mixins.client.ScreenAccessor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +21,7 @@ public class BarComponent implements ScrollableComponent {
 
     private int scrollAmount;
 
-    public BarComponent(final Screen screen, int xPos, int yPos, int displayAmount, final List<? extends AbstractWidget> widgets, int spacing, int arrowLeftX, int arrowRightX, int arrowY, int arrowWidth, int arrowHeight, ResourceLocation leftArrowHover, ResourceLocation leftArrowMain, ResourceLocation rightArrowHover, ResourceLocation rightArrowMain) {
+    public BarComponent(final Screen screen, int xPos, int yPos, int displayAmount, final List<? extends AbstractWidget> widgets, int spacing, int arrowLeftX, int arrowRightX, int arrowY, int arrowWidth, int arrowHeight, Identifier leftArrowHover, Identifier leftArrowMain, Identifier rightArrowHover, Identifier rightArrowMain) {
         this.xPos = xPos;
         this.yPos = yPos;
         this.displayAmount = displayAmount;

@@ -1,24 +1,24 @@
 package by.dragonsurvivalteam.dragonsurvival.client.models.creatures;
 
 import by.dragonsurvivalteam.dragonsurvival.common.entity.creatures.GriffinEntity;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import software.bernie.geckolib.model.GeoModel;
 
 import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 
 public class GriffinModel extends GeoModel<GriffinEntity> {
     @Override
-    public ResourceLocation getModelResource(GriffinEntity animatable) {
-        return ResourceLocation.fromNamespaceAndPath(MODID, "geo/hunter_griffin.geo.json");
+    public Identifier getModelResource(GriffinEntity animatable) {
+        return Identifier.fromNamespaceAndPath(MODID, "geo/hunter_griffin.geo.json");
     }
 
     @Override
-    public ResourceLocation getTextureResource(GriffinEntity animatable) {
-        return ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/hunters/griffins/hunter_griffin_1.png");
+    public Identifier getTextureResource(GriffinEntity animatable) {
+        return Identifier.fromNamespaceAndPath(MODID, "textures/entity/hunters/griffins/hunter_griffin_1.png");
     }
 
     @Override
-    public ResourceLocation getAnimationResource(GriffinEntity animatable) {
-        return ResourceLocation.fromNamespaceAndPath(MODID, "animations/hunter_griffin.animation.json");
+    public Identifier getAnimationResource(GriffinEntity animatable) {
+        return Identifier.fromNamespaceAndPath(MODID, "animations/hunter_griffin.animation.json");
     }
 }

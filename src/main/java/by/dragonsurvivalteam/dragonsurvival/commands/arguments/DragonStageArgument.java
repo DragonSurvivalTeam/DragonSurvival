@@ -14,7 +14,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderSet;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -35,7 +35,7 @@ public class DragonStageArgument implements ArgumentType<Holder<DragonStage>> {
 
     @Override
     public @Nullable Holder<DragonStage> parse(final StringReader reader) throws CommandSyntaxException {
-        Optional<Holder.Reference<DragonStage>> optional = lookup.get(ResourceKey.create(DragonStage.REGISTRY, ResourceLocation.read(reader)));
+        Optional<Holder.Reference<DragonStage>> optional = lookup.get(ResourceKey.create(DragonStage.REGISTRY, Identifier.read(reader)));
         return optional.orElse(null);
     }
 

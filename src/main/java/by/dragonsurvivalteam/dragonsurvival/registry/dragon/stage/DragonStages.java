@@ -11,7 +11,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 
@@ -28,7 +28,7 @@ public class DragonStages {
     @Translation(type = Translation.Type.STAGE, comments = "Adult")
     public static final ResourceKey<DragonStage> adult = key("adult");
 
-    public static ResourceKey<DragonStage> key(final ResourceLocation location) {
+    public static ResourceKey<DragonStage> key(final Identifier location) {
         return ResourceKey.create(DragonStage.REGISTRY, location);
     }
 

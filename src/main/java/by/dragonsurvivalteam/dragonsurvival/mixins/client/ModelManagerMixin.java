@@ -3,7 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.mixins.client;
 import by.dragonsurvivalteam.dragonsurvival.client.loaders.CustomSoulIconLoader;
 import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.client.resources.model.ModelManager;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.profiling.ProfilerFiller;
@@ -20,7 +20,7 @@ import java.util.concurrent.Executor;
 public abstract class ModelManagerMixin {
     /** We need to make sure this loader runs before the model bakery (which triggers the event to register new models) */
     @ModifyVariable(method = "reload", at = @At("STORE"))
-    private CompletableFuture<Map<ResourceLocation, BlockModel>> test(final CompletableFuture<Map<ResourceLocation, BlockModel>> future, final PreparableReloadListener.PreparationBarrier preparationBarrier, final ResourceManager resourceManager, final ProfilerFiller preparationsProfiler, final ProfilerFiller reloadProfiler, final Executor backgroundExecutor, final Executor gameExecutor) {
+    private CompletableFuture<Map<Identifier, BlockModel>> test(final CompletableFuture<Map<Identifier, BlockModel>> future, final PreparableReloadListener.PreparationBarrier preparationBarrier, final ResourceManager resourceManager, final ProfilerFiller preparationsProfiler, final ProfilerFiller reloadProfiler, final Executor backgroundExecutor, final Executor gameExecutor) {
         return CompletableFuture.runAsync(() -> CustomSoulIconLoader.reload(resourceManager)).thenCompose(v -> future);
     }
 }

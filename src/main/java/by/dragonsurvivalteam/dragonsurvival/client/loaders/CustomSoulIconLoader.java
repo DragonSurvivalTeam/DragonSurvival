@@ -9,9 +9,9 @@ import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.client.resources.model.ModelIdentifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.neoforged.api.distmarker.Dist;
@@ -26,13 +26,13 @@ import java.util.Optional;
 
 @EventBusSubscriber(Dist.CLIENT)
 public class CustomSoulIconLoader {
-    private static final Map<ResourceKey<DragonSpecies>, Map<ResourceKey<DragonStage>, ResourceLocation>> ICONS = new HashMap<>();
+    private static final Map<ResourceKey<DragonSpecies>, Map<ResourceKey<DragonStage>, Identifier>> ICONS = new HashMap<>();
 
-    record CustomSoulIcon(ResourceKey<DragonSpecies> species, Optional<ResourceKey<DragonStage>> stage, ResourceLocation model) {
+    record CustomSoulIcon(ResourceKey<DragonSpecies> species, Optional<ResourceKey<DragonStage>> stage, Identifier model) {
         public static final Codec<CustomSoulIcon> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 ResourceKey.codec(DragonSpecies.REGISTRY).fieldOf("species").forGetter(CustomSoulIcon::species),
                 ResourceKey.codec(DragonStage.REGISTRY).optionalFieldOf("stage").forGetter(CustomSoulIcon::stage),
-                ResourceLocation.CODEC.fieldOf("model").forGetter(CustomSoulIcon::model)
+                Identifier.CODEC.fieldOf("model").forGetter(CustomSoulIcon::model)
         ).apply(instance, CustomSoulIcon::new));
     }
 
@@ -40,7 +40,7 @@ public class CustomSoulIconLoader {
     public static void reload(final ResourceManager manager) {
         ICONS.clear();
 
-        Map<ResourceLocation, JsonElement> resources = new HashMap<>();
+        Map<Identifier, JsonElement> resources = new HashMap<>();
         SimpleJsonResourceReloadListener.scanDirectory(manager, "custom_soul_icons", new Gson(), resources);
 
         resources.forEach((location, element) -> CustomSoulIcon.CODEC.decode(JsonOps.INSTANCE, element)
@@ -51,14 +51,14 @@ public class CustomSoulIconLoader {
                 }));
     }
 
-    public static @Nullable ResourceLocation getIcon(final ResourceKey<DragonSpecies> species, @Nullable final ResourceKey<DragonStage> stage) {
-        Map<ResourceKey<DragonStage>, ResourceLocation> resources = ICONS.get(species);
+    public static @Nullable Identifier getIcon(final ResourceKey<DragonSpecies> species, @Nullable final ResourceKey<DragonStage> stage) {
+        Map<ResourceKey<DragonStage>, Identifier> resources = ICONS.get(species);
 
         if (resources == null) {
             return null;
         }
 
-        ResourceLocation resource = resources.get(stage);
+        Identifier resource = resources.get(stage);
 
         if (resource == null) {
             // Check if a generic one exists (i.e. no stage specified)
@@ -70,6 +70,6 @@ public class CustomSoulIconLoader {
 
     @SubscribeEvent
     public static void registerIcons(final ModelEvent.RegisterAdditional event) {
-        ICONS.values().forEach(maps -> maps.values().forEach(resource -> event.register(ModelResourceLocation.standalone(resource))));
+        ICONS.values().forEach(maps -> maps.values().forEach(resource -> event.register(ModelIdentifier.standalone(resource))));
     }
 }

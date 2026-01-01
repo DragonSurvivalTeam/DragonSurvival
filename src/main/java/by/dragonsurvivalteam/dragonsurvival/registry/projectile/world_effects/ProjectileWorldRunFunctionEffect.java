@@ -4,15 +4,15 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.ServerFunctionManager;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.projectile.Projectile;
 
-public record ProjectileWorldRunFunctionEffect(ResourceLocation function) implements ProjectileWorldEffect {
+public record ProjectileWorldRunFunctionEffect(Identifier function) implements ProjectileWorldEffect {
     public static final MapCodec<ProjectileWorldRunFunctionEffect> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            ResourceLocation.CODEC.fieldOf("function").forGetter(ProjectileWorldRunFunctionEffect::function)
+            Identifier.CODEC.fieldOf("function").forGetter(ProjectileWorldRunFunctionEffect::function)
     ).apply(instance, ProjectileWorldRunFunctionEffect::new));
 
     @Override

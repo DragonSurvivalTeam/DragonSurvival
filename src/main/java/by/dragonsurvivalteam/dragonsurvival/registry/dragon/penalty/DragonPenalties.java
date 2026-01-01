@@ -22,7 +22,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
@@ -191,7 +191,7 @@ public class DragonPenalties {
         ));
     }
 
-    public static ResourceKey<DragonPenalty> key(final ResourceLocation location) {
+    public static ResourceKey<DragonPenalty> key(final Identifier location) {
         return ResourceKey.create(DragonPenalty.REGISTRY, location);
     }
 

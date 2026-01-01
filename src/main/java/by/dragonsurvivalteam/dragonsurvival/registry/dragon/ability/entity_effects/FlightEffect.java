@@ -11,7 +11,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -21,13 +21,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 // TODO :: does this need some 'remove_automatically' handling as well?
-public record FlightEffect(int levelRequirement, ResourceLocation icon) implements AbilityEntityEffect {
+public record FlightEffect(int levelRequirement, Identifier icon) implements AbilityEntityEffect {
     @Translation(comments = "§6■ Can use flight")
     private static final String FLIGHT = Translation.Type.GUI.wrap("flight_effect.flight");
 
     public static final MapCodec<FlightEffect> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             Codec.INT.fieldOf("level_requirement").forGetter(FlightEffect::levelRequirement),
-            ResourceLocation.CODEC.optionalFieldOf("icon", FlightData.DEFAULT_ICON).forGetter(FlightEffect::icon)
+            Identifier.CODEC.optionalFieldOf("icon", FlightData.DEFAULT_ICON).forGetter(FlightEffect::icon)
     ).apply(instance, FlightEffect::new));
 
     @Override

@@ -9,7 +9,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -40,9 +40,9 @@ public class CustomizationFileHandler {
     public static class SavedCustomization implements INBTSerializable<CompoundTag>, Copyable<SavedCustomization> {
         private DragonStageCustomization customization;
         private ResourceKey<DragonSpecies> dragonSpecies;
-        private ResourceLocation dragonModel;
+        private Identifier dragonModel;
 
-        public SavedCustomization(final DragonStageCustomization customization, final ResourceKey<DragonSpecies> dragonSpecies, final ResourceLocation dragonModel) {
+        public SavedCustomization(final DragonStageCustomization customization, final ResourceKey<DragonSpecies> dragonSpecies, final Identifier dragonModel) {
             this.customization = customization;
             this.dragonSpecies = dragonSpecies;
             this.dragonModel = dragonModel;
@@ -84,11 +84,11 @@ public class CustomizationFileHandler {
             }
 
             if (nbt.contains(DRAGON_SPECIES)) {
-                this.dragonSpecies = ResourceKey.create(DragonSpecies.REGISTRY, ResourceLocation.parse(nbt.getString(DRAGON_SPECIES)));
+                this.dragonSpecies = ResourceKey.create(DragonSpecies.REGISTRY, Identifier.parse(nbt.getString(DRAGON_SPECIES)));
             }
 
             if (nbt.contains(DRAGON_MODEL)) {
-                this.dragonModel = ResourceLocation.parse(nbt.getString(DRAGON_MODEL));
+                this.dragonModel = Identifier.parse(nbt.getString(DRAGON_MODEL));
             }
         }
 
@@ -100,7 +100,7 @@ public class CustomizationFileHandler {
             return dragonSpecies;
         }
 
-        public ResourceLocation getDragonModel() {
+        public Identifier getDragonModel() {
             return dragonModel;
         }
     }

@@ -6,15 +6,15 @@ import by.dragonsurvivalteam.dragonsurvival.registry.attachments.PenaltySupply;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
-public record SyncRemovePenaltySupply(ResourceLocation id) implements CustomPacketPayload {
+public record SyncRemovePenaltySupply(Identifier id) implements CustomPacketPayload {
     public static final Type<SyncRemovePenaltySupply> TYPE = new CustomPacketPayload.Type<>(DragonSurvival.res("sync_remove_penalty_supply"));
 
     public static final StreamCodec<FriendlyByteBuf, SyncRemovePenaltySupply> STREAM_CODEC = StreamCodec.composite(
-            ResourceLocation.STREAM_CODEC, SyncRemovePenaltySupply::id,
+            Identifier.STREAM_CODEC, SyncRemovePenaltySupply::id,
             SyncRemovePenaltySupply::new
     );
 

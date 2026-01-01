@@ -8,7 +8,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.emotes.DragonEm
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.emotes.DragonEmoteSets;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.phys.Vec3;
@@ -176,7 +176,7 @@ public class DragonBodies {
         ));
     }
 
-    public static ResourceKey<DragonBody> key(final ResourceLocation location) {
+    public static ResourceKey<DragonBody> key(final Identifier location) {
         return ResourceKey.create(DragonBody.REGISTRY, location);
     }
 

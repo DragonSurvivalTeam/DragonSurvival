@@ -22,7 +22,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.contents.PlainTextContents;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.FormattedCharSequence;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector2ic;
@@ -37,8 +37,8 @@ public class AbilityAndPenaltyTooltipRenderer {
     @Translation(comments = "§4Manually disabled§r")
     private static final String MANUALLY_DISABLED = Translation.Type.GUI.wrap("general.manually_disabled");
 
-    private static final ResourceLocation EFFECT_HEADER = DragonSurvival.res("ability_effect_header");
-    private static final ResourceLocation BARS = DragonSurvival.res("textures/gui/widget_bars.png");
+    private static final Identifier EFFECT_HEADER = DragonSurvival.res("ability_effect_header");
+    private static final Identifier BARS = DragonSurvival.res("textures/gui/widget_bars.png");
 
     private static final int MAX_SHOWN_LINES = 15;
     private static int maxScrollAmount = Integer.MAX_VALUE;
@@ -60,7 +60,7 @@ public class AbilityAndPenaltyTooltipRenderer {
             final Color tooltipBackgroundColor,
             int maxLevel,
             int abilityLevel,
-            final ResourceLocation icon,
+            final Identifier icon,
             int scrollAmount
     ) {
         FormattedText textContents = formatText(shiftInfo);
@@ -237,7 +237,7 @@ public class AbilityAndPenaltyTooltipRenderer {
         }
 
         Component name = Component.translatable(Translation.Type.PENALTY.wrap(penalty.getKey().location()));
-        ResourceLocation icon = penalty.value().icon().orElse(MissingTextureAtlasSprite.getLocation());
+        Identifier icon = penalty.value().icon().orElse(MissingTextureAtlasSprite.getLocation());
         drawTooltip(guiGraphics, x, y, components, description, colorXPos, colorYPos, LangKey.PENALTY, name, Color.ofRGB(145, 46, 46), -1, -1, icon, 0);
     }
 }

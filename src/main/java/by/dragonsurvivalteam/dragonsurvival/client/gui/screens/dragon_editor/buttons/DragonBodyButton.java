@@ -16,7 +16,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.client.gui.widget.ExtendedButton;
 import org.jetbrains.annotations.NotNull;
 
@@ -29,8 +29,8 @@ public class DragonBodyButton extends ExtendedButton implements HoverDisableable
     @Translation(comments = "This body type has not been unlocked yet.")
     private static final String NOT_UNLOCKED = Translation.Type.GUI.wrap("dragon_body_button.not_unlocked");
 
-    private static final ResourceLocation SELECTED_BACKGROUND = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/icon_skin_on.png");
-    private static final ResourceLocation DESELECTED_BACKGROUND = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/icon_skin_off.png");
+    private static final Identifier SELECTED_BACKGROUND = Identifier.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/icon_skin_on.png");
+    private static final Identifier DESELECTED_BACKGROUND = Identifier.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/icon_skin_off.png");
 
     public static final int HOVERED = 1;
     public static final int SELECTED = 2;
@@ -38,8 +38,8 @@ public class DragonBodyButton extends ExtendedButton implements HoverDisableable
 
     private final Screen screen;
     private final Holder<DragonBody> dragonBody;
-    private final ResourceLocation icon;
-    private final ResourceLocation bodyLocation;
+    private final Identifier icon;
+    private final Identifier bodyLocation;
     private boolean disableHover;
     private final boolean useBackground;
     private final boolean noTooltip;
@@ -60,7 +60,7 @@ public class DragonBodyButton extends ExtendedButton implements HoverDisableable
         this(screen, x, y, xSize, ySize, dragonBody, Objects.requireNonNull(dragonBody.getKey()).location(), locked, action, useBackground, noTooltip);
     }
 
-    private DragonBodyButton(Screen screen, int x, int y, int xSize, int ySize, final Holder<DragonBody> dragonBody, final ResourceLocation location, LockedReason locked, OnPress action, boolean useBackground, boolean noTooltip) {
+    private DragonBodyButton(Screen screen, int x, int y, int xSize, int ySize, final Holder<DragonBody> dragonBody, final Identifier location, LockedReason locked, OnPress action, boolean useBackground, boolean noTooltip) {
         super(x, y, xSize, ySize, Component.empty(), action, DEFAULT_NARRATION);
 
         if (!noTooltip) {
@@ -134,7 +134,7 @@ public class DragonBodyButton extends ExtendedButton implements HoverDisableable
         }
 
         if (this.useBackground) {
-            ResourceLocation background = state == SELECTED ? SELECTED_BACKGROUND : DESELECTED_BACKGROUND;
+            Identifier background = state == SELECTED ? SELECTED_BACKGROUND : DESELECTED_BACKGROUND;
             graphics.blit(background, getX(), getY(), 0, 0, this.width, this.height, 35, 35);
             graphics.blit(icon, getX() + 5, getY() + 5, 0, state * 25, 25, 25, 32, 104);
         } else {

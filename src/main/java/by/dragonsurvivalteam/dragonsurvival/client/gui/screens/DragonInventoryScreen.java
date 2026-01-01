@@ -32,7 +32,7 @@ import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
@@ -69,27 +69,27 @@ public class DragonInventoryScreen extends EffectRenderingInventoryScreen<Dragon
     })
     private static final String HELP_CLAWS = Translation.Type.GUI.wrap("help.claws");
 
-    private static final ResourceLocation BACKGROUND = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/inventory/dragon_inventory.png");
-    private static final ResourceLocation CLAWS_TEXTURE = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/inventory/dragon_claws.png");
+    private static final Identifier BACKGROUND = Identifier.fromNamespaceAndPath(MODID, "textures/gui/inventory/dragon_inventory.png");
+    private static final Identifier CLAWS_TEXTURE = Identifier.fromNamespaceAndPath(MODID, "textures/gui/inventory/dragon_claws.png");
 
-    private static final ResourceLocation CLAW_ARROW_CLICK = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/inventory/claw_arrow_left_click.png");
-    private static final ResourceLocation CLAW_ARROW_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/inventory/claw_arrow_left_hover.png");
-    private static final ResourceLocation CLAW_ARROW_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/inventory/claw_arrow_left_main.png");
+    private static final Identifier CLAW_ARROW_CLICK = Identifier.fromNamespaceAndPath(MODID, "textures/gui/inventory/claw_arrow_left_click.png");
+    private static final Identifier CLAW_ARROW_HOVER = Identifier.fromNamespaceAndPath(MODID, "textures/gui/inventory/claw_arrow_left_hover.png");
+    private static final Identifier CLAW_ARROW_MAIN = Identifier.fromNamespaceAndPath(MODID, "textures/gui/inventory/claw_arrow_left_main.png");
 
-    private static final ResourceLocation CLAW_DISPLAY_ON = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/inventory/claw_display_on.png");
-    private static final ResourceLocation CLAW_DISPLAY_OFF = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/inventory/claw_display_off.png");
+    private static final Identifier CLAW_DISPLAY_ON = Identifier.fromNamespaceAndPath(MODID, "textures/gui/inventory/claw_display_on.png");
+    private static final Identifier CLAW_DISPLAY_OFF = Identifier.fromNamespaceAndPath(MODID, "textures/gui/inventory/claw_display_off.png");
 
-    private static final ResourceLocation INFO_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/inventory/info_hover.png");
-    private static final ResourceLocation INFO_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/inventory/info_main.png");
+    private static final Identifier INFO_HOVER = Identifier.fromNamespaceAndPath(MODID, "textures/gui/inventory/info_hover.png");
+    private static final Identifier INFO_MAIN = Identifier.fromNamespaceAndPath(MODID, "textures/gui/inventory/info_main.png");
 
-    private static final ResourceLocation CONFIG_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/inventory/config_hover.png");
-    private static final ResourceLocation CONFIG_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/inventory/config_main.png");
+    private static final Identifier CONFIG_HOVER = Identifier.fromNamespaceAndPath(MODID, "textures/gui/inventory/config_hover.png");
+    private static final Identifier CONFIG_MAIN = Identifier.fromNamespaceAndPath(MODID, "textures/gui/inventory/config_main.png");
 
-    private static final ResourceLocation VANILLA_INVENTORY_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/inventory/vanilla_inventory_hover.png");
-    private static final ResourceLocation VANILLA_INVENTORY_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/inventory/vanilla_inventory_main.png");
+    private static final Identifier VANILLA_INVENTORY_HOVER = Identifier.fromNamespaceAndPath(MODID, "textures/gui/inventory/vanilla_inventory_hover.png");
+    private static final Identifier VANILLA_INVENTORY_MAIN = Identifier.fromNamespaceAndPath(MODID, "textures/gui/inventory/vanilla_inventory_main.png");
 
-    private static final ResourceLocation SORT_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/inventory/sort_hover.png");
-    private static final ResourceLocation SORT_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/inventory/sort_main.png");
+    private static final Identifier SORT_HOVER = Identifier.fromNamespaceAndPath(MODID, "textures/gui/inventory/sort_hover.png");
+    private static final Identifier SORT_MAIN = Identifier.fromNamespaceAndPath(MODID, "textures/gui/inventory/sort_main.png");
 
     public static double mouseX = -1;
     public static double mouseY = -1;
@@ -263,7 +263,7 @@ public class DragonInventoryScreen extends EffectRenderingInventoryScreen<Dragon
         super.render(graphics, mouseX, mouseY, partialTick);
 
         if (clawsMenu) {
-            ResourceLocation texture = ClientDragonRenderer.renderDragonClaws ? CLAW_DISPLAY_ON : CLAW_DISPLAY_OFF;
+            Identifier texture = ClientDragonRenderer.renderDragonClaws ? CLAW_DISPLAY_ON : CLAW_DISPLAY_OFF;
             graphics.pose().pushPose();
             graphics.pose().translate(0, 0, 100);
             graphics.blit(texture, leftPos - 30, topPos + 120, 0, 0, 24, 42, 24, 42);

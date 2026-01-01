@@ -10,14 +10,14 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
-import net.minecraft.ResourceLocationException;
+import net.minecraft.IdentifierException;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderSet;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -29,7 +29,7 @@ public class DragonSpeciesArgument implements ArgumentType<Holder<DragonSpecies>
     public static final String ID = "dragon_species";
     public static final DragonSpecies EMPTY = new DragonSpecies(Optional.empty(), Optional.empty(), ManaHandling.DEFAULT, Optional.empty(), HolderSet.empty(), HolderSet.empty(), HolderSet.empty(), null);
 
-    private static final ResourceLocation HUMAN = DragonSurvival.res("human");
+    private static final Identifier HUMAN = DragonSurvival.res("human");
     private final HolderLookup.RegistryLookup<DragonSpecies> lookup;
 
     public DragonSpeciesArgument(final CommandBuildContext context) {
@@ -40,7 +40,7 @@ public class DragonSpeciesArgument implements ArgumentType<Holder<DragonSpecies>
     public @Nullable Holder<DragonSpecies> parse(final StringReader reader) throws CommandSyntaxException {
         try {
             int start = reader.getCursor();
-            ResourceLocation species = ResourceLocation.read(reader);
+            Identifier species = Identifier.read(reader);
 
             if (species.equals(HUMAN)) {
                 return Holder.direct(EMPTY);
@@ -54,8 +54,8 @@ public class DragonSpeciesArgument implements ArgumentType<Holder<DragonSpecies>
             }
 
             return optional.get();
-        } catch (ResourceLocationException exception) {
-            // ResourceLocation#read already resets the cursor
+        } catch (IdentifierException exception) {
+            // Identifier#read already resets the cursor
             throw CommandSyntaxException.BUILT_IN_EXCEPTIONS.dispatcherUnknownArgument().createWithContext(reader);
         }
     }

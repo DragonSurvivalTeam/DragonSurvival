@@ -4,11 +4,11 @@ import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
-public record EndPlatform(ResourceLocation structure, BlockPos spawnPosition) {
+public record EndPlatform(Identifier structure, BlockPos spawnPosition) {
     public static final Codec<EndPlatform> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            ResourceLocation.CODEC.fieldOf("structure").forGetter(EndPlatform::structure),
+            Identifier.CODEC.fieldOf("structure").forGetter(EndPlatform::structure),
             BlockPos.CODEC.fieldOf("spawn_position").forGetter(EndPlatform::spawnPosition)
     ).apply(instance, EndPlatform::new));
 
@@ -16,7 +16,7 @@ public record EndPlatform(ResourceLocation structure, BlockPos spawnPosition) {
         return from(DragonSurvival.res(path), x, y, z);
     }
 
-    public static EndPlatform from(final ResourceLocation structure, final int x, final int y, final int z) {
+    public static EndPlatform from(final Identifier structure, final int x, final int y, final int z) {
         return new EndPlatform(structure, new BlockPos(x, y, z));
     }
 }

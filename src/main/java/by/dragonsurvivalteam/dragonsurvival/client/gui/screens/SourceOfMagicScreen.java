@@ -12,7 +12,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.level.block.Block;
@@ -28,16 +28,16 @@ public class SourceOfMagicScreen extends AbstractContainerScreen<SourceOfMagicCo
     @Translation(comments = "■ This source of magic can be charged with with the following items:")
     private static final String HELP = Translation.Type.GUI.wrap("source_of_magic.help");
 
-    private static final ResourceLocation BACKGROUND = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/source_of_magic/source_of_magic_ui.png");
+    private static final Identifier BACKGROUND = Identifier.fromNamespaceAndPath(MODID, "textures/gui/source_of_magic/source_of_magic_ui.png");
 
-    private static final ResourceLocation CAVE_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/source_of_magic/cave_source_of_magic_0.png");
-    private static final ResourceLocation CAVE_FILLED = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/source_of_magic/cave_source_of_magic_1.png");
+    private static final Identifier CAVE_MAIN = Identifier.fromNamespaceAndPath(MODID, "textures/gui/source_of_magic/cave_source_of_magic_0.png");
+    private static final Identifier CAVE_FILLED = Identifier.fromNamespaceAndPath(MODID, "textures/gui/source_of_magic/cave_source_of_magic_1.png");
 
-    private static final ResourceLocation FOREST_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/source_of_magic/forest_source_of_magic_0.png");
-    private static final ResourceLocation FOREST_FILLED = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/source_of_magic/forest_source_of_magic_1.png");
+    private static final Identifier FOREST_MAIN = Identifier.fromNamespaceAndPath(MODID, "textures/gui/source_of_magic/forest_source_of_magic_0.png");
+    private static final Identifier FOREST_FILLED = Identifier.fromNamespaceAndPath(MODID, "textures/gui/source_of_magic/forest_source_of_magic_1.png");
 
-    private static final ResourceLocation SEA_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/source_of_magic/sea_source_of_magic_0.png");
-    private static final ResourceLocation SEA_FILLED = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/source_of_magic/sea_source_of_magic_1.png");
+    private static final Identifier SEA_MAIN = Identifier.fromNamespaceAndPath(MODID, "textures/gui/source_of_magic/sea_source_of_magic_0.png");
+    private static final Identifier SEA_FILLED = Identifier.fromNamespaceAndPath(MODID, "textures/gui/source_of_magic/sea_source_of_magic_1.png");
 
     private static final int MAX_SHOWN = 5;
 
@@ -89,7 +89,7 @@ public class SourceOfMagicScreen extends AbstractContainerScreen<SourceOfMagicCo
         boolean hasItem = blockEntity.getCurrentDuration() > 0;
         Block block = blockEntity.getBlockState().getBlock();
 
-        ResourceLocation resource = null;
+        Identifier resource = null;
 
         if (block == DSBlocks.CAVE_SOURCE_OF_MAGIC.get()) {
             resource = hasItem ? CAVE_FILLED : CAVE_MAIN;

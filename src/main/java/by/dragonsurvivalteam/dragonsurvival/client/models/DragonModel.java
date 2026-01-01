@@ -21,7 +21,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
@@ -37,9 +37,9 @@ public class DragonModel extends GeoModel<DragonEntity> {
     private static final double DELTA_MOVEMENT_FACTOR = 10;
 
     // FIXME 'dragon_dragon'?
-    private final ResourceLocation defaultTexture = DragonSurvival.res("textures/dragon_dragon/newborn.png");
+    private final Identifier defaultTexture = DragonSurvival.res("textures/dragon_dragon/newborn.png");
 
-    private ResourceLocation overrideTexture;
+    private Identifier overrideTexture;
 
     @Override
     public void applyMolangQueries(final AnimationState<DragonEntity> animationState, double currentTick) {
@@ -170,8 +170,8 @@ public class DragonModel extends GeoModel<DragonEntity> {
     }
 
     @Override
-    public ResourceLocation getModelResource(final DragonEntity dragon) {
-        ResourceLocation model;
+    public Identifier getModelResource(final DragonEntity dragon) {
+        Identifier model;
 
         if (dragon.getPlayer() == null) {
             model = DragonBody.DEFAULT_MODEL;
@@ -192,7 +192,7 @@ public class DragonModel extends GeoModel<DragonEntity> {
     }
 
     @Override
-    public ResourceLocation getTextureResource(final DragonEntity dragon) {
+    public Identifier getTextureResource(final DragonEntity dragon) {
         if (overrideTexture != null && RenderingUtils.hasTexture(overrideTexture)) {
             return overrideTexture;
         }
@@ -215,7 +215,7 @@ public class DragonModel extends GeoModel<DragonEntity> {
         // Don't try to fetch skins if it is a fake client player; the only case where we need custom skins for a fake client player
         // is in the dragon skins screen, and we already have special logic for that outside of this getTextureResource method
         if (handler.getModel().equals(DragonBody.DEFAULT_MODEL) && !(player instanceof FakeClientPlayer)) {
-            ResourceLocation skin = DragonSkins.getPlayerSkin(player, handler.stageKey());
+            Identifier skin = DragonSkins.getPlayerSkin(player, handler.stageKey());
 
             if (RenderingUtils.hasTexture(skin)) {
                 return skin;
@@ -233,7 +233,7 @@ public class DragonModel extends GeoModel<DragonEntity> {
             handler.getSkinData().recompileSkin.put(handler.stageKey(), false);
         }
 
-        ResourceLocation texture = dynamicTexture(player, handler, false);
+        Identifier texture = dynamicTexture(player, handler, false);
 
         // Show the default skin while we are compiling if we haven't already compiled the skin
         if (customization.defaultSkin || !handler.getSkinData().isCompiled.getOrDefault(stageKey, false) || !RenderingUtils.hasTexture(texture)) {
@@ -243,19 +243,19 @@ public class DragonModel extends GeoModel<DragonEntity> {
         return texture;
     }
 
-    public static ResourceLocation dynamicTexture(final Player player, final DragonStateHandler handler, boolean isGlowLayer) {
+    public static Identifier dynamicTexture(final Player player, final DragonStateHandler handler, boolean isGlowLayer) {
         String prefix = isGlowLayer ? "dynamic_glow_" : "dynamic_normal_";
         return DragonSurvival.res(prefix + player.getStringUUID() + "_" + handler.speciesId().getPath() + "_" + handler.stageKey().location().getPath());
     }
 
     @Override
-    public ResourceLocation getAnimationResource(final DragonEntity dragon) {
+    public Identifier getAnimationResource(final DragonEntity dragon) {
         Player player = dragon.getPlayer();
         return getAnimationResource(player);
     }
 
     @Override // GeoEntityRenderer#getRenderType handles invisible and glowing
-    public RenderType getRenderType(final DragonEntity animatable, final ResourceLocation texture) {
+    public RenderType getRenderType(final DragonEntity animatable, final Identifier texture) {
         Player player = animatable.getPlayer();
 
         if (player != null && HunterData.hasTransparency(player)) {
@@ -265,11 +265,11 @@ public class DragonModel extends GeoModel<DragonEntity> {
         return RenderType.entityCutout(texture);
     }
 
-    public void setOverrideTexture(final ResourceLocation overrideTexture) {
+    public void setOverrideTexture(final Identifier overrideTexture) {
         this.overrideTexture = overrideTexture;
     }
 
-    public static ResourceLocation getAnimationResource(final Player player) {
+    public static Identifier getAnimationResource(final Player player) {
         if (player != null) {
             DragonStateHandler handler = DragonStateProvider.getData(player);
             Holder<DragonBody> body = handler.body();

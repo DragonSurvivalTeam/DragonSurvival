@@ -23,7 +23,7 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.RegistryFixedCodec;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.phys.Vec3;
@@ -42,10 +42,10 @@ public record DragonBody(
         Optional<UnlockableBehavior> unlockableBehavior,
         List<Modifier> modifiers,
         boolean canHideWings,
-        ResourceLocation model,
+        Identifier model,
         TextureSize textureSize,
-        ResourceLocation animation,
-        Optional<ResourceLocation> defaultIcon,
+        Identifier animation,
+        Optional<Identifier> defaultIcon,
         List<String> bonesToHideForToggle,
         Holder<DragonEmoteSet> emotes,
         ScalingProportions scalingProportions,
@@ -55,17 +55,17 @@ public record DragonBody(
         double betterCombatWeaponOffset
 ) implements AttributeModifierSupplier {
     public static final ResourceKey<Registry<DragonBody>> REGISTRY = ResourceKey.createRegistryKey(DragonSurvival.res("dragon_body"));
-    public static final ResourceLocation DEFAULT_MODEL = DragonSurvival.res("dragon_model");
+    public static final Identifier DEFAULT_MODEL = DragonSurvival.res("dragon_model");
 
     public static final Codec<DragonBody> DIRECT_CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.BOOL.optionalFieldOf("is_default", false).forGetter(DragonBody::isDefault),
             UnlockableBehavior.CODEC.optionalFieldOf("unlockable_behavior").forGetter(DragonBody::unlockableBehavior),
             Modifier.CODEC.listOf().fieldOf("modifiers").forGetter(DragonBody::modifiers),
             Codec.BOOL.optionalFieldOf("can_hide_wings", true).forGetter(DragonBody::canHideWings),
-            ResourceLocation.CODEC.optionalFieldOf("model", DEFAULT_MODEL).forGetter(DragonBody::model),
+            Identifier.CODEC.optionalFieldOf("model", DEFAULT_MODEL).forGetter(DragonBody::model),
             TextureSize.CODEC.optionalFieldOf("texture_size", new TextureSize(512, 512)).forGetter(DragonBody::textureSize),
-            ResourceLocation.CODEC.fieldOf("animation").forGetter(DragonBody::animation),
-            ResourceLocation.CODEC.optionalFieldOf("default_icon").forGetter(DragonBody::defaultIcon),
+            Identifier.CODEC.fieldOf("animation").forGetter(DragonBody::animation),
+            Identifier.CODEC.optionalFieldOf("default_icon").forGetter(DragonBody::defaultIcon),
             Codec.STRING.listOf().optionalFieldOf("bones_to_hide_for_toggle", List.of("WingLeft", "WingRight", "SmallWingLeft", "SmallWingRight")).forGetter(DragonBody::bonesToHideForToggle),
             DragonEmoteSet.CODEC.fieldOf("emotes").forGetter(DragonBody::emotes),
             ScalingProportions.CODEC.fieldOf("scaling_proportions").forGetter(DragonBody::scalingProportions),

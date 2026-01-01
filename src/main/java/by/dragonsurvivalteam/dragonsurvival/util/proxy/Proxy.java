@@ -8,7 +8,7 @@ import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
@@ -30,9 +30,9 @@ public interface Proxy {
 
     default void playSoundAtEyeLevel(final Player player, final SoundEvent event) { /* Nothing to do */ }
 
-    default void queueTickingSound(final ResourceLocation id, final SoundEvent soundEvent, final SoundSource soundSource, final Entity entity) { /* Nothing to do */ }
+    default void queueTickingSound(final Identifier id, final SoundEvent soundEvent, final SoundSource soundSource, final Entity entity) { /* Nothing to do */ }
 
-    default void stopTickingSound(final ResourceLocation id) { /* Nothing to do */ }
+    default void stopTickingSound(final Identifier id) { /* Nothing to do */ }
 
     default void setCurrentAbilityAnimation(final Player player, final Pair<AbilityAnimation, AnimationType> animation) { /* Nothing to do */ }
 

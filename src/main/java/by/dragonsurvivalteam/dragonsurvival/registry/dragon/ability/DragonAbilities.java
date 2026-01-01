@@ -59,7 +59,7 @@ import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.random.WeightedRandomList;
@@ -454,7 +454,7 @@ public class DragonAbilities {
         ));
     }
 
-    public static ResourceKey<DragonAbility> key(final ResourceLocation location) {
+    public static ResourceKey<DragonAbility> key(final Identifier location) {
         return ResourceKey.create(DragonAbility.REGISTRY, location);
     }
 

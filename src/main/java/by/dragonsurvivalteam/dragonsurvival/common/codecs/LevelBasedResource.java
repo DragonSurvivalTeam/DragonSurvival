@@ -3,7 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.common.codecs;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ExtraCodecs;
 import org.jetbrains.annotations.NotNull;
 
@@ -21,7 +21,7 @@ public record LevelBasedResource(List<Entry> entries) {
             }, Function.identity()).fieldOf("texture_entries").forGetter(LevelBasedResource::entries)
     ).apply(instance, LevelBasedResource::new));
 
-    public ResourceLocation get(final int level) {
+    public Identifier get(final int level) {
         for (Entry entry : entries) {
             if (level >= entry.fromLevel()) {
                 return entry.location();
@@ -32,9 +32,9 @@ public record LevelBasedResource(List<Entry> entries) {
         return entries().getFirst().location();
     }
 
-    public record Entry(ResourceLocation location, int fromLevel) implements Comparable<Entry> {
+    public record Entry(Identifier location, int fromLevel) implements Comparable<Entry> {
         public static final Codec<Entry> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                ResourceLocation.CODEC.fieldOf("texture_resource").forGetter(Entry::location),
+                Identifier.CODEC.fieldOf("texture_resource").forGetter(Entry::location),
                 ExtraCodecs.intRange(DragonAbilityInstance.MIN_LEVEL, DragonAbilityInstance.MAX_LEVEL).fieldOf("from_level").forGetter(Entry::fromLevel)
         ).apply(instance, Entry::new));
 

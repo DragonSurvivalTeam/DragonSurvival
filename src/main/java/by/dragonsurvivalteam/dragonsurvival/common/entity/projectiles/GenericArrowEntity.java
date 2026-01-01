@@ -20,7 +20,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.protocol.game.ClientboundGameEventPacket;
 import net.minecraft.resources.RegistryOps;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.DamageTypeTags;
@@ -277,7 +277,7 @@ public class GenericArrowEntity extends AbstractArrow implements IEntityWithComp
         }
     }
 
-    public ResourceLocation getResource() {
+    public Identifier getResource() {
         return getTypeData().texture().get(projectileLevel);
     }
 

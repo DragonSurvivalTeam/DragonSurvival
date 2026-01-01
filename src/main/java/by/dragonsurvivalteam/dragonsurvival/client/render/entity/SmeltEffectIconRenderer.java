@@ -12,15 +12,15 @@ import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.neoforged.neoforge.client.GlStateBackup;
 import org.joml.Matrix4f;
 
 public class SmeltEffectIconRenderer {
-    private static final ResourceLocation ICON_EMPTY = DragonSurvival.res("textures/icons/smelting_effect_empty.png");
-    private static final ResourceLocation ICON_FULL = DragonSurvival.res("textures/icons/smelting_effect_full.png");
+    private static final Identifier ICON_EMPTY = DragonSurvival.res("textures/icons/smelting_effect_empty.png");
+    private static final Identifier ICON_FULL = DragonSurvival.res("textures/icons/smelting_effect_full.png");
 
     private static final int WIDTH = 16;
     private static final int HEIGHT = 8;
@@ -57,11 +57,11 @@ public class SmeltEffectIconRenderer {
             RenderSystem.disablePolygonOffset();
 
             // TODO :: add an option to render the item it will smelt into? example how the texture needs to be set up
-//            ResourceLocation resource = item.getItem().getItem().builtInRegistryHolder().getKey().location().withPrefix("textures/item/").withSuffix(".png");
+//            Identifier resource = item.getItem().getItem().builtInRegistryHolder().getKey().location().withPrefix("textures/item/").withSuffix(".png");
         });
     }
 
-    public static void renderIconAboveEntity(final Entity entity, final ResourceLocation icon, final PoseStack pose, final float widthPercentage) {
+    public static void renderIconAboveEntity(final Entity entity, final Identifier icon, final PoseStack pose, final float widthPercentage) {
         GlStateBackup state = new GlStateBackup();
         RenderSystem.backupGlState(state);
 

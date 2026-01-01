@@ -4,7 +4,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ClawInventoryDa
 import by.dragonsurvivalteam.dragonsurvival.server.containers.DragonContainer;
 import by.dragonsurvivalteam.dragonsurvival.util.ToolUtils;
 import com.mojang.datafixers.util.Pair;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.Container;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.inventory.Slot;
@@ -39,7 +39,7 @@ public class ClawToolSlot extends Slot {
     }
 
     @Override
-    public @Nullable Pair<ResourceLocation, ResourceLocation> getNoItemIcon() {
+    public @Nullable Pair<Identifier, Identifier> getNoItemIcon() {
         return Pair.of(InventoryMenu.BLOCK_ATLAS, slot.getEmptyTexture());
     }
 

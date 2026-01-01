@@ -13,7 +13,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.common.util.INBTSerializable;
@@ -26,9 +26,9 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Objects;
 
 public class FlightData implements INBTSerializable<CompoundTag> {
-    public static final ResourceLocation DEFAULT_ICON = DragonSurvival.res("textures/ability_effect/generic_icons/dragon_wings.png");
+    public static final Identifier DEFAULT_ICON = DragonSurvival.res("textures/ability_effect/generic_icons/dragon_wings.png");
 
-    public ResourceLocation icon = DEFAULT_ICON;
+    public Identifier icon = DEFAULT_ICON;
     public @Nullable HolderSet<FluidType> inFluid;
 
     public boolean areWingsSpread;
@@ -75,7 +75,7 @@ public class FlightData implements INBTSerializable<CompoundTag> {
             inFluid = null;
         }
 
-        icon = Objects.requireNonNullElse(ResourceLocation.tryParse(tag.getString(ICON)), DEFAULT_ICON);
+        icon = Objects.requireNonNullElse(Identifier.tryParse(tag.getString(ICON)), DEFAULT_ICON);
     }
 
     public void sync(final ServerPlayer player) {
@@ -97,9 +97,9 @@ public class FlightData implements INBTSerializable<CompoundTag> {
 
     public static final ClientEffectProvider FLIGHT_EFFECT = new ClientEffectProvider() {
         @Translation(type = Translation.Type.GUI, comments = "Wings")
-        private static final ResourceLocation NAME = DragonSurvival.res("dragon_wings");
+        private static final Identifier NAME = DragonSurvival.res("dragon_wings");
 
-        private static final ResourceLocation ID = DragonSurvival.res("dragon_wings");
+        private static final Identifier ID = DragonSurvival.res("dragon_wings");
         private static final Component TRANSLATED_NAME = Component.translatable(Translation.Type.GUI.wrap(NAME));
 
         @Override
@@ -110,7 +110,7 @@ public class FlightData implements INBTSerializable<CompoundTag> {
         @Override
         public ClientData clientData() {
             Player player = DragonSurvival.PROXY.getLocalPlayer();
-            ResourceLocation icon = player != null ? FlightData.getData(player).icon : DEFAULT_ICON;
+            Identifier icon = player != null ? FlightData.getData(player).icon : DEFAULT_ICON;
             return new ClientData(ID, icon, TRANSLATED_NAME, CommonComponents.EMPTY);
         }
 

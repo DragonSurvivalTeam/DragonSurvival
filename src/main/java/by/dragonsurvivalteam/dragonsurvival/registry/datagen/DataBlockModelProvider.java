@@ -6,7 +6,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.blocks.HelmetBlock;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSBlocks;
 import net.minecraft.core.Direction;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.client.model.generators.BlockModelProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
@@ -35,9 +35,9 @@ public class DataBlockModelProvider extends BlockModelProvider {
                 withExistingParent(holder.getId().getPath(), BLOCK_FOLDER + "/" + "skull")
                         .texture("all", DragonSurvival.res(PREFIX + holder.getId().getPath()));
             } else if (holder == DSBlocks.CHOCOLATE_DRAGON_TREASURE) {
-                ResourceLocation top = DragonSurvival.res(PREFIX + holder.getId().getPath());
-                ResourceLocation side = DragonSurvival.res(PREFIX + holder.getId().getPath() + "_side");
-                ResourceLocation bottom = DragonSurvival.res(PREFIX + holder.getId().getPath() + "_bottom");
+                Identifier top = DragonSurvival.res(PREFIX + holder.getId().getPath());
+                Identifier side = DragonSurvival.res(PREFIX + holder.getId().getPath() + "_side");
+                Identifier bottom = DragonSurvival.res(PREFIX + holder.getId().getPath() + "_bottom");
 
                 orientableWithBottom(holder.getId().getPath(), side, side, bottom, top);
 

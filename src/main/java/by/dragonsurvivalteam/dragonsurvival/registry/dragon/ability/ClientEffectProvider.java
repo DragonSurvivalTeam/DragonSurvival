@@ -16,7 +16,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 
@@ -25,28 +25,28 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ClientEffectProvider {
-    record ClientData(ResourceLocation id, ResourceLocation texture, Component name, Component effectSource) {
+    record ClientData(Identifier id, Identifier texture, Component name, Component effectSource) {
         public static final Codec<ClientData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                ResourceLocation.CODEC.fieldOf("id").forGetter(ClientData::id),
-                ResourceLocation.CODEC.fieldOf("texture").forGetter(ClientData::texture),
+                Identifier.CODEC.fieldOf("id").forGetter(ClientData::id),
+                Identifier.CODEC.fieldOf("texture").forGetter(ClientData::texture),
                 ComponentSerialization.CODEC.fieldOf("name").forGetter(ClientData::name),
                 ComponentSerialization.CODEC.optionalFieldOf("effect_source", Component.empty()).forGetter(ClientData::effectSource)
         ).apply(instance, ClientData::new));
 
         @SuppressWarnings("OptionalUsedAsFieldOrParameterType") // ignore
-        public static ClientData from(final ResourceLocation id, final ServerPlayer dragon, final DragonAbilityInstance ability, final Optional<ResourceLocation> customIcon) {
-            ResourceLocation icon = customIcon.orElse(ability.getIcon().withPrefix("textures/gui/sprites/").withSuffix(".png"));
+        public static ClientData from(final Identifier id, final ServerPlayer dragon, final DragonAbilityInstance ability, final Optional<Identifier> customIcon) {
+            Identifier icon = customIcon.orElse(ability.getIcon().withPrefix("textures/gui/sprites/").withSuffix(".png"));
             return new ClientData(id, icon, Component.translatable(Translation.Type.ABILITY.wrap(ability.location())), dragon.getName());
         }
 
         @SuppressWarnings({"OptionalUsedAsFieldOrParameterType", "DataFlowIssue"}) // ignore
-        public static ClientData from(final ResourceLocation id, final Holder<DragonPenalty> penalty, final Optional<ResourceLocation> customIcon) {
-            ResourceLocation icon = customIcon.orElse(penalty.value().icon().orElse(UNKNOWN_ICON));
+        public static ClientData from(final Identifier id, final Holder<DragonPenalty> penalty, final Optional<Identifier> customIcon) {
+            Identifier icon = customIcon.orElse(penalty.value().icon().orElse(UNKNOWN_ICON));
             return new ClientData(id, icon, Component.translatable(Translation.Type.PENALTY.wrap(penalty.getKey().location())), Component.empty());
         }
     }
 
-    ResourceLocation UNKNOWN_ICON = DragonSurvival.res("textures/ability_effect/generic_icons/unknown.png");
+    Identifier UNKNOWN_ICON = DragonSurvival.res("textures/ability_effect/generic_icons/unknown.png");
 
     /** See {@link net.minecraft.client.renderer.texture.MissingTextureAtlasSprite#MISSING_TEXTURE_LOCATION} */
     ClientData NONE = new ClientData(DragonSurvival.res("none"), DragonSurvival.MISSING_TEXTURE, Component.literal("N/A"), Component.empty());

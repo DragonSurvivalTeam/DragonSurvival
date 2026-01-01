@@ -9,7 +9,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -20,7 +20,7 @@ public class BolasEntityRenderer extends EntityRenderer<Bolas> {
 
     // This class is purely for rendering the bolas projectile. The bolas rendered on top of the target when it is trapped is handled elsewhere: renderBolas & renderTrap inside of ClientEvents.java, and thirdPersonPreRender in ClientDragonRender.java
 
-    private static final ResourceLocation BOLAS_TEXTURE = ResourceLocation.fromNamespaceAndPath(MODID, "textures/item/dragon_hunting_mesh.png");
+    private static final Identifier BOLAS_TEXTURE = Identifier.fromNamespaceAndPath(MODID, "textures/item/dragon_hunting_mesh.png");
 
     public BolasEntityRenderer(Context p_174198_) {
         super(p_174198_);
@@ -39,7 +39,7 @@ public class BolasEntityRenderer extends EntityRenderer<Bolas> {
     }
 
     @Override
-    public @NotNull ResourceLocation getTextureLocation(@NotNull Bolas bolas) {
+    public @NotNull Identifier getTextureLocation(@NotNull Bolas bolas) {
         return BOLAS_TEXTURE;
     }
 }

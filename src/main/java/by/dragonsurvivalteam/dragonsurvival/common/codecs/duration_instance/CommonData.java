@@ -9,7 +9,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 
 import java.util.Optional;
@@ -33,13 +33,13 @@ public record CommonData(
     ).apply(instance, CommonData::new));
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType") // ignore
-    public static CommonData from(final ResourceLocation id, final ServerPlayer dragon, final DragonAbilityInstance ability, final Optional<ResourceLocation> customIcon, boolean removeAutomatically) {
+    public static CommonData from(final Identifier id, final ServerPlayer dragon, final DragonAbilityInstance ability, final Optional<Identifier> customIcon, boolean removeAutomatically) {
         ClientEffectProvider.ClientData clientData = ClientEffectProvider.ClientData.from(id, dragon, ability, customIcon);
         return new CommonData(clientData, Optional.of(ability.key()), Optional.empty(), Optional.of(dragon.getUUID()), ability.level(), removeAutomatically);
     }
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType") // ignore
-    public static CommonData from(final ResourceLocation id, final ServerPlayer dragon, final Holder<DragonPenalty> penalty, final Optional<ResourceLocation> customIcon, boolean removeAutomatically) {
+    public static CommonData from(final Identifier id, final ServerPlayer dragon, final Holder<DragonPenalty> penalty, final Optional<Identifier> customIcon, boolean removeAutomatically) {
         ClientEffectProvider.ClientData clientData = ClientEffectProvider.ClientData.from(id, penalty, customIcon);
         //noinspection DataFlowIssue -> key is present
         return new CommonData(clientData, Optional.empty(), Optional.of(penalty.getKey()), Optional.of(dragon.getUUID()), 1, removeAutomatically);

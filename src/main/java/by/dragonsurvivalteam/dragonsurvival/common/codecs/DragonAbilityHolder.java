@@ -49,20 +49,20 @@ public record DragonAbilityHolder(List<AbilityPair> pairs, Optional<LootItemCond
             AbilityPair.CODEC.listOf().fieldOf("pairs").forGetter(DragonAbilityHolder::pairs),
             MiscCodecs.conditional(LootItemCondition.DIRECT_CODEC).optionalFieldOf("conditions").forGetter(DragonAbilityHolder::conditions),
             // This can be handled by the condition, but we are keeping it to make the tooltip more helpful
-            ResourceLocationWrapper.validatedCodec().listOf().optionalFieldOf("applicable_species", List.of()).forGetter(DragonAbilityHolder::applicableSpecies)
+            IdentifierWrapper.validatedCodec().listOf().optionalFieldOf("applicable_species", List.of()).forGetter(DragonAbilityHolder::applicableSpecies)
     ).apply(instance, DragonAbilityHolder::new));
 
     public record AbilityPair(List<String> add, List<String> remove, boolean strict) {
         public static final Codec<AbilityPair> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                ResourceLocationWrapper.validatedCodec().listOf().fieldOf("add").forGetter(AbilityPair::add),
-                ResourceLocationWrapper.validatedCodec().listOf().fieldOf("remove").forGetter(AbilityPair::remove),
+                IdentifierWrapper.validatedCodec().listOf().fieldOf("add").forGetter(AbilityPair::add),
+                IdentifierWrapper.validatedCodec().listOf().fieldOf("remove").forGetter(AbilityPair::remove),
                 // In strict mode all removals and additions of a pair have to be successful
                 Codec.BOOL.optionalFieldOf("strict", true).forGetter(AbilityPair::strict)
         ).apply(instance, AbilityPair::new));
 
         public Component translate(final Registry<?> registry) {
-            List<MutableComponent> add = ResourceLocationWrapper.getTranslations(this.add, registry, Translation.Type.ABILITY);
-            List<MutableComponent> remove = ResourceLocationWrapper.getTranslations(this.remove, registry, Translation.Type.ABILITY);
+            List<MutableComponent> add = IdentifierWrapper.getTranslations(this.add, registry, Translation.Type.ABILITY);
+            List<MutableComponent> remove = IdentifierWrapper.getTranslations(this.remove, registry, Translation.Type.ABILITY);
 
             MutableComponent translation = null;
             MutableComponent addTranslation = DSLanguageProvider.formatList(add, Function.identity());
@@ -111,7 +111,7 @@ public record DragonAbilityHolder(List<AbilityPair> pairs, Optional<LootItemCond
         }
 
         if (!applicableSpecies.isEmpty()) {
-            MutableComponent translation = DSLanguageProvider.formatList(ResourceLocationWrapper.getTranslations(applicableSpecies, registry, Translation.Type.DRAGON_SPECIES), Function.identity());
+            MutableComponent translation = DSLanguageProvider.formatList(IdentifierWrapper.getTranslations(applicableSpecies, registry, Translation.Type.DRAGON_SPECIES), Function.identity());
 
             if (!pairs.isEmpty()) {
                 consumer.accept(Component.empty());
@@ -123,7 +123,7 @@ public record DragonAbilityHolder(List<AbilityPair> pairs, Optional<LootItemCond
 
     public boolean use(final ServerPlayer player, final DragonStateHandler handler, final MagicData magic) {
         for (String resource : applicableSpecies) {
-            if (!ResourceLocationWrapper.getEntries(resource, player.registryAccess().registryOrThrow(DragonSpecies.REGISTRY)).contains(handler.speciesId())) {
+            if (!IdentifierWrapper.getEntries(resource, player.registryAccess().registryOrThrow(DragonSpecies.REGISTRY)).contains(handler.speciesId())) {
                 player.sendSystemMessage(Component.translatable(REQUIREMENTS_NOT_MET).withStyle(ChatFormatting.RED));
                 return false;
             }
@@ -172,7 +172,7 @@ public record DragonAbilityHolder(List<AbilityPair> pairs, Optional<LootItemCond
             final boolean strict
     ) {
         for (String resource : resources) {
-            Set<ResourceKey<DragonAbility>> entries = ResourceLocationWrapper.map(resource, registry);
+            Set<ResourceKey<DragonAbility>> entries = IdentifierWrapper.map(resource, registry);
 
             for (ResourceKey<DragonAbility> entry : entries) {
                 if (test.apply(entry)) {

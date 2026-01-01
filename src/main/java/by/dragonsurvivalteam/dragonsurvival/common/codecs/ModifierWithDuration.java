@@ -24,7 +24,7 @@ import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -90,24 +90,24 @@ public class ModifierWithDuration extends DurationInstanceBase<ModifiersWithDura
 
     public static class Instance extends DurationInstance<ModifierWithDuration> implements AttributeModifierSupplier {
         public static final Codec<Instance> CODEC = RecordCodecBuilder.create(instance -> DurationInstance.codecStart(instance, () -> ModifierWithDuration.CODEC)
-                .and(Codec.compoundList(BuiltInRegistries.ATTRIBUTE.holderByNameCodec(), ResourceLocation.CODEC.listOf()).xmap(pairs -> {
-                            Map<Holder<Attribute>, List<ResourceLocation>> ids = new HashMap<>();
+                .and(Codec.compoundList(BuiltInRegistries.ATTRIBUTE.holderByNameCodec(), Identifier.CODEC.listOf()).xmap(pairs -> {
+                            Map<Holder<Attribute>, List<Identifier>> ids = new HashMap<>();
                             pairs.forEach(pair -> pair.getSecond().forEach(id -> ids.computeIfAbsent(pair.getFirst(), key -> new ArrayList<>()).add(id)));
                             return ids;
                         }, ids -> {
-                            List<Pair<Holder<Attribute>, List<ResourceLocation>>> pairs = new ArrayList<>();
+                            List<Pair<Holder<Attribute>, List<Identifier>>> pairs = new ArrayList<>();
                             ids.forEach((attribute, value) -> pairs.add(new Pair<>(attribute, value)));
                             return pairs;
                         }).fieldOf("ids").forGetter(Instance::getStoredIds)
                 ).apply(instance, Instance::new));
 
-        private final Map<Holder<Attribute>, List<ResourceLocation>> ids;
+        private final Map<Holder<Attribute>, List<Identifier>> ids;
 
         public Instance(final ModifierWithDuration baseData, final CommonData commonData, final int currentDuration) {
             this(baseData, commonData, currentDuration, new HashMap<>());
         }
 
-        public Instance(final ModifierWithDuration baseData, final CommonData commonData, final int currentDuration, final Map<Holder<Attribute>, List<ResourceLocation>> ids) {
+        public Instance(final ModifierWithDuration baseData, final CommonData commonData, final int currentDuration, final Map<Holder<Attribute>, List<Identifier>> ids) {
             super(baseData, commonData, currentDuration);
             this.ids = ids;
         }
@@ -158,12 +158,12 @@ public class ModifierWithDuration extends DurationInstanceBase<ModifiersWithDura
         }
 
         @Override
-        public void storeId(final Holder<Attribute> attribute, final ResourceLocation id) {
+        public void storeId(final Holder<Attribute> attribute, final Identifier id) {
             ids.computeIfAbsent(attribute, key -> new ArrayList<>()).add(id);
         }
 
         @Override
-        public Map<Holder<Attribute>, List<ResourceLocation>> getStoredIds() {
+        public Map<Holder<Attribute>, List<Identifier>> getStoredIds() {
             return ids;
         }
 

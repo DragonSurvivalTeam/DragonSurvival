@@ -4,7 +4,7 @@ import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 
 import java.util.List;
@@ -271,7 +271,7 @@ public class DragonEmoteSets {
         );
     }
 
-    public static ResourceKey<DragonEmoteSet> key(final ResourceLocation location) {
+    public static ResourceKey<DragonEmoteSet> key(final Identifier location) {
         return ResourceKey.create(DragonEmoteSet.REGISTRY, location);
     }
 

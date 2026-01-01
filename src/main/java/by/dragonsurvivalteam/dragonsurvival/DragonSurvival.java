@@ -30,7 +30,7 @@ import by.dragonsurvivalteam.dragonsurvival.util.proxy.ClientProxy;
 import by.dragonsurvivalteam.dragonsurvival.util.proxy.Proxy;
 import by.dragonsurvivalteam.dragonsurvival.util.proxy.ServerProxy;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
@@ -44,7 +44,7 @@ public class DragonSurvival {
     public static final String DISCORD_URL = "https://discord.gg/8SsB8ar";
 
     /** See {@link MissingTextureAtlasSprite#MISSING_TEXTURE_LOCATION} */
-    public static final ResourceLocation MISSING_TEXTURE = ResourceLocation.withDefaultNamespace("missingno");
+    public static final Identifier MISSING_TEXTURE = Identifier.withDefaultNamespace("missingno");
 
     public static final String MODID = "dragonsurvival";
     public static final Logger LOGGER = LogManager.getLogger("Dragon Survival");
@@ -83,12 +83,12 @@ public class DragonSurvival {
         NeoForge.EVENT_BUS.addListener(OnBlockBreak::trigger);
     }
 
-    /** Creates a {@link ResourceLocation} with the dragon survival namespace */
-    public static ResourceLocation res(final String path) {
+    /** Creates a {@link Identifier} with the dragon survival namespace */
+    public static Identifier res(final String path) {
         return location(DragonSurvival.MODID, path);
     }
 
-    public static ResourceLocation location(final String namespace, final String path) {
-        return ResourceLocation.fromNamespaceAndPath(namespace, path);
+    public static Identifier location(final String namespace, final String path) {
+        return Identifier.fromNamespaceAndPath(namespace, path);
     }
 }

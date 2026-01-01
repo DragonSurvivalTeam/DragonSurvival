@@ -1,6 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.config;
 
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.ResourceLocationWrapper;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.IdentifierWrapper;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -32,7 +32,7 @@ public class OffsetConfig implements CustomConfig {
         this.offsets = new HashMap<>();
         this.originalData = originalData;
 
-        ResourceLocationWrapper.getEntries(entityTypeResource, BuiltInRegistries.ENTITY_TYPE).forEach(resource -> {
+        IdentifierWrapper.getEntries(entityTypeResource, BuiltInRegistries.ENTITY_TYPE).forEach(resource -> {
             offsets.put(ResourceKey.create(Registries.ENTITY_TYPE, resource), offset);
         });
     }
@@ -70,7 +70,7 @@ public class OffsetConfig implements CustomConfig {
                 return false;
             }
 
-            if (!ResourceLocationWrapper.validateRegexResourceLocation(elements[ENTITY_TYPE])) {
+            if (!IdentifierWrapper.validateRegexIdentifier(elements[ENTITY_TYPE])) {
                 return false;
             }
 

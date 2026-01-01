@@ -11,7 +11,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,7 +20,7 @@ import java.util.Optional;
 public record DragonPart(
         String key,
         Optional<Component> localization,
-        ResourceLocation texture,
+        Identifier texture,
         List<ResourceKey<DragonSpecies>> applicableSpecies,
         List<ResourceKey<DragonBody>> applicableBodies,
         float averageHue,
@@ -32,7 +32,7 @@ public record DragonPart(
     public static final Codec<DragonPart> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.STRING.fieldOf("key").forGetter(DragonPart::key),
             ComponentSerialization.CODEC.optionalFieldOf("localization").forGetter(DragonPart::localization),
-            ResourceLocation.CODEC.fieldOf("texture").forGetter(DragonPart::texture),
+            Identifier.CODEC.fieldOf("texture").forGetter(DragonPart::texture),
             ResourceKey.codec(DragonSpecies.REGISTRY).listOf().optionalFieldOf("applicable_species", List.of()).forGetter(DragonPart::applicableSpecies),
             ResourceKey.codec(DragonBody.REGISTRY).listOf().optionalFieldOf("applicable_bodies", List.of()).forGetter(DragonPart::applicableBodies),
             Codec.FLOAT.optionalFieldOf("average_hue", 0f).forGetter(DragonPart::averageHue),

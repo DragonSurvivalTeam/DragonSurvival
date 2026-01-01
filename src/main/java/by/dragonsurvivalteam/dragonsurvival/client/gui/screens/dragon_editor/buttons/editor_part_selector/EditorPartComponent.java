@@ -12,18 +12,18 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
 public class EditorPartComponent implements ScrollableComponent {
-    private static final ResourceLocation DROPDOWN_BUTTON_BACKGROUND = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/editor/part_name_background.png");
-    private static final ResourceLocation SMALL_LEFT_ARROW_HOVER = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/editor/small_left_arrow_hover.png");
-    private static final ResourceLocation SMALL_LEFT_ARROW_MAIN = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/editor/small_left_arrow_main.png");
-    private static final ResourceLocation SMALL_RIGHT_ARROW_HOVER = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/editor/small_right_arrow_hover.png");
-    private static final ResourceLocation SMALL_RIGHT_ARROW_MAIN = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/editor/small_right_arrow_main.png");
+    private static final Identifier DROPDOWN_BUTTON_BACKGROUND = Identifier.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/editor/part_name_background.png");
+    private static final Identifier SMALL_LEFT_ARROW_HOVER = Identifier.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/editor/small_left_arrow_hover.png");
+    private static final Identifier SMALL_LEFT_ARROW_MAIN = Identifier.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/editor/small_left_arrow_main.png");
+    private static final Identifier SMALL_RIGHT_ARROW_HOVER = Identifier.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/editor/small_right_arrow_hover.png");
+    private static final Identifier SMALL_RIGHT_ARROW_MAIN = Identifier.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/editor/small_right_arrow_main.png");
 
     private final DragonEditorScreen screen;
     private final HoverButton partButton;

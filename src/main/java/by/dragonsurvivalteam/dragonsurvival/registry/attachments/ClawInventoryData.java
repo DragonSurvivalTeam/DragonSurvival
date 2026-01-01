@@ -9,7 +9,7 @@ import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.StringRepresentable;
@@ -40,13 +40,13 @@ public class ClawInventoryData implements INBTSerializable<CompoundTag> {
         SHOVEL("gui/dragon_claws_shovel");
 
         public static Codec<Slot> CODEC = StringRepresentable.fromValues(Slot::values);
-        private final ResourceLocation emptyTexture;
+        private final Identifier emptyTexture;
 
         Slot(final String path) {
             emptyTexture = DragonSurvival.res(path);
         }
 
-        public ResourceLocation getEmptyTexture() {
+        public Identifier getEmptyTexture() {
             return emptyTexture;
         }
 

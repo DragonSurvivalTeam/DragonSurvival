@@ -19,7 +19,7 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.contents.PlainTextContents;
 import net.minecraft.resources.RegistryFixedCodec;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.player.Player;
@@ -32,13 +32,13 @@ import net.neoforged.neoforge.registries.DataPackRegistryEvent;
 import java.util.Optional;
 
 @EventBusSubscriber
-public record DragonPenalty(Optional<ResourceLocation> icon, Optional<LootItemCondition> condition, PenaltyEffect effect, PenaltyTrigger trigger) {
+public record DragonPenalty(Optional<Identifier> icon, Optional<LootItemCondition> condition, PenaltyEffect effect, PenaltyTrigger trigger) {
     @Translation(key = "enable_penalties", type = Translation.Type.CONFIGURATION, comments = "Enable / Disable the penalty system")
     @ConfigOption(side = ConfigSide.SERVER, category = "penalties", key = "enable_penalties")
     public static boolean ENABLE_PENALTIES = true;
 
     public static final Codec<DragonPenalty> DIRECT_CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            ResourceLocation.CODEC.optionalFieldOf("icon").forGetter(DragonPenalty::icon),
+            Identifier.CODEC.optionalFieldOf("icon").forGetter(DragonPenalty::icon),
             MiscCodecs.conditional(LootItemCondition.DIRECT_CODEC).optionalFieldOf("condition").forGetter(DragonPenalty::condition),
             PenaltyEffect.CODEC.fieldOf("effect").forGetter(DragonPenalty::effect),
             PenaltyTrigger.CODEC.fieldOf("trigger").forGetter(DragonPenalty::trigger)

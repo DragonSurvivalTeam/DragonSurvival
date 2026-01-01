@@ -6,7 +6,7 @@ import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -24,7 +24,7 @@ public class ConfigUtils {
     public static Predicate<ItemStack> itemStackPredicate(final String[] splitData) {
         boolean isTag = splitData[NAMESPACE].startsWith("#");
 
-        ResourceLocation location = getLocation(splitData, isTag);
+        Identifier location = getLocation(splitData, isTag);
         if (isTag) {
             TagKey<Item> tag = TagKey.create(Registries.ITEM, location);
             return stack -> stack.is(tag);
@@ -36,7 +36,7 @@ public class ConfigUtils {
 
     public static Predicate<Item> itemPredicate(final String[] splitData) {
         boolean isTag = splitData[NAMESPACE].startsWith("#");
-        ResourceLocation location = getLocation(splitData, isTag);
+        Identifier location = getLocation(splitData, isTag);
 
         if (isTag) {
             TagKey<Item> tag = TagKey.create(Registries.ITEM, location);
@@ -49,7 +49,7 @@ public class ConfigUtils {
 
     public static Predicate<BlockState> blockStatePredicate(final String[] splitData) {
         boolean isTag = splitData[NAMESPACE].startsWith("#");
-        ResourceLocation location = getLocation(splitData, isTag);
+        Identifier location = getLocation(splitData, isTag);
 
         if (isTag) {
             TagKey<Block> tag = TagKey.create(Registries.BLOCK, location);
@@ -62,7 +62,7 @@ public class ConfigUtils {
 
     public static Supplier<HolderSet<Item>> itemSupplier(final String[] splitData) {
         boolean isTag = splitData[NAMESPACE].startsWith("#");
-        ResourceLocation location = getLocation(splitData, isTag);
+        Identifier location = getLocation(splitData, isTag);
 
         if (isTag) {
             TagKey<Item> tag = TagKey.create(Registries.ITEM, location);
@@ -80,7 +80,7 @@ public class ConfigUtils {
     }
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted") // ignore
-    public static boolean validateResourceLocation(final String[] splitData) {
+    public static boolean validateIdentifier(final String[] splitData) {
         if (splitData.length < 2) {
             return false;
         }
@@ -88,7 +88,7 @@ public class ConfigUtils {
         String namespace = splitData[NAMESPACE].startsWith("#") ? splitData[NAMESPACE].substring(1) : splitData[NAMESPACE];
         String path = splitData[PATH];
 
-        return ResourceLocation.tryParse(namespace + ":" + path) != null;
+        return Identifier.tryParse(namespace + ":" + path) != null;
     }
 
     public static boolean validateInteger(final String string) {
@@ -140,7 +140,7 @@ public class ConfigUtils {
             return holder.getRegisteredName();
         }
 
-        if (object instanceof ResourceLocation location) {
+        if (object instanceof Identifier location) {
             return location.toString();
         }
 
@@ -151,7 +151,7 @@ public class ConfigUtils {
         return key.location().toString();
     }
 
-    private static ResourceLocation getLocation(final String[] splitData, boolean isTag) {
+    private static Identifier getLocation(final String[] splitData, boolean isTag) {
         if (isTag) {
             return DragonSurvival.location(splitData[NAMESPACE].substring(1), splitData[PATH]);
         }

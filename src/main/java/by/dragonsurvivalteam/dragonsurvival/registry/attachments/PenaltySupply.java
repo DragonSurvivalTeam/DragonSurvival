@@ -14,7 +14,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -33,9 +33,9 @@ import java.util.Optional;
 public class PenaltySupply implements INBTSerializable<CompoundTag> {
     public static final int NO_ENTRY = -1;
 
-    private final HashMap<ResourceLocation, Data> supplyData = new HashMap<>();
+    private final HashMap<Identifier, Data> supplyData = new HashMap<>();
 
-    public boolean hasSupply(final ResourceLocation supplyType) {
+    public boolean hasSupply(final Identifier supplyType) {
         Data data = supplyData.get(supplyType);
 
         if (data == null) {
@@ -45,7 +45,7 @@ public class PenaltySupply implements INBTSerializable<CompoundTag> {
         return data.currentSupply() > 0;
     }
 
-    public void setSupply(final ResourceLocation supplyType, float supply) {
+    public void setSupply(final Identifier supplyType, float supply) {
         Data data = supplyData.get(supplyType);
 
         if (data != null) {
@@ -53,7 +53,7 @@ public class PenaltySupply implements INBTSerializable<CompoundTag> {
         }
     }
 
-    public float getPercentage(final ResourceLocation supplyType) {
+    public float getPercentage(final Identifier supplyType) {
         Data data = supplyData.get(supplyType);
 
         if (data == null) {
@@ -63,7 +63,7 @@ public class PenaltySupply implements INBTSerializable<CompoundTag> {
         return (data.currentSupply() / data.maximumSupply());
     }
 
-    public float getRawSupply(final ResourceLocation supplyType) {
+    public float getRawSupply(final Identifier supplyType) {
         Data data = supplyData.get(supplyType);
 
         if (data == null) {
@@ -73,7 +73,7 @@ public class PenaltySupply implements INBTSerializable<CompoundTag> {
         return data.currentSupply();
     }
 
-    public int getMaxSupply(final ResourceLocation supplyType) {
+    public int getMaxSupply(final Identifier supplyType) {
         Data data = supplyData.get(supplyType);
 
         if (data == null) {
@@ -83,7 +83,7 @@ public class PenaltySupply implements INBTSerializable<CompoundTag> {
         return (int) data.maximumSupply();
     }
 
-    public int getCurrentTick(final ResourceLocation supplyType) {
+    public int getCurrentTick(final Identifier supplyType) {
         Data data = supplyData.get(supplyType);
 
         if (data == null) {
@@ -93,7 +93,7 @@ public class PenaltySupply implements INBTSerializable<CompoundTag> {
         return data.currentTick();
     }
 
-    public void tick(final ResourceLocation supplyType) {
+    public void tick(final Identifier supplyType) {
         Data data = supplyData.get(supplyType);
 
         if (data == null) {
@@ -103,7 +103,7 @@ public class PenaltySupply implements INBTSerializable<CompoundTag> {
         data.tick();
     }
 
-    public void resetTick(final ResourceLocation supplyType) {
+    public void resetTick(final Identifier supplyType) {
         Data data = supplyData.get(supplyType);
 
         if (data == null) {
@@ -113,7 +113,7 @@ public class PenaltySupply implements INBTSerializable<CompoundTag> {
         data.resetTick();
     }
 
-    public void reduce(final ServerPlayer player, final ResourceLocation supplyType) {
+    public void reduce(final ServerPlayer player, final Identifier supplyType) {
         Data data = supplyData.get(supplyType);
 
         if (data == null) {
@@ -125,7 +125,7 @@ public class PenaltySupply implements INBTSerializable<CompoundTag> {
         }
     }
 
-    public void regenerate(final ServerPlayer player, final ResourceLocation supplyType) {
+    public void regenerate(final ServerPlayer player, final Identifier supplyType) {
         Data data = supplyData.get(supplyType);
 
         if (data == null) {
@@ -137,7 +137,7 @@ public class PenaltySupply implements INBTSerializable<CompoundTag> {
         }
     }
 
-    public Optional<Holder<DragonPenalty>> getMatchingPenalty(final ResourceLocation supplyType, final DragonStateHandler handler) {
+    public Optional<Holder<DragonPenalty>> getMatchingPenalty(final Identifier supplyType, final DragonStateHandler handler) {
         if (handler.species() == null) {
             return Optional.empty();
         }
@@ -152,7 +152,7 @@ public class PenaltySupply implements INBTSerializable<CompoundTag> {
         return Optional.empty();
     }
 
-    public void initialize(final ResourceLocation supplyType, float maximumSupply, float reductionRate, float regenerationRate, float currentSupply, int currentTick) {
+    public void initialize(final Identifier supplyType, float maximumSupply, float reductionRate, float regenerationRate, float currentSupply, int currentTick) {
         supplyData.put(supplyType, new Data(maximumSupply, currentSupply, reductionRate, regenerationRate, currentTick));
     }
 
@@ -160,11 +160,11 @@ public class PenaltySupply implements INBTSerializable<CompoundTag> {
         PacketDistributor.sendToPlayer(player, new SyncPenaltySupply(serializeNBT(player.registryAccess())));
     }
 
-    public List<ResourceLocation> getSupplyTypes() {
+    public List<Identifier> getSupplyTypes() {
         return List.copyOf(supplyData.keySet());
     }
 
-    public void remove(final ResourceLocation supplyType) {
+    public void remove(final Identifier supplyType) {
         supplyData.remove(supplyType);
     }
 
@@ -219,7 +219,7 @@ public class PenaltySupply implements INBTSerializable<CompoundTag> {
         });
     }
 
-    private void regenerateManual(final ServerPlayer player, final ResourceLocation supplyType, final float amount) {
+    private void regenerateManual(final ServerPlayer player, final Identifier supplyType, final float amount) {
         Data data = supplyData.get(supplyType);
 
         if (data == null) {
@@ -241,7 +241,7 @@ public class PenaltySupply implements INBTSerializable<CompoundTag> {
     public void deserializeNBT(@NotNull final HolderLookup.Provider provider, @NotNull final CompoundTag tag) {
         supplyData.clear();
         tag.getAllKeys().forEach(supplyType -> {
-            ResourceLocation resource = ResourceLocation.tryParse(supplyType);
+            Identifier resource = Identifier.tryParse(supplyType);
 
             if (resource != null) {
                 supplyData.put(resource, Data.deserializeNBT(provider, tag.get(supplyType)));

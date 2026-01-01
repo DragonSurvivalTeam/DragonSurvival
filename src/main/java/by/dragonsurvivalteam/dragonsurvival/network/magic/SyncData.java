@@ -7,7 +7,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.common.util.INBTSerializable;
@@ -15,12 +15,12 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
-public record SyncData(int targetEntityId, ResourceLocation attachmentType, CompoundTag tag) implements CustomPacketPayload {
+public record SyncData(int targetEntityId, Identifier attachmentType, CompoundTag tag) implements CustomPacketPayload {
     public static final Type<SyncData> TYPE = new Type<>(DragonSurvival.res("sync_data"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, SyncData> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.VAR_INT, SyncData::targetEntityId,
-            ResourceLocation.STREAM_CODEC, SyncData::attachmentType,
+            Identifier.STREAM_CODEC, SyncData::attachmentType,
             ByteBufCodecs.COMPOUND_TAG, SyncData::tag,
             SyncData::new
     );

@@ -9,7 +9,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.SectionPos;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.Entity;
@@ -34,7 +34,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 public class RotatingKeyItem extends TooltipItem implements GeoItem {
-    public final ResourceLocation texture, model;
+    public final Identifier texture, model;
     private final TagKey<Structure> target;
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
     public final RawAnimation IDLE = RawAnimation.begin().thenPlay("idle");
@@ -45,7 +45,7 @@ public class RotatingKeyItem extends TooltipItem implements GeoItem {
     public Vector3f currentTarget = new Vector3f();
     public Player playerHoldingItem;
 
-    public RotatingKeyItem(Properties properties, ResourceLocation model, ResourceLocation texture, ResourceLocation target) {
+    public RotatingKeyItem(Properties properties, Identifier model, Identifier texture, Identifier target) {
         super(properties, null);
         this.target = TagKey.create(Registries.STRUCTURE, target);
         this.model = model;

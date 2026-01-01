@@ -3,7 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.client.render.entity.dragon;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ClawInventoryData;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Tier;
@@ -12,10 +12,10 @@ import net.minecraft.world.item.Tiers;
 import org.jetbrains.annotations.Nullable;
 
 public class ClawsAndTeeth {
-    public static @Nullable ResourceLocation constructClawTexture(final Player player) {
+    public static @Nullable Identifier constructClawTexture(final Player player) {
         DragonStateHandler handler = DragonStateProvider.getData(player);
 
-        ResourceLocation model = handler.getModel();
+        Identifier model = handler.getModel();
         String texturePath = "textures/armor/" + model.getPath() + "/";
 
         ItemStack clawItem = ClawInventoryData.getData(player).get(handler.species().value().miscResources().clawTextureSlot());
@@ -26,11 +26,11 @@ public class ClawsAndTeeth {
             return null;
         }
 
-        return ResourceLocation.fromNamespaceAndPath(model.getNamespace(), texturePath + "dragon_claws.png");
+        return Identifier.fromNamespaceAndPath(model.getNamespace(), texturePath + "dragon_claws.png");
     }
 
-    public static @Nullable ResourceLocation constructTeethTexture(final Player player) {
-        ResourceLocation model = DragonStateProvider.getData(player).getModel();
+    public static @Nullable Identifier constructTeethTexture(final Player player) {
+        Identifier model = DragonStateProvider.getData(player).getModel();
 
         String texturePath = "textures/armor/" + model.getPath() + "/";
         ItemStack swordItem = ClawInventoryData.getData(player).getContainer().getItem(0);
@@ -41,7 +41,7 @@ public class ClawsAndTeeth {
             return null;
         }
 
-        return ResourceLocation.fromNamespaceAndPath(model.getNamespace(), texturePath + "dragon_teeth.png");
+        return Identifier.fromNamespaceAndPath(model.getNamespace(), texturePath + "dragon_teeth.png");
     }
 
     private static String getMaterial(String texture, ItemStack clawItem) {

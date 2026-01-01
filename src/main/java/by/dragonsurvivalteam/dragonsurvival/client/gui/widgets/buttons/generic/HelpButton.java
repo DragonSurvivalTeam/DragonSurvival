@@ -5,7 +5,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.client.gui.widget.ExtendedButton;
@@ -17,13 +17,13 @@ import java.util.List;
 import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 
 public class HelpButton extends ExtendedButton {
-    private static final ResourceLocation MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/ability_screen/info_main.png");
-    private static final ResourceLocation HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/ability_screen/info_hover.png");
+    private static final Identifier MAIN = Identifier.fromNamespaceAndPath(MODID, "textures/gui/ability_screen/info_main.png");
+    private static final Identifier HOVER = Identifier.fromNamespaceAndPath(MODID, "textures/gui/ability_screen/info_hover.png");
     private static final int TEXTURE_SIZE = 16;
     private static final int UV = 13;
 
-    private final ResourceLocation hover;
-    private final ResourceLocation main;
+    private final Identifier hover;
+    private final Identifier main;
 
     private List<Either<FormattedText, TooltipComponent>> tooltip;
 
@@ -38,7 +38,7 @@ public class HelpButton extends ExtendedButton {
         this.hover = HOVER;
     }
 
-    public HelpButton(int x, int y, int sizeX, int sizeY, final String tooltip, final ResourceLocation main, final ResourceLocation hover) {
+    public HelpButton(int x, int y, int sizeX, int sizeY, final String tooltip, final Identifier main, final Identifier hover) {
         super(x, y, sizeX, sizeY, Component.empty(), action -> { /* Nothing to do */ });
         this.tooltip = new ArrayList<>(List.of(Either.left(Component.translatable(tooltip))));
         this.main = main;
@@ -51,7 +51,7 @@ public class HelpButton extends ExtendedButton {
 
     @Override
     public void renderWidget(@NotNull final GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        ResourceLocation resource;
+        Identifier resource;
 
         if (isHovered()) {
             graphics.renderComponentTooltipFromElements(Minecraft.getInstance().font, tooltip, mouseX, mouseY, ItemStack.EMPTY);

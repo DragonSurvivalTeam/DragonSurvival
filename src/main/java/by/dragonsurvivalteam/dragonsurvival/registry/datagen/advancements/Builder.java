@@ -8,7 +8,7 @@ import net.minecraft.advancements.AdvancementRewards;
 import net.minecraft.advancements.AdvancementType;
 import net.minecraft.advancements.Criterion;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
@@ -27,7 +27,7 @@ public class Builder {
     private AdvancementHolder parent;
 
     private ItemStack displayItem;
-    private ResourceLocation background;
+    private Identifier background;
     private AdvancementType type = AdvancementType.TASK;
 
     private int experienceReward;
@@ -57,7 +57,7 @@ public class Builder {
         return this;
     }
 
-    public Builder background(final ResourceLocation background) {
+    public Builder background(final Identifier background) {
         this.background = background;
         return this;
     }

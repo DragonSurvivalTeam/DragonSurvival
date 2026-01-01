@@ -12,10 +12,10 @@ import net.minecraft.client.renderer.ItemModelShaper;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.client.resources.model.ModelIdentifier;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemDisplayContext;
@@ -85,13 +85,13 @@ public abstract class ItemRendererMixin { // FIXME :: doesn't work with sodium s
                 return;
             }
 
-            ResourceLocation resource = CustomSoulIconLoader.getIcon(species, soul.getStage(stack, access));
+            Identifier resource = CustomSoulIconLoader.getIcon(species, soul.getStage(stack, access));
 
             if (resource == null) {
                 return;
             }
 
-            callback.setReturnValue(getItemModelShaper().getModelManager().getModel(ModelResourceLocation.standalone(resource)));
+            callback.setReturnValue(getItemModelShaper().getModelManager().getModel(ModelIdentifier.standalone(resource)));
         }
     }
 

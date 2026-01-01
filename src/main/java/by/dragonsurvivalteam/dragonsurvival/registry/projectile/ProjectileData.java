@@ -17,7 +17,7 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.RegistryFixedCodec;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -48,7 +48,7 @@ public record ProjectileData(GeneralData generalData, Either<GenericBallData, Ge
     //  and when doing so maybe store a count on the targets for how many projectiles already target it
     //  projectiles then may target entities with lower values
     public record GeneralData(
-            ResourceLocation name,
+            Identifier name,
             boolean isImpactProjectile,
             Optional<LootItemCondition> entityHitCondition,
             List<ProjectileTargeting> tickingEffects,
@@ -57,7 +57,7 @@ public record ProjectileData(GeneralData generalData, Either<GenericBallData, Ge
             List<ProjectileBlockEffect> blockHitEffects
     ) {
         public static final Codec<GeneralData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                ResourceLocation.CODEC.fieldOf("name").forGetter(GeneralData::name),
+                Identifier.CODEC.fieldOf("name").forGetter(GeneralData::name),
                 Codec.BOOL.optionalFieldOf("is_impact_projectile", false).forGetter(GeneralData::isImpactProjectile),
                 LootItemCondition.DIRECT_CODEC.optionalFieldOf("entity_hit_condition").forGetter(GeneralData::entityHitCondition),
                 ProjectileTargeting.CODEC.listOf().fieldOf("ticking_effects").forGetter(GeneralData::tickingEffects),

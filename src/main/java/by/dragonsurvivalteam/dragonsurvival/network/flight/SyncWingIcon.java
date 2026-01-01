@@ -5,15 +5,15 @@ import by.dragonsurvivalteam.dragonsurvival.registry.attachments.FlightData;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
-public record SyncWingIcon(ResourceLocation icon) implements CustomPacketPayload {
+public record SyncWingIcon(Identifier icon) implements CustomPacketPayload {
     public static final Type<SyncWingIcon> TYPE = new Type<>(DragonSurvival.res("sync_wing_icon"));
 
     public static final StreamCodec<ByteBuf, SyncWingIcon> STREAM_CODEC = StreamCodec.composite(
-            ResourceLocation.STREAM_CODEC, SyncWingIcon::icon,
+            Identifier.STREAM_CODEC, SyncWingIcon::icon,
             SyncWingIcon::new
     );
 

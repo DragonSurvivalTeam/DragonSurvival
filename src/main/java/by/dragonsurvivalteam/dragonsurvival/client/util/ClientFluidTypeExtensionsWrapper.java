@@ -3,7 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.client.util;
 import by.dragonsurvivalteam.dragonsurvival.client.render.VisionHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.material.FluidState;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
@@ -19,22 +19,22 @@ public class ClientFluidTypeExtensionsWrapper implements IClientFluidTypeExtensi
     }
 
     @Override
-    public @NotNull ResourceLocation getStillTexture() {
+    public @NotNull Identifier getStillTexture() {
         return original.getStillTexture();
     }
 
     @Override
-    public @NotNull ResourceLocation getFlowingTexture() {
+    public @NotNull Identifier getFlowingTexture() {
         return original.getFlowingTexture();
     }
 
     @Override
-    public ResourceLocation getOverlayTexture() {
+    public Identifier getOverlayTexture() {
         return original.getOverlayTexture();
     }
 
     @Override
-    public ResourceLocation getRenderOverlayTexture(@NotNull final Minecraft minecraft) {
+    public Identifier getRenderOverlayTexture(@NotNull final Minecraft minecraft) {
         return original.getRenderOverlayTexture(minecraft);
     }
 

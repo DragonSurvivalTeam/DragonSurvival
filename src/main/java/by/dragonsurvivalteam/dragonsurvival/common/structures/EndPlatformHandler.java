@@ -8,7 +8,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachmen
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.PlacedEndPlatforms;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSBlockTags;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Block;
@@ -57,7 +57,7 @@ public class EndPlatformHandler {
             return false;
         }
 
-        ResourceLocation platform = data.structure();
+        Identifier platform = data.structure();
         PlacedEndPlatforms platforms = level.getData(DSDataAttachments.PLACED_END_PLATFORMS);
 
         if (platforms.wasPlaced(platform)) {

@@ -29,7 +29,7 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.network.chat.contents.PlainTextContents;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.EnchantedBookItem;
 import net.minecraft.world.item.Item;
@@ -71,8 +71,8 @@ public class ToolTipHandler {
     @Translation(comments = "Press 'SHIFT' for more info")
     private static final String PRESS_SHIFT = Translation.Type.GUI.wrap("tooltip.shift");
 
-    private static final ResourceLocation TOOLTIP_BLINKING = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/magic_tips_1.png");
-    private static final ResourceLocation TOOLTIP = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/magic_tips_0.png");
+    private static final Identifier TOOLTIP_BLINKING = Identifier.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/magic_tips_1.png");
+    private static final Identifier TOOLTIP = Identifier.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/magic_tips_0.png");
 
     private static boolean isBlinking;
     private static int tick;
@@ -174,7 +174,7 @@ public class ToolTipHandler {
             return Component.empty();
         }
 
-        ResourceLocation font = species.value().miscResources().foodTooltip().font();
+        Identifier font = species.value().miscResources().foodTooltip().font();
         String nutritionIcon = species.value().miscResources().foodTooltip().nutritionIcon();
         String saturationIcon = species.value().miscResources().foodTooltip().saturationIcon();
 
@@ -189,7 +189,7 @@ public class ToolTipHandler {
         return nutritionComponent.append(parseIcon(nutritionIcon, font)).append(saturationComponent).append(parseIcon(saturationIcon, font));
     }
 
-    private static Component parseIcon(final String icon, final ResourceLocation font) {
+    private static Component parseIcon(final String icon, final Identifier font) {
         String actualIcon;
 
         if (icon.length() == 6 && icon.startsWith("\\u")) {
@@ -208,7 +208,7 @@ public class ToolTipHandler {
     @SuppressWarnings("DataFlowIssue") // resource key should be present
     public static void addCustomItemDescriptions(final ItemTooltipEvent event) {
         if (event.getEntity() != null && event.getEntity().level().isClientSide() && event.getItemStack() != ItemStack.EMPTY) {
-            ResourceLocation location = event.getItemStack().getItemHolder().getKey().location();
+            Identifier location = event.getItemStack().getItemHolder().getKey().location();
             MutableComponent description = null;
 
             if (ENCHANTMENT_DESCRIPTIONS && event.getItemStack().getItem() instanceof EnchantedBookItem) {

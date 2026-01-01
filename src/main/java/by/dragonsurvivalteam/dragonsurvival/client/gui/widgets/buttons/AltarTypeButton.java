@@ -27,7 +27,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
@@ -54,8 +54,8 @@ public class AltarTypeButton extends Button implements HoverDisableable {
     })
     private static final String HUMAN = Translation.Type.GUI.wrap("altar.info.human");
 
-    private static final ResourceLocation HUMAN_BANNER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/custom/altar/human/altar_icon.png");
-    private static final ResourceLocation LOCKED_BANNER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/altar/blocked_species.png");
+    private static final Identifier HUMAN_BANNER = Identifier.fromNamespaceAndPath(MODID, "textures/gui/custom/altar/human/altar_icon.png");
+    private static final Identifier LOCKED_BANNER = Identifier.fromNamespaceAndPath(MODID, "textures/gui/altar/blocked_species.png");
 
     public final @Nullable UnlockableBehavior.SpeciesEntry speciesEntry;
     private final DragonAltarScreen parent;

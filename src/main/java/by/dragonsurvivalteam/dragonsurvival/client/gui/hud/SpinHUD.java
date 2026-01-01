@@ -13,7 +13,7 @@ import com.mojang.blaze3d.platform.Window;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -28,9 +28,9 @@ public class SpinHUD {
     @ConfigOption(side = ConfigSide.CLIENT, category = {"ui", "spin"}, key = "spin_cooldown_y_offset")
     public static Integer spinCooldownYOffset = 0;
 
-    public static final ResourceLocation ID = DragonSurvival.res("spin_cooldown");
+    public static final Identifier ID = DragonSurvival.res("spin_cooldown");
 
-    private static final ResourceLocation SPIN_COOLDOWN = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/spin_cooldown.png");
+    private static final Identifier SPIN_COOLDOWN = Identifier.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/spin_cooldown.png");
 
     public static void render(@NotNull final GuiGraphics graphics, @NotNull final DeltaTracker tracker) {
         Player player =  Minecraft.getInstance().player;

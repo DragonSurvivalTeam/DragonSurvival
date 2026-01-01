@@ -14,7 +14,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.valueproviders.ConstantFloat;
 import net.minecraft.world.effect.MobEffects;
@@ -89,7 +89,7 @@ public class DSEnchantments {
     public static ResourceKey<Enchantment> CURSE_OF_KINDNESS = register("curse_of_kindness");
 
     private static ResourceKey<Enchantment> register(String key) {
-        return ResourceKey.create(Registries.ENCHANTMENT, ResourceLocation.fromNamespaceAndPath(MODID, key));
+        return ResourceKey.create(Registries.ENCHANTMENT, Identifier.fromNamespaceAndPath(MODID, key));
     }
 
     // TODO :: currently only has enchantments which are needed for further data generation (e.g. for advancements)

@@ -44,7 +44,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -83,20 +83,20 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
     @Translation(comments = "Dragon Survival")
     private static final String TITLE = Translation.Type.GUI.wrap("altar.title");
 
-    private static final ResourceLocation BACKGROUND_TEXTURE = ResourceLocation.withDefaultNamespace("textures/block/black_concrete.png");
+    private static final Identifier BACKGROUND_TEXTURE = Identifier.withDefaultNamespace("textures/block/black_concrete.png");
 
     private final DragonStateHandler handler1 = new DragonStateHandler();
     private final DragonStateHandler handler2 = new DragonStateHandler();
     private final String[] animations = {"sit", "idle", "fly", "swim", "run", "dig", "vibing_sitting", "shy_sitting", "rocking_on_back"};
     private final List<ScrollableComponent> scrollableComponents = new ArrayList<>();
 
-    private static final ResourceLocation ALTAR_ARROW_LEFT_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/altar/arrow_left_hover.png");
-    private static final ResourceLocation ALTAR_ARROW_LEFT_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/altar/arrow_left_main.png");
-    private static final ResourceLocation ALTAR_ARROW_RIGHT_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/altar/arrow_right_hover.png");
-    private static final ResourceLocation ALTAR_ARROW_RIGHT_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/altar/arrow_right_main.png");
+    private static final Identifier ALTAR_ARROW_LEFT_HOVER = Identifier.fromNamespaceAndPath(MODID, "textures/gui/altar/arrow_left_hover.png");
+    private static final Identifier ALTAR_ARROW_LEFT_MAIN = Identifier.fromNamespaceAndPath(MODID, "textures/gui/altar/arrow_left_main.png");
+    private static final Identifier ALTAR_ARROW_RIGHT_HOVER = Identifier.fromNamespaceAndPath(MODID, "textures/gui/altar/arrow_right_hover.png");
+    private static final Identifier ALTAR_ARROW_RIGHT_MAIN = Identifier.fromNamespaceAndPath(MODID, "textures/gui/altar/arrow_right_main.png");
 
-    private static final ResourceLocation INFO_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/altar/info_hover.png");
-    private static final ResourceLocation INFO_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/altar/info_main.png");
+    private static final Identifier INFO_HOVER = Identifier.fromNamespaceAndPath(MODID, "textures/gui/altar/info_hover.png");
+    private static final Identifier INFO_MAIN = Identifier.fromNamespaceAndPath(MODID, "textures/gui/altar/info_main.png");
 
     private final List<UnlockableBehavior.SpeciesEntry> entries;
 
@@ -334,7 +334,7 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
         renderBorders(guiGraphics, BACKGROUND_TEXTURE, 0, width, 25, height - 25, width, height);
     }
 
-    public static void renderBorders(@NotNull final GuiGraphics guiGraphics, ResourceLocation texture, int x0, int x1, int y0, int y1, int width, int height) {
+    public static void renderBorders(@NotNull final GuiGraphics guiGraphics, Identifier texture, int x0, int x1, int y0, int y1, int width, int height) {
         Tesselator tesselator = Tesselator.getInstance();
         BufferBuilder bufferbuilder = tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
         RenderSystem.setShaderTexture(0, texture);
