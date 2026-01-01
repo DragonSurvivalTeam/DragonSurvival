@@ -28,11 +28,14 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.item.component.TooltipDisplay;
+import net.minecraft.world.item.component.TypedEntityData;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.VaultBlock;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
@@ -46,6 +49,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -739,15 +743,15 @@ public class DSBlocks {
 
     @Translation(type = Translation.Type.BLOCK, comments = "Dragon Soul")
     @Translation(type = Translation.Type.DESCRIPTION_ADDITION, comments = "■§7 Displays the soul of a dragon.")
-    public static final DeferredHolder<Block, DragonSoulBlock> DRAGON_SOUL = REGISTRY.register(
+    public static final DeferredHolder<Block, DragonSoulBlock> DRAGON_SOUL = REGISTRY.registerBlock(
             "dragon_soul",
-            () -> new DragonSoulBlock(Block.Properties.of()
+            DragonSoulBlock::new,
+            () -> Block.Properties.of()
                     .mapColor(MapColor.METAL)
                     .pushReaction(PushReaction.IGNORE)
                     .strength(1, 1200)
                     .noOcclusion()
                     .noCollision()
-            )
     );
 
     // --- Treasures --- //
@@ -1183,10 +1187,12 @@ public class DSBlocks {
             () -> vaultBlockProperties
     );
 
-    public static final DeferredHolder<Item, BlockItem> LIGHT_VAULT_ITEM = DSItems.REGISTRY.register(
+    public static final DeferredHolder<Item, BlockItem> LIGHT_VAULT_ITEM = DSItems.REGISTRY.registerItem(
             "light_vault",
-            () -> new BlockItem(LIGHT_VAULT.get(), new Item.Properties()
-                    .component(DataComponents.BLOCK_ENTITY_DATA, CustomData.of(LIGHT_VAULT_TAG)))
+            properties -> new BlockItem(LIGHT_VAULT.get(), properties),
+            () -> new Item.Properties()
+                .component(DataComponents.BLOCK_ENTITY_DATA, TypedEntityData.of(BlockEntityType.VAULT, LIGHT_VAULT_TAG))
+                .useBlockDescriptionPrefix()
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Dark Vault")
@@ -1196,10 +1202,12 @@ public class DSBlocks {
             () -> vaultBlockProperties
     );
 
-    public static final DeferredHolder<Item, BlockItem> DARK_VAULT_ITEM = DSItems.REGISTRY.register(
+    public static final DeferredHolder<Item, BlockItem> DARK_VAULT_ITEM = DSItems.REGISTRY.registerItem(
             "dark_vault",
-            () -> new BlockItem(DARK_VAULT.get(), new Item.Properties()
-                    .component(DataComponents.BLOCK_ENTITY_DATA, CustomData.of(DARK_VAULT_TAG)))
+            properties -> new BlockItem(DARK_VAULT.get(), properties),
+            () -> new Item.Properties()
+                .component(DataComponents.BLOCK_ENTITY_DATA, TypedEntityData.of(BlockEntityType.VAULT, DARK_VAULT_TAG))
+                .useBlockDescriptionPrefix()
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Hunter's Vault")
@@ -1209,10 +1217,12 @@ public class DSBlocks {
             () -> vaultBlockProperties
     );
 
-    public static final DeferredHolder<Item, BlockItem> HUNTER_VAULT_ITEM = DSItems.REGISTRY.register(
+    public static final DeferredHolder<Item, BlockItem> HUNTER_VAULT_ITEM = DSItems.REGISTRY.registerItem(
             "hunter_vault",
-            () -> new BlockItem(HUNTER_VAULT.get(), new Item.Properties()
-                    .component(DataComponents.BLOCK_ENTITY_DATA, CustomData.of(HUNTER_VAULT_TAG)))
+            properties -> new BlockItem(HUNTER_VAULT.get(), properties),
+            () -> new Item.Properties()
+                .component(DataComponents.BLOCK_ENTITY_DATA, TypedEntityData.of(BlockEntityType.VAULT, HUNTER_VAULT_TAG))
+                .useBlockDescriptionPrefix()
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Primordial Anchor")
@@ -1234,22 +1244,23 @@ public class DSBlocks {
             .mapColor(MapColor.WOOD)
     );
 
-    public static final DeferredHolder<Item, BlockItem> DRAGON_RIDER_WORKBENCH_ITEM = DSItems.REGISTRY.register("dragon_rider_workbench",
-            () -> new BlockItem(DRAGON_RIDER_WORKBENCH.get(), new Item.Properties()) {
+    public static final DeferredHolder<Item, BlockItem> DRAGON_RIDER_WORKBENCH_ITEM = DSItems.REGISTRY.registerItem("dragon_rider_workbench",
+            properties -> new BlockItem(DRAGON_RIDER_WORKBENCH.get(), properties) {
                 @Translation(comments = "■§7 A work station for a villager who sells useful dragon enchantments. Knows the secrets to getting into the draconic vaults.")
                 private static final String DRAGON_RIDER_WORKBENCH = Translation.Type.DESCRIPTION.wrap("dragon_rider_workbench");
 
                 @Override
-                public void appendHoverText(@NotNull ItemStack pStack, Item.@NotNull TooltipContext pContext, @NotNull List<Component> pTooltipComponents, @NotNull TooltipFlag pTooltipFlag) {
-                    super.appendHoverText(pStack, pContext, pTooltipComponents, pTooltipFlag);
-                    pTooltipComponents.add(Component.translatable(DRAGON_RIDER_WORKBENCH));
+                public void appendHoverText(@NotNull ItemStack stack, Item.@NotNull TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
+                    super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
+                    tooltipAdder.accept(Component.translatable(DRAGON_RIDER_WORKBENCH));
                 }
-            }
+            },
+            () -> new Item.Properties().useBlockDescriptionPrefix()
     );
 
     private static <B extends Block> DeferredHolder<Block, B> registerWithItem(final String name, Function<BlockBehaviour.Properties, ? extends B> func, Supplier<BlockBehaviour.Properties> properties) {
         DeferredHolder<Block, B> holder = REGISTRY.registerBlock(name, func, properties);
-        DSItems.REGISTRY.register(name, () -> new BlockItem(holder.value(), new Item.Properties()));
+        DSItems.REGISTRY.registerItem(name, itemProperties -> new BlockItem(holder.value(), itemProperties), () -> new Item.Properties().useBlockDescriptionPrefix());
         return holder;
     }
 
@@ -1275,8 +1286,9 @@ public class DSBlocks {
                                 .strength(1.0F)
                                 .sound(SoundType.BONE_BLOCK));
 
-                DeferredHolder<Item, BlockItem> item = DSItems.REGISTRY.register(type.getSerializedName() + "_skin" + i,
-                        () -> new BlockItem(block.value(), new Item.Properties()));
+                DeferredHolder<Item, BlockItem> item = DSItems.REGISTRY.registerItem(type.getSerializedName() + "_skin" + i,
+                        properties -> new BlockItem(block.value(), properties),
+                        () -> new Item.Properties().useBlockDescriptionPrefix());
 
                 SKELETON_PIECES.put(type.getSerializedName(), new Pair<>(block, item));
             }
