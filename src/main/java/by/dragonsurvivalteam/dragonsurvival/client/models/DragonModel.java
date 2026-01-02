@@ -53,8 +53,8 @@ public class DragonModel extends GeoModel<DragonEntity> {
         }
 
         MovementData movement = MovementData.getData(player);
-        float deltaTick = Minecraft.getInstance().getTimer().getRealtimeDeltaTicks();
-        float partialDeltaTick = Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(false);
+        float deltaTick = Minecraft.getInstance().getDeltaTracker().getRealtimeDeltaTicks();
+        float partialDeltaTick = Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(false);
 
         if (dragon.neckLocked) {
             MathParser.setVariable("query.head_yaw", () -> 0);

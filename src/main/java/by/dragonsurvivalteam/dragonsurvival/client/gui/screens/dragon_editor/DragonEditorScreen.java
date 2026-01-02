@@ -536,7 +536,7 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
             init();
         }
 
-        tick += Minecraft.getInstance().getTimer().getRealtimeDeltaTicks();;
+        tick += Minecraft.getInstance().getDeltaTracker().getRealtimeDeltaTicks();;
 
         if (showUi) {
             dragonRender.x = width / 2 - 70;

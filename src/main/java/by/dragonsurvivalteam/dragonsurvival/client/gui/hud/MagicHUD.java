@@ -299,7 +299,7 @@ public class MagicHUD {
                         graphics.blitSprite(ability.getIcon(), posX + x * sizeX + 3, posY + 1, 0, 16, 16);
 
                         float skillCooldown = ability.value().activation().getCooldown(ability.level());
-                        float currentCooldown = ability.cooldown() - Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(false);
+                        float currentCooldown = ability.cooldown() - Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(false);
 
                         if (skillCooldown > 0 && currentCooldown > 0 && skillCooldown != currentCooldown) {
                             float cooldown = Mth.clamp(currentCooldown / skillCooldown, 0, 1);
@@ -388,12 +388,12 @@ public class MagicHUD {
 
         if (magic.isCasting()) {
             DragonAbilityInstance ability = Objects.requireNonNull(magic.fromSlot(magic.getSelectedAbilitySlot()));
-            float currentTime = magic.getClientCastTimer() - Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(false);
+            float currentTime = magic.getClientCastTimer() - Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(false);
             int targetTime = ability.value().activation().getCastTime(ability.level());
 
             if (currentTime <= 0 && ability.value().activation() instanceof ChanneledActivation channeled && channeled.maxDuration().isPresent()) {
                 // We passed the cast / charging time and now display what is left of the duration
-                currentTime = magic.getClientTickTimer() - Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(false);
+                currentTime = magic.getClientTickTimer() - Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(false);
                 targetTime = (int) channeled.maxDuration().get().calculate(ability.level());
             }
 

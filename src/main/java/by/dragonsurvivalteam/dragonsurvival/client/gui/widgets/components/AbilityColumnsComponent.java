@@ -97,7 +97,7 @@ public class AbilityColumnsComponent implements ScrollableComponent {
 
                 Vec3 currentOffset = button.getOffset();
                 Vec3 nextOffset = buttonPositions[nextColumnPhase][j];
-                float deltaTick = Minecraft.getInstance().getTimer().getRealtimeDeltaTicks();
+                float deltaTick = Minecraft.getInstance().getDeltaTracker().getRealtimeDeltaTicks();
                 float lerpRate = Math.min(1, deltaTick);
                 // Modify the rate of the lerp to be faster if we are closer to the target values
                 Vec3 newOffset = new Vec3(

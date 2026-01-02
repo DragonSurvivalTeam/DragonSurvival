@@ -38,14 +38,14 @@ public class AnimationUtils {
     }
 
     public static float getDeltaTickFor60FPS() {
-        float deltaTick = Minecraft.getInstance().getTimer().getRealtimeDeltaTicks();
+        float deltaTick = Minecraft.getInstance().getDeltaTracker().getRealtimeDeltaTicks();
         //noinspection DataFlowIssue -> level is present
         return deltaTick / (MS_FOR_60FPS / Minecraft.getInstance().level.tickRateManager().millisecondsPerTick());
     }
 
     public static float getDeltaSeconds() {
         //noinspection DataFlowIssue -> level is present
-        return (Minecraft.getInstance().getTimer().getRealtimeDeltaTicks() * Minecraft.getInstance().level.tickRateManager().millisecondsPerTick()) / 1000f;
+        return (Minecraft.getInstance().getDeltaTracker().getRealtimeDeltaTicks() * Minecraft.getInstance().level.tickRateManager().millisecondsPerTick()) / 1000f;
     }
 
     public static <A extends GeoAnimatable, T extends GeoModel<A>> boolean doesAnimationExist(final T model, final A animatable, final String animation) {

@@ -57,7 +57,7 @@ public class ClientProxy implements Proxy {
 
     @Override
     public void playSoundAtEyeLevel(final Player player, final SoundEvent event) {
-        Vec3 pos = player.getEyePosition(Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(false));
+        Vec3 pos = player.getEyePosition(Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(false));
         SimpleSoundInstance sound = new SimpleSoundInstance(event, SoundSource.PLAYERS, 1, 1, SoundInstance.createUnseededRandom(), pos.x, pos.y, pos.z);
         Minecraft.getInstance().getSoundManager().playDelayed(sound, 0);
     }

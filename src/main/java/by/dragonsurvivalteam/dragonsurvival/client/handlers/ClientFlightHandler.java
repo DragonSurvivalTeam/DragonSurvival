@@ -137,7 +137,7 @@ public class ClientFlightHandler {
 
         DragonStateProvider.getOptional(DragonSurvival.PROXY.getLocalPlayer()).ifPresent(handler -> {
             if (handler.isDragon()) {
-                float visualScale = (float) handler.getVisualScale(DragonSurvival.PROXY.getLocalPlayer(), Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(false));
+                float visualScale = (float) handler.getVisualScale(DragonSurvival.PROXY.getLocalPlayer(), Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(false));
                 if (disableSizeCameraModifications) {
                     event.setDistance((event.getDistance()) / event.getEntityScalingFactor() * visualScale);
                 } else {
