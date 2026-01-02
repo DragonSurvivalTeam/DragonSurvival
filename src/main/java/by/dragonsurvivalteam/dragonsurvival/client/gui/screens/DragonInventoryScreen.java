@@ -39,6 +39,7 @@ import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.client.gui.widget.ExtendedButton;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforgespi.language.IModInfo;
 import org.jetbrains.annotations.NotNull;
@@ -141,14 +142,14 @@ public class DragonInventoryScreen extends EffectRenderingInventoryScreen<Dragon
         ClawInventoryData clawInventory = ClawInventoryData.getData(player);
 
         clawsMenu = clawInventory.isMenuOpen();
-        PacketDistributor.sendToServer(new SyncDragonClawMenuToggle(clawsMenu));
+        ClientPacketDistributor.sendToServer(new SyncDragonClawMenuToggle(clawsMenu));
 
         TabButton.addTabButtonsToScreen(this, leftPos + 5, topPos - 26, TabButton.TabButtonType.INVENTORY_TAB);
 
         ClickHoverButton clawMenuArrow = new ClickHoverButton(leftPos - 8, topPos + 73, 10, 18, 0, 0, 18, 18, Component.empty(), button -> {
             clawsMenu = !clawsMenu;
             ClawInventoryData.getData(player).setMenuOpen(clawsMenu);
-            PacketDistributor.sendToServer(new SyncDragonClawMenuToggle(clawsMenu));
+            ClientPacketDistributor.sendToServer(new SyncDragonClawMenuToggle(clawsMenu));
         }, CLAW_ARROW_CLICK, CLAW_ARROW_HOVER, CLAW_ARROW_MAIN);
         addRenderableWidget(clawMenuArrow);
 
@@ -161,7 +162,7 @@ public class DragonInventoryScreen extends EffectRenderingInventoryScreen<Dragon
         // Button to enable / disable the rendering of claws (extra x and y offset is the location of the button in the texture)
         ExtendedButton clawRenderButton = new ExtendedButton(leftPos - 30 + 7, topPos + 120 + 27, 10, 10, Component.translatable(TOGGLE_CLAWS), button -> {
             ClientDragonRenderer.renderDragonClaws = !ClientDragonRenderer.renderDragonClaws;
-            PacketDistributor.sendToServer(new SyncDragonClawRender(player.getId(), ClientDragonRenderer.renderDragonClaws));
+            ClientPacketDistributor.sendToServer(new SyncDragonClawRender(player.getId(), ClientDragonRenderer.renderDragonClaws));
         }) {
             @Override
             public void renderWidget(@NotNull final GuiGraphics graphics, int mouseX, int mouseY, float partialTick) { /* Texture is rendered separately */ }
@@ -201,7 +202,7 @@ public class DragonInventoryScreen extends EffectRenderingInventoryScreen<Dragon
         // Vanilla inventory
         HoverButton vanillaInventoryButton = new HoverButton(leftPos + 177, topPos + 84, 18, 16, 18, 18, VANILLA_INVENTORY_MAIN, VANILLA_INVENTORY_HOVER, button -> {
             Minecraft.getInstance().setScreen(new InventoryScreen(player));
-            PacketDistributor.sendToServer(RequestOpenVanillaInventory.INSTANCE);
+            ClientPacketDistributor.sendToServer(RequestOpenVanillaInventory.INSTANCE);
         });
         vanillaInventoryButton.setTooltip(Tooltip.create(Component.translatable(TOGGLE_VANILLA_INVENTORY)));
         addRenderableWidget(vanillaInventoryButton);
@@ -224,7 +225,7 @@ public class DragonInventoryScreen extends EffectRenderingInventoryScreen<Dragon
 
         // Sorting button
         HoverButton sortInventoryButton = new HoverButton(leftPos + 177, topPos + 120, 18, 16, 18, 18, SORT_MAIN, SORT_HOVER, button -> {
-            PacketDistributor.sendToServer(SortInventory.INSTANCE);
+            ClientPacketDistributor.sendToServer(SortInventory.INSTANCE);
         });
         sortInventoryButton.setTooltip(Tooltip.create(Component.translatable(SORT_INVENTORY)));
         addRenderableWidget(sortInventoryButton);

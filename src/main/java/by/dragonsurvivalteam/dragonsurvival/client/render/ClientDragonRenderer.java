@@ -463,15 +463,15 @@ public class ClientDragonRenderer {
 
         if (player.isPassenger()) {
             // Prevent animation problems while we are riding an entity
-            PacketDistributor.sendToServer(new SyncDeltaMovement(player.getId(), Vec3.ZERO));
+            ClientPacketDistributor.sendToServer(new SyncDeltaMovement(player.getId(), Vec3.ZERO));
         } else {
-            PacketDistributor.sendToServer(new SyncDeltaMovement(player.getId(), player.getDeltaMovement()));
+            ClientPacketDistributor.sendToServer(new SyncDeltaMovement(player.getId(), player.getDeltaMovement()));
         }
 
         movement.dig = DragonSurvival.PROXY.isMining(player);
 
-        PacketDistributor.sendToServer(new SyncDragonMovement(player.getId(), movement.isFirstPerson, movement.bite, movement.dig, movement.isFreeLook, movement.desiredMoveVec));
-        PacketDistributor.sendToServer(new SyncPitchAndYaw(player.getId(), movement.headYaw, movement.headPitch, movement.bodyYaw));
+        ClientPacketDistributor.sendToServer(new SyncDragonMovement(player.getId(), movement.isFirstPerson, movement.bite, movement.dig, movement.isFreeLook, movement.desiredMoveVec));
+        ClientPacketDistributor.sendToServer(new SyncPitchAndYaw(player.getId(), movement.headYaw, movement.headPitch, movement.bodyYaw));
     }
 
     @SubscribeEvent // Don't render the fire overlay when fire immune

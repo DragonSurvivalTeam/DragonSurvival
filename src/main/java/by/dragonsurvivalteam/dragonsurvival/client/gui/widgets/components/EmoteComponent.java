@@ -55,10 +55,10 @@ public class EmoteComponent {
 
             if (dragon.isPlayingEmote(emote)) {
                 dragon.stopEmote(emote);
-                PacketDistributor.sendToServer(new SyncEmote(Minecraft.getInstance().player.getId(), emote, true));
+                ClientPacketDistributor.sendToServer(new SyncEmote(Minecraft.getInstance().player.getId(), emote, true));
             } else {
                 dragon.beginPlayingEmote(emote);
-                PacketDistributor.sendToServer(new SyncEmote(Minecraft.getInstance().player.getId(), emote, false));
+                ClientPacketDistributor.sendToServer(new SyncEmote(Minecraft.getInstance().player.getId(), emote, false));
             }
         }) {
             @Override
@@ -85,10 +85,10 @@ public class EmoteComponent {
 
             if (dragon.isPlayingEmote(emote)) {
                 dragon.stopEmote(emote);
-                PacketDistributor.sendToServer(new SyncEmote(Minecraft.getInstance().player.getId(), emote, true));
+                ClientPacketDistributor.sendToServer(new SyncEmote(Minecraft.getInstance().player.getId(), emote, true));
             } else {
                 dragon.beginPlayingEmote(emote);
-                PacketDistributor.sendToServer(new SyncEmote(Minecraft.getInstance().player.getId(), emote, false));
+                ClientPacketDistributor.sendToServer(new SyncEmote(Minecraft.getInstance().player.getId(), emote, false));
             }
         }) {
             @Override

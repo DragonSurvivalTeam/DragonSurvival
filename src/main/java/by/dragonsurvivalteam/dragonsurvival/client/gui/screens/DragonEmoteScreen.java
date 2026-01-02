@@ -233,7 +233,7 @@ public class DragonEmoteScreen extends Screen {
         DragonStateHandler handler = DragonStateProvider.getData(Minecraft.getInstance().player);
         DragonEmote emote = handler.body().value().emotes().value().getEmote(key);
         dragon.beginPlayingEmote(emote);
-        PacketDistributor.sendToServer(new SyncEmote(Minecraft.getInstance().player.getId(), emote, false));
+        ClientPacketDistributor.sendToServer(new SyncEmote(Minecraft.getInstance().player.getId(), emote, false));
     }
 
     // Prevent the screen from closing when pressing escape to cancel a keybind

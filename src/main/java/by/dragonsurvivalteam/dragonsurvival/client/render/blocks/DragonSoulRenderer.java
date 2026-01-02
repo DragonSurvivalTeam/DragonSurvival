@@ -47,7 +47,7 @@ public class DragonSoulRenderer implements BlockEntityRenderer<DragonSoulBlockEn
                 // When a player places the block, the components are not synchronized to the other clients
                 // The player that places the block cannot determine when other clients receive the block entity
                 // Therefor request the data when needed
-                PacketDistributor.sendToServer(new RequestDragonSoulData(soul.getBlockPos()));
+                ClientPacketDistributor.sendToServer(new RequestDragonSoulData(soul.getBlockPos()));
                 soul.packetTimeout = Functions.secondsToTicks(2);
             } else if (soul.packetTimeout > 0) {
                 soul.packetTimeout -= partialTick;

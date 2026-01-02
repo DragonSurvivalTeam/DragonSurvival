@@ -183,8 +183,8 @@ public class AltarTypeButton extends Button implements HoverDisableable {
 
             DragonStateHandler data = DragonStateProvider.getData(player);
             data.revertToHumanForm(player, false);
-            PacketDistributor.sendToServer(new SyncAltarCooldown(Functions.secondsToTicks(ServerConfig.altarUsageCooldown)));
-            PacketDistributor.sendToServer(new SyncComplete(player.getId(), data.serializeNBT(player.registryAccess())));
+            ClientPacketDistributor.sendToServer(new SyncAltarCooldown(Functions.secondsToTicks(ServerConfig.altarUsageCooldown)));
+            ClientPacketDistributor.sendToServer(new SyncComplete(player.getId(), data.serializeNBT(player.registryAccess())));
 
             player.closeContainer();
         } else {

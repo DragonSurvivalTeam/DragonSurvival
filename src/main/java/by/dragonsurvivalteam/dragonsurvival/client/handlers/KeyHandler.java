@@ -101,7 +101,7 @@ public class KeyHandler {
         PlayerData data = Minecraft.getInstance().player.getData(DSDataAttachments.PLAYER_DATA);
 
         if (data.updateKey(input.getName(), isDown)) {
-            PacketDistributor.sendToServer(new SyncKey(input.getName(), isDown));
+            ClientPacketDistributor.sendToServer(new SyncKey(input.getName(), isDown));
         }
     }
 
@@ -119,7 +119,7 @@ public class KeyHandler {
                 data.getFirst().displayClientMessage(cycledEnum(summonData.attackBehaviour), true);
             }
 
-            PacketDistributor.sendToServer(new SyncSummonedEntitiesBehaviour(summonData.attackBehaviour, summonData.movementBehaviour));
+            ClientPacketDistributor.sendToServer(new SyncSummonedEntitiesBehaviour(summonData.attackBehaviour, summonData.movementBehaviour));
         });
     }
 
@@ -133,7 +133,7 @@ public class KeyHandler {
         String message = playerData.enabledDragonSoulPlacement ? DRAGON_SOUL_PLACEMENT_ENABLED : DRAGON_SOUL_PLACEMENT_DISABLED;
         data.getFirst().displayClientMessage(Component.translatable(message), true);
 
-        PacketDistributor.sendToServer(new SyncDragonSoulPlacement(playerData.enabledDragonSoulPlacement));
+        ClientPacketDistributor.sendToServer(new SyncDragonSoulPlacement(playerData.enabledDragonSoulPlacement));
     }
 
     /**

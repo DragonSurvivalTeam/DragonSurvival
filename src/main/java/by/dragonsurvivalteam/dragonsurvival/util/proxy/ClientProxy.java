@@ -202,7 +202,7 @@ public class ClientProxy implements Proxy {
         DragonEntity dragon = FakeClientPlayerUtils.getFakeDragon(soul.fakePlayerIndex, soul.getHandler());
 
         if (AnimationUtils.doesAnimationExist(DragonSurvivalClient.DRAGON_MODEL, dragon, animation)) {
-            PacketDistributor.sendToServer(new SyncDragonSoulAnimation(soul.getBlockPos(), animation));
+            ClientPacketDistributor.sendToServer(new SyncDragonSoulAnimation(soul.getBlockPos(), animation));
             return true;
         }
 

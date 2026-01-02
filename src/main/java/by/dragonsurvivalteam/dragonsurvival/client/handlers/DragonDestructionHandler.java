@@ -124,7 +124,7 @@ public class DragonDestructionHandler {
         handler.largeDragonDestruction = Functions.cycleEnum(handler.largeDragonDestruction);
         data.getFirst().displayClientMessage(KeyHandler.cycledEnum(handler.largeDragonDestruction), true);
 
-        PacketDistributor.sendToServer(new SyncLargeDragonDestruction(handler.largeDragonDestruction));
+        ClientPacketDistributor.sendToServer(new SyncLargeDragonDestruction(handler.largeDragonDestruction));
     }
 
     public static void toggleMultiMining(@Nullable final Pair<Player, DragonStateHandler> data) {
@@ -140,6 +140,6 @@ public class DragonDestructionHandler {
         handler.multiMining = Functions.cycleEnum(handler.multiMining);
         data.getFirst().displayClientMessage(KeyHandler.cycledEnum(handler.multiMining), true);
 
-        PacketDistributor.sendToServer(new SyncMultiMining(handler.multiMining));
+        ClientPacketDistributor.sendToServer(new SyncMultiMining(handler.multiMining));
     }
 }

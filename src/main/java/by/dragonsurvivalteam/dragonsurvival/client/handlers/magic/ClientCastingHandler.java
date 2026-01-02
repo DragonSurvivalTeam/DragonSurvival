@@ -100,7 +100,7 @@ public class ClientCastingHandler {
         if (selectedSlot != lastSelectedSlot) {
             if (magicData.isCasting()) {
                 magicData.stopCasting(player);
-                PacketDistributor.sendToServer(new SyncStopCast(player.getId(), Optional.empty()));
+                ClientPacketDistributor.sendToServer(new SyncStopCast(player.getId(), Optional.empty()));
             }
 
             magicData.setSelectedAbilitySlot(selectedSlot);
@@ -114,7 +114,7 @@ public class ClientCastingHandler {
 
         // Proceed with casting (ignore anything blocking the cast from happening; we'll let the server deny the client later)
         if (getKey(magicData.getSelectedAbilitySlot()).matches(input) && !magicData.isCasting() && magicData.attemptCast(player, selectedSlot)) {
-            PacketDistributor.sendToServer(new SyncBeginCast(player.getId(), selectedSlot));
+            ClientPacketDistributor.sendToServer(new SyncBeginCast(player.getId(), selectedSlot));
         }
     }
 
@@ -125,7 +125,7 @@ public class ClientCastingHandler {
         if (getKey(magicData.getSelectedAbilitySlot()).isReleased(input)) {
             if (magicData.isCasting()) {
                 magicData.stopCasting(player);
-                PacketDistributor.sendToServer(new SyncStopCast(player.getId(), Optional.empty()));
+                ClientPacketDistributor.sendToServer(new SyncStopCast(player.getId(), Optional.empty()));
             }
 
             magicData.setErrorMessageSent(false);

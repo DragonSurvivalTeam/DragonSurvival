@@ -441,7 +441,7 @@ public class ClientFlightHandler {
             return;
         }
 
-        PacketDistributor.sendToServer(new ToggleFlight(ToggleFlight.Activation.MANUAL, ToggleFlight.Result.NONE));
+        ClientPacketDistributor.sendToServer(new ToggleFlight(ToggleFlight.Activation.MANUAL, ToggleFlight.Result.NONE));
     }
 
     /**
@@ -466,7 +466,7 @@ public class ClientFlightHandler {
             return;
         }
 
-        PacketDistributor.sendToServer(new ToggleFlight(ToggleFlight.Activation.JUMP, ToggleFlight.Result.NONE));
+        ClientPacketDistributor.sendToServer(new ToggleFlight(ToggleFlight.Activation.JUMP, ToggleFlight.Result.NONE));
     }
 
     public static void handleToggleResult(final ToggleFlight.Activation activation, final ToggleFlight.Result result) {
@@ -504,7 +504,7 @@ public class ClientFlightHandler {
         if (ServerFlightHandler.isFlying(player) || ServerFlightHandler.canSwimSpin(player)) {
             spin.duration = ServerFlightHandler.SPIN_DURATION;
             spin.cooldown = Functions.secondsToTicks(ServerFlightHandler.flightSpinCooldown);
-            PacketDistributor.sendToServer(new SpinDurationAndCooldown(player.getId(), spin.duration, spin.cooldown));
+            ClientPacketDistributor.sendToServer(new SpinDurationAndCooldown(player.getId(), spin.duration, spin.cooldown));
         }
     }
 

@@ -40,7 +40,7 @@ public class EmoteHandler {
         boolean isForLocalPlayer = player == Minecraft.getInstance().player;
         if ((player.isCrouching() || player.swinging) && isForLocalPlayer) {
             dragon.stopAllEmotes();
-            PacketDistributor.sendToServer(new StopAllEmotes(player.getId()));
+            ClientPacketDistributor.sendToServer(new StopAllEmotes(player.getId()));
             return;
         }
 
@@ -60,7 +60,7 @@ public class EmoteHandler {
                 }
 
                 if (!currentlyPlayingEmotes[i].canMove() && playerIsMoving) {
-                    PacketDistributor.sendToServer(new SyncEmote(player.getId(), currentlyPlayingEmotes[i], true));
+                    ClientPacketDistributor.sendToServer(new SyncEmote(player.getId(), currentlyPlayingEmotes[i], true));
                     dragon.stopEmote(i);
                     continue;
                 }
@@ -95,7 +95,7 @@ public class EmoteHandler {
             }
 
             dragon.stopAllEmotes();
-            PacketDistributor.sendToServer(new StopAllEmotes(player.getId()));
+            ClientPacketDistributor.sendToServer(new StopAllEmotes(player.getId()));
         }
     }
 }

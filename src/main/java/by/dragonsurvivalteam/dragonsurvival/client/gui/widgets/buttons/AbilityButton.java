@@ -142,7 +142,7 @@ public class AbilityButton extends ExtendedButton {
         if (!isHotbar && ability != null && ability.value().canBeManuallyDisabled() && Screen.hasControlDown()) {
             boolean isDisabled = !ability.isDisabled(true);
             ability.setDisabled(Minecraft.getInstance().player, isDisabled, true);
-            PacketDistributor.sendToServer(new SyncDisableAbility(ability.key(), isDisabled, true));
+            ClientPacketDistributor.sendToServer(new SyncDisableAbility(ability.key(), isDisabled, true));
             return;
         }
 
@@ -171,7 +171,7 @@ public class AbilityButton extends ExtendedButton {
             for (Renderable renderable : screen.renderables) {
                 if (renderable instanceof AbilityButton button && button.slot != MagicData.NO_SLOT) {
                     if (button.isMouseOver(mouseX, mouseY)) {
-                        PacketDistributor.sendToServer(new SyncSlotAssignment(ability.key(), button.slot));
+                        ClientPacketDistributor.sendToServer(new SyncSlotAssignment(ability.key(), button.slot));
                         data.moveAbilityToSlot(ability.key(), button.slot);
                         wasSwappedToASlot = true;
                         break;
@@ -180,7 +180,7 @@ public class AbilityButton extends ExtendedButton {
             }
 
             if (isHotbar && !wasSwappedToASlot) {
-                PacketDistributor.sendToServer(new SyncSlotAssignment(ability.key(), MagicData.NO_SLOT));
+                ClientPacketDistributor.sendToServer(new SyncSlotAssignment(ability.key(), MagicData.NO_SLOT));
                 data.moveAbilityToSlot(ability.key(), MagicData.NO_SLOT);
             }
         }

@@ -381,7 +381,7 @@ public class DragonSkinsScreen extends Screen {
             DragonStateHandler handler = DragonStateProvider.getData(Objects.requireNonNull(player));
             handler.getSkinData().renderCustomSkin = !handler.getSkinData().renderCustomSkin;
             ConfigHandler.updateConfigValue("render_custom_skin", handler.getSkinData().renderCustomSkin);
-            PacketDistributor.sendToServer(new SyncDragonSkinSettings(player.getId(), handler.getSkinData().renderCustomSkin));
+            ClientPacketDistributor.sendToServer(new SyncDragonSkinSettings(player.getId(), handler.getSkinData().renderCustomSkin));
         }) {
             @Override
             public void renderWidget(@NotNull final GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {

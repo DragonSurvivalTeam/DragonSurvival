@@ -54,8 +54,8 @@ public class LevelButton extends ClickHoverButton {
     public LevelButton(final Type type, final DragonAbilityInstance ability, int xPos, int yPos) {
         super(xPos, yPos, WIDTH, HEIGHT, 0, 0, 16, 16, Component.empty(), button -> {
             switch (type) {
-                case DOWNGRADE -> PacketDistributor.sendToServer(new AttemptManualUpgrade(ability.key(), ExperiencePointsUpgrade.Type.DOWNGRADE));
-                case UPGRADE -> PacketDistributor.sendToServer(new AttemptManualUpgrade(ability.key(), ExperiencePointsUpgrade.Type.UPGRADE));
+                case DOWNGRADE -> ClientPacketDistributor.sendToServer(new AttemptManualUpgrade(ability.key(), ExperiencePointsUpgrade.Type.DOWNGRADE));
+                case UPGRADE -> ClientPacketDistributor.sendToServer(new AttemptManualUpgrade(ability.key(), ExperiencePointsUpgrade.Type.UPGRADE));
             }
         }, type.click, type.hover, type.main);
 

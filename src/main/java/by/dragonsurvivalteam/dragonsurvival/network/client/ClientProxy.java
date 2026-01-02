@@ -46,13 +46,13 @@ public class ClientProxy {
             return;
         }
 
-        PacketDistributor.sendToServer(new SyncDragonClawRender(localPlayer.getId(), ClientDragonRenderer.renderDragonClaws));
-        PacketDistributor.sendToServer(new SyncDragonSkinSettings(localPlayer.getId(), ClientDragonRenderer.renderCustomSkin));
-        PacketDistributor.sendToServer(new SyncPlayerSkinPreset(localPlayer.getId(), data.speciesKey(), data.getCurrentSkinPreset().serializeNBT(localPlayer.registryAccess())));
+        ClientPacketDistributor.sendToServer(new SyncDragonClawRender(localPlayer.getId(), ClientDragonRenderer.renderDragonClaws));
+        ClientPacketDistributor.sendToServer(new SyncDragonSkinSettings(localPlayer.getId(), ClientDragonRenderer.renderCustomSkin));
+        ClientPacketDistributor.sendToServer(new SyncPlayerSkinPreset(localPlayer.getId(), data.speciesKey(), data.getCurrentSkinPreset().serializeNBT(localPlayer.registryAccess())));
     }
 
     public static void openDragonAltar() {
-        PacketDistributor.sendToServer(new OpenDragonAltar(List.of()));
+        ClientPacketDistributor.sendToServer(new OpenDragonAltar(List.of()));
     }
 
     public static void openDragonAltar(final List<UnlockableBehavior.SpeciesEntry> entries) {
@@ -60,7 +60,7 @@ public class ClientProxy {
     }
 
     public static void openDragonEditor(ResourceKey<DragonSpecies> species, boolean fromAltar) {
-        PacketDistributor.sendToServer(new OpenDragonEditor(species, List.of(), fromAltar));
+        ClientPacketDistributor.sendToServer(new OpenDragonEditor(species, List.of(), fromAltar));
     }
 
     public static void openDragonEditor(final List<UnlockableBehavior.BodyEntry> entries, ResourceKey<DragonSpecies> species, boolean fromAltar) {

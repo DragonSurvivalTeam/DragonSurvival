@@ -75,7 +75,7 @@ public class InventoryScreenHandler {
 
         if (openEvent.getScreen() instanceof InventoryScreen) {
             openEvent.setCanceled(true);
-            PacketDistributor.sendToServer(RequestOpenDragonInventory.INSTANCE);
+            ClientPacketDistributor.sendToServer(RequestOpenDragonInventory.INSTANCE);
         }
     }
 
@@ -205,7 +205,7 @@ public class InventoryScreenHandler {
 
         if (screen == null) {
             if (Keybind.DRAGON_INVENTORY.matches(input)) {
-                PacketDistributor.sendToServer(RequestOpenDragonInventory.INSTANCE);
+                ClientPacketDistributor.sendToServer(RequestOpenDragonInventory.INSTANCE);
             } else if (Keybind.SKINS_MENU.matches(input)) {
                 Minecraft.getInstance().setScreen(new DragonSkinsScreen());
             } else if (Keybind.ABILITY_MENU.matches(input)) {
@@ -227,7 +227,7 @@ public class InventoryScreenHandler {
             if (screen instanceof DragonInventoryScreen) {
                 player.closeContainer();
             } else {
-                PacketDistributor.sendToServer(RequestOpenDragonInventory.INSTANCE);
+                ClientPacketDistributor.sendToServer(RequestOpenDragonInventory.INSTANCE);
             }
         } else if (Keybind.ABILITY_MENU.matches(input, true)) {
             if (screen instanceof DragonAbilityScreen) {
@@ -261,10 +261,10 @@ public class InventoryScreenHandler {
         DragonInventoryScreen.mouseX = Minecraft.getInstance().mouseHandler.xpos();
         DragonInventoryScreen.mouseY = Minecraft.getInstance().mouseHandler.ypos();
 
-        PacketDistributor.sendToServer(RequestOpenDragonInventory.INSTANCE);
+        ClientPacketDistributor.sendToServer(RequestOpenDragonInventory.INSTANCE);
         //noinspection DataFlowIssue -> player is present
         ClawInventoryData data = ClawInventoryData.getData(Minecraft.getInstance().player);
-        PacketDistributor.sendToServer(new SyncDragonClawMenuToggle(data.isMenuOpen()));
+        ClientPacketDistributor.sendToServer(new SyncDragonClawMenuToggle(data.isMenuOpen()));
     }
 
     private static boolean isInventoryTab(final Screen screen) {
