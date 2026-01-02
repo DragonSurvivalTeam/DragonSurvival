@@ -247,12 +247,12 @@ public class DragonContainer extends AbstractContainerMenu {
     public void slotsChanged(@NotNull final Container inventory) {
         if (player instanceof ServerPlayer serverPlayer) {
             ItemStack itemStack = ItemStack.EMPTY;
-            Optional<RecipeHolder<CraftingRecipe>> recipeOptional = serverPlayer.serverLevel().getRecipeManager().getRecipeFor(RecipeType.CRAFTING, craftMatrix.asCraftInput(), serverPlayer.level());
+            Optional<RecipeHolder<CraftingRecipe>> recipeOptional = serverPlayer.level().recipeAccess().getRecipeFor(RecipeType.CRAFTING, craftMatrix.asCraftInput(), serverPlayer.level());
 
             if (recipeOptional.isPresent()) {
                 RecipeHolder<CraftingRecipe> recipe = recipeOptional.get();
 
-                if (craftResult.setRecipeUsed(player.level(), serverPlayer, recipe)) {
+                if (craftResult.setRecipeUsed(serverPlayer, recipe)) {
                     itemStack = recipe.value().assemble(craftMatrix.asCraftInput(), serverPlayer.level().registryAccess());
                 }
             }
