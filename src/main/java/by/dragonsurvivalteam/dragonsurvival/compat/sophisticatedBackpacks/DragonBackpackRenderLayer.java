@@ -97,11 +97,11 @@
 //            rotOffset = backpackOffsets.rotOffset();
 //        }
 //
-//        poseStack.pushPose();
+//        poseStack.pushMatrix();
 //        transformModel(poseStack, posOffset.scale(1 / 32f), rotOffset, scale);
 //
 //        model.render(null, player, poseStack, bufferSource, packedLight, clothColor, borderColor, backpack.getItem(), wrapper.getRenderInfo());
-//        poseStack.popPose();
+//        poseStack.popMatrix();
 //    }
 //
 //    private void transformModel(final PoseStack poseStack, final Vec3 posOffset, final Vec3 rotOffset, final Vec3 scale) {

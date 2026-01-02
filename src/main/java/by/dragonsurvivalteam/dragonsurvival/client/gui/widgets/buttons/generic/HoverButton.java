@@ -83,7 +83,7 @@ public class HoverButton extends ExtendedButton implements HoverDisableable {
     @Override
     public void renderWidget(@NotNull final GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         // Scale about the center of the button
-        graphics.pose().pushPose();
+        graphics.pose().pushMatrix();
         graphics.pose().translate(getX(), getY(), 0);
 
         float scaleX = this.scale.x == 1 ? (float) width / (float) originalWidth : this.scale.x;
@@ -96,7 +96,7 @@ public class HoverButton extends ExtendedButton implements HoverDisableable {
 
         Identifier texture = isHovered() ? hover : main;
         graphics.blit(texture, getX(), getY(), uOffset, vOffset, originalWidth, originalHeight, textureWidth, textureHeight);
-        graphics.pose().popPose();
+        graphics.pose().popMatrix();
 
         this.renderString(graphics, Minecraft.getInstance().font, getFGColor() | Mth.ceil(this.alpha * 255.0F) << 24);
         renderTooltip(graphics, mouseX, mouseY);

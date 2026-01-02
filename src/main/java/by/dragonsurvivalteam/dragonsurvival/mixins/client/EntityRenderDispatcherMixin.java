@@ -24,7 +24,7 @@ public abstract class EntityRenderDispatcherMixin {
     private static void dragonSurvival$modifyShadow(PoseStack poseStack, MultiBufferSource buffer, Entity entity, float weight, float partialTicks, LevelReader level, float size, CallbackInfo callback) {
         if (entity instanceof Player player && DragonStateProvider.isDragon(player) && !DragonSurvival.PROXY.dragonRenderingWasCancelled(player)) {
             Vector3f offset = ClientDragonRenderer.getModelShadowOffset(player, partialTicks).negate();
-            poseStack.pushPose();
+            poseStack.pushMatrix();
             poseStack.translate(offset.x(), offset.y(), offset.z());
             dragonSurvival$modifiedPoseStack = true;
         }
@@ -35,7 +35,7 @@ public abstract class EntityRenderDispatcherMixin {
     @Inject(method = "renderShadow", at = @At(value = "RETURN"))
     private static void dragonSurvival$clearPoseStack(PoseStack poseStack, MultiBufferSource buffer, Entity entity, float weight, float partialTicks, LevelReader level, float size, CallbackInfo callback) {
         if (dragonSurvival$modifiedPoseStack) {
-            poseStack.popPose();
+            poseStack.popMatrix();
             dragonSurvival$modifiedPoseStack = false;
         }
     }

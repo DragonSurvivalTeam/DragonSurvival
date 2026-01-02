@@ -207,7 +207,7 @@ public class AbilityButton extends ExtendedButton {
             ability = MagicData.getData(Minecraft.getInstance().player).fromSlot(slot);
         }
 
-        graphics.pose().pushPose();
+        graphics.pose().pushMatrix();
         // Scale about the center of the button
         graphics.pose().translate(getX(), getY(), 0);
         graphics.pose().scale(scale, scale, 1);
@@ -218,7 +218,7 @@ public class AbilityButton extends ExtendedButton {
 
         if (ability == null) {
             blit(graphics, PASSIVE_BACKGROUND, getX() - 2, getY() - 2, ORNAMENTATION_SIZE);
-            graphics.pose().popPose();
+            graphics.pose().popMatrix();
             return;
         }
 
@@ -236,31 +236,31 @@ public class AbilityButton extends ExtendedButton {
             blit(graphics, AUTO_UPGRADE_ORNAMENTATION, getX() - 2, getY() - 2, ORNAMENTATION_SIZE);
         }
 
-        graphics.pose().pushPose();
+        graphics.pose().pushMatrix();
         graphics.pose().translate(0, 0, 50);
 
         if (isDragging) {
-            graphics.pose().pushPose();
+            graphics.pose().pushMatrix();
             graphics.pose().translate(0, 0, 100);
             blit(graphics, ability.getIcon(), mouseX - SIZE / 2, mouseY - SIZE / 2, SIZE);
-            graphics.pose().popPose();
+            graphics.pose().popMatrix();
         }
 
         if (!isHotbar || !isDragging) {
             blit(graphics, ability.getIcon(), getX(), getY(), SIZE);
         }
 
-        graphics.pose().popPose();
+        graphics.pose().popMatrix();
 
         if (isHovered() && shouldShowDescription()) {
-            graphics.pose().pushPose();
+            graphics.pose().pushMatrix();
             // Render above the other UI elements
             graphics.pose().translate(0, 0, 150);
             AbilityAndPenaltyTooltipRenderer.drawAbilityTooltip(graphics, mouseX, mouseY, ability, scrollAmount);
-            graphics.pose().popPose();
+            graphics.pose().popMatrix();
         }
 
-        graphics.pose().popPose();
+        graphics.pose().popMatrix();
     }
 
     @Override

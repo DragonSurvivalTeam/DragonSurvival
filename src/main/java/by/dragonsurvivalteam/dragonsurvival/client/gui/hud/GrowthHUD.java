@@ -96,9 +96,9 @@ public class GrowthHUD {
 
         RenderingUtils.drawGrowthCircle(graphics, circleX, circleY, radius, 6, 0.13f, currentProgress, targetProgress, CENTER_COLOR, OUTLINE_COLOR, addColor, SUBTRACT_COLOR);
 
-        graphics.pose().pushPose();
+        graphics.pose().pushMatrix();
         graphics.pose().translate(0, 0, 300);
         graphics.blit(StageResources.getGrowthIcon(handler.species(), handler.stageKey()).hoverIcon(), circleX + 7, circleY + 6, 0, 0, 20, 20, 20, 20);
-        graphics.pose().popPose();
+        graphics.pose().popMatrix();
     }
 }

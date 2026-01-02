@@ -33,11 +33,11 @@ public class PenaltyButton extends ExtendedButton {
         blit(graphics, icon, getX(), getY(), SIZE);
 
         if (isHovered()) {
-            graphics.pose().pushPose();
+            graphics.pose().pushMatrix();
             // Render above the other UI elements
             graphics.pose().translate(0, 0, 250);
             AbilityAndPenaltyTooltipRenderer.drawPenaltyTooltip(graphics, mouseX, mouseY, penalty);
-            graphics.pose().popPose();
+            graphics.pose().popMatrix();
         }
     }
 

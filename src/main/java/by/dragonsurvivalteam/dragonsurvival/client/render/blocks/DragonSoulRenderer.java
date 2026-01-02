@@ -72,11 +72,11 @@ public class DragonSoulRenderer implements BlockEntityRenderer<DragonSoulBlockEn
             player.animationSupplier = () -> DragonSoulBlockEntity.DEFAULT_ANIMATION;
         }
 
-        pose.pushPose();
+        pose.pushMatrix();
         pose.translate(0.5, 0, 0.5); // Move to the center of the block
         rotateBlock(soul.getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING), pose);
         Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(dragon).render(dragon, 0, partialTick, pose, buffer, packedLight);
-        pose.popPose();
+        pose.popMatrix();
 
         player.useVisualScale = false;
 

@@ -29,12 +29,12 @@ public class BolasEntityRenderer extends EntityRenderer<Bolas> {
     @Override
     public void render(final Bolas bolas, float yaw, float partialTicks, @NotNull PoseStack stack, @NotNull MultiBufferSource bufferSource, int eventLight) {
         if (bolas.tickCount >= 2 || !(entityRenderDispatcher.camera.getEntity().distanceToSqr(bolas) < 12.25D)) {
-            stack.pushPose();
+            stack.pushMatrix();
             stack.scale(1.2F, 1.2F, 1.2F);
             stack.mulPose(entityRenderDispatcher.cameraOrientation());
             stack.mulPose(Axis.YP.rotationDegrees(180.0F));
             Minecraft.getInstance().getItemRenderer().renderStatic(new ItemStack(DSItems.HUNTING_NET), ItemDisplayContext.GROUND, eventLight, OverlayTexture.NO_OVERLAY, stack, bufferSource, bolas.level(), 0);
-            stack.popPose();
+            stack.popMatrix();
         }
     }
 

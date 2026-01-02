@@ -307,10 +307,10 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
         }
 
         TextRenderUtil.drawCenteredScaledText(graphics, width / 2 + 7, 10, 2f, Component.translatable(TITLE).getString(), DyeColor.WHITE.getTextColor());
-        graphics.pose().pushPose();
+        graphics.pose().pushMatrix();
         graphics.pose().translate(0, 0, 300);
         super.render(graphics, mouseX, mouseY, partialTick);
-        graphics.pose().popPose();
+        graphics.pose().popMatrix();
     }
 
     private void initializeHandler(final DragonStateHandler handler) {

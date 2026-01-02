@@ -99,7 +99,7 @@ public class DragonEditorConfirmComponent extends AbstractContainerEventHandler 
 
     @Override
     public void render(@NotNull final GuiGraphics graphics, int pMouseX, int pMouseY, float pPartialTicks) {
-        graphics.pose().pushPose();
+        graphics.pose().pushMatrix();
         // Render above the rendered dragon
         graphics.pose().translate(0, 0, 100);
         graphics.fillGradient(0, 0, Minecraft.getInstance().getWindow().getWidth(), Minecraft.getInstance().getWindow().getHeight(), -1072689136, -804253680);
@@ -127,6 +127,6 @@ public class DragonEditorConfirmComponent extends AbstractContainerEventHandler 
 
         confirmButton.render(graphics, pMouseX, pMouseY, pPartialTicks);
         cancelButton.render(graphics, pMouseX, pMouseY, pPartialTicks);
-        graphics.pose().popPose();
+        graphics.pose().popMatrix();
     }
 }

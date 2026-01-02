@@ -933,10 +933,10 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
             @Override
             public void renderWidget(@NotNull final GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
                 Identifier texture = preset.get(Objects.requireNonNull(stage.getKey())).get().wings ? ALTERNATIVE_ON : ALTERNATIVE_OFF;
-                guiGraphics.pose().pushPose();
+                guiGraphics.pose().pushMatrix();
                 guiGraphics.pose().translate(0, 0, 100);
                 guiGraphics.blit(texture, getX(), getY(), 0, 0, 20, 20, 20, 20);
-                guiGraphics.pose().popPose();
+                guiGraphics.pose().popMatrix();
             }
         };
         addRenderableWidget(wingsButton);
@@ -946,10 +946,10 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
             @Override
             public void renderWidget(@NotNull final GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
                 Identifier texture = showUi ? SHOW_UI_ON : SHOW_UI_OFF;
-                guiGraphics.pose().pushPose();
+                guiGraphics.pose().pushMatrix();
                 guiGraphics.pose().translate(0, 0, 100);
                 guiGraphics.blit(texture, getX(), getY(), 0, 0, 20, 20, 20, 20);
-                guiGraphics.pose().popPose();
+                guiGraphics.pose().popMatrix();
             }
         };
         uiButton.setTooltip(Tooltip.create(Component.translatable(SHOW_UI)));

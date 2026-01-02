@@ -62,7 +62,7 @@ public class BackgroundColorSelectorComponent extends AbstractContainerEventHand
     @Override
     public void render(@NotNull final GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTicks) {
         if (visible) {
-            guiGraphics.pose().pushPose();
+            guiGraphics.pose().pushMatrix();
             guiGraphics.pose().translate(0, 0, 100);
             // guiGraphics.fill(x, y, x + xSize, y + ySize, Color.black.getRGB());
             // Background for reset button
@@ -78,7 +78,7 @@ public class BackgroundColorSelectorComponent extends AbstractContainerEventHand
 
             colorPicker.render(guiGraphics, pMouseX, pMouseY, pPartialTicks);
             resetButton.render(guiGraphics, pMouseX, pMouseY, pPartialTicks);
-            guiGraphics.pose().popPose();
+            guiGraphics.pose().popMatrix();
         }
     }
 }

@@ -56,13 +56,13 @@ public class DragonBeaconRenderer implements BlockEntityRenderer<DragonBeaconBlo
             beacon.tick += 0.5f;
         }
 
-        pose.pushPose();
+        pose.pushMatrix();
         float bounce = Mth.sin((beacon.tick + partialTick) / 20 + beacon.bobOffset) * 0.1f + 0.1f;
         pose.translate(0.5, 0.25 + bounce / 2f, 0.5);
         pose.mulPose(Axis.YP.rotationDegrees(beacon.tick));
 
         pose.scale(2, 2, 2);
         Minecraft.getInstance().getItemRenderer().renderStatic(item.getDefaultInstance(), ItemDisplayContext.GROUND, packedLight, packedOverlay, pose, buffer, level, 0);
-        pose.popPose();
+        pose.popMatrix();
     }
 }

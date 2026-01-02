@@ -97,13 +97,13 @@ public class DragonDestructionHandler {
                         return;
                     }
 
-                    event.getPoseStack().pushPose();
+                    event.getPoseStack().pushMatrix();
                     event.getPoseStack().translate((double) offsetPosition.getX() - x, (double) offsetPosition.getY() - y, (double) offsetPosition.getZ() - z);
                     PoseStack.Pose lastPose = event.getPoseStack().last();
                     VertexConsumer consumer = new SheetedDecalTextureGenerator(access.dragonSurvival$getRenderBuffers().crumblingBufferSource().getBuffer(ModelBakery.DESTROY_TYPES.get(progress)), lastPose, 1.0F);
                     ModelData modelData = access.dragonSurvival$getLevel().getModelData(offsetPosition);
                     Minecraft.getInstance().getBlockRenderer().renderBreakingTexture(state, offsetPosition, access.dragonSurvival$getLevel(), event.getPoseStack(), consumer, modelData);
-                    event.getPoseStack().popPose();
+                    event.getPoseStack().popMatrix();
                 }
             });
         }

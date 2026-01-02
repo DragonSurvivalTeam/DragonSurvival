@@ -40,7 +40,7 @@ public class DragonItemRenderLayer extends BlockAndItemGeoLayer<DragonEntity> {
         }
 
         if (ClientDragonRenderer.renderHeldItem && (animatable.getPlayer() != Minecraft.getInstance().player || !Minecraft.getInstance().options.getCameraType().isFirstPerson())) {
-            poseStack.pushPose();
+            poseStack.pushMatrix();
 
             if (bone.getName().equals("RightItem")) {
                 Quaternionf rotation = new Quaternionf();
@@ -58,7 +58,7 @@ public class DragonItemRenderLayer extends BlockAndItemGeoLayer<DragonEntity> {
             }
 
             super.renderStackForBone(poseStack, bone, stack, animatable, bufferSource, partialTick, packedLight, packedOverlay);
-            poseStack.popPose();
+            poseStack.popMatrix();
         }
     }
 }

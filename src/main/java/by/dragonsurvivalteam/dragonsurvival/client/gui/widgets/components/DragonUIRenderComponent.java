@@ -43,7 +43,7 @@ public class DragonUIRenderComponent extends AbstractContainerEventHandler imple
         float scale = zoom;
 
         // We need to translate this backwards with the poseStack as renderEntityInInventory pushes the poseStack forward
-        guiGraphics.pose().pushPose();
+        guiGraphics.pose().pushMatrix();
         guiGraphics.pose().translate(0, 0, -200); // We chose -200 here as the background is translated -300, and we don't want to clip with it
 
         Quaternionf quaternion = Axis.ZP.rotationDegrees(180);
@@ -51,7 +51,7 @@ public class DragonUIRenderComponent extends AbstractContainerEventHandler imple
         quaternion.rotateY((float) Math.toRadians(180 - xRot * 10));
         InventoryScreen.renderEntityInInventory(guiGraphics, x + (float) width / 2 + xOffset, y + height - 30 + yOffset, (int) scale, new Vector3f(0, 0, 0), quaternion, null, getter.get());
 
-        guiGraphics.pose().popPose();
+        guiGraphics.pose().popMatrix();
     }
 
     @Override

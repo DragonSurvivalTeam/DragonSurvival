@@ -45,7 +45,7 @@ public class HelmetEntityRenderer implements BlockEntityRenderer<HelmetBlockEnti
 
     public static void renderHelmet(
             @Nullable Direction direction, float p_228879_1_, Block helmetBlock, float p_228879_4_, PoseStack PoseStack, MultiBufferSource renderTypeBuffer, int p_228879_7_) {
-        PoseStack.pushPose();
+        PoseStack.pushMatrix();
         if (direction == null) {
             PoseStack.translate(0.5D, 0.0D, 0.5D);
         } else {
@@ -56,7 +56,7 @@ public class HelmetEntityRenderer implements BlockEntityRenderer<HelmetBlockEnti
         VertexConsumer ivertexbuilder = renderTypeBuffer.getBuffer(getRenderType(helmetBlock));
         humanoidHeadModel.setupAnim(p_228879_4_, p_228879_1_, 0.0F);
         humanoidHeadModel.renderToBuffer(PoseStack, ivertexbuilder, p_228879_7_, OverlayTexture.NO_OVERLAY);
-        PoseStack.popPose();
+        PoseStack.popMatrix();
     }
 
     private static RenderType getRenderType(Block block) {

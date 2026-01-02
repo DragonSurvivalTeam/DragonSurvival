@@ -69,7 +69,7 @@ public class BolasOnPlayerRenderer {
     }
 
     private static void renderBolas(int light, int overlayCoords, MultiBufferSource buffers, PoseStack matrixStack, float eyeHeight) {
-        matrixStack.pushPose();
+        matrixStack.pushMatrix();
         matrixStack.translate(0, 0.9f + eyeHeight / 8.f, 0);
         matrixStack.scale(1.6f + eyeHeight / 8.f, 1.6f + eyeHeight / 8.f, 1.6f + eyeHeight / 8.f);
 
@@ -78,6 +78,6 @@ public class BolasOnPlayerRenderer {
         }
 
         Minecraft.getInstance().getItemRenderer().renderStatic(BOLAS, ItemDisplayContext.NONE, light, overlayCoords, matrixStack, buffers, Minecraft.getInstance().level, 0);
-        matrixStack.popPose();
+        matrixStack.popMatrix();
     }
 }

@@ -69,7 +69,7 @@ public class SmeltEffectIconRenderer {
         float x = -WIDTH / 2f;
         float y = -HEIGHT / 2f - 4;
 
-        pose.pushPose();
+        pose.pushMatrix();
         pose.translate(0, entity.getBbHeight() + 0.5, 0);
         pose.mulPose(Minecraft.getInstance().getEntityRenderDispatcher().cameraOrientation());
         pose.scale(scale, -scale, scale);
@@ -97,7 +97,7 @@ public class SmeltEffectIconRenderer {
             BufferUploader.drawWithShader(data);
         }
 
-        pose.popPose();
+        pose.popMatrix();
         RenderSystem.restoreGlState(state);
     }
 }

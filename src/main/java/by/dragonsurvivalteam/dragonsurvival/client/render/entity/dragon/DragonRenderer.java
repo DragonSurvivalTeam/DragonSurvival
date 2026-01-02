@@ -141,7 +141,7 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
             return;
         }
 
-        poseStack.pushPose();
+        poseStack.pushMatrix();
         setupRender(animatable, player, poseStack, partialTick);
 
         DragonStateHandler handler = DragonStateProvider.getData(player);
@@ -156,7 +156,7 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
         // If a body refresh was requested, all the animations will have been reset once we are post-render
         handler.refreshBody = false;
 
-        poseStack.popPose();
+        poseStack.popMatrix();
     }
 
     private void setupRender(final DragonEntity dragon, final Player player, final PoseStack pose, final float partialTick) {

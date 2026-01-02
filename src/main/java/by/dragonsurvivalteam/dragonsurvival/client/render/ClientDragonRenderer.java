@@ -176,10 +176,10 @@ public class ClientDragonRenderer {
             PoseStack pose = event.getPoseStack();
 //            renderCollisionBox(pose, player, buffer, camera);
 
-            pose.pushPose();
+            pose.pushMatrix();
             pose.translate(-camera.x(), -camera.y(), -camera.z());
             renderAbilityHitbox(player, pose, buffer);
-            pose.popPose();
+            pose.popMatrix();
         }
     }
 

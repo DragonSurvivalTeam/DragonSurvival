@@ -21,7 +21,7 @@ public class CustomBlockAndItemGeoLayer<T extends GeoAnimatable> extends BlockAn
 
     @Override
     protected void renderStackForBone(final PoseStack poseStack, final GeoBone bone, final ItemStack stack, final T animatable, final MultiBufferSource bufferSource, float partialTick, int packedLight, int packedOverlay) {
-        poseStack.pushPose();
+        poseStack.pushMatrix();
 
         if (animatable instanceof KnightEntity) {
             if (bone.getName().equalsIgnoreCase("left_item")) {
@@ -41,7 +41,7 @@ public class CustomBlockAndItemGeoLayer<T extends GeoAnimatable> extends BlockAn
             Minecraft.getInstance().getItemRenderer().renderStatic(stack, getTransformTypeForStack(bone, stack, animatable), packedLight, packedOverlay, poseStack, bufferSource, Minecraft.getInstance().level, (int) this.renderer.getInstanceId(animatable));
         }
 
-        poseStack.popPose();
+        poseStack.popMatrix();
     }
 
     @Override

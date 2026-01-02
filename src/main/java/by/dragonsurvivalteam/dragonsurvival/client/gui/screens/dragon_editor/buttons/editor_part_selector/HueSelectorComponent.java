@@ -86,10 +86,10 @@ public class HueSelectorComponent extends AbstractContainerEventHandler implemen
             @Override
             public void renderWidget(@NotNull final GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
                 Identifier texture = settingsSupplier.get().isGlowing ? GLOW_ON : GLOW_OFF;
-                guiGraphics.pose().pushPose();
+                guiGraphics.pose().pushMatrix();
                 guiGraphics.pose().translate(0, 0, 100);
                 guiGraphics.blit(texture, getX(), getY(), 0, 0, 27, 25, 27, 25);
-                guiGraphics.pose().popPose();
+                guiGraphics.pose().popMatrix();
             }
         };
 
@@ -290,7 +290,7 @@ public class HueSelectorComponent extends AbstractContainerEventHandler implemen
 
     @Override
     public void render(@NotNull final GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTicks) {
-        guiGraphics.pose().pushPose();
+        guiGraphics.pose().pushMatrix();
         // Render pop-up menu content above the other elements
         guiGraphics.pose().translate(0, 0, 150);
 
@@ -313,6 +313,6 @@ public class HueSelectorComponent extends AbstractContainerEventHandler implemen
         hueSlider.render(guiGraphics, pMouseX, pMouseY, pPartialTicks);
         saturationSlider.render(guiGraphics, pMouseX, pMouseY, pPartialTicks);
         brightnessSlider.render(guiGraphics, pMouseX, pMouseY, pPartialTicks);
-        guiGraphics.pose().popPose();
+        guiGraphics.pose().popMatrix();
     }
 }

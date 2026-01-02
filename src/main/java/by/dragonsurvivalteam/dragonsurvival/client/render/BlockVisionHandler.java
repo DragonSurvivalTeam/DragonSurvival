@@ -118,7 +118,7 @@ public class BlockVisionHandler {
         }
 
         PoseStack pose = event.getPoseStack();
-        pose.pushPose();
+        pose.pushMatrix();
 
         Vec3 camera = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
         pose.mulPose(event.getModelViewMatrix());
@@ -142,7 +142,7 @@ public class BlockVisionHandler {
             }
 
             if (((FrustumAccess) event.getFrustum()).dragonSurvival$cubeInFrustum(data.x(), data.y(), data.z(), data.x() + 1, data.y() + 1, data.z() + 1)) {
-                pose.pushPose();
+                pose.pushMatrix();
                 pose.translate(data.x(), data.y(), data.z());
 
                 int colorARGB = vision.getColor(data.state().getBlock());
@@ -153,12 +153,12 @@ public class BlockVisionHandler {
                     case SIMPLE_SHADER -> SHADER_RENDER_DATA.add(data);
                 }
 
-                pose.popPose();
+                pose.popMatrix();
             }
         }
 
         BlockVisionOutline.endBatch();
-        pose.popPose();
+        pose.popMatrix();
     }
 
     /**
@@ -187,7 +187,7 @@ public class BlockVisionHandler {
         }
 
         PoseStack pose = event.getPoseStack();
-        pose.pushPose();
+        pose.pushMatrix();
 
         Vec3 camera = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
         pose.mulPose(event.getModelViewMatrix());
@@ -196,7 +196,7 @@ public class BlockVisionHandler {
         BlockVisionShaderSimple.beginBatch();
 
         for (Data data : SHADER_RENDER_DATA) {
-            pose.pushPose();
+            pose.pushMatrix();
             pose.translate(data.x(), data.y(), data.z());
 
             int colorARGB = vision.getColor(data.state().getBlock());
@@ -205,12 +205,12 @@ public class BlockVisionHandler {
                 case SIMPLE_SHADER -> BlockVisionShaderSimple.render(data, pose, colorARGB);
             }
 
-            pose.popPose();
+            pose.popMatrix();
         }
 
         BlockVisionShaderSimple.endBatch();
 
-        pose.popPose();
+        pose.popMatrix();
         SHADER_RENDER_DATA.clear();
     }
 

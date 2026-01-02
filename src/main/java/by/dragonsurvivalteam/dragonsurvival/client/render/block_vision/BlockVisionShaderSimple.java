@@ -60,12 +60,12 @@ public class BlockVisionShaderSimple {
         BlockPos position = BlockPos.containing(data.x(), data.y(), data.z());
         Level level = Objects.requireNonNull(Minecraft.getInstance().level);
 
-        pose.pushPose();
+        pose.pushMatrix();
         // Apply the randomized offset some blocks can have to their position
         Vec3 offset = data.state().getOffset(level, position);
         pose.translate(offset.x, offset.y, offset.z);
         PoseStack.Pose lastPose = pose.last();
-        pose.popPose();
+        pose.popMatrix();
 
         BakedModel model = Minecraft.getInstance().getBlockRenderer().getBlockModel(data.state());
         ModelData modelData = model.getModelData(level, position, data.state(), ModelData.EMPTY);

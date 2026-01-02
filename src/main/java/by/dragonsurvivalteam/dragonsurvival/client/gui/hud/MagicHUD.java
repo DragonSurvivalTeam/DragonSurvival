@@ -398,7 +398,7 @@ public class MagicHUD {
             }
 
             if (targetTime > 0) {
-                graphics.pose().pushPose();
+                graphics.pose().pushMatrix();
 
                 // Call flush here, otherwise some mods that batch together blit calls will cause this to be rendered in an incorrect order
                 // This does nothing on vanilla code but is required for compatibility with other mods (e.g. immediatelyfast)
@@ -422,7 +422,7 @@ public class MagicHUD {
 
                 graphics.blitSprite(ability.getIcon(), startX + 78, startY + 3, 0, 36, 36);
 
-                graphics.pose().popPose();
+                graphics.pose().popMatrix();
             }
         }
 
