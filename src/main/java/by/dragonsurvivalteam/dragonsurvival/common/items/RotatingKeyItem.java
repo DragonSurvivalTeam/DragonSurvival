@@ -102,7 +102,7 @@ public class RotatingKeyItem extends TooltipItem implements GeoItem {
 
         // TODO :: as long as the player is within a certain distance of the current target don't re-check
         if (serverLevel.getGameTime() % 20 == 0) {
-            Optional<HolderSet.Named<Structure>> structure = serverLevel.registryAccess().registryOrThrow(Registries.STRUCTURE).getTag(this.target);
+            Optional<HolderSet.Named<Structure>> structure = serverLevel.registryAccess().lookupOrThrow(Registries.STRUCTURE).getTag(this.target);
 
             if (structure.isPresent()) {
                 Pair<BlockPos, Holder<Structure>> nearest = serverLevel.getChunkSource().getGenerator().findNearestMapStructure(serverLevel, structure.get(), entity.blockPosition(), 25, false);

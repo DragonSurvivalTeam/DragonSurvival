@@ -96,7 +96,7 @@ public class DSDamageTypes {
     public static final ResourceKey<DamageType> MIRROR_CURSE = key("mirror_curse");
 
     public static Holder<DamageType> get(final Level level, final ResourceKey<DamageType> damageType) {
-        return level.registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(damageType);
+        return level.registryAccess().lookupOrThrow(Registries.DAMAGE_TYPE).getOrThrow(damageType);
     }
 
     public static void registerDamageTypes(final BootstrapContext<DamageType> context) {

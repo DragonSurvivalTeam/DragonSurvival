@@ -209,7 +209,7 @@ public class DragonAbilityScreen extends Screen {
         List<DragonAbilityInstance> upgradablePassives = data.filterPassiveByUpgrade(UpgradeType.IS_MANUAL);
         List<DragonAbilityInstance> constantPassives = data.filterPassiveByUpgrade(UpgradeType.IS_MANUAL.negate());
 
-        minecraft.player.registryAccess().registryOrThrow(DragonAbility.REGISTRY).getTag(DSDragonAbilityTags.ORDER).ifPresent(order -> {
+        minecraft.player.registryAccess().lookupOrThrow(DragonAbility.REGISTRY).getTag(DSDragonAbilityTags.ORDER).ifPresent(order -> {
             //noinspection unchecked -> cast is valid
             List<Holder<DragonAbility>> list = ((HolderSet$NamedAccess<DragonAbility>) order).dragonSurvival$contents();
             Comparator<DragonAbilityInstance> comparator = Comparator.comparingInt(instance -> {

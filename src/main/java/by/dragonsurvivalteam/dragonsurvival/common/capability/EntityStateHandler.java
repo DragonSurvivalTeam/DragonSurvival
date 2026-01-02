@@ -49,7 +49,7 @@ public class EntityStateHandler implements INBTSerializable<CompoundTag> {
     public static boolean cannotPillageProfession(final Villager villager) {
         VillagerProfession profession = villager.getVillagerData().getProfession();
         Identifier key = BuiltInRegistries.VILLAGER_PROFESSION.getKey(profession);
-        Holder.Reference<VillagerProfession> holder = BuiltInRegistries.VILLAGER_PROFESSION.getHolderOrThrow(ResourceKey.create(BuiltInRegistries.VILLAGER_PROFESSION.key(), key));
+        Holder.Reference<VillagerProfession> holder = BuiltInRegistries.VILLAGER_PROFESSION.getOrThrow(ResourceKey.create(BuiltInRegistries.VILLAGER_PROFESSION.key(), key));
         return BuiltInRegistries.VILLAGER_PROFESSION.getOrCreateTag(DSProfessionTags.PILLAGE_BLACKLIST).contains(holder);
     }
 

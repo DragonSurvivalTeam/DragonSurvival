@@ -18,7 +18,7 @@ import org.jetbrains.annotations.NotNull;
 @EventBusSubscriber
 public class OxygenBonuses extends Storage<OxygenBonus.Instance> {
     public float getBonus(final ResourceKey<FluidType> fluidKey) {
-        Holder.Reference<FluidType> fluid = NeoForgeRegistries.FLUID_TYPES.getHolderOrThrow(fluidKey);
+        Holder.Reference<FluidType> fluid = NeoForgeRegistries.FLUID_TYPES.getOrThrow(fluidKey);
         float bonus = OxygenBonus.NONE;
 
         for (OxygenBonus.Instance instance : all()) {

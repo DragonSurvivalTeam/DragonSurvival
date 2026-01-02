@@ -27,7 +27,7 @@ public record NearbyEntityPredicate(HolderSet<EntityType<?>> entityTypes, int ra
 
         for (EntityType<?> type : types) {
             BuiltInRegistries.ENTITY_TYPE.getResourceKey(type).ifPresent(key -> {
-                holders.add(BuiltInRegistries.ENTITY_TYPE.getHolderOrThrow(key));
+                holders.add(BuiltInRegistries.ENTITY_TYPE.getOrThrow(key));
             });
         }
 
