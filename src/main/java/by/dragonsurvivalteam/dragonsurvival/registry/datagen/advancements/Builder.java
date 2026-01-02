@@ -11,7 +11,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -102,7 +101,7 @@ public class Builder {
         return this;
     }
 
-    public AdvancementHolder build(final Consumer<AdvancementHolder> saver, final ExistingFileHelper helper) {
+    public AdvancementHolder build(final Consumer<AdvancementHolder> saver) {
         Advancement.Builder advancement = Advancement.Builder.advancement();
 
         if (parent != null) {
@@ -135,6 +134,6 @@ public class Builder {
             advancement.rewards(AdvancementRewards.Builder.experience(experienceReward));
         }
 
-        return advancement.save(saver, DragonSurvival.res(path), helper);
+        return advancement.save(saver, DragonSurvival.res(path));
     }
 }
