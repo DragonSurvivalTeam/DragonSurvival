@@ -505,8 +505,8 @@ public class SeaDragonAbilities {
                         )), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(1)),
                         new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                                 // Enable when on (or within) said block tag or when in water
-                                Condition.thisEntity(EntityCondition.isOnBlock(DSBlockTags.IS_WET))
-                                        .or(Condition.thisEntity(EntityCondition.isInBlock(DSBlockTags.IS_WET)))
+                                Condition.thisEntity(EntityCondition.isOnBlock(context.lookup(Registries.BLOCK), DSBlockTags.IS_WET))
+                                        .or(Condition.thisEntity(EntityCondition.isInBlock(context.lookup(Registries.BLOCK), DSBlockTags.IS_WET)))
                                         .or(Condition.thisEntity(EntityCondition.isInFluid(context.lookup(Registries.FLUID).getOrThrow(FluidTags.WATER)))).build(),
                                 ModifierEffect.only(new ModifierWithDuration(
                                         DurationInstanceBase.create(DragonSurvival.res("good_mana_condition")).removeAutomatically().hidden().build(),
@@ -537,8 +537,8 @@ public class SeaDragonAbilities {
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         // Enable when on said block tag
-                        Condition.thisEntity(EntityCondition.isOnBlock(DSBlockTags.SPEEDS_UP_SEA_DRAGON)).build(),
-                        PotionEffect.only(PotionData.create(MobEffects.MOVEMENT_SPEED).amplifierPer(0.2f).durationPer(1).build()),
+                        Condition.thisEntity(EntityCondition.isOnBlock(context.lookup(Registries.BLOCK), DSBlockTags.SPEEDS_UP_SEA_DRAGON)).build(),
+                        PotionEffect.only(PotionData.create(MobEffects.SPEED).amplifierPer(0.2f).durationPer(1).build()),
                         TargetingMode.ALLIES_AND_SELF
                 )), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(Functions.secondsToTicks(1)))),
                 true,

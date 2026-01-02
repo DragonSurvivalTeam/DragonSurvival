@@ -1,6 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.util;
 
-import net.minecraft.advancements.critereon.EntityPredicate;
+import net.minecraft.advancements.criterion.EntityPredicate;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.TamableAnimal;

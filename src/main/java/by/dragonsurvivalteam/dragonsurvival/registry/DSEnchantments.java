@@ -7,7 +7,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSDragonSpecie
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSEnchantmentTags;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSEntityTypeTags;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
-import net.minecraft.advancements.critereon.DamageSourcePredicate;
+import net.minecraft.advancements.criterion.DamageSourcePredicate;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.registries.Registries;
@@ -27,8 +27,8 @@ import net.minecraft.world.item.enchantment.LevelBasedValue;
 import net.minecraft.world.item.enchantment.effects.AddValue;
 import net.minecraft.world.item.enchantment.effects.AllOf;
 import net.minecraft.world.item.enchantment.effects.ApplyMobEffect;
+import net.minecraft.world.item.enchantment.effects.ChangeItemDamage;
 import net.minecraft.world.item.enchantment.effects.DamageEntity;
-import net.minecraft.world.item.enchantment.effects.DamageItem;
 import net.minecraft.world.item.enchantment.effects.PlaySoundEffect;
 import net.minecraft.world.level.storage.loot.IntRange;
 import net.minecraft.world.level.storage.loot.LootContext;
@@ -126,7 +126,7 @@ public class DSEnchantments {
                         new AddValue(LevelBasedValue.perLevel(2.5f)),
                         // this -> attacked entity
                         AnyOfCondition.anyOf(
-                                Condition.thisEntity(EntityCondition.isType(DSEntityTypeTags.DRAGONS)),
+                                Condition.thisEntity(EntityCondition.isType(context.lookup(Registries.ENTITY_TYPE), DSEntityTypeTags.DRAGONS)),
                                 Condition.thisEntity(EntityCondition.isSpecies(context.lookup(DragonSpecies.REGISTRY).getOrThrow(DSDragonSpeciesTags.TRUE_DRAGONS)))
                         )
                 )
@@ -135,7 +135,7 @@ public class DSEnchantments {
                         EnchantmentTarget.ATTACKER,
                         EnchantmentTarget.VICTIM,
                         new ApplyMobEffect(
-                                HolderSet.direct(MobEffects.MOVEMENT_SLOWDOWN),
+                                HolderSet.direct(MobEffects.SLOWNESS),
                                 LevelBasedValue.constant(1.5f),
                                 LevelBasedValue.perLevel(1.5f, 0.5f),
                                 LevelBasedValue.constant(1),
@@ -143,7 +143,7 @@ public class DSEnchantments {
                         ),
                         // this -> attacked entity
                         AnyOfCondition.anyOf(
-                                LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS, EntityCondition.isType(EntityType.ENDER_DRAGON)),
+                                LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS, EntityCondition.isType(context.lookup(Registries.ENTITY_TYPE), EntityType.ENDER_DRAGON)),
                                 Condition.thisEntity(EntityCondition.isSpecies(context.lookup(DragonSpecies.REGISTRY).getOrThrow(DSDragonSpeciesTags.TRUE_DRAGONS)))
 
                         ).and(DamageSourceCondition.hasDamageSource(DamageSourcePredicate.Builder.damageType().isDirect(true)))
@@ -156,15 +156,15 @@ public class DSEnchantments {
                                         LevelBasedValue.constant(0.5f),
                                         context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.ANTI_DRAGON)
                                 ),
-                                new DamageItem(LevelBasedValue.constant(1)),
+                                new ChangeItemDamage(LevelBasedValue.constant(1)),
                                 new ApplyMobEffect(
-                                        HolderSet.direct(MobEffects.MOVEMENT_SLOWDOWN),
+                                        HolderSet.direct(MobEffects.SLOWNESS),
                                         LevelBasedValue.constant(5),
                                         LevelBasedValue.constant(5),
                                         LevelBasedValue.constant(1),
                                         LevelBasedValue.constant(1)
                                 ),
-                                new PlaySoundEffect(DSSounds.BONK, ConstantFloat.of(1), ConstantFloat.of(1))
+                                new PlaySoundEffect(List.of(DSSounds.BONK), ConstantFloat.of(1), ConstantFloat.of(1))
                         ),
                         TimeCheck.time(IntRange.exact(0)).setPeriod(100).and(Condition.thisEntity(EntityCondition.isSpecies(context.lookup(DragonSpecies.REGISTRY).getOrThrow(DSDragonSpeciesTags.TRUE_DRAGONS)))
                         )

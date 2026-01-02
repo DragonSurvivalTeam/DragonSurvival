@@ -32,7 +32,7 @@ public class DragonBeaconDataProvider extends DataMapProvider {
                         new DragonBeaconData.PaymentData(60, 30, 0)
                 ), false, DSConditions.FOREST_DRAGON_LOADED)
                 .add(BuiltInDragonSpecies.SEA_DRAGON, new DragonBeaconData(
-                        DragonBeaconData.createEffects(Functions.secondsToTicks(20), 0, DSEffects.PEACE, MobEffects.DIG_SPEED, DSEffects.EMPOWERED_SOUL),
+                        DragonBeaconData.createEffects(Functions.secondsToTicks(20), 0, DSEffects.PEACE, MobEffects.HASTE, DSEffects.EMPOWERED_SOUL),
                         new DragonBeaconData.PaymentData(60, 30, 0)
                 ), false, DSConditions.SEA_DRAGON_LOADED)
                 .add(DSDragonSpeciesTags.ALL, new DragonBeaconData(

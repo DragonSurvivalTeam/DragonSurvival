@@ -33,27 +33,27 @@ import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementType;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.advancements.Criterion;
-import net.minecraft.advancements.critereon.BlockPredicate;
-import net.minecraft.advancements.critereon.ConsumeItemTrigger;
-import net.minecraft.advancements.critereon.ContextAwarePredicate;
-import net.minecraft.advancements.critereon.EffectsChangedTrigger;
-import net.minecraft.advancements.critereon.EnchantmentPredicate;
-import net.minecraft.advancements.critereon.EntityPredicate;
-import net.minecraft.advancements.critereon.FluidPredicate;
-import net.minecraft.advancements.critereon.InventoryChangeTrigger;
-import net.minecraft.advancements.critereon.ItemEnchantmentsPredicate;
-import net.minecraft.advancements.critereon.ItemPredicate;
-import net.minecraft.advancements.critereon.ItemSubPredicates;
-import net.minecraft.advancements.critereon.ItemUsedOnLocationTrigger;
-import net.minecraft.advancements.critereon.LightPredicate;
-import net.minecraft.advancements.critereon.LocationPredicate;
-import net.minecraft.advancements.critereon.MinMaxBounds;
-import net.minecraft.advancements.critereon.MobEffectsPredicate;
-import net.minecraft.advancements.critereon.PlayerInteractTrigger;
-import net.minecraft.advancements.critereon.PlayerTrigger;
-import net.minecraft.advancements.critereon.RecipeCraftedTrigger;
-import net.minecraft.advancements.critereon.ShotCrossbowTrigger;
-import net.minecraft.advancements.critereon.UsingItemTrigger;
+import net.minecraft.advancements.criterion.BlockPredicate;
+import net.minecraft.advancements.criterion.ConsumeItemTrigger;
+import net.minecraft.advancements.criterion.ContextAwarePredicate;
+import net.minecraft.advancements.criterion.EffectsChangedTrigger;
+import net.minecraft.advancements.criterion.EnchantmentPredicate;
+import net.minecraft.advancements.criterion.EntityPredicate;
+import net.minecraft.advancements.criterion.FluidPredicate;
+import net.minecraft.advancements.criterion.InventoryChangeTrigger;
+import net.minecraft.advancements.criterion.ItemEnchantmentsPredicate;
+import net.minecraft.advancements.criterion.ItemPredicate;
+import net.minecraft.advancements.criterion.ItemSubPredicates;
+import net.minecraft.advancements.criterion.ItemUsedOnLocationTrigger;
+import net.minecraft.advancements.criterion.LightPredicate;
+import net.minecraft.advancements.criterion.LocationPredicate;
+import net.minecraft.advancements.criterion.MinMaxBounds;
+import net.minecraft.advancements.criterion.MobEffectsPredicate;
+import net.minecraft.advancements.criterion.PlayerInteractTrigger;
+import net.minecraft.advancements.criterion.PlayerTrigger;
+import net.minecraft.advancements.criterion.RecipeCraftedTrigger;
+import net.minecraft.advancements.criterion.ShotCrossbowTrigger;
+import net.minecraft.advancements.criterion.UsingItemTrigger;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderSet;
@@ -833,7 +833,7 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
 
     private LocationPredicate.Builder inStructure(final TagKey<Structure> tag) {
         HolderSet.Named<Structure> set = registries.lookupOrThrow(Registries.STRUCTURE).getOrThrow(tag);
-        return LocationPredicate.Builder.identifier().setStructures(set);
+        return LocationPredicate.Builder.location().setStructures(set);
     }
 
     private LocationPredicate.Builder inStructure(final Holder<Structure> structure) {
@@ -841,7 +841,7 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
     }
 
     private LocationPredicate.Builder isInFluid(final TagKey<Fluid> fluids) {
-        return LocationPredicate.Builder.identifier().setFluid(fluid(fluids));
+        return LocationPredicate.Builder.location().setFluid(fluid(fluids));
     }
 
     private Optional<ContextAwarePredicate> caveDragonInLava() {
@@ -854,11 +854,11 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
 
     @SuppressWarnings("SameParameterValue") // ignore
     private LocationPredicate.Builder block(final Block block) {
-        return LocationPredicate.Builder.identifier().setBlock(BlockPredicate.Builder.block().of(block));
+        return LocationPredicate.Builder.location().setBlock(BlockPredicate.Builder.block().of(block));
     }
 
     private LocationPredicate.Builder light(final MinMaxBounds.Ints bounds) {
-        return LocationPredicate.Builder.identifier().setLight(LightPredicate.Builder.light().setComposite(bounds));
+        return LocationPredicate.Builder.location().setLight(LightPredicate.Builder.light().setComposite(bounds));
     }
 
     @SuppressWarnings("deprecation") // ignore
@@ -902,11 +902,11 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
     }
 
     public Criterion<ItemUsedOnLocationTrigger.TriggerInstance> itemUsedOnBlock(final Block block, final ItemLike... items) {
-        return ItemUsedOnLocationTrigger.TriggerInstance.itemUsedOnBlock(LocationPredicate.Builder.identifier().setBlock(BlockPredicate.Builder.block().of(block)), ItemPredicate.Builder.item().of(items));
+        return ItemUsedOnLocationTrigger.TriggerInstance.itemUsedOnBlock(LocationPredicate.Builder.location().setBlock(BlockPredicate.Builder.block().of(block)), ItemPredicate.Builder.item().of(items));
     }
 
     public Criterion<ItemUsedOnLocationTrigger.TriggerInstance> itemUsedOnBlock(final Block block, final TagKey<Item> items) {
-        return ItemUsedOnLocationTrigger.TriggerInstance.itemUsedOnBlock(LocationPredicate.Builder.identifier().setBlock(BlockPredicate.Builder.block().of(block)), ItemPredicate.Builder.item().of(items));
+        return ItemUsedOnLocationTrigger.TriggerInstance.itemUsedOnBlock(LocationPredicate.Builder.location().setBlock(BlockPredicate.Builder.block().of(block)), ItemPredicate.Builder.item().of(items));
     }
 
     public Criterion<EffectsChangedTrigger.TriggerInstance> effectWithMinDuration(final Holder<MobEffect> effect, int minDuration) {

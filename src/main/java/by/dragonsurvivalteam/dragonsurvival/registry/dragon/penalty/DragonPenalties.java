@@ -85,8 +85,8 @@ public class DragonPenalties {
                 Optional.of(DragonSurvival.res("penalties/cave/cold_weakness")),
                 Optional.of(AnyOfCondition.anyOf(
                         Condition.thisEntity(EntityCondition.isInRainOrSnow()),
-                        Condition.thisEntity(EntityCondition.isOnBlock(DSBlockTags.IS_WET)),
-                        Condition.thisEntity(EntityCondition.isInBlock(DSBlockTags.IS_WET))
+                        Condition.thisEntity(EntityCondition.isOnBlock(context.lookup(Registries.BLOCK), DSBlockTags.IS_WET)),
+                        Condition.thisEntity(EntityCondition.isInBlock(context.lookup(Registries.BLOCK), DSBlockTags.IS_WET))
                 ).and(Condition.thisEntity(EntityCondition.hasEffect(DSEffects.FIRE)).invert()).build()),
                 new DamagePenalty(context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.RAIN_BURN), 1),
                 new SupplyTrigger(DragonSurvival.res("rain_supply"), DSAttributes.PENALTY_RESISTANCE_TIME, Functions.secondsToTicks(2), 1, 0.013f, List.of(), false, Optional.of(ParticleTypes.SMOKE))
@@ -105,8 +105,8 @@ public class DragonPenalties {
                 Optional.of(AnyOfCondition.anyOf(
                         Condition.thisEntity(EntityCondition.hasEffect(DSEffects.PEACE)),
                         Condition.thisEntity(EntityCondition.isInFluid(context.lookup(Registries.FLUID).getOrThrow(FluidTags.WATER))),
-                        Condition.thisEntity(EntityCondition.isOnBlock(DSBlockTags.IS_WET)),
-                        Condition.thisEntity(EntityCondition.isInBlock(DSBlockTags.IS_WET)),
+                        Condition.thisEntity(EntityCondition.isOnBlock(context.lookup(Registries.BLOCK), DSBlockTags.IS_WET)),
+                        Condition.thisEntity(EntityCondition.isInBlock(context.lookup(Registries.BLOCK), DSBlockTags.IS_WET)),
                         Condition.thisEntity(EntityCondition.isInRainOrSnow())
                 ).invert().build()),
                 new DamagePenalty(context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.DEHYDRATION), 1),
@@ -142,8 +142,8 @@ public class DragonPenalties {
                 Optional.of(AnyOfCondition.anyOf(
                         Condition.thisEntity(EntityCondition.hasEffect(DSEffects.MAGIC)),
                         Condition.thisEntity(EntityCondition.hasEffect(MobEffects.GLOWING)),
-                        Condition.thisEntity(EntityCondition.isItemEquipped(EquipmentSlot.MAINHAND, DSItemTags.LIGHT_SOURCE)),
-                        Condition.thisEntity(EntityCondition.isItemEquipped(EquipmentSlot.OFFHAND, DSItemTags.LIGHT_SOURCE)),
+                        Condition.thisEntity(EntityCondition.isItemEquipped(context.lookup(Registries.ITEM), EquipmentSlot.MAINHAND, DSItemTags.LIGHT_SOURCE)),
+                        Condition.thisEntity(EntityCondition.isItemEquipped(context.lookup(Registries.ITEM), EquipmentSlot.OFFHAND, DSItemTags.LIGHT_SOURCE)),
                         Condition.thisEntity(EntityCondition.isInLight(3))
                 ).invert().build()),
                 new MobEffectPenalty(PotionData.create(DSEffects.STRESS).duration(10).showParticles().build()),
@@ -181,7 +181,7 @@ public class DragonPenalties {
                         DurationInstanceBase.create(DragonSurvival.res("animals")).removeAutomatically().hidden().build(),
                         Optional.of(
                                 Condition.thisEntity(EntityCondition.isType(EntityCheckPredicate.Type.ANIMAL))
-                                        .and(Condition.thisEntity(EntityCondition.isType(DSEntityTypeTags.ANIMAL_AVOID_BLACKLIST)).invert()).build()
+                                        .and(Condition.thisEntity(EntityCondition.isType(context.lookup(Registries.ENTITY_TYPE), DSEntityTypeTags.ANIMAL_AVOID_BLACKLIST)).invert()).build()
                         ),
                         LevelBasedValue.constant(20),
                         LevelBasedValue.constant(1.3f),
@@ -200,9 +200,9 @@ public class DragonPenalties {
     }
 
     public static final List<String> DEFAULT_COMMON_BLACKLIST = List.of(
-            "#" + Tags.Items.TOOLS_SHIELD.identifier(),
-            "#" + Tags.Items.TOOLS_BOW.identifier(),
-            "#" + Tags.Items.TOOLS_CROSSBOW.identifier(),
+            "#" + Tags.Items.TOOLS_SHIELD.location(),
+            "#" + Tags.Items.TOOLS_BOW.location(),
+            "#" + Tags.Items.TOOLS_CROSSBOW.location(),
             "minecraft:trident",
             "born_in_chaos_v1:staffof_magic_arrows",
             "mowziesmobs:wrought_axe",

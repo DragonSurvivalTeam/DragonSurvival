@@ -325,7 +325,7 @@ public class ForestDragonAbilities {
                 Optional.of(Condition.thisEntity(EntityCondition.isOnGround(false)).build()),
                 List.of(new ActionContainer(new AreaTarget(AbilityTargeting.entity(
                         List.of(
-                                new PotionEffect(PotionData.create(MobEffects.DIG_SPEED).amplifierPer(1).durationPer(200).build()),
+                                new PotionEffect(PotionData.create(MobEffects.HASTE).amplifierPer(1).durationPer(200).build()),
                                 new ParticleEffect(
                                         new SpawnParticles(ParticleTypes.END_ROD, SpawnParticles.inBoundingBox(), SpawnParticles.inBoundingBox(), SpawnParticles.fixedVelocity(ConstantFloat.of(0.05f)), SpawnParticles.fixedVelocity(ConstantFloat.of(0.05f)), ConstantFloat.of(0.05f)),
                                         LevelBasedValue.constant(20)
@@ -392,8 +392,8 @@ public class ForestDragonAbilities {
                         )), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(1)),
                         new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                                 // Enable when on (or within) said block tag or when under sunlight with a strength of at least 10
-                                Condition.thisEntity(EntityCondition.isOnBlock(DSBlockTags.IS_GRASSY))
-                                        .or(Condition.thisEntity(EntityCondition.isInBlock(DSBlockTags.IS_GRASSY)))
+                                Condition.thisEntity(EntityCondition.isOnBlock(context.lookup(Registries.BLOCK), DSBlockTags.IS_GRASSY))
+                                        .or(Condition.thisEntity(EntityCondition.isInBlock(context.lookup(Registries.BLOCK), DSBlockTags.IS_GRASSY)))
                                         .or(Condition.thisEntity(EntityCondition.isInSunlight(10))).build(),
                                 ModifierEffect.only(new ModifierWithDuration(
                                         DurationInstanceBase.create(DragonSurvival.res("good_mana_condition")).removeAutomatically().hidden().build(),
@@ -424,8 +424,8 @@ public class ForestDragonAbilities {
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         // Enable when on said block tag
-                        Condition.thisEntity(EntityCondition.isOnBlock(DSBlockTags.SPEEDS_UP_FOREST_DRAGON)).build(),
-                        PotionEffect.only(PotionData.create(MobEffects.MOVEMENT_SPEED).amplifierPer(0.2f).durationPer(1).build()),
+                        Condition.thisEntity(EntityCondition.isOnBlock(context.lookup(Registries.BLOCK), DSBlockTags.SPEEDS_UP_FOREST_DRAGON)).build(),
+                        PotionEffect.only(PotionData.create(MobEffects.SPEED).amplifierPer(0.2f).durationPer(1).build()),
                         TargetingMode.ALLIES_AND_SELF
                 )), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(Functions.secondsToTicks(1)))),
                 true,

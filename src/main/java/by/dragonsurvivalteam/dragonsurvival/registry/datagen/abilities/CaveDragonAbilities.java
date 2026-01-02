@@ -431,14 +431,14 @@ public class CaveDragonAbilities {
                         new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                                 // Enable when on (or within) said block tag, when in lava or when on certain lit blocks
                                 AnyOfCondition.anyOf(
-                                        Condition.thisEntity(EntityCondition.isOnBlock(DSBlockTags.IS_WARM)),
-                                        Condition.thisEntity(EntityCondition.isInBlock(DSBlockTags.IS_WARM)),
-                                        Condition.thisEntity(EntityCondition.isOnBlock(Blocks.FIRE)),
+                                        Condition.thisEntity(EntityCondition.isOnBlock(context.lookup(Registries.BLOCK), DSBlockTags.IS_WARM)),
+                                        Condition.thisEntity(EntityCondition.isInBlock(context.lookup(Registries.BLOCK), DSBlockTags.IS_WARM)),
+                                        Condition.thisEntity(EntityCondition.isOnBlock(context.lookup(Registries.BLOCK), Blocks.FIRE)),
                                         Condition.thisEntity(EntityCondition.isInFluid(context.lookup(Registries.FLUID).getOrThrow(FluidTags.LAVA))),
-                                        Condition.thisEntity(EntityCondition.isOnBlock(BlockTags.CAMPFIRES, BlockStateProperties.LIT, true)),
-                                        Condition.thisEntity(EntityCondition.isOnBlock(Tags.Blocks.PLAYER_WORKSTATIONS_FURNACES, BlockStateProperties.LIT, true)),
-                                        Condition.thisEntity(EntityCondition.isOnBlock(Blocks.SMOKER, BlockStateProperties.LIT, true)),
-                                        Condition.thisEntity(EntityCondition.isOnBlock(Blocks.BLAST_FURNACE, BlockStateProperties.LIT, true))
+                                        Condition.thisEntity(EntityCondition.isOnBlock(context.lookup(Registries.BLOCK), BlockTags.CAMPFIRES, BlockStateProperties.LIT, true)),
+                                        Condition.thisEntity(EntityCondition.isOnBlock(context.lookup(Registries.BLOCK), Tags.Blocks.PLAYER_WORKSTATIONS_FURNACES, BlockStateProperties.LIT, true)),
+                                        Condition.thisEntity(EntityCondition.isOnBlock(context.lookup(Registries.BLOCK), Blocks.SMOKER, BlockStateProperties.LIT, true)),
+                                        Condition.thisEntity(EntityCondition.isOnBlock(context.lookup(Registries.BLOCK), Blocks.BLAST_FURNACE, BlockStateProperties.LIT, true))
                                 ).build(),
                                 ModifierEffect.only(new ModifierWithDuration(
                                         DurationInstanceBase.create(DragonSurvival.res("good_mana_condition")).removeAutomatically().hidden().build(),
@@ -469,8 +469,8 @@ public class CaveDragonAbilities {
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         // Enable when on said block tag
-                        Condition.thisEntity(EntityCondition.isOnBlock(DSBlockTags.SPEEDS_UP_CAVE_DRAGON)).build(),
-                        PotionEffect.only(PotionData.create(MobEffects.MOVEMENT_SPEED).amplifierPer(0.2f).durationPer(1).build()),
+                        Condition.thisEntity(EntityCondition.isOnBlock(context.lookup(Registries.BLOCK), DSBlockTags.SPEEDS_UP_CAVE_DRAGON)).build(),
+                        PotionEffect.only(PotionData.create(MobEffects.SPEED).amplifierPer(0.2f).durationPer(1).build()),
                         TargetingMode.ALLIES_AND_SELF
                 )), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(Functions.secondsToTicks(1)))),
                 true,

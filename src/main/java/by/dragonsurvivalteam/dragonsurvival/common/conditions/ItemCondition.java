@@ -1,8 +1,8 @@
 package by.dragonsurvivalteam.dragonsurvival.common.conditions;
 
-import net.minecraft.advancements.critereon.ItemPotionsPredicate;
-import net.minecraft.advancements.critereon.ItemPredicate;
-import net.minecraft.advancements.critereon.ItemSubPredicates;
+import net.minecraft.advancements.criterion.ItemPotionsPredicate;
+import net.minecraft.advancements.criterion.ItemPredicate;
+import net.minecraft.advancements.criterion.ItemSubPredicates;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.tags.TagKey;

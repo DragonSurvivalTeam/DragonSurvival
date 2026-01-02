@@ -11,7 +11,6 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
 import net.neoforged.neoforge.common.Tags;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -45,8 +44,8 @@ public class DSEntityTypeTags extends EntityTypeTagsProvider {
     @Translation(comments = "Drops Elder Dragon Heart")
     public static final TagKey<EntityType<?>> DROPS_ELDER_DRAGON_HEART = key("drops_elder_dragon_heart");
 
-    public DSEntityTypeTags(final PackOutput output, final CompletableFuture<HolderLookup.Provider> provider, @Nullable final ExistingFileHelper helper) {
-        super(output, provider, DragonSurvival.MODID, helper);
+    public DSEntityTypeTags(final PackOutput output, final CompletableFuture<HolderLookup.Provider> provider) {
+        super(output, provider, DragonSurvival.MODID);
     }
 
     @Override
