@@ -82,7 +82,7 @@ public class DynamicAvoidEntityGoal extends Goal {
 
     @Override
     public void start() {
-        navigation.snapTo(path, walkSpeed);
+        navigation.moveTo(path, walkSpeed);
     }
 
     @Override

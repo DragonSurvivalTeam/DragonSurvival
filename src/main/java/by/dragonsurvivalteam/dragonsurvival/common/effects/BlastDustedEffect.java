@@ -43,7 +43,7 @@ public class BlastDustedEffect extends ModifiableMobEffect {
     }
 
     @Override
-    public boolean applyEffectTick(@NotNull final LivingEntity entity, final int amplifier) {
+    public boolean applyEffectTick(@NotNull ServerLevel level, @NotNull final LivingEntity entity, final int amplifier) {
         if (entity instanceof Player player) {
             DragonStateHandler handler = DragonStateProvider.getData(player);
 
@@ -52,19 +52,15 @@ public class BlastDustedEffect extends ModifiableMobEffect {
             }
         }
 
-        if (entity.isEyeInFluidType(NeoForgeMod.WATER_TYPE.value()) || entity.isInWaterRainOrBubble()) {
+        if (entity.isEyeInFluidType(NeoForgeMod.WATER_TYPE.value()) || entity.isInWaterOrRain()) {
             return false;
         }
 
-        return super.applyEffectTick(entity, amplifier);
+        return super.applyEffectTick(level, entity, amplifier);
     }
 
     @Override
-    public void onMobHurt(@NotNull final LivingEntity entity, final int amplifier, @NotNull final DamageSource damageSource, final float amount) {
-        if (entity.level().isClientSide()) {
-            return;
-        }
-
+    public void onMobHurt(@NotNull ServerLevel level, @NotNull final LivingEntity entity, final int amplifier, @NotNull final DamageSource damageSource, final float amount) {
         if (damageSource.is(DamageTypeTags.IS_FIRE)) {
             explode(entity, amplifier);
             entity.removeEffect(DSEffects.BLAST_DUSTED);

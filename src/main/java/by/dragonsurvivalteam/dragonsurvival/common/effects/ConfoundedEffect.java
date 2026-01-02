@@ -50,44 +50,40 @@ public class ConfoundedEffect extends ModifiableMobEffect {
     }
 
     @Override
-    public boolean applyEffectTick(@NotNull LivingEntity livingEntity, int amplifier) {
+    public boolean applyEffectTick(@NotNull ServerLevel level, @NotNull LivingEntity livingEntity, int amplifier) {
         if (livingEntity instanceof Player player) {
-            if (!player.level().isClientSide()) {
-                DragonStateHandler handler = DragonStateProvider.getData(player);
-                if (handler.isDragon() && handler.species().is(BuiltInDragonSpecies.FOREST_DRAGON)) { return false; }
+            DragonStateHandler handler = DragonStateProvider.getData(player);
+            if (handler.isDragon() && handler.species().is(BuiltInDragonSpecies.FOREST_DRAGON)) { return false; }
 
-                player.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 100));
-                if (amplifier > 1) {
-                    player.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 100));
-                    player.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, 100));
-                } else if (amplifier > 0) {
-                    player.addEffect(new MobEffectInstance(MobEffects.DARKNESS, 100));
-                    player.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, 100));
-                }
+            player.addEffect(new MobEffectInstance(MobEffects.NAUSEA, 100));
+            if (amplifier > 1) {
+                player.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 100));
+                player.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, 100));
+            } else if (amplifier > 0) {
+                player.addEffect(new MobEffectInstance(MobEffects.DARKNESS, 100));
+                player.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, 100));
             }
         } else if (livingEntity instanceof Mob mob){
-            if (!mob.level().isClientSide()) {
-                if (mob.getType().is(DSEntityTypeTags.CONFOUNDED_TARGET_BLACKLIST)) {
-                    return true; // Keep the effect but don't change targets
-                }
-                List<LivingEntity> list1 = mob.level().getEntitiesOfClass(LivingEntity.class, mob.getBoundingBox().inflate(5.0));
-                // Remove all forest dragons from potential targets
-                // Also remove self as target
-                list1 = list1.stream().filter(e -> {
-                    if (e instanceof Player p) { return !(DragonStateProvider.getData(p).species().is(DSDragonSpeciesTags.FOREST_DRAGONS)); }
-                    else if (e == mob) return false;
-                    else if (mob.getType().is(DSEntityTypeTags.CONFOUNDED_TARGET_BLACKLIST)) return false;
-                    return true;
-                }).toList();
-                if (list1.size() <= 0) {
-                    // No valid targets to swap to.
-                    return true;
-                }
-                int targetIndex = mob.getRandom().nextInt(list1.size());
-                mob.setTarget(list1.get(targetIndex));
+            if (mob.getType().is(DSEntityTypeTags.CONFOUNDED_TARGET_BLACKLIST)) {
+                return true; // Keep the effect but don't change targets
             }
+            List<LivingEntity> list1 = mob.level().getEntitiesOfClass(LivingEntity.class, mob.getBoundingBox().inflate(5.0));
+            // Remove all forest dragons from potential targets
+            // Also remove self as target
+            list1 = list1.stream().filter(e -> {
+                if (e instanceof Player p) { return !(DragonStateProvider.getData(p).species().is(DSDragonSpeciesTags.FOREST_DRAGONS)); }
+                else if (e == mob) return false;
+                else if (mob.getType().is(DSEntityTypeTags.CONFOUNDED_TARGET_BLACKLIST)) return false;
+                return true;
+            }).toList();
+            if (list1.size() <= 0) {
+                // No valid targets to swap to.
+                return true;
+            }
+            int targetIndex = mob.getRandom().nextInt(list1.size());
+            mob.setTarget(list1.get(targetIndex));
         }
-        return super.applyEffectTick(livingEntity, amplifier);
+        return super.applyEffectTick(level, livingEntity, amplifier);
     }
 
     @Override

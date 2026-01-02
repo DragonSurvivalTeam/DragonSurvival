@@ -93,7 +93,7 @@ public class FollowSummonerGoal extends Goal {
             if (shouldTeleport) {
                 teleportToOwner();
             } else {
-                navigation.snapTo(owner, speedModifier);
+                navigation.moveTo(owner, speedModifier);
             }
         }
     }

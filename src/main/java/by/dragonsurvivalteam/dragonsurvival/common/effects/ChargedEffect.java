@@ -72,19 +72,20 @@ public class ChargedEffect extends ModifiableMobEffect {
     }
 
     @Override
-    public boolean applyEffectTick(final LivingEntity entity, int amplifier) {
+    public boolean applyEffectTick(@NotNull ServerLevel level, final LivingEntity entity, int amplifier) {
         entity.hurt(new DamageSource(DSDamageTypes.get(entity.level(), DSDamageTypes.ELECTRIC)), damage * (amplifier + 1));
 
-        if (!DragonStateProvider.isDragon(entity)) {
+        // FIXME :: applyEffectTick is now serverside, this needs to be sent to the client or done elsewhere.
+        /*if (!DragonStateProvider.isDragon(entity)) {
             ParticleOptions particle = new SmallLightningParticleOption(37F, false);
 
             for (int i = 0; i < 4; i++) {
                 EffectHandler.renderEffectParticle(entity, particle);
             }
-        }
+        }*/
 
-        chargedEffectChain(entity, damage * amplifier + 1);
-        return super.applyEffectTick(entity, amplifier);
+        chargedEffectChain(level, entity, damage * amplifier + 1);
+        return super.applyEffectTick(level, entity, amplifier);
     }
 
     public static void drawParticleLine(LivingEntity source, LivingEntity target) {
@@ -105,8 +106,8 @@ public class ChargedEffect extends ModifiableMobEffect {
                 new SyncParticleTrail(start.toVector3f(), end.toVector3f(), new LargeLightningParticleOption(37F, false)));
     }
 
-    public static void chargedEffectChain(final LivingEntity source, float damage) {
-        List<LivingEntity> secondaryTargets = source.level().getNearbyEntities(LivingEntity.class, TargetingConditions.forCombat(), source, source.getBoundingBox().inflate(spreadRadius));
+    public static void chargedEffectChain(final ServerLevel serverLevel, final LivingEntity source, float damage) {
+        List<LivingEntity> secondaryTargets = serverLevel.getNearbyEntities(LivingEntity.class, TargetingConditions.forCombat(), source, source.getBoundingBox().inflate(spreadRadius));
         secondaryTargets.sort((c1, c2) -> Boolean.compare(c1.hasEffect(DSEffects.CHARGED), c2.hasEffect(DSEffects.CHARGED))); // Prioritize non-charged entities
 
         if (secondaryTargets.size() > maxChainTargets) {
@@ -116,13 +117,12 @@ public class ChargedEffect extends ModifiableMobEffect {
         for (LivingEntity target : secondaryTargets) {
             Entity effectApplier = null;
 
-            if (source.level() instanceof ServerLevel serverLevel) {
-                //noinspection DataFlowIssue -> effect cannot be null here
-                effectApplier = ((AdditionalEffectData) source.getEffect(DSEffects.CHARGED)).dragonSurvival$getApplier(serverLevel);
-            }
+            //noinspection DataFlowIssue -> effect cannot be null here
+            effectApplier = ((AdditionalEffectData) source.getEffect(DSEffects.CHARGED)).dragonSurvival$getApplier(serverLevel);
 
             target.hurt(new DamageSource(DSDamageTypes.get(target.level(), DSDamageTypes.ELECTRIC), effectApplier), damage);
-            drawParticleLine(source, target);
+            // FIXME :: applyEffectTick is now serverside, this needs to be sent to the client or done elsewhere.
+            //drawParticleLine(source, target);
 
             if (target.level().isClientSide()) {
                 return;

@@ -34,24 +34,20 @@ public class DrainEffect extends ModifiableMobEffect {
     }
 
     @Override
-    public boolean applyEffectTick(@NotNull final LivingEntity entity, int amplifier) {
-        if (!DragonStateProvider.isDragon(entity)) {
+    public boolean applyEffectTick(@NotNull ServerLevel level, @NotNull final LivingEntity entity, int amplifier) {
+        // FIXME :: applyEffectTick is now serverside, this needs to be sent to the client or done elsewhere.
+        /*if (!DragonStateProvider.isDragon(entity)) {
             ParticleOptions particle = new SmallPoisonParticleOption(37F, false);
 
             for (int i = 0; i < 4; i++) {
                 EffectHandler.renderEffectParticle(entity, particle);
             }
-        }
+        }*/
 
         Entity effectApplier = null;
-
-        if (entity.level() instanceof ServerLevel serverLevel) {
-            //noinspection DataFlowIssue -> effect cannot be null here
-            effectApplier = ((AdditionalEffectData) entity.getEffect(DSEffects.DRAIN)).dragonSurvival$getApplier(serverLevel);
-        }
-
+        effectApplier = ((AdditionalEffectData) entity.getEffect(DSEffects.DRAIN)).dragonSurvival$getApplier(level);
         entity.hurt(new DamageSource(DSDamageTypes.get(entity.level(), DSDamageTypes.DRAIN), effectApplier), damage);
 
-        return super.applyEffectTick(entity, amplifier);
+        return super.applyEffectTick(level, entity, amplifier);
     }
 }

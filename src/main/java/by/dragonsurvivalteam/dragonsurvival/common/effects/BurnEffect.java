@@ -16,6 +16,7 @@ import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.neoforged.neoforge.common.NeoForgeMod;
+import org.jetbrains.annotations.NotNull;
 
 public class BurnEffect extends ModifiableMobEffect {
     public BurnEffect(final MobEffectCategory type, int color, boolean incurable) {
@@ -28,8 +29,8 @@ public class BurnEffect extends ModifiableMobEffect {
     }
 
     @Override
-    public boolean applyEffectTick(final LivingEntity entity, int amplifier) {
-        if (entity.fireImmune() || entity.isEyeInFluidType(NeoForgeMod.WATER_TYPE.value()) || entity.isInWaterRainOrBubble()) {
+    public boolean applyEffectTick(@NotNull ServerLevel level, final LivingEntity entity, int amplifier) {
+        if (entity.fireImmune() || entity.isEyeInFluidType(NeoForgeMod.WATER_TYPE.value()) || entity.isInWaterOrRain()) {
             return false;
         }
 
@@ -39,36 +40,35 @@ public class BurnEffect extends ModifiableMobEffect {
             data.lastPos = entity.position();
         }
 
-        if (!DragonStateProvider.isDragon(entity)) {
+        // FIXME :: applyEffectTick is now serverside, this needs to be sent to the client or done elsewhere.
+        /*if (!DragonStateProvider.isDragon(entity)) {
             ParticleOptions particle = new SmallFireParticleOption(37F, false);
 
             for (int i = 0; i < 4; i++) {
                 EffectHandler.renderEffectParticle(entity, particle);
             }
-        }
+        }*/
 
-        if (data.lastPos != null) {
-            double distance = entity.distanceToSqr(data.lastPos);
-            float damage = (amplifier + 1) * Mth.clamp((float) distance, 0, 10);
+        double distance = entity.distanceToSqr(data.lastPos);
+        float damage = (amplifier + 1) * Mth.clamp((float) distance, 0, 10);
 
-            if (damage > 0) {
-                if (!entity.isOnFire()) {
-                    // Short enough fire duration to not cause fire damage but still drop cooked items
-                    entity.setRemainingFireTicks(1);
-                }
-
-                Entity effectApplier = null;
-
-                if (entity.level() instanceof ServerLevel serverLevel) {
-                    //noinspection DataFlowIssue -> effect cannot be null here
-                    effectApplier = ((AdditionalEffectData) entity.getEffect(DSEffects.BURN)).dragonSurvival$getApplier(serverLevel);
-                }
-
-                entity.hurt(new DamageSource(DSDamageTypes.get(entity.level(), DSDamageTypes.BURN), effectApplier), damage);
+        if (damage > 0) {
+            if (!entity.isOnFire()) {
+                // Short enough fire duration to not cause fire damage but still drop cooked items
+                entity.setRemainingFireTicks(1);
             }
+
+            Entity effectApplier = null;
+
+            if (entity.level() instanceof ServerLevel serverLevel) {
+                //noinspection DataFlowIssue -> effect cannot be null here
+                effectApplier = ((AdditionalEffectData) entity.getEffect(DSEffects.BURN)).dragonSurvival$getApplier(serverLevel);
+            }
+
+            entity.hurt(new DamageSource(DSDamageTypes.get(entity.level(), DSDamageTypes.BURN), effectApplier), damage);
         }
 
         data.lastPos = entity.position();
-        return super.applyEffectTick(entity, amplifier);
+        return super.applyEffectTick(level, entity, amplifier);
     }
 }
