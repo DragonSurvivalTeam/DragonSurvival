@@ -111,7 +111,7 @@ public class KeyHandler {
         }
 
         data.getFirst().getExistingData(DSDataAttachments.SUMMONED_ENTITIES).ifPresent(summonData -> {
-            if (Screen.hasShiftDown()) {
+            if (Minecraft.getInstance().hasShiftDown()) {
                 summonData.movementBehaviour = Functions.cycleEnum(summonData.movementBehaviour);
                 data.getFirst().displayClientMessage(cycledEnum(summonData.movementBehaviour), true);
             } else {

@@ -132,7 +132,7 @@ public class AbilityColumnsComponent implements ScrollableComponent {
 
     @Override
     public void scroll(double mouseX, double mouseY, double scrollX, double scrollY) {
-        if (!isHoveringOverButton(mouseX, mouseY) || Screen.hasShiftDown()) {
+        if (!isHoveringOverButton(mouseX, mouseY) || Minecraft.getInstance().hasShiftDown()) {
             return;
         }
 

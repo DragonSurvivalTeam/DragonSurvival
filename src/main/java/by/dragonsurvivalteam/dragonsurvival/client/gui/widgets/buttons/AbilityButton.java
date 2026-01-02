@@ -265,7 +265,7 @@ public class AbilityButton extends ExtendedButton {
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
-        if (Screen.hasShiftDown() && isHovered()) {
+        if (Minecraft.getInstance().hasShiftDown() && isHovered()) {
             // invert the value so that scrolling down shows further entries
             scrollAmount = Math.clamp(scrollAmount + (int) -scrollY, 0, AbilityAndPenaltyTooltipRenderer.maxScroll());
             return true;

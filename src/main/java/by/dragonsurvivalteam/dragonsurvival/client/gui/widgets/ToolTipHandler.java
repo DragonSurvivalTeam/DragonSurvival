@@ -93,7 +93,7 @@ public class ToolTipHandler {
             return;
         }
 
-        if (Screen.hasShiftDown()) {
+        if (Minecraft.getInstance().hasShiftDown()) {
             holder.translate(level.registryAccess(), event.getToolTip()::add);
         } else {
             event.getToolTip().add(Component.translatable(PRESS_SHIFT).withStyle(ChatFormatting.DARK_GRAY));
@@ -147,7 +147,7 @@ public class ToolTipHandler {
             return;
         }
 
-        if (Screen.hasShiftDown()) {
+        if (Minecraft.getInstance().hasShiftDown()) {
             dragonFoodTooltips.forEach(tooltip -> event.getToolTip().add(tooltip));
         } else {
             event.getToolTip().add(Component.translatable(PRESS_SHIFT).withStyle(ChatFormatting.DARK_GRAY));

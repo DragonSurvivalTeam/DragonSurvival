@@ -78,10 +78,10 @@ public class AbilityAndPenaltyTooltipRenderer {
         List<FormattedCharSequence> description = Minecraft.getInstance().font.split(rawDescription, backgroundWidth - 7);
 
         int backgroundHeight = 35 + 24 + description.size() * 9;
-        int sideWidth = Screen.hasShiftDown() ? maxLineWidth : 15;
-        int sideHeight = Screen.hasShiftDown() ? 36 + Math.min(skipFirstLine ? lines.size() - 1 : lines.size(), MAX_SHOWN_LINES) * 9 : backgroundHeight - 10;
+        int sideWidth = Minecraft.getInstance().hasShiftDown() ? maxLineWidth : 15;
+        int sideHeight = Minecraft.getInstance().hasShiftDown() ? 36 + Math.min(skipFirstLine ? lines.size() - 1 : lines.size(), MAX_SHOWN_LINES) * 9 : backgroundHeight - 10;
 
-        ClientTooltipPositioner positioner = new AbilityTooltipPositioner(Screen.hasShiftDown() ? sideWidth : 0);
+        ClientTooltipPositioner positioner = new AbilityTooltipPositioner(Minecraft.getInstance().hasShiftDown() ? sideWidth : 0);
         Vector2ic position = positioner.positionTooltip(graphics.guiWidth(), graphics.guiHeight(), x, y, maxLineWidth + 5, Math.max(sideHeight, backgroundHeight));
 
         int trueX = position.x();
@@ -89,11 +89,11 @@ public class AbilityAndPenaltyTooltipRenderer {
 
         if (!shiftInfo.isEmpty()) {
             // Backing for info tab
-            graphics.blitWithBorder(BARS, trueX - (Screen.hasShiftDown() ? maxLineWidth : 10), trueY + 3, 40, 20, sideWidth, sideHeight, 20, 20, 3);
+            graphics.blitWithBorder(BARS, trueX - (Minecraft.getInstance().hasShiftDown() ? maxLineWidth : 10), trueY + 3, 40, 20, sideWidth, sideHeight, 20, 20, 3);
             // Top bar for info tab
-            graphics.blitWithBorder(BARS, trueX - (Screen.hasShiftDown() ? maxLineWidth : 10) + 3, trueY + 9, colorXPos, colorYPos, Screen.hasShiftDown() ? maxLineWidth : 15, 20, 20, 20, 3);
+            graphics.blitWithBorder(BARS, trueX - (Minecraft.getInstance().hasShiftDown() ? maxLineWidth : 10) + 3, trueY + 9, colorXPos, colorYPos, Minecraft.getInstance().hasShiftDown() ? maxLineWidth : 15, 20, 20, 20, 3);
 
-            if (Screen.hasShiftDown()) {
+            if (Minecraft.getInstance().hasShiftDown()) {
                 graphics.drawString(Minecraft.getInstance().font, Component.translatable(LangKey.INFO), trueX - maxLineWidth + 10, trueY + 15, -1);
                 int counter = 0;
 

@@ -2,6 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components;
 
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic.HoverButton;
 import by.dragonsurvivalteam.dragonsurvival.mixins.client.ScreenAccessor;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.resources.Identifier;
@@ -55,7 +56,7 @@ public class BarComponent implements ScrollableComponent {
 
     @Override
     public void scroll(double mouseX, double mouseY, double scrollX, double scrollY) {
-        if (Screen.hasShiftDown() || !isHoveringOverWidget(mouseX, mouseY)) {
+        if (Minecraft.getInstance().hasShiftDown() || !isHoveringOverWidget(mouseX, mouseY)) {
             return;
         }
 
