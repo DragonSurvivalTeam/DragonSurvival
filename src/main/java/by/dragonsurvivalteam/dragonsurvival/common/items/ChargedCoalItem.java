@@ -4,6 +4,8 @@ import by.dragonsurvivalteam.dragonsurvival.common.items.food.CustomOnFinishEffe
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.block.entity.FuelValues;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -15,8 +17,9 @@ public class ChargedCoalItem extends CustomOnFinishEffectItem {
         super(properties, key, onEat);
     }
 
+    // TODO :: This shouldn't be hardcoded inside of the item class, instead it should use a data map. See the default function here for more info.
     @Override
-    public int getBurnTime(@NotNull ItemStack itemStack, RecipeType<?> recipeType) {
+    public int getBurnTime(@NotNull ItemStack itemStack, @Nullable RecipeType<?> recipeType, @NotNull FuelValues fuelValues) {
         return 4000;
     }
 }
