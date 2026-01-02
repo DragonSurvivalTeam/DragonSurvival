@@ -12,6 +12,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -23,6 +24,7 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
@@ -34,7 +36,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.DoorHingeSide;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.gameevent.GameEvent;
@@ -52,7 +53,7 @@ import java.util.Locale;
 
 /** These doors are 3 blocks high */
 public class DragonDoor extends Block implements SimpleWaterloggedBlock {
-    public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
+    public static final EnumProperty<Direction> FACING = HorizontalDirectionalBlock.FACING;
     public static final BooleanProperty OPEN = BlockStateProperties.OPEN;
     public static final EnumProperty<DoorHingeSide> HINGE = BlockStateProperties.DOOR_HINGE;
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
@@ -107,7 +108,7 @@ public class DragonDoor extends Block implements SimpleWaterloggedBlock {
     }
 
     @Override
-    public @NotNull BlockState updateShape(final BlockState state, @NotNull final Direction facing, @NotNull final BlockState facingState, @NotNull final LevelAccessor level, @NotNull final BlockPos position, @NotNull final BlockPos facingPosition) {
+    protected @NotNull BlockState updateShape(final BlockState state, @NotNull LevelReader level, @NotNull ScheduledTickAccess scheduledTickAccess, @NotNull BlockPos pos, @NotNull Direction direction, @NotNull BlockPos neighborPos, @NotNull BlockState neighborState, @NotNull RandomSource random) {
         if (state.getValue(WATERLOGGED)) {
             level.scheduleTick(position, Fluids.WATER, Fluids.WATER.getTickDelay(level));
         }

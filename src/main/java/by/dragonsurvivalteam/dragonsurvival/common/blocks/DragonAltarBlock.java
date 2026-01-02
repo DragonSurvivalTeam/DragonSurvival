@@ -12,9 +12,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -22,15 +19,13 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
 
 public class DragonAltarBlock extends Block {
     @Translation(comments = "The altar is on cooldown for: %s")
@@ -39,7 +34,7 @@ public class DragonAltarBlock extends Block {
     @Translation(comments = "■§7 An altar that allows you to turn into a dragon and edit skin.")
     private static final String ALTAR = Translation.Type.DESCRIPTION.wrap("dragon_altar");
 
-    public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
+    public static final EnumProperty<Direction> FACING = HorizontalDirectionalBlock.FACING;
     private final VoxelShape SHAPE = Shapes.block();
 
     public DragonAltarBlock(Properties properties) {
@@ -57,11 +52,12 @@ public class DragonAltarBlock extends Block {
         builder.add(FACING);
     }
 
-    @Override
+    // Will need a new way to add a tooltip here. Maybe inside of DSBlocks?
+    /*@Override
     public void appendHoverText(@NotNull ItemStack pStack, Item.@NotNull TooltipContext pContext, @NotNull List<Component> pTootipComponents, @NotNull TooltipFlag pTooltipFlag) {
         super.appendHoverText(pStack, pContext, pTootipComponents, pTooltipFlag);
         pTootipComponents.add(Component.translatable(ALTAR));
-    }
+    }*/
 
     @Override
     public @NotNull InteractionResult useWithoutItem(@NotNull final BlockState state, @NotNull final Level level, @NotNull final BlockPos position, @NotNull final Player player, @NotNull final BlockHitResult hitResult) {
@@ -69,7 +65,7 @@ public class DragonAltarBlock extends Block {
 
         if (ServerConfig.altarUsageCooldown > 0 && data.altarCooldown > 0) {
             Functions.Time time = Functions.Time.fromTicks(data.altarCooldown);
-            player.sendSystemMessage(Component.translatable(ALTAR_COOLDOWN, time.format()));
+            player.displayClientMessage(Component.translatable(ALTAR_COOLDOWN, time.format()), true);
             return InteractionResult.FAIL;
         } else {
             data.altarCooldown = Functions.secondsToTicks(ServerConfig.altarUsageCooldown);
@@ -80,7 +76,7 @@ public class DragonAltarBlock extends Block {
                 PacketDistributor.sendToPlayer(serverPlayer, new OpenDragonAltar(DragonSpecies.getSpecies(serverPlayer, true)));
             }
 
-            return InteractionResult.sidedSuccess(level.isClientSide());
+            return InteractionResult.SUCCESS;
         }
     }
 
