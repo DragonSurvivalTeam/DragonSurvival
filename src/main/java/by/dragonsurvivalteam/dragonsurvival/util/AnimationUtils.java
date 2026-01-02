@@ -1,12 +1,12 @@
 package by.dragonsurvivalteam.dragonsurvival.util;
 
+import java.util.List;
 import by.dragonsurvivalteam.dragonsurvival.mixins.client.AnimationControllerAccessor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.LivingEntity;
 import software.bernie.geckolib.animatable.GeoAnimatable;
 import software.bernie.geckolib.animation.AnimationController;
 import software.bernie.geckolib.animation.RawAnimation;
-import software.bernie.geckolib.cache.GeckoLibCache;
 import software.bernie.geckolib.cache.GeckoLibResources;
 import software.bernie.geckolib.loading.object.BakedAnimations;
 import software.bernie.geckolib.model.GeoModel;
@@ -21,7 +21,7 @@ public class AnimationUtils {
             return;
         }
 
-        if (controller.getCurrentAnimation() != null) {
+        if (controller.getCurrentRawAnimation() != null) {
             double distance = currentAnimationTick - ((AnimationControllerAccessor) controller).dragonSurvival$getTickOffset();
             ((AnimationControllerAccessor) controller).dragonSurvival$setTickOffset(currentAnimationTick - distance * (controller.getAnimationSpeed() / speed));
             controller.setAnimationSpeed(speed);
@@ -31,7 +31,11 @@ public class AnimationUtils {
     // TODO: This is a hack since GeckoLib's state.isCurrentAnimation() doesn't work. If they ever fix that, we can remove this.
     public static boolean isAnimationPlaying(AnimationController<?> controller, RawAnimation animation) {
         String animationName = animation.getAnimationStages().getFirst().animationName();
-        return controller.getCurrentAnimation() != null && controller.getCurrentAnimation().animation().name().equals(animationName);
+        RawAnimation currentRawAnimation = controller.getCurrentRawAnimation();
+        if (currentRawAnimation == null) return false;
+        assert (currentRawAnimation.getAnimationStages().size() == 1);
+
+        return currentRawAnimation.getAnimationStages().getFirst().animationName().equals(animationName);
     }
 
     public static double getMovementSpeed(LivingEntity of) {
