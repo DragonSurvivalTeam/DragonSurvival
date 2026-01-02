@@ -8,28 +8,30 @@ import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigRange;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.util.AnimationUtils;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import software.bernie.geckolib.animation.AnimatableManager;
+import software.bernie.geckolib.animatable.manager.AnimatableManager;
 import software.bernie.geckolib.animation.AnimationController;
-import software.bernie.geckolib.animation.AnimationState;
-import software.bernie.geckolib.animation.PlayState;
 import software.bernie.geckolib.animation.RawAnimation;
+import software.bernie.geckolib.animation.object.PlayState;
+import software.bernie.geckolib.animation.state.AnimationTest;
 
 public class HoundEntity extends Hunter {
     @ConfigRange(min = 1)
@@ -149,26 +151,26 @@ public class HoundEntity extends Hunter {
     }
 
     @Override
-    public void addAdditionalSaveData(@NotNull CompoundTag compoundNBT) {
-        super.addAdditionalSaveData(compoundNBT);
-        compoundNBT.putInt("Variety", entityData.get(VARIETY));
+    public void addAdditionalSaveData(@NotNull ValueOutput valueOutput) {
+        super.addAdditionalSaveData(valueOutput);
+        valueOutput.putInt("Variety", entityData.get(VARIETY));
     }
 
     @Override
-    public void readAdditionalSaveData(@NotNull CompoundTag compoundNBT) {
-        super.readAdditionalSaveData(compoundNBT);
-        entityData.set(VARIETY, compoundNBT.getInt("Variety"));
+    public void readAdditionalSaveData(@NotNull ValueInput valueInput) {
+        super.readAdditionalSaveData(valueInput);
+        entityData.set(VARIETY, valueInput.getIntOr("Variety", 0));
     }
 
     @Override
-    public SpawnGroupData finalizeSpawn(@NotNull ServerLevelAccessor pLevel, @NotNull DifficultyInstance pDifficulty, @NotNull MobSpawnType pSpawnType, @Nullable SpawnGroupData pSpawnGroupData) {
+    public SpawnGroupData finalizeSpawn(@NotNull ServerLevelAccessor pLevel, @NotNull DifficultyInstance pDifficulty, @NotNull EntitySpawnReason pSpawnType, @Nullable SpawnGroupData pSpawnGroupData) {
         entityData.set(VARIETY, random.nextInt(8));
         return super.finalizeSpawn(pLevel, pDifficulty, pSpawnType, pSpawnGroupData);
     }
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>(this, "everything", 3, this::fullPredicate));
+        controllers.add(new AnimationController<>("everything", 3, this::fullPredicate));
     }
 
     private boolean isNotIdle() {
@@ -177,7 +179,7 @@ public class HoundEntity extends Hunter {
     }
 
     @Override
-    public boolean doHurtTarget(@NotNull Entity entity) {
+    public boolean doHurtTarget(@NotNull ServerLevel level, @NotNull Entity entity) {
         if (SLOWDOWN_CHANCE > 0 && entity instanceof LivingEntity) {
             if (random.nextDouble() > SLOWDOWN_CHANCE) {
                 ((LivingEntity) entity).addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 200));
@@ -187,10 +189,10 @@ public class HoundEntity extends Hunter {
             }
         }
 
-        return super.doHurtTarget(entity);
+        return super.doHurtTarget(level, entity);
     }
 
-    public PlayState fullPredicate(AnimationState<HoundEntity> state) {
+    public PlayState fullPredicate(AnimationTest<HoundEntity> state) {
         double movement = AnimationUtils.getMovementSpeed(this);
 
         if (isIdleAnimSet) {

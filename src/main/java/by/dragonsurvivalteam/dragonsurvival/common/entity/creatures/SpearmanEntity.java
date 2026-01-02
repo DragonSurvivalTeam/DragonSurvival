@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.common.entity.creatures;
 
+import java.util.Set;
 import by.dragonsurvivalteam.dragonsurvival.client.render.util.RandomAnimationPicker;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.goals.FollowSpecificMobGoal;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.goals.WindupMeleeAttackGoal;
@@ -15,20 +16,22 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.PositionMoveRotation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.event.EventHooks;
 import org.jetbrains.annotations.NotNull;
-import software.bernie.geckolib.animation.AnimatableManager;
+import software.bernie.geckolib.animatable.manager.AnimatableManager;
 import software.bernie.geckolib.animation.AnimationController;
-import software.bernie.geckolib.animation.AnimationState;
-import software.bernie.geckolib.animation.PlayState;
 import software.bernie.geckolib.animation.RawAnimation;
+import software.bernie.geckolib.animation.object.PlayState;
+import software.bernie.geckolib.animation.state.AnimationTest;
 
 public class SpearmanEntity extends Hunter {
     @ConfigRange(min = 1)
@@ -135,7 +138,7 @@ public class SpearmanEntity extends Hunter {
 
     @Override
     public boolean isWithinMeleeAttackRange(LivingEntity pEntity) {
-        return this.getAttackBoundingBox().inflate(HORIZONTAL_REACH, VERTICAL_REACH, HORIZONTAL_REACH).intersects(pEntity.getHitbox());
+        return this.getAttackBoundingBox(0).inflate(HORIZONTAL_REACH, VERTICAL_REACH, HORIZONTAL_REACH).intersects(pEntity.getHitbox());
     }
 
     @Override
@@ -145,10 +148,10 @@ public class SpearmanEntity extends Hunter {
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>(this, "everything", 3, this::fullPredicate));
-        controllers.add(new AnimationController<>(this, "head", 3, this::headPredicate));
-        controllers.add(new AnimationController<>(this, "arms", 3, this::armsPredicate));
-        controllers.add(new AnimationController<>(this, "legs", 3, this::legsPredicate));
+        controllers.add(new AnimationController<>("everything", 3, this::fullPredicate));
+        controllers.add(new AnimationController<>("head", 3, this::headPredicate));
+        controllers.add(new AnimationController<>("arms", 3, this::armsPredicate));
+        controllers.add(new AnimationController<>("legs", 3, this::legsPredicate));
     }
 
     @Override
@@ -158,11 +161,11 @@ public class SpearmanEntity extends Hunter {
             return super.mobInteract(pPlayer, pHand);
         } else {
             if (itemstack.getItem() == DSItems.SPEARMAN_PROMOTION.value()) {
-                if (!this.level().isClientSide) {
+                if (this.level() instanceof ServerLevel level) {
                     // Copied from witch conversion code
-                    Mob leader = DSEntities.HUNTER_LEADER.get().create(this.level());
-                    leader.moveTo(this.getX(), this.getY(), this.getZ(), this.getYRot(), this.getXRot());
-                    leader.finalizeSpawn((ServerLevel) this.level(), this.level().getCurrentDifficultyAt(leader.blockPosition()), MobSpawnType.CONVERSION, null);
+                    Mob leader = DSEntities.HUNTER_LEADER.get().create(level, EntitySpawnReason.CONVERSION);
+                    leader.snapTo(this.getX(), this.getY(), this.getZ(), this.getYRot(), this.getXRot());
+                    EventHooks.finalizeMobSpawn(leader, level, level.getCurrentDifficultyAt(leader.blockPosition()), EntitySpawnReason.CONVERSION, null);
                     leader.setNoAi(this.isNoAi());
                     if (this.hasCustomName()) {
                         leader.setCustomName(this.getCustomName());
@@ -171,8 +174,8 @@ public class SpearmanEntity extends Hunter {
 
                     leader.setPersistenceRequired();
                     net.neoforged.neoforge.event.EventHooks.onLivingConvert(this, leader);
-                    this.level().addFreshEntity(leader);
-                    this.level().playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.AMETHYST_BLOCK_CHIME, this.getSoundSource(), 2.0F, 1.0F);
+                    level.addFreshEntity(leader);
+                    level.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.AMETHYST_BLOCK_CHIME, this.getSoundSource(), 2.0F, 1.0F);
                     this.discard();
                 }
 
@@ -192,7 +195,7 @@ public class SpearmanEntity extends Hunter {
         return swingTime > 0 || movement > getWalkThreshold() || isAggro();
     }
 
-    public PlayState fullPredicate(final AnimationState<SpearmanEntity> state) {
+    public PlayState fullPredicate(final AnimationTest<SpearmanEntity> state) {
         if (isNotIdle()) {
             isIdleAnimSet = false;
             return PlayState.STOP;
@@ -201,11 +204,11 @@ public class SpearmanEntity extends Hunter {
         return state.setAndContinue(getIdleAnim());
     }
 
-    public PlayState headPredicate(final AnimationState<SpearmanEntity> state) {
+    public PlayState headPredicate(final AnimationTest<SpearmanEntity> state) {
         return state.setAndContinue(HEAD_BLEND);
     }
 
-    public PlayState armsPredicate(final AnimationState<SpearmanEntity> state) {
+    public PlayState armsPredicate(final AnimationTest<SpearmanEntity> state) {
         if (swingTime > 0) {
             return state.setAndContinue(ATTACK_BLEND);
         } else if (isAggro()) {
@@ -217,7 +220,7 @@ public class SpearmanEntity extends Hunter {
         return PlayState.STOP;
     }
 
-    public PlayState legsPredicate(final AnimationState<SpearmanEntity> state) {
+    public PlayState legsPredicate(final AnimationTest<SpearmanEntity> state) {
         double movement = AnimationUtils.getMovementSpeed(this);
 
         if (movement > getRunThreshold()) {

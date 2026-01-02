@@ -13,7 +13,7 @@ import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
@@ -24,11 +24,11 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import software.bernie.geckolib.animation.AnimatableManager;
+import software.bernie.geckolib.animatable.manager.AnimatableManager;
 import software.bernie.geckolib.animation.AnimationController;
-import software.bernie.geckolib.animation.AnimationState;
-import software.bernie.geckolib.animation.PlayState;
 import software.bernie.geckolib.animation.RawAnimation;
+import software.bernie.geckolib.animation.object.PlayState;
+import software.bernie.geckolib.animation.state.AnimationTest;
 
 import java.util.List;
 
@@ -120,8 +120,8 @@ public class KnightEntity extends Hunter {
 
     @Override
     public void registerControllers(final AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>(this, "everything", 3, this::fullPredicate));
-        controllers.add(new AnimationController<>(this, "head", 3, this::headPredicate));
+        controllers.add(new AnimationController<>("everything", 3, this::fullPredicate));
+        controllers.add(new AnimationController<>("head", 3, this::headPredicate));
     }
 
     private boolean isNotIdle() {
@@ -129,7 +129,7 @@ public class KnightEntity extends Hunter {
         return swingTime > 0 || movement > getWalkThreshold() || isInWater();
     }
 
-    public PlayState fullPredicate(final AnimationState<KnightEntity> state) {
+    public PlayState fullPredicate(final AnimationTest<KnightEntity> state) {
         double movement = AnimationUtils.getMovementSpeed(this);
 
         if (swingTime == 0) {
@@ -169,7 +169,7 @@ public class KnightEntity extends Hunter {
         return currentAttackAnim;
     }
 
-    public PlayState headPredicate(final AnimationState<Hunter> state) {
+    public PlayState headPredicate(final AnimationTest<Hunter> state) {
         return state.setAndContinue(HEAD_BLEND);
     }
 
@@ -219,7 +219,7 @@ public class KnightEntity extends Hunter {
     }
 
     @Override
-    public @Nullable SpawnGroupData finalizeSpawn(@NotNull ServerLevelAccessor serverWorld, @NotNull DifficultyInstance difficultyInstance, @NotNull MobSpawnType spawnReason, @Nullable SpawnGroupData entityData) {
+    public @Nullable SpawnGroupData finalizeSpawn(@NotNull ServerLevelAccessor serverWorld, @NotNull DifficultyInstance difficultyInstance, @NotNull EntitySpawnReason spawnReason, @Nullable SpawnGroupData entityData) {
         populateDefaultEquipmentSlots(random, difficultyInstance);
         return super.finalizeSpawn(serverWorld, difficultyInstance, spawnReason, entityData);
     }

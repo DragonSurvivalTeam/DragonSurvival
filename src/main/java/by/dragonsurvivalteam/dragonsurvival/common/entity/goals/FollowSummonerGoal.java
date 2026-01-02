@@ -6,6 +6,7 @@ import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.PositionMoveRotation;
 import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
@@ -92,7 +93,7 @@ public class FollowSummonerGoal extends Goal {
             if (shouldTeleport) {
                 teleportToOwner();
             } else {
-                navigation.moveTo(owner, speedModifier);
+                navigation.snapTo(owner, speedModifier);
             }
         }
     }
@@ -133,7 +134,7 @@ public class FollowSummonerGoal extends Goal {
         if (!canTeleportTo(BlockPos.containing(x, y, z))) {
             return false;
         } else {
-            mob.moveTo(x, y, z, mob.getYRot(), mob.getXRot());
+            mob.snapTo(x, y, z, mob.getYRot(), mob.getXRot());
             mob.getNavigation().stop();
             return true;
         }

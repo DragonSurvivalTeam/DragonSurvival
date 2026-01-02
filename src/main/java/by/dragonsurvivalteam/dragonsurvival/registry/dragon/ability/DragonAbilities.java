@@ -204,7 +204,7 @@ public class DragonAbilities {
                         true,
                         Optional.empty(),
                         Animations.create()
-                                .startAndCharging(SimpleAbilityAnimation.create(AnimationKey.CAST_MAGIC_ALT, AnimationLayer.BASE).transitionLength(5).build())
+                                .startAndCharging(SimpleAbilityAnimation.create(AnimationKey.CAST_MAGIC_ALT, AnimationLayer.BASE).setTransitionTicks(5).build())
                                 .end(SimpleAbilityAnimation.create(AnimationKey.MAGIC_ALT, AnimationLayer.BASE).build())
                                 .optional()
                 ),
@@ -310,7 +310,7 @@ public class DragonAbilities {
                         true,
                         Sound.create().end(SoundEvents.PLAYER_TELEPORT).optional(),
                         Animations.create()
-                                .startAndCharging(SimpleAbilityAnimation.create(AnimationKey.CAST_MAGIC_ALT, AnimationLayer.BASE).transitionLength(5).build())
+                                .startAndCharging(SimpleAbilityAnimation.create(AnimationKey.CAST_MAGIC_ALT, AnimationLayer.BASE).setTransitionTicks(5).build())
                                 .end(SimpleAbilityAnimation.create(AnimationKey.MAGIC_ALT, AnimationLayer.BASE).build())
                                 .optional()
                 ),
@@ -349,7 +349,7 @@ public class DragonAbilities {
                         true,
                         Sound.create().end(SoundEvents.PLAYER_TELEPORT).optional(),
                         Animations.create()
-                                .startAndCharging(SimpleAbilityAnimation.create(AnimationKey.CAST_MAGIC_ALT, AnimationLayer.BASE).transitionLength(5).build())
+                                .startAndCharging(SimpleAbilityAnimation.create(AnimationKey.CAST_MAGIC_ALT, AnimationLayer.BASE).setTransitionTicks(5).build())
                                 .end(SimpleAbilityAnimation.create(AnimationKey.MAGIC_ALT, AnimationLayer.BASE).build())
                                 .optional()
                 ),
@@ -387,7 +387,7 @@ public class DragonAbilities {
                         true,
                         Sound.create().end(SoundEvents.EVOKER_PREPARE_SUMMON).optional(),
                         Animations.create()
-                                .startAndCharging(SimpleAbilityAnimation.create(AnimationKey.CAST_MAGIC_ALT, AnimationLayer.BASE).transitionLength(5).build())
+                                .startAndCharging(SimpleAbilityAnimation.create(AnimationKey.CAST_MAGIC_ALT, AnimationLayer.BASE).setTransitionTicks(5).build())
                                 .end(SimpleAbilityAnimation.create(AnimationKey.MAGIC_ALT, AnimationLayer.BASE).build())
                                 .optional()
                 ),
@@ -421,7 +421,7 @@ public class DragonAbilities {
                         true,
                         Optional.empty(),
                         Animations.create()
-                                .startAndCharging(SimpleAbilityAnimation.create(AnimationKey.CAST_MAGIC_ALT, AnimationLayer.BASE).transitionLength(5).build())
+                                .startAndCharging(SimpleAbilityAnimation.create(AnimationKey.CAST_MAGIC_ALT, AnimationLayer.BASE).setTransitionTicks(5).build())
                                 .end(SimpleAbilityAnimation.create(AnimationKey.MAGIC_ALT, AnimationLayer.BASE).build())
                                 .optional()
                 ),

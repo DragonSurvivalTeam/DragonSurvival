@@ -28,7 +28,7 @@ public class KnightModel extends GeoModel<KnightEntity> {
     }
 
     @Override
-    public void applyMolangQueries(final AnimationState<KnightEntity> animationState, double currentTick) {
+    public void applyMolangQueries(final AnimationTest<KnightEntity> animationState, double currentTick) {
         super.applyMolangQueries(animationState, currentTick);
 
         EntityModelData entityData = animationState.getData(DataTickets.ENTITY_MODEL_DATA);

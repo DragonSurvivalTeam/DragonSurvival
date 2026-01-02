@@ -51,7 +51,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
@@ -357,7 +357,7 @@ public class SummonEntityEffect extends DurationInstanceBase<SummonedEntities, S
                 }
             }
 
-            Entity entity = type.spawn(storageHolder.serverLevel(), spawnPosition.above(), MobSpawnType.TRIGGERED);
+            Entity entity = type.spawn(storageHolder.serverLevel(), spawnPosition.above(), EntitySpawnReason.TRIGGERED);
 
             if (entity == null) {
                 return;

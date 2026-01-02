@@ -13,6 +13,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -20,8 +21,7 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -34,11 +34,11 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import software.bernie.geckolib.animation.AnimatableManager;
+import software.bernie.geckolib.animatable.manager.AnimatableManager;
 import software.bernie.geckolib.animation.AnimationController;
-import software.bernie.geckolib.animation.AnimationState;
-import software.bernie.geckolib.animation.PlayState;
 import software.bernie.geckolib.animation.RawAnimation;
+import software.bernie.geckolib.animation.object.PlayState;
+import software.bernie.geckolib.animation.state.AnimationTest;
 
 public class GriffinEntity extends Hunter {
     @ConfigRange(min = 1)
@@ -136,7 +136,7 @@ public class GriffinEntity extends Hunter {
     }
 
     @Override
-    public @Nullable SpawnGroupData finalizeSpawn(final @NotNull ServerLevelAccessor level, final @NotNull DifficultyInstance difficulty, final @NotNull MobSpawnType spawnType, final @Nullable SpawnGroupData spawnGroupData) {
+    public @Nullable SpawnGroupData finalizeSpawn(final @NotNull ServerLevelAccessor level, final @NotNull DifficultyInstance difficulty, final @NotNull EntitySpawnReason spawnType, final @Nullable SpawnGroupData spawnGroupData) {
         setBaseValue(Attributes.FLYING_SPEED, FLYING_SPEED);
         return super.finalizeSpawn(level, difficulty, spawnType, spawnGroupData);
     }
@@ -157,22 +157,9 @@ public class GriffinEntity extends Hunter {
     }
 
     @Override
-    public void travel(@NotNull Vec3 pTravelVector) {
-        if (this.isControlledByLocalInstance()) {
-            if (this.isInWater()) {
-                this.moveRelative(0.02F, pTravelVector);
-                this.move(MoverType.SELF, this.getDeltaMovement());
-                this.setDeltaMovement(this.getDeltaMovement().scale(0.8F));
-            } else if (this.isInLava()) {
-                this.moveRelative(0.02F, pTravelVector);
-                this.move(MoverType.SELF, this.getDeltaMovement());
-                this.setDeltaMovement(this.getDeltaMovement().scale(0.5));
-            } else {
-                this.moveRelative(this.getSpeed(), pTravelVector);
-                this.move(MoverType.SELF, this.getDeltaMovement());
-                this.setDeltaMovement(this.getDeltaMovement().scale(0.91F));
-            }
-        }
+    // Copied from Allay.java
+    public void travel(@NotNull Vec3 travelVector) {
+        this.travelFlying(travelVector, this.getSpeed());
     }
 
     @Override
@@ -219,7 +206,7 @@ public class GriffinEntity extends Hunter {
     }
 
     @Override
-    public boolean doHurtTarget(@NotNull Entity entity) {
+    public boolean doHurtTarget(@NotNull ServerLevel level, @NotNull Entity entity) {
         if (entity instanceof LivingEntity target) {
             if (getCurrentAttack() == GriffinAttackTypes.BLINDNESS) {
                 target.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 100, 0));
@@ -229,15 +216,16 @@ public class GriffinEntity extends Hunter {
                 }
             }
         }
-        return super.doHurtTarget(entity);
+
+        return super.doHurtTarget(level, entity);
     }
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>(this, "everything", 0, this::fullPredicate));
+        controllers.add(new AnimationController<>("everything", 0, this::fullPredicate));
     }
 
-    public PlayState fullPredicate(final AnimationState<GriffinEntity> state) {
+    public PlayState fullPredicate(final AnimationTest<GriffinEntity> state) {
         double movement = AnimationUtils.getMovementSpeed(this);
 
         if (swingTime > 0) {

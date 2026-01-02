@@ -1,9 +1,9 @@
 package by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation;
 
-import software.bernie.geckolib.animation.AnimationState;
+import software.bernie.geckolib.animation.state.AnimationTest;
 
 public interface AbilityAnimation {
-    void play(AnimationState<?> state, AnimationType animationType);
+    void play(AnimationTest<?> state, AnimationType animationType);
 
     boolean locksHead();
 

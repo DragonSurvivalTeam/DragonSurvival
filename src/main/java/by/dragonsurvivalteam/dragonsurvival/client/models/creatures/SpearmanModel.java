@@ -28,7 +28,7 @@ public class SpearmanModel extends GeoModel<SpearmanEntity> {
     }
 
     @Override
-    public void applyMolangQueries(final AnimationState<SpearmanEntity> animationState, double currentTick) {
+    public void applyMolangQueries(final AnimationTest<SpearmanEntity> animationState, double currentTick) {
         super.applyMolangQueries(animationState, currentTick);
 
         EntityModelData entityData = animationState.getData(DataTickets.ENTITY_MODEL_DATA);

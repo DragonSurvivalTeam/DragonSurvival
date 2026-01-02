@@ -16,8 +16,8 @@ public record SimpleAbilityAnimation(String animationKey, AnimationLayer layer, 
     ).apply(instance, SimpleAbilityAnimation::new));
 
     @Override
-    public void play(final AnimationState<?> state, final AnimationType animationType) {
-        state.getController().transitionLength(transitionLength);
+    public void play(final AnimationTest<?> state, final AnimationType animationType) {
+        state.controller().setTransitionTicks(transitionLength);
         state.setAndContinue(getRawAnimation(animationType));
     }
 
@@ -73,7 +73,7 @@ public record SimpleAbilityAnimation(String animationKey, AnimationLayer layer, 
         }
 
         public Builder transitionLength(final int transitionLength) {
-            this.transitionLength = transitionLength;
+            this.setTransitionTicks = transitionLength;
             return this;
         }
 

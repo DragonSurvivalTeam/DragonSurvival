@@ -17,7 +17,7 @@ public record ProjectileLightningWorldEffect(LightningHandler.Data data) impleme
     @Override
     public void apply(final Projectile projectile, final Void target, final int level) {
         LightningBolt bolt = EntityType.LIGHTNING_BOLT.create(projectile.level());
-        bolt.moveTo(projectile.position());
+        bolt.snapTo(projectile.position());
 
         if (projectile.getOwner() instanceof ServerPlayer serverPlayer) {
             bolt.setCause(serverPlayer);

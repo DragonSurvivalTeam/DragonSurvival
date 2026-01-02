@@ -3,6 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.common.entity.goals;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SummonData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SummonedEntities;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.Targeting;
@@ -30,32 +31,37 @@ public class SummonerTargetedGoal extends TargetGoal {
 
     @Override
     public boolean canUse() {
-        SummonData data = mob.getData(DSDataAttachments.SUMMON);
-        LivingEntity owner = data.getOwner(mob.level());
+        if (mob.level() instanceof ServerLevel serverLevel)
+        {
+            SummonData data = mob.getData(DSDataAttachments.SUMMON);
+            LivingEntity owner = data.getOwner(serverLevel);
 
-        if (owner == null || data.attackBehaviour != SummonedEntities.AttackBehaviour.DEFENSIVE) {
-            return false;
-        }
-
-        if (mob.tickCount - lastTick < 20) {
-            // To minimize how often this area check happens
-            return false;
-        }
-
-        lastTick = mob.tickCount;
-
-        List<LivingEntity> targets = mob.level().getNearbyEntities(LivingEntity.class, TargetingConditions.DEFAULT, mob, AABB.ofSize(owner.position(), SEARCH_RADIUS, SEARCH_RADIUS, SEARCH_RADIUS));
-
-        for (LivingEntity entity : targets) {
-            if (!(entity instanceof Targeting targeting && targeting.getTarget() == owner)) {
-                continue;
+            if (owner == null || data.attackBehaviour != SummonedEntities.AttackBehaviour.DEFENSIVE) {
+                return false;
             }
 
-            // Cannot check this as part of the selector above, since that will run into a 'StackOverflowError'
-            // This check is needed though because it also checks whether the mob can even reach the target
-            if (canAttack(entity, TargetingConditions.DEFAULT)) {
-                return true;
+            if (mob.tickCount - lastTick < 20) {
+                // To minimize how often this area check happens
+                return false;
             }
+
+            lastTick = mob.tickCount;
+
+            List<LivingEntity> targets = serverLevel.getNearbyEntities(LivingEntity.class, TargetingConditions.DEFAULT, mob, AABB.ofSize(owner.position(), SEARCH_RADIUS, SEARCH_RADIUS, SEARCH_RADIUS));
+
+            for (LivingEntity entity : targets) {
+                if (!(entity instanceof Targeting targeting && targeting.getTarget() == owner)) {
+                    continue;
+                }
+
+                // Cannot check this as part of the selector above, since that will run into a 'StackOverflowError'
+                // This check is needed though because it also checks whether the mob can even reach the target
+                if (canAttack(entity, TargetingConditions.DEFAULT)) {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         return false;
@@ -69,30 +75,33 @@ public class SummonerTargetedGoal extends TargetGoal {
 
     @Override
     public void start() {
-        SummonData data = mob.getData(DSDataAttachments.SUMMON);
-        LivingEntity owner = data.getOwner(mob.level());
+        if (mob.level() instanceof ServerLevel serverLevel)
+        {
+            SummonData data = mob.getData(DSDataAttachments.SUMMON);
+            LivingEntity owner = data.getOwner(serverLevel);
 
-        if (owner == null) {
-            stop();
-            return;
-        }
-
-        // Target the closest entity which is targeting the summoner
-        List<LivingEntity> targets = mob.level().getNearbyEntities(LivingEntity.class, TargetingConditions.forCombat(), mob, AABB.ofSize(owner.position(), SEARCH_RADIUS, SEARCH_RADIUS, SEARCH_RADIUS));
-        targets.sort(Comparator.comparingDouble(entity -> entity.distanceTo(owner)));
-
-        for (LivingEntity target : targets) {
-            if (!(target instanceof Targeting targeting && targeting.getTarget() == owner)) {
-                continue;
-            }
-
-            if (canAttack(target, TargetingConditions.DEFAULT)) {
-                mob.setTarget(target);
-                super.start();
+            if (owner == null) {
+                stop();
                 return;
             }
-        }
 
-        stop();
+            // Target the closest entity which is targeting the summoner
+            List<LivingEntity> targets = serverLevel.getNearbyEntities(LivingEntity.class, TargetingConditions.forCombat(), mob, AABB.ofSize(owner.position(), SEARCH_RADIUS, SEARCH_RADIUS, SEARCH_RADIUS));
+            targets.sort(Comparator.comparingDouble(entity -> entity.distanceTo(owner)));
+
+            for (LivingEntity target : targets) {
+                if (!(target instanceof Targeting targeting && targeting.getTarget() == owner)) {
+                    continue;
+                }
+
+                if (canAttack(target, TargetingConditions.DEFAULT)) {
+                    mob.setTarget(target);
+                    super.start();
+                    return;
+                }
+            }
+
+            stop();
+        }
     }
 }

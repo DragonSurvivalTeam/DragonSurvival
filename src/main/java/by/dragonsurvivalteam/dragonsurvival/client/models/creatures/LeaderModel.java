@@ -28,7 +28,7 @@ public class LeaderModel extends GeoModel<LeaderEntity> {
     }
 
     @Override
-    public void applyMolangQueries(final AnimationState<LeaderEntity> animationState, double currentTick) {
+    public void applyMolangQueries(final AnimationTest<LeaderEntity> animationState, double currentTick) {
         super.applyMolangQueries(animationState, currentTick);
 
         EntityModelData entityData = animationState.getData(DataTickets.ENTITY_MODEL_DATA);

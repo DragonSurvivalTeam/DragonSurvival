@@ -3,6 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.common.entity.goals;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.FearData;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
@@ -81,7 +82,7 @@ public class DynamicAvoidEntityGoal extends Goal {
 
     @Override
     public void start() {
-        navigation.moveTo(path, walkSpeed);
+        navigation.snapTo(path, walkSpeed);
     }
 
     @Override
@@ -120,7 +121,7 @@ public class DynamicAvoidEntityGoal extends Goal {
                 continue;
             }
 
-            if (avoidCondition.range(data.distance()).test(mob, player)) {
+            if (avoidCondition.range(data.distance()).test((ServerLevel) mob.level(), mob, player)) {
                 toAvoid = player;
                 walkSpeed = data.walkSpeed();
                 sprintSpeed = data.sprintSpeed();

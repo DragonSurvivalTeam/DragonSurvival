@@ -7,7 +7,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.monster.PatrollingMonster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.CustomSpawner;
@@ -79,7 +79,7 @@ public class AmbusherSpawner implements CustomSpawner {
             return;
         }
 
-        if (!PatrollingMonster.checkPatrollingMonsterSpawnRules(EntityType.PILLAGER, level, MobSpawnType.PATROL, spawnPosition, random)) {
+        if (!PatrollingMonster.checkPatrollingMonsterSpawnRules(EntityType.PILLAGER, level, EntitySpawnReason.PATROL, spawnPosition, random)) {
             return;
         }
 
@@ -90,7 +90,7 @@ public class AmbusherSpawner implements CustomSpawner {
         }
 
         ambusher.setPos(spawnPosition.getX(), spawnPosition.getY(), spawnPosition.getZ());
-        EventHooks.finalizeMobSpawn(ambusher, level, level.getCurrentDifficultyAt(spawnPosition), MobSpawnType.PATROL, null);
+        EventHooks.finalizeMobSpawn(ambusher, level, level.getCurrentDifficultyAt(spawnPosition), EntitySpawnReason.PATROL, null);
         level.addFreshEntityWithPassengers(ambusher);
     }
 

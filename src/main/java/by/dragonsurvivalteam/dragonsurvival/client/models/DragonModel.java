@@ -42,7 +42,7 @@ public class DragonModel extends GeoModel<DragonEntity> {
     private Identifier overrideTexture;
 
     @Override
-    public void applyMolangQueries(final AnimationState<DragonEntity> animationState, double currentTick) {
+    public void applyMolangQueries(final AnimationTest<DragonEntity> animationState, double currentTick) {
         super.applyMolangQueries(animationState, currentTick);
 
         DragonEntity dragon = animationState.getAnimatable();

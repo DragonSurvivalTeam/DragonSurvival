@@ -8,7 +8,6 @@ import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import com.mojang.serialization.Dynamic;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -20,7 +19,7 @@ import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LightningBolt;
-import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.npc.villager.VillagerData;
@@ -32,15 +31,17 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.trading.MerchantOffers;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.animation.AnimatableManager;
+import software.bernie.geckolib.animatable.manager.AnimatableManager;
 import software.bernie.geckolib.animation.AnimationController;
-import software.bernie.geckolib.animation.AnimationState;
-import software.bernie.geckolib.animation.PlayState;
 import software.bernie.geckolib.animation.RawAnimation;
+import software.bernie.geckolib.animation.object.PlayState;
+import software.bernie.geckolib.animation.state.AnimationTest;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 public class LeaderEntity extends Villager implements GeoEntity, ConfigurableAttributes {
@@ -85,10 +86,10 @@ public class LeaderEntity extends Villager implements GeoEntity, ConfigurableAtt
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>(this, "everything", 3, this::fullPredicate));
-        controllers.add(new AnimationController<>(this, "head", 3, this::headPredicate));
-        controllers.add(new AnimationController<>(this, "arms", 3, this::armsPredicate));
-        controllers.add(new AnimationController<>(this, "legs", 3, this::legsPredicate));
+        controllers.add(new AnimationController<>("everything", 3, this::fullPredicate));
+        controllers.add(new AnimationController<>("head", 3, this::headPredicate));
+        controllers.add(new AnimationController<>("arms", 3, this::armsPredicate));
+        controllers.add(new AnimationController<>("legs", 3, this::legsPredicate));
     }
 
     private double getWalkThreshold() {
@@ -104,7 +105,7 @@ public class LeaderEntity extends Villager implements GeoEntity, ConfigurableAtt
         return swingTime > 0 || movement > getWalkThreshold();
     }
 
-    public PlayState fullPredicate(final AnimationState<LeaderEntity> state) {
+    public PlayState fullPredicate(final AnimationTest<LeaderEntity> state) {
         if (isNotIdle()) {
             isIdleAnimSet = false;
             return PlayState.STOP;
@@ -113,11 +114,11 @@ public class LeaderEntity extends Villager implements GeoEntity, ConfigurableAtt
         return state.setAndContinue(getIdleAnim());
     }
 
-    public PlayState headPredicate(final AnimationState<LeaderEntity> state) {
+    public PlayState headPredicate(final AnimationTest<LeaderEntity> state) {
         return state.setAndContinue(HEAD_BLEND);
     }
 
-    public PlayState armsPredicate(final AnimationState<LeaderEntity> state) {
+    public PlayState armsPredicate(final AnimationTest<LeaderEntity> state) {
         if (swingTime > 0) {
             return state.setAndContinue(ATTACK_BLEND);
         }
@@ -125,7 +126,7 @@ public class LeaderEntity extends Villager implements GeoEntity, ConfigurableAtt
         return PlayState.STOP;
     }
 
-    public PlayState legsPredicate(final AnimationState<LeaderEntity> state) {
+    public PlayState legsPredicate(final AnimationTest<LeaderEntity> state) {
         double movement = AnimationUtils.getMovementSpeed(this);
 
         if (movement > getRunThreshold()) {
@@ -161,17 +162,17 @@ public class LeaderEntity extends Villager implements GeoEntity, ConfigurableAtt
     }
 
     @Override
-    public void addAdditionalSaveData(@NotNull CompoundTag compoundNBT) {
-        super.addAdditionalSaveData(compoundNBT);
-        compoundNBT.putInt("RestockTimer", getRestockTimer());
-        compoundNBT.putBoolean("initialized_attributes", initializedAttributes);
+    public void addAdditionalSaveData(@NotNull ValueOutput valueOutput) {
+        super.addAdditionalSaveData(valueOutput);
+        valueOutput.putInt("RestockTimer", getRestockTimer());
+        valueOutput.putBoolean("initialized_attributes", initializedAttributes);
     }
 
     @Override
-    public void readAdditionalSaveData(@NotNull CompoundTag compoundNBT) {
-        super.readAdditionalSaveData(compoundNBT);
-        setRestockTimer(compoundNBT.getInt("RestockTimer"));
-        initializedAttributes = compoundNBT.getBoolean("initialized_attributes");
+    public void readAdditionalSaveData(@NotNull ValueInput valueInput) {
+        super.readAdditionalSaveData(valueInput);
+        setRestockTimer(valueInput.getIntOr("RestockTimer", 0));
+        initializedAttributes = valueInput.getBooleanOr("initialized_attributes", false);
     }
 
     @Override
@@ -249,13 +250,13 @@ public class LeaderEntity extends Villager implements GeoEntity, ConfigurableAtt
     }
 
     @Override
-    public boolean wantsToPickUp(@NotNull ItemStack pStack) {
+    public boolean wantsToPickUp(@NotNull ServerLevel level, @NotNull ItemStack stack) {
         return false;
     }
 
     @Override
-    public SpawnGroupData finalizeSpawn(@NotNull ServerLevelAccessor pLevel, @NotNull DifficultyInstance pDifficulty, @NotNull MobSpawnType pSpawnType, @Nullable SpawnGroupData pSpawnGroupData) {
-        setVillagerData(getVillagerData().setProfession(VillagerProfession.NITWIT));
+    public SpawnGroupData finalizeSpawn(@NotNull ServerLevelAccessor pLevel, @NotNull DifficultyInstance pDifficulty, @NotNull EntitySpawnReason pSpawnType, @Nullable SpawnGroupData pSpawnGroupData) {
+        setVillagerData(getVillagerData().withProfession(pLevel.registryAccess(), VillagerProfession.NITWIT));
         return super.finalizeSpawn(pLevel, pDifficulty, pSpawnType, pSpawnGroupData);
     }
 
@@ -280,25 +281,25 @@ public class LeaderEntity extends Villager implements GeoEntity, ConfigurableAtt
 
     // Copied from Villager.java, but with the trades changed to the ones in DSTrades
     @Override
-    protected void updateTrades() {
+    protected void updateTrades(@NotNull ServerLevel level) {
         VillagerData villagerdata = this.getVillagerData();
         Int2ObjectMap<VillagerTrades.ItemListing[]> int2objectmap;
         int2objectmap = DSTrades.LEADER_TRADES;
 
         if (!int2objectmap.isEmpty()) {
-            VillagerTrades.ItemListing[] avillagertrades$itemlisting = int2objectmap.get(villagerdata.getLevel());
+            VillagerTrades.ItemListing[] avillagertrades$itemlisting = int2objectmap.get(villagerdata.level());
             if (avillagertrades$itemlisting != null) {
                 MerchantOffers merchantoffers = this.getOffers();
-                this.addOffersFromItemListings(merchantoffers, avillagertrades$itemlisting, 2);
+                this.addOffersFromItemListings(level, merchantoffers, avillagertrades$itemlisting, 2);
             }
         }
     }
 
     // This prevents the trade window from closing due to this Villager not having a proper profession
     @Override
-    protected void customServerAiStep() {
+    protected void customServerAiStep(@NotNull ServerLevel level) {
         Player player = getTradingPlayer();
-        super.customServerAiStep();
+        super.customServerAiStep(level);
         if (player != null) {
             if (getTradingPlayer() == null) {
                 setTradingPlayer(player);

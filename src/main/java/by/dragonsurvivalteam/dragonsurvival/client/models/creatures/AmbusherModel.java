@@ -28,7 +28,7 @@ public class AmbusherModel extends GeoModel<AmbusherEntity> {
     }
 
     @Override
-    public void applyMolangQueries(final AnimationState<AmbusherEntity> animationState, double currentTick) {
+    public void applyMolangQueries(final AnimationTest<AmbusherEntity> animationState, double currentTick) {
         super.applyMolangQueries(animationState, currentTick);
 
         EntityModelData entityData = animationState.getData(DataTickets.ENTITY_MODEL_DATA);

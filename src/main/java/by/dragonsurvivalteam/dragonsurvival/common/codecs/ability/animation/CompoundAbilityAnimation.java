@@ -22,8 +22,8 @@ public record CompoundAbilityAnimation(String startingAnimationKey, String loopi
     ).apply(instance, CompoundAbilityAnimation::new));
 
     @Override
-    public void play(AnimationState<?> state, AnimationType animationType) {
-        state.getController().transitionLength(transitionLength);
+    public void play(AnimationTest<?> state, AnimationType animationType) {
+        state.controller().setTransitionTicks(transitionLength);
         state.setAndContinue(getRawAnimation());
     }
 

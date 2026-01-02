@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.common.entity.goals;
 
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
@@ -42,7 +43,10 @@ public class WindupMeleeAttackGoal extends MeleeAttackGoal {
 
             if (this.ticksUntilDamage <= 0 && !hasPerformedAttack) {
                 if (this.canPerformAttack(pTarget)) {
-                    this.mob.doHurtTarget(pTarget);
+                    if (this.mob.level() instanceof ServerLevel serverLevel)
+                    {
+                        this.mob.doHurtTarget(serverLevel, pTarget);
+                    }
                 }
                 hasPerformedAttack = true;
             }

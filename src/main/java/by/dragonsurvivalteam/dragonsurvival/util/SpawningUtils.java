@@ -4,7 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.Heightmap;
@@ -30,17 +30,17 @@ public class SpawningUtils {
         return null;
     }
 
-    public static boolean spawn(final Mob mob, final Vec3 position, final Level level, final MobSpawnType type, int attempts, float radius, boolean useSpawnParticles) {
+    public static boolean spawn(final Mob mob, final Vec3 position, final Level level, final EntitySpawnReason type, int attempts, float radius, boolean useSpawnParticles) {
         if (!(level instanceof ServerLevel serverLevel)) {
             return false;
         }
 
-        BlockPos spawnPosition = findRandomSpawnPosition(level, position, attempts, radius);
+        BlockPos spawnPosition = findRandomSpawnPosition(serverLevel, position, attempts, radius);
 
         if (spawnPosition != null) {
             mob.setPos(spawnPosition.getX(), spawnPosition.getY(), spawnPosition.getZ());
-            EventHooks.finalizeMobSpawn(mob, serverLevel, level.getCurrentDifficultyAt(spawnPosition), type, null);
-            level.addFreshEntity(mob);
+            EventHooks.finalizeMobSpawn(mob, serverLevel, serverLevel.getCurrentDifficultyAt(spawnPosition), type, null);
+            serverLevel.addFreshEntity(mob);
 
             if (useSpawnParticles) {
                 mob.spawnAnim();

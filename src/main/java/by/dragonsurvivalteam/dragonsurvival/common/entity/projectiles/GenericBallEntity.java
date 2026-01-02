@@ -388,14 +388,14 @@ public class GenericBallEntity extends AbstractHurtingProjectile implements GeoE
         }
     }
 
-    public PlayState predicate(final AnimationState<GenericBallEntity> state) {
+    public PlayState predicate(final AnimationTest<GenericBallEntity> state) {
         if (!isLingering() && getMaxLingeringTicks() > 0) {
-            state.getController().setAnimation(FLY);
+            state.controller().setAnimation(FLY);
             return PlayState.CONTINUE;
         } else if (lingerTicks < 16 && getMaxLingeringTicks() > 0) {
-            state.getController().setAnimation(EXPLOSION);
+            state.controller().setAnimation(EXPLOSION);
         } else {
-            state.getController().setAnimation(IDLE);
+            state.controller().setAnimation(IDLE);
         }
 
         return PlayState.CONTINUE;

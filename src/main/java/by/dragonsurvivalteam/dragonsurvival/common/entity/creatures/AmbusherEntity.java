@@ -12,16 +12,15 @@ import by.dragonsurvivalteam.dragonsurvival.util.AnimationUtils;
 import by.dragonsurvivalteam.dragonsurvival.util.DragonUtils;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import by.dragonsurvivalteam.dragonsurvival.util.SpawningUtils;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.RangedAttackGoal;
@@ -31,12 +30,14 @@ import net.minecraft.world.item.CrossbowItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.NotNull;
-import software.bernie.geckolib.animation.AnimatableManager;
+import software.bernie.geckolib.animatable.manager.AnimatableManager;
 import software.bernie.geckolib.animation.AnimationController;
-import software.bernie.geckolib.animation.AnimationState;
-import software.bernie.geckolib.animation.PlayState;
 import software.bernie.geckolib.animation.RawAnimation;
+import software.bernie.geckolib.animation.object.PlayState;
+import software.bernie.geckolib.animation.state.AnimationTest;
 
 import static by.dragonsurvivalteam.dragonsurvival.client.DragonSurvivalClient.AMBUSHER_MODEL;
 
@@ -274,27 +275,27 @@ public class AmbusherEntity extends Hunter implements RangedAttackMob {
 
     private void summonReinforcements() {
         for (int i = 0; i < SPEARMAN_REINFORCEMENT_COUNT; i++) {
-            Mob mob = DSEntities.HUNTER_SPEARMAN.get().create(this.level());
-            SpawningUtils.spawn(mob, this.position(), this.level(), MobSpawnType.MOB_SUMMONED, 20, 3.0f, true);
+            Mob mob = DSEntities.HUNTER_SPEARMAN.get().create(this.level(), EntitySpawnReason.MOB_SUMMONED);
+            SpawningUtils.spawn(mob, this.position(), this.level(), EntitySpawnReason.MOB_SUMMONED, 20, 3.0f, true);
             mob.setTarget(this.getTarget());
         }
 
         for (int i = 0; i < HOUND_REINFORCEMENT_COUNT; i++) {
-            Mob mob = DSEntities.HUNTER_HOUND.get().create(this.level());
-            SpawningUtils.spawn(mob, this.position(), this.level(), MobSpawnType.MOB_SUMMONED, 20, 3.0f, true);
+            Mob mob = DSEntities.HUNTER_HOUND.get().create(this.level(), EntitySpawnReason.MOB_SUMMONED);
+            SpawningUtils.spawn(mob, this.position(), this.level(), EntitySpawnReason.MOB_SUMMONED, 20, 3.0f, true);
             mob.setTarget(this.getTarget());
         }
 
-        Mob mob = DSEntities.HUNTER_KNIGHT.get().create(this.level());
-        SpawningUtils.spawn(mob, this.position(), this.level(), MobSpawnType.MOB_SUMMONED, 20, 3.0f, true);
+        Mob mob = DSEntities.HUNTER_KNIGHT.get().create(this.level(), EntitySpawnReason.MOB_SUMMONED);
+        SpawningUtils.spawn(mob, this.position(), this.level(), EntitySpawnReason.MOB_SUMMONED, 20, 3.0f, true);
         mob.setTarget(this.getTarget());
 
         setHasSummonedReinforcements(true);
     }
 
     private void summonGriffin() {
-        Mob mob = DSEntities.HUNTER_GRIFFIN.get().create(this.level());
-        SpawningUtils.spawn(mob, this.position().add(0, 2, 0), this.level(), MobSpawnType.MOB_SUMMONED, 20, 3.0f, true);
+        Mob mob = DSEntities.HUNTER_GRIFFIN.get().create(this.level(), EntitySpawnReason.MOB_SUMMONED);
+        SpawningUtils.spawn(mob, this.position().add(0, 2, 0), this.level(), EntitySpawnReason.MOB_SUMMONED, 20, 3.0f, true);
         mob.setTarget(this.getTarget());
     }
 
@@ -311,19 +312,19 @@ public class AmbusherEntity extends Hunter implements RangedAttackMob {
     }
 
     @Override
-    public void addAdditionalSaveData(@NotNull CompoundTag compoundNBT) {
-        super.addAdditionalSaveData(compoundNBT);
-        compoundNBT.putBoolean("HasReleasedGriffin", hasReleasedGriffin());
-        compoundNBT.putBoolean("HasCalledReinforcements", hasCalledReinforcements());
-        compoundNBT.putBoolean("HasSummonedReinforcements", hasSummonedReinforcements());
+    public void addAdditionalSaveData(@NotNull ValueOutput valueOutput) {
+        super.addAdditionalSaveData(valueOutput);
+        valueOutput.putBoolean("HasReleasedGriffin", hasReleasedGriffin());
+        valueOutput.putBoolean("HasCalledReinforcements", hasCalledReinforcements());
+        valueOutput.putBoolean("HasSummonedReinforcements", hasSummonedReinforcements());
     }
 
     @Override
-    public void readAdditionalSaveData(@NotNull CompoundTag compoundNBT) {
-        super.readAdditionalSaveData(compoundNBT);
-        setHasReleasedGriffin(compoundNBT.getBoolean("HasReleasedGriffin"));
-        setHasCalledReinforcements(compoundNBT.getBoolean("HasCalledReinforcements"));
-        setHasSummonedReinforcements(compoundNBT.getBoolean("HasSummonedReinforcements"));
+    public void readAdditionalSaveData(@NotNull ValueInput valueInput) {
+        super.readAdditionalSaveData(valueInput);
+        setHasReleasedGriffin(valueInput.getBooleanOr("HasReleasedGriffin", false));
+        setHasCalledReinforcements(valueInput.getBooleanOr("HasCalledReinforcements", false));
+        setHasSummonedReinforcements(valueInput.getBooleanOr("HasSummonedReinforcements", false));
     }
 
     public boolean hasReleasedGriffin() {
@@ -392,8 +393,8 @@ public class AmbusherEntity extends Hunter implements RangedAttackMob {
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>(this, "everything", 3, this::fullPredicate));
-        controllers.add(new AnimationController<>(this, "arms", 3, this::armsPredicate));
+        controllers.add(new AnimationController<>("everything", 3, this::fullPredicate));
+        controllers.add(new AnimationController<>("arms", 3, this::armsPredicate));
     }
 
     public boolean isIdle() {
@@ -401,7 +402,7 @@ public class AmbusherEntity extends Hunter implements RangedAttackMob {
         return !(swingTime > 0 || movement > getWalkThreshold());
     }
 
-    public PlayState fullPredicate(final AnimationState<Hunter> state) {
+    public PlayState fullPredicate(final AnimationTest<Hunter> state) {
         double movement = AnimationUtils.getMovementSpeed(this);
         boolean isCurrentlyIdlingRandomly = false;
         if (hasReleasedGriffin() && !hasPlayedReleaseAnimation && !hasPlayedReinforcementsAnimation) {
@@ -457,7 +458,7 @@ public class AmbusherEntity extends Hunter implements RangedAttackMob {
         return PlayState.CONTINUE;
     }
 
-    public PlayState armsPredicate(final AnimationState<Hunter> state) {
+    public PlayState armsPredicate(final AnimationTest<Hunter> state) {
         if (hasReleasedGriffin() && getGriffinReleaseReloadTimer() == -1 && getAmbushHornTimer() == -1) {
             // We check at 1 because the first client tick already sees the value incremented by 1 (we start at 0)
             if (getRangedAttackTimer() == 1) {
