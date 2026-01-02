@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.registry;
 
+import java.util.Optional;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.creatures.AmbusherEntity;
@@ -14,6 +15,8 @@ import by.dragonsurvivalteam.dragonsurvival.common.entity.projectiles.GenericBal
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -42,7 +45,7 @@ public class DSEntities {
     @Translation(type = Translation.Type.ENTITY, comments = "Dragon")
     public static DeferredHolder<EntityType<?>, EntityType<DragonEntity>> DRAGON = REGISTRY.register(
             "dummy_dragon",
-            () -> new EntityType<>(DragonEntity::new, MobCategory.MISC, true, false, false, false, ImmutableSet.of(), EntityDimensions.fixed(0.9f, 1.9f), 1.0f, 0, 0, FeatureFlagSet.of(FeatureFlags.VANILLA)));
+            () -> new EntityType<>(DragonEntity::new, MobCategory.MISC, true, false, false, false, ImmutableSet.of(), EntityDimensions.fixed(0.9f, 1.9f), 1.0f, 0, 0, "dummy_dragon", Optional.empty(), FeatureFlagSet.of(FeatureFlags.VANILLA), true));
 
     // --- Fake entities --- //
 
@@ -56,7 +59,7 @@ public class DSEntities {
                     .eyeHeight(0.13F)
                     .clientTrackingRange(4)
                     .updateInterval(20)
-                    .build("bolas"));
+                    .build(res("bolas")));
 
     @Translation(type = Translation.Type.ENTITY, comments = "Generic Ball Entity")
     public static DeferredHolder<EntityType<?>, EntityType<GenericBallEntity>> GENERIC_BALL_ENTITY = REGISTRY.register(
@@ -65,7 +68,7 @@ public class DSEntities {
                     .sized(1F, 1F)
                     .clientTrackingRange(4)
                     .updateInterval(1)
-                    .build("generic_ball_entity"));
+                    .build(res("generic_ball_entity")));
 
     @Translation(type = Translation.Type.ENTITY, comments = "Generic Arrow Entity")
     public static DeferredHolder<EntityType<?>, EntityType<GenericArrowEntity>> GENERIC_ARROW_ENTITY = REGISTRY.register(
@@ -74,7 +77,7 @@ public class DSEntities {
                     .sized(0.5F, 0.5F)
                     .clientTrackingRange(4)
                     .updateInterval(1)
-                    .build("generic_arrow_entity"));
+                    .build(res("generic_arrow_entity")));
 
     // --- Entities --- //
 
@@ -85,7 +88,7 @@ public class DSEntities {
                     .sized(0.6F, 0.85F)
                     .clientTrackingRange(64)
                     .updateInterval(1)
-                    .build("hunter_hound"));
+                    .build(res("hunter_hound")));
 
     @Translation(type = Translation.Type.ENTITY, comments = "Hunter Griffin")
     public static DeferredHolder<EntityType<?>, EntityType<GriffinEntity>> HUNTER_GRIFFIN = REGISTRY.register(
@@ -94,7 +97,7 @@ public class DSEntities {
                     .sized(0.6F, 0.85F)
                     .clientTrackingRange(64)
                     .updateInterval(1)
-                    .build("hunter_griffin"));
+                    .build(res("hunter_griffin")));
 
     @Translation(type = Translation.Type.ENTITY, comments = "Hunter Spearman")
     public static DeferredHolder<EntityType<?>, EntityType<SpearmanEntity>> HUNTER_SPEARMAN = REGISTRY.register(
@@ -103,7 +106,7 @@ public class DSEntities {
                     .sized(0.6F, 1.95F)
                     .clientTrackingRange(64)
                     .updateInterval(1)
-                    .build("hunter_spearman"));
+                    .build(res("hunter_spearman")));
 
     @Translation(type = Translation.Type.ENTITY, comments = "Hunter Knight")
     public static DeferredHolder<EntityType<?>, EntityType<KnightEntity>> HUNTER_KNIGHT = REGISTRY.register(
@@ -111,7 +114,7 @@ public class DSEntities {
                     .sized(1.5f, 3f)
                     .clientTrackingRange(64)
                     .updateInterval(1)
-                    .build("hunter_knight"));
+                    .build(res("hunter_knight")));
 
     @Translation(type = Translation.Type.ENTITY, comments = "Hunter Ambusher")
     public static DeferredHolder<EntityType<?>, EntityType<AmbusherEntity>> HUNTER_AMBUSHER = REGISTRY.register(
@@ -119,7 +122,7 @@ public class DSEntities {
                     .sized(0.8f, 2.5f)
                     .clientTrackingRange(64)
                     .updateInterval(1)
-                    .build("hunter_ambusher"));
+                    .build(res("hunter_ambusher")));
 
     @Translation(type = Translation.Type.ENTITY, comments = "Hunter Leader")
     public static DeferredHolder<EntityType<?>, EntityType<LeaderEntity>> HUNTER_LEADER = REGISTRY.register(
@@ -128,7 +131,7 @@ public class DSEntities {
                     .sized(0.6F, 1.95F)
                     .clientTrackingRange(64)
                     .updateInterval(1)
-                    .build("hunter_leader"));
+                    .build(res("hunter_leader")));
 
     @SubscribeEvent
     public static void attributeCreationEvent(final EntityAttributeCreationEvent event) {
@@ -146,6 +149,10 @@ public class DSEntities {
 
     private static AttributeSupplier.Builder hunterAttributes() {
         return Mob.createMobAttributes().add(Attributes.ATTACK_DAMAGE);
+    }
+
+    private static ResourceKey<EntityType<?>> res(String name) {
+        return ResourceKey.create(Registries.ENTITY_TYPE, DragonSurvival.res(name));
     }
 
     @SubscribeEvent
