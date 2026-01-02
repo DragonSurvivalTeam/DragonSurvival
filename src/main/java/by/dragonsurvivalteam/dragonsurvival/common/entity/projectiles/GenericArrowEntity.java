@@ -12,14 +12,10 @@ import by.dragonsurvivalteam.dragonsurvival.registry.projectile.entity_effects.P
 import by.dragonsurvivalteam.dragonsurvival.registry.projectile.targeting.ProjectileTargeting;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtOps;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.protocol.game.ClientboundGameEventPacket;
-import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -27,15 +23,19 @@ import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Unit;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ProjectileDeflection;
 import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
-import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.gamerules.GameRules;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
@@ -111,31 +111,31 @@ public class GenericArrowEntity extends AbstractArrow implements IEntityWithComp
     }
 
     @Override
-    public void addAdditionalSaveData(@NotNull final CompoundTag tag) {
-        super.addAdditionalSaveData(tag);
+    public void addAdditionalSaveData(@NotNull final ValueOutput valueOutput) {
+        super.addAdditionalSaveData(valueOutput);
 
-        RegistryOps<Tag> context = level().registryAccess().createSerializationContext(NbtOps.INSTANCE);
-        ProjectileData.GeneralData.CODEC.encodeStart(context, getGeneralData()).ifSuccess(data -> tag.put(GENERAL_DATA, data));
-        ProjectileData.GenericArrowData.CODEC.encodeStart(context, getTypeData()).ifSuccess(data -> tag.put(TYPE_DATA, data));
+        valueOutput.store(GENERAL_DATA, ProjectileData.GeneralData.CODEC, getGeneralData());
+        valueOutput.store(TYPE_DATA, ProjectileData.GenericArrowData.CODEC, getTypeData());
 
-        tag.putInt(PROJECTILE_LEVEL, projectileLevel);
+        valueOutput.putInt(PROJECTILE_LEVEL, projectileLevel);
     }
 
     @Override
-    public void readAdditionalSaveData(@NotNull final CompoundTag tag) {
-        super.readAdditionalSaveData(tag);
-        RegistryOps<Tag> context = level().registryAccess().createSerializationContext(NbtOps.INSTANCE);
+    public void readAdditionalSaveData(@NotNull final ValueInput valueInput) {
+        super.readAdditionalSaveData(valueInput);
 
-        if (tag.contains(GENERAL_DATA)) {
-            ProjectileData.GeneralData.CODEC.parse(context, tag.get(GENERAL_DATA))
-                    .resultOrPartial(DragonSurvival.LOGGER::error)
-                    .map(data -> generalData = data);
+        if (valueInput.child(GENERAL_DATA).isPresent()) {
+            valueInput.read(GENERAL_DATA, ProjectileData.GeneralData.CODEC)
+                .ifPresentOrElse(
+                    data -> generalData = data,
+                    () -> DragonSurvival.LOGGER.error("Missing GENERAL_DATA when reading GenericArrowEntity data!"));
         }
 
-        if (tag.contains(TYPE_DATA)) {
-            ProjectileData.GenericArrowData.CODEC.parse(context, tag.get(TYPE_DATA))
-                    .resultOrPartial(DragonSurvival.LOGGER::error)
-                    .map(data -> typeData = data);
+        if (valueInput.child(TYPE_DATA).isPresent()) {
+            valueInput.read(TYPE_DATA, ProjectileData.GenericArrowData.CODEC)
+                .ifPresentOrElse(
+                    data -> typeData = data,
+                    () -> DragonSurvival.LOGGER.error("Missing TYPE_DATA when reading GenericArrowEntity data!"));
         }
 
         if (generalData == null || typeData == null) {
@@ -144,7 +144,7 @@ public class GenericArrowEntity extends AbstractArrow implements IEntityWithComp
             return;
         }
 
-        projectileLevel = tag.getInt(PROJECTILE_LEVEL);
+        projectileLevel = valueInput.getInt(PROJECTILE_LEVEL).orElseThrow();
     }
 
     @Override
@@ -213,7 +213,7 @@ public class GenericArrowEntity extends AbstractArrow implements IEntityWithComp
             piercingIgnoreEntityIds.add(target.getId());
         }
 
-        if (level().isClientSide()) {
+        if (!(level() instanceof ServerLevel serverLevel)) {
             return;
         }
 
@@ -228,7 +228,7 @@ public class GenericArrowEntity extends AbstractArrow implements IEntityWithComp
                     considerImmunityFrames = false;
                 }
 
-                if (target.isInvulnerableTo(new DamageSource(damageEffect.damageType(), owner))) {
+                if (target instanceof LivingEntity livingTarget && livingTarget.isInvulnerableTo(serverLevel, new DamageSource(damageEffect.damageType(), owner))) {
                     // TODO :: do we really cancel all damage effects because the target has immunity for one of them?
                     targetIsImmune = true;
                 }
@@ -244,7 +244,7 @@ public class GenericArrowEntity extends AbstractArrow implements IEntityWithComp
                 && piercingIgnoreEntityIds != null && piercingIgnoreEntityIds.size() >= getPierceLevel() + 1
                 && isImmune
                 // Short-circuit eval will prevent this from being called in situations where we don't want it
-                && deflect(ProjectileDeflection.REVERSE, getOwner(), target, target instanceof Player)) {
+                && deflect(ProjectileDeflection.REVERSE, getOwner(), EntityReference.of(target), target instanceof Player)) {
             lastDeflectedBy = target;
         } else if (!isImmune) {
             // TODO :: immunity to a single damage type skips all entity effects here
@@ -253,7 +253,7 @@ public class GenericArrowEntity extends AbstractArrow implements IEntityWithComp
             }
 
             if (owner instanceof Player && target instanceof ServerPlayer serverPlayer && !isSilent()) {
-                serverPlayer.connection.send(new ClientboundGameEventPacket(ClientboundGameEventPacket.ARROW_HIT_PLAYER, 0));
+                serverPlayer.connection.send(new ClientboundGameEventPacket(ClientboundGameEventPacket.PLAY_ARROW_HIT_SOUND, 0));
             }
         }
 
@@ -268,7 +268,7 @@ public class GenericArrowEntity extends AbstractArrow implements IEntityWithComp
     public void tick() {
         super.tick();
 
-        if (level().isClientSide() || inGround) {
+        if (level().isClientSide() || isInGround()) {
             return;
         }
 
@@ -298,8 +298,8 @@ public class GenericArrowEntity extends AbstractArrow implements IEntityWithComp
     }
 
     @Override
-    public boolean mayBreak(@NotNull final Level level) {
-        return getGeneralData().isImpactProjectile() && level.getGameRules().getBoolean(GameRules.RULE_PROJECTILESCANBREAKBLOCKS);
+    public boolean mayBreak(@NotNull final ServerLevel level) {
+        return getGeneralData().isImpactProjectile() && level.getGameRules().get(GameRules.PROJECTILES_CAN_BREAK_BLOCKS);
     }
 
     private static final String GENERAL_DATA = "general_data";

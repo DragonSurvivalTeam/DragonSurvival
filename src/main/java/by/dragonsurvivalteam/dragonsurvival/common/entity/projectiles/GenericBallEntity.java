@@ -30,8 +30,10 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.projectile.hurtingprojectile.AbstractHurtingProjectile;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
-import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.gamerules.GameRules;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
@@ -41,11 +43,10 @@ import org.jetbrains.annotations.NotNull;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.animatable.manager.AnimatableManager;
-import software.bernie.geckolib.animation.AnimatableManager;
 import software.bernie.geckolib.animation.AnimationController;
-import software.bernie.geckolib.animation.AnimationState;
-import software.bernie.geckolib.animation.PlayState;
 import software.bernie.geckolib.animation.RawAnimation;
+import software.bernie.geckolib.animation.object.PlayState;
+import software.bernie.geckolib.animation.state.AnimationTest;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.List;
@@ -144,35 +145,36 @@ public class GenericBallEntity extends AbstractHurtingProjectile implements GeoE
     }
 
     @Override
-    public void addAdditionalSaveData(@NotNull final CompoundTag tag) {
-        super.addAdditionalSaveData(tag);
+    public void addAdditionalSaveData(@NotNull final ValueOutput valueOutput) {
+        super.addAdditionalSaveData(valueOutput);
 
-        RegistryOps<Tag> context = level().registryAccess().createSerializationContext(NbtOps.INSTANCE);
-        ProjectileData.GeneralData.CODEC.encodeStart(context, getGeneralData()).ifSuccess(data -> tag.put(GENERAL_DATA, data));
-        ProjectileData.GenericBallData.CODEC.encodeStart(context, getTypeData()).ifSuccess(data -> tag.put(TYPE_DATA, data));
+        valueOutput.store(GENERAL_DATA, ProjectileData.GeneralData.CODEC, getGeneralData());
+        valueOutput.store(TYPE_DATA, ProjectileData.GenericBallData.CODEC, getTypeData());
 
-        tag.putInt(PROJECTILE_LEVEL, projectileLevel);
-        tag.putFloat(MOVEMENT_DISTANCE, movementDistance);
-        tag.putInt(LINGERING_TICKS, lingerTicks);
-        tag.putInt(LIFESPAN, lifespan);
-        tag.putInt(BOUNCES, bounces);
+        valueOutput.putInt(PROJECTILE_LEVEL, projectileLevel);
+        valueOutput.putFloat(MOVEMENT_DISTANCE, movementDistance);
+        valueOutput.putInt(LINGERING_TICKS, lingerTicks);
+        valueOutput.putInt(LIFESPAN, lifespan);
+        valueOutput.putInt(BOUNCES, bounces);
     }
 
     @Override
-    public void readAdditionalSaveData(@NotNull final CompoundTag tag) {
-        super.readAdditionalSaveData(tag);
+    public void readAdditionalSaveData(@NotNull final ValueInput valueInput) {
+        super.readAdditionalSaveData(valueInput);
         RegistryOps<Tag> context = level().registryAccess().createSerializationContext(NbtOps.INSTANCE);
 
-        if (tag.contains(GENERAL_DATA)) {
-            ProjectileData.GeneralData.CODEC.parse(context, tag.get(GENERAL_DATA))
-                    .resultOrPartial(DragonSurvival.LOGGER::error)
-                    .map(data -> generalData = data);
+        if (valueInput.child(GENERAL_DATA).isPresent()) {
+            valueInput.read(GENERAL_DATA, ProjectileData.GeneralData.CODEC)
+                .ifPresentOrElse(
+                    data -> generalData = data,
+                    () -> DragonSurvival.LOGGER.error("Missing GENERAL_DATA when reading GenericBallEntity data!"));
         }
 
-        if (tag.contains(TYPE_DATA)) {
-            ProjectileData.GenericBallData.CODEC.parse(context, tag.get(TYPE_DATA))
-                    .resultOrPartial(DragonSurvival.LOGGER::error)
-                    .map(data -> typeData = data);
+        if (valueInput.child(TYPE_DATA).isPresent()) {
+            valueInput.read(TYPE_DATA, ProjectileData.GenericBallData.CODEC)
+                .ifPresentOrElse(
+                    data -> typeData = data,
+                    () -> DragonSurvival.LOGGER.error("Missing TYPE_DATA when reading GenericBallEntity data!"));
         }
 
         if (generalData == null || typeData == null) {
@@ -181,11 +183,11 @@ public class GenericBallEntity extends AbstractHurtingProjectile implements GeoE
             return;
         }
 
-        projectileLevel = tag.getInt(PROJECTILE_LEVEL);
-        movementDistance = tag.getFloat(MOVEMENT_DISTANCE);
-        lingerTicks = tag.getInt(LINGERING_TICKS);
-        lifespan = tag.getInt(LIFESPAN);
-        bounces = tag.getInt(BOUNCES);
+        projectileLevel = valueInput.getInt(PROJECTILE_LEVEL).orElseThrow();
+        movementDistance = valueInput.getFloatOr(MOVEMENT_DISTANCE, 0.0f);
+        lingerTicks = valueInput.getInt(LINGERING_TICKS).orElseThrow();
+        lifespan = valueInput.getInt(LIFESPAN).orElseThrow();
+        bounces = valueInput.getInt(BOUNCES).orElseThrow();
         accelerationPower = 0;
 
         refreshDimensions();
@@ -431,7 +433,7 @@ public class GenericBallEntity extends AbstractHurtingProjectile implements GeoE
 
     @Override
     public void registerControllers(final AnimatableManager.ControllerRegistrar registrar) {
-        registrar.add(new AnimationController<>(this, "everything", this::predicate));
+        registrar.add(new AnimationController<>("everything", this::predicate));
     }
 
     @Override
@@ -457,8 +459,8 @@ public class GenericBallEntity extends AbstractHurtingProjectile implements GeoE
     }
 
     @Override
-    public boolean mayBreak(@NotNull final Level level) {
-        return getGeneralData().isImpactProjectile() && level.getGameRules().getBoolean(GameRules.RULE_PROJECTILESCANBREAKBLOCKS);
+    public boolean mayBreak(@NotNull final ServerLevel level) {
+        return getGeneralData().isImpactProjectile() && level.getGameRules().get(GameRules.PROJECTILES_CAN_BREAK_BLOCKS);
     }
 
     private static final RawAnimation EXPLOSION = RawAnimation.begin().thenLoop("explosion");
