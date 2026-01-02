@@ -18,50 +18,44 @@ public class DSBlockEntities {
     public static final DeferredRegister<BlockEntityType<?>> REGISTRY = DeferredRegister.create(BuiltInRegistries.BLOCK_ENTITY_TYPE, MODID);
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<SourceOfMagicBlockEntity>> SOURCE_OF_MAGIC_TILE_ENTITY = REGISTRY.register(
-            "dragon_nest", () -> BlockEntityType.Builder.of(
+            "dragon_nest", () -> new BlockEntityType<>(
                             SourceOfMagicBlockEntity::new,
                             DSBlocks.CAVE_SOURCE_OF_MAGIC.get(),
                             DSBlocks.SEA_SOURCE_OF_MAGIC.get(),
                             DSBlocks.FOREST_SOURCE_OF_MAGIC.get())
-                    .build(null)
     );
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<SourceOfMagicPlaceholder>> SOURCE_OF_MAGIC_PLACEHOLDER = REGISTRY.register(
-            "placeholder", () -> BlockEntityType.Builder.of(
+            "placeholder", () -> new BlockEntityType<>(
                             SourceOfMagicPlaceholder::new,
                             DSBlocks.FOREST_SOURCE_OF_MAGIC.get(),
                             DSBlocks.SEA_SOURCE_OF_MAGIC.get(),
                             DSBlocks.CAVE_SOURCE_OF_MAGIC.get())
-                    .build(null)
     );
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<HelmetBlockEntity>> HELMET = REGISTRY.register(
-            "knight_helmet", () -> BlockEntityType.Builder.of(
+            "knight_helmet", () -> new BlockEntityType<>(
                             HelmetBlockEntity::new,
                             DSBlocks.GRAY_KNIGHT_HELMET.get(),
                             DSBlocks.GOLDEN_KNIGHT_HELMET.get(),
                             DSBlocks.BLACK_KNIGHT_HELMET.get())
-                    .build(null)
     );
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<DragonBeaconBlockEntity>> DRAGON_BEACON = REGISTRY.register(
-            "dragon_beacon", () -> BlockEntityType.Builder.of(
+            "dragon_beacon", () -> new BlockEntityType<>(
                             DragonBeaconBlockEntity::new,
                             DSBlocks.DRAGON_BEACON.get())
-                    .build(null)
     );
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<DragonSoulBlockEntity>> DRAGON_SOUL = REGISTRY.register(
-            "dragon_soul", () -> BlockEntityType.Builder.of(
+            "dragon_soul", () -> new BlockEntityType<>(
                             DragonSoulBlockEntity::new,
                             DSBlocks.DRAGON_SOUL.get())
-                    .build(null)
     );
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<PrimordialAnchorBlockEntity>> PRIMORDIAL_ANCHOR = REGISTRY.register(
-            "primordial_anchor", () -> BlockEntityType.Builder.of(
+            "primordial_anchor", () -> new BlockEntityType<>(
                             PrimordialAnchorBlockEntity::new,
                             DSBlocks.PRIMORDIAL_ANCHOR.get())
-                    .build(null)
     );
 }
