@@ -26,8 +26,8 @@ public class ConvertItemFromAbility extends SimpleCriterionTrigger<ConvertItemFr
     public record TriggerInstance(Optional<ContextAwarePredicate> player, Holder<Item> itemFrom, Holder<Item> itemTo) implements SimpleCriterionTrigger.SimpleInstance {
         public static final Codec<ConvertItemFromAbility.TriggerInstance> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 EntityPredicate.ADVANCEMENT_CODEC.optionalFieldOf("player").forGetter(ConvertItemFromAbility.TriggerInstance::player),
-                ItemStack.ITEM_NON_AIR_CODEC.fieldOf("item_from").forGetter(ConvertItemFromAbility.TriggerInstance::itemFrom),
-                ItemStack.ITEM_NON_AIR_CODEC.fieldOf("item_to").forGetter(ConvertItemFromAbility.TriggerInstance::itemTo)
+                Item.CODEC.fieldOf("item_from").forGetter(ConvertItemFromAbility.TriggerInstance::itemFrom),
+                Item.CODEC.fieldOf("item_to").forGetter(ConvertItemFromAbility.TriggerInstance::itemTo)
         ).apply(instance, ConvertItemFromAbility.TriggerInstance::new));
     }
 }
