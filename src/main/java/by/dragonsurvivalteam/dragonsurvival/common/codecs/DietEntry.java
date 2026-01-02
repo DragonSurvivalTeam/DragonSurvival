@@ -85,7 +85,7 @@ public record DietEntry(String items, Optional<FoodProperties> properties, Optio
     }
 
     public static Builder create(final TagKey<Item> tag) {
-        return create("#" + tag.location());
+        return create("#" + tag.identifier());
     }
 
     public static Builder create(final Identifier location) {
@@ -94,7 +94,7 @@ public record DietEntry(String items, Optional<FoodProperties> properties, Optio
 
     public static Builder create(final Item item) {
         //noinspection deprecation, DataFlowIssue -> ignore deprecated / key is present
-        return create(item.builtInRegistryHolder().getKey().location());
+        return create(item.builtInRegistryHolder().getKey().identifier());
     }
 
     @Override

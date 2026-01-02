@@ -30,7 +30,7 @@ public record DamagePenalty(Holder<DamageType> damageType, float damage) impleme
     @Override
     public MutableComponent getDescription() {
         //noinspection DataFlowIssue -> key is present
-        MutableComponent translation = Component.translatable(Translation.Type.DAMAGE_TYPE.wrap(damageType.getKey().location())).withColor(DSColors.GOLD);
+        MutableComponent translation = Component.translatable(Translation.Type.DAMAGE_TYPE.wrap(damageType.getKey().identifier())).withColor(DSColors.GOLD);
         return Component.translatable(LangKey.ABILITY_DAMAGE, translation, DSColors.dynamicValue(String.format("%.1f", damage)));
     }
 

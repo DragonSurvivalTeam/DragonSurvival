@@ -71,8 +71,8 @@ public class AddTableLootExtendedLootModifier extends LootModifier {
                     // Try regex if we don't have a valid key
                     context.getLevel().getServer().reloadableRegistries().get().lookupOrThrow(Registries.LOOT_TABLE).registryKeySet().forEach(
                             key -> {
-                                String path = key.location().toString();
-                                if (path.matches(table) && !path.equals(this.table.location().toString())) {
+                                String path = key.identifier().toString();
+                                if (path.matches(table) && !path.equals(this.table.identifier().toString())) {
                                     resolvedTables.add(key);
                                 }
                             }

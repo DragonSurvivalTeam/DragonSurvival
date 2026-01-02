@@ -317,7 +317,7 @@ public class DragonAbilityInstance {
     }
 
     public Identifier location() {
-        return key().location();
+        return key().identifier();
     }
 
     public String id() {

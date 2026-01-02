@@ -43,7 +43,7 @@ public class DragonAbilityArgument implements ArgumentType<Holder<DragonAbility>
     @Override
     public <S> CompletableFuture<Suggestions> listSuggestions(final CommandContext<S> context, final SuggestionsBuilder builder) {
         List<String> suggestions = new ArrayList<>();
-        lookup.listElementIds().forEach(element -> suggestions.add(element.location().toString()));
+        lookup.listElementIds().forEach(element -> suggestions.add(element.identifier().toString()));
         return SharedSuggestionProvider.suggest(suggestions, builder);
     }
 }

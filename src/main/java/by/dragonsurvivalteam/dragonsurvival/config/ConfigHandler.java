@@ -429,7 +429,7 @@ public class ConfigHandler {
             List<T> list = new ArrayList<>();
 
             registry.registryKeySet().forEach(key -> {
-                Identifier keyLocation = key.location();
+                Identifier keyLocation = key.identifier();
 
                 if (keyLocation.getNamespace().equals(splitLocation[0])) {
                     Pattern pattern = Pattern.compile(splitLocation[1]);
@@ -452,7 +452,7 @@ public class ConfigHandler {
                 return List.of(optional.get().value());
             }
         } else {
-            Optional<TagKey<T>> tag = registry.getTagNames().filter(registryTag -> registryTag.location().equals(Identifier)).findAny();
+            Optional<TagKey<T>> tag = registry.getTagNames().filter(registryTag -> registryTag.identifier().equals(Identifier)).findAny();
 
             if (tag.isPresent()) {
                 List<T> list = new ArrayList<>();
@@ -644,7 +644,7 @@ public class ConfigHandler {
     @SuppressWarnings("deprecation") // ignore
     private static Object getRelevantConfigValue(final Object object) {
         if (object instanceof Registry<?> registry) {
-            return registry.key().location();
+            return registry.key().identifier();
         }
 
         if (object instanceof CustomConfig customConfig) {
@@ -656,11 +656,11 @@ public class ConfigHandler {
         }
 
         if (object instanceof Item item) {
-            return item.builtInRegistryHolder().key().location();
+            return item.builtInRegistryHolder().key().identifier();
         }
 
         if (object instanceof Block block) {
-            return block.builtInRegistryHolder().key().location();
+            return block.builtInRegistryHolder().key().identifier();
         }
 
         return object;

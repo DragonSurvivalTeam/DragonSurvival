@@ -53,7 +53,7 @@ public class DragonStageArgument implements ArgumentType<Holder<DragonStage>> {
             HolderSet<DragonStage> stages = species.value().getStages(this.context);
             stages.forEach(stage -> suggestions.add(stage.getRegisteredName()));
         } else {
-            lookup.listElementIds().forEach(element -> suggestions.add(element.location().toString()));
+            lookup.listElementIds().forEach(element -> suggestions.add(element.identifier().toString()));
         }
 
         return SharedSuggestionProvider.suggest(suggestions, builder);

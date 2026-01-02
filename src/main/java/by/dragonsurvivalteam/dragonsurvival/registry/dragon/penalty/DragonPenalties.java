@@ -200,9 +200,9 @@ public class DragonPenalties {
     }
 
     public static final List<String> DEFAULT_COMMON_BLACKLIST = List.of(
-            "#" + Tags.Items.TOOLS_SHIELD.location(),
-            "#" + Tags.Items.TOOLS_BOW.location(),
-            "#" + Tags.Items.TOOLS_CROSSBOW.location(),
+            "#" + Tags.Items.TOOLS_SHIELD.identifier(),
+            "#" + Tags.Items.TOOLS_BOW.identifier(),
+            "#" + Tags.Items.TOOLS_CROSSBOW.identifier(),
             "minecraft:trident",
             "born_in_chaos_v1:staffof_magic_arrows",
             "mowziesmobs:wrought_axe",

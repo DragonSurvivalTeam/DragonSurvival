@@ -240,11 +240,11 @@ public record DragonBody(
 
     public static String getWingButtonName(final Holder<DragonBody> holder) {
         //noinspection DataFlowIssue -> key is present
-        return Translation.Type.BODY_WINGS.wrap(holder.getKey().location());
+        return Translation.Type.BODY_WINGS.wrap(holder.getKey().identifier());
     }
 
     public static String getWingButtonDescription(final Holder<DragonBody> holder) {
         //noinspection DataFlowIssue -> key is present
-        return Translation.Type.BODY_WINGS_DESCRIPTION.wrap(holder.getKey().location());
+        return Translation.Type.BODY_WINGS_DESCRIPTION.wrap(holder.getKey().identifier());
     }
 }

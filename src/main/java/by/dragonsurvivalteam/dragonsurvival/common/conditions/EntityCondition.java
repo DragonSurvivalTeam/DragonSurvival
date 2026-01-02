@@ -51,67 +51,67 @@ public class EntityCondition {
     }
 
     public static EntityPredicate isOnBlock(final TagKey<Block> tag) {
-        return EntityPredicate.Builder.entity().steppingOn(LocationPredicate.Builder.location().setBlock(BlockPredicate.Builder.block().of(tag))).build();
+        return EntityPredicate.Builder.entity().steppingOn(LocationPredicate.Builder.identifier().setBlock(BlockPredicate.Builder.block().of(tag))).build();
     }
 
     public static EntityPredicate isOnBlock(final Block... blocks) {
-        return EntityPredicate.Builder.entity().steppingOn(LocationPredicate.Builder.location().setBlock(BlockPredicate.Builder.block().of(blocks))).build();
+        return EntityPredicate.Builder.entity().steppingOn(LocationPredicate.Builder.identifier().setBlock(BlockPredicate.Builder.block().of(blocks))).build();
     }
 
     public static EntityPredicate isOnBlock(final TagKey<Block> block, final Property<?> property, final String value) {
-        return EntityPredicate.Builder.entity().steppingOn(LocationPredicate.Builder.location().setBlock(
+        return EntityPredicate.Builder.entity().steppingOn(LocationPredicate.Builder.identifier().setBlock(
                 BlockPredicate.Builder.block().of(block).setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(property, value))
         )).build();
     }
 
     public static EntityPredicate isOnBlock(final TagKey<Block> block, final Property<Integer> property, final int value) {
-        return EntityPredicate.Builder.entity().steppingOn(LocationPredicate.Builder.location().setBlock(
+        return EntityPredicate.Builder.entity().steppingOn(LocationPredicate.Builder.identifier().setBlock(
                 BlockPredicate.Builder.block().of(block).setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(property, value))
         )).build();
     }
 
     public static EntityPredicate isOnBlock(final TagKey<Block> block, final Property<Boolean> property, final boolean value) {
-        return EntityPredicate.Builder.entity().steppingOn(LocationPredicate.Builder.location().setBlock(
+        return EntityPredicate.Builder.entity().steppingOn(LocationPredicate.Builder.identifier().setBlock(
                 BlockPredicate.Builder.block().of(block).setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(property, value))
         )).build();
     }
 
     public static <T extends Comparable<T> & StringRepresentable> EntityPredicate isOnBlock(final TagKey<Block> block, final Property<T> property, final T value) {
-        return EntityPredicate.Builder.entity().steppingOn(LocationPredicate.Builder.location().setBlock(
+        return EntityPredicate.Builder.entity().steppingOn(LocationPredicate.Builder.identifier().setBlock(
                 BlockPredicate.Builder.block().of(block).setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(property, value))
         )).build();
     }
 
     public static EntityPredicate isOnBlock(final Block block, final Property<?> property, final String value) {
-        return EntityPredicate.Builder.entity().steppingOn(LocationPredicate.Builder.location().setBlock(
+        return EntityPredicate.Builder.entity().steppingOn(LocationPredicate.Builder.identifier().setBlock(
                 BlockPredicate.Builder.block().of(block).setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(property, value))
         )).build();
     }
 
     public static EntityPredicate isOnBlock(final Block block, final Property<Integer> property, final int value) {
-        return EntityPredicate.Builder.entity().steppingOn(LocationPredicate.Builder.location().setBlock(
+        return EntityPredicate.Builder.entity().steppingOn(LocationPredicate.Builder.identifier().setBlock(
                 BlockPredicate.Builder.block().of(block).setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(property, value))
         )).build();
     }
 
     public static EntityPredicate isOnBlock(final Block block, final Property<Boolean> property, final boolean value) {
-        return EntityPredicate.Builder.entity().steppingOn(LocationPredicate.Builder.location().setBlock(
+        return EntityPredicate.Builder.entity().steppingOn(LocationPredicate.Builder.identifier().setBlock(
                 BlockPredicate.Builder.block().of(block).setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(property, value))
         )).build();
     }
 
     public static <T extends Comparable<T> & StringRepresentable> EntityPredicate isOnBlock(final Block block, final Property<T> property, final T value) {
-        return EntityPredicate.Builder.entity().steppingOn(LocationPredicate.Builder.location().setBlock(
+        return EntityPredicate.Builder.entity().steppingOn(LocationPredicate.Builder.identifier().setBlock(
                 BlockPredicate.Builder.block().of(block).setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(property, value))
         )).build();
     }
 
     public static EntityPredicate isInBlock(final TagKey<Block> tag) {
-        return EntityPredicate.Builder.entity().located(LocationPredicate.Builder.location().setBlock(BlockPredicate.Builder.block().of(tag))).build();
+        return EntityPredicate.Builder.entity().located(LocationPredicate.Builder.identifier().setBlock(BlockPredicate.Builder.block().of(tag))).build();
     }
 
     public static EntityPredicate isInFluid(final HolderSet<Fluid> fluids) {
-        return EntityPredicate.Builder.entity().located(LocationPredicate.Builder.location().setFluid(FluidPredicate.Builder.fluid().of(fluids))).build();
+        return EntityPredicate.Builder.entity().located(LocationPredicate.Builder.identifier().setFluid(FluidPredicate.Builder.fluid().of(fluids))).build();
     }
 
     public static EntityPredicate isEyeInFluid(final Holder<FluidType> fluid) {
@@ -131,7 +131,7 @@ public class EntityCondition {
     }
 
     public static EntityPredicate isInLight(int lightLevel) {
-        return EntityPredicate.Builder.entity().located(LocationPredicate.Builder.location().setLight(LightPredicate.Builder.light().setComposite(MinMaxBounds.Ints.atLeast(lightLevel)))).build();
+        return EntityPredicate.Builder.entity().located(LocationPredicate.Builder.identifier().setLight(LightPredicate.Builder.light().setComposite(MinMaxBounds.Ints.atLeast(lightLevel)))).build();
     }
 
     public static EntityPredicate isOnGround(boolean isOnGround) {
@@ -155,7 +155,7 @@ public class EntityCondition {
     }
 
     public static EntityPredicate inDimension(final ResourceKey<Level> dimension) {
-        return EntityPredicate.Builder.entity().located(LocationPredicate.Builder.location().setDimension(dimension)).build();
+        return EntityPredicate.Builder.entity().located(LocationPredicate.Builder.identifier().setDimension(dimension)).build();
     }
 
     @SafeVarargs

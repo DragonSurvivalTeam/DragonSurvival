@@ -229,7 +229,7 @@ public class DragonSpeciesScreen extends Screen {
                     graphics.blit(data.species().value().miscResources().altarBanner(), getX(), getY(), 0, 0, 49, 147, 49, 294);
                     List<Either<FormattedText, TooltipComponent>> components = new ArrayList<>();
                     //noinspection DataFlowIssue -> key is present
-                    components.addFirst(Either.left(Component.translatable(Translation.Type.DRAGON_SPECIES_INVENTORY_DESCRIPTION.wrap(species.getKey().location()))));
+                    components.addFirst(Either.left(Component.translatable(Translation.Type.DRAGON_SPECIES_INVENTORY_DESCRIPTION.wrap(species.getKey().identifier()))));
                     graphics.renderComponentTooltipFromElements(Minecraft.getInstance().font, components, mouseX, mouseY, ItemStack.EMPTY);
                 } else {
                     graphics.blit(data.species().value().miscResources().altarBanner(), getX(), getY(), 0, 147, 49, 147, 49, 294);

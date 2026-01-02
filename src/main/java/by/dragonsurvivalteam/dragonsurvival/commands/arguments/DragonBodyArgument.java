@@ -65,7 +65,7 @@ public class DragonBodyArgument implements ArgumentType<Holder<DragonBody>> {
                 }
             });
         } else {
-            lookup.listElementIds().forEach(element -> suggestions.add(element.location().toString()));
+            lookup.listElementIds().forEach(element -> suggestions.add(element.identifier().toString()));
         }
 
         return SharedSuggestionProvider.suggest(suggestions, builder);

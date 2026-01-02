@@ -313,7 +313,7 @@ public class Functions {
 
     public static <T> MutableComponent translateHolderSet(final HolderSet<T> set, final Translation.Type type) {
         //noinspection DataFlowIssue -> key is present
-        return translateHolderSet(set, entry -> type.wrap(entry.getKey().location()));
+        return translateHolderSet(set, entry -> type.wrap(entry.getKey().identifier()));
     }
 
     public static <T> MutableComponent translateHolderSet(final HolderSet<T> set, final Function<Holder<T>, String> translationKey) {

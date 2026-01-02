@@ -169,6 +169,6 @@ public class DSEnchantments {
                         TimeCheck.time(IntRange.exact(0)).setPeriod(100).and(Condition.thisEntity(EntityCondition.isSpecies(context.lookup(DragonSpecies.REGISTRY).getOrThrow(DSDragonSpeciesTags.TRUE_DRAGONS)))
                         )
                 )
-                .build(DRAGONSBANE.location()));
+                .build(DRAGONSBANE.identifier()));
     }
 }

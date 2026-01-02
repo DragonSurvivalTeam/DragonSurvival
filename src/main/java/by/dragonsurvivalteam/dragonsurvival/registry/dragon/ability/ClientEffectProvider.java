@@ -36,13 +36,13 @@ public interface ClientEffectProvider {
         @SuppressWarnings("OptionalUsedAsFieldOrParameterType") // ignore
         public static ClientData from(final Identifier id, final ServerPlayer dragon, final DragonAbilityInstance ability, final Optional<Identifier> customIcon) {
             Identifier icon = customIcon.orElse(ability.getIcon().withPrefix("textures/gui/sprites/").withSuffix(".png"));
-            return new ClientData(id, icon, Component.translatable(Translation.Type.ABILITY.wrap(ability.location())), dragon.getName());
+            return new ClientData(id, icon, Component.translatable(Translation.Type.ABILITY.wrap(ability.identifier())), dragon.getName());
         }
 
         @SuppressWarnings({"OptionalUsedAsFieldOrParameterType", "DataFlowIssue"}) // ignore
         public static ClientData from(final Identifier id, final Holder<DragonPenalty> penalty, final Optional<Identifier> customIcon) {
             Identifier icon = customIcon.orElse(penalty.value().icon().orElse(UNKNOWN_ICON));
-            return new ClientData(id, icon, Component.translatable(Translation.Type.PENALTY.wrap(penalty.getKey().location())), Component.empty());
+            return new ClientData(id, icon, Component.translatable(Translation.Type.PENALTY.wrap(penalty.getKey().identifier())), Component.empty());
         }
     }
 

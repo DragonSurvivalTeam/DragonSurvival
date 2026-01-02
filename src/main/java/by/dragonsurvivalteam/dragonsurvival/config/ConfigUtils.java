@@ -121,7 +121,7 @@ public class ConfigUtils {
     @SuppressWarnings("deprecation") // ignore
     public static String location(final Object object) {
         if (object instanceof TagKey<?> tag) {
-            return "#" + tag.location();
+            return "#" + tag.identifier();
         }
 
         if (object instanceof Block block) {
@@ -148,7 +148,7 @@ public class ConfigUtils {
     }
 
     private static String location(final ResourceKey<?> key) {
-        return key.location().toString();
+        return key.identifier().toString();
     }
 
     private static Identifier getLocation(final String[] splitData, boolean isTag) {

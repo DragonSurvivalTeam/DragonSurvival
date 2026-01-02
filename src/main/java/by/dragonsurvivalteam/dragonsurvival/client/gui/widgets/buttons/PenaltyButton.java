@@ -23,7 +23,7 @@ public class PenaltyButton extends ExtendedButton {
 
         if (penalty.value().icon().isEmpty()) {
             //noinspection DataFlowIssue -> key is present
-            Functions.logOrThrow("Penalties with no icon should not be added as button - [" + penalty.getKey().location() + "] is invalid");
+            Functions.logOrThrow("Penalties with no icon should not be added as button - [" + penalty.getKey().identifier() + "] is invalid");
         }
     }
 

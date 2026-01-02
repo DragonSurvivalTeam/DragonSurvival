@@ -108,14 +108,14 @@ public class DSLanguageProvider extends LanguageProvider {
 
         // It seems only built-in registries are present (which excludes dragon species)
         // Therefor we have to handle these manually (because the tags are dynamically created)
-        add(Tags.getTagTranslationKey(DSItemTags.key(LangKey.FOOD.apply(BuiltInDragonSpecies.CAVE_DRAGON.location()))), "Cave Dragon Food");
-        add(Tags.getTagTranslationKey(DSItemTags.key(LangKey.FOOD.apply(BuiltInDragonSpecies.FOREST_DRAGON.location()))), "Forest Dragon Food");
-        add(Tags.getTagTranslationKey(DSItemTags.key(LangKey.FOOD.apply(BuiltInDragonSpecies.SEA_DRAGON.location()))), "Sea Dragon Food");
+        add(Tags.getTagTranslationKey(DSItemTags.key(LangKey.FOOD.apply(BuiltInDragonSpecies.CAVE_DRAGON.identifier()))), "Cave Dragon Food");
+        add(Tags.getTagTranslationKey(DSItemTags.key(LangKey.FOOD.apply(BuiltInDragonSpecies.FOREST_DRAGON.identifier()))), "Forest Dragon Food");
+        add(Tags.getTagTranslationKey(DSItemTags.key(LangKey.FOOD.apply(BuiltInDragonSpecies.SEA_DRAGON.identifier()))), "Sea Dragon Food");
     }
 
     private void handleVanilla() {
         for (ResourceKey<DamageType> damageType : ResourceHelper.keys(lookup.join(), Registries.DAMAGE_TYPE)) {
-            add(Translation.Type.DAMAGE_TYPE.wrap(damageType.location()), capitalize(damageType.location().getPath()));
+            add(Translation.Type.DAMAGE_TYPE.wrap(damageType.identifier()), capitalize(damageType.identifier().getPath()));
         }
 
         // Used by 'HarvestBonuses'
@@ -162,7 +162,7 @@ public class DSLanguageProvider extends LanguageProvider {
                     if (Holder.class.isAssignableFrom(field.getType())) {
                         Holder<?> holder = (Holder<?>) field.get(null);
                         //noinspection DataFlowIssue -> only a problem if we work with Holder$Direct which should not be the case here
-                        add(type.wrap(holder.getKey().location().getPath()), format(comments));
+                        add(type.wrap(holder.getKey().identifier().getPath()), format(comments));
                         continue;
                     }
 
@@ -174,7 +174,7 @@ public class DSLanguageProvider extends LanguageProvider {
 
                     if (ResourceKey.class.isAssignableFrom(field.getType())) {
                         ResourceKey<?> resourceKey = (ResourceKey<?>) field.get(null);
-                        add(type.wrap(resourceKey.location().getPath()), format(comments));
+                        add(type.wrap(resourceKey.identifier().getPath()), format(comments));
                         continue;
                     }
 

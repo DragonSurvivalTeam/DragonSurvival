@@ -809,7 +809,7 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
 
     @SuppressWarnings("deprecation") // ignore
     private Criterion<RecipeCraftedTrigger.TriggerInstance> crafted(final ItemLike item) {
-        return RecipeCraftedTrigger.TriggerInstance.craftedItem(item.asItem().builtInRegistryHolder().key().location());
+        return RecipeCraftedTrigger.TriggerInstance.craftedItem(item.asItem().builtInRegistryHolder().key().identifier());
     }
 
     private LootItemCondition entityCondition(final EntityPredicate predicate) {
@@ -833,7 +833,7 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
 
     private LocationPredicate.Builder inStructure(final TagKey<Structure> tag) {
         HolderSet.Named<Structure> set = registries.lookupOrThrow(Registries.STRUCTURE).getOrThrow(tag);
-        return LocationPredicate.Builder.location().setStructures(set);
+        return LocationPredicate.Builder.identifier().setStructures(set);
     }
 
     private LocationPredicate.Builder inStructure(final Holder<Structure> structure) {
@@ -841,7 +841,7 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
     }
 
     private LocationPredicate.Builder isInFluid(final TagKey<Fluid> fluids) {
-        return LocationPredicate.Builder.location().setFluid(fluid(fluids));
+        return LocationPredicate.Builder.identifier().setFluid(fluid(fluids));
     }
 
     private Optional<ContextAwarePredicate> caveDragonInLava() {
@@ -854,11 +854,11 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
 
     @SuppressWarnings("SameParameterValue") // ignore
     private LocationPredicate.Builder block(final Block block) {
-        return LocationPredicate.Builder.location().setBlock(BlockPredicate.Builder.block().of(block));
+        return LocationPredicate.Builder.identifier().setBlock(BlockPredicate.Builder.block().of(block));
     }
 
     private LocationPredicate.Builder light(final MinMaxBounds.Ints bounds) {
-        return LocationPredicate.Builder.location().setLight(LightPredicate.Builder.light().setComposite(bounds));
+        return LocationPredicate.Builder.identifier().setLight(LightPredicate.Builder.light().setComposite(bounds));
     }
 
     @SuppressWarnings("deprecation") // ignore
@@ -902,11 +902,11 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
     }
 
     public Criterion<ItemUsedOnLocationTrigger.TriggerInstance> itemUsedOnBlock(final Block block, final ItemLike... items) {
-        return ItemUsedOnLocationTrigger.TriggerInstance.itemUsedOnBlock(LocationPredicate.Builder.location().setBlock(BlockPredicate.Builder.block().of(block)), ItemPredicate.Builder.item().of(items));
+        return ItemUsedOnLocationTrigger.TriggerInstance.itemUsedOnBlock(LocationPredicate.Builder.identifier().setBlock(BlockPredicate.Builder.block().of(block)), ItemPredicate.Builder.item().of(items));
     }
 
     public Criterion<ItemUsedOnLocationTrigger.TriggerInstance> itemUsedOnBlock(final Block block, final TagKey<Item> items) {
-        return ItemUsedOnLocationTrigger.TriggerInstance.itemUsedOnBlock(LocationPredicate.Builder.location().setBlock(BlockPredicate.Builder.block().of(block)), ItemPredicate.Builder.item().of(items));
+        return ItemUsedOnLocationTrigger.TriggerInstance.itemUsedOnBlock(LocationPredicate.Builder.identifier().setBlock(BlockPredicate.Builder.block().of(block)), ItemPredicate.Builder.item().of(items));
     }
 
     public Criterion<EffectsChangedTrigger.TriggerInstance> effectWithMinDuration(final Holder<MobEffect> effect, int minDuration) {

@@ -62,7 +62,7 @@ public class SkinData implements INBTSerializable<CompoundTag> {
         tag.putBoolean(RENDER_CUSTOM_SKIN, renderCustomSkin);
 
         for (Map.Entry<ResourceKey<DragonSpecies>, SkinPreset> entry : skinPresets.get().entrySet()) {
-            tag.put(entry.getKey().location().toString(), entry.getValue().serializeNBT(provider));
+            tag.put(entry.getKey().identifier().toString(), entry.getValue().serializeNBT(provider));
         }
 
         return tag;

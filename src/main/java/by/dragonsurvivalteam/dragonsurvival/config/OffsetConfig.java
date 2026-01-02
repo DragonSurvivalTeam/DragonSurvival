@@ -42,7 +42,7 @@ public class OffsetConfig implements CustomConfig {
     }
 
     public static OffsetConfig create(final TagKey<EntityType<?>> entityType, final Vec3 offset) {
-        return create("#" + entityType.location(), offset);
+        return create("#" + entityType.identifier(), offset);
     }
 
     public static OffsetConfig create(final String entityType, final Vec3 offset) {

@@ -79,7 +79,7 @@ public record DamageEffect(Holder<DamageType> damageType, LevelBasedValue amount
         boolean swap = swap(dragon);
 
         //noinspection DataFlowIssue -> key is present
-        MutableComponent damageType = Component.translatable(Translation.Type.DAMAGE_TYPE.wrap(this.damageType.getKey().location()));
+        MutableComponent damageType = Component.translatable(Translation.Type.DAMAGE_TYPE.wrap(this.damageType.getKey().identifier()));
         MutableComponent abilityDamage = Component.translatable(LangKey.ABILITY_DAMAGE, DSColors.dynamicValue(calculate(dragon, ability.level())), DSColors.dynamicValue(damageType));
 
         if (swap) {

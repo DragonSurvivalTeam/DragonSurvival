@@ -19,9 +19,9 @@ import java.lang.annotation.Target;
  * - {@link Enum} will use {@link DSLanguageProvider#enumClassKey(Class)} and {@link DSLanguageProvider#enumValue(Enum)} <br>
  * - {@link String} annotated with the type {@link Type#NONE} will use its stored value, not wrapping anything <br>
  * - {@link String} annotated with the type {@link Type#EMOTE} will use its stored value, wrapped with emote <br>
- * - {@link Holder} will use {@link Holder#getKey()} -> {@link ResourceKey#location()} -> {@link Identifier#getPath()} to determine the wrapped value <br>
+ * - {@link Holder} will use {@link Holder#getKey()} -> {@link ResourceKey#identifier()} -> {@link Identifier#getPath()} to determine the wrapped value <br>
  * - {@link TagKey} will use {@link Tags#getTagTranslationKey(TagKey)} <br>
- * - {@link ResourceKey} will use {@link ResourceKey#location()} -> {@link Identifier#getPath()} to determine the wrapped value <br>
+ * - {@link ResourceKey} will use {@link ResourceKey#identifier()} -> {@link Identifier#getPath()} to determine the wrapped value <br>
  * - {@link Identifier} will use {@link Identifier#getPath()} to determine the wrapped value <br>
  */
 @Target({ElementType.FIELD, ElementType.TYPE})
@@ -137,7 +137,7 @@ public @interface Translation {
 
         /** See {@link Translation.Type#wrap(String, String)} */
         public String wrap(final ResourceKey<?> key) {
-            return wrap(key.location());
+            return wrap(key.identifier());
         }
 
         /** See {@link Translation.Type#wrap(String, String)} */

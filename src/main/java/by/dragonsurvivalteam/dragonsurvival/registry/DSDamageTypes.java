@@ -119,7 +119,7 @@ public class DSDamageTypes {
     }
 
     private static void register(final BootstrapContext<DamageType> context, final ResourceKey<DamageType> damageType) {
-        context.register(damageType, type(damageType.location().getPath()));
+        context.register(damageType, type(damageType.identifier().getPath()));
     }
 
     private static DamageType type(final String messageId) {

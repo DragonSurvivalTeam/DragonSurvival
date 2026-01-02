@@ -49,7 +49,7 @@ public class Projectiles {
     public static void registerProjectiles(final BootstrapContext<ProjectileData> context) {
         context.register(FIREBALL, new ProjectileData(
                 new ProjectileData.GeneralData(
-                        FIREBALL.location(),
+                        FIREBALL.identifier(),
                         false,
                         Optional.of(Condition.thisEntity(EntityCondition.isLiving()).build()),
                         List.of(),
@@ -61,7 +61,7 @@ public class Projectiles {
                         List.of()
                 ),
                 Either.left(new ProjectileData.GenericBallData(
-                        new LevelBasedResource(List.of(new LevelBasedResource.Entry(FIREBALL.location(), 1))),
+                        new LevelBasedResource(List.of(new LevelBasedResource.Entry(FIREBALL.identifier(), 1))),
                         Optional.of(ParticleTypes.LARGE_SMOKE),
                         List.of(new ProjectilePointTarget(new ProjectileTargeting.GeneralData(List.of(
                                 new ProjectileTargeting.ConditionalEffect(new ProjectileExplosionEffect(
@@ -85,7 +85,7 @@ public class Projectiles {
 
         context.register(SPIKE, new ProjectileData(
                 new ProjectileData.GeneralData(
-                        SPIKE.location(),
+                        SPIKE.identifier(),
                         true,
                         Optional.of(Condition.thisEntity(EntityCondition.isLiving()).build()),
                         List.of(),
@@ -97,14 +97,14 @@ public class Projectiles {
                         List.of()
                 ),
                 Either.right(new ProjectileData.GenericArrowData(
-                        new LevelBasedResource(List.of(new LevelBasedResource.Entry(SPIKE.location(), 1))),
+                        new LevelBasedResource(List.of(new LevelBasedResource.Entry(SPIKE.identifier(), 1))),
                         LevelBasedValue.constant(3)
                 ))
         ));
 
         context.register(BALL_LIGHTNING, new ProjectileData(
                 new ProjectileData.GeneralData(
-                        BALL_LIGHTNING.location(),
+                        BALL_LIGHTNING.identifier(),
                         false,
                         Optional.of(Condition.thisEntity(EntityCondition.isLiving()).build()),
                         List.of(
@@ -149,7 +149,7 @@ public class Projectiles {
                         List.of()
                 ),
                 Either.left(new ProjectileData.GenericBallData(
-                        new LevelBasedResource(List.of(new LevelBasedResource.Entry(BALL_LIGHTNING.location(), 1))),
+                        new LevelBasedResource(List.of(new LevelBasedResource.Entry(BALL_LIGHTNING.identifier(), 1))),
                         Optional.of(ParticleTypes.ELECTRIC_SPARK),
                         List.of(new ProjectilePointTarget(new ProjectileTargeting.GeneralData(List.of(
                                 new ProjectileTargeting.ConditionalEffect(new ProjectileExplosionEffect(
@@ -173,7 +173,7 @@ public class Projectiles {
 
         context.register(BOUNCY_BALL_LIGHTNING, new ProjectileData(
                 new ProjectileData.GeneralData(
-                        BALL_LIGHTNING.location(),
+                        BALL_LIGHTNING.identifier(),
                         false,
                         Optional.of(Condition.thisEntity(EntityCondition.isLiving()).build()),
                         List.of(
@@ -216,7 +216,7 @@ public class Projectiles {
                         List.of()
                 ),
                 Either.left(new ProjectileData.GenericBallData(
-                        new LevelBasedResource(List.of(new LevelBasedResource.Entry(BALL_LIGHTNING.location(), 1))),
+                        new LevelBasedResource(List.of(new LevelBasedResource.Entry(BALL_LIGHTNING.identifier(), 1))),
                         Optional.empty(),
                         List.of(new ProjectilePointTarget(new ProjectileTargeting.GeneralData(List.of(
                                 new ProjectileTargeting.ConditionalEffect(new ProjectileExplosionEffect(

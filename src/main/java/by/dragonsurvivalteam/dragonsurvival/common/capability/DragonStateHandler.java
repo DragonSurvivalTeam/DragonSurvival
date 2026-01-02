@@ -138,7 +138,7 @@ public class DragonStateHandler extends EntityStateHandler {
     public void setStage(@Nullable final Player player, final Holder<DragonStage> dragonStage) {
         if (!dragonSpecies.value().getStages(player != null ? player.registryAccess() : null).contains(dragonStage)) {
             //noinspection DataFlowIssue -> key is present
-            Functions.logOrThrow("The dragon stage [" + dragonStage.getKey().location() + "] is not valid for the dragon species [" + speciesId() + "]");
+            Functions.logOrThrow("The dragon stage [" + dragonStage.getKey().identifier() + "] is not valid for the dragon species [" + speciesId() + "]");
             return;
         }
 
@@ -334,7 +334,7 @@ public class DragonStateHandler extends EntityStateHandler {
 
     /** Should only be called if the player is a dragon */
     public Identifier speciesId() {
-        return speciesKey().location();
+        return speciesKey().identifier();
     }
 
     public Holder<DragonStage> stage() {
@@ -352,7 +352,7 @@ public class DragonStateHandler extends EntityStateHandler {
 
     /** Should only be called if the player is a dragon */
     public Identifier stageId() {
-        return stageKey().location();
+        return stageKey().identifier();
     }
 
     public Holder<DragonBody> body() {
@@ -366,7 +366,7 @@ public class DragonStateHandler extends EntityStateHandler {
 
     /** Should only be called if the player is a dragon */
     public Identifier bodyId() {
-        return bodyKey().location();
+        return bodyKey().identifier();
     }
 
     public void refreshMagicData(final ServerPlayer player, boolean forceRetainMagicData) {
@@ -636,10 +636,10 @@ public class DragonStateHandler extends EntityStateHandler {
 
             items.forEach((item, count) -> {
                 //noinspection deprecation,DataFlowIssue -> ignore / key is present
-                perStage.putInt(item.builtInRegistryHolder().getKey().location().toString(), count);
+                perStage.putInt(item.builtInRegistryHolder().getKey().identifier().toString(), count);
             });
 
-            usedGrowthItems.put(key.location().toString(), perStage);
+            usedGrowthItems.put(key.identifier().toString(), perStage);
         });
 
         tag.put(USED_GROWTH_ITEMS, usedGrowthItems);
@@ -749,7 +749,7 @@ public class DragonStateHandler extends EntityStateHandler {
     }
 
     private double loadSavedStage(@NotNull final HolderLookup.Provider provider, final ResourceKey<DragonSpecies> dragonSpecies, final CompoundTag tag) {
-        CompoundTag compound = tag.getCompound(dragonSpecies.location() + SAVED_GROWTH_SUFFIX);
+        CompoundTag compound = tag.getCompound(dragonSpecies.identifier() + SAVED_GROWTH_SUFFIX);
 
         if (compound.isEmpty()) {
             Optional<Holder.Reference<DragonSpecies>> optional = ResourceHelper.get(provider, dragonSpecies);
@@ -768,7 +768,7 @@ public class DragonStateHandler extends EntityStateHandler {
     private void storeSavedAge(final ResourceKey<DragonSpecies> speciesKey, final CompoundTag tag) {
         CompoundTag savedGrowthTag = new CompoundTag();
         savedGrowthTag.putDouble(GROWTH, getSavedDragonAge(speciesKey));
-        tag.put(speciesKey.location() + SAVED_GROWTH_SUFFIX, savedGrowthTag);
+        tag.put(speciesKey.identifier() + SAVED_GROWTH_SUFFIX, savedGrowthTag);
     }
 
     @Override

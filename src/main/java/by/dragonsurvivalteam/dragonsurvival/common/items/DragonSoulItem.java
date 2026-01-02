@@ -260,7 +260,7 @@ public class DragonSoulItem extends BlockItem {
             Component name;
 
             if (species != null) {
-                name = Component.translatable(Translation.Type.DRAGON_SPECIES.wrap(species.location()));
+                name = Component.translatable(Translation.Type.DRAGON_SPECIES.wrap(species.identifier()));
             } else {
                 name = Component.translatable(INVALID_DRAGON_TYPE);
             }
@@ -294,7 +294,7 @@ public class DragonSoulItem extends BlockItem {
             return Component.translatable(EMPTY_DRAGON_SOUL);
         }
 
-        return Component.translatable(Translation.Type.DRAGON_SPECIES.wrap(species.location())).append(Component.translatable(SOUL));
+        return Component.translatable(Translation.Type.DRAGON_SPECIES.wrap(species.identifier())).append(Component.translatable(SOUL));
     }
 
     public CompoundTag getHandlerData(final ItemStack stack) {

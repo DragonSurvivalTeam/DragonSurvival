@@ -48,21 +48,21 @@ public class DragonSkins {
     private static boolean initialized;
 
     public static boolean playerSkinOrGlowFetchingInProgress(String playerName, ResourceKey<DragonStage> stage) {
-        String playerKey = playerName + "_" + stage.location().getPath();
+        String playerKey = playerName + "_" + stage.identifier().getPath();
         return SKIN_CACHE.containsKey(playerKey) && !SKIN_CACHE.get(playerKey).isDone() || GLOW_CACHE.containsKey(playerKey) && !GLOW_CACHE.get(playerKey).isDone();
     }
 
     public static boolean fetchHasFailed(String playerName, ResourceKey<DragonStage> stage) {
-        String playerKey = playerName + "_" + stage.location().getPath();
+        String playerKey = playerName + "_" + stage.identifier().getPath();
         return hasFailedFetch.contains(playerKey);
     }
 
     public static @Nullable Identifier getPlayerSkin(String playerName, ResourceKey<DragonStage> dragonStage) {
         String skinKey;
         if (validStages.contains(dragonStage)) {
-             skinKey = playerName + "_" + dragonStage.location().getPath();
+             skinKey = playerName + "_" + dragonStage.identifier().getPath();
         } else {
-            skinKey = playerName + "_" + DragonStages.adult.location().getPath();
+            skinKey = playerName + "_" + DragonStages.adult.identifier().getPath();
         }
 
         if (SKIN_CACHE.containsKey(skinKey) && SKIN_CACHE.get(skinKey) != null) {
@@ -79,7 +79,7 @@ public class DragonSkins {
     }
 
     public static @Nullable Identifier getPlayerGlow(String playerName, ResourceKey<DragonStage> dragonStage) {
-        String skinKey = playerName + "_" + dragonStage.location().getPath();
+        String skinKey = playerName + "_" + dragonStage.identifier().getPath();
 
         if (GLOW_CACHE.containsKey(skinKey) && GLOW_CACHE.get(skinKey) != null) {
             if (GLOW_CACHE.get(skinKey).isDone()) {
@@ -94,7 +94,7 @@ public class DragonSkins {
 
 
     public static @Nullable Identifier getPlayerSkin(Player player, ResourceKey<DragonStage> dragonStage) {
-        String playerKey = player.getGameProfile().getName() + "_" + dragonStage.location().getPath();
+        String playerKey = player.getGameProfile().getName() + "_" + dragonStage.identifier().getPath();
         boolean renderCustomSkin = DragonStateProvider.getData(player).getSkinData().renderCustomSkin;
 
         if ((ClientDragonRenderer.renderOtherPlayerSkins || player == DragonSurvival.PROXY.getLocalPlayer()) && renderCustomSkin) {
@@ -113,7 +113,7 @@ public class DragonSkins {
     }
 
     public static @Nullable Identifier fetchSkinFile(final String playerName, final ResourceKey<DragonStage> stage, final String... extra) {
-        String playerKey = playerName + "_" + stage.location().getPath();
+        String playerKey = playerName + "_" + stage.identifier().getPath();
         String[] text = ArrayUtils.addAll(new String[]{playerKey}, extra);
 
         String resourceName = StringUtils.join(text, "_");
@@ -198,7 +198,7 @@ public class DragonSkins {
     }
 
     public static @Nullable Identifier getGlowTexture(Player player, ResourceKey<DragonStage> dragonStage) {
-        String playerKey = player.getGameProfile().getName() + "_" + dragonStage.location().getPath();
+        String playerKey = player.getGameProfile().getName() + "_" + dragonStage.identifier().getPath();
         boolean renderCustomSkin = DragonStateProvider.getData(player).getSkinData().renderCustomSkin;
 
         if ((ClientDragonRenderer.renderOtherPlayerSkins || player == DragonSurvival.PROXY.getLocalPlayer()) && SKIN_CACHE.containsKey(playerKey) && renderCustomSkin) {

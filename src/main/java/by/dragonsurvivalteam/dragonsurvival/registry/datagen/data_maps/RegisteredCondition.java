@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 public record RegisteredCondition<T>(ResourceKey<T> registryKey) implements ICondition {
     public static final MapCodec<RegisteredCondition<?>> CODEC = RecordCodecBuilder.mapCodec(instance -> instance
             .group(Identifier.CODEC.fieldOf("registry").forGetter(condition -> condition.registryKey().registry()),
-                    Identifier.CODEC.fieldOf("value").forGetter(condition -> condition.registryKey().location()))
+                    Identifier.CODEC.fieldOf("value").forGetter(condition -> condition.registryKey().identifier()))
             .apply(instance, RegisteredCondition::new));
 
     private RegisteredCondition(final Identifier registryType, final Identifier registryName) {

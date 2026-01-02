@@ -184,7 +184,7 @@ public class DragonModel extends GeoModel<DragonEntity> {
         try {
             getBakedModel(model);
         } catch (Exception e) {
-            DragonSurvival.LOGGER.error("Model not found for dragon species: {}", Translation.Type.DRAGON_SPECIES.wrap(DragonStateProvider.getData(dragon.getPlayer()).speciesKey().location()));
+            DragonSurvival.LOGGER.error("Model not found for dragon species: {}", Translation.Type.DRAGON_SPECIES.wrap(DragonStateProvider.getData(dragon.getPlayer()).speciesKey().identifier()));
             return DragonBody.DEFAULT_MODEL;
         }
 
@@ -245,7 +245,7 @@ public class DragonModel extends GeoModel<DragonEntity> {
 
     public static Identifier dynamicTexture(final Player player, final DragonStateHandler handler, boolean isGlowLayer) {
         String prefix = isGlowLayer ? "dynamic_glow_" : "dynamic_normal_";
-        return DragonSurvival.res(prefix + player.getStringUUID() + "_" + handler.speciesId().getPath() + "_" + handler.stageKey().location().getPath());
+        return DragonSurvival.res(prefix + player.getStringUUID() + "_" + handler.speciesId().getPath() + "_" + handler.stageKey().identifier().getPath());
     }
 
     @Override

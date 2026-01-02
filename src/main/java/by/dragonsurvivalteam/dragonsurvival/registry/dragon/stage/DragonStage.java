@@ -101,12 +101,12 @@ public record DragonStage(
                 MiscCodecs.DestructionData destructionData = stage.value().destructionData().get();
 
                 if (destructionData.blockDestructionGrowth() > stage.value().growthRange().max() || destructionData.blockDestructionGrowth() < stage.value().growthRange().min()) {
-                    validationError.append("\n- Block destruction growth of [").append(key.location()).append("] is not within the bounds of the dragon stage");
+                    validationError.append("\n- Block destruction growth of [").append(key.identifier()).append("] is not within the bounds of the dragon stage");
                     areStagesValid.set(false);
                 }
 
                 if (destructionData.crushingGrowth() > stage.value().growthRange().max() || destructionData.crushingGrowth() < stage.value().growthRange().min()) {
-                    validationError.append("\n- Crushing growth of [").append(key.location()).append("] is not within the bounds of the dragon stage");
+                    validationError.append("\n- Crushing growth of [").append(key.identifier()).append("] is not within the bounds of the dragon stage");
                     areStagesValid.set(false);
                 }
             }
@@ -145,7 +145,7 @@ public record DragonStage(
         if (optional.isPresent()) {
             return true;
         } else {
-            builder.append("\n- ").append(stageKey.location());
+            builder.append("\n- ").append(stageKey.identifier());
             return false;
         }
     }
@@ -164,7 +164,7 @@ public record DragonStage(
     }
 
     public static Component translatableName(final ResourceKey<DragonStage> dragonStage) {
-        return Component.translatable(Translation.Type.STAGE.wrap(dragonStage.location()));
+        return Component.translatable(Translation.Type.STAGE.wrap(dragonStage.identifier()));
     }
 
     public double getBoundedGrowth(double growth) {

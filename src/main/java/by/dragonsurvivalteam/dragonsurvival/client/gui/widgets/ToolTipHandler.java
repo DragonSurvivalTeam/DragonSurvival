@@ -159,7 +159,7 @@ public class ToolTipHandler {
 
         if (foodData.getContents() != PlainTextContents.EMPTY) {
             //noinspection DataFlowIssue -> key is present
-            MutableComponent speciesTranslation = Component.translatable(Translation.Type.DRAGON_SPECIES.wrap(species.getKey().location()));
+            MutableComponent speciesTranslation = Component.translatable(Translation.Type.DRAGON_SPECIES.wrap(species.getKey().identifier()));
             return Component.translatable(DRAGON_FOOD, speciesTranslation.withStyle(foodData.getStyle()), foodData).withStyle(foodData.getStyle());
         }
 
@@ -208,7 +208,7 @@ public class ToolTipHandler {
     @SuppressWarnings("DataFlowIssue") // resource key should be present
     public static void addCustomItemDescriptions(final ItemTooltipEvent event) {
         if (event.getEntity() != null && event.getEntity().level().isClientSide() && event.getItemStack() != ItemStack.EMPTY) {
-            Identifier location = event.getItemStack().getItemHolder().getKey().location();
+            Identifier location = event.getItemStack().getItemHolder().getKey().identifier();
             MutableComponent description = null;
 
             if (ENCHANTMENT_DESCRIPTIONS && event.getItemStack().getItem() instanceof EnchantedBookItem) {
@@ -219,8 +219,8 @@ public class ToolTipHandler {
                     Holder<Enchantment> holder = enchantments.entrySet().iterator().next().getKey();
                     ResourceKey<Enchantment> resourceKey = holder.getKey();
 
-                    if (resourceKey.location().getNamespace().equals(DragonSurvival.MODID)) {
-                        description = Component.translatable(Translation.Type.ENCHANTMENT_DESCRIPTION.wrap(resourceKey.location().getPath())).withStyle(ChatFormatting.DARK_GRAY);
+                    if (resourceKey.identifier().getNamespace().equals(DragonSurvival.MODID)) {
+                        description = Component.translatable(Translation.Type.ENCHANTMENT_DESCRIPTION.wrap(resourceKey.identifier().getPath())).withStyle(ChatFormatting.DARK_GRAY);
                     }
                 }
             } else if (location.getNamespace().equals(DragonSurvival.MODID)) {

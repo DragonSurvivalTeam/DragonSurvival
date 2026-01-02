@@ -130,7 +130,7 @@ public class PlayerLoginHandler {
             DragonAbilityInstance currentlyCasting = magicDataTracked.getCurrentlyCasting();
 
             if (currentlyCasting != null) {
-                PacketDistributor.sendToPlayer(trackerPlayer, new StopTickingSound(currentlyCasting.location().withSuffix(trackedPlayer.getStringUUID())));
+                PacketDistributor.sendToPlayer(trackerPlayer, new StopTickingSound(currentlyCasting.identifier().withSuffix(trackedPlayer.getStringUUID())));
             }
         }
     }
@@ -140,7 +140,7 @@ public class PlayerLoginHandler {
         DragonAbilityInstance currentlyCasting = magicData.getCurrentlyCasting();
 
         if (currentlyCasting != null) {
-            PacketDistributor.sendToAllPlayers(new StopTickingSound(currentlyCasting.location().withSuffix(player.getStringUUID())));
+            PacketDistributor.sendToAllPlayers(new StopTickingSound(currentlyCasting.identifier().withSuffix(player.getStringUUID())));
         }
     }
 

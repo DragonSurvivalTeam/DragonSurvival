@@ -55,7 +55,7 @@ public record SyncStopCast(int playerId, Optional<ResourceKey<DragonAbility>> ab
             return;
         }
 
-        PacketDistributor.sendToPlayersTrackingEntity(player, new StopTickingSound(abilityInstance.location().withSuffix(player.getStringUUID())));
+        PacketDistributor.sendToPlayersTrackingEntity(player, new StopTickingSound(abilityInstance.identifier().withSuffix(player.getStringUUID())));
 
         if (!abilityInstance.isApplyingEffects() || (abilityInstance.isApplyingEffects() && !abilityInstance.hasEndAnimation())) {
             PacketDistributor.sendToPlayersTrackingEntity(player, new StopAbilityAnimation(player.getId()));

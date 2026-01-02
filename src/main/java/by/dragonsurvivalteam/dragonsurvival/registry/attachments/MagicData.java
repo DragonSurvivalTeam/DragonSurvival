@@ -581,10 +581,10 @@ public class MagicData implements INBTSerializable<CompoundTag> {
         CompoundTag tag = new CompoundTag();
 
         CompoundTag speciesAbilities = new CompoundTag();
-        abilities.get(this.currentSpecies).values().forEach(instance -> speciesAbilities.put(instance.key().location().toString(), instance.save(provider)));
+        abilities.get(this.currentSpecies).values().forEach(instance -> speciesAbilities.put(instance.key().identifier().toString(), instance.save(provider)));
 
         CompoundTag speciesHotbar = new CompoundTag();
-        hotbar.get(this.currentSpecies).forEach((slot, key) -> speciesHotbar.putInt(key.location().toString(), slot));
+        hotbar.get(this.currentSpecies).forEach((slot, key) -> speciesHotbar.putInt(key.identifier().toString(), slot));
 
         tag.put(ABILITIES, speciesAbilities);
         tag.put(HOTBARS, speciesHotbar);
@@ -636,15 +636,15 @@ public class MagicData implements INBTSerializable<CompoundTag> {
         CompoundTag allAbilities = new CompoundTag();
         for (Map.Entry<ResourceKey<DragonSpecies>, Map<ResourceKey<DragonAbility>, DragonAbilityInstance>> entry : abilities.entrySet()) {
             CompoundTag abilities = new CompoundTag();
-            entry.getValue().values().forEach(instance -> abilities.put(instance.key().location().toString(), instance.save(provider)));
-            allAbilities.put(entry.getKey().location().toString(), abilities);
+            entry.getValue().values().forEach(instance -> abilities.put(instance.key().identifier().toString(), instance.save(provider)));
+            allAbilities.put(entry.getKey().identifier().toString(), abilities);
         }
 
         CompoundTag allHotbars = new CompoundTag();
         for (Map.Entry<ResourceKey<DragonSpecies>, Map<Integer, ResourceKey<DragonAbility>>> entry : hotbar.entrySet()) {
             CompoundTag hotbar = new CompoundTag();
-            entry.getValue().forEach((slot, key) -> hotbar.putInt(key.location().toString(), slot));
-            allHotbars.put(entry.getKey().location().toString(), hotbar);
+            entry.getValue().forEach((slot, key) -> hotbar.putInt(key.identifier().toString(), slot));
+            allHotbars.put(entry.getKey().identifier().toString(), hotbar);
         }
 
         tag.put(ABILITIES, allAbilities);
@@ -654,7 +654,7 @@ public class MagicData implements INBTSerializable<CompoundTag> {
         tag.putBoolean(RENDER_ABILITIES, renderAbilities);
 
         if (currentSpecies != null) {
-            tag.putString(CURRENT_SPECIES, currentSpecies.location().toString());
+            tag.putString(CURRENT_SPECIES, currentSpecies.identifier().toString());
         }
 
         return tag;

@@ -45,7 +45,7 @@ public class DSDragonAbilityTags extends TagsProvider<DragonAbility> {
 
         provider.lookupOrThrow(DragonAbility.REGISTRY).listElements().forEach(ability -> {
                     //noinspection DataFlowIssue -> key is present
-                    if (ability.getKey().location().getPath().startsWith(DragonAbilities.TEST_PREFIX)) {
+                    if (ability.getKey().identifier().getPath().startsWith(DragonAbilities.TEST_PREFIX)) {
                         testAbilities.add(ability.getKey());
                     }
                 }

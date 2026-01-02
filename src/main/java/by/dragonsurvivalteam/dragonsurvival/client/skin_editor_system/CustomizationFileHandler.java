@@ -70,7 +70,7 @@ public class CustomizationFileHandler {
         public @UnknownNullability CompoundTag serializeNBT(@NotNull final HolderLookup.Provider provider) {
             CompoundTag nbt = new CompoundTag();
             nbt.put(CUSTOMIZATION, customization.serializeNBT(provider));
-            nbt.putString(DRAGON_SPECIES, dragonSpecies.location().toString());
+            nbt.putString(DRAGON_SPECIES, dragonSpecies.identifier().toString());
             nbt.putString(DRAGON_MODEL, dragonModel.toString());
             return nbt;
         }

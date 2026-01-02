@@ -24,12 +24,12 @@ public record LevelBasedResource(List<Entry> entries) {
     public Identifier get(final int level) {
         for (Entry entry : entries) {
             if (level >= entry.fromLevel()) {
-                return entry.location();
+                return entry.identifier();
             }
         }
 
         // Fallback to returning the first entry (this is intended, as it happens for a single tick as the client is receiving projectile data from the server)
-        return entries().getFirst().location();
+        return entries().getFirst().identifier();
     }
 
     public record Entry(Identifier location, int fromLevel) implements Comparable<Entry> {

@@ -127,7 +127,7 @@ public class SkinPreset implements INBTSerializable<CompoundTag> {
         tag.putString(MODEL, model.toString());
 
         if (species != null) {
-            tag.putString(SPECIES, species.location().toString());
+            tag.putString(SPECIES, species.identifier().toString());
         }
 
         List<ResourceKey<DragonStage>> stageKeys;
@@ -140,7 +140,7 @@ public class SkinPreset implements INBTSerializable<CompoundTag> {
 
         for (ResourceKey<DragonStage> dragonStage : stageKeys) {
             if(skins.get().containsKey(dragonStage)) {
-                tag.put(dragonStage.location().toString(), skins.get().getOrDefault(dragonStage, Lazy.of(DragonStageCustomization::new)).get().serializeNBT(provider));
+                tag.put(dragonStage.identifier().toString(), skins.get().getOrDefault(dragonStage, Lazy.of(DragonStageCustomization::new)).get().serializeNBT(provider));
             }
         }
 
@@ -162,10 +162,10 @@ public class SkinPreset implements INBTSerializable<CompoundTag> {
         }
 
         for (ResourceKey<DragonStage> dragonStage : stageKeys) {
-            if (base.contains(dragonStage.location().toString())) {
+            if (base.contains(dragonStage.identifier().toString())) {
                 skins.get().put(dragonStage, Lazy.of(() -> {
                     DragonStageCustomization group = new DragonStageCustomization();
-                    CompoundTag dragonStageData = base.getCompound(dragonStage.location().toString());
+                    CompoundTag dragonStageData = base.getCompound(dragonStage.identifier().toString());
                     group.deserializeNBT(provider, dragonStageData);
                     return group;
                 }));
@@ -187,10 +187,10 @@ public class SkinPreset implements INBTSerializable<CompoundTag> {
         }
 
         for (ResourceKey<DragonStage> dragonStage : stageKeys) {
-            if (base.contains(dragonStage.location().toString())) {
+            if (base.contains(dragonStage.identifier().toString())) {
                 skins.get().put(dragonStage, Lazy.of(() -> {
                     DragonStageCustomization group = new DragonStageCustomization();
-                    CompoundTag dragonStageData = base.getCompound(dragonStage.location().toString());
+                    CompoundTag dragonStageData = base.getCompound(dragonStage.identifier().toString());
                     group.deserializeNBT(provider, dragonStageData);
                     return group;
                 }));

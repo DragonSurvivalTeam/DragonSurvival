@@ -157,7 +157,7 @@ public class DSTrades {
             Holder<Enchantment> enchantment = EnchantmentUtils.getHolder(this.enchantment);
 
             if (enchantment == null) {
-                DragonSurvival.LOGGER.warn("Enchantment [{}] is not present - cannot create proper trade offer", this.enchantment.location());
+                DragonSurvival.LOGGER.warn("Enchantment [{}] is not present - cannot create proper trade offer", this.enchantment.identifier());
                 return new MerchantOffer(new ItemCost(Items.EMERALD, 1), Optional.empty(), Items.BOOK.getDefaultInstance(), 1, 0, 1);
             }
 

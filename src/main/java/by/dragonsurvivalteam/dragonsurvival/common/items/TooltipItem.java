@@ -21,7 +21,7 @@ public class TooltipItem extends Item {
     public TooltipItem(final Item.Properties properties, final @Nullable String key) {
         super(properties);
         //noinspection DataFlowIssue -> this is a Holder$Reference not a Holder$Direct, meaning it's fine
-        this.keySupplier = stack -> Objects.requireNonNullElseGet(key, () -> stack.getItemHolder().getKey().location().getPath());
+        this.keySupplier = stack -> Objects.requireNonNullElseGet(key, () -> stack.getItemHolder().getKey().identifier().getPath());
     }
 
     @Override
