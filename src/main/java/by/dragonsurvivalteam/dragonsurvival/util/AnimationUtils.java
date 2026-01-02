@@ -7,6 +7,7 @@ import software.bernie.geckolib.animatable.GeoAnimatable;
 import software.bernie.geckolib.animation.AnimationController;
 import software.bernie.geckolib.animation.RawAnimation;
 import software.bernie.geckolib.cache.GeckoLibCache;
+import software.bernie.geckolib.cache.GeckoLibResources;
 import software.bernie.geckolib.loading.object.BakedAnimations;
 import software.bernie.geckolib.model.GeoModel;
 
@@ -49,7 +50,7 @@ public class AnimationUtils {
     }
 
     public static <A extends GeoAnimatable, T extends GeoModel<A>> boolean doesAnimationExist(final T model, final A animatable, final String animation) {
-        BakedAnimations bakedAnimations = GeckoLibCache.getBakedAnimations().get(model.getAnimationResource(animatable));
+        BakedAnimations bakedAnimations = GeckoLibResources.getBakedAnimations().cache().get(model.getAnimationResource(animatable));
 
         if (bakedAnimations == null) {
             return false;
@@ -69,6 +70,6 @@ public class AnimationUtils {
             return 0;
         }
 
-        return GeckoLibCache.getBakedAnimations().get(model.getAnimationResource(animatable)).getAnimation(animation).length();
+        return GeckoLibResources.getBakedAnimations().cache().get(model.getAnimationResource(animatable)).getAnimation(animation).length();
     }
 }

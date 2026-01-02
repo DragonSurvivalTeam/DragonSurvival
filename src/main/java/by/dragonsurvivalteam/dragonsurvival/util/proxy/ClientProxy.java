@@ -35,6 +35,7 @@ import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.cache.GeckoLibCache;
+import software.bernie.geckolib.cache.GeckoLibResources;
 import software.bernie.geckolib.loading.object.BakedAnimations;
 
 import java.util.HashMap;
@@ -219,7 +220,7 @@ public class ClientProxy implements Proxy {
     public Set<String> getAnimations(final DragonSoulBlockEntity soul) {
         DragonEntity dragon = FakeClientPlayerUtils.getFakeDragon(soul.fakePlayerIndex, soul.getHandler());
         Identifier resource = DragonSurvivalClient.DRAGON_MODEL.getAnimationResource(dragon);
-        BakedAnimations animations = GeckoLibCache.getBakedAnimations().get(resource);
+        BakedAnimations animations = GeckoLibResources.getBakedAnimations().cache().get(resource);
         return animations.animations().keySet();
     }
 
