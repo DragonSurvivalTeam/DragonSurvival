@@ -35,6 +35,7 @@ public class DSColors {
     public static final int DARK_GRAY = 0x262626;
     public static final int LIGHT_PURPLE = 0x9A849A;
     public static final int DARK_PURPLE = 0x594459;
+    public static final int YELLOW = 0xEDDB11;
 
     public static final int PASSIVE_BACKGROUND = 0x7F912E;
     public static final int ACTIVE_BACKGROUND = 0xC8861F;

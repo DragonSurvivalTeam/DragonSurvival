@@ -17,13 +17,13 @@ public class HoundRenderer extends DynamicGeoEntityRenderer<HoundEntity> {
 
     @Override
     public void preRender(final PoseStack poseStack, final HoundEntity animatable, final BakedGeoModel model, final MultiBufferSource bufferSource, final VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, int color) {
-        Minecraft.getInstance().getProfiler().push("hound");
+        Profiler.get().push("hound");
         super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, color);
     }
 
     @Override
     public void postRender(final PoseStack poseStack, final HoundEntity animatable, final BakedGeoModel model, final MultiBufferSource bufferSource, final VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, int color) {
         super.postRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, color);
-        Minecraft.getInstance().getProfiler().pop();
+        Profiler.get().pop();
     }
 }

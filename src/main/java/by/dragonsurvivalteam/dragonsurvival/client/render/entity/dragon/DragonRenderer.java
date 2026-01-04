@@ -88,7 +88,7 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
 
     @Override
     public void preRender(final PoseStack poseStack, final DragonEntity animatable, final BakedGeoModel model, final MultiBufferSource bufferSource, final VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, int color) {
-        Minecraft.getInstance().getProfiler().push("player_dragon");
+        Profiler.get().push("player_dragon");
         Player player = animatable.getPlayer();
 
         resetNeckVisibility = model.getBone("Neck").map(bone -> {
@@ -129,7 +129,7 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
             BONE_POSITIONS.computeIfAbsent(animatable.getId(), key -> new HashMap<>()).put(bone.getName(), position);
         }));
 
-        Minecraft.getInstance().getProfiler().pop();
+        Profiler.get().pop();
     }
 
     @Override

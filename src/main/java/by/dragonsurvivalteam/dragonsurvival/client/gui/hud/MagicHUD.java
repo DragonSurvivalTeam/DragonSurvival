@@ -23,14 +23,15 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
+import net.minecraft.util.profiling.Profiler;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import org.jetbrains.annotations.NotNull;
-import software.bernie.geckolib.util.Color;
 
 import java.util.Objects;
 
@@ -90,11 +91,11 @@ public class MagicHUD {
     private static final Identifier CAST_BAR_FILL = Identifier.fromNamespaceAndPath(MODID, "textures/gui/cast_bar_fill.png");
 
     public static class OutlineColorData {
-        private Color color;
+        private int color;
         private double delay;
         private boolean pastDelay;
 
-        public OutlineColorData(Color color, double delay, boolean pastDelay) {
+        public OutlineColorData(int color, double delay, boolean pastDelay) {
             this.color = color;
             this.delay = delay;
             this.pastDelay = pastDelay;
@@ -122,24 +123,25 @@ public class MagicHUD {
         int guiScaledWidth = window.getGuiScaledWidth();
         int guiScaledHeight = window.getGuiScaledHeight();
 
-        Minecraft.getInstance().getProfiler().push("expLevel");
+        Profiler.get().push("expLevel");
 
         if (localPlayer.getXpNeededForNextLevel() > 0) {
             int width = screenWidth / 2 - 91;
 
             int experienceProgress = (int) (localPlayer.experienceProgress * 183.0F);
             int height = guiScaledHeight - 32 + 3;
-            guiGraphics.blit(WIDGET_TEXTURES, width, height, 0, 0, 164, 182, 5, 256, 256);
+            // FIXME :: UI GRAPHICS
+            //guiGraphics.blit(WIDGET_TEXTURES, width, height, 0, 0, 164, 182, 5, 256, 256);
 
             if (experienceProgress > 0) {
-                guiGraphics.blit(WIDGET_TEXTURES, width, height, 0, 0, 169, experienceProgress, 5, 256, 256);
+                //guiGraphics.blit(WIDGET_TEXTURES, width, height, 0, 0, 169, experienceProgress, 5, 256, 256);
             }
         }
 
-        Minecraft.getInstance().getProfiler().pop();
+        Profiler.get().pop();
 
         if (localPlayer.experienceLevel > 0) {
-            Minecraft.getInstance().getProfiler().push("expLevel");
+            Profiler.get().push("expLevel");
 
             String s = "" + localPlayer.experienceLevel;
             int width = (guiScaledWidth - Minecraft.getInstance().font.width(s)) / 2;
@@ -151,7 +153,7 @@ public class MagicHUD {
             guiGraphics.drawString(Minecraft.getInstance().font, s, width, (height - 1), 0, false);
             guiGraphics.drawString(Minecraft.getInstance().font, s, width, height, DSColors.RED, false);
 
-            Minecraft.getInstance().getProfiler().pop();
+            Profiler.get().pop();
         }
 
         return true;
@@ -177,7 +179,7 @@ public class MagicHUD {
     private static float deltaCounter;
     private static boolean reverseCounter;
 
-    private static void lerpToColor(int slot, Color color) {
+    private static void lerpToColor(int slot, int color) {
         colors[slot].delay -= AnimationUtils.getDeltaSeconds();
 
         if (colors[slot].delay <= 0) {
@@ -188,13 +190,13 @@ public class MagicHUD {
             return;
         }
 
-        Color currentColor = colors[slot].color;
+        int currentColor = colors[slot].color;
         float lerpSpeed = (float) markDisabledAbilitiesRedLerpSpeed;
-        float red = Mth.lerp(lerpSpeed, currentColor.getRedFloat(), color.getRedFloat());
-        float green = Mth.lerp(lerpSpeed, currentColor.getGreenFloat(), color.getGreenFloat());
-        float blue = Mth.lerp(lerpSpeed, currentColor.getBlueFloat(), color.getBlueFloat());
-        float alpha = Mth.lerp(lerpSpeed, currentColor.getAlphaFloat(), color.getAlphaFloat());
-        colors[slot].color = Color.ofRGBA(red, green, blue, alpha);
+        float red = Mth.lerp(lerpSpeed, ARGB.redFloat(currentColor), ARGB.redFloat(color));
+        float green = Mth.lerp(lerpSpeed, ARGB.greenFloat(currentColor), ARGB.greenFloat(color));
+        float blue = Mth.lerp(lerpSpeed, ARGB.blueFloat(currentColor), ARGB.blueFloat(color));
+        float alpha = Mth.lerp(lerpSpeed,ARGB.alphaFloat(currentColor), ARGB.alphaFloat(color));
+        colors[slot].color = ARGB.colorFromFloat(alpha, red, green, blue);
     }
 
     public static void render(@NotNull final GuiGraphics graphics, @NotNull final DeltaTracker tracker) {
@@ -220,7 +222,7 @@ public class MagicHUD {
 
         if (!initializedDisabledAbilitiesColor) {
             for (int i = 0; i < MagicData.HOTBAR_SLOTS; i++) {
-                colors[i] = new OutlineColorData(Color.ofRGBA(1f, 1f, 1f, 1f), disabledColorDelay, false);
+                colors[i] = new OutlineColorData(ARGB.color(0xFF, DSColors.WHITE), disabledColorDelay, false);
             }
 
             initializedDisabledAbilitiesColor = true;
@@ -250,7 +252,8 @@ public class MagicHUD {
 
         if (magic.shouldRenderAbilities()) {
             if (!magic.getActiveAbilities().isEmpty()) {
-                graphics.setColor(1, 1, 1, 1);
+                // FIXME :: UI GRAPHICS
+                // graphics.setColor(1, 1, 1, 1);
 
                 for (int x = 0; x < MagicData.HOTBAR_SLOTS; x++) {
                     DragonAbilityInstance ability = magic.fromSlot(x);
@@ -258,22 +261,23 @@ public class MagicHUD {
                     if (ability != null) {
                         if (!ability.isEnabled()) {
                             // TODO :: what color is this and what is this check for?
-                            if (colors[x].pastDelay && colors[x].color.equals(Color.ofOpaque(-2314))) {
+                            if (colors[x].pastDelay && colors[x].color == 0) {
                                 colors[x].delay = disabledColorDelay;
                                 colors[x].pastDelay = false;
                             }
 
-                            lerpToColor(x, Color.RED);
+                            lerpToColor(x, ARGB.color(0xFF, DSColors.RED));
                         } else if (!ability.hasEnoughMana(player)) {
-                            lerpToColor(x, Color.YELLOW);
+                            lerpToColor(x, ARGB.color(0xFF, DSColors.YELLOW));
                         } else {
                             colors[x].pastDelay = true;
                             colors[x].delay = 0;
-                            lerpToColor(x, Color.WHITE);
+                            lerpToColor(x, ARGB.color(0xFF, DSColors.WHITE));
                         }
 
-                        Color outlineColor = colors[x].color;
-                        graphics.setColor(outlineColor.getRedFloat(), outlineColor.getGreenFloat(), outlineColor.getBlueFloat(), outlineColor.getAlphaFloat());
+                        // FIXME :: UI GRAPHICS
+                        //Color outlineColor = colors[x].color;
+                        //graphics.setColor(outlineColor.getRedFloat(), outlineColor.getGreenFloat(), outlineColor.getBlueFloat(), outlineColor.getAlphaFloat());
 
                         int uOffset;
                         int uWidth;
@@ -293,10 +297,11 @@ public class MagicHUD {
                             xPos = posX + x * 20 + 1;
                         }
 
-                        graphics.blit(VANILLA_WIDGETS, xPos, posY - 2, -50, uOffset, 0, uWidth, 22, 256, 256);
-                        graphics.setColor(1f, 1f, 1f, 1f);
+                        // FIXME :: UI GRAPHICS
+                        //graphics.blit(VANILLA_WIDGETS, xPos, posY - 2, -50, uOffset, 0, uWidth, 22, 256, 256);
+                        //graphics.setColor(1f, 1f, 1f, 1f);
 
-                        graphics.blitSprite(ability.getIcon(), posX + x * sizeX + 3, posY + 1, 0, 16, 16);
+                        //graphics.blitSprite(ability.getIcon(), posX + x * sizeX + 3, posY + 1, 0, 16, 16);
 
                         float skillCooldown = ability.value().activation().getCooldown(ability.level());
                         float currentCooldown = ability.cooldown() - Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(false);
@@ -310,17 +315,20 @@ public class MagicHUD {
                             graphics.fill(boxX, boxY, boxX + 16, boxY + offset, color);
                         }
                     } else {
-                        graphics.blit(VANILLA_WIDGETS, posX + x * 20, posY - 2, -50, x * 20, 0, 21, 22, 256, 256);
+                        // FIXME :: UI GRAPHICS
+                        //graphics.blit(VANILLA_WIDGETS, posX + x * 20, posY - 2, -50, x * 20, 0, 21, 22, 256, 256);
                     }
                 }
 
                 if (magic.getSelectedAbility() != null) {
-                    Color outlineColor = colors[magic.getSelectedAbilitySlot()].color;
-                    graphics.setColor(outlineColor.getRedFloat(), outlineColor.getGreenFloat(), outlineColor.getBlueFloat(), outlineColor.getAlphaFloat());
+                    // FIXME :: UI GRAPHICS
+                    //Color outlineColor = colors[magic.getSelectedAbilitySlot()].color;
+                    //graphics.setColor(outlineColor.getRedFloat(), outlineColor.getGreenFloat(), outlineColor.getBlueFloat(), outlineColor.getAlphaFloat());
                 }
 
-                graphics.blit(VANILLA_WIDGETS, posX + sizeX * magic.getSelectedAbilitySlot() - 1, posY - 3, 2, 0, 22, 24, 24, 256, 256);
-                graphics.setColor(1f, 1f, 1f, 1f);
+                // FIXME :: UI GRAPHICS
+                //graphics.blit(VANILLA_WIDGETS, posX + sizeX * magic.getSelectedAbilitySlot() - 1, posY - 3, 2, 0, 22, 24, 24, 256, 256);
+                //graphics.setColor(1f, 1f, 1f, 1f);
             }
 
             float reservedMana = ManaHandler.getReservedMana(player);
@@ -400,27 +408,28 @@ public class MagicHUD {
             if (targetTime > 0) {
                 graphics.pose().pushMatrix();
 
+                // FIXME :: UI GRAPHICS
                 // Call flush here, otherwise some mods that batch together blit calls will cause this to be rendered in an incorrect order
                 // This does nothing on vanilla code but is required for compatibility with other mods (e.g. immediatelyfast)
-                graphics.flush();
+                //graphics.flush();
 
-                graphics.pose().scale(0.5F, 0.5F, 0);
+                //graphics.pose().scale(0.5F, 0.5F, 0);
 
                 int startX = graphics.guiWidth() / 2 - 49 + castbarXOffset;
                 int startY = graphics.guiHeight() - 96 + castbarYOffset;
                 float percentage = Math.clamp(1 - currentTime / (float) targetTime, 0, 1);
 
-                graphics.pose().translate(startX, startY, 0);
+                //graphics.pose().translate(startX, startY, 0);
 
                 DragonStateHandler handler = DragonStateProvider.getData(player);
                 graphics.blit(handler.species().value().miscResources().castBar(), startX, startY, 0, 0, 196, 47, 196, 47);
 
-                Color color = new Color(DSColors.toARGB(handler.species().value().miscResources().primaryColor()));
-                graphics.setColor(color.getRedFloat(), color.getGreenFloat(), color.getBlueFloat(), color.getAlphaFloat());
-                graphics.blit(CAST_BAR_FILL, startX + 2, startY + 41, 0, 0, (int) (191 * percentage), 4, 191, 4);
-                graphics.setColor(1, 1, 1, 1);
+                //Color color = new Color(DSColors.toARGB(handler.species().value().miscResources().primaryColor()));
+                //graphics.setColor(color.getRedFloat(), color.getGreenFloat(), color.getBlueFloat(), color.getAlphaFloat());
+                //graphics.blit(CAST_BAR_FILL, startX + 2, startY + 41, 0, 0, (int) (191 * percentage), 4, 191, 4);
+                //graphics.setColor(1, 1, 1, 1);
 
-                graphics.blitSprite(ability.getIcon(), startX + 78, startY + 3, 0, 36, 36);
+                //graphics.blitSprite(ability.getIcon(), startX + 78, startY + 3, 0, 36, 36);
 
                 graphics.pose().popMatrix();
             }

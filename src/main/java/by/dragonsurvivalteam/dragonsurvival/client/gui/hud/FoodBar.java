@@ -40,8 +40,9 @@ public class FoodBar {
             return false;
         }
 
-        Minecraft.getInstance().getProfiler().push("food");
-        RenderSystem.enableBlend();
+        // FIXME :: UI GRAPHICS
+       // Profiler.get().push("food");
+        //RenderSystem.enableBlend();
 
         final int left = width / 2 + 91;
         final int top = height - Minecraft.getInstance().gui.rightHeight;
@@ -59,17 +60,17 @@ public class FoodBar {
                 y = top + RANDOM.nextInt(3) - 1;
             }
 
-            graphics.blit(foodSprites, left - i * 8 - 9, y, hunger ? 117 : 0, 0, 9, 9);
+            //graphics.blit(foodSprites, left - i * 8 - 9, y, hunger ? 117 : 0, 0, 9, 9);
 
             if (icon < food.getFoodLevel()) {
-                graphics.blit(foodSprites, left - i * 8 - 9, y, hunger ? 72 : 36, 0, 9, 9);
+                //graphics.blit(foodSprites, left - i * 8 - 9, y, hunger ? 72 : 36, 0, 9, 9);
             } else if (icon == food.getFoodLevel()) {
-                graphics.blit(foodSprites, left - i * 8 - 9, y, hunger ? 81 : 45, 0, 9, 9);
+                //graphics.blit(foodSprites, left - i * 8 - 9, y, hunger ? 81 : 45, 0, 9, 9);
             }
         }
 
-        RenderSystem.disableBlend();
-        Minecraft.getInstance().getProfiler().pop();
+        //RenderSystem.disableBlend();
+       // Profiler.get().pop();
 
         return true;
     }

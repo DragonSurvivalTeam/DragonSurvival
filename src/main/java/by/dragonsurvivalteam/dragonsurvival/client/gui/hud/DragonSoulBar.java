@@ -55,7 +55,8 @@ public class DragonSoulBar {
 
             int width = (int) (progress * WIDTH);
             graphics.blit(DRAGON_SOUL_BAR, x, y, 0, 0, WIDTH, HEIGHT / 2, WIDTH, HEIGHT);
-            graphics.blit(DRAGON_SOUL_BAR, x, y, 0, (float) HEIGHT / 2, width, HEIGHT / 2, WIDTH, HEIGHT);
+            // FIXME :: UI GRAPHICS
+            //graphics.blit(DRAGON_SOUL_BAR, x, y, 0, (float) HEIGHT / 2, width, HEIGHT / 2, WIDTH, HEIGHT);
         }
     }
 }
