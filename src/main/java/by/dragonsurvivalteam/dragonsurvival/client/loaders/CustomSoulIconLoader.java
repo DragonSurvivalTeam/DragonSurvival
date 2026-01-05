@@ -41,7 +41,8 @@ public class CustomSoulIconLoader {
         ICONS.clear();
 
         Map<Identifier, JsonElement> resources = new HashMap<>();
-        SimpleJsonResourceReloadListener.scanDirectory(manager, "custom_soul_icons", new Gson(), resources);
+        // FIXME
+        // SimpleJsonResourceReloadListener.scanDirectory(manager, "custom_soul_icons", new Gson(), resources);
 
         resources.forEach((location, element) -> CustomSoulIcon.CODEC.decode(JsonOps.INSTANCE, element)
                 .ifError(DragonSurvival.LOGGER::error).map(Pair::getFirst)
@@ -69,7 +70,8 @@ public class CustomSoulIconLoader {
     }
 
     @SubscribeEvent
-    public static void registerIcons(final ModelEvent.RegisterAdditional event) {
-        ICONS.values().forEach(maps -> maps.values().forEach(resource -> event.register(ModelIdentifier.standalone(resource))));
+    public static void registerIcons(final ModelEvent.RegisterStandalone event) {
+        // FIXME
+        // ICONS.values().forEach(maps -> maps.values().forEach(resource -> event.register(ModelIdentifier.standalone(resource))));
     }
 }
