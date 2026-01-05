@@ -27,8 +27,8 @@
         {
           "items": "dragonsurvival:charred_meat",
           "properties": {
-            "nutrition": 8,
-            "saturation": 10.0
+            "nutrition": 6,
+            "saturation": 3.0
           }
         },
         {

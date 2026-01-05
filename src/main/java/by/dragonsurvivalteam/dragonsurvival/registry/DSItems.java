@@ -74,7 +74,7 @@ public class DSItems {
             "■§f This heart contains magic that absorbs draconic energy. It is able to stop the natural growth cycle of the user."
     })
     @Translation(type = Translation.Type.ITEM, comments = "Star Heart")
-    public static final Holder<Item> STAR_HEART = REGISTRY.register("star_heart", () -> new Item(new Properties()));
+    public static final Holder<Item> STAR_HEART = REGISTRY.register("star_heart", location -> new TooltipItem(new Item.Properties(), location.getPath()));
 
     @Translation(type = Translation.Type.DESCRIPTION, comments = {
             "§6■ Part of the Elder dragon.§r",
