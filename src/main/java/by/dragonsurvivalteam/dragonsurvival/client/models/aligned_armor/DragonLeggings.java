@@ -3,8 +3,6 @@ package by.dragonsurvivalteam.dragonsurvival.client.models.aligned_armor;
 // Exported for Minecraft version 1.17 or later with Mojang mappings
 // Paste this class into your mod and generate all required imports
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
@@ -14,19 +12,18 @@ import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
-import org.jetbrains.annotations.NotNull;
 
-public class DragonLeggings<T extends Entity> extends EntityModel<T> {
+public class DragonLeggings<T extends Entity> extends EntityModel<EntityRenderState> {
     // This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
     public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath("dragonsurvival", "dragon_leggings"), "main");
-    public final ModelPart left_leg;
-    public final ModelPart right_leg;
 
     public DragonLeggings(ModelPart root) {
-        this.left_leg = root.getChild("left_leg");
-        this.right_leg = root.getChild("right_leg");
+        super(root);
+        root.createPartLookup().apply("left_leg");
+        root.createPartLookup().apply("right_leg");
     }
 
     public static LayerDefinition createBodyLayer() {
@@ -46,16 +43,5 @@ public class DragonLeggings<T extends Entity> extends EntityModel<T> {
         PartDefinition leg_r2 = right_arm.addOrReplaceChild("leg_r2", CubeListBuilder.create().texOffs(0, 53).mirror().addBox(-1.5F, -0.5F, -1.0F, 2.0F, 2.0F, 5.0F, new CubeDeformation(0.75F)).mirror(false), PartPose.offsetAndRotation(-1.6F, -1.7F, 0.6F, 0.6333F, -0.2489F, -0.1789F));
 
         return LayerDefinition.create(meshdefinition, 64, 64);
-    }
-
-    @Override
-    public void setupAnim(@NotNull Entity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-
-    }
-
-    @Override
-    public void renderToBuffer(@NotNull PoseStack poseStack, @NotNull VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int color) {
-        left_leg.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-        right_leg.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
     }
 }

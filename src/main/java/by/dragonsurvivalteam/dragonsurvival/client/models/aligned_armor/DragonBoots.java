@@ -14,19 +14,20 @@ import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
+import net.neoforged.neoforge.client.renderstate.BaseRenderState;
 import org.jetbrains.annotations.NotNull;
 
-public class DragonBoots<T extends Entity> extends EntityModel<T> {
+public class DragonBoots<T extends Entity> extends EntityModel<EntityRenderState> {
     // This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
     public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath("dragonsurvival", "dragon_shoe"), "main");
-    public final ModelPart left_shoe;
-    public final ModelPart right_shoe;
 
     public DragonBoots(ModelPart root) {
-        this.left_shoe = root.getChild("left_shoe");
-        this.right_shoe = root.getChild("right_shoe");
+        super(root);
+        root.createPartLookup().apply("left_shoe");
+        root.createPartLookup().apply("right_shoe");
     }
 
     public static LayerDefinition createBodyLayer() {
@@ -46,16 +47,5 @@ public class DragonBoots<T extends Entity> extends EntityModel<T> {
         PartDefinition shoe_r2 = right_shoe.addOrReplaceChild("shoe_r2", CubeListBuilder.create().texOffs(0, 53).mirror().addBox(-1.5F, -0.5F, -1.0F, 2.0F, 2.0F, 5.0F, new CubeDeformation(0.75F)).mirror(false), PartPose.offsetAndRotation(-0.7F, 6.6F, 2.6F, 0.5813F, -0.1073F, -0.0206F));
 
         return LayerDefinition.create(meshdefinition, 64, 64);
-    }
-
-    @Override
-    public void setupAnim(@NotNull Entity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-
-    }
-
-    @Override
-    public void renderToBuffer(@NotNull PoseStack poseStack, @NotNull VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int color) {
-        left_shoe.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-        right_shoe.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
     }
 }
