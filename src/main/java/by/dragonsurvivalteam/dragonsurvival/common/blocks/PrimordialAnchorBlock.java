@@ -1,6 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.common.blocks;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.client.util.SystemMessageUtils;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
@@ -160,11 +161,11 @@ public class PrimordialAnchorBlock extends Block implements EntityBlock {
             }
 
             if (flightWasActuallyGranted && spinWasActuallyGranted) {
-                player.sendSystemMessage(Component.translatable(PRIMORDIAL_ANCHOR_GRANTED_FLIGHT_SPIN));
+                SystemMessageUtils.sendSystemMessage(Component.translatable(PRIMORDIAL_ANCHOR_GRANTED_FLIGHT_SPIN), player);
             } else if (flightWasActuallyGranted) {
-                player.sendSystemMessage(Component.translatable(PRIMORDIAL_ANCHOR_GRANTED_FLIGHT));
+                SystemMessageUtils.sendSystemMessage(Component.translatable(PRIMORDIAL_ANCHOR_GRANTED_FLIGHT), player);
             } else if (spinWasActuallyGranted) {
-                player.sendSystemMessage(Component.translatable(PRIMORDIAL_ANCHOR_GRANTED_SPIN));
+                SystemMessageUtils.sendSystemMessage(Component.translatable(PRIMORDIAL_ANCHOR_GRANTED_SPIN), player);
             }
 
             PacketDistributor.sendToPlayer((ServerPlayer) player, new SyncEnderDragonMark(false));

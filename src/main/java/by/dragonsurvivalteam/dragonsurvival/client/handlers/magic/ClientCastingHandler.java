@@ -42,7 +42,7 @@ public class ClientCastingHandler {
 
     @SubscribeEvent
     private static void handleKeyInput(final InputEvent.Key event) {
-        handleCastingInput(InputConstants.getKey(event.getKey(), event.getScanCode()), event.getAction());
+        handleCastingInput(InputConstants.getKey(event.getKeyEvent()), event.getAction());
     }
 
     private static void handleCastingInput(final InputConstants.Key input, final int action) {

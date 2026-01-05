@@ -34,15 +34,12 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.UseAnim;
+import net.minecraft.world.item.*;
 import net.minecraft.world.item.component.CustomModelData;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -50,6 +47,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 public class DragonSoulItem extends BlockItem {
     @ConfigRange(min = 0)
@@ -87,12 +85,16 @@ public class DragonSoulItem extends BlockItem {
     }
 
     @Override
-    public @NotNull InteractionResultHolder<ItemStack> use(@NotNull final Level level, @NotNull final Player player, @NotNull final InteractionHand hand) {
+    public @NotNull InteractionResult use(@NotNull final Level level, @NotNull final Player player, @NotNull final InteractionHand hand) {
         if (!player.hasEffect(DSEffects.EXHAUSTED_SOUL) && (DragonStateProvider.isDragon(player) || player.getItemInHand(hand).has(DSDataComponents.DRAGON_SOUL))) {
             player.startUsingItem(hand);
-            return InteractionResultHolder.success(player.getItemInHand(hand));
+            // FIXME
+            //return InteractionResultHolder.success(player.getItemInHand(hand));
+            return InteractionResult.SUCCESS;
         } else {
-            return InteractionResultHolder.fail(player.getItemInHand(hand));
+            // FIXME
+            // return InteractionResultHolder.fail(player.getItemInHand(hand));
+            return InteractionResult.FAIL;
         }
     }
 
@@ -138,25 +140,7 @@ public class DragonSoulItem extends BlockItem {
             DSAdvancementTriggers.USE_DRAGON_SOUL.get().trigger(serverPlayer);
         }
 
-        DragonSoulData data = null;
-
-        // FIXME 1.22 :: remove, this was only a fallback for a breaking change
-        if (stack.has(DataComponents.CUSTOM_DATA)) {
-            CompoundTag tag = stack.get(DataComponents.CUSTOM_DATA).getUnsafe();
-
-            if (tag.contains(DragonSoulData.DRAGON)) {
-                data = DragonSoulData.parseLegacy(tag);
-
-                tag.remove(DragonSoulData.DRAGON);
-                tag.remove(DragonSoulData.ABILITIES);
-            }
-        }
-
-        if (data == null) {
-            data = stack.get(DSDataComponents.DRAGON_SOUL);
-        } else {
-            stack.set(DSDataComponents.DRAGON_SOUL, data);
-        }
+        DragonSoulData data = stack.get(DSDataComponents.DRAGON_SOUL);
 
         DragonStateHandler handler = DragonStateProvider.getData(player);
         MagicData magicData = MagicData.getData(player);
@@ -182,7 +166,7 @@ public class DragonSoulItem extends BlockItem {
                 PenaltySupply.clear(player);
 
                 stack.set(DSDataComponents.DRAGON_SOUL, new DragonSoulData(currentDragonData, currentAbilityData, player.getScale()));
-                stack.set(DataComponents.CUSTOM_MODEL_DATA, new CustomModelData(getCustomModelData(level.registryAccess(), currentDragonData)));
+                stack.set(DataComponents.CUSTOM_MODEL_DATA, new CustomModelData(List.of(), List.of(), List.of(), List.of(getCustomModelData(level.registryAccess(), currentDragonData))));
             } else {
                 // Preserve spin/flight grant state
                 boolean flightGranted = handler.flightWasGranted;
@@ -202,7 +186,7 @@ public class DragonSoulItem extends BlockItem {
             CompoundTag currentAbilityData = magicData.serializeNBTForCurrentSpecies(level.registryAccess());
 
             stack.set(DSDataComponents.DRAGON_SOUL, new DragonSoulData(currentDragonData, currentAbilityData, player.getScale()));
-            stack.set(DataComponents.CUSTOM_MODEL_DATA, new CustomModelData(getCustomModelData(level.registryAccess(), currentDragonData)));
+            stack.set(DataComponents.CUSTOM_MODEL_DATA, new CustomModelData(List.of(), List.of(), List.of(), List.of(getCustomModelData(level.registryAccess(), currentDragonData))));
             handler.revertToHumanForm(player, true);
         }
 
@@ -234,8 +218,9 @@ public class DragonSoulItem extends BlockItem {
 
     /** See {@link by.dragonsurvivalteam.dragonsurvival.client.extensions.ShakeWhenUsedExtension} */
     @Override
-    public @NotNull UseAnim getUseAnimation(@NotNull final ItemStack stack) {
-        return UseAnim.CUSTOM;
+    // FIXME :: ItemUseAnimation.CUSTOM is gone?
+    public @NotNull ItemUseAnimation getUseAnimation(@NotNull final ItemStack stack) {
+        return ItemUseAnimation.NONE;
     }
 
     @Override
@@ -244,8 +229,8 @@ public class DragonSoulItem extends BlockItem {
     }
 
     @Override
-    public void appendHoverText(@NotNull final ItemStack stack, @NotNull final TooltipContext context, @NotNull final List<Component> tooltips, @NotNull final TooltipFlag flag) {
-        super.appendHoverText(stack, context, tooltips, flag);
+    public void appendHoverText(@NotNull ItemStack stack, Item.@NotNull TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
+        super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
         HolderLookup.Provider provider = context.registries();
 
         if (provider == null) {
@@ -254,7 +239,7 @@ public class DragonSoulItem extends BlockItem {
 
         if (stack.has(DSDataComponents.DRAGON_SOUL)) {
             CompoundTag handlerData = getHandlerData(stack);
-            tooltips.add(Component.translatable(DESCRIPTION, DSColors.dynamicValue(DragonSurvival.PROXY.getDragonSoulPlacementKeybind())));
+            tooltipAdder.accept(Component.translatable(DESCRIPTION, DSColors.dynamicValue(DragonSurvival.PROXY.getDragonSoulPlacementKeybind())));
 
             ResourceKey<DragonSpecies> species = ResourceHelper.decodeKey(provider, DragonSpecies.REGISTRY, handlerData, DragonStateHandler.DRAGON_SPECIES);
             Component name;
@@ -265,13 +250,13 @@ public class DragonSoulItem extends BlockItem {
                 name = Component.translatable(INVALID_DRAGON_TYPE);
             }
 
-            double growth = handlerData.getDouble(DragonStateHandler.GROWTH);
+            double growth = handlerData.getDouble(DragonStateHandler.GROWTH).orElseThrow();
             Holder<DragonStage> stage = DragonStage.get(provider, growth);
 
             //noinspection DataFlowIssue -> key is present
-            tooltips.add(Component.translatable(INFO, name, DragonStage.translatableName(stage.getKey()), String.format("%.0f", growth)));
+            tooltipAdder.accept(Component.translatable(INFO, name, DragonStage.translatableName(stage.getKey()), String.format("%.0f", growth)));
         } else {
-            tooltips.add(Component.translatable(IS_EMPTY));
+            tooltipAdder.accept(Component.translatable(IS_EMPTY));
         }
     }
 

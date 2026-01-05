@@ -2,6 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.client.handlers;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.sounds.FastGlideSound;
+import by.dragonsurvivalteam.dragonsurvival.client.util.SystemMessageUtils;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
@@ -108,7 +109,7 @@ public class ClientFlightHandler {
         if (localPlayer == null) {
             return;
         }
-        localPlayer.sendSystemMessage(Component.translatable(LangKey.MESSAGE_NO_HUNGER));
+        SystemMessageUtils.sendSystemMessage(Component.translatable(LangKey.MESSAGE_NO_HUNGER), localPlayer);
     });
 
     public static int lastSync;

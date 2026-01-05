@@ -1,6 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.server.handlers;
 
 import by.dragonsurvivalteam.dragonsurvival.client.handlers.ClientFlightHandler;
+import by.dragonsurvivalteam.dragonsurvival.client.util.SystemMessageUtils;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
@@ -317,7 +318,7 @@ public class ServerFlightHandler {
                     if (isFlying(player)) {
                         if (!player.level().isClientSide()) {
                             if (player.getFoodData().getFoodLevel() <= foldWingsThreshold && !player.isCreative()) {
-                                player.sendSystemMessage(Component.translatable(LangKey.MESSAGE_NO_HUNGER));
+                                SystemMessageUtils.sendSystemMessage(Component.translatable(LangKey.MESSAGE_NO_HUNGER), player);
                                 FlightData.getData(player).areWingsSpread = false;
                                 PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new SyncWingsSpread(player.getId(), false));
                                 return;
