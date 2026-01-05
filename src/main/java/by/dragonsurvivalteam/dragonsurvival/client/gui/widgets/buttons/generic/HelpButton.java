@@ -3,9 +3,16 @@ package by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic;
 import com.mojang.datafixers.util.Either;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.screens.inventory.tooltip.BelowOrAboveWidgetTooltipPositioner;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
+import net.minecraft.network.chat.Style;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.client.gui.widget.ExtendedButton;
@@ -25,28 +32,22 @@ public class HelpButton extends ExtendedButton {
     private final Identifier hover;
     private final Identifier main;
 
-    private List<Either<FormattedText, TooltipComponent>> tooltip;
-
     public HelpButton(int x, int y, int sizeX, int sizeY, final String tooltip) {
-        this(x, y, sizeX, sizeY, new ArrayList<>(List.of(Either.left(Component.translatable(tooltip)))));
+        this(x, y, sizeX, sizeY, Tooltip.create(Component.translatable(tooltip)));
     }
 
-    public HelpButton(int x, int y, int sizeX, int sizeY, final List<Either<FormattedText, TooltipComponent>> tooltip) {
+    public HelpButton(int x, int y, int sizeX, int sizeY, final Tooltip tooltip) {
         super(x, y, sizeX, sizeY, Component.empty(), action -> { /* Nothing to do */ });
-        this.tooltip = tooltip;
+        setTooltip(tooltip);
         this.main = MAIN;
         this.hover = HOVER;
     }
 
     public HelpButton(int x, int y, int sizeX, int sizeY, final String tooltip, final Identifier main, final Identifier hover) {
         super(x, y, sizeX, sizeY, Component.empty(), action -> { /* Nothing to do */ });
-        this.tooltip = new ArrayList<>(List.of(Either.left(Component.translatable(tooltip))));
+        setTooltip(Tooltip.create(Component.translatable(tooltip)));
         this.main = main;
         this.hover = hover;
-    }
-
-    public void setTooltip(final List<Either<FormattedText, TooltipComponent>> tooltip) {
-        this.tooltip = tooltip;
     }
 
     @Override
@@ -54,17 +55,16 @@ public class HelpButton extends ExtendedButton {
         Identifier resource;
 
         if (isHovered()) {
-            graphics.renderComponentTooltipFromElements(Minecraft.getInstance().font, tooltip, mouseX, mouseY, ItemStack.EMPTY);
             resource = hover;
         } else {
             resource = main;
         }
 
-        graphics.blit(resource, getX(), getY(), width, height, 0, 0, UV, UV, TEXTURE_SIZE, TEXTURE_SIZE);
+        graphics.blit(RenderPipelines.GUI_TEXTURED, resource, getX(), getY(), width, height, 0, 0, UV, UV, TEXTURE_SIZE, TEXTURE_SIZE);
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    public boolean mouseClicked(@NotNull MouseButtonEvent event, boolean isDoubleClick) {
         return false;
     }
 }

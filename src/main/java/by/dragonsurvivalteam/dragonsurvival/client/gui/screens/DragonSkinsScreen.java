@@ -39,6 +39,7 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.ConfirmLinkScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.core.Holder;
@@ -174,7 +175,6 @@ public class DragonSkinsScreen extends Screen {
 
     public DragonSkinsScreen() {
         super(Component.empty());
-        this.minecraft = Minecraft.getInstance();
 
         if (dragonStage == null) {
             //noinspection DataFlowIssue -> player should not be null
@@ -184,11 +184,11 @@ public class DragonSkinsScreen extends Screen {
 
     @Override
     public void render(@NotNull final GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        if (minecraft == null || minecraft.player == null) {
+        if (minecraft.player == null) {
             return;
         }
 
-        this.renderBlurredBackground(partialTick);
+        this.renderBlurredBackground(guiGraphics);
 
         int startX = guiLeft;
         int startY = guiTop;
@@ -196,9 +196,9 @@ public class DragonSkinsScreen extends Screen {
         setTextures();
 
         DragonEntity dragon = FakeClientPlayerUtils.getFakeDragon(0, handler);
-        EntityRenderer<? super DragonEntity> dragonRenderer = Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(dragon);
+        EntityRenderer<? super DragonEntity, ?> dragonRenderer = Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(dragon);
 
-        if (noSkin && Objects.equals(playerName, minecraft.player.getGameProfile().getName())) {
+        if (noSkin && Objects.equals(playerName, minecraft.player.getGameProfile().name())) {
             DragonSurvivalClient.DRAGON_MODEL.setOverrideTexture(null);
             ((DragonRenderer) dragonRenderer).glowTexture = null;
         } else {
@@ -209,8 +209,8 @@ public class DragonSkinsScreen extends Screen {
         float scale = zoom;
 
         //noinspection DataFlowIssue -> key is present
-        if (dragonStage != null && !DragonSkins.playerSkinOrGlowFetchingInProgress(playerName, dragonStage.getKey()) && (showYourSkin || !Objects.equals(playerName, minecraft.player.getGameProfile().getName()))) {
-            if (!DragonSkins.fetchHasFailed(playerName, dragonStage.getKey()) || Objects.equals(playerName, minecraft.player.getGameProfile().getName())) {
+        if (dragonStage != null && !DragonSkins.playerSkinOrGlowFetchingInProgress(playerName, dragonStage.getKey()) && (showYourSkin || !Objects.equals(playerName, minecraft.player.getGameProfile().name()))) {
+            if (!DragonSkins.fetchHasFailed(playerName, dragonStage.getKey()) || Objects.equals(playerName, minecraft.player.getGameProfile().name())) {
                 if (handler.stage() == null) {
                     boolean alreadyUsingDefaults = handler.getCurrentSkinPreset().isStageUsingDefaultSkin(dragonStage.getKey());
                     handler.setGrowth(null, handler.species().value().getStartingGrowth(minecraft.player.registryAccess()));
@@ -224,18 +224,19 @@ public class DragonSkinsScreen extends Screen {
                 Quaternionf quaternion = Axis.ZP.rotationDegrees(180.0F);
                 quaternion.mul(Axis.XP.rotationDegrees(yRot * 10.0F));
                 quaternion.rotateY((float) Math.toRadians(180 - xRot * 10));
-                InventoryScreen.renderEntityInInventory(guiGraphics, startX + 15, startY + 70, (int) scale, new Vector3f(0, 0, 100), quaternion, null, dragon);
+                // FIXME :: UI RENDERING
+                //InventoryScreen.renderEntityInInventory(guiGraphics, startX + 15, startY + 70, (int) scale, new Vector3f(0, 0, 100), quaternion, null, dragon);
             } else {
                 drawNonShadowString(guiGraphics, minecraft.font, Component.translatable(NO_SKIN).withStyle(ChatFormatting.RED), startX + 21, startY + 40, -1);
             }
-        } else if (!showYourSkin && Objects.equals(playerName, minecraft.player.getGameProfile().getName())) {
+        } else if (!showYourSkin && Objects.equals(playerName, minecraft.player.getGameProfile().name())) {
             drawNonShadowString(guiGraphics, minecraft.font, Component.translatable(CUSTOM_MODEL_WARNING_1).withStyle(ChatFormatting.RED), startX + 26, startY + 40, -1);
             drawNonShadowString(guiGraphics, minecraft.font, Component.translatable(CUSTOM_MODEL_WARNING_2).withStyle(ChatFormatting.RED), startX + 26, startY + 50, -1);
         }
 
         ((DragonRenderer) dragonRenderer).glowTexture = null;
 
-        guiGraphics.blit(BACKGROUND_TEXTURE, startX + 128, startY, 0, 0, 164, 256);
+        guiGraphics.blit(BACKGROUND_TEXTURE, startX + 128, startY, 0, 0, 164, 256, 256, 256);
         drawNonShadowString(guiGraphics, minecraft.font, Component.translatable(SETTINGS).withStyle(ChatFormatting.BLACK), startX + 128 + /* image width */ 164 / 2, startY + 7, -1);
         playerNameDisplay.setMessage(Component.literal(playerName));
         //noinspection DataFlowIssue -> key is present
@@ -285,7 +286,7 @@ public class DragonSkinsScreen extends Screen {
         int startY = guiTop;
 
         if (playerName == null) {
-            playerName = Objects.requireNonNull(player).getGameProfile().getName();
+            playerName = Objects.requireNonNull(player).getGameProfile().name();
         }
 
         //noinspection DataFlowIssue -> player is present
@@ -326,7 +327,7 @@ public class DragonSkinsScreen extends Screen {
                 BODY_ARROW_LEFT_HOVER, BODY_ARROW_LEFT_MAIN, BODY_ARROW_RIGHT_HOVER, BODY_ARROW_RIGHT_MAIN);
 
         playerNameDisplay = new HoverButton(startX - 62, startY - 50, 165, 22, 165, 22, BUTTON_BACKGROUND_WHITE, BUTTON_BACKGROUND_WHITE, button -> { /* Nothing to do */ });
-        playerNameDisplay.setMessage(Component.literal(Objects.requireNonNull(player).getGameProfile().getName()));
+        playerNameDisplay.setMessage(Component.literal(Objects.requireNonNull(player).getGameProfile().name()));
         addRenderableOnly(playerNameDisplay);
 
         playerStageDisplay = new HoverButton(startX - 55, startY + 150, 149, 22, 149, 22, STAGE_BACKGROUND, STAGE_BACKGROUND, button -> { /* Nothing to do */ });
@@ -411,7 +412,7 @@ public class DragonSkinsScreen extends Screen {
         addRenderableWidget(toggleRenderingOtherSkins);
 
         HoverButton resetSkinButton = new HoverButton(startX + 20, startY + 128, 22, 21, 22, 21, RESET_SKIN_MAIN, RESET_SKIN_HOVER, button -> {
-            playerName = Objects.requireNonNull(player).getGameProfile().getName();
+            playerName = Objects.requireNonNull(player).getGameProfile().name();
         });
 
         addRenderableWidget(resetSkinButton);
@@ -509,7 +510,7 @@ public class DragonSkinsScreen extends Screen {
         Identifier glowTexture = null;
         boolean defaultSkin = false;
 
-        if (!DragonSkins.renderCustomSkin(Objects.requireNonNull(minecraft).player) && playerName.equals(Objects.requireNonNull(minecraft.player).getGameProfile().getName()) || skinTexture == null) {
+        if (!DragonSkins.renderCustomSkin(Objects.requireNonNull(minecraft).player) && playerName.equals(Objects.requireNonNull(minecraft.player).getGameProfile().name()) || skinTexture == null) {
             skinTexture = null;
             defaultSkin = true;
         }
@@ -535,11 +536,11 @@ public class DragonSkinsScreen extends Screen {
     }
 
     @Override
-    public boolean mouseDragged(double x1, double y1, int p_231045_5_, double x2, double y2) {
-        xRot -= (float) (x2 / 5);
-        yRot -= (float) (y2 / 5);
+    public boolean mouseDragged(@NotNull MouseButtonEvent event, double mouseX, double mouseY) {
+        xRot -= (float) (mouseX / 5);
+        yRot -= (float) (mouseY / 5);
 
-        return super.mouseDragged(x1, y1, p_231045_5_, x2, y2);
+        return super.mouseDragged(event, mouseX, mouseY);
     }
 
     @Override

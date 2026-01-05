@@ -2,6 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components;
 
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
 import com.google.common.collect.ImmutableList;
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.math.Axis;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Renderable;
@@ -9,6 +10,7 @@ import net.minecraft.client.gui.components.events.AbstractContainerEventHandler;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Quaternionf;
@@ -44,12 +46,14 @@ public class DragonUIRenderComponent extends AbstractContainerEventHandler imple
 
         // We need to translate this backwards with the poseStack as renderEntityInInventory pushes the poseStack forward
         guiGraphics.pose().pushMatrix();
-        guiGraphics.pose().translate(0, 0, -200); // We chose -200 here as the background is translated -300, and we don't want to clip with it
+        // FIXME :: UI GRAPHICS
+        //guiGraphics.pose().translate(0, 0, -200); // We chose -200 here as the background is translated -300, and we don't want to clip with it
 
         Quaternionf quaternion = Axis.ZP.rotationDegrees(180);
         quaternion.mul(Axis.XP.rotationDegrees(yRot * 10));
         quaternion.rotateY((float) Math.toRadians(180 - xRot * 10));
-        InventoryScreen.renderEntityInInventory(guiGraphics, x + (float) width / 2 + xOffset, y + height - 30 + yOffset, (int) scale, new Vector3f(0, 0, 0), quaternion, null, getter.get());
+        // FIXME :: UI GRAPHICS
+        //InventoryScreen.renderEntityInInventory(guiGraphics, x + (float) width / 2 + xOffset, y + height - 30 + yOffset, (int) scale, new Vector3f(0, 0, 0), quaternion, null, getter.get());
 
         guiGraphics.pose().popMatrix();
     }
@@ -65,14 +69,14 @@ public class DragonUIRenderComponent extends AbstractContainerEventHandler imple
     }
 
     @Override
-    public boolean mouseDragged(double x1, double y1, int rightClick, double x2, double y2) {
-        if (isMouseOver(x1, y1)) {
-            if (rightClick == 0) {
-                xRot -= (float) (x2 / 5.0);
-                yRot -= (float) (y2 / 5.0);
-            } else if (rightClick == 1) {
-                xOffset += (float) (x2);
-                yOffset += (float) (y2);
+    public boolean mouseDragged(@NotNull MouseButtonEvent event, double mouseX, double mouseY) {
+        if (isMouseOver(event.x(), event.y())) {
+            if (event.button() == InputConstants.MOUSE_BUTTON_RIGHT) {
+                xRot -= (float) (mouseX / 5.0);
+                yRot -= (float) (mouseY / 5.0);
+            } else if (event.button() == InputConstants.MOUSE_BUTTON_LEFT) {
+                xOffset += (float) (mouseX);
+                yOffset += (float) (mouseY);
 
                 xOffset = Mth.clamp(xOffset, -((float) width / 2.f), (float) width / 2.f);
                 yOffset = Mth.clamp(yOffset, -((float) height / 2.f), (float) height / 2.f);

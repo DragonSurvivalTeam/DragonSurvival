@@ -21,6 +21,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
@@ -31,9 +32,7 @@ import net.neoforged.neoforge.client.event.InputEvent;
 import net.neoforged.neoforge.client.event.ScreenEvent;
 import net.neoforged.neoforge.client.gui.widget.ExtendedButton;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
-import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
-import top.theillusivec4.curios.client.gui.CuriosScreen;
 
 import java.util.Objects;
 
@@ -142,10 +141,12 @@ public class InventoryScreenHandler {
         if (sc instanceof InventoryScreen screen) {
             width = screen.getGuiLeft();
             height = screen.height;
-        } else if (ModCheck.isModLoaded(ModCheck.CURIOS) && sc instanceof CuriosScreen screen) {
+        }
+        // FIXME :: CURIOS INTEGRATION
+        /*else if (ModCheck.isModLoaded(ModCheck.CURIOS) && sc instanceof CuriosScreen screen) {
             width = screen.getGuiLeft();
             height = screen.height;
-        }
+        }*/
 
         // Dragon only UI
         if (width != null) {
@@ -157,7 +158,7 @@ public class InventoryScreenHandler {
                     public void renderWidget(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
                         float u = 21f;
                         float v = isHoveredOrFocused() ? 20f : 0f;
-                        guiGraphics.blit(INVENTORY_TOGGLE_BUTTON, getX(), getY(), u, v, 20, 18, 256, 256);
+                        guiGraphics.blit(RenderPipelines.GUI, INVENTORY_TOGGLE_BUTTON, getX(), getY(), u, v, 20, 18, 256, 256);
                     }
                 };
                 dragonInventoryButton.setTooltip(Tooltip.create(Component.translatable(TOGGLE_DRAGON_INVENTORY)));
@@ -174,7 +175,7 @@ public class InventoryScreenHandler {
                     public void renderWidget(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
                         float u = 21f;
                         float v = isHoveredOrFocused() ? 20f : 0f;
-                        guiGraphics.blit(INVENTORY_TOGGLE_BUTTON, getX(), getY(), u, v, 20, 18, 256, 256);
+                        guiGraphics.blit(RenderPipelines.GUI, INVENTORY_TOGGLE_BUTTON, getX(), getY(), u, v, 20, 18, 256, 256);
                     }
                 };
                 creativeModeDragonInventoryButton.setTooltip(Tooltip.create(Component.translatable(TOGGLE_DRAGON_INVENTORY)));
@@ -190,7 +191,7 @@ public class InventoryScreenHandler {
 
     @SubscribeEvent
     public static void handleKey(final InputEvent.Key event) {
-        handleInput(InputConstants.getKey(event.getKey(), event.getScanCode()), event.getAction());
+        handleInput(InputConstants.getKey(event.getKeyEvent()), event.getAction());
     }
 
     private static void handleInput(final InputConstants.Key input, final int action) {

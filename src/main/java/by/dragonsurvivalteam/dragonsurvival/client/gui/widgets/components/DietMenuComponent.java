@@ -89,7 +89,8 @@ public class DietMenuComponent implements ScrollableComponent, Renderable {
             graphics.renderFakeItem(stack, itemX, itemY);
 
             if (mouseX >= itemX && mouseX < itemX + ITEM_SIZE && mouseY >= itemY && mouseY < itemY + ITEM_SIZE) {
-                graphics.renderTooltip(Minecraft.getInstance().font, stack, mouseX, mouseY);
+                // FIXME :: UI GRAPHICS
+                // graphics.renderTooltip(Minecraft.getInstance().font, stack, mouseX, mouseY);
                 hovered = stack;
             }
 

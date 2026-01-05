@@ -63,13 +63,14 @@ public class BackgroundColorSelectorComponent extends AbstractContainerEventHand
     public void render(@NotNull final GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTicks) {
         if (visible) {
             guiGraphics.pose().pushMatrix();
-            guiGraphics.pose().translate(0, 0, 100);
+            // FIXME :: UI GRAPHICS
+            //guiGraphics.pose().translate(0, 0, 100);
             // guiGraphics.fill(x, y, x + xSize, y + ySize, Color.black.getRGB());
             // Background for reset button
             guiGraphics.fill(x + 2, y - 10, x + 32, y + 35, BACKGROUND_COLOR);
             guiGraphics.renderOutline(x + 2, y - 11, 30, 41, Color.black.getRGB());
             guiGraphics.renderOutline(x + 3, y - 10, 28, 39, INNER_BORDER_COLOR);
-            guiGraphics.pose().translate(0, 0, 100);
+            //guiGraphics.pose().translate(0, 0, 100);
 
             // Background for color picker
             guiGraphics.fill(x, y + 15, x + xSize, y + ySize - 5, BACKGROUND_COLOR);

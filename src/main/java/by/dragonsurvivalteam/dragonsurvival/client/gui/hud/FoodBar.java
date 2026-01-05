@@ -7,8 +7,10 @@ import by.dragonsurvivalteam.dragonsurvival.registry.data_maps.DietEntryCache;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
+import net.minecraft.util.profiling.Profiler;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodData;
@@ -41,7 +43,7 @@ public class FoodBar {
         }
 
         // FIXME :: UI GRAPHICS
-       // Profiler.get().push("food");
+        Profiler.get().push("food");
         //RenderSystem.enableBlend();
 
         final int left = width / 2 + 91;
@@ -60,17 +62,18 @@ public class FoodBar {
                 y = top + RANDOM.nextInt(3) - 1;
             }
 
-            //graphics.blit(foodSprites, left - i * 8 - 9, y, hunger ? 117 : 0, 0, 9, 9);
+            graphics.blit(foodSprites, left - i * 8 - 9, y, hunger ? 117 : 0, 0, 9, 9, 256, 256);
 
             if (icon < food.getFoodLevel()) {
-                //graphics.blit(foodSprites, left - i * 8 - 9, y, hunger ? 72 : 36, 0, 9, 9);
+                graphics.blit(foodSprites, left - i * 8 - 9, y, hunger ? 72 : 36, 0, 9, 9, 256, 256);
             } else if (icon == food.getFoodLevel()) {
-                //graphics.blit(foodSprites, left - i * 8 - 9, y, hunger ? 81 : 45, 0, 9, 9);
+                graphics.blit(foodSprites, left - i * 8 - 9, y, hunger ? 81 : 45, 0, 9, 9, 256, 256);
             }
         }
 
+        // FIXME UI GRAPHICS
         //RenderSystem.disableBlend();
-       // Profiler.get().pop();
+        Profiler.get().pop();
 
         return true;
     }

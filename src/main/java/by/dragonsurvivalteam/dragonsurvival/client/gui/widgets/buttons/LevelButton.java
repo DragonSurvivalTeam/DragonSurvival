@@ -8,6 +8,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilit
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.ExperiencePointsUpgrade;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.input.InputWithModifiers;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -110,9 +111,9 @@ public class LevelButton extends ClickHoverButton {
     }
 
     @Override
-    public void onPress() {
+    public void onPress(@NotNull InputWithModifiers inputWithModifiers) {
         if (canModify()) {
-            super.onPress();
+            super.onPress(inputWithModifiers);
         }
     }
 }

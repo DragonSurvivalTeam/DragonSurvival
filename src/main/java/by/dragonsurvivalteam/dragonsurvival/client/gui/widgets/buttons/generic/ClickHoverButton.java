@@ -1,6 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic;
 
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.client.gui.widget.ExtendedButton;
@@ -36,13 +37,13 @@ public class ClickHoverButton extends ExtendedButton {
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY) {
-        super.onClick(mouseX, mouseY);
+    public void onClick(@NotNull MouseButtonEvent event, boolean isDoubleClick) {
+        super.onClick(event, isDoubleClick);
         isClicking = true;
     }
 
-    public void onRelease(double mouseX, double mouseY) {
-        super.onRelease(mouseX, mouseY);
+    public void onRelease(@NotNull MouseButtonEvent event) {
+        super.onRelease(event);
         isClicking = false;
     }
 }

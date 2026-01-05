@@ -35,7 +35,8 @@ public class PenaltyButton extends ExtendedButton {
         if (isHovered()) {
             graphics.pose().pushMatrix();
             // Render above the other UI elements
-            graphics.pose().translate(0, 0, 250);
+            // FIXME :: UI GRAPHICS
+            //graphics.pose().translate(0, 0, 250);
             AbilityAndPenaltyTooltipRenderer.drawPenaltyTooltip(graphics, mouseX, mouseY, penalty);
             graphics.pose().popMatrix();
         }
@@ -43,6 +44,8 @@ public class PenaltyButton extends ExtendedButton {
 
     // TODO :: add in generic helper method
     private void blit(final GuiGraphics graphics, final Identifier texture, int x, int y, int size) {
-        graphics.blit(x, y, 0, size, size, Minecraft.getInstance().getGuiSprites().getSprite(texture), 1, 1, 1, alpha);
+        // FIXME :: UI GRAPHICS
+        // Sprite blit is no longer functional
+        //graphics.blit(x, y, 0, size, size, Minecraft.getInstance().getGuiSprites().getSprite(texture), 1, 1, 1, alpha);
     }
 }

@@ -12,6 +12,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.AbstractContainerEventHandler;
 import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.client.gui.widget.ExtendedButton;
@@ -87,7 +88,8 @@ public class HueSelectorComponent extends AbstractContainerEventHandler implemen
             public void renderWidget(@NotNull final GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
                 Identifier texture = settingsSupplier.get().isGlowing ? GLOW_ON : GLOW_OFF;
                 guiGraphics.pose().pushMatrix();
-                guiGraphics.pose().translate(0, 0, 100);
+                // FIXME :: UI GRAPHICS
+                //guiGraphics.pose().translate(0, 0, 100);
                 guiGraphics.blit(texture, getX(), getY(), 0, 0, 27, 25, 27, 25);
                 guiGraphics.pose().popMatrix();
             }
@@ -134,7 +136,8 @@ public class HueSelectorComponent extends AbstractContainerEventHandler implemen
             public void renderWidget(@NotNull final GuiGraphics guiGraphics, int mouseX, int mouseY, float partial) {
                 if (visible) {
                     this.isHovered = mouseX >= getX() && mouseY >= getY() && mouseX < getX() + getWidth() && mouseY < getY() + getHeight();
-                    RenderingUtils.renderPureColorSquare(guiGraphics.pose(), getX() + 1, getY() + 1, getWidth() - 1, getHeight() - 1);
+                    // FIXME :: UI GRAPHICS
+                    // RenderingUtils.renderPureColorSquare(guiGraphics.pose(), getX() + 1, getY() + 1, getWidth() - 1, getHeight() - 1);
                     guiGraphics.renderOutline(getX() + 1, getY() + 1, getWidth() - 1, getHeight() - 1, Color.black.getRGB());
                     if (this.isHovered) {
                         guiGraphics.blit(SLIDER_HOVER, this.getX() + (int) (this.value * (double) (this.width - 8)), this.getY() - 3, 0, 0, 12, 26, 26, 26);
@@ -145,14 +148,14 @@ public class HueSelectorComponent extends AbstractContainerEventHandler implemen
             }
 
             @Override
-            public void onClick(double mouseX, double mouseY) {
-                super.onClick(mouseX, mouseY);
+            public void onClick(@NotNull MouseButtonEvent event, boolean isDoubleClick) {
+                super.onClick(event, isDoubleClick);
                 previousHue = this.getValueInt();
             }
 
             @Override
-            public void onRelease(double mouseX, double mouseY) {
-                super.onRelease(mouseX, mouseY);
+            public void onRelease(@NotNull MouseButtonEvent event) {
+                super.onRelease(event);
                 screen.actionHistory.add(new DragonEditorScreen.EditorAction<>(setHueAction, this.getValueInt()));
             }
         };
@@ -193,7 +196,8 @@ public class HueSelectorComponent extends AbstractContainerEventHandler implemen
                     int col1 = Color.getHSBColor(value1, 0f, 1f).getRGB();
                     int col2 = Color.getHSBColor(value1, 1f, 1f).getRGB();
 
-                    RenderingUtils.drawGradientRect(guiGraphics.pose().last().pose(), 0, getX() + 1, getY() + 1, getX() + getWidth() - 1, getY() + getHeight() - 1, new int[]{col2, col1, col1, col2});
+                    // FIXME :: UI GRAPHICS
+                    //RenderingUtils.drawGradientRect(guiGraphics.pose().last().pose(), 0, getX() + 1, getY() + 1, getX() + getWidth() - 1, getY() + getHeight() - 1, new int[]{col2, col1, col1, col2});
                     guiGraphics.renderOutline(getX() + 1, getY() + 1, getWidth() - 1, getHeight() - 1, Color.black.getRGB());
                     if (this.isHovered) {
                         guiGraphics.blit(SLIDER_HOVER, this.getX() + (int) (this.value * (double) (this.width - 8)), this.getY() - 3, 0, 0, 12, 26, 26, 26);
@@ -204,14 +208,14 @@ public class HueSelectorComponent extends AbstractContainerEventHandler implemen
             }
 
             @Override
-            public void onRelease(double mouseX, double mouseY) {
-                super.onRelease(mouseX, mouseY);
+            public void onRelease(@NotNull MouseButtonEvent event) {
+                super.onRelease(event);
                 screen.actionHistory.add(new DragonEditorScreen.EditorAction<>(setSaturationAction, this.getValueInt()));
             }
 
             @Override
-            public void onClick(double mouseX, double mouseY) {
-                super.onClick(mouseX, mouseY);
+            public void onClick(@NotNull MouseButtonEvent event, boolean isDoubleClick) {
+                super.onClick(event, isDoubleClick);
                 previousSaturation = this.getValueInt();
             }
         };
@@ -252,7 +256,8 @@ public class HueSelectorComponent extends AbstractContainerEventHandler implemen
                     int col1 = Color.getHSBColor(value1, 1f, 0f).getRGB();
                     int col2 = Color.getHSBColor(value1, 1f, 1f).getRGB();
 
-                    RenderingUtils.drawGradientRect(guiGraphics.pose().last().pose(), 0, getX() + 1, getY() + 1, getX() + getWidth() - 1, getY() + getHeight() - 1, new int[]{col2, col1, col1, col2});
+                    // FIXME :: UI GRAPHICS
+                    // RenderingUtils.drawGradientRect(guiGraphics.pose().last().pose(), 0, getX() + 1, getY() + 1, getX() + getWidth() - 1, getY() + getHeight() - 1, new int[]{col2, col1, col1, col2});
                     guiGraphics.renderOutline(getX() + 1, getY() + 1, getWidth() - 1, getHeight() - 1, Color.black.getRGB());
                     if (this.isHovered) {
                         guiGraphics.blit(SLIDER_HOVER, this.getX() + (int) (this.value * (double) (this.width - 8)), this.getY() - 3, 0, 0, 12, 26, 26, 26);
@@ -263,14 +268,14 @@ public class HueSelectorComponent extends AbstractContainerEventHandler implemen
             }
 
             @Override
-            public void onRelease(double mouseX, double mouseY) {
-                super.onRelease(mouseX, mouseY);
+            public void onRelease(@NotNull MouseButtonEvent event) {
+                super.onRelease(event);
                 screen.actionHistory.add(new DragonEditorScreen.EditorAction<>(setBrightnessAction, this.getValueInt()));
             }
 
             @Override
-            public void onClick(double mouseX, double mouseY) {
-                super.onClick(mouseX, mouseY);
+            public void onClick(@NotNull MouseButtonEvent event, boolean isDoubleClick) {
+                super.onClick(event, isDoubleClick);
                 previousBrightness = this.getValueInt();
             }
         };
@@ -292,7 +297,8 @@ public class HueSelectorComponent extends AbstractContainerEventHandler implemen
     public void render(@NotNull final GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTicks) {
         guiGraphics.pose().pushMatrix();
         // Render pop-up menu content above the other elements
-        guiGraphics.pose().translate(0, 0, 150);
+        // FIXME :: UI GRAPHICS
+        //guiGraphics.pose().translate(0, 0, 150);
 
         // Background for glow button
         guiGraphics.fill(x + 2, y - 25, x + 32, y + 5, BACKGROUND_COLOR);

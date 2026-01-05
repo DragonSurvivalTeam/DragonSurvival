@@ -45,6 +45,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import by.dragonsurvivalteam.dragonsurvival.util.ResourceHelper;
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -53,6 +54,8 @@ import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.InputWithModifiers;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
@@ -437,7 +440,7 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
 
     // Ignore clicks on elements that are not in a popup menu, if one is open
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    public boolean mouseClicked(@NotNull MouseButtonEvent event, boolean isDoubleClick) {
         if (onlyCheckForColorSelectorComponentButtons()) {
             for (EditorPartComponent partComponent : partComponents.values()) {
                 HueSelectorComponent hueComponent = partComponent.getColorSelectorButton().getHueComponent();
@@ -445,9 +448,9 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
                     List<GuiEventListener> hueComponentChildrenAndColorButton = new ArrayList<>(hueComponent.children());
                     hueComponentChildrenAndColorButton.add(partComponent.getColorSelectorButton());
                     for (GuiEventListener guieventlistener : hueComponentChildrenAndColorButton) {
-                        if (guieventlistener.mouseClicked(mouseX, mouseY, button)) {
+                        if (guieventlistener.mouseClicked(event, isDoubleClick)) {
                             this.setFocused(guieventlistener);
-                            if (button == 0) {
+                            if (event.button() == InputConstants.MOUSE_BUTTON_LEFT) {
                                 this.setDragging(true);
                             }
 
@@ -462,9 +465,9 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
 
         if (confirmComponent != null && confirmation) {
             for (GuiEventListener guieventlistener : confirmComponent.children()) {
-                if (guieventlistener.mouseClicked(mouseX, mouseY, button)) {
+                if (guieventlistener.mouseClicked(event, isDoubleClick)) {
                     this.setFocused(guieventlistener);
-                    if (button == 0) {
+                    if (event.button() == InputConstants.MOUSE_BUTTON_LEFT) {
                         this.setDragging(true);
                     }
 
@@ -477,9 +480,9 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
 
         if (backgroundColorButton != null && backgroundColorButton.toggled) {
             for (GuiEventListener guieventlistener : backgroundColorButton.childrenAndSelf()) {
-                if (guieventlistener.mouseClicked(mouseX, mouseY, button)) {
+                if (guieventlistener.mouseClicked(event, isDoubleClick)) {
                     this.setFocused(guieventlistener);
-                    if (button == 0) {
+                    if (event.button() == InputConstants.MOUSE_BUTTON_LEFT) {
                         this.setDragging(true);
                     }
 
@@ -491,9 +494,9 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
         }
 
         for (GuiEventListener guieventlistener : this.children()) {
-            if (guieventlistener.mouseClicked(mouseX, mouseY, button)) {
+            if (guieventlistener.mouseClicked(event, isDoubleClick)) {
                 this.setFocused(guieventlistener);
-                if (button == 0) {
+                if (event.button() == InputConstants.MOUSE_BUTTON_LEFT) {
                     this.setDragging(true);
                 }
 
@@ -563,9 +566,10 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
             }
             if (tickWhenSlotDisplayMessageSet + 100 - tick > 0) {
                 float alpha = (float) Math.min(1.0f - (tick - tickWhenSlotDisplayMessageSet - 50.f) / 50.f, 1.0f);
-                graphics.setColor(1, 1, 1, alpha);
+                // FIXME :: UI RENDERING
+                //graphics.setColor(1, 1, 1, alpha);
                 TextRenderUtil.drawCenteredScaledText(graphics, width / 2, height / 2 + 20, 0.5f, loadSlotDisplayMessage(slotDisplayMessage).getString(), color);
-                graphics.setColor(1, 1, 1, 1);
+                //graphics.setColor(1, 1, 1, 1);
             } else {
                 slotDisplayMessage = SlotDisplayMessage.NONE;
             }
@@ -604,7 +608,9 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
 
     @Override
     public void renderBackground(GuiGraphics pGuiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
-        pGuiGraphics.fill(0, 0, width, height, -350, backgroundColor);
+        // FIXME :: UI RENDERING
+        // no Z value, used to be -350
+        pGuiGraphics.fill(0, 0, width, height, backgroundColor);
     }
 
     private void initDummyDragon(final DragonStateHandler localHandler) {
@@ -794,7 +800,7 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
             }
 
             @Override
-            public void onPress() {
+            public void onPress(@NotNull InputWithModifiers inputWithModifiers) {
                 //noinspection DataFlowIssue -> player is present
                 DragonStateHandler handler = DragonStateProvider.getData(minecraft.player);
                 minecraft.player.level().playSound(minecraft.player, minecraft.player.blockPosition(), SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 1, 0.7f);
@@ -1147,12 +1153,12 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
     }
 
     @Override
-    public boolean mouseDragged(double pMouseX, double pMouseY, int pButton, double pDragX, double pDragY) {
-        if (dragonRender != null && dragonRender.isMouseOver(pMouseX, pMouseY) && (backgroundColorButton == null || !backgroundColorButton.toggled)) {
-            return dragonRender.mouseDragged(pMouseX, pMouseY, pButton, pDragX, pDragY);
+    public boolean mouseDragged(@NotNull MouseButtonEvent event, double mouseX, double mouseY) {
+        if (dragonRender != null && dragonRender.isMouseOver(mouseX, mouseY) && (backgroundColorButton == null || !backgroundColorButton.toggled)) {
+            return dragonRender.mouseDragged(event, mouseX, mouseY);
         }
 
-        return super.mouseDragged(pMouseX, pMouseY, pButton, pDragX, pDragY);
+        return super.mouseDragged(event, mouseX, mouseY);
     }
 
     @SubscribeEvent

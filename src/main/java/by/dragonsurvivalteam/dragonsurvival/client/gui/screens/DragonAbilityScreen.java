@@ -89,20 +89,20 @@ public class DragonAbilityScreen extends Screen {
 
     @Override
     public void render(@NotNull final GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        if (minecraft == null || minecraft.player == null) {
+        if (minecraft.player == null) {
             return;
         }
 
-        renderBlurredBackground(partialTick);
+        renderBlurredBackground(graphics);
 
         int startX = guiLeft + 8;
         int startY = guiTop - 28;
 
         if (leftWindowOpen && !leftWindowWidgets.isEmpty()) {
-            graphics.blit(BACKGROUND_SIDE, startX - 50, startY, 0, 0, 48, 203);
+            graphics.blit(BACKGROUND_SIDE, startX - 50, startY, 0, 0, 48, 203, 256, 256);
         }
 
-        graphics.blit(BACKGROUND_MAIN, startX, startY, 0, 0, 256, 256);
+        graphics.blit(BACKGROUND_MAIN, startX, startY, 0, 0, 256, 256, 256, 256);
 
         for (ScrollableComponent component : scrollableComponents) {
             component.update();
@@ -147,10 +147,11 @@ public class DragonAbilityScreen extends Screen {
                 float leftExpBarHoverProgress = Math.min(0.5f, hoverProgress) * 2;
                 float rightExpBarHoverProgress = Math.min(0.5f, hoverProgress - leftExpBarHoverProgress / 2) * 2;
 
+                // FIXME :: UI GRAPHICS
                 if (experienceModification < 0) {
-                    graphics.setColor(1, 0, 0, 1);
+                    //graphics.setColor(1, 0, 0, 1);
                 } else {
-                    graphics.setColor(0.6f, 0.2f, 0.85f, 1);
+                   // graphics.setColor(0.6f, 0.2f, 0.85f, 1);
                 }
 
                 drawExperienceBar(graphics, barYPos, leftBarX, leftExpBarHoverProgress);
@@ -159,7 +160,7 @@ public class DragonAbilityScreen extends Screen {
                     drawExperienceBar(graphics, barYPos, rightBarX, rightExpBarHoverProgress);
                 }
 
-                graphics.setColor(1, 1, 1, 1);
+                //graphics.setColor(1, 1, 1, 1);
             }
 
             int color;
@@ -209,7 +210,7 @@ public class DragonAbilityScreen extends Screen {
         List<DragonAbilityInstance> upgradablePassives = data.filterPassiveByUpgrade(UpgradeType.IS_MANUAL);
         List<DragonAbilityInstance> constantPassives = data.filterPassiveByUpgrade(UpgradeType.IS_MANUAL.negate());
 
-        minecraft.player.registryAccess().lookupOrThrow(DragonAbility.REGISTRY).getTag(DSDragonAbilityTags.ORDER).ifPresent(order -> {
+        minecraft.player.registryAccess().lookupOrThrow(DragonAbility.REGISTRY).get(DSDragonAbilityTags.ORDER).ifPresent(order -> {
             //noinspection unchecked -> cast is valid
             List<Holder<DragonAbility>> list = ((HolderSet$NamedAccess<DragonAbility>) order).dragonSurvival$contents();
             Comparator<DragonAbilityInstance> comparator = Comparator.comparingInt(instance -> {

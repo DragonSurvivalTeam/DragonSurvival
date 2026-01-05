@@ -5,14 +5,16 @@ import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.dragon_editor.Dra
 import by.dragonsurvivalteam.dragonsurvival.client.util.TextRenderUtil;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.input.InputWithModifiers;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.DyeColor;
+import net.neoforged.neoforge.client.gui.widget.ExtendedButton;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Function;
 
-public class DragonEditorSlotButton extends Button {
+public class DragonEditorSlotButton extends ExtendedButton {
     private static final Identifier SLOT_NUMBER_BACKGROUND = Identifier.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/editor/slot_number_background.png");
 
     private final DragonEditorScreen screen;
@@ -36,7 +38,7 @@ public class DragonEditorSlotButton extends Button {
     }
 
     @Override
-    public void onPress() {
+    public void onPress(@NotNull InputWithModifiers inputWithModifiers) {
         screen.actionHistory.add(new DragonEditorScreen.EditorAction<>(setDragonSlotAction, slot));
         action.run();
     }

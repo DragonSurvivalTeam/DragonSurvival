@@ -12,6 +12,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.phys.Vec3;
@@ -24,11 +26,12 @@ import org.jetbrains.annotations.Nullable;
 import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 
 public class AbilityButton extends ExtendedButton {
-    public static final Identifier ACTIVE_BACKGROUND = Identifier.fromNamespaceAndPath(MODID, "ability_screen/skill_main");
-    public static final Identifier PASSIVE_BACKGROUND = Identifier.fromNamespaceAndPath(MODID, "ability_screen/skill_main");
-    public static final Identifier DISABLED_BACKGROUND = Identifier.fromNamespaceAndPath(MODID, "ability_screen/skill_disabled");
-    public static final Identifier AUTO_UPGRADE_ORNAMENTATION = Identifier.fromNamespaceAndPath(MODID, "ability_screen/skill_autoupgrade");
+    public static final Identifier ACTIVE_BACKGROUND = Identifier.fromNamespaceAndPath(MODID, "textures/gui/sprites/ability_screen/skill_main");
+    public static final Identifier PASSIVE_BACKGROUND = Identifier.fromNamespaceAndPath(MODID, "textures/gui/sprites/ability_screen/skill_main");
+    public static final Identifier DISABLED_BACKGROUND = Identifier.fromNamespaceAndPath(MODID, "textures/gui/sprites/ability_screen/skill_disabled");
+    public static final Identifier AUTO_UPGRADE_ORNAMENTATION = Identifier.fromNamespaceAndPath(MODID, "textures/gui/sprites/ability_screen/skill_autoupgrade");
 
+    private static final int UV = 13;
     private static final int SIZE = 34;
     private static final int ORNAMENTATION_SIZE = 38;
 
@@ -126,10 +129,10 @@ public class AbilityButton extends ExtendedButton {
     }
 
     @Override
-    protected void onDrag(double mouseX, double mouseY, double dragX, double dragY) {
-        super.onDrag(mouseX, mouseY, dragX, dragY);
+    protected void onDrag(@NotNull MouseButtonEvent event, double mouseX, double mouseY) {
+        super.onDrag(event, mouseX, mouseY);
 
-        if (ability == null || Screen.hasControlDown()) {
+        if (ability == null || event.hasControlDown()) {
             return;
         }
 
@@ -139,20 +142,20 @@ public class AbilityButton extends ExtendedButton {
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY) {
-        if (!isHotbar && ability != null && ability.value().canBeManuallyDisabled() && Screen.hasControlDown()) {
+    public void onClick(@NotNull MouseButtonEvent event, boolean isDoubleClick) {
+        if (!isHotbar && ability != null && ability.value().canBeManuallyDisabled() && event.hasControlDown()) {
             boolean isDisabled = !ability.isDisabled(true);
             ability.setDisabled(Minecraft.getInstance().player, isDisabled, true);
             ClientPacketDistributor.sendToServer(new SyncDisableAbility(ability.key(), isDisabled, true));
             return;
         }
 
-        super.onClick(mouseX, mouseY);
+        super.onClick(event, isDoubleClick);
     }
 
     @Override
-    public void onRelease(double mouseX, double mouseY) {
-        super.onRelease(mouseX, mouseY);
+    public void onRelease(@NotNull MouseButtonEvent event) {
+        super.onRelease(event);
 
         if (!isDragging) {
             return;
@@ -171,7 +174,7 @@ public class AbilityButton extends ExtendedButton {
             boolean wasSwappedToASlot = false;
             for (Renderable renderable : screen.renderables) {
                 if (renderable instanceof AbilityButton button && button.slot != MagicData.NO_SLOT) {
-                    if (button.isMouseOver(mouseX, mouseY)) {
+                    if (button.isMouseOver(event.x(), event.y())) {
                         ClientPacketDistributor.sendToServer(new SyncSlotAssignment(ability.key(), button.slot));
                         data.moveAbilityToSlot(ability.key(), button.slot);
                         wasSwappedToASlot = true;
@@ -210,12 +213,12 @@ public class AbilityButton extends ExtendedButton {
 
         graphics.pose().pushMatrix();
         // Scale about the center of the button
-        graphics.pose().translate(getX(), getY(), 0);
-        graphics.pose().scale(scale, scale, 1);
-        graphics.pose().translate(-getX(), -getY(), 0);
+        graphics.pose().translate(getX(), getY());
+        graphics.pose().scale(scale, scale);
+        graphics.pose().translate(-getX(), -getY());
         float scaleXDiff = (scale - 1) * SIZE / 2;
         float scaleYDiff = (scale - 1) * SIZE / 2;
-        graphics.pose().translate(offset.x - scaleXDiff, offset.y - scaleYDiff, offset.z);
+        graphics.pose().translate((float) (offset.x - scaleXDiff), (float) (offset.y - scaleYDiff));
 
         if (ability == null) {
             blit(graphics, PASSIVE_BACKGROUND, getX() - 2, getY() - 2, ORNAMENTATION_SIZE);
@@ -238,11 +241,13 @@ public class AbilityButton extends ExtendedButton {
         }
 
         graphics.pose().pushMatrix();
-        graphics.pose().translate(0, 0, 50);
+        // FIXME :: UI GRAPHICS
+        //graphics.pose().translate(0, 0, 50);
 
         if (isDragging) {
             graphics.pose().pushMatrix();
-            graphics.pose().translate(0, 0, 100);
+            // FIXME :: UI GRAPHICS
+            //graphics.pose().translate(0, 0, 100);
             blit(graphics, ability.getIcon(), mouseX - SIZE / 2, mouseY - SIZE / 2, SIZE);
             graphics.pose().popMatrix();
         }
@@ -256,7 +261,8 @@ public class AbilityButton extends ExtendedButton {
         if (isHovered() && shouldShowDescription()) {
             graphics.pose().pushMatrix();
             // Render above the other UI elements
-            graphics.pose().translate(0, 0, 150);
+            // FIXME :: UI GRAPHICS
+            //graphics.pose().translate(0, 0, 150);
             AbilityAndPenaltyTooltipRenderer.drawAbilityTooltip(graphics, mouseX, mouseY, ability, scrollAmount);
             graphics.pose().popMatrix();
         }
@@ -287,7 +293,8 @@ public class AbilityButton extends ExtendedButton {
     }
 
     private void blit(final GuiGraphics graphics, final Identifier texture, int x, int y, int size) {
-        graphics.blit(x, y, 0, size, size, Minecraft.getInstance().getGuiSprites().getSprite(texture), 1, 1, 1, alpha);
+        // FIXME :: UI GRAPHICS (there was an alpha value used here and it is now gone)
+        graphics.blit(RenderPipelines.GUI_TEXTURED, texture, x, y, size, size, 0, 0, size, size);
     }
 
     /** If the player is dragging any button the buttons shouldn't show their description */

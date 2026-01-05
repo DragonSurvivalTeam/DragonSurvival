@@ -9,15 +9,21 @@ import by.dragonsurvivalteam.dragonsurvival.server.containers.SourceOfMagicConta
 import by.dragonsurvivalteam.dragonsurvival.server.tileentity.SourceOfMagicBlockEntity;
 import com.mojang.datafixers.util.Either;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.NotNull;
 
+import javax.tools.Tool;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -84,7 +90,7 @@ public class SourceOfMagicScreen extends AbstractContainerScreen<SourceOfMagicCo
 
     @Override
     protected void renderBg(@NotNull final GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
-        guiGraphics.blit(BACKGROUND, leftPos, topPos, 0, 0, imageWidth, imageHeight);
+        guiGraphics.blit(BACKGROUND, leftPos, topPos, 0, 0, imageWidth, imageHeight, 256, 256);
 
         boolean hasItem = blockEntity.getCurrentDuration() > 0;
         Block block = blockEntity.getBlockState().getBlock();
@@ -104,24 +110,28 @@ public class SourceOfMagicScreen extends AbstractContainerScreen<SourceOfMagicCo
         }
     }
 
-    private List<Either<FormattedText, TooltipComponent>> getTooltip() {
-        List<Either<FormattedText, TooltipComponent>> tooltip = new ArrayList<>();
+
+    private Tooltip getTooltip() {
+        MutableComponent tooltip = Component.empty();
         List<SourceOfMagicData.Consumable> consumables = blockEntity.getConsumables();
 
         // Show the highest duration at the top
         consumables.sort(Comparator.comparingInt(SourceOfMagicData.Consumable::duration).reversed());
 
+        int numElements = 0;
         for (int i = scrollAmount; i < consumables.size(); i++) {
-            if (tooltip.size() == MAX_SHOWN) {
+            if (numElements == MAX_SHOWN) {
                 break;
             }
 
             SourceOfMagicData.Consumable consumable = consumables.get(i);
-            tooltip.add(Either.right(new TimeComponent(consumable.item(), consumable.duration(), TimeComponent.DEFAULT)));
+            TimeComponent timeComponent = new TimeComponent(consumable.item(), consumable.duration(), TimeComponent.DEFAULT);
+            tooltip.append(timeComponent.description().apply(timeComponent.item(), timeComponent.ticks()));
+            numElements++;
         }
 
-        tooltip.addFirst(Either.left(Component.translatable(HELP)));
-        return tooltip;
+        tooltip.append(Component.translatable(HELP));
+        return Tooltip.create(tooltip);
     }
 
     private int maxScroll() {

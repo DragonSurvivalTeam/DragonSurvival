@@ -33,6 +33,7 @@ import by.dragonsurvivalteam.dragonsurvival.util.ToolUtils;
 import com.mojang.datafixers.util.Either;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderSet;
@@ -40,6 +41,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
@@ -804,7 +806,7 @@ public class DragonStateHandler extends EntityStateHandler {
 
     private static final int MAX_SHOWN = 5;
 
-    public Pair<List<Either<FormattedText, TooltipComponent>>, Integer> getGrowthDescription(int currentScroll) {
+    public Pair<Tooltip, Integer> getGrowthDescription(int currentScroll) {
         DragonStage stage = dragonStage.value();
         double percentage = Math.clamp(stage.getProgress(getGrowth()), 0, 1);
         String ageInformation = stage.getTimeToGrowFormattedWithPercentage(percentage, getGrowth(), isGrowing);
@@ -825,17 +827,18 @@ public class DragonStateHandler extends EntityStateHandler {
 
         int max = Math.min(growthItems.size(), scroll + MAX_SHOWN);
 
-        List<Either<FormattedText, TooltipComponent>> components = new ArrayList<>();
-        components.add(Either.left(Component.translatable(LangKey.GROWTH_STAGE).append(DragonStage.translatableName(stageKey()))));
-        components.add(Either.left(Component.translatable(LangKey.GROWTH_AGE, ageInformation)));
-        components.add(Either.left(Component.translatable(LangKey.GROWTH_AMOUNT, (int) getGrowth())));
-        components.add(Either.left(Component.translatable(LangKey.GROWTH_INFO).append(Component.literal(" [" + Math.min(growthItems.size(), scroll + MAX_SHOWN) + " / " + growthItems.size() + "]").withStyle(ChatFormatting.DARK_GRAY))));
+        MutableComponent component = Component.empty();
+        component.append(Component.translatable(LangKey.GROWTH_STAGE).append(DragonStage.translatableName(stageKey())));
+        component.append(Component.translatable(LangKey.GROWTH_AGE, ageInformation));
+        component.append(Component.translatable(LangKey.GROWTH_AMOUNT, (int) getGrowth()));
+        component.append(Component.translatable(LangKey.GROWTH_INFO).append(Component.literal(" [" + Math.min(growthItems.size(), scroll + MAX_SHOWN) + " / " + growthItems.size() + "]").withStyle(ChatFormatting.DARK_GRAY)));
 
         for (int i = scroll; i < max; i++) {
-            components.add(Either.right(growthItems.get(i)));
+            TimeComponent timeComponent = growthItems.get(i);
+            component.append(timeComponent.description().apply(timeComponent.item(), timeComponent.ticks()));
         }
 
-        return Pair.of(components, scroll);
+        return Pair.of(Tooltip.create(component), scroll);
     }
 
     @Translation(comments = "Multi Mining")

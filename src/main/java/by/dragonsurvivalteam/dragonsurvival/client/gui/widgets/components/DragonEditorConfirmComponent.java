@@ -11,8 +11,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Renderable;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.events.AbstractContainerEventHandler;
 import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.input.InputWithModifiers;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -58,33 +61,27 @@ public class DragonEditorConfirmComponent extends AbstractContainerEventHandler 
             @Override
             public void renderWidget(@NotNull final GuiGraphics guiGraphics, int mouseX, int mouseY, float partial) {
                 guiGraphics.drawCenteredString(Minecraft.getInstance().font, getMessage(), getX() + getWidth() / 2, getY() + (getHeight() - 8) / 2, getFGColor());
-
-                if (isHovered()) {
-                    guiGraphics.renderTooltip(Minecraft.getInstance().font, Component.translatable(LangKey.GUI_CONFIRM), mouseX, mouseY);
-                }
             }
 
             @Override
-            public void onPress() {
+            public void onPress(@NotNull InputWithModifiers inputWithModifiers) {
                 screen.confirm();
             }
         };
+        confirmButton.setTooltip(Tooltip.create(Component.translatable(LangKey.GUI_CONFIRM)));
 
         cancelButton = new ExtendedButton(x + 66, y + 132, 60, 19, CommonComponents.GUI_NO, action -> { /* Nothing to do */ }) {
             @Override
             public void renderWidget(@NotNull final GuiGraphics guiGraphics, int mouseX, int mouseY, float partial) {
                 guiGraphics.drawCenteredString(Minecraft.getInstance().font, getMessage(), getX() + getWidth() / 2, getY() + (getHeight() - 8) / 2, getFGColor());
-
-                if (isHovered) {
-                    guiGraphics.renderTooltip(Minecraft.getInstance().font, Component.translatable(LangKey.GUI_CANCEL), mouseX, mouseY);
-                }
             }
 
             @Override
-            public void onPress() {
+            public void onPress(@NotNull InputWithModifiers inputWithModifiers) {
                 screen.cancel();
             }
         };
+        cancelButton.setTooltip(Tooltip.create(Component.translatable(LangKey.GUI_CANCEL)));
     }
 
     @Override
@@ -93,15 +90,15 @@ public class DragonEditorConfirmComponent extends AbstractContainerEventHandler 
     }
 
     @Override
-    public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
-        return super.mouseClicked(pMouseX, pMouseY, pButton);
+    public boolean mouseClicked(@NotNull MouseButtonEvent event, boolean isDoubleClick) {
+        return super.mouseClicked(event, isDoubleClick);
     }
 
     @Override
     public void render(@NotNull final GuiGraphics graphics, int pMouseX, int pMouseY, float pPartialTicks) {
         graphics.pose().pushMatrix();
         // Render above the rendered dragon
-        graphics.pose().translate(0, 0, 100);
+        // graphics.pose().translate(0, 0, 100);
         graphics.fillGradient(0, 0, Minecraft.getInstance().getWindow().getWidth(), Minecraft.getInstance().getWindow().getHeight(), -1072689136, -804253680);
 
         String key = "";
@@ -116,11 +113,11 @@ public class DragonEditorConfirmComponent extends AbstractContainerEventHandler 
 
         String text = Component.translatable(key).getString();
         if (confirmButton.isHovered()) {
-            graphics.blit(WARNING_ACCEPT, x, y, 0, 0, xSize, ySize);
+            graphics.blit(WARNING_ACCEPT, x, y, 0, 0, xSize, ySize, 256, 256);
         } else if (cancelButton.isHovered()) {
-            graphics.blit(WARNING_CANCEL, x, y, 0, 0, xSize, ySize);
+            graphics.blit(WARNING_CANCEL, x, y, 0, 0, xSize, ySize, 256, 256);
         } else {
-            graphics.blit(WARNING_MAIN, x, y, 0, 0, xSize, ySize);
+            graphics.blit(WARNING_MAIN, x, y, 0, 0, xSize, ySize, 256, 256);
         }
 
         TextRenderUtil.drawCenteredScaledTextSplit(graphics, x + xSize / 2, y + 42, 1f, text, DyeColor.WHITE.getTextColor(), xSize - 10, 150);

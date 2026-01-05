@@ -21,6 +21,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.input.InputWithModifiers;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.Holder;
@@ -33,8 +34,8 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.client.gui.widget.ExtendedButton;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
-import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -44,7 +45,7 @@ import java.util.List;
 
 import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 
-public class AltarTypeButton extends Button implements HoverDisableable {
+public class AltarTypeButton extends ExtendedButton implements HoverDisableable {
     @Translation(comments = "You have awakened from your sleep, and become a human.")
     private static final String CHOICE_HUMAN = Translation.Type.GUI.wrap("altar.choice.human");
 
@@ -67,7 +68,7 @@ public class AltarTypeButton extends Button implements HoverDisableable {
     private boolean resetScroll;
 
     public AltarTypeButton(final DragonAltarScreen parent, @Nullable final UnlockableBehavior.SpeciesEntry speciesEntry, int x, int y) {
-        super(x, y, 49, 147, Component.empty(), Button::onPress, DEFAULT_NARRATION);
+        super(x, y, 49, 147, Component.empty(), button -> {}, DEFAULT_NARRATION);
         this.parent = parent;
         this.speciesEntry = speciesEntry;
 
@@ -75,7 +76,7 @@ public class AltarTypeButton extends Button implements HoverDisableable {
     }
 
     @Override
-    public void onPress() {
+    public void onPress(@NotNull InputWithModifiers inputWithModifiers) {
         if (speciesEntry == null) {
             // Human
             initiateDragonForm(null);
@@ -101,7 +102,8 @@ public class AltarTypeButton extends Button implements HoverDisableable {
         }
 
         graphics.renderOutline(getX() - 1, getY() - 1, width + 2, height + 2, Color.black.getRGB());
-        RenderSystem.enableBlend(); // Needs to happen after the outline for the transparent locked banner to render correctly
+        // FIXME :: UI RENDERING
+        // RenderSystem.enableBlend(); // Needs to happen after the outline for the transparent locked banner to render correctly
 
         if (speciesEntry != null) {
             graphics.blit(speciesEntry.species().value().miscResources().altarBanner(), getX(), getY(), 0, isHovered() ? 0 : 147, 49, 147, 49, 294);
@@ -116,7 +118,7 @@ public class AltarTypeButton extends Button implements HoverDisableable {
             graphics.blit(HUMAN_BANNER, getX(), getY(), 0, isHovered() ? 0 : 147, 49, 147, 49, 294);
         }
 
-        RenderSystem.disableBlend();
+        // RenderSystem.disableBlend();
     }
 
     private void handleTooltip(@NotNull final GuiGraphics graphics, int mouseX, int mouseY) {
@@ -163,7 +165,8 @@ public class AltarTypeButton extends Button implements HoverDisableable {
         }
 
         if (!components.isEmpty()) {
-            graphics.renderComponentTooltipFromElements(Minecraft.getInstance().font, components, mouseX, mouseY, ItemStack.EMPTY);
+            // FIXME :: UI RENDERING
+            //graphics.renderComponentTooltipFromElements(Minecraft.getInstance().font, components, mouseX, mouseY, ItemStack.EMPTY);
         }
     }
 
@@ -179,7 +182,9 @@ public class AltarTypeButton extends Button implements HoverDisableable {
         }
 
         if (species == null) {
-            Minecraft.getInstance().player.sendSystemMessage(Component.translatable(CHOICE_HUMAN));
+            // FIXME :: UI RENDERING
+            // Send system message equivalent anywhere?
+            // Minecraft.getInstance().player.sendSystemMessage(Component.translatable(CHOICE_HUMAN));
             player.level().playSound(player, player.blockPosition(), SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 1, 0.7f);
 
             DragonStateHandler data = DragonStateProvider.getData(player);

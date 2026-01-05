@@ -21,6 +21,7 @@ import com.mojang.blaze3d.platform.Window;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
@@ -130,11 +131,10 @@ public class MagicHUD {
 
             int experienceProgress = (int) (localPlayer.experienceProgress * 183.0F);
             int height = guiScaledHeight - 32 + 3;
-            // FIXME :: UI GRAPHICS
-            //guiGraphics.blit(WIDGET_TEXTURES, width, height, 0, 0, 164, 182, 5, 256, 256);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, WIDGET_TEXTURES, width, height, 0, 0, 164, 182, 5, 256, 256);
 
             if (experienceProgress > 0) {
-                //guiGraphics.blit(WIDGET_TEXTURES, width, height, 0, 0, 169, experienceProgress, 5, 256, 256);
+                guiGraphics.blit(RenderPipelines.GUI_TEXTURED, WIDGET_TEXTURES, width, height, 0, 0, 169, experienceProgress, 5, 256, 256);
             }
         }
 
@@ -298,10 +298,10 @@ public class MagicHUD {
                         }
 
                         // FIXME :: UI GRAPHICS
-                        //graphics.blit(VANILLA_WIDGETS, xPos, posY - 2, -50, uOffset, 0, uWidth, 22, 256, 256);
+                        graphics.blit(RenderPipelines.GUI_TEXTURED, VANILLA_WIDGETS, xPos, posY - 2, -50, uOffset, 0, uWidth, 22, 256, 256);
                         //graphics.setColor(1f, 1f, 1f, 1f);
 
-                        //graphics.blitSprite(ability.getIcon(), posX + x * sizeX + 3, posY + 1, 0, 16, 16);
+                        graphics.blitSprite(RenderPipelines.GUI_TEXTURED, ability.getIcon(), posX + x * sizeX + 3, posY + 1, 0, 16, 16);
 
                         float skillCooldown = ability.value().activation().getCooldown(ability.level());
                         float currentCooldown = ability.cooldown() - Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(false);
@@ -315,8 +315,7 @@ public class MagicHUD {
                             graphics.fill(boxX, boxY, boxX + 16, boxY + offset, color);
                         }
                     } else {
-                        // FIXME :: UI GRAPHICS
-                        //graphics.blit(VANILLA_WIDGETS, posX + x * 20, posY - 2, -50, x * 20, 0, 21, 22, 256, 256);
+                        graphics.blit(RenderPipelines.GUI_TEXTURED, VANILLA_WIDGETS, posX + x * 20, posY - 2, -50, x * 20, 0, 21, 22, 256, 256);
                     }
                 }
 
@@ -326,8 +325,8 @@ public class MagicHUD {
                     //graphics.setColor(outlineColor.getRedFloat(), outlineColor.getGreenFloat(), outlineColor.getBlueFloat(), outlineColor.getAlphaFloat());
                 }
 
+                graphics.blit(RenderPipelines.GUI_TEXTURED, VANILLA_WIDGETS, posX + sizeX * magic.getSelectedAbilitySlot() - 1, posY - 3, 2, 0, 22, 24, 24, 256, 256);
                 // FIXME :: UI GRAPHICS
-                //graphics.blit(VANILLA_WIDGETS, posX + sizeX * magic.getSelectedAbilitySlot() - 1, posY - 3, 2, 0, 22, 24, 24, 256, 256);
                 //graphics.setColor(1f, 1f, 1f, 1f);
             }
 
@@ -426,10 +425,10 @@ public class MagicHUD {
 
                 //Color color = new Color(DSColors.toARGB(handler.species().value().miscResources().primaryColor()));
                 //graphics.setColor(color.getRedFloat(), color.getGreenFloat(), color.getBlueFloat(), color.getAlphaFloat());
-                //graphics.blit(CAST_BAR_FILL, startX + 2, startY + 41, 0, 0, (int) (191 * percentage), 4, 191, 4);
+                graphics.blit(CAST_BAR_FILL, startX + 2, startY + 41, 0, 0, (int) (191 * percentage), 4, 191, 4);
                 //graphics.setColor(1, 1, 1, 1);
 
-                //graphics.blitSprite(ability.getIcon(), startX + 78, startY + 3, 0, 36, 36);
+                graphics.blitSprite(RenderPipelines.GUI_TEXTURED, ability.getIcon(), startX + 78, startY + 3, 0, 36, 36);
 
                 graphics.pose().popMatrix();
             }

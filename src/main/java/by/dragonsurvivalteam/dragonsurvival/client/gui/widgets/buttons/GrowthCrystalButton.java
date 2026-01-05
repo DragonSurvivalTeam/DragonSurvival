@@ -83,7 +83,8 @@ public class GrowthCrystalButton extends ExtendedButton {
 
         if (isHovered) {
             //noinspection DataFlowIssue -> screen is not null
-            Minecraft.getInstance().screen.setTooltipForNextRenderPass(tooltip);
+            // FIXME:: UI RENDERING
+            //Minecraft.getInstance().screen.setTooltipForNextRenderPass(tooltip);
         }
 
         return isHovered;

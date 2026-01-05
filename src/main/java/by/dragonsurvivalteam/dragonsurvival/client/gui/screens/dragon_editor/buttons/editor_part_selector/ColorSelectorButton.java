@@ -10,6 +10,7 @@ import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.La
 import by.dragonsurvivalteam.dragonsurvival.mixins.client.ScreenAccessor;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Renderable;
+import net.minecraft.client.input.InputWithModifiers;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.client.gui.widget.ExtendedButton;
@@ -77,7 +78,7 @@ public class ColorSelectorButton extends ExtendedButton {
     }
 
     @Override
-    public void onPress() {
+    public void onPress(@NotNull InputWithModifiers inputWithModifiers) {
         if (!toggled) {
             String partKey = screen.preset.get(screen.stage.getKey()).get().layerSettings.get(layer).get().partKey;
             DragonPart part = DragonPartLoader.getDragonPart(layer, DragonEditorScreen.HANDLER.speciesKey(), DragonEditorScreen.HANDLER.body(), partKey);

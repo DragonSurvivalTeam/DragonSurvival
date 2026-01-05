@@ -10,6 +10,7 @@ import com.mojang.blaze3d.platform.Window;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -55,8 +56,7 @@ public class DragonSoulBar {
 
             int width = (int) (progress * WIDTH);
             graphics.blit(DRAGON_SOUL_BAR, x, y, 0, 0, WIDTH, HEIGHT / 2, WIDTH, HEIGHT);
-            // FIXME :: UI GRAPHICS
-            //graphics.blit(DRAGON_SOUL_BAR, x, y, 0, (float) HEIGHT / 2, width, HEIGHT / 2, WIDTH, HEIGHT);
+            graphics.blit(RenderPipelines.GUI_TEXTURED, DRAGON_SOUL_BAR, x, y, 0, (float) HEIGHT / 2, width, HEIGHT / 2, WIDTH, HEIGHT);
         }
     }
 }

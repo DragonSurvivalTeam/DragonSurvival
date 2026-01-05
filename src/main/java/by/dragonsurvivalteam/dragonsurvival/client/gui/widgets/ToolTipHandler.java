@@ -19,6 +19,7 @@ import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
@@ -30,6 +31,7 @@ import net.minecraft.network.chat.TextColor;
 import net.minecraft.network.chat.contents.PlainTextContents;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.EnchantedBookItem;
 import net.minecraft.world.item.Item;
@@ -201,7 +203,9 @@ public class ToolTipHandler {
         }
 
         // Use white color to reset the color (i.e. don't color the icons)
-        return Component.literal(actualIcon).withStyle(Style.EMPTY.withFont(font).withColor(ChatFormatting.WHITE));
+        // FIXME :: UI RENDERING
+        return Component.empty();
+        //return Component.literal(actualIcon).withStyle(Style.EMPTY.withFont(font).withColor(ChatFormatting.WHITE));
     }
 
     @SubscribeEvent // Add certain descriptions to our items which use generic classes
@@ -211,7 +215,7 @@ public class ToolTipHandler {
             Identifier location = event.getItemStack().getItemHolder().getKey().identifier();
             MutableComponent description = null;
 
-            if (ENCHANTMENT_DESCRIPTIONS && event.getItemStack().getItem() instanceof EnchantedBookItem) {
+            if (ENCHANTMENT_DESCRIPTIONS && event.getItemStack().get(DataComponents.STORED_ENCHANTMENTS) != null) {
                 ItemEnchantments enchantments = event.getItemStack().get(DataComponents.STORED_ENCHANTMENTS);
 
                 // Only add it to single-entry enchanted books since the text is longer than usual enchantment descriptions
@@ -280,7 +284,7 @@ public class ToolTipHandler {
                 width = componentWidth;
             }
 
-            height += component.getHeight();
+            height += component.getHeight(event.getFont());
         }
 
         Vector2ic tooltipPosition = event.getTooltipPositioner().positionTooltip(event.getScreenWidth(), event.getScreenHeight(), event.getX(), event.getY(), width, height);
@@ -291,14 +295,14 @@ public class ToolTipHandler {
         int textureWidth = 128;
         int textureHeight = 128;
 
-        event.getGraphics().blit(isBlinking ? TOOLTIP_BLINKING : TOOLTIP, x - 8 - 6, y - 8 - 6, 400, 1, 1 % textureHeight, 16, 16, textureWidth, textureHeight);
-        event.getGraphics().blit(isBlinking ? TOOLTIP_BLINKING : TOOLTIP, x + width - 8 + 6, y - 8 - 6, 400, textureWidth - 16 - 1, 1 % textureHeight, 16, 16, textureWidth, textureHeight);
+        event.getGraphics().blit(RenderPipelines.GUI_TEXTURED, isBlinking ? TOOLTIP_BLINKING : TOOLTIP, x - 8 - 6, y - 8 - 6, 400, 1, 1 % textureHeight, 16, 16, textureWidth, textureHeight);
+        event.getGraphics().blit(RenderPipelines.GUI_TEXTURED, isBlinking ? TOOLTIP_BLINKING : TOOLTIP, x + width - 8 + 6, y - 8 - 6, 400, textureWidth - 16 - 1, 1 % textureHeight, 16, 16, textureWidth, textureHeight);
 
-        event.getGraphics().blit(isBlinking ? TOOLTIP_BLINKING : TOOLTIP, x - 8 - 6, y + height - 8 + 6, 400, 1, 1 % textureHeight + 16, 16, 16, textureWidth, textureHeight);
-        event.getGraphics().blit(isBlinking ? TOOLTIP_BLINKING : TOOLTIP, x + width - 8 + 6, y + height - 8 + 6, 400, textureWidth - 16 - 1, 1 % textureHeight + 16, 16, 16, textureWidth, textureHeight);
+        event.getGraphics().blit(RenderPipelines.GUI_TEXTURED, isBlinking ? TOOLTIP_BLINKING : TOOLTIP, x - 8 - 6, y + height - 8 + 6, 400, 1, 1 % textureHeight + 16, 16, 16, textureWidth, textureHeight);
+        event.getGraphics().blit(RenderPipelines.GUI_TEXTURED, isBlinking ? TOOLTIP_BLINKING : TOOLTIP, x + width - 8 + 6, y + height - 8 + 6, 400, textureWidth - 16 - 1, 1 % textureHeight + 16, 16, 16, textureWidth, textureHeight);
 
-        event.getGraphics().blit(isBlinking ? TOOLTIP_BLINKING : TOOLTIP, x + width / 2 - 47, y - 16, 400, 16 + 2 * textureWidth + 1, 1 % textureHeight, 94, 16, textureWidth, textureHeight);
-        event.getGraphics().blit(isBlinking ? TOOLTIP_BLINKING : TOOLTIP, x + width / 2 - 47, y + height, 400, 16 + 2 * textureWidth + 1, 1 % textureHeight + 16, 94, 16, textureWidth, textureHeight);
+        event.getGraphics().blit(RenderPipelines.GUI_TEXTURED, isBlinking ? TOOLTIP_BLINKING : TOOLTIP, x + width / 2 - 47, y - 16, 400, 16 + 2 * textureWidth + 1, 1 % textureHeight, 94, 16, textureWidth, textureHeight);
+        event.getGraphics().blit(RenderPipelines.GUI_TEXTURED, isBlinking ? TOOLTIP_BLINKING : TOOLTIP, x + width / 2 - 47, y + height, 400, 16 + 2 * textureWidth + 1, 1 % textureHeight + 16, 94, 16, textureWidth, textureHeight);
     }
 
     private static boolean isHelpText() {
@@ -321,7 +325,9 @@ public class ToolTipHandler {
         return false;
     }
 
-    @SubscribeEvent
+    // FIXME :: UI RENDERING
+    // This event doesn't exist anymore
+    /*@SubscribeEvent
     public static void renderTooltipBorderInDragonColor(final RenderTooltipEvent.Color event) {
         if (!TOOLTIP_CHANGES) {
             return;
@@ -346,5 +352,5 @@ public class ToolTipHandler {
             event.setBorderStart(DSColors.toARGB(data.species().value().miscResources().primaryColor()));
             event.setBorderEnd(DSColors.toARGB(data.species().value().miscResources().secondaryColor()));
         }
-    }
+    }*/
 }

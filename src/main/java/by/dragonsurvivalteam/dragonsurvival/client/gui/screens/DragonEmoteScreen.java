@@ -24,6 +24,7 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.ConfirmLinkScreen;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.KeyEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
@@ -135,9 +136,10 @@ public class DragonEmoteScreen extends Screen {
         int startX = guiLeft;
         int startY = guiTop;
 
-        RenderSystem.enableBlend();
-        graphics.blit(BACKGROUND_MAIN, startX, startY, 0, 0, 256, 256);
-        RenderSystem.disableBlend();
+        // FIXME :: UI RENDERING
+        //RenderSystem.enableBlend();
+        graphics.blit(BACKGROUND_MAIN, startX, startY, 0, 0, 256, 256, 256, 256);
+        //RenderSystem.disableBlend();
 
         super.render(graphics, mouseX, mouseY, partialTick);
         int totalPages = (int) Math.ceil((double) DragonStateProvider.getData(minecraft.player).body().value().emotes().value().emotes().size() / PER_PAGE);
@@ -239,13 +241,13 @@ public class DragonEmoteScreen extends Screen {
 
     // Prevent the screen from closing when pressing escape to cancel a keybind
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (keyCode == 256 && currentlyKeybinding != null) {
+    public boolean keyPressed(KeyEvent keyEvent) {
+        if (keyEvent.key() == InputConstants.KEY_ESCAPE && currentlyKeybinding != null) {
             currentlyKeybinding = null;
             return true;
         }
 
-        return super.keyPressed(keyCode, scanCode, modifiers);
+        return super.keyPressed(keyEvent);
     }
 
     @SubscribeEvent

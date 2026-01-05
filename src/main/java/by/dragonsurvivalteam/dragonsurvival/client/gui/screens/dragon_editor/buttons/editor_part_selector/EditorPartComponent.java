@@ -9,10 +9,14 @@ import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.loader.Def
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.DragonPart;
 import by.dragonsurvivalteam.dragonsurvival.mixins.client.ScreenAccessor;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.input.MouseButtonInfo;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Locale;
@@ -44,12 +48,12 @@ public class EditorPartComponent implements ScrollableComponent {
 
         partButton = new HoverButton(xPos, yPos, 110, 19, 149, 22, DROPDOWN_BUTTON_BACKGROUND, DROPDOWN_BUTTON_BACKGROUND, button -> { /* Nothing to do*/ }) {
             @Override
-            public boolean isValidClickButton(int button) {
-                return button == 1 && skinLayer != SkinLayer.BASE;
+            public boolean isValidClickButton(@NotNull MouseButtonInfo buttonInfo) {
+                return buttonInfo.button() == InputConstants.MOUSE_BUTTON_RIGHT && skinLayer != SkinLayer.BASE;
             }
 
             @Override
-            public void onClick(double mouseX, double mouseY, int button) {
+            public void onClick(@NotNull MouseButtonEvent event, boolean isDoubleClick) {
                 setSelectedPartInternal(DefaultPartLoader.NO_PART);
             }
         };

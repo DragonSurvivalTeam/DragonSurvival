@@ -45,6 +45,7 @@ import net.neoforged.neoforgespi.language.IModInfo;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 
+import javax.tools.Tool;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -178,11 +179,11 @@ public class DragonInventoryScreen extends AbstractContainerScreen<DragonContain
         StageResources.GrowthIcon growthIcon = StageResources.getGrowthIcon(data.species(), data.stageKey());
         growthButton = new HoverButton(leftPos + 175, topPos + 4, 20, growthIcon.icon(), growthIcon.hoverIcon(), () -> {
             DragonStateHandler handler = DragonStateProvider.getData(minecraft.player);
-            Pair<List<Either<FormattedText, TooltipComponent>>, Integer> growthDescriptionResult = handler.getGrowthDescription(growthTooltipScroll);
-            List<Either<FormattedText, TooltipComponent>> components = growthDescriptionResult.getFirst();
+            Pair<Tooltip, Integer> growthDescriptionResult = handler.getGrowthDescription(growthTooltipScroll);
+            Tooltip tooltip = growthDescriptionResult.getFirst();
             growthTooltipScroll = growthDescriptionResult.getSecond();
 
-            return components;
+            return tooltip;
         });
         addRenderableWidget(growthButton);
 
@@ -279,6 +280,8 @@ public class DragonInventoryScreen extends AbstractContainerScreen<DragonContain
 
         // Bandaid solution since we are rendering the tooltip twice now
         // But with this it is guaranteed to be rendered after the slot icons
-        growthButton.renderTooltip(graphics, mouseX, mouseY);
+        // FIXME :: UI RENDERING
+        // We probably need to access the internal tooltip holder from AbstractWidget to render this here
+        // growthButton.renderTooltip(graphics, mouseX, mouseY);
     }
 }

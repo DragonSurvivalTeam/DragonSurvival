@@ -13,8 +13,6 @@ import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscResources;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.StageResources;
-import by.dragonsurvivalteam.dragonsurvival.compat.ModCheck;
-import by.dragonsurvivalteam.dragonsurvival.compat.jei.JEIPlugin;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.FlightData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.data_maps.DietEntryCache;
@@ -24,7 +22,6 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effec
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty.DragonPenalty;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import by.dragonsurvivalteam.dragonsurvival.server.handlers.DragonRidingHandler;
-import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.datafixers.util.Either;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.Minecraft;
@@ -34,6 +31,7 @@ import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.KeyEvent;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
@@ -41,7 +39,6 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.contents.PlainTextContents;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
-import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.client.gui.widget.ExtendedButton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -130,12 +127,13 @@ public class DragonSpeciesScreen extends Screen {
     }
 
     @Override
-    public boolean keyPressed(final int keyCode, final int scanCode, final int modifiers) {
-        if (dietMenu != null && dietMenu.getHovered() != null && ModCheck.isModLoaded(ModCheck.JEI)) {
-            return JEIPlugin.handleKeyPress(InputConstants.getKey(keyCode, scanCode), dietMenu.getHovered());
-        }
+    public boolean keyPressed(@NotNull KeyEvent keyEvent) {
+        // FIXME :: JEI INTEGRATION
+        /*if (dietMenu != null && dietMenu.getHovered() != null && ModCheck.isModLoaded(ModCheck.JEI)) {
+            return JEIPlugin.handleKeyPress(InputConstants.getKey(keyEvent), dietMenu.getHovered());
+        }*/
 
-        return super.keyPressed(keyCode, scanCode, modifiers);
+        return super.keyPressed(keyEvent);
     }
 
     @Override
@@ -150,17 +148,17 @@ public class DragonSpeciesScreen extends Screen {
 
     @Override
     public void render(@NotNull final GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        if (minecraft == null || minecraft.player == null) {
+        if (minecraft.player == null) {
             return;
         }
 
-        renderBlurredBackground(partialTick);
+        renderBlurredBackground(graphics);
 
         int startX = guiLeft + 23;
         int startY = guiTop - 13;
 
         DragonStateHandler data = DragonStateProvider.getData(minecraft.player);
-        graphics.blit(BACKGROUND_MAIN, startX, startY, 0, 0, 256, 256);
+        graphics.blit(BACKGROUND_MAIN, startX, startY, 0, 0, 256, 256, 256, 256);
 
         for (ScrollableComponent component : scrollableComponents) {
             component.update();
@@ -230,7 +228,8 @@ public class DragonSpeciesScreen extends Screen {
                     List<Either<FormattedText, TooltipComponent>> components = new ArrayList<>();
                     //noinspection DataFlowIssue -> key is present
                     components.addFirst(Either.left(Component.translatable(Translation.Type.DRAGON_SPECIES_INVENTORY_DESCRIPTION.wrap(species.getKey().identifier()))));
-                    graphics.renderComponentTooltipFromElements(Minecraft.getInstance().font, components, mouseX, mouseY, ItemStack.EMPTY);
+                    // FIXME :: UI RENDERING
+                    // graphics.renderComponentTooltipFromElements(Minecraft.getInstance().font, components, mouseX, mouseY, ItemStack.EMPTY);
                 } else {
                     graphics.blit(data.species().value().miscResources().altarBanner(), getX(), getY(), 0, 147, 49, 147, 49, 294);
                 }
@@ -271,8 +270,8 @@ public class DragonSpeciesScreen extends Screen {
         StageResources.GrowthIcon growthIcon = StageResources.getGrowthIcon(data.species(), data.stageKey());
         growthButton = new HoverButton(startX + 99, startY - 21, 20, growthIcon.icon(), growthIcon.hoverIcon(), () -> {
             DragonStateHandler handler = DragonStateProvider.getData(minecraft.player);
-            Pair<List<Either<FormattedText, TooltipComponent>>, Integer> growthDescriptionResult = handler.getGrowthDescription(growthTooltipScroll);
-            List<Either<FormattedText, TooltipComponent>> components = growthDescriptionResult.getFirst();
+            Pair<Tooltip, Integer> growthDescriptionResult = handler.getGrowthDescription(growthTooltipScroll);
+            Tooltip components = growthDescriptionResult.getFirst();
             growthTooltipScroll = growthDescriptionResult.getSecond();
 
             return components;

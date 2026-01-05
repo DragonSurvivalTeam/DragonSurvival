@@ -2,6 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic;
 
 import by.dragonsurvivalteam.dragonsurvival.client.util.RenderingUtils;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
@@ -55,19 +56,19 @@ public class ColorPickerButton extends ExtendedButton {
     }
 
     @Override
-    public void onClick(double pMouseX, double pMouseY) {
-        selectorX = Mth.clamp(pMouseX - getX(), 0, width);
-        selectorY = Mth.clamp(pMouseY - getY(), 0, height);
+    public void onClick(@NotNull MouseButtonEvent event, boolean isDoubleClick) {
+        selectorX = Mth.clamp(event.x() - getX(), 0, width);
+        selectorY = Mth.clamp(event.y() - getY(), 0, height);
         colorConsumer.accept(getColor());
     }
 
     @Override
-    public boolean mouseDragged(double pMouseX, double pMouseY, int pButton, double pDragX, double pDragY) {
-        selectorX = Mth.clamp(pMouseX - getX(), 0, width);
-        selectorY = Mth.clamp(pMouseY - getY(), 0, height);
+    public boolean mouseDragged(@NotNull MouseButtonEvent event, double mouseX, double mouseY) {
+        selectorX = Mth.clamp(event.x() - getX(), 0, width);
+        selectorY = Mth.clamp(event.y() - getY(), 0, height);
         colorConsumer.accept(getColor());
 
-        return super.mouseDragged(pMouseX, pMouseY, pButton, pDragX, pDragY);
+        return super.mouseDragged(event, mouseX, mouseY);
     }
 
     @Override

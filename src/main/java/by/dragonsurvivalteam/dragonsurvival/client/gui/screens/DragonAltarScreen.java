@@ -23,13 +23,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSDragonSpecie
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import by.dragonsurvivalteam.dragonsurvival.util.DragonUtils;
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.BufferUploader;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -37,9 +31,9 @@ import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.inventory.InventoryScreen;
+import net.minecraft.client.input.InputWithModifiers;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
@@ -51,7 +45,6 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.neoforged.neoforge.client.gui.widget.ExtendedButton;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Quaternionf;
-import org.joml.Vector3f;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -115,7 +108,7 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
         super(Component.translatable(CHOOSE_SPECIES));
 
         //noinspection DataFlowIssue -> 'minecraft' (from 'Screen') is null at this point because it gets set in 'init'
-        Minecraft.getInstance().player.registryAccess().lookupOrThrow(DragonSpecies.REGISTRY).getTag(DSDragonSpeciesTags.ORDER).ifPresent(order -> {
+        Minecraft.getInstance().player.registryAccess().lookupOrThrow(DragonSpecies.REGISTRY).get(DSDragonSpeciesTags.ORDER).ifPresent(order -> {
             //noinspection unchecked -> cast is valid
             List<Holder<DragonSpecies>> list = ((HolderSet$NamedAccess<DragonSpecies>) order).dragonSurvival$contents();
 
@@ -160,12 +153,12 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    public boolean mouseClicked(@NotNull MouseButtonEvent event, boolean isDoubleClick) {
         if (confirmComponent != null && confirmation) {
             for (GuiEventListener guieventlistener : confirmComponent.children()) {
-                if (guieventlistener.mouseClicked(mouseX, mouseY, button)) {
+                if (guieventlistener.mouseClicked(event, isDoubleClick)) {
                     this.setFocused(guieventlistener);
-                    if (button == 0) {
+                    if (event.button() == InputConstants.MOUSE_BUTTON_LEFT) {
                         this.setDragging(true);
                     }
 
@@ -177,9 +170,9 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
         }
 
         for (GuiEventListener guieventlistener : this.children()) {
-            if (guieventlistener.mouseClicked(mouseX, mouseY, button)) {
+            if (guieventlistener.mouseClicked(event, isDoubleClick)) {
                 this.setFocused(guieventlistener);
-                if (button == 0) {
+                if (event.button() == InputConstants.MOUSE_BUTTON_LEFT) {
                     this.setDragging(true);
                 }
 
@@ -290,12 +283,14 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
                     // Left side
                     Quaternionf quaternion = Axis.ZP.rotationDegrees(180.0F);
                     quaternion.rotateY((float) Math.toRadians(210));
-                    InventoryScreen.renderEntityInInventory(graphics, (width / 2f) - 180, button.getY() + button.getHeight(), entity1Scale, new Vector3f(), quaternion, null, entity1);
+                    // FIXME :: UI RENDERING
+                    //InventoryScreen.renderEntityInInventory(graphics, (width / 2f) - 180, button.getY() + button.getHeight(), entity1Scale, new Vector3f(), quaternion, null, entity1);
 
                     // Right side
                     Quaternionf quaternion2 = Axis.ZP.rotationDegrees(180.0F);
                     quaternion2.rotateY((float) Math.toRadians(150));
-                    InventoryScreen.renderEntityInInventory(graphics, (width / 2f) + 180, button.getY() + button.getHeight(), entity2Scale, new Vector3f(), quaternion2, null, entity2);
+                    // FIXME :: UI RENDERING
+                    //InventoryScreen.renderEntityInInventory(graphics, (width / 2f) + 180, button.getY() + button.getHeight(), entity2Scale, new Vector3f(), quaternion2, null, entity2);
                 }
             }
 
@@ -308,7 +303,8 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
 
         TextRenderUtil.drawCenteredScaledText(graphics, width / 2 + 7, 10, 2f, Component.translatable(TITLE).getString(), DyeColor.WHITE.getTextColor());
         graphics.pose().pushMatrix();
-        graphics.pose().translate(0, 0, 300);
+        // FIXME :: UI RENDERING
+        // graphics.pose().translate(0, 0, 300);
         super.render(graphics, mouseX, mouseY, partialTick);
         graphics.pose().popMatrix();
     }
@@ -330,12 +326,13 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
 
     @Override
     public void renderBackground(@NotNull final GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        guiGraphics.fillGradient(0, 0, this.width, this.height, -300, -1072689136, -804253680);
+        guiGraphics.fillGradient(0, 0, this.width, this.height, -1072689136, -804253680);
         renderBorders(guiGraphics, BACKGROUND_TEXTURE, 0, width, 25, height - 25, width, height);
     }
 
     public static void renderBorders(@NotNull final GuiGraphics guiGraphics, Identifier texture, int x0, int x1, int y0, int y1, int width, int height) {
-        Tesselator tesselator = Tesselator.getInstance();
+        // FIXME :: UI RENDERING
+        /*Tesselator tesselator = Tesselator.getInstance();
         BufferBuilder bufferbuilder = tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
         RenderSystem.setShaderTexture(0, texture);
         float zLevel = 0;
@@ -364,7 +361,7 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
         bufferbuilder.addVertex(x1, y1, zLevel).setUv(1.0F, 1.0F).setColor(0, 0, 0, 255);
         bufferbuilder.addVertex(x1, y1 - 4, zLevel).setUv(1.0F, 0.0F).setColor(0, 0, 0, 0);
         bufferbuilder.addVertex(x0, y1 - 4, zLevel).setUv(0.0F, 0.0F).setColor(0, 0, 0, 0);
-        BufferUploader.drawWithShader(bufferbuilder.buildOrThrow());
+        BufferUploader.drawWithShader(bufferbuilder.buildOrThrow());*/
     }
 
     @Override
@@ -398,7 +395,7 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
             }
 
             @Override
-            public void onPress() {
+            public void onPress(@NotNull InputWithModifiers inputWithModifiers) {
                 //noinspection DataFlowIssue -> player is present
                 DragonStateHandler handler = DragonStateProvider.getData(minecraft.player);
                 boolean dragonDataIsPreserved = ServerConfig.saveAllAbilities && ServerConfig.saveGrowthStage;

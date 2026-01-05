@@ -21,7 +21,7 @@ public class ClientDietComponent implements ClientTooltipComponent {
     }
 
     @Override
-    public int getHeight() {
+    public int getHeight(@NotNull Font font) {
         return ICON_SIZE - 2;
     }
 
@@ -31,13 +31,14 @@ public class ClientDietComponent implements ClientTooltipComponent {
     }
 
     @Override
-    public void renderImage(@NotNull final Font font, int x, int y, @NotNull final GuiGraphics graphics) {
+    public void renderImage(@NotNull Font font, int x, int y, int width, int height, @NotNull GuiGraphics graphics) {
         graphics.renderFakeItem(component.item().getDefaultInstance(), x, y);
     }
 
     @Override
-    public void renderText(@NotNull final Font font, int mouseX, int mouseY, @NotNull final Matrix4f matrix, @NotNull final MultiBufferSource.BufferSource bufferSource) {
+    public void renderText(@NotNull GuiGraphics graphics, Font font, int x, int y) {
         // Y offset to align the height of the text with the center of the item
-        font.drawInBatch(tooltip, mouseX + ICON_SIZE, mouseY + 4, -1, true, matrix, bufferSource, Font.DisplayMode.NORMAL, 0, LightTexture.FULL_BRIGHT);
+        // FIXME :: UI RENDERING
+        //font.drawInBatch(tooltip, x + ICON_SIZE, y + 4, -1, true, graphics.pose(), bufferSource, Font.DisplayMode.NORMAL, 0, LightTexture.FULL_BRIGHT);
     }
 }
