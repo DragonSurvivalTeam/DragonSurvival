@@ -29,9 +29,8 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
-import net.neoforged.neoforge.client.model.data.ModelData;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
-import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.model.data.ModelData;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 
@@ -49,65 +48,62 @@ public class DragonDestructionHandler {
      */
     @SubscribeEvent
     @SuppressWarnings({"DataFlowIssue", "resource"}) // level should not be null / there is no resource to close
-    public static void renderAdditionalBreakProgress(final RenderLevelStageEvent event) {
-        if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_BLOCK_ENTITIES) {
-            LocalPlayer player = Minecraft.getInstance().player;
+    public static void renderAdditionalBreakProgress(final RenderLevelStageEvent.AfterEntities event) {
+        LocalPlayer player = Minecraft.getInstance().player;
 
-            if (player.isCrouching()) {
-                return;
-            }
-
-            int radius = (int) player.getAttributeValue(DSAttributes.BLOCK_BREAK_RADIUS);
-
-            if (radius < 1) {
-                return;
-            }
-
-            DragonStateHandler handler = DragonStateProvider.getData(player);
-
-            if (handler.multiMining == DragonStateHandler.MultiMining.DISABLED) {
-                return;
-            }
-
-            Vec3 cameraPosition = event.getCamera().getPosition();
-            double x = cameraPosition.x();
-            double y = cameraPosition.y();
-            double z = cameraPosition.z();
-
-            LevelRendererAccess access = (LevelRendererAccess) event.getLevelRenderer();
-            SortedSet<BlockDestructionProgress> set = access.dragonSurvival$getDestructionProgress().get(centerOfDestruction.asLong());
-            int progress = set != null ? set.last().getProgress() : -1;
-
-            if (progress == -1) {
-                return;
-            }
-
-            float centerSpeed = access.dragonSurvival$getLevel().getBlockState(centerOfDestruction).getDestroySpeed(access.dragonSurvival$getLevel(), centerOfDestruction);
-
-            BlockPos.betweenClosedStream(AABB.ofSize(centerOfDestruction.getCenter(), radius, radius, radius)).forEach(offsetPosition -> {
-                double xDistance = (double) offsetPosition.getX() - x;
-                double yDistance = (double) offsetPosition.getY() - y;
-                double zDistance = (double) offsetPosition.getZ() - z;
-
-                // Check if the position is close enough to be rendered
-                if (!(xDistance * xDistance + yDistance * yDistance + zDistance * zDistance > 1024)) {
-                    BlockState state = access.dragonSurvival$getLevel().getBlockState(offsetPosition);
-                    float speed = state.getDestroySpeed(access.dragonSurvival$getLevel(), offsetPosition);
-
-                    if (speed == /* Bedrock strength */ -1 || speed > centerSpeed) {
-                        return;
-                    }
-
-                    event.getPoseStack().pushMatrix();
-                    event.getPoseStack().translate((double) offsetPosition.getX() - x, (double) offsetPosition.getY() - y, (double) offsetPosition.getZ() - z);
-                    PoseStack.Pose lastPose = event.getPoseStack().last();
-                    VertexConsumer consumer = new SheetedDecalTextureGenerator(access.dragonSurvival$getRenderBuffers().crumblingBufferSource().getBuffer(ModelBakery.DESTROY_TYPES.get(progress)), lastPose, 1.0F);
-                    ModelData modelData = access.dragonSurvival$getLevel().getModelData(offsetPosition);
-                    Minecraft.getInstance().getBlockRenderer().renderBreakingTexture(state, offsetPosition, access.dragonSurvival$getLevel(), event.getPoseStack(), consumer, modelData);
-                    event.getPoseStack().popMatrix();
-                }
-            });
+        if (player.isCrouching()) {
+            return;
         }
+
+        int radius = (int) player.getAttributeValue(DSAttributes.BLOCK_BREAK_RADIUS);
+
+        if (radius < 1) {
+            return;
+        }
+
+        DragonStateHandler handler = DragonStateProvider.getData(player);
+
+        if (handler.multiMining == DragonStateHandler.MultiMining.DISABLED) {
+            return;
+        }
+
+        Vec3 cameraPosition = event.getLevelRenderState().cameraRenderState.pos;
+        double x = cameraPosition.x();
+        double y = cameraPosition.y();
+        double z = cameraPosition.z();
+
+        LevelRendererAccess access = (LevelRendererAccess) event.getLevelRenderer();
+        SortedSet<BlockDestructionProgress> set = access.dragonSurvival$getDestructionProgress().get(centerOfDestruction.asLong());
+        int progress = set != null ? set.last().getProgress() : -1;
+
+        if (progress == -1) {
+            return;
+        }
+
+        float centerSpeed = access.dragonSurvival$getLevel().getBlockState(centerOfDestruction).getDestroySpeed(access.dragonSurvival$getLevel(), centerOfDestruction);
+
+        BlockPos.betweenClosedStream(AABB.ofSize(centerOfDestruction.getCenter(), radius, radius, radius)).forEach(offsetPosition -> {
+            double xDistance = (double) offsetPosition.getX() - x;
+            double yDistance = (double) offsetPosition.getY() - y;
+            double zDistance = (double) offsetPosition.getZ() - z;
+
+            // Check if the position is close enough to be rendered
+            if (!(xDistance * xDistance + yDistance * yDistance + zDistance * zDistance > 1024)) {
+                BlockState state = access.dragonSurvival$getLevel().getBlockState(offsetPosition);
+                float speed = state.getDestroySpeed(access.dragonSurvival$getLevel(), offsetPosition);
+
+                if (speed == /* Bedrock strength */ -1 || speed > centerSpeed) {
+                    return;
+                }
+
+                event.getPoseStack().pushPose();
+                event.getPoseStack().translate((double) offsetPosition.getX() - x, (double) offsetPosition.getY() - y, (double) offsetPosition.getZ() - z);
+                PoseStack.Pose lastPose = event.getPoseStack().last();
+                VertexConsumer consumer = new SheetedDecalTextureGenerator(access.dragonSurvival$getRenderBuffers().crumblingBufferSource().getBuffer(ModelBakery.DESTROY_TYPES.get(progress)), lastPose, 1.0F);
+                Minecraft.getInstance().getBlockRenderer().renderBreakingTexture(state, offsetPosition, access.dragonSurvival$getLevel(), event.getPoseStack(), consumer);
+                event.getPoseStack().popPose();
+            }
+        });
     }
 
     public static void toggleDestructionMode(@Nullable final Pair<Player, DragonStateHandler> data) {

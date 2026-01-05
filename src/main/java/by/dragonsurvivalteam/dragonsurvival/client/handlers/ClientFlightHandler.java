@@ -13,7 +13,6 @@ import by.dragonsurvivalteam.dragonsurvival.network.flight.ToggleFlight;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAttributes;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.FlightData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
-import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import by.dragonsurvivalteam.dragonsurvival.server.handlers.ServerFlightHandler;
 import by.dragonsurvivalteam.dragonsurvival.util.ActionWithTimedCooldown;
 import by.dragonsurvivalteam.dragonsurvival.util.EnchantmentUtils;
@@ -22,13 +21,14 @@ import by.dragonsurvivalteam.dragonsurvival.util.TickedCooldown;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.Input;
+import net.minecraft.client.player.ClientInput;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -45,11 +45,11 @@ import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.ViewportEvent;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
-import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Vector3f;
 
 import java.util.Objects;
+
+import static by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey.MESSAGE_NO_HUNGER;
 
 
 /** Used in pair with {@link ServerFlightHandler} */
@@ -109,7 +109,7 @@ public class ClientFlightHandler {
         if (localPlayer == null) {
             return;
         }
-        SystemMessageUtils.sendSystemMessage(Component.translatable(LangKey.MESSAGE_NO_HUNGER), localPlayer);
+        SystemMessageUtils.sendSystemMessage(Component.translatable(MESSAGE_NO_HUNGER), localPlayer);
     });
 
     public static int lastSync;
@@ -179,7 +179,8 @@ public class ClientFlightHandler {
                             Vec3 lookVec = currentPlayer.getLookAngle();
                             float f = Math.min(Math.max(0.5F, 1F - (float) (lookVec.y * 5 / 2.5 * 0.5)), 3F);
                             float newZoom = Mth.lerp(0.25f, lastZoom, f);
-                            gameRenderer.zoom = newZoom;
+                            // FIXME :: zoom is gone
+                            // gameRenderer.zoom = newZoom;
                             lastZoom = newZoom;
                         }
                     }
@@ -195,7 +196,8 @@ public class ClientFlightHandler {
                 if (lastZoom != 1) {
                     if (flightZoomEffect) {
                         lastZoom = Mth.lerp(0.25f, lastZoom, 1f);
-                        gameRenderer.zoom = lastZoom;
+                        // FIXME :: zoom is gone
+                        // gameRenderer.zoom = lastZoom;
                     }
                 }
             }
@@ -222,7 +224,7 @@ public class ClientFlightHandler {
         } else if (EnchantmentUtils.getLevel(player, Enchantments.SWEEPING_EDGE) > 0) {
             spawnSpinParticle(player, ParticleTypes.SWEEP_ATTACK);
         } else if (EnchantmentUtils.getLevel(player, Enchantments.SHARPNESS) > 0) {
-            spawnSpinParticle(player, new DustParticleOptions(new Vector3f(1f, 1f, 1f), 1f));
+            spawnSpinParticle(player, new DustParticleOptions(ARGB.colorFromFloat(1, 1, 1, 1), 1f));
         } else if (EnchantmentUtils.getLevel(player, Enchantments.SMITE) > 0) {
             spawnSpinParticle(player, ParticleTypes.ENCHANT);
         } else if (EnchantmentUtils.getLevel(player, Enchantments.BANE_OF_ARTHROPODS) > 0) {
@@ -270,7 +272,7 @@ public class ClientFlightHandler {
                         }
 
                         if (FlightData.getData(player).isWingsSpread()) {
-                            Input movement = player.input;
+                            ClientInput movement = player.input;
 
                             if (!ToggleFlight.hasEnoughFoodToStartFlight(player) || player.isCreative()) {
                                 ay = Mth.clamp(Math.abs(ay * 4), -0.4 * ServerFlightHandler.maxFlightSpeed, 0.4 * ServerFlightHandler.maxFlightSpeed);
@@ -358,10 +360,10 @@ public class ClientFlightHandler {
                                     wasGliding = false;
                                     double maxForward = 0.5 * flightSpeedMultiplier * 2;
 
-                                    Vec3 moveVector = getInputVector(new Vec3(movement.leftImpulse, 0, movement.forwardImpulse), 1F, player.getYRot());
+                                    Vec3 moveVector = getInputVector(new Vec3(movement.getMoveVector().x, 0, movement.getMoveVector().y), 1F, player.getYRot());
                                     moveVector.multiply(1.3 * flightSpeedMultiplier * 2, 0, 1.3 * flightSpeedMultiplier * 2);
 
-                                    boolean moving = movement.up || movement.down || movement.left || movement.right;
+                                    boolean moving = movement.keyPresses.forward() || movement.keyPresses.backward() || movement.keyPresses.left() || movement.keyPresses.right();
 
                                     if (ServerFlightHandler.isSpin(player)) {
                                         ax += (Math.cos(yaw) * flightSpeedMultiplier * 200 * 2) / 500;
@@ -369,11 +371,11 @@ public class ClientFlightHandler {
                                         ay = viewVector.y / 8;
                                     }
 
-                                    if (ServerFlightHandler.stableHover && !movement.jumping && !movement.shiftKeyDown && !ServerFlightHandler.isSpin(player) && !ServerFlightHandler.isGliding(player)) {
+                                    if (ServerFlightHandler.stableHover && !movement.keyPresses.jump() && !movement.keyPresses.shift() && !ServerFlightHandler.isSpin(player) && !ServerFlightHandler.isGliding(player)) {
                                         ay = Math.max(ay, gravity * 1.1);
                                     }
 
-                                    if (moving && !movement.jumping && !movement.shiftKeyDown) {
+                                    if (moving && !movement.keyPresses.jump() && !movement.keyPresses.shift()) {
                                         maxForward = 0.8 * flightSpeedMultiplier * 2;
                                         moveVector.multiply(1.4 * flightSpeedMultiplier * 2, 0, 1.4 * flightSpeedMultiplier * 2);
                                         deltaMovement = new Vec3(Mth.lerp(0.14, deltaMovement.x, moveVector.x), 0, Mth.lerp(0.14, deltaMovement.z, moveVector.z));
@@ -407,10 +409,10 @@ public class ClientFlightHandler {
                                         ay *= 0.9F;
                                         az *= 0.9F;
 
-                                        if (movement.jumping) {
+                                        if (movement.keyPresses.jump()) {
                                             deltaMovement = new Vec3(deltaMovement.x, 0.4 + deltaMovement.y, deltaMovement.z);
                                             player.setDeltaMovement(deltaMovement);
-                                        } else if (movement.shiftKeyDown) {
+                                        } else if (movement.keyPresses.shift()) {
                                             deltaMovement = new Vec3(deltaMovement.x, -0.5 + deltaMovement.y, deltaMovement.z);
                                             player.setDeltaMovement(deltaMovement);
                                         } else if (wasFlying) { // Don't activate on a regular jump
@@ -476,10 +478,10 @@ public class ClientFlightHandler {
 
         if (activation == ToggleFlight.Activation.MANUAL) {
             switch (result) {
-                case NO_WINGS -> player.sendSystemMessage(Component.translatable(NO_FLIGHT_EFFECT));
-                case DISABLED -> player.sendSystemMessage(Component.translatable(FLIGHT_EFFECT_DISABLED));
-                case WINGS_BLOCKED -> player.sendSystemMessage(Component.translatable(WINGS_BLOCKED));
-                case NO_HUNGER -> player.sendSystemMessage(Component.translatable(LangKey.MESSAGE_NO_HUNGER));
+                case NO_WINGS -> SystemMessageUtils.sendSystemMessage(Component.translatable(NO_FLIGHT_EFFECT), player);
+                case DISABLED -> SystemMessageUtils.sendSystemMessage(Component.translatable(FLIGHT_EFFECT_DISABLED), player);
+                case WINGS_BLOCKED -> SystemMessageUtils.sendSystemMessage(Component.translatable(WINGS_BLOCKED), player);
+                case NO_HUNGER -> SystemMessageUtils.sendSystemMessage(Component.translatable(MESSAGE_NO_HUNGER), player);
             }
         } else if (result == ToggleFlight.Result.NO_HUNGER) {
             HUNGER_MESSAGE_WITH_COOLDOWN.tryRun();

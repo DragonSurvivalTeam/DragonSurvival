@@ -47,7 +47,7 @@ public class KeyHandler {
 
     @SubscribeEvent
     public static void handleKey(final InputEvent.Key event) {
-        handleKeybinds(InputConstants.getKey(event.getKey(), event.getScanCode()), event.getAction());
+        handleKeybinds(InputConstants.getKey(event.getKeyEvent()), event.getAction());
     }
 
     @SubscribeEvent

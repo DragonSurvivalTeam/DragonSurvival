@@ -4,6 +4,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.attachments.TreasureRestDat
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import com.mojang.blaze3d.platform.Window;
 import net.minecraft.client.Minecraft;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.api.distmarker.Dist;
@@ -11,7 +12,6 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RenderGuiLayerEvent;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
-import software.bernie.geckolib.util.Color;
 
 @EventBusSubscriber(Dist.CLIENT)
 public class DragonTreasureHandler {
@@ -35,8 +35,8 @@ public class DragonTreasureHandler {
         }
 
         if (renderSleepTimer > 0) {
-            Color darkening = Color.ofRGBA(0.05f, 0.05f, 0.05f, Mth.lerp(Math.min(renderSleepTimer, 100) / 100f, 0, 0.5F));
-            event.getGuiGraphics().fill(0, 0, window.getGuiScaledWidth(), window.getGuiScaledHeight(), darkening.getColor());
+            int darkening = ARGB.colorFromFloat(Mth.lerp(Math.min(renderSleepTimer, 100) / 100f, 0, 0.5F), 0.05f, 0.05f, 0.05f);
+            event.getGuiGraphics().fill(0, 0, window.getGuiScaledWidth(), window.getGuiScaledHeight(), darkening);
         }
     }
 }
