@@ -13,7 +13,7 @@ import static net.minecraft.commands.Commands.literal;
 public class DragonAltarCommand {
     public static void register(final CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.getRoot().addChild(literal("dragon-altar")
-                .requires(source -> source.hasPermission(Commands.LEVEL_GAMEMASTERS))
+                .requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
                 .executes(context -> runCommand(context.getSource().getPlayerOrException()))
                 .build()
         );

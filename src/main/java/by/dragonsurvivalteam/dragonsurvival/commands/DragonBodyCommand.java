@@ -22,7 +22,7 @@ import java.util.Collection;
 public class DragonBodyCommand {
     public static void register(final RegisterCommandsEvent event) {
         event.getDispatcher().register(Commands.literal("dragon-body")
-                .requires(sourceStack -> sourceStack.hasPermission(Commands.LEVEL_GAMEMASTERS))
+                .requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
                 .then(Commands.argument(DSCommands.TARGETS, EntityArgument.players())
                         .then(Commands.argument(DragonBodyArgument.ID, new DragonBodyArgument(event.getBuildContext()))
                                 .executes(source -> switchBody(source, EntityArgument.getPlayers(source, DSCommands.TARGETS), DragonBodyArgument.get(source)))

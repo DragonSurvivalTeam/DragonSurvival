@@ -40,7 +40,7 @@ public class DragonAbilityCommand {
 
     public static void register(final RegisterCommandsEvent event) {
         event.getDispatcher().register(Commands.literal("dragon-ability")
-                .requires(sourceStack -> sourceStack.hasPermission(Commands.LEVEL_GAMEMASTERS))
+                .requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
                 .then(Commands.literal("remove")
                         .then(Commands.argument(DSCommands.TARGETS, EntityArgument.players())
                                 .executes(source -> handleCommand(source, EntityArgument.getPlayers(source, DSCommands.TARGETS), (player, data) -> data.clear(player) > 0))

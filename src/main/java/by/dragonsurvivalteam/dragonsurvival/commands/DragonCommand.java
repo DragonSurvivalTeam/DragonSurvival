@@ -32,7 +32,7 @@ public class DragonCommand {
     private static final String NO_UNLOCKED_SPECIES = Translation.Type.GUI.wrap("message.no_unlocked_species");
 
     public static void register(final RegisterCommandsEvent event) {
-        LiteralCommandNode<CommandSourceStack> dragon = Commands.literal("dragon").requires(source -> source.hasPermission(Commands.LEVEL_GAMEMASTERS)).executes(context -> {
+        LiteralCommandNode<CommandSourceStack> dragon = Commands.literal("dragon").requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS)).executes(context -> {
             ServerPlayer player = context.getSource().getPlayerOrException();
             Holder<DragonSpecies> species = DragonSpecies.getRandom(player);
 

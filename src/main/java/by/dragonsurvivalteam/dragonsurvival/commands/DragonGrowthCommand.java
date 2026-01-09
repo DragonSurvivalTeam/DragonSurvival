@@ -27,7 +27,7 @@ public class DragonGrowthCommand {
 
     public static void register(final RegisterCommandsEvent event) {
         event.getDispatcher().register(Commands.literal("dragon-growth")
-                .requires(sourceStack -> sourceStack.hasPermission(Commands.LEVEL_GAMEMASTERS))
+                .requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
                 .then(Commands.argument(DSCommands.TARGETS, EntityArgument.players())
                         .then(Commands.argument(DragonGrowthArgument.ID, new DragonGrowthArgument(event.getBuildContext()))
                                 .executes(source -> {

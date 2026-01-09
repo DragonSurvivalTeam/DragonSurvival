@@ -26,7 +26,7 @@ public class ClearMarkCommand {
 
     public static void register(final CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(literal("dragon-mark")
-                .requires(commandSourceStack -> commandSourceStack.hasPermission(Commands.LEVEL_GAMEMASTERS))
+                .requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
                 .then(literal("clear")
                         .executes(commandSourceStack -> clearMark(commandSourceStack.getSource(), List.of(commandSourceStack.getSource().getPlayerOrException())))
                         .then(argument(DSCommands.TARGETS, EntityArgument.players())

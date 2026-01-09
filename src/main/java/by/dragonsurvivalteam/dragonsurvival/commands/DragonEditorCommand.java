@@ -15,7 +15,7 @@ public class DragonEditorCommand {
     public static void register(final CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.getRoot().addChild(literal("dragon-editor")
                 // TODO :: should this be allowed with lower permissions?
-                .requires(source -> source.hasPermission(Commands.LEVEL_GAMEMASTERS))
+                .requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
                 .executes(context -> runCommand(context.getSource().getPlayerOrException()))
                 .build()
         );
