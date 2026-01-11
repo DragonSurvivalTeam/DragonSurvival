@@ -3,7 +3,6 @@ package by.dragonsurvivalteam.dragonsurvival.common.items;
 import by.dragonsurvivalteam.dragonsurvival.client.render.item.RotatingKeyRenderer;
 import by.dragonsurvivalteam.dragonsurvival.registry.data_components.DSDataComponents;
 import com.mojang.datafixers.util.Pair;
-import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
@@ -13,6 +12,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -21,13 +21,14 @@ import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureStart;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3f;
+import org.jspecify.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoItem;
 import software.bernie.geckolib.animatable.client.GeoRenderProvider;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.animation.AnimatableManager;
+import software.bernie.geckolib.animatable.manager.AnimatableManager;
 import software.bernie.geckolib.animation.AnimationController;
-import software.bernie.geckolib.animation.PlayState;
 import software.bernie.geckolib.animation.RawAnimation;
+import software.bernie.geckolib.animation.object.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.Optional;
@@ -54,24 +55,20 @@ public class RotatingKeyItem extends TooltipItem implements GeoItem {
 
     @Override
     public void createGeoRenderer(Consumer<GeoRenderProvider> consumer) {
-        consumer.accept(new GeoRenderProvider() {
-            private RotatingKeyRenderer renderer;
-
-            @Override
-            public BlockEntityWithoutLevelRenderer getGeoItemRenderer() {
-                if (this.renderer == null) {
-                    this.renderer = new RotatingKeyRenderer();
-                }
-
-
-                return this.renderer;
-            }
-        });
+        consumer.accept(GeoRenderProvider.of(this));
     }
 
-    @Override
+    // FIXME :: Not supported by geckolib anymore, is this needed?
+    /*@Override
     public double getTick(Object itemStack) {
         return GeoItem.super.getTick(itemStack);
+    }*/
+
+    @Override
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
+        controllers.add(new AnimationController<>( "rotating_key_controller", 10, state -> PlayState.CONTINUE)
+                .triggerableAnim("idle", IDLE)
+                .triggerableAnim("no_target", NO_TARGET));
     }
 
     @Override
@@ -80,29 +77,23 @@ public class RotatingKeyItem extends TooltipItem implements GeoItem {
     }
 
     @Override
-    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>(this, "rotating_key_controller", 10, state -> PlayState.CONTINUE)
-                .triggerableAnim("idle", IDLE)
-                .triggerableAnim("no_target", NO_TARGET));
-    }
-
-    @Override
-    public void inventoryTick(@NotNull ItemStack stack, @NotNull Level level, @NotNull Entity entity, int slot, boolean isSelected) {
-        super.inventoryTick(stack, level, entity, slot, isSelected);
+    public void inventoryTick(ItemStack stack, ServerLevel serverLevel, Entity entity, @Nullable EquipmentSlot slot) {
+        super.inventoryTick(stack, serverLevel, entity, slot);
 
         if (!(entity instanceof Player player) || (player.getMainHandItem() != stack && player.getOffhandItem() != stack)) {
             return;
         }
 
-        if (!(level instanceof ServerLevel serverLevel)) {
+        // FIXME :: How to send this client data over correctly? This is now server side only
+        /*if (!(level instanceof ServerLevel serverLevel)) {
             playerHoldingItem = player;
             currentTarget = stack.get(DSDataComponents.TARGET_POSITION);
             return;
-        }
+        }*/
 
         // TODO :: as long as the player is within a certain distance of the current target don't re-check
         if (serverLevel.getGameTime() % 20 == 0) {
-            Optional<HolderSet.Named<Structure>> structure = serverLevel.registryAccess().lookupOrThrow(Registries.STRUCTURE).getTag(this.target);
+            Optional<HolderSet.Named<Structure>> structure = serverLevel.registryAccess().lookupOrThrow(Registries.STRUCTURE).get(this.target);
 
             if (structure.isPresent()) {
                 Pair<BlockPos, Holder<Structure>> nearest = serverLevel.getChunkSource().getGenerator().findNearestMapStructure(serverLevel, structure.get(), entity.blockPosition(), 25, false);

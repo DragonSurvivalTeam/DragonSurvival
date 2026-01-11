@@ -1,29 +1,30 @@
 package by.dragonsurvivalteam.dragonsurvival.client.render.item;
 
 import by.dragonsurvivalteam.dragonsurvival.common.items.RotatingKeyItem;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.Direction;
-import org.jetbrains.annotations.Nullable;
+import net.minecraft.resources.Identifier;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
-import software.bernie.geckolib.cache.object.BakedGeoModel;
+import software.bernie.geckolib.constant.dataticket.DataTicket;
 import software.bernie.geckolib.loading.math.MathParser;
 import software.bernie.geckolib.renderer.GeoItemRenderer;
+import software.bernie.geckolib.renderer.base.GeoRenderState;
 
 public class RotatingKeyRenderer extends GeoItemRenderer<RotatingKeyItem> {
+
+    // Data tickets
+    public static DataTicket<Identifier> MODEL = DataTicket.create("model", Identifier.class);
+    public static DataTicket<Identifier> TEXTURE = DataTicket.create("texture", Identifier.class);
+
     public RotatingKeyRenderer() {
         super(new RotatingKeyModel());
     }
 
-    @Override
-    public void preRender(PoseStack poseStack, RotatingKeyItem animatable, BakedGeoModel model, @Nullable MultiBufferSource bufferSource, @Nullable VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, int colour) {
-        super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, colour);
+    // FIXME :: In the old prerender, there was a check to see if the player holding the object was null or not; is this still needed?
 
-        if (animatable.playerHoldingItem == null) {
-            return;
-        }
+    @Override
+    public void setMolangQueryValues(RotatingKeyItem animatable, GeoItemRenderer.RenderData relatedObject, GeoRenderState renderState, float partialTick) {
+        super.setMolangQueryValues(animatable, relatedObject, renderState, partialTick);
 
         Vector3f target = new Vector3f(animatable.currentTarget);
         Vector3f vectorTo = target.sub(animatable.playerHoldingItem.getEyePosition(partialTick).toVector3f()).normalize();
@@ -35,8 +36,14 @@ public class RotatingKeyRenderer extends GeoItemRenderer<RotatingKeyItem> {
 
         eulerAngles.mul(180 / (float) Math.PI);
 
-        MathParser.setVariable("query.x_rotation", () -> eulerAngles.x + 180);
-        MathParser.setVariable("query.y_rotation", () -> eulerAngles.y - animatable.playerHoldingItem.getYRot() - 90);
-        MathParser.setVariable("query.z_rotation", () -> eulerAngles.z);
+        MathParser.setVariable("query.x_rotation", state -> eulerAngles.x + 180);
+        MathParser.setVariable("query.y_rotation", state -> eulerAngles.y - animatable.playerHoldingItem.getYRot() - 90);
+        MathParser.setVariable("query.z_rotation", state -> eulerAngles.z);
+    }
+
+    @Override
+    public void addRenderData(RotatingKeyItem animatable, GeoItemRenderer.RenderData relatedObject, GeoRenderState renderState, float partialTick) {
+        renderState.addGeckolibData(MODEL, animatable.model);
+        renderState.addGeckolibData(TEXTURE, animatable.texture);
     }
 }

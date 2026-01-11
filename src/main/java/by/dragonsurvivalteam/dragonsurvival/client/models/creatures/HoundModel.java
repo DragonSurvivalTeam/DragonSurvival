@@ -1,20 +1,22 @@
 package by.dragonsurvivalteam.dragonsurvival.client.models.creatures;
 
+import by.dragonsurvivalteam.dragonsurvival.client.render.entity.creatures.HoundRenderer;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.creatures.HoundEntity;
 import net.minecraft.resources.Identifier;
 import software.bernie.geckolib.model.GeoModel;
+import software.bernie.geckolib.renderer.base.GeoRenderState;
 
 import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 
 public class HoundModel extends GeoModel<HoundEntity> {
     @Override
-    public Identifier getModelResource(HoundEntity animatable) {
+    public Identifier getModelResource(GeoRenderState renderState) {
         return Identifier.fromNamespaceAndPath(MODID, "geo/hunter_hound.geo.json");
     }
 
     @Override
-    public Identifier getTextureResource(HoundEntity animatable) {
-        String houndName = switch (animatable.getVariety()) {
+    public Identifier getTextureResource(GeoRenderState renderState) {
+        String houndName = switch (renderState.getGeckolibData(HoundRenderer.VARIETY)) {
             case 0 -> "hound_1";
             case 1 -> "hound_2";
             case 2 -> "hound_3";

@@ -4,16 +4,17 @@ import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.items.RotatingKeyItem;
 import net.minecraft.resources.Identifier;
 import software.bernie.geckolib.model.GeoModel;
+import software.bernie.geckolib.renderer.base.GeoRenderState;
 
 public class RotatingKeyModel extends GeoModel<RotatingKeyItem> {
     @Override
-    public Identifier getModelResource(RotatingKeyItem object) {
-        return object.model;
+    public Identifier getModelResource(GeoRenderState renderState) {
+        return renderState.getGeckolibData(RotatingKeyRenderer.MODEL);
     }
 
     @Override
-    public Identifier getTextureResource(RotatingKeyItem object) {
-        return object.texture;
+    public Identifier getTextureResource(GeoRenderState renderState) {
+        return renderState.getGeckolibData(RotatingKeyRenderer.TEXTURE);
     }
 
     @Override

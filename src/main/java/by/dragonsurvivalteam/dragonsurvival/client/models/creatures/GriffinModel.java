@@ -3,17 +3,18 @@ package by.dragonsurvivalteam.dragonsurvival.client.models.creatures;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.creatures.GriffinEntity;
 import net.minecraft.resources.Identifier;
 import software.bernie.geckolib.model.GeoModel;
+import software.bernie.geckolib.renderer.base.GeoRenderState;
 
 import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 
 public class GriffinModel extends GeoModel<GriffinEntity> {
     @Override
-    public Identifier getModelResource(GriffinEntity animatable) {
+    public Identifier getModelResource(GeoRenderState renderState) {
         return Identifier.fromNamespaceAndPath(MODID, "geo/hunter_griffin.geo.json");
     }
 
     @Override
-    public Identifier getTextureResource(GriffinEntity animatable) {
+    public Identifier getTextureResource(GeoRenderState renderState) {
         return Identifier.fromNamespaceAndPath(MODID, "textures/entity/hunters/griffins/hunter_griffin_1.png");
     }
 

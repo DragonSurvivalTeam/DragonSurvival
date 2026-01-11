@@ -10,12 +10,11 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.Ab
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.UpgradeType;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty.DragonPenalty;
 import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipPositioner;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
@@ -23,10 +22,10 @@ import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.contents.PlainTextContents;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.FormattedCharSequence;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector2ic;
-import software.bernie.geckolib.util.Color;
 
 import java.util.List;
 
@@ -57,7 +56,7 @@ public class AbilityAndPenaltyTooltipRenderer {
             int colorYPos,
             final String headerTranslationKey,
             final Component name,
-            final Color tooltipBackgroundColor,
+            int tooltipBackgroundColor,
             int maxLevel,
             int abilityLevel,
             final Identifier icon,
@@ -89,9 +88,11 @@ public class AbilityAndPenaltyTooltipRenderer {
 
         if (!shiftInfo.isEmpty()) {
             // Backing for info tab
-            graphics.blitWithBorder(BARS, trueX - (Minecraft.getInstance().hasShiftDown() ? maxLineWidth : 10), trueY + 3, 40, 20, sideWidth, sideHeight, 20, 20, 3);
+            // FIXME :: GUI GRAPHICS
+            //graphics.blitWithBorder(BARS, trueX - (Minecraft.getInstance().hasShiftDown() ? maxLineWidth : 10), trueY + 3, 40, 20, sideWidth, sideHeight, 20, 20, 3);
             // Top bar for info tab
-            graphics.blitWithBorder(BARS, trueX - (Minecraft.getInstance().hasShiftDown() ? maxLineWidth : 10) + 3, trueY + 9, colorXPos, colorYPos, Minecraft.getInstance().hasShiftDown() ? maxLineWidth : 15, 20, 20, 20, 3);
+            // FIXME :: GUI GRAPHICS
+            //graphics.blitWithBorder(BARS, trueX - (Minecraft.getInstance().hasShiftDown() ? maxLineWidth : 10) + 3, trueY + 9, colorXPos, colorYPos, Minecraft.getInstance().hasShiftDown() ? maxLineWidth : 15, 20, 20, 20, 3);
 
             if (Minecraft.getInstance().hasShiftDown()) {
                 graphics.drawString(Minecraft.getInstance().font, Component.translatable(LangKey.INFO), trueX - maxLineWidth + 10, trueY + 15, -1);
@@ -109,8 +110,9 @@ public class AbilityAndPenaltyTooltipRenderer {
 
                     if (isEffectHeader(text)) {
                         RenderingUtils.setShaderColor(DSColors.withAlpha(DSColors.GOLD, 1));
-                        graphics.blitSprite(EFFECT_HEADER, startPosition, textY - 4, maxLineWidth - 10, 9);
-                        RenderSystem.setShaderColor(1, 1, 1, 1);
+                        graphics.blitSprite(RenderPipelines.GUI, EFFECT_HEADER, startPosition, textY - 4, maxLineWidth - 10, 9);
+                        // FIXME :: GUI GRAPHICS
+                        // RenderSystem.setShaderColor(1, 1, 1, 1);
                     } else {
                         graphics.drawString(Minecraft.getInstance().font, text, startPosition, textY, DSColors.GRAY);
                     }
@@ -125,13 +127,16 @@ public class AbilityAndPenaltyTooltipRenderer {
         }
 
         // Background of the main description
-        graphics.blitWithBorder(BARS, trueX - 2, trueY - 4, 40, 20, backgroundWidth + 5, backgroundHeight, 20, 20, 3, 3, 3, 3);
+        // FIXME :: GUI GRAPHICS
+        // graphics.blitWithBorder(BARS, trueX - 2, trueY - 4, 40, 20, backgroundWidth + 5, backgroundHeight, 20, 20, 3, 3, 3, 3);
         // Top bar of the main description
-        graphics.blitWithBorder(BARS, trueX, trueY + 3, colorXPos, colorYPos, backgroundWidth, 20, 20, 20, 3);
+        // FIXME :: GUI GRAPHICS
+        // graphics.blitWithBorder(BARS, trueX, trueY + 3, colorXPos, colorYPos, backgroundWidth, 20, 20, 20, 3);
         // Backing square for ability icon
-        graphics.blitWithBorder(BARS, trueX, trueY, 0, 100, 26, 26, 24, 24, 3);
+        // FIXME :: GUI GRAPHICS
+        // graphics.blitWithBorder(BARS, trueX, trueY, 0, 100, 26, 26, 24, 24, 3);
 
-        graphics.drawCenteredString(Minecraft.getInstance().font, Component.translatable(headerTranslationKey), trueX + backgroundWidth / 2, trueY + 30, tooltipBackgroundColor.getColor());
+        graphics.drawCenteredString(Minecraft.getInstance().font, Component.translatable(headerTranslationKey), trueX + backgroundWidth / 2, trueY + 30, tooltipBackgroundColor);
 
         if (maxLevel > DragonAbilityInstance.MIN_LEVEL) {
             graphics.drawCenteredString(Minecraft.getInstance().font, Component.empty().append(abilityLevel + "/" + maxLevel), trueX + backgroundWidth - 18, trueY + 9, -1);
@@ -148,7 +153,7 @@ public class AbilityAndPenaltyTooltipRenderer {
             graphics.drawCenteredString(Minecraft.getInstance().font, Component.translatable(INFO_SHIFT).withStyle(ChatFormatting.DARK_GRAY), trueX + backgroundWidth / 2, trueY + 47 + (description.size() - 1) * 9, 0);
         }
 
-        graphics.blitSprite(icon, trueX + 5, trueY + 5, 16, 16);
+        graphics.blitSprite(RenderPipelines.GUI, icon, trueX + 5, trueY + 5, 16, 16);
     }
 
     private static boolean isEffectHeader(final FormattedCharSequence text) {
@@ -204,7 +209,7 @@ public class AbilityAndPenaltyTooltipRenderer {
 
             if (upgradeDescription.getContents() != PlainTextContents.EMPTY) {
                 rawDescription = FormattedText.composite(rawDescription, Component.empty().append("\n\n"));
-                rawDescription = FormattedText.composite(rawDescription, upgradeDescription.withColor(Color.GREEN.getColor()));
+                rawDescription = FormattedText.composite(rawDescription, upgradeDescription.withColor(DSColors.GREEN));
             }
         }
 
@@ -212,7 +217,7 @@ public class AbilityAndPenaltyTooltipRenderer {
             rawDescription = FormattedText.composite(rawDescription, Component.empty().append("\n\n"));
         }
 
-        Color color = ability.isPassive() ? new Color(DSColors.withAlpha(DSColors.PASSIVE_BACKGROUND, 1f)) : new Color(DSColors.withAlpha(DSColors.ACTIVE_BACKGROUND, 1f));
+        int color = ability.isPassive() ? ARGB.color(1.0f, DSColors.PASSIVE_BACKGROUND) : ARGB.color(1.0f, DSColors.ACTIVE_BACKGROUND);
         drawTooltip(guiGraphics, x, y, info, rawDescription, colorXPos, colorYPos, ability.isPassive() ? LangKey.PASSIVE_ABILITY : LangKey.ACTIVE_ABILITY, ability.getName(), color, ability.getMaxLevel(), ability.level(), ability.getIcon(), scrollAmount);
     }
 
@@ -238,6 +243,6 @@ public class AbilityAndPenaltyTooltipRenderer {
 
         Component name = Component.translatable(Translation.Type.PENALTY.wrap(penalty.getKey().identifier()));
         Identifier icon = penalty.value().icon().orElse(MissingTextureAtlasSprite.getLocation());
-        drawTooltip(guiGraphics, x, y, components, description, colorXPos, colorYPos, LangKey.PENALTY, name, Color.ofRGB(145, 46, 46), -1, -1, icon, 0);
+        drawTooltip(guiGraphics, x, y, components, description, colorXPos, colorYPos, LangKey.PENALTY, name, ARGB.color(145, 46, 46), -1, -1, icon, 0);
     }
 }

@@ -22,17 +22,14 @@ public class VisionHandler {
         if (hasLavaVision() && event.getCamera().getFluidInCamera() == FogType.LAVA) {
             event.setNearPlaneDistance(0);
             event.setFarPlaneDistance(event.getRenderer().getRenderDistance() * 0.5f);
-            event.setCanceled(true);
+            // FIXME
+            // event.setCanceled(true);
         }
     }
 
     /** The alpha change in {@link LiquidBlockRendererMixin} requires the drawn blocks to be uncached and be re-rendered */
     @SubscribeEvent
-    public static void markChangedIfVisionStateChanged(final RenderLevelStageEvent event) {
-        if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_PARTICLES) {
-            return;
-        }
-
+    public static void markChangedIfVisionStateChanged(final RenderLevelStageEvent.AfterParticles event) {
         boolean hasLavaVision = hasLavaVision();
         boolean hasWaterVision = hasWaterVision();
 

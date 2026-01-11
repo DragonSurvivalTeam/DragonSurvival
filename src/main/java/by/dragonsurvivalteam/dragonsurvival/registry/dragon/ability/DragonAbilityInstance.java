@@ -113,11 +113,11 @@ public class DragonAbilityInstance {
     }
 
     public void queueTickingSound(final SoundEvent soundEvent, final SoundSource soundSource, final Player dragon) {
-        DragonSurvival.PROXY.queueTickingSound(location().withSuffix(dragon.getStringUUID()), soundEvent, soundSource, dragon);
+        DragonSurvival.PROXY.queueTickingSound(identifier().withSuffix(dragon.getStringUUID()), soundEvent, soundSource, dragon);
     }
 
     public void stopSound(final Player dragon) {
-        DragonSurvival.PROXY.stopTickingSound(location().withSuffix(dragon.getStringUUID()));
+        DragonSurvival.PROXY.stopTickingSound(identifier().withSuffix(dragon.getStringUUID()));
     }
 
     private void tickActions(final Player dragon) {
@@ -310,19 +310,19 @@ public class DragonAbilityInstance {
     }
 
     public Component getName() {
-        return Component.translatable(Translation.Type.ABILITY.wrap(location()));
+        return Component.translatable(Translation.Type.ABILITY.wrap(identifier()));
     }
 
     public ResourceKey<DragonAbility> key() {
         return ability.getKey();
     }
 
-    public Identifier location() {
+    public Identifier identifier() {
         return key().identifier();
     }
 
     public String id() {
-        return location().toString();
+        return identifier().toString();
     }
 
     /** Returns the field in an unmodified way (also used by the codec) */

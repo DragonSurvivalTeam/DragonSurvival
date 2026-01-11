@@ -3,27 +3,45 @@ package by.dragonsurvivalteam.dragonsurvival.client.render.entity.creatures;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.creatures.SpearmanEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import software.bernie.geckolib.cache.object.BakedGeoModel;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
+import net.minecraft.util.Mth;
+import net.minecraft.util.profiling.Profiler;
+import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.Nullable;
+import software.bernie.geckolib.constant.DataTickets;
+import software.bernie.geckolib.loading.math.MathParser;
 import software.bernie.geckolib.model.GeoModel;
-import software.bernie.geckolib.renderer.specialty.DynamicGeoEntityRenderer;
+import software.bernie.geckolib.renderer.GeoEntityRenderer;
+import software.bernie.geckolib.renderer.base.GeoRenderState;
+import software.bernie.geckolib.renderer.base.RenderPassInfo;
 
-public class SpearmanRenderer extends DynamicGeoEntityRenderer<SpearmanEntity> {
+public class SpearmanRenderer<R extends LivingEntityRenderState & GeoRenderState> extends GeoEntityRenderer<SpearmanEntity, R> {
     public SpearmanRenderer(EntityRendererProvider.Context renderManager, GeoModel<SpearmanEntity> model) {
         super(renderManager, model);
     }
 
     @Override
-    public void preRender(final PoseStack poseStack, final SpearmanEntity animatable, final BakedGeoModel model, final MultiBufferSource bufferSource, final VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, int color) {
+    public void preRenderPass(@NotNull RenderPassInfo<@NotNull R> renderPassInfo, @NotNull SubmitNodeCollector renderTasks) {
         Profiler.get().push("spearman");
-        super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, color);
+        super.preRenderPass(renderPassInfo, renderTasks);
     }
 
     @Override
-    public void postRender(final PoseStack poseStack, final SpearmanEntity animatable, final BakedGeoModel model, final MultiBufferSource bufferSource, final VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, int color) {
-        super.postRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, color);
+    public void postRenderPass(@NotNull RenderPassInfo<@NotNull R> renderPassInfo, @NotNull SubmitNodeCollector renderTasks) {
+        super.postRenderPass(renderPassInfo, renderTasks);
         Profiler.get().pop();
+    }
+
+    @Override
+    public void setMolangQueryValues(SpearmanEntity animatable, @Nullable Void relatedObject, R renderState, float partialTick) {
+        super.setMolangQueryValues(animatable, relatedObject, renderState, partialTick);
+
+        float entityPitch = renderState.getGeckolibData(DataTickets.ENTITY_PITCH);
+        float entityYaw = renderState.getGeckolibData(DataTickets.ENTITY_YAW);
+        MathParser.setVariable("query.look_angle_x", controllerState -> entityPitch * Mth.DEG_TO_RAD);
+        MathParser.setVariable("query.look_angle_y", controllerState -> entityYaw * Mth.DEG_TO_RAD);
     }
 }
