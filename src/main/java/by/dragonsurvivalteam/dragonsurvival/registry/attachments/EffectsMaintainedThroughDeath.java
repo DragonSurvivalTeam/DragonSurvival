@@ -1,22 +1,22 @@
+
 package by.dragonsurvivalteam.dragonsurvival.registry.attachments;
 
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.common.util.ValueIOSerializable;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.UnknownNullability;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @EventBusSubscriber
-public class EffectsMaintainedThroughDeath implements INBTSerializable<CompoundTag> {
-    private final List<MobEffectInstance> effectsToReapplyOnDeath = new ArrayList<>();
+public class EffectsMaintainedThroughDeath implements ValueIOSerializable {
+    private List<MobEffectInstance> effectsToReapplyOnDeath = new ArrayList<>();
 
     public static EffectsMaintainedThroughDeath getData(final Player player) {
         return player.getData(DSDataAttachments.EFFECTS_MAINTAINED_THROUGH_DEATH);
@@ -43,20 +43,15 @@ public class EffectsMaintainedThroughDeath implements INBTSerializable<CompoundT
     }
 
     @Override
-    public @UnknownNullability CompoundTag serializeNBT(@NotNull final HolderLookup.Provider provider) {
-        CompoundTag tag = new CompoundTag();
-        for (int i = 0; i < effectsToReapplyOnDeath.size(); i++) {
-            tag.put("effect" + i, effectsToReapplyOnDeath.get(i).save());
-        }
-
-        return tag;
+    public void serialize(@NotNull final ValueOutput output) {
+        output.store(EFFECTS, MobEffectInstance.CODEC.listOf(), effectsToReapplyOnDeath);
     }
 
     @Override
-    public void deserializeNBT(@NotNull final HolderLookup.Provider provider, @NotNull final CompoundTag nbt) {
-        effectsToReapplyOnDeath.clear();
-        for (int i = 0; i < nbt.size(); i++) {
-            effectsToReapplyOnDeath.add(MobEffectInstance.load(nbt.getCompound("effect" + i)));
-        }
+    public void deserialize(@NotNull final ValueInput input) {
+        // TODO :: check if this returns an unmodifiable list or not
+        effectsToReapplyOnDeath = input.read(EFFECTS, MobEffectInstance.CODEC.listOf()).orElse(new ArrayList<>());
     }
+
+    private static final String EFFECTS = "maintained_effects";
 }
