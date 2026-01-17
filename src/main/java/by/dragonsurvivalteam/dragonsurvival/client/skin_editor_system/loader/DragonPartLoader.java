@@ -10,6 +10,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import net.minecraft.core.Holder;
+import net.minecraft.resources.FileToIdConverter;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -25,19 +26,19 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class DragonPartLoader extends SimpleJsonResourceReloadListener {
+public class DragonPartLoader extends SimpleJsonResourceReloadListener<DragonPart> {
     public static final Map<ResourceKey<DragonSpecies>, Map<SkinLayer, Map<String, DragonPart>>> DRAGON_PARTS = new HashMap<>();
     private static final int LAYER = 0;
 
     public DragonPartLoader() {
-        super(new Gson(), "skin/parts");
+        super(DragonPart.CODEC, new FileToIdConverter("skin/parts", ".json"));
     }
 
     @Override
-    protected void apply(final @NotNull Map<Identifier, JsonElement> map, @NotNull final ResourceManager manager, @NotNull final ProfilerFiller profiler) {
+    protected void apply(@NotNull Map<Identifier, DragonPart> entries, @NotNull ResourceManager resourceManager, @NotNull ProfilerFiller profiler) {
         DRAGON_PARTS.clear();
 
-        map.forEach((location, value) -> {
+        entries.forEach((location, part) -> {
             String[] elements = location.getPath().split("/", 2);
 
             if (elements.length != 2) {
@@ -47,7 +48,6 @@ public class DragonPartLoader extends SimpleJsonResourceReloadListener {
 
             try {
                 SkinLayer layer = SkinLayer.valueOf(elements[LAYER].toUpperCase(Locale.ENGLISH));
-                DragonPart part = DragonPart.load(value.getAsJsonObject());
 
                 // TODO :: if no species are specific -> throw into generic map?
                 for (ResourceKey<DragonSpecies> species : part.applicableSpecies()) {
