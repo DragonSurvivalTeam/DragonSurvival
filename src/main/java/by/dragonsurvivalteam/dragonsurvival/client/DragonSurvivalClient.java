@@ -33,14 +33,10 @@ import by.dragonsurvivalteam.dragonsurvival.client.render.entity.creatures.Knigh
 import by.dragonsurvivalteam.dragonsurvival.client.render.entity.creatures.LeaderRenderer;
 import by.dragonsurvivalteam.dragonsurvival.client.render.entity.creatures.SpearmanRenderer;
 import by.dragonsurvivalteam.dragonsurvival.client.render.entity.dragon.DragonRenderer;
-import by.dragonsurvivalteam.dragonsurvival.client.render.entity.projectiles.BolasEntityRenderer;
-import by.dragonsurvivalteam.dragonsurvival.client.render.entity.projectiles.GenericArrowRenderer;
-import by.dragonsurvivalteam.dragonsurvival.client.render.entity.projectiles.GenericBallRenderer;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.loader.DefaultPartLoader;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.loader.DragonPartLoader;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.compat.ModCheck;
-import by.dragonsurvivalteam.dragonsurvival.compat.curios.CuriosButtonHandler;
 import by.dragonsurvivalteam.dragonsurvival.mixins.client.LocalPlayerAccessor;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSBlockEntities;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEntities;
@@ -48,9 +44,11 @@ import by.dragonsurvivalteam.dragonsurvival.registry.DSItems;
 import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.entity.EntityRenderers;
+import net.minecraft.client.resources.model.EquipmentClientInfo;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -61,8 +59,8 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.neoforge.client.event.AddClientReloadListenersEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
-import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
 import net.neoforged.neoforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
 import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
@@ -89,7 +87,6 @@ public class DragonSurvivalClient {
 
     public DragonSurvivalClient(final IEventBus bus, final ModContainer container) {
         container.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
-        GeckoLibClient.init();
 
         bus.addListener(this::setup);
         bus.addListener(this::addReloadListeners);
@@ -100,9 +97,9 @@ public class DragonSurvivalClient {
         NeoForge.EVENT_BUS.addListener(this::incrementTimer);
         NeoForge.EVENT_BUS.addListener(this::preventThirdPersonWhenSuffocating);
 
-        if (ModCheck.isModLoaded(ModCheck.CURIOS)) {
+        /*if (ModCheck.isModLoaded(ModCheck.CURIOS)) {
             NeoForge.EVENT_BUS.addListener(CuriosButtonHandler::handleCurios);
-        }
+        }*/
     }
 
     private void incrementTimer(final ClientTickEvent.Post event) {
@@ -115,15 +112,15 @@ public class DragonSurvivalClient {
 
     private void setup(final FMLClientSetupEvent event) {
         event.enqueueWork(() -> {
-            EntityRenderers.register(DSEntities.BOLAS_ENTITY.get(), BolasEntityRenderer::new);
-            EntityRenderers.register(DSEntities.GENERIC_ARROW_ENTITY.get(), GenericArrowRenderer::new);
+            //EntityRenderers.register(DSEntities.BOLAS_ENTITY.get(), BolasEntityRenderer::new);
+            //EntityRenderers.register(DSEntities.GENERIC_ARROW_ENTITY.get(), GenericArrowRenderer::new);
 
             BlockEntityRenderers.register(DSBlockEntities.HELMET.get(), HelmetEntityRenderer::new);
             BlockEntityRenderers.register(DSBlockEntities.DRAGON_BEACON.get(), DragonBeaconRenderer::new);
             BlockEntityRenderers.register(DSBlockEntities.DRAGON_SOUL.get(), DragonSoulRenderer::new);
 
             // GeckoLib renderers
-            EntityRenderers.register(DSEntities.GENERIC_BALL_ENTITY.get(), manager -> new GenericBallRenderer(manager, new GenericBallModel()));
+            //EntityRenderers.register(DSEntities.GENERIC_BALL_ENTITY.get(), manager -> new GenericBallRenderer(manager, new GenericBallModel()));
             EntityRenderers.register(DSEntities.DRAGON.get(), manager -> {
                 DRAGON_RENDERER = new DragonRenderer(manager, DRAGON_MODEL);
                 return DRAGON_RENDERER;
@@ -137,9 +134,9 @@ public class DragonSurvivalClient {
         });
     }
 
-    private void addReloadListeners(final RegisterClientReloadListenersEvent event) {
-        event.registerReloadListener(new DragonPartLoader());
-        event.registerReloadListener(new DefaultPartLoader());
+    private void addReloadListeners(final AddClientReloadListenersEvent event) {
+        event.addListener(DragonSurvival.res("dragon_part_loader"), new DragonPartLoader());
+        event.addListener(DragonSurvival.res("default_part_loader"), new DefaultPartLoader());
     }
 
     private void registerGuiLayers(final RegisterGuiLayersEvent event) {
@@ -172,9 +169,10 @@ public class DragonSurvivalClient {
 
         // --- Light dragon armor --- //
 
-        event.registerItem(new IClientItemExtensions() {
+        // FIXME
+        /*event.registerItem(new IClientItemExtensions() {
             @Override
-            public @NotNull HumanoidModel<?> getHumanoidArmorModel(@NotNull LivingEntity entity, @NotNull ItemStack stack, @NotNull EquipmentSlot slot, @NotNull HumanoidModel<?> defaultModel) {
+            public @NotNull HumanoidModel<?> getHumanoidArmorModel(@NotNull ItemStack itemStack, EquipmentClientInfo.@NotNull LayerType layerType, @NotNull Model original) {
                 return createModel(entity, defaultModel, true, false, false, false);
             }
         }, DSItems.LIGHT_DRAGON_HELMET.value());
@@ -228,10 +226,10 @@ public class DragonSurvivalClient {
             public @NotNull HumanoidModel<?> getHumanoidArmorModel(@NotNull LivingEntity entity, @NotNull ItemStack stack, @NotNull EquipmentSlot slot, @NotNull HumanoidModel<?> defaultModel) {
                 return createModel(entity, defaultModel, false, false, false, true);
             }
-        }, DSItems.DARK_DRAGON_BOOTS.value());
+        }, DSItems.DARK_DRAGON_BOOTS.value());*/
     }
 
-    private HumanoidModel<?> createModel(final LivingEntity entity, final HumanoidModel<?> defaultModel, boolean head, boolean body, boolean leggings, boolean boots) {
+    /*private HumanoidModel<?> createModel(final LivingEntity entity, final HumanoidModel<?> defaultModel, boolean head, boolean body, boolean leggings, boolean boots) {
         HumanoidModel<?> model = new HumanoidModel<>(new ModelPart(Collections.emptyList(), Map.of(
                 "hat", empty(),
                 "head", head ? head().head : empty(),
@@ -267,5 +265,5 @@ public class DragonSurvivalClient {
 
     private DragonBoots<?> boots() {
         return new DragonBoots<>(Minecraft.getInstance().getEntityModels().bakeLayer(DragonBoots.LAYER_LOCATION));
-    }
+    }*/
 }
