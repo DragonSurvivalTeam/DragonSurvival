@@ -94,7 +94,7 @@ public class DragonSkins {
 
 
     public static @Nullable Identifier getPlayerSkin(Player player, ResourceKey<DragonStage> dragonStage) {
-        String playerKey = player.getGameProfile().getName() + "_" + dragonStage.identifier().getPath();
+        String playerKey = player.getGameProfile().name() + "_" + dragonStage.identifier().getPath();
         boolean renderCustomSkin = DragonStateProvider.getData(player).getSkinData().renderCustomSkin;
 
         if ((ClientDragonRenderer.renderOtherPlayerSkins || player == DragonSurvival.PROXY.getLocalPlayer()) && renderCustomSkin) {
@@ -127,9 +127,10 @@ public class DragonSkins {
         }
 
         try (SimpleTexture simpleTexture = new SimpleTexture(resource)) {
-            if (Minecraft.getInstance().getTextureManager().getTexture(resource, simpleTexture) != simpleTexture) {
+            // FIXME :: Mixin to TextureManager to add a "has texture" function so this can be done again
+            /*if (Minecraft.getInstance().getTextureManager().getTexture(resource, simpleTexture) != simpleTexture) {
                 return resource;
-            }
+            }*/
         }
         if (USER_SKINS.isEmpty()) {
             init();
@@ -173,7 +174,8 @@ public class DragonSkins {
         NativeImage customTexture = NativeImage.read(imageStream);
         // Avoid overwriting and closing the texture (closing the image as well, leading to a crash)
         // (Since this method is handled off-thread the image doesn't get immediately uploaded)
-        RenderSystem.recordRenderCall(() -> Minecraft.getInstance().getTextureManager().register(location, new DynamicTexture(customTexture)));
+        // FIXME :: Invalid now
+        //RenderSystem.recordRenderCall(() -> Minecraft.getInstance().getTextureManager().register(location, new DynamicTexture(customTexture)));
 
         return location;
     }
@@ -194,11 +196,11 @@ public class DragonSkins {
     }
 
     public static Identifier fetchSkinFile(Player playerEntity, ResourceKey<DragonStage> dragonStage, String... extra) {
-        return fetchSkinFile(playerEntity.getGameProfile().getName(), dragonStage, extra);
+        return fetchSkinFile(playerEntity.getGameProfile().name(), dragonStage, extra);
     }
 
     public static @Nullable Identifier getGlowTexture(Player player, ResourceKey<DragonStage> dragonStage) {
-        String playerKey = player.getGameProfile().getName() + "_" + dragonStage.identifier().getPath();
+        String playerKey = player.getGameProfile().name() + "_" + dragonStage.identifier().getPath();
         boolean renderCustomSkin = DragonStateProvider.getData(player).getSkinData().renderCustomSkin;
 
         if ((ClientDragonRenderer.renderOtherPlayerSkins || player == DragonSurvival.PROXY.getLocalPlayer()) && SKIN_CACHE.containsKey(playerKey) && renderCustomSkin) {
