@@ -14,13 +14,14 @@ import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @EventBusSubscriber
 public class BlockVisionData extends Storage<BlockVision.Instance> {
-    private final Map<Block, CacheEntry> cache = new HashMap<>();
+    // Concurrent because the worker thread (for searching) and the render thread modify it
+    private final Map<Block, CacheEntry> cache = new ConcurrentHashMap<>();
     private int maximumRange = -1;
 
     record CacheEntry(int range, List<Integer> colors, BlockVision.DisplayType displayType, int particleRate, double colorShiftRate) {}
