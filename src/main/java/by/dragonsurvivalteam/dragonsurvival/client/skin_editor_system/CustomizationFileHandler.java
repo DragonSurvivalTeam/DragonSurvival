@@ -10,15 +10,19 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.ProblemReporter;
+import net.minecraft.world.level.storage.TagValueInput;
+import net.minecraft.world.level.storage.TagValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.loading.FMLPaths;
-import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.common.util.ValueIOSerializable;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.UnknownNullability;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,7 +41,7 @@ public class CustomizationFileHandler {
     private static final String DRAGON_SPECIES = "dragon_species";
     private static final String DRAGON_MODEL = "dragon_model";
 
-    public static class SavedCustomization implements INBTSerializable<CompoundTag>, Copyable<SavedCustomization> {
+    public static class SavedCustomization implements ValueIOSerializable, Copyable<SavedCustomization> {
         private DragonStageCustomization customization;
         private ResourceKey<DragonSpecies> dragonSpecies;
         private Identifier dragonModel;
@@ -55,41 +59,16 @@ public class CustomizationFileHandler {
             return new SavedCustomization(handler.getCurrentStageCustomization().copy(provider), handler.speciesKey(), handler.body().value().model());
         }
 
-        public static SavedCustomization fromNbt(@NotNull final HolderLookup.Provider provider, final CompoundTag nbt) {
+        public static SavedCustomization fromNBT(HolderLookup.Provider provider, CompoundTag nbt) {
             SavedCustomization customization = new SavedCustomization();
-            customization.deserializeNBT(provider, nbt);
+            ValueInput valueInput = TagValueInput.create(ProblemReporter.DISCARDING, provider, nbt);
+            customization.deserialize(valueInput);
 
             if (customization.customization == null || customization.dragonSpecies == null || customization.dragonModel == null) {
                 return null;
             }
 
             return customization;
-        }
-
-        @Override
-        public @UnknownNullability CompoundTag serializeNBT(@NotNull final HolderLookup.Provider provider) {
-            CompoundTag nbt = new CompoundTag();
-            nbt.put(CUSTOMIZATION, customization.serializeNBT(provider));
-            nbt.putString(DRAGON_SPECIES, dragonSpecies.identifier().toString());
-            nbt.putString(DRAGON_MODEL, dragonModel.toString());
-            return nbt;
-        }
-
-        @Override
-        public void deserializeNBT(@NotNull final HolderLookup.Provider provider, final CompoundTag nbt) {
-            this.customization = new DragonStageCustomization();
-
-            if (nbt.contains(CUSTOMIZATION)) {
-                this.customization.deserializeNBT(provider, nbt.getCompound(CUSTOMIZATION));
-            }
-
-            if (nbt.contains(DRAGON_SPECIES)) {
-                this.dragonSpecies = ResourceKey.create(DragonSpecies.REGISTRY, Identifier.parse(nbt.getString(DRAGON_SPECIES)));
-            }
-
-            if (nbt.contains(DRAGON_MODEL)) {
-                this.dragonModel = Identifier.parse(nbt.getString(DRAGON_MODEL));
-            }
         }
 
         public DragonStageCustomization getCustomization() {
@@ -102,6 +81,23 @@ public class CustomizationFileHandler {
 
         public Identifier getDragonModel() {
             return dragonModel;
+        }
+
+        @Override
+        public void serialize(@NotNull ValueOutput output) {
+            customization.serialize(output);
+            output.putChild(CUSTOMIZATION, customization);
+            output.putString(DRAGON_SPECIES, dragonSpecies.identifier().toString());
+            output.putString(DRAGON_MODEL, dragonModel.toString());
+        }
+
+        @Override
+        public void deserialize(@NotNull ValueInput input) {
+            this.customization = new DragonStageCustomization();
+
+            input.child(CUSTOMIZATION).ifPresent(customization -> this.customization.deserialize(customization));
+            input.child(DRAGON_SPECIES).ifPresent(dragonSpecies -> this.dragonSpecies = ResourceKey.create(DragonSpecies.REGISTRY, Identifier.parse(dragonSpecies.getString(DRAGON_SPECIES).orElseThrow())));
+            input.child(DRAGON_MODEL).ifPresent(dragonModel -> this.dragonModel = Identifier.parse(dragonModel.getString(DRAGON_MODEL).orElseThrow()));
         }
     }
 
@@ -146,14 +142,14 @@ public class CustomizationFileHandler {
                     continue;
                 }
 
-                SavedCustomization savedCustomization = SavedCustomization.fromNbt(provider, nbt);
+                SavedCustomization savedCustomization = SavedCustomization.fromNBT(provider, nbt);
 
                 if (savedCustomization == null) {
                     DragonSurvival.LOGGER.warn("Could not read saved skin from the file [{}]", savedFile);
                     continue;
                 }
 
-                savedCustomizations.put(slot, SavedCustomization.fromNbt(provider, nbt));
+                savedCustomizations.put(slot, SavedCustomization.fromNBT(provider, nbt));
             } catch (IOException exception) {
                 DragonSurvival.LOGGER.warn("An error occurred while processing the file [{}]", savedFile, exception);
             }
@@ -168,9 +164,11 @@ public class CustomizationFileHandler {
         }
 
         SavedCustomization savedCustomization = SavedCustomization.fromHandler(handler, provider);
+        TagValueOutput valueOutput = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, provider);
+        savedCustomization.serialize(valueOutput);
 
         try {
-            NbtIo.write(savedCustomization.serializeNBT(provider), savedFileForSlot.get(slot).toPath());
+            NbtIo.write(valueOutput.buildResult(), savedFileForSlot.get(slot).toPath());
         } catch (IOException exception) {
             DragonSurvival.LOGGER.error("An error occurred while trying to save the dragon skin", exception);
         }
@@ -185,9 +183,10 @@ public class CustomizationFileHandler {
 
         SavedCustomization customization = savedCustomizations.get(slot);
 
-        if (customization != null) {
-            return customization.copy(provider);
-        }
+        // FIXME
+//        if (customization != null) {
+//            return customization.copy(provider);
+//        }
 
         return null;
     }

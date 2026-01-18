@@ -6,13 +6,14 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import by.dragonsurvivalteam.dragonsurvival.util.ResourceHelper;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.fml.loading.FMLLoader;
-import net.neoforged.neoforge.common.util.INBTSerializable;
 import net.neoforged.neoforge.common.util.Lazy;
+import net.neoforged.neoforge.common.util.ValueIOSerializable;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
@@ -20,7 +21,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-public class SkinPreset implements INBTSerializable<CompoundTag> {
+public class SkinPreset implements ValueIOSerializable {
     private static final String MODEL = "model";
     private static final String SPECIES = "species";
 
@@ -70,7 +71,7 @@ public class SkinPreset implements INBTSerializable<CompoundTag> {
     }
 
     public void initDefaults(final Holder<DragonSpecies> species, final Identifier model) {
-        if (FMLLoader.getDist().isDedicatedServer()) {
+        if (FMLLoader.getCurrent().getDist().isDedicatedServer()) {
             // Don't try to initialize default data for skin presets when asked by the server, as the server doesn't have the part data
             // to construct this data anyways
             return;
@@ -98,7 +99,7 @@ public class SkinPreset implements INBTSerializable<CompoundTag> {
     }
 
     public HashMap<ResourceKey<DragonStage>, Lazy<DragonStageCustomization>> initialize() {
-        if (FMLLoader.getDist().isDedicatedServer()) {
+        if (FMLLoader.getCurrent().getDist().isDedicatedServer()) {
             // Don't try to initialize default data for skin presets when asked by the server, as the server doesn't have the part data
             // to construct this data anyways
             return new HashMap<>();
@@ -122,76 +123,50 @@ public class SkinPreset implements INBTSerializable<CompoundTag> {
     }
 
     @Override
-    public CompoundTag serializeNBT(@NotNull final HolderLookup.Provider provider) {
+    public void serialize(@NotNull ValueOutput output) {
         CompoundTag tag = new CompoundTag();
         tag.putString(MODEL, model.toString());
 
         if (species != null) {
-            tag.putString(SPECIES, species.identifier().toString());
+            output.putString(SPECIES, species.identifier().toString());
         }
 
         List<ResourceKey<DragonStage>> stageKeys;
         if (species != null) {
-            Optional<Holder.Reference<DragonSpecies>> speciesHolder = ResourceHelper.get(provider, species);
-            stageKeys = speciesHolder.map(dragonSpeciesReference -> dragonSpeciesReference.value().getStages(provider).stream().map(Holder::getKey).toList()).orElseGet(List::of);
+            Optional<Holder.Reference<DragonSpecies>> speciesHolder = ResourceHelper.get(null, species);
+            stageKeys = speciesHolder.map(dragonSpeciesReference -> dragonSpeciesReference.value().getStages(null).stream().map(Holder::getKey).toList()).orElseGet(List::of);
         } else {
-            stageKeys = ResourceHelper.keys(provider, DragonStage.REGISTRY);
+            stageKeys = ResourceHelper.keys(null, DragonStage.REGISTRY);
         }
 
         for (ResourceKey<DragonStage> dragonStage : stageKeys) {
             if(skins.get().containsKey(dragonStage)) {
-                tag.put(dragonStage.identifier().toString(), skins.get().getOrDefault(dragonStage, Lazy.of(DragonStageCustomization::new)).get().serializeNBT(provider));
+                output.putChild(dragonStage.identifier().toString(), skins.get().getOrDefault(dragonStage, Lazy.of(DragonStageCustomization::new)).get());
             }
         }
-
-        return tag;
     }
 
-    // Special version of deserializeNBT to fix up broken data from an older version of the mod
+    // Special version of deserialize to fix up broken data from an older version of the mod
     // The tag encoding of the species was broken and was just giving "minecraft:" as the species instead of what it should be
-    public void deserializeNBT(@NotNull final HolderLookup.Provider provider, @NotNull final CompoundTag base, ResourceKey<DragonSpecies> species) {
-        this.species = species;
-        Identifier.read(base.getString(MODEL)).ifSuccess(model -> this.model = model);
-
-        List<ResourceKey<DragonStage>> stageKeys;
-        if (species != null) {
-            Optional<Holder.Reference<DragonSpecies>> speciesHolder = ResourceHelper.get(provider, species);
-            stageKeys = speciesHolder.map(dragonSpeciesReference -> dragonSpeciesReference.value().getStages(provider).stream().map(Holder::getKey).toList()).orElseGet(List::of);
-        } else {
-            stageKeys = ResourceHelper.keys(provider, DragonStage.REGISTRY);
-        }
-
-        for (ResourceKey<DragonStage> dragonStage : stageKeys) {
-            if (base.contains(dragonStage.identifier().toString())) {
-                skins.get().put(dragonStage, Lazy.of(() -> {
-                    DragonStageCustomization group = new DragonStageCustomization();
-                    CompoundTag dragonStageData = base.getCompound(dragonStage.identifier().toString());
-                    group.deserializeNBT(provider, dragonStageData);
-                    return group;
-                }));
-            }
-        }
-    }
-
     @Override
-    public void deserializeNBT(@NotNull final HolderLookup.Provider provider, @NotNull final CompoundTag base) {
-        this.species = ResourceKey.create(DragonSpecies.REGISTRY, Identifier.parse(base.getString(SPECIES)));
-        Identifier.read(base.getString(MODEL)).ifSuccess(model -> this.model = model);
+    public void deserialize(@NotNull ValueInput valueInput) {
+        this.species = ResourceKey.create(DragonSpecies.REGISTRY, Identifier.parse(valueInput.getString(SPECIES).orElseThrow()));
+        Identifier.read(valueInput.getString(MODEL).orElseThrow()).ifSuccess(model -> this.model = model);
 
         List<ResourceKey<DragonStage>> stageKeys;
         if (species != null) {
-            Optional<Holder.Reference<DragonSpecies>> speciesHolder = ResourceHelper.get(provider, species);
-            stageKeys = speciesHolder.map(dragonSpeciesReference -> dragonSpeciesReference.value().getStages(provider).stream().map(Holder::getKey).toList()).orElseGet(List::of);
+            Optional<Holder.Reference<DragonSpecies>> speciesHolder = ResourceHelper.get(null, species);
+            stageKeys = speciesHolder.map(dragonSpeciesReference -> dragonSpeciesReference.value().getStages(null).stream().map(Holder::getKey).toList()).orElseGet(List::of);
         } else {
-            stageKeys = ResourceHelper.keys(provider, DragonStage.REGISTRY);
+            stageKeys = ResourceHelper.keys(null, DragonStage.REGISTRY);
         }
 
         for (ResourceKey<DragonStage> dragonStage : stageKeys) {
-            if (base.contains(dragonStage.identifier().toString())) {
+            if (valueInput.child(dragonStage.identifier().toString()).isPresent()) {
                 skins.get().put(dragonStage, Lazy.of(() -> {
                     DragonStageCustomization group = new DragonStageCustomization();
-                    CompoundTag dragonStageData = base.getCompound(dragonStage.identifier().toString());
-                    group.deserializeNBT(provider, dragonStageData);
+                    ValueInput dragonStageData = valueInput.child(dragonStage.identifier().toString()).orElseThrow();
+                    group.deserialize(dragonStageData);
                     return group;
                 }));
             }

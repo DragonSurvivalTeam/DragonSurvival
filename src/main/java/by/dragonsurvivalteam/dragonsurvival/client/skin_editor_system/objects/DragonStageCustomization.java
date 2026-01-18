@@ -11,15 +11,19 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
-import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.minecraft.util.ProblemReporter;
+import net.minecraft.world.level.storage.TagValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.common.util.Lazy;
+import net.neoforged.neoforge.common.util.ValueIOSerializable;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
 
 /** Saved customization per dragon level */
-public class DragonStageCustomization implements INBTSerializable<CompoundTag>, Copyable<DragonStageCustomization> {
+public class DragonStageCustomization implements ValueIOSerializable, Copyable<DragonStageCustomization> {
     public static final String HAS_WINGS = "wings";
     public static final String IS_DEFAULT_SKIN = "defaultSkin";
 
@@ -55,28 +59,25 @@ public class DragonStageCustomization implements INBTSerializable<CompoundTag>, 
     }
 
     @Override
-    public CompoundTag serializeNBT(@NotNull final HolderLookup.Provider provider) {
-        CompoundTag layerData = new CompoundTag();
-        layerData.putBoolean(HAS_WINGS, wings);
-        layerData.putBoolean(IS_DEFAULT_SKIN, defaultSkin);
+    public void serialize(ValueOutput output) {
+        output.putBoolean(HAS_WINGS, wings);
+        output.putBoolean(IS_DEFAULT_SKIN, defaultSkin);
 
         for (SkinLayer layer : SkinLayer.values()) {
-            layerData.put(layer.name(), layerSettings.getOrDefault(layer, Lazy.of(LayerSettings::new)).get().serializeNBT(provider));
+            output.putChild(layer.name(), layerSettings.getOrDefault(layer, Lazy.of(LayerSettings::new)).get());
         }
-
-        return layerData;
     }
 
     @Override
-    public void deserializeNBT(@NotNull final HolderLookup.Provider provider, @NotNull final CompoundTag tag) {
-        wings = tag.getBoolean(HAS_WINGS);
-        defaultSkin = tag.getBoolean(IS_DEFAULT_SKIN);
+    public void deserialize(ValueInput input) {
+        wings = input.getBooleanOr(HAS_WINGS, false);
+        defaultSkin = input.getBooleanOr(IS_DEFAULT_SKIN, false);
 
         for (SkinLayer layer : SkinLayer.values()) {
             layerSettings.put(layer, Lazy.of(() -> {
                 LayerSettings settings = new LayerSettings();
-                CompoundTag layerData = tag.getCompound(layer.name());
-                settings.deserializeNBT(provider, layerData);
+                ValueInput layerData = input.child(layer.name()).orElseThrow();
+                settings.deserialize(layerData);
                 return settings;
             }));
         }
