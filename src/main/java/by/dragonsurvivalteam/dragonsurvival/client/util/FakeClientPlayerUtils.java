@@ -9,10 +9,10 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
-import software.bernie.geckolib.animation.AnimatableManager;
+import software.bernie.geckolib.animatable.manager.AnimatableManager;
 import software.bernie.geckolib.animation.AnimationController;
-import software.bernie.geckolib.animation.PlayState;
 import software.bernie.geckolib.animation.RawAnimation;
+import software.bernie.geckolib.animation.object.PlayState;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
@@ -28,16 +28,17 @@ public class FakeClientPlayerUtils {
         return FAKE_DRAGONS.computeIfAbsent(index, key -> new DragonEntity(DSEntities.DRAGON.get(), fakePlayer.level()) {
             @Override
             public void registerControllers(final AnimatableManager.ControllerRegistrar controllers) {
-                AnimationController<DragonEntity> controller = new AnimationController<>(this, "fake_player_controller", 2, state -> {
+                AnimationController<DragonEntity> controller = new AnimationController<>("fake_player_controller", 2, state -> {
                     if (fakePlayer.handler.refreshBody) {
                         fakePlayer.animationController.reset();
                     }
 
                     if (fakePlayer.animationSupplier != null) {
-                        if (state.controller().getCurrentAnimation() == null) {
+                        if (state.controller().getCurrentRawAnimation() == null) {
                             // Sometimes it happens that this turns to null and the set animation below will do nothing
                             // Because the controller still has the same raw animation stored (no change = no update)
-                            state.resetCurrentAnimation();
+                            // FIXME :: Is this the same as state.resetCurrentAnimation() ?
+                            state.controller().reset();
                         }
 
                         return state.setAndContinue(RawAnimation.begin().thenLoop(fakePlayer.animationSupplier.get()));

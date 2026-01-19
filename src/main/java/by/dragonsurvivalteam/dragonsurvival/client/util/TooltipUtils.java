@@ -25,14 +25,16 @@ public class TooltipUtils {
         return Tooltip.create(base);
     }
 
+    // FIXME
     public static boolean needsTooltip(final AbstractWidget widget) {
-        Tooltip tooltip = widget.getTooltip();
-
-        if (tooltip == null) {
-            return true;
-        }
-
-        List<FormattedCharSequence> message = tooltip.toCharSequence(Minecraft.getInstance());
-        return message.isEmpty();
+//        Tooltip tooltip = widget.getTooltip();
+//
+//        if (tooltip == null) {
+//            return true;
+//        }
+//
+//        List<FormattedCharSequence> message = tooltip.toCharSequence(Minecraft.getInstance());
+//        return message.isEmpty();
+        return false;
     }
 }

@@ -12,6 +12,8 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.stats.Stat;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -57,25 +59,16 @@ public class FakeClientPlayer extends AbstractClientPlayer {
     }
 
     @Override
-    public void tick() {
-    }
+    public void tick() {}
 
     @Override
-    public void die(@NotNull DamageSource source) {
-    }
+    public void die(@NotNull DamageSource source) {}
 
     @Override
-    public void readAdditionalSaveData(@NotNull CompoundTag pCompound) {
-    }
+    public void readAdditionalSaveData(@NotNull ValueInput valueInput) {}
 
     @Override
-    public void addAdditionalSaveData(@NotNull CompoundTag pCompound) {
-    }
-
-    @Override
-    public boolean isInvulnerableTo(@NotNull DamageSource source) {
-        return true;
-    }
+    public void addAdditionalSaveData(@NotNull ValueOutput valueOutput) {}
 
     @Override
     public boolean canHarmPlayer(@NotNull Player player) {
@@ -87,8 +80,7 @@ public class FakeClientPlayer extends AbstractClientPlayer {
     }
 
     @Override
-    public void awardStat(@NotNull Stat par1StatBase, int par2) {
-    }
+    public void awardStat(@NotNull Stat par1StatBase, int par2) {}
 
     @Override
     public boolean shouldShowName() {
@@ -98,21 +90,6 @@ public class FakeClientPlayer extends AbstractClientPlayer {
     @Override
     public @NotNull Component getDisplayName() {
         return Component.empty();
-    }
-
-    @Override
-    public boolean saveAsPassenger(@NotNull CompoundTag pCompound) {
-        return false;
-    }
-
-    @Override
-    public boolean save(@NotNull CompoundTag pCompound) {
-        return false;
-    }
-
-    @Override
-    public @Nullable MinecraftServer getServer() {
-        return Minecraft.getInstance().getSingleplayerServer();
     }
 
     @Override

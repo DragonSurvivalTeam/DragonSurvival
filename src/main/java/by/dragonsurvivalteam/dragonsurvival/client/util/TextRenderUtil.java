@@ -15,9 +15,9 @@ public class TextRenderUtil {
 
     public static void drawScaledText(@NotNull final GuiGraphics guiGraphics, float x, float y, float scale, String text, int color, int zLevel) {
         guiGraphics.pose().pushMatrix();
-        guiGraphics.pose().translate(x - x * scale, y - y * scale, zLevel);
-        guiGraphics.pose().scale(scale, scale, 1);
-        guiGraphics.drawString(Minecraft.getInstance().font, text, x, y, color, false);
+        guiGraphics.pose().translate(x - x * scale, y - y * scale);
+        guiGraphics.pose().scale(scale, scale);
+        guiGraphics.drawString(Minecraft.getInstance().font, text, (int)x, (int)y, color, false);
         guiGraphics.pose().popMatrix();
     }
 
@@ -27,8 +27,8 @@ public class TextRenderUtil {
 
     public static void drawCenteredScaledText(@NotNull final GuiGraphics guiGraphics, int x, int y, float scale, String text, int color, int zLevel) {
         guiGraphics.pose().pushMatrix();
-        guiGraphics.pose().translate(x - x * scale, y - y * scale, zLevel);
-        guiGraphics.pose().scale(scale, scale, 1);
+        guiGraphics.pose().translate(x - x * scale, y - y * scale);
+        guiGraphics.pose().scale(scale, scale);
         guiGraphics.drawCenteredString(Minecraft.getInstance().font, text, x, y, color);
         guiGraphics.pose().popMatrix();
     }
@@ -37,8 +37,8 @@ public class TextRenderUtil {
         List<FormattedCharSequence> lines = Minecraft.getInstance().font.split(Component.empty().append(text), (int) (maxLength / scale));
 
         guiGraphics.pose().pushMatrix();
-        guiGraphics.pose().translate(x - x * scale, y - y * scale, zLevel);
-        guiGraphics.pose().scale(scale, scale, 1);
+        guiGraphics.pose().translate(x - x * scale, y - y * scale);
+        guiGraphics.pose().scale(scale, scale);
 
         for (int i = 0; i < lines.size(); i++) {
             FormattedCharSequence line = lines.get(i);
@@ -52,12 +52,12 @@ public class TextRenderUtil {
         List<FormattedCharSequence> lines = Minecraft.getInstance().font.split(text, (int) (maxLength / scale));
 
         guiGraphics.pose().pushMatrix();
-        guiGraphics.pose().translate(x - x * scale, y - y * scale, zLevel);
-        guiGraphics.pose().scale(scale, scale, 1);
+        guiGraphics.pose().translate(x - x * scale, y - y * scale);
+        guiGraphics.pose().scale(scale, scale);
 
         for (int i = 0; i < lines.size(); i++) {
             FormattedCharSequence line = lines.get(i);
-            guiGraphics.drawString(Minecraft.getInstance().font, line, x, y + i * Minecraft.getInstance().font.lineHeight, color, true);
+            guiGraphics.drawString(Minecraft.getInstance().font, line, (int)x, (int)(y + i * Minecraft.getInstance().font.lineHeight), color, true);
         }
 
         guiGraphics.pose().popMatrix();
