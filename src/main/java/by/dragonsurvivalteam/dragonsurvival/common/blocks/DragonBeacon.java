@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.common.blocks;
 
+import by.dragonsurvivalteam.dragonsurvival.client.util.InteractionResultUtils;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.DragonBeaconData;
@@ -14,15 +15,16 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
@@ -53,12 +55,12 @@ public class DragonBeacon extends Block implements SimpleWaterloggedBlock, Entit
     }
 
     @Override
-    public @NotNull BlockState updateShape(final BlockState state, @NotNull final Direction direction, @NotNull final BlockState neighborState, @NotNull final LevelAccessor level, @NotNull final BlockPos position, @NotNull final BlockPos neighborPosition) {
+    public @NotNull BlockState updateShape(BlockState state, @NotNull LevelReader level, @NotNull ScheduledTickAccess scheduledTickAccess, @NotNull BlockPos position, @NotNull Direction direction, @NotNull BlockPos neighborPosition, @NotNull BlockState neighborState, @NotNull RandomSource random) {
         if (state.getValue(BlockStateProperties.WATERLOGGED)) {
-            level.scheduleTick(position, Fluids.WATER, Fluids.WATER.getTickDelay(level));
+            scheduledTickAccess.scheduleTick(position, Fluids.WATER, Fluids.WATER.getTickDelay(level));
         }
 
-        return super.updateShape(state, direction, neighborState, level, position, neighborPosition);
+        return super.updateShape(state, level, scheduledTickAccess, position, direction, neighborPosition, neighborState, random);
     }
 
     @Override
@@ -79,7 +81,7 @@ public class DragonBeacon extends Block implements SimpleWaterloggedBlock, Entit
                 level.playSound(null, position, DSSounds.APPLY_EFFECT.get(), SoundSource.PLAYERS, 1, 1);
             }
 
-            return InteractionResult.sidedSuccess(level.isClientSide());
+            return InteractionResultUtils.sidedSuccess(player.level().isClientSide());
         } else {
             player.displayClientMessage(Component.translatable(NOT_ENOUGH_EXPERIENCE, playerExperience, beacon.getExperienceCost()), true);
         }
@@ -88,9 +90,9 @@ public class DragonBeacon extends Block implements SimpleWaterloggedBlock, Entit
     }
 
     @Override
-    public @NotNull ItemInteractionResult useItemOn(@NotNull final ItemStack stack, @NotNull final BlockState state, @NotNull final Level level, @NotNull final BlockPos position, @NotNull final Player player, @NotNull final InteractionHand hand, @NotNull final BlockHitResult hitResult) {
+    public @NotNull InteractionResult useItemOn(@NotNull final ItemStack stack, @NotNull final BlockState state, @NotNull final Level level, @NotNull final BlockPos position, @NotNull final Player player, @NotNull final InteractionHand hand, @NotNull final BlockHitResult hitResult) {
         if (state.getValue(BlockStateProperties.LIT)) {
-            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            return InteractionResult.PASS;
         }
 
         if (!stack.is(DSItemTags.ACTIVATES_DRAGON_BEACON)) {
@@ -98,29 +100,29 @@ public class DragonBeacon extends Block implements SimpleWaterloggedBlock, Entit
                 player.displayClientMessage(Component.translatable(USE_ACTIVATOR), true);
             }
 
-            return ItemInteractionResult.FAIL;
+            return InteractionResult.FAIL;
         }
 
         DragonStateHandler handler = DragonStateProvider.getData(player);
 
         if (!handler.isDragon()) {
-            return ItemInteractionResult.FAIL;
+            return InteractionResult.FAIL;
         }
 
         if (player.level().isClientSide()) {
             // We don't sync the beacon data to the client since it doesn't get retained anyway
             // Therefor we just think of it as a successful interaction at this point
-            return ItemInteractionResult.sidedSuccess(true);
+            return InteractionResult.SUCCESS;
         }
 
         DragonBeaconData beaconData = handler.species().getData(DSDataMaps.DRAGON_BEACON_DATA);
 
         if (beaconData == null) {
-            return ItemInteractionResult.FAIL;
+            return InteractionResult.FAIL;
         }
 
         if (!(level.getBlockEntity(position) instanceof DragonBeaconBlockEntity beacon)) {
-            return ItemInteractionResult.FAIL;
+            return InteractionResult.FAIL;
         }
 
         beacon.setData(beaconData);
@@ -129,7 +131,7 @@ public class DragonBeacon extends Block implements SimpleWaterloggedBlock, Entit
         level.setBlockAndUpdate(position, state.cycle(BlockStateProperties.LIT));
         level.playSound(null, position, DSSounds.ACTIVATE_BEACON.get(), SoundSource.BLOCKS, 1, 1);
 
-        return ItemInteractionResult.sidedSuccess(level.isClientSide());
+        return InteractionResultUtils.sidedSuccess(level.isClientSide());
     }
 
     @Override
@@ -141,7 +143,7 @@ public class DragonBeacon extends Block implements SimpleWaterloggedBlock, Entit
 
     @Override
     public @NotNull RenderShape getRenderShape(@NotNull final BlockState state) {
-        return RenderShape.ENTITYBLOCK_ANIMATED;
+        return RenderShape.MODEL;
     }
 
     @Override
@@ -173,6 +175,6 @@ public class DragonBeacon extends Block implements SimpleWaterloggedBlock, Entit
 
     @Override
     public <T extends BlockEntity> @Nullable BlockEntityTicker<T> getTicker(final Level level, @NotNull final BlockState state, @NotNull final BlockEntityType<T> type) {
-        return level.isClientSide ? null : BaseEntityBlock.createTickerHelper(type, DSBlockEntities.DRAGON_BEACON.get(), DragonBeaconBlockEntity::serverTick);
+        return level.isClientSide() ? null : BaseEntityBlock.createTickerHelper(type, DSBlockEntities.DRAGON_BEACON.get(), DragonBeaconBlockEntity::serverTick);
     }
 }

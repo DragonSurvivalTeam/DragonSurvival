@@ -16,7 +16,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -29,15 +29,15 @@ public class SkeletonPieceBlock extends Block implements SimpleWaterloggedBlock 
     @Translation(comments = "Dragon Bones")
     public static final String DRAGON_BONES = "item.dragonsurvival.dragon_bone";
 
-    public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
+    public static final EnumProperty<Direction> FACING = HorizontalDirectionalBlock.FACING;
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
     private final SkeletonPieceBlock.Type type;
     public static final MapCodec<SkeletonPieceBlock> CODEC = RecordCodecBuilder.mapCodec(
             instance -> instance.group(SkeletonPieceBlock.Type.CODEC.fieldOf("type").forGetter(SkeletonPieceBlock::type), propertiesCodec())
                     .apply(instance, SkeletonPieceBlock::new));
 
-    public SkeletonPieceBlock(SkeletonPieceBlock.Type type, Properties p_56319_) {
-        super(p_56319_);
+    public SkeletonPieceBlock(SkeletonPieceBlock.Type type, Properties properties) {
+        super(properties.overrideDescription(DRAGON_BONES));
         this.type = type;
         this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(WATERLOGGED, Boolean.FALSE));
     }
@@ -59,7 +59,7 @@ public class SkeletonPieceBlock extends Block implements SimpleWaterloggedBlock 
     }
 
     @Override
-    protected @NotNull VoxelShape getOcclusionShape(@NotNull BlockState pState, @NotNull BlockGetter pLevel, @NotNull BlockPos pPos) {
+    protected @NotNull VoxelShape getOcclusionShape(@NotNull BlockState state) {
         return Shapes.empty();
     }
 
@@ -133,10 +133,5 @@ public class SkeletonPieceBlock extends Block implements SimpleWaterloggedBlock 
         public @NotNull String getSerializedName() {
             return this.name;
         }
-    }
-
-    @Override
-    public @NotNull String getDescriptionId() {
-        return DRAGON_BONES;
     }
 }

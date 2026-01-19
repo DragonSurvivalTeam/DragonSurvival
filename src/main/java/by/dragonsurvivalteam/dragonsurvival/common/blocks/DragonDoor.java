@@ -42,6 +42,7 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.pathfinder.PathComputationType;
+import net.minecraft.world.level.redstone.Orientation;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -108,9 +109,9 @@ public class DragonDoor extends Block implements SimpleWaterloggedBlock {
     }
 
     @Override
-    protected @NotNull BlockState updateShape(final BlockState state, @NotNull LevelReader level, @NotNull ScheduledTickAccess scheduledTickAccess, @NotNull BlockPos pos, @NotNull Direction direction, @NotNull BlockPos neighborPos, @NotNull BlockState neighborState, @NotNull RandomSource random) {
+    protected @NotNull BlockState updateShape(final BlockState state, @NotNull LevelReader level, @NotNull ScheduledTickAccess scheduledTickAccess, @NotNull BlockPos position, @NotNull Direction facing, @NotNull BlockPos facingPosition, @NotNull BlockState facingState, @NotNull RandomSource random) {
         if (state.getValue(WATERLOGGED)) {
-            level.scheduleTick(position, Fluids.WATER, Fluids.WATER.getTickDelay(level));
+            scheduledTickAccess.scheduleTick(position, Fluids.WATER, Fluids.WATER.getTickDelay(level));
         }
 
         if (facing.getAxis() == Direction.Axis.Y && state.is(facingState.getBlock())) {
@@ -123,11 +124,11 @@ public class DragonDoor extends Block implements SimpleWaterloggedBlock {
 
         // If this check is done in `canSurvive` it prevents the placement of the door
         boolean isBottomWithoutTopBlocks = state.getValue(PART) == Part.BOTTOM && level.getBlockState(position.above()).getBlock() != this;
-        return canSurvive(state, level, position) && !isBottomWithoutTopBlocks ? super.updateShape(state, facing, facingState, level, position, facingPosition) : Blocks.AIR.defaultBlockState();
+        return canSurvive(state, level, position) && !isBottomWithoutTopBlocks ? super.updateShape(state, level, scheduledTickAccess, position, facing, facingPosition, facingState, random) : Blocks.AIR.defaultBlockState();
     }
 
     @Override
-    public void neighborChanged(@NotNull final BlockState state, @NotNull final Level level, @NotNull final BlockPos position, @NotNull final Block neighborBlock, @NotNull final BlockPos neighborPosition, boolean isMoving) {
+    public void neighborChanged(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos position, @NotNull Block neighborBlock, Orientation orientation, boolean movedByPiston) {
         if (neighborBlock == this) {
             return;
         }
@@ -252,7 +253,7 @@ public class DragonDoor extends Block implements SimpleWaterloggedBlock {
     public @Nullable BlockState getStateForPlacement(final BlockPlaceContext context) {
         BlockPos clickedPosition = context.getClickedPos();
 
-        if (clickedPosition.getY() < context.getLevel().getMaxBuildHeight() && context.getLevel().getBlockState(clickedPosition.above()).canBeReplaced(context) && context.getLevel().getBlockState(clickedPosition.above(2)).canBeReplaced(context)) {
+        if (clickedPosition.getY() < context.getLevel().getHeight() && context.getLevel().getBlockState(clickedPosition.above()).canBeReplaced(context) && context.getLevel().getBlockState(clickedPosition.above(2)).canBeReplaced(context)) {
             Level level = context.getLevel();
             boolean hasPower = level.hasNeighborSignal(clickedPosition) || level.hasNeighborSignal(clickedPosition.above());
             return defaultBlockState().setValue(FACING, context.getHorizontalDirection()).setValue(HINGE, getHinge(context)).setValue(POWERED, hasPower).setValue(OPEN, hasPower).setValue(PART, Part.BOTTOM).setValue(WATERLOGGED, context.getLevel().getFluidState(context.getClickedPos()).getType() == Fluids.WATER && context.getLevel().getBlockState(clickedPosition).getBlock() == DSBlocks.SEA_DRAGON_DOOR.get());

@@ -15,17 +15,6 @@ public record DragonSoulData(CompoundTag dragonData, CompoundTag abilityData, do
             Codec.DOUBLE.fieldOf("scale").forGetter(DragonSoulData::scale)
     ).apply(instance, DragonSoulData::new));
 
-    // FIXME 1.22 :: remove, this was only a fallback for a breaking change
-    public static @Nullable DragonSoulData parseLegacy(final CompoundTag tag) {
-        CompoundTag handlerData = tag.getCompound(DRAGON);
-
-        if (handlerData.isEmpty()) {
-            return null;
-        }
-
-        return new DragonSoulData(handlerData, tag.getCompound(ABILITIES), 1);
-    }
-
     public static final String DRAGON = "dragon";
     public static final String ABILITIES = "soul";
 }

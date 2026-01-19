@@ -1,6 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.common.blocks;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.client.util.InteractionResultUtils;
 import by.dragonsurvivalteam.dragonsurvival.network.dragon_soul_block.SyncDragonSoulLock;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSBlockEntities;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSBlocks;
@@ -14,9 +15,9 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -24,8 +25,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
@@ -42,7 +43,6 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.HitResult;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.level.BlockEvent;
@@ -95,7 +95,7 @@ public class DragonSoulBlock extends Block implements SimpleWaterloggedBlock, En
     }
 
     @Override
-    protected @NotNull ItemInteractionResult useItemOn(@NotNull final ItemStack stack, @NotNull final BlockState state, @NotNull final Level level, @NotNull final BlockPos position, @NotNull final Player player, @NotNull final InteractionHand hand, @NotNull final BlockHitResult hitResult) {
+    protected @NotNull InteractionResult useItemOn(@NotNull final ItemStack stack, @NotNull final BlockState state, @NotNull final Level level, @NotNull final BlockPos position, @NotNull final Player player, @NotNull final InteractionHand hand, @NotNull final BlockHitResult hitResult) {
         if (!(level.getBlockEntity(position) instanceof DragonSoulBlockEntity soul)) {
             return super.useItemOn(stack, state, level, position, player, hand, hitResult);
         }
@@ -106,13 +106,13 @@ public class DragonSoulBlock extends Block implements SimpleWaterloggedBlock, En
 
             if (level.isClientSide()) {
                 if (DragonSurvival.PROXY.updateDragonSoulBlockAnimation(soul, animation)) {
-                    return ItemInteractionResult.sidedSuccess(level.isClientSide());
+                    return InteractionResultUtils.sidedSuccess(level.isClientSide());
                 }
 
                 player.displayClientMessage(Component.translatable(INVALID_ANIMATION, DSColors.withColor(animation, DSColors.GOLD)), true);
-                return ItemInteractionResult.FAIL;
+                return InteractionResult.FAIL;
             } else {
-                return ItemInteractionResult.sidedSuccess(level.isClientSide());
+                return InteractionResultUtils.sidedSuccess(level.isClientSide());
             }
         } else if (stack.is(Items.PAPER)) {
             if (level.isClientSide()) {
@@ -120,7 +120,7 @@ public class DragonSoulBlock extends Block implements SimpleWaterloggedBlock, En
                 player.displayClientMessage(Component.translatable(APPLICABLE_ANIMATIONS, DSColors.withColor(animations, DSColors.GOLD)), false);
             }
 
-            return ItemInteractionResult.sidedSuccess(level.isClientSide());
+            return InteractionResultUtils.sidedSuccess(level.isClientSide());
         }
 
         return super.useItemOn(stack, state, level, position, player, hand, hitResult);
@@ -145,7 +145,7 @@ public class DragonSoulBlock extends Block implements SimpleWaterloggedBlock, En
                 PacketDistributor.sendToPlayersInDimension(serverLevel, new SyncDragonSoulLock(position, soul.locked));
             }
 
-            return InteractionResult.sidedSuccess(level.isClientSide());
+            return InteractionResultUtils.sidedSuccess(level.isClientSide());
         }
 
         return super.useWithoutItem(state, level, position, player, hitResult);
@@ -156,7 +156,7 @@ public class DragonSoulBlock extends Block implements SimpleWaterloggedBlock, En
         if (!level.isClientSide() && player.isCreative()) {
             level.getBlockEntity(position, DSBlockEntities.DRAGON_SOUL.get()).ifPresent(soul -> {
                 ItemStack stack = DSItems.DRAGON_SOUL.value().getDefaultInstance();
-                soul.saveToItem(stack, level.registryAccess());
+                soul.applyComponentsFromItemStack(stack);
 
                 ItemEntity item = new ItemEntity(level, position.getX(), position.getY(), position.getZ(), stack);
                 item.setDefaultPickUpDelay();
@@ -177,19 +177,19 @@ public class DragonSoulBlock extends Block implements SimpleWaterloggedBlock, En
     }
 
     @Override
-    public @NotNull ItemStack getCloneItemStack(@NotNull final BlockState state, @NotNull final HitResult target, @NotNull final LevelReader level, @NotNull final BlockPos position, @NotNull final Player player) {
-        ItemStack stack = super.getCloneItemStack(state, target, level, position, player);
-        level.getBlockEntity(position, DSBlockEntities.DRAGON_SOUL.get()).ifPresent(soul -> soul.saveToItem(stack, level.registryAccess()));
+    public @NotNull ItemStack getCloneItemStack(@NotNull LevelReader level, @NotNull BlockPos position, @NotNull BlockState state, boolean includeData, @NotNull Player player) {
+        ItemStack stack = super.getCloneItemStack(level, position, state, includeData, player);
+        level.getBlockEntity(position, DSBlockEntities.DRAGON_SOUL.get()).ifPresent(soul -> soul.applyComponentsFromItemStack(stack));
         return stack;
     }
 
     @Override
-    public @NotNull BlockState updateShape(final BlockState state, @NotNull final Direction direction, @NotNull final BlockState neighborState, @NotNull final LevelAccessor level, @NotNull final BlockPos position, @NotNull final BlockPos neighborPosition) {
+    public @NotNull BlockState updateShape(final BlockState state, @NotNull LevelReader level, @NotNull ScheduledTickAccess scheduledTickAccess, @NotNull BlockPos position, @NotNull Direction facing, @NotNull BlockPos facingPosition, @NotNull BlockState facingState, @NotNull RandomSource random) {
         if (state.getValue(BlockStateProperties.WATERLOGGED)) {
-            level.scheduleTick(position, Fluids.WATER, Fluids.WATER.getTickDelay(level));
+            scheduledTickAccess.scheduleTick(position, Fluids.WATER, Fluids.WATER.getTickDelay(level));
         }
 
-        return super.updateShape(state, direction, neighborState, level, position, neighborPosition);
+        return super.updateShape(state, level, scheduledTickAccess, position, facing, facingPosition, facingState, random);
     }
 
     @Override
@@ -201,7 +201,7 @@ public class DragonSoulBlock extends Block implements SimpleWaterloggedBlock, En
 
     @Override
     public @NotNull RenderShape getRenderShape(@NotNull final BlockState state) {
-        return RenderShape.ENTITYBLOCK_ANIMATED;
+        return RenderShape.MODEL;
     }
 
     @Override
@@ -239,6 +239,6 @@ public class DragonSoulBlock extends Block implements SimpleWaterloggedBlock, En
 
     @Override
     public <T extends BlockEntity> @Nullable BlockEntityTicker<T> getTicker(final Level level, @NotNull final BlockState state, @NotNull final BlockEntityType<T> type) {
-        return level.isClientSide ? null : BaseEntityBlock.createTickerHelper(type, DSBlockEntities.DRAGON_SOUL.get(), DragonSoulBlockEntity::serverTick);
+        return level.isClientSide() ? null : BaseEntityBlock.createTickerHelper(type, DSBlockEntities.DRAGON_SOUL.get(), DragonSoulBlockEntity::serverTick);
     }
 }

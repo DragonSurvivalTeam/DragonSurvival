@@ -9,13 +9,19 @@ import by.dragonsurvivalteam.dragonsurvival.registry.data_components.DragonSoulD
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.TagValueInput;
+import net.minecraft.world.level.storage.TagValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -49,7 +55,8 @@ public class DragonSoulBlockEntity extends BlockEntity {
         if ((handler == null || !handler.isDragon()) && components().has(DSDataComponents.DRAGON_SOUL.get())) {
             // This is only the case when placed, and at that point the client still has the data component
             //noinspection DataFlowIssue -> level and components are expected to be present
-            initializeHandler(level.registryAccess(), components().get(DSDataComponents.DRAGON_SOUL.get()).dragonData());
+            ValueInput valueInput = TagValueInput.create(ProblemReporter.DISCARDING, level.registryAccess(), components().get(DSDataComponents.DRAGON_SOUL.get()).dragonData());
+            initializeHandler(valueInput);
         }
 
         return handler;
@@ -75,46 +82,41 @@ public class DragonSoulBlockEntity extends BlockEntity {
         return playerUUID == null || playerUUID.equals(player.getUUID());
     }
 
-    private void initializeHandler(final HolderLookup.Provider provider, final CompoundTag tag) {
+    private void initializeHandler(final ValueInput valueInput) {
         handler = new DragonStateHandler();
-        handler.deserializeNBT(provider, tag);
+        handler.deserialize(valueInput);
     }
 
     @Override // Responsible for synchronizing the data to the client that joins the world
     public @NotNull CompoundTag getUpdateTag(@NotNull final HolderLookup.Provider provider) {
-        CompoundTag tag = super.getUpdateTag(provider);
-        saveAdditional(tag, provider);
+        TagValueOutput valueOutput = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, provider);
+        saveAdditional(valueOutput);
 
         // We need to do this because components are not synchronized / retained client-side by default
         // 'BlockEntity.ComponentHelper' is private, but this is the "official" key to serialize components (see 'BlockEntity#loadWithComponents')
-        tag.put("components", DataComponentMap.CODEC.encodeStart(provider.createSerializationContext(NbtOps.INSTANCE), components()).getOrThrow());
-        return tag;
+        valueOutput.store("components", DataComponentMap.CODEC, components());
+        return valueOutput.buildResult();
     }
 
     @Override
-    protected void saveAdditional(@NotNull final CompoundTag tag, @NotNull final HolderLookup.Provider registries) {
-        super.saveAdditional(tag, registries);
-        tag.putString(ANIMATION, animation);
-        tag.putBoolean(LOCKED, locked);
+    protected void saveAdditional(@NotNull final ValueOutput valueOutput) {
+        super.saveAdditional(valueOutput);
+        valueOutput.putString(ANIMATION, animation);
+        valueOutput.putBoolean(LOCKED, locked);
 
         if (playerUUID != null) {
-            tag.putUUID(PLAYER_UUID, playerUUID);
+            valueOutput.store(PLAYER_UUID, UUIDUtil.CODEC, playerUUID);
         }
     }
 
     @Override
-    public void loadAdditional(@NotNull final CompoundTag tag, @NotNull final HolderLookup.Provider provider) {
-        super.loadAdditional(tag, provider);
-        animation = tag.getString(ANIMATION);
-        locked = tag.getBoolean(LOCKED);
+    public void loadAdditional(@NotNull final ValueInput valueInput) {
+        super.loadAdditional(valueInput);
+        animation = valueInput.getString(ANIMATION).orElseThrow();
+        locked = valueInput.getBooleanOr(LOCKED, false);
 
-        if (tag.hasUUID(PLAYER_UUID)) {
-            playerUUID = tag.getUUID(PLAYER_UUID);
-        } else {
-            playerUUID = null;
-        }
-
-        initializeHandler(provider, tag);
+        valueInput.read(PLAYER_UUID, UUIDUtil.CODEC).ifPresentOrElse(UUID -> playerUUID = UUID, () -> playerUUID = null);
+        initializeHandler(valueInput);
     }
 
     private static final String ANIMATION = "animation";

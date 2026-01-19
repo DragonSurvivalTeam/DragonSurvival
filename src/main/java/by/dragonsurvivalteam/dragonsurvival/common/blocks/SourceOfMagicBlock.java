@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.common.blocks;
 
+import by.dragonsurvivalteam.dragonsurvival.client.util.InteractionResultUtils;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
@@ -37,6 +38,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageSources;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.InsideBlockEffectApplier;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -44,9 +46,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.*;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -251,27 +251,18 @@ public class SourceOfMagicBlock extends HorizontalDirectionalBlock implements Si
     }
 
     @Override
-    public @NotNull BlockState updateShape(final BlockState state, @NotNull final Direction facing, @NotNull final BlockState neighborState, @NotNull final LevelAccessor level, @NotNull final BlockPos position, @NotNull final BlockPos neighborPosition) {
+    public @NotNull BlockState updateShape(final @NotNull BlockState state, @NotNull LevelReader level, @NotNull ScheduledTickAccess scheduledTickAccess, @NotNull BlockPos position, @NotNull Direction facing, @NotNull BlockPos facingPosition, @NotNull BlockState facingState, @NotNull RandomSource random) {
         if (state.getValue(BlockStateProperties.WATERLOGGED)) {
-            level.scheduleTick(position, Fluids.WATER, Fluids.WATER.getTickDelay(level));
+            scheduledTickAccess.scheduleTick(position, Fluids.WATER, Fluids.WATER.getTickDelay(level));
         }
 
-        return super.updateShape(state, facing, neighborState, level, position, neighborPosition);
+        return super.updateShape(state, level, scheduledTickAccess, position, facing, facingPosition, facingState, random);
     }
 
     @Override
-    public void onRemove(@NotNull final BlockState state, @NotNull final Level level, @NotNull final BlockPos position, final BlockState newState, boolean isMoving) {
-        if (newState.getBlock() instanceof SourceOfMagicBlock) {
-            return;
-        }
-
+    public void affectNeighborsAfterRemoval(BlockState state, @NotNull ServerLevel level, @NotNull BlockPos position, boolean movedByPiston) {
         if (state.getValue(PRIMARY_BLOCK)) {
-            if (level.getBlockEntity(position) instanceof Container container) {
-                Containers.dropContents(level, position, container);
-                level.updateNeighbourForOutputSignal(position, this);
-            }
-
-            super.onRemove(state, level, position, newState, isMoving);
+            super.affectNeighborsAfterRemoval(state, level, position, movedByPiston);
 
             Direction direction = state.getValue(FACING).getOpposite();
 
@@ -294,7 +285,7 @@ public class SourceOfMagicBlock extends HorizontalDirectionalBlock implements Si
             breakBlock(level, position.above().relative(direction).relative(direction.getClockWise()));
         } else if (level.getBlockEntity(position) instanceof SourceOfMagicPlaceholder placeholder) {
             if (level.getBlockEntity(placeholder.rootPos) instanceof SourceOfMagicBlockEntity root) {
-                onRemove(root.getBlockState(), level, placeholder.rootPos, Blocks.BUBBLE_COLUMN.defaultBlockState(), isMoving);
+                affectNeighborsAfterRemoval(root.getBlockState(), level, placeholder.rootPos, movedByPiston);
             }
         }
     }
@@ -314,7 +305,7 @@ public class SourceOfMagicBlock extends HorizontalDirectionalBlock implements Si
                 serverPlayer.openMenu(provider, buffer -> buffer.writeBlockPos(rootPosition));
             }
 
-            return InteractionResult.sidedSuccess(player.level().isClientSide());
+            return InteractionResultUtils.sidedSuccess(player.level().isClientSide());
         }
 
         // TODO :: previously on the else branch the entity was marked to be on magic source (if the source was not empty)
@@ -366,8 +357,8 @@ public class SourceOfMagicBlock extends HorizontalDirectionalBlock implements Si
     }
 
     @Override
-    public void entityInside(@NotNull final BlockState state, @NotNull final Level level, @NotNull final BlockPos position, @NotNull final Entity entity) {
-        super.entityInside(state, level, position, entity);
+    public void entityInside(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos position, @NotNull Entity entity, @NotNull InsideBlockEffectApplier applier, boolean intersects) {
+        super.entityInside(state, level, position, entity, applier, intersects);
         BlockPos sourcePosition = position;
 
         if (level.getBlockEntity(position) instanceof SourceOfMagicPlaceholder placeholder) {
@@ -387,7 +378,10 @@ public class SourceOfMagicBlock extends HorizontalDirectionalBlock implements Si
             if (source.getDuration(stack.getItem()) > 0) {
                 if (source.isEmpty()) {
                     source.setItem(0, stack);
-                    item.kill();
+                    if (level instanceof ServerLevel serverLevel)
+                    {
+                        item.kill(serverLevel);
+                    }
                 } else if (ItemStack.isSameItem(tileStack, stack) && tileStack.getCount() < tileStack.getMaxStackSize()) {
                     int left = tileStack.getMaxStackSize() - tileStack.getCount();
                     int toAdd = Math.min(stack.getCount(), left);
@@ -418,7 +412,7 @@ public class SourceOfMagicBlock extends HorizontalDirectionalBlock implements Si
                     return;
                 }
 
-                player.playNotifySound(SoundEvents.BEACON_POWER_SELECT, SoundSource.NEUTRAL, 1, 1);
+                level.playSound(null, position.getX(), position.getY(), position.getZ(), SoundEvents.BEACON_POWER_SELECT, SoundSource.BLOCKS, 1.0F, 1.0F);
                 source.removeItem(0, 1);
             } else {
                 RandomSource random = player.getRandom();
@@ -464,7 +458,7 @@ public class SourceOfMagicBlock extends HorizontalDirectionalBlock implements Si
     }
 
     @Override // Entrypoint for bucket interaction
-    public @NotNull ItemStack pickupBlock(@Nullable final Player player, @NotNull final LevelAccessor level, @NotNull final BlockPos position, @NotNull final BlockState state) {
+    public @NotNull ItemStack pickupBlock(LivingEntity owner, LevelAccessor level, @NotNull BlockPos position, BlockState state) {
         BlockEntity entity = level.getBlockEntity(position);
         BlockPos rootPosition = null;
 
@@ -539,7 +533,7 @@ public class SourceOfMagicBlock extends HorizontalDirectionalBlock implements Si
 
     @Override
     public <T extends BlockEntity> @Nullable BlockEntityTicker<T> getTicker(final Level level, @NotNull final BlockState state, @NotNull final BlockEntityType<T> type) {
-        return level.isClientSide ? null : BaseEntityBlock.createTickerHelper(type, DSBlockEntities.SOURCE_OF_MAGIC_TILE_ENTITY.get(), SourceOfMagicBlockEntity::serverTick);
+        return level.isClientSide() ? null : BaseEntityBlock.createTickerHelper(type, DSBlockEntities.SOURCE_OF_MAGIC_TILE_ENTITY.get(), SourceOfMagicBlockEntity::serverTick);
     }
 
     public boolean isMagic(final BlockState state) {

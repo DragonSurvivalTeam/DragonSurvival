@@ -206,7 +206,7 @@ public class RenderingUtils {
 //            AbstractTexture texture = Minecraft.getInstance().getTextureManager().getTexture(resource, missing);
 //            return texture != missing;
 //        }
-//        return false;
+          return false;
     }
 
     public static void setShaderColor(int color) {

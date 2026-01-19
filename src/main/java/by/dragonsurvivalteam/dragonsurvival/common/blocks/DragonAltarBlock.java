@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.common.blocks;
 
+import by.dragonsurvivalteam.dragonsurvival.client.util.InteractionResultUtils;
 import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
 import by.dragonsurvivalteam.dragonsurvival.network.container.OpenDragonAltar;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AltarData;
@@ -76,7 +77,7 @@ public class DragonAltarBlock extends Block {
                 PacketDistributor.sendToPlayer(serverPlayer, new OpenDragonAltar(DragonSpecies.getSpecies(serverPlayer, true)));
             }
 
-            return InteractionResult.SUCCESS;
+            return InteractionResultUtils.sidedSuccess(level.isClientSide());
         }
     }
 

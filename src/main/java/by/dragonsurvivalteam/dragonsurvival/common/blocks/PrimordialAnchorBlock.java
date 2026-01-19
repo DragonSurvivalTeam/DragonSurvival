@@ -1,6 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.common.blocks;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.client.util.InteractionResultUtils;
 import by.dragonsurvivalteam.dragonsurvival.client.util.SystemMessageUtils;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
@@ -12,6 +13,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSItemTags;
 import by.dragonsurvivalteam.dragonsurvival.server.tileentity.PrimordialAnchorBlockEntity;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.core.registries.Registries;
@@ -25,7 +27,6 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
@@ -46,7 +47,7 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.pathfinder.PathComputationType;
-import net.minecraft.world.level.portal.DimensionTransition;
+import net.minecraft.world.level.portal.TeleportTransition;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -105,8 +106,8 @@ public class PrimordialAnchorBlock extends Block implements EntityBlock {
     }
 
     @Override
-    protected int getAnalogOutputSignal(final BlockState blockState, @NotNull final Level level, @NotNull final BlockPos position) {
-        return blockState.getValue(CHARGED) ? 15 : 0;
+    protected int getAnalogOutputSignal(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Direction direction) {
+        return state.getValue(CHARGED) ? 15 : 0;
     }
 
     @Override // TODO :: set state here when it is charged (to enable flight and / or wings)?
@@ -146,8 +147,8 @@ public class PrimordialAnchorBlock extends Block implements EntityBlock {
 
         if (level instanceof ServerLevel serverLevel) {
             BlockPos teleportPosition = findOrCreateValidTeleportPos(serverLevel, position).above(5);
-            DimensionTransition transition = new DimensionTransition(serverLevel, teleportPosition.getCenter(), player.getDeltaMovement(), player.getYRot(), player.getXRot(), DimensionTransition.PLAY_PORTAL_SOUND);
-            player.changeDimension(transition);
+            TeleportTransition transition = new TeleportTransition(serverLevel, teleportPosition.getCenter(), player.getDeltaMovement(), player.getYRot(), player.getXRot(), TeleportTransition.PLAY_PORTAL_SOUND);
+            player.teleport(transition);
             handler.markedByEnderDragon = false;
             boolean flightWasActuallyGranted = false;
             boolean spinWasActuallyGranted = false;
@@ -175,18 +176,18 @@ public class PrimordialAnchorBlock extends Block implements EntityBlock {
     }
 
     @Override
-    protected @NotNull ItemInteractionResult useItemOn(@NotNull final ItemStack stack, @NotNull final BlockState state, @NotNull final Level level, @NotNull final BlockPos position, @NotNull final Player player, @NotNull final InteractionHand hand, @NotNull final BlockHitResult hitResult) {
+    protected @NotNull InteractionResult useItemOn(@NotNull final ItemStack stack, @NotNull final BlockState state, @NotNull final Level level, @NotNull final BlockPos position, @NotNull final Player player, @NotNull final InteractionHand hand, @NotNull final BlockHitResult hitResult) {
         if (state.getValue(CHARGED)) {
-            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            return InteractionResult.PASS;
         }
 
         if (stack.is(DSItemTags.PRIMORDIAL_ANCHOR_FUEL)) {
             charge(player, level, position, state);
             stack.consume(1, player);
-            return ItemInteractionResult.sidedSuccess(level.isClientSide);
+            return InteractionResultUtils.sidedSuccess(level.isClientSide());
         }
 
-        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        return InteractionResult.PASS;
     }
 
     @Override
@@ -202,7 +203,7 @@ public class PrimordialAnchorBlock extends Block implements EntityBlock {
         for (int xOffset = -radius; xOffset <= radius; xOffset++) {
             for (int zOffset = -radius; zOffset <= radius; zOffset++) {
                 if (xOffset != 0 || zOffset != 0 || allowBedrock) {
-                    for (int y = level.getMaxBuildHeight() - 1; y > (tallestPosition == null ? level.getMinBuildHeight() : tallestPosition.getY()); y--) {
+                    for (int y = level.getMaxY() - 1; y > (tallestPosition == null ? level.getMinY() : tallestPosition.getY()); y--) {
                         BlockPos positionToCheck = new BlockPos(position.getX() + xOffset, y, position.getZ() + zOffset);
                         BlockState state = level.getBlockState(positionToCheck);
 
@@ -284,8 +285,8 @@ public class PrimordialAnchorBlock extends Block implements EntityBlock {
             DragonSurvival.LOGGER.debug("Failed to find a suitable block to teleport to, spawning an island on {}", islandPosition);
 
             level.registryAccess()
-                    .registry(Registries.CONFIGURED_FEATURE)
-                    .flatMap(configuredFeatureRegistry -> configuredFeatureRegistry.getHolder(EndFeatures.END_ISLAND))
+                    .lookup(Registries.CONFIGURED_FEATURE)
+                    .flatMap(configuredFeatureRegistry -> configuredFeatureRegistry.get(EndFeatures.END_ISLAND))
                     .ifPresent(configuredFeatureHolder -> configuredFeatureHolder.value()
                             .place(level, level.getChunkSource().getGenerator(), RandomSource.create(islandPosition.asLong()), islandPosition)
                     );
@@ -327,6 +328,6 @@ public class PrimordialAnchorBlock extends Block implements EntityBlock {
 
     @Override
     public <T extends BlockEntity> @Nullable BlockEntityTicker<T> getTicker(final Level level, @NotNull final BlockState state, @NotNull final BlockEntityType<T> type) {
-        return level.isClientSide ? null : BaseEntityBlock.createTickerHelper(type, DSBlockEntities.PRIMORDIAL_ANCHOR.get(), PrimordialAnchorBlockEntity::serverTick);
+        return level.isClientSide() ? null : BaseEntityBlock.createTickerHelper(type, DSBlockEntities.PRIMORDIAL_ANCHOR.get(), PrimordialAnchorBlockEntity::serverTick);
     }
 }
