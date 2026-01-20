@@ -30,20 +30,17 @@ import by.dragonsurvivalteam.dragonsurvival.util.DragonUtils;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import by.dragonsurvivalteam.dragonsurvival.util.ResourceHelper;
 import by.dragonsurvivalteam.dragonsurvival.util.ToolUtils;
-import com.mojang.datafixers.util.Either;
 import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.Codec;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderSet;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
@@ -52,9 +49,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -73,6 +68,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Function;
 
 public class DragonStateHandler extends EntityStateHandler {
     @Translation(comments = "You cannot turn into a human in this world")
@@ -86,10 +82,16 @@ public class DragonStateHandler extends EntityStateHandler {
     public MultiMining multiMining = MultiMining.ENABLED;
     public LargeDragonDestruction largeDragonDestruction = LargeDragonDestruction.ENABLED;
 
+    private static final Codec<HashMap<ResourceKey<DragonStage>, HashMap<Item, Integer>>> USED_GROWTH_ITEMS_CODEC =
+            Codec.unboundedMap(
+                    ResourceKey.codec(DragonStage.REGISTRY),
+                    // Need to convert to an actual map to make it modifiable
+                    Codec.unboundedMap(Item.CODEC.xmap(Holder::value, Item::builtInRegistryHolder), Codec.INT).xmap(HashMap::new, Function.identity())
+            ).xmap(HashMap::new, Function.identity());
     // Gets reset once the growth reaches the starting growth of the dragon species
     // Currently also stores the usages of non-limited items (but doesn't limit them by doing so)
     // (Preferably it would not but the additional checks may not be worth it)
-    private final Map<ResourceKey<DragonStage>, Map<Item, Integer>> usedGrowthItems = new HashMap<>();
+    private HashMap<ResourceKey<DragonStage>, HashMap<Item, Integer>> usedGrowthItems = new HashMap<>();
 
     public boolean isGrowthStopped;
     public boolean isGrowing = true;
@@ -631,22 +633,7 @@ public class DragonStateHandler extends EntityStateHandler {
             }
         }
 
-        // FIXME
-        /*CompoundTag usedGrowthItems = new CompoundTag();
-
-        this.usedGrowthItems.forEach((key, items) -> {
-            CompoundTag perStage = new CompoundTag();
-
-            items.forEach((item, count) -> {
-                //noinspection deprecation,DataFlowIssue -> ignore / key is present
-                perStage.putInt(item.builtInRegistryHolder().getKey().identifier().toString(), count);
-            });
-
-            usedGrowthItems.put(key.identifier().toString(), perStage);
-        });
-
-        valueOutput.putChild(USED_GROWTH_ITEMS, usedGrowthItems);*/
-
+        valueOutput.store(USED_GROWTH_ITEMS, USED_GROWTH_ITEMS_CODEC, usedGrowthItems);
         valueOutput.putChild(SKIN_DATA, skinData);
         super.serialize(valueOutput);
     }
@@ -718,29 +705,7 @@ public class DragonStateHandler extends EntityStateHandler {
             }
         }
 
-        this.usedGrowthItems.clear();
-
-        // FIXME
-        /*CompoundTag usedGrowthItems = tag.getCompound(USED_GROWTH_ITEMS);
-        usedGrowthItems.getAllKeys().forEach(growthItemStage -> {
-            Identifier stageResource = Identifier.tryParse(growthItemStage);
-
-            if (stageResource == null) {
-                // Just to be safe - would normally not occur
-                return;
-            }
-
-            CompoundTag perStage = usedGrowthItems.getCompound(growthItemStage);
-            ResourceKey<DragonStage> stageKey = ResourceKey.create(DragonStage.REGISTRY, stageResource);
-
-            perStage.getAllKeys().forEach(itemResource -> {
-                Item item = BuiltInRegistries.ITEM.get(Identifier.tryParse(itemResource));
-
-                if (item != Items.AIR) {
-                    this.usedGrowthItems.computeIfAbsent(stageKey, ignored -> new HashMap<>()).put(item, perStage.getInt(itemResource));
-                }
-            });
-        });*/
+        this.usedGrowthItems = valueInput.read(USED_GROWTH_ITEMS, USED_GROWTH_ITEMS_CODEC).orElse(new HashMap<>());
 
         skinData = new SkinData();
         skinData.deserialize(valueInput.child(SKIN_DATA).orElseThrow(), dragonBody);

@@ -13,6 +13,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 @EventBusSubscriber
 public class EffectsMaintainedThroughDeath implements ValueIOSerializable {
@@ -49,8 +50,7 @@ public class EffectsMaintainedThroughDeath implements ValueIOSerializable {
 
     @Override
     public void deserialize(@NotNull final ValueInput input) {
-        // TODO :: check if this returns an unmodifiable list or not
-        effectsToReapplyOnDeath = input.read(EFFECTS, MobEffectInstance.CODEC.listOf()).orElse(new ArrayList<>());
+        effectsToReapplyOnDeath = input.read(EFFECTS, MobEffectInstance.CODEC.listOf().xmap(ArrayList::new, Function.identity())).orElse(new ArrayList<>());
     }
 
     private static final String EFFECTS = "maintained_effects";

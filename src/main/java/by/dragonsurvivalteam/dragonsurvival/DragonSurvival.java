@@ -2,6 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival;
 
 import by.dragonsurvivalteam.dragonsurvival.config.ConfigHandler;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAdvancementTriggers;
+import by.dragonsurvivalteam.dragonsurvival.registry.DSArmorMaterials;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAttributes;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSBlockEntities;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSBlocks;
@@ -11,7 +12,6 @@ import by.dragonsurvivalteam.dragonsurvival.registry.DSContainers;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSCreativeTabs;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEntities;
-import by.dragonsurvivalteam.dragonsurvival.registry.DSArmorMaterials;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSItems;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSLootModifiers;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSMapDecorationTypes;
@@ -36,8 +36,8 @@ import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.neoforge.common.NeoForge;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Mod(DragonSurvival.MODID)
 public class DragonSurvival {
@@ -47,7 +47,7 @@ public class DragonSurvival {
     public static final Identifier MISSING_TEXTURE = Identifier.withDefaultNamespace("missingno");
 
     public static final String MODID = "dragonsurvival";
-    public static final Logger LOGGER = LogManager.getLogger("Dragon Survival");
+    public static final Logger LOGGER = LoggerFactory.getLogger("Dragon Survival");
     public static Proxy PROXY;
 
     public DragonSurvival(final IEventBus bus, final ModContainer ignored) {
