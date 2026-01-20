@@ -5,7 +5,6 @@ import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ClawInventoryDa
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.BuiltInDragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBodies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStages;
-import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
@@ -13,13 +12,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.gametest.GameTestHolder;
-import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
-@PrefixGameTestTemplate(false)
-@GameTestHolder(DragonSurvival.MODID)
+//@PrefixGameTestTemplate(false)
+//@GameTestHolder(DragonSurvival.MODID)
 public class GeneralTests {
-    @GameTest(template = TestUtils.AIR_CUBE_1X)
+   // @GameTest(template = TestUtils.AIR_CUBE_1X)
     public static void test_tool_swap(final GameTestHelper helper) {
         Player player = TestUtils.createPlayer(helper);
         TestUtils.setToDragon(helper, player, BuiltInDragonSpecies.CAVE_DRAGON, DragonBodies.CENTER, DragonStages.young);

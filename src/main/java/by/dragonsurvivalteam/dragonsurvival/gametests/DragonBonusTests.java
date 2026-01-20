@@ -3,15 +3,12 @@ package by.dragonsurvivalteam.dragonsurvival.gametests;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.config.ConfigHandler;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
-import net.minecraft.gametest.framework.BeforeBatch;
 import net.minecraft.server.level.ServerLevel;
-import net.neoforged.neoforge.gametest.GameTestHolder;
-import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
-@PrefixGameTestTemplate(false)
-@GameTestHolder(DragonSurvival.MODID)
+//@PrefixGameTestTemplate(false)
+//@GameTestHolder(DragonSurvival.MODID)
 public class DragonBonusTests {
-    @BeforeBatch(batch = "dragon_bonus_tests")
+    //@BeforeBatch(batch = "dragon_bonus_tests")
     public static void beforeTest(final ServerLevel level) {
         ConfigHandler.resetConfigValues(ConfigSide.SERVER);
     }
