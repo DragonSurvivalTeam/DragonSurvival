@@ -56,6 +56,8 @@ import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.neoforged.fml.loading.FMLLoader;
@@ -409,7 +411,7 @@ public class DragonStateHandler extends EntityStateHandler {
             updateGrowthAndStage(player != null ? player.registryAccess() : null, getSavedDragonAge(speciesKey()));
 
             // The server doesn't need to check for skin preset refreshes; the client handles this
-            if (FMLLoader.getDist().isClient()) {
+            if (FMLLoader.getCurrent().getDist().isClient()) {
                 if (skinData.skinPresets.get().get(speciesKey()).isEmpty()) {
                     refreshSkinPresetForSpecies(dragonSpecies, dragonBody);
                     recompileCurrentSkin();
@@ -594,44 +596,43 @@ public class DragonStateHandler extends EntityStateHandler {
         return skinData.get(species, stage).get();
     }
 
-    public CompoundTag serializeNBT(HolderLookup.Provider provider, boolean isDragonSoul) {
-        CompoundTag tag = new CompoundTag();
-
+    public void serialize(ValueOutput valueOutput, boolean isDragonSoul) {
         if (isDragon()) {
-            tag.putString(DRAGON_SPECIES, speciesId().toString());
-            tag.putString(DRAGON_BODY, bodyId().toString());
-            tag.putString(DRAGON_STAGE, stageId().toString());
-            tag.putDouble(GROWTH, growth);
-            tag.putBoolean(IS_GROWTH_STOPPED, isGrowthStopped);
-            tag.putBoolean(IS_GROWING, isGrowing);
-            tag.putBoolean(DESTRUCTION_ENABLED, destructionEnabled);
-            tag.putBoolean(MARKED_BY_ENDER_DRAGON, markedByEnderDragon);
-            tag.putBoolean(WINGS_WAS_GRANTED, flightWasGranted);
-            tag.putBoolean(SPIN_WAS_GRANTED, spinWasGranted);
+            valueOutput.putString(DRAGON_SPECIES, speciesId().toString());
+            valueOutput.putString(DRAGON_BODY, bodyId().toString());
+            valueOutput.putString(DRAGON_STAGE, stageId().toString());
+            valueOutput.putDouble(GROWTH, growth);
+            valueOutput.putBoolean(IS_GROWTH_STOPPED, isGrowthStopped);
+            valueOutput.putBoolean(IS_GROWING, isGrowing);
+            valueOutput.putBoolean(DESTRUCTION_ENABLED, destructionEnabled);
+            valueOutput.putBoolean(MARKED_BY_ENDER_DRAGON, markedByEnderDragon);
+            valueOutput.putBoolean(WINGS_WAS_GRANTED, flightWasGranted);
+            valueOutput.putBoolean(SPIN_WAS_GRANTED, spinWasGranted);
         }
 
         // TODO :: these probably shouldn't be applied to other players (dragon soul)?
         //  but a player re-using the should keep them
         //  -> store entity uuid in dragon soul and have separate loading method for dragon soul data with entity context
-        tag.putString(MULTI_MINING, multiMining.name());
-        tag.putString(GIANT_DRAGON_DESTRUCTION, largeDragonDestruction.name());
+        valueOutput.putString(MULTI_MINING, multiMining.name());
+        valueOutput.putString(GIANT_DRAGON_DESTRUCTION, largeDragonDestruction.name());
 
         if (isDragonSoul && dragonSpecies != null) {
             // Only store the growth of the dragon the player is currently in if we are saving for the soul
-            storeSavedAge(speciesKey(), tag);
+            storeSavedAge(speciesKey(), valueOutput);
             // Also, clear the saved growth for the current species in this case to prevent keeping growth data post-soul save
             savedGrowth.remove(speciesKey());
         } else if (!isDragonSoul) {
-            for (ResourceKey<DragonSpecies> type : ResourceHelper.keys(provider, DragonSpecies.REGISTRY)) {
+            for (ResourceKey<DragonSpecies> type : ResourceHelper.keys(null, DragonSpecies.REGISTRY)) {
                 boolean hasSavedGrowth = savedGrowth.containsKey(type);
 
                 if (hasSavedGrowth) {
-                    storeSavedAge(type, tag);
+                    storeSavedAge(type, valueOutput);
                 }
             }
         }
 
-        CompoundTag usedGrowthItems = new CompoundTag();
+        // FIXME
+        /*CompoundTag usedGrowthItems = new CompoundTag();
 
         this.usedGrowthItems.forEach((key, items) -> {
             CompoundTag perStage = new CompoundTag();
@@ -644,62 +645,62 @@ public class DragonStateHandler extends EntityStateHandler {
             usedGrowthItems.put(key.identifier().toString(), perStage);
         });
 
-        tag.put(USED_GROWTH_ITEMS, usedGrowthItems);
-        tag.put(SKIN_DATA, skinData.serializeNBT(provider));
-        tag.put(ENTITY_STATE, super.serializeNBT(provider));
+        valueOutput.putChild(USED_GROWTH_ITEMS, usedGrowthItems);*/
 
-        return tag;
+        valueOutput.putChild(SKIN_DATA, skinData);
+        super.serialize(valueOutput);
     }
 
     @Override
-    public CompoundTag serializeNBT(@NotNull final HolderLookup.Provider provider) {
-        return serializeNBT(provider, false);
+    public void serialize(@NotNull final ValueOutput valueOutput) {
+        serialize(valueOutput, false);
     }
 
-    public void deserializeNBT(@NotNull final HolderLookup.Provider provider, final CompoundTag tag, boolean isDragonSoul) {
-        ResourceKey<DragonSpecies> species = ResourceHelper.decodeKey(provider, DragonSpecies.REGISTRY, tag, DRAGON_SPECIES);
+    public void deserialize(ValueInput valueInput, boolean isDragonSoul) {
+        // FIXME How to do decodeKey now?
+//        ResourceKey<DragonSpecies> species = ResourceHelper.decodeKey(valueInput.lookup(), DragonSpecies.REGISTRY, tag, DRAGON_SPECIES);
+//
+//        if (species != null) {
+//            dragonSpecies = valueInput.lookup().holderOrThrow(species);
+//        } else {
+//            dragonSpecies = null;
+//        }
+//
+//        ResourceKey<DragonBody> body = ResourceHelper.decodeKey(valueInput.lookup(), DragonBody.REGISTRY, tag, DRAGON_BODY);
+//
+//        if (body != null) {
+//            dragonBody = valueInput.lookup().holderOrThrow(body);
+//        } else {
+//            dragonBody = null;
+//        }
+//
+//        ResourceKey<DragonStage> stage = ResourceHelper.decodeKey(valueInput.lookup(), DragonStage.REGISTRY, tag, DRAGON_STAGE);
+//
+//        if (stage != null) {
+//            dragonStage = valueInput.lookup().holderOrThrow(stage);
+//        } else {
+//            dragonStage = null;
+//        }
 
-        if (species != null) {
-            dragonSpecies = provider.holderOrThrow(species);
-        } else {
-            dragonSpecies = null;
-        }
-
-        ResourceKey<DragonBody> body = ResourceHelper.decodeKey(provider, DragonBody.REGISTRY, tag, DRAGON_BODY);
-
-        if (body != null) {
-            dragonBody = provider.holderOrThrow(body);
-        } else {
-            dragonBody = null;
-        }
-
-        ResourceKey<DragonStage> stage = ResourceHelper.decodeKey(provider, DragonStage.REGISTRY, tag, DRAGON_STAGE);
-
-        if (stage != null) {
-            dragonStage = provider.holderOrThrow(stage);
-        } else {
-            dragonStage = null;
-        }
-
-        multiMining = Functions.getEnum(MultiMining.class, tag.getString(MULTI_MINING));
-        largeDragonDestruction = Functions.getEnum(LargeDragonDestruction.class, tag.getString(GIANT_DRAGON_DESTRUCTION));
+        multiMining = Functions.getEnum(MultiMining.class, valueInput.getString(MULTI_MINING).orElseThrow());
+        largeDragonDestruction = Functions.getEnum(LargeDragonDestruction.class, valueInput.getString(GIANT_DRAGON_DESTRUCTION).orElseThrow());
 
         if (dragonSpecies != null) {
             if (dragonBody == null) {
                 // This can happen if a dragon body gets removed; we pick a random one, which will cause a desync between clients
                 // But this situation should only happen during testing; the end user should not be removing body types once real gameplay is occurring
-                dragonBody = DragonBody.getRandom(provider, dragonSpecies);
+                dragonBody = DragonBody.getRandom(valueInput.lookup(), dragonSpecies);
             }
 
             // Makes sure that the set growth matches the previously set stage
-            setGrowth(null, tag.getDouble(GROWTH));
+            setGrowth(null, valueInput.getDoubleOr(GROWTH, 0));
             desiredGrowth = growth;
-            destructionEnabled = tag.getBoolean(DESTRUCTION_ENABLED);
-            isGrowing = !tag.contains(IS_GROWING) || tag.getBoolean(IS_GROWING);
-            isGrowthStopped = tag.getBoolean(IS_GROWTH_STOPPED);
-            markedByEnderDragon = tag.getBoolean(MARKED_BY_ENDER_DRAGON);
-            flightWasGranted = tag.getBoolean(WINGS_WAS_GRANTED);
-            spinWasGranted = tag.getBoolean(SPIN_WAS_GRANTED);
+            destructionEnabled = valueInput.getBooleanOr(DESTRUCTION_ENABLED, false);
+            isGrowing = !valueInput.getBooleanOr(IS_GROWING, false) || valueInput.getBooleanOr(IS_GROWING, false);
+            isGrowthStopped = valueInput.getBooleanOr(IS_GROWTH_STOPPED, false);
+            markedByEnderDragon = valueInput.getBooleanOr(MARKED_BY_ENDER_DRAGON, false);
+            flightWasGranted = valueInput.getBooleanOr(WINGS_WAS_GRANTED, false);
+            spinWasGranted = valueInput.getBooleanOr(SPIN_WAS_GRANTED, false);
         }
 
         if (dragonSpecies != null) {
@@ -707,11 +708,11 @@ public class DragonStateHandler extends EntityStateHandler {
                 // Load the growth from the saved growth in the tag when loading from a soul, rather than referencing the saved stage status
                 savedGrowth.put(speciesKey(), growth);
             } else {
-                for (ResourceKey<DragonSpecies> type : ResourceHelper.keys(provider, DragonSpecies.REGISTRY)) {
-                    CompoundTag compound = tag.getCompound(speciesId() + SAVED_GROWTH_SUFFIX);
+                for (ResourceKey<DragonSpecies> type : ResourceHelper.keys(valueInput.lookup(), DragonSpecies.REGISTRY)) {
+                    Optional<ValueInput> valueInputChild = valueInput.child(speciesId() + SAVED_GROWTH_SUFFIX);
 
-                    if (!compound.isEmpty()) {
-                        savedGrowth.put(type, loadSavedStage(provider, type, tag));
+                    if (!valueInputChild.isEmpty()) {
+                        savedGrowth.put(type, loadSavedStage(type, valueInputChild.orElseThrow()));
                     }
                 }
             }
@@ -719,7 +720,8 @@ public class DragonStateHandler extends EntityStateHandler {
 
         this.usedGrowthItems.clear();
 
-        CompoundTag usedGrowthItems = tag.getCompound(USED_GROWTH_ITEMS);
+        // FIXME
+        /*CompoundTag usedGrowthItems = tag.getCompound(USED_GROWTH_ITEMS);
         usedGrowthItems.getAllKeys().forEach(growthItemStage -> {
             Identifier stageResource = Identifier.tryParse(growthItemStage);
 
@@ -738,11 +740,11 @@ public class DragonStateHandler extends EntityStateHandler {
                     this.usedGrowthItems.computeIfAbsent(stageKey, ignored -> new HashMap<>()).put(item, perStage.getInt(itemResource));
                 }
             });
-        });
+        });*/
 
         skinData = new SkinData();
-        skinData.deserializeNBT(provider, tag.getCompound(SKIN_DATA), dragonBody);
-        super.deserializeNBT(provider, tag.getCompound(ENTITY_STATE));
+        skinData.deserialize(valueInput.child(SKIN_DATA).orElseThrow(), dragonBody);
+        super.deserialize(valueInput.childOrEmpty(ENTITY_STATE));
 
         if (isDragon()) {
             refreshBody = true;
@@ -750,32 +752,33 @@ public class DragonStateHandler extends EntityStateHandler {
         }
     }
 
-    private double loadSavedStage(@NotNull final HolderLookup.Provider provider, final ResourceKey<DragonSpecies> dragonSpecies, final CompoundTag tag) {
-        CompoundTag compound = tag.getCompound(dragonSpecies.identifier() + SAVED_GROWTH_SUFFIX);
+    private double loadSavedStage(final ResourceKey<DragonSpecies> dragonSpecies, final ValueInput valueInput) {
+        Optional<ValueInput> valueInputChild = valueInput.child(dragonSpecies.identifier() + SAVED_GROWTH_SUFFIX);
 
-        if (compound.isEmpty()) {
-            Optional<Holder.Reference<DragonSpecies>> optional = ResourceHelper.get(provider, dragonSpecies);
+        if (valueInputChild.isEmpty()) {
+            Optional<Holder.Reference<DragonSpecies>> optional = ResourceHelper.get(valueInput.lookup(), dragonSpecies);
 
             if (optional.isPresent()) {
-                return optional.get().value().getStartingGrowth(provider);
+                return optional.get().value().getStartingGrowth(valueInput.lookup());
             } else {
-                DragonSurvival.LOGGER.warn("Cannot load saved growth for dragon species [{}] while deserializing NBT of [{}] due to the dragon type not existing. Falling back to the smallest growth.", dragonSpecies, tag);
+                DragonSurvival.LOGGER.warn("Cannot load saved growth for dragon species [{}] while deserializing NBT of [{}] due to the dragon type not existing. Falling back to the smallest growth.", dragonSpecies, valueInput);
                 return DragonStage.getBounds().min();
             }
         }
 
-        return compound.getDouble(GROWTH);
+        return valueInputChild.orElseThrow().getDoubleOr(GROWTH, 0);
     }
 
-    private void storeSavedAge(final ResourceKey<DragonSpecies> speciesKey, final CompoundTag tag) {
-        CompoundTag savedGrowthTag = new CompoundTag();
+    private void storeSavedAge(final ResourceKey<DragonSpecies> speciesKey, final ValueOutput valueOutput) {
+        // FIXME
+        /*CompoundTag savedGrowthTag = new CompoundTag();
         savedGrowthTag.putDouble(GROWTH, getSavedDragonAge(speciesKey));
-        tag.put(speciesKey.identifier() + SAVED_GROWTH_SUFFIX, savedGrowthTag);
+        valueOutput.putChild(speciesKey.identifier() + SAVED_GROWTH_SUFFIX, savedGrowthTag);*/
     }
 
     @Override
-    public void deserializeNBT(@NotNull final HolderLookup.Provider provider, final CompoundTag tag) {
-        deserializeNBT(provider, tag, false);
+    public void deserialize(final ValueInput valueInput) {
+        deserialize(valueInput, false);
     }
 
     public void revertToHumanForm(final Player player, boolean isDragonSoul) {

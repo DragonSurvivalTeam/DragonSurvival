@@ -7,20 +7,20 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import by.dragonsurvivalteam.dragonsurvival.util.ResourceHelper;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.fml.loading.FMLLoader;
-import net.neoforged.neoforge.common.util.INBTSerializable;
 import net.neoforged.neoforge.common.util.Lazy;
+import net.neoforged.neoforge.common.util.ValueIOSerializable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class SkinData implements INBTSerializable<CompoundTag> {
+public class SkinData implements ValueIOSerializable {
     public static final String RENDER_CUSTOM_SKIN = "render_custom_skin";
 
     public final Map<ResourceKey<DragonStage>, Boolean> recompileSkin = new HashMap<>();
@@ -31,7 +31,7 @@ public class SkinData implements INBTSerializable<CompoundTag> {
     public boolean blankSkin;
 
     public HashMap<ResourceKey<DragonSpecies>, SkinPreset> initialize() {
-        if (FMLLoader.getDist().isDedicatedServer()) {
+        if (FMLLoader.getCurrent().getDist().isDedicatedServer()) {
             // Don't try to initialize default data for skin presets when asked by the server, as the server doesn't have the part data
             // to construct this data anyways
             return new HashMap<>();
@@ -57,30 +57,27 @@ public class SkinData implements INBTSerializable<CompoundTag> {
     }
 
     @Override
-    public CompoundTag serializeNBT(@NotNull final HolderLookup.Provider provider) {
-        CompoundTag tag = new CompoundTag();
-        tag.putBoolean(RENDER_CUSTOM_SKIN, renderCustomSkin);
+    public void serialize(@NotNull final ValueOutput valueOutput) {
+        valueOutput.putBoolean(RENDER_CUSTOM_SKIN, renderCustomSkin);
 
         for (Map.Entry<ResourceKey<DragonSpecies>, SkinPreset> entry : skinPresets.get().entrySet()) {
-            tag.put(entry.getKey().identifier().toString(), entry.getValue().serializeNBT(provider));
+            valueOutput.putChild(entry.getKey().identifier().toString(), entry.getValue());
         }
-
-        return tag;
     }
 
     // Used when loading the dragon handler data to properly setup skin data on the client if the server sends empty skin data
-    public void deserializeNBT(@NotNull final HolderLookup.Provider provider, final CompoundTag tag, @Nullable final Holder<DragonBody> currentBody) {
-        renderCustomSkin = tag.getBoolean(RENDER_CUSTOM_SKIN);
+    public void deserialize(final ValueInput valueInput, @Nullable final Holder<DragonBody> currentBody) {
+        renderCustomSkin = valueInput.getBooleanOr(RENDER_CUSTOM_SKIN, false);
 
-        for (String key : tag.getAllKeys()) {
+        for (String key : valueInput.keySet()) {
             ResourceKey<DragonSpecies> dragonSpecies = ResourceKey.create(DragonSpecies.REGISTRY, Identifier.parse(key));
 
-            if (provider.lookup(DragonSpecies.REGISTRY).flatMap(lookup -> lookup.get(dragonSpecies)).isPresent()) {
+            if (valueInput.lookup().lookup(DragonSpecies.REGISTRY).flatMap(lookup -> lookup.get(dragonSpecies)).isPresent()) {
                 SkinPreset preset = new SkinPreset();
-                preset.deserializeNBT(provider, tag.getCompound(key), dragonSpecies);
+                preset.deserialize(valueInput.childOrEmpty(key));
 
                 if (preset.isEmpty()) {
-                    Holder<DragonSpecies> speciesHolder = ResourceHelper.get(provider, dragonSpecies).get();
+                    Holder<DragonSpecies> speciesHolder = ResourceHelper.get(valueInput.lookup(), dragonSpecies).get();
 
                     if (currentBody != null && speciesHolder.value().isValidForBody(currentBody)) {
                         preset.initDefaults(speciesHolder, currentBody.value().model());
@@ -95,15 +92,15 @@ public class SkinData implements INBTSerializable<CompoundTag> {
     }
 
     @Override
-    public void deserializeNBT(@NotNull final HolderLookup.Provider provider, final CompoundTag tag) {
-        renderCustomSkin = tag.getBoolean(RENDER_CUSTOM_SKIN);
+    public void deserialize(ValueInput valueInput) {
+        renderCustomSkin = valueInput.getBooleanOr(RENDER_CUSTOM_SKIN, false);
 
-        for (String key : tag.getAllKeys()) {
+        for (String key : valueInput.keySet()) {
             ResourceKey<DragonSpecies> dragonSpecies = ResourceKey.create(DragonSpecies.REGISTRY, Identifier.parse(key));
 
-            if (provider.lookup(DragonSpecies.REGISTRY).flatMap(lookup -> lookup.get(dragonSpecies)).isPresent()) {
+            if (valueInput.lookup().lookup(DragonSpecies.REGISTRY).flatMap(lookup -> lookup.get(dragonSpecies)).isPresent()) {
                 SkinPreset preset = new SkinPreset();
-                preset.deserializeNBT(provider, tag.getCompound(key), dragonSpecies);
+                preset.deserialize(valueInput.childOrEmpty(key));
                 skinPresets.get().put(dragonSpecies, preset);
             }
         }

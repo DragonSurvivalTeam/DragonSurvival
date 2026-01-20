@@ -146,8 +146,6 @@ public class SkinPreset implements ValueIOSerializable {
         }
     }
 
-    // Special version of deserialize to fix up broken data from an older version of the mod
-    // The tag encoding of the species was broken and was just giving "minecraft:" as the species instead of what it should be
     @Override
     public void deserialize(@NotNull ValueInput valueInput) {
         this.species = ResourceKey.create(DragonSpecies.REGISTRY, Identifier.parse(valueInput.getString(SPECIES).orElseThrow()));

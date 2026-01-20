@@ -48,6 +48,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.projectile.ProjectileData;
 import by.dragonsurvivalteam.dragonsurvival.registry.projectile.Projectiles;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistrySetBuilder;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
@@ -167,7 +168,7 @@ public class DataGeneration {
         generator.addProvider(event.includeServer(), new DSEntityTypeTags(output, lookup, helper));
         generator.addProvider(event.includeServer(), new DSEffectTags(output, lookup, helper));
         generator.addProvider(event.includeServer(), new DSPoiTypeTags(output, lookup, helper));
-        generator.addProvider(event.includeServer(), new DSProfessionTags(output, lookup, helper));
+        generator.addProvider(event.includeServer(), new DSProfessionTags(output, BuiltInRegistries.VILLAGER_PROFESSION.key(), lookup, DragonSurvival.MODID));
         generator.addProvider(event.includeServer(), new DSEnchantmentTags(output, lookup, helper));
         generator.addProvider(event.includeServer(), new DSDragonBodyTags(output, lookup, helper));
         generator.addProvider(event.includeServer(), new DSDragonAbilityTags(output, lookup, helper));

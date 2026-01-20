@@ -8,9 +8,12 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.storage.TagValueInput;
+import net.minecraft.world.level.storage.ValueInput;
 import net.neoforged.neoforge.attachment.AttachmentType;
-import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.common.util.ValueIOSerializable;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import org.jetbrains.annotations.NotNull;
@@ -28,12 +31,13 @@ public record SyncData(int targetEntityId, Identifier attachmentType, CompoundTa
     public static void handleCommon(final SyncData packet, final IPayloadContext context) {
         context.enqueueWork(() -> {
             try {
-                AttachmentType<?> type = NeoForgeRegistries.ATTACHMENT_TYPES.get(packet.attachmentType());
+                AttachmentType<?> type = NeoForgeRegistries.ATTACHMENT_TYPES.get(packet.attachmentType()).orElseThrow().value();
 
-                if (type != null && context.player().level().getEntity(packet.targetEntityId()) instanceof Entity entity) {
+                if (context.player().level().getEntity(packet.targetEntityId()) instanceof Entity entity) {
                     //noinspection unchecked -> it's handled
-                    INBTSerializable<CompoundTag> data = (INBTSerializable<CompoundTag>) entity.getData(type);
-                    data.deserializeNBT(context.player().registryAccess(), packet.tag());
+                    ValueInput valueInput = TagValueInput.create(ProblemReporter.DISCARDING, context.player().registryAccess(), packet.tag());
+                    ValueIOSerializable data = (ValueIOSerializable) entity.getData(type);
+                    data.deserialize(valueInput);
                     return;
                 }
             } catch (ClassCastException ignored) { /* Nothing to do */ }
