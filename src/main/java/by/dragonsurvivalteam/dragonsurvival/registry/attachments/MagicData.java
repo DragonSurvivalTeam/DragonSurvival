@@ -34,14 +34,18 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.storage.TagValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.common.util.ValueIOSerializable;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
@@ -58,7 +62,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @EventBusSubscriber
-public class MagicData implements INBTSerializable<CompoundTag> {
+public class MagicData implements ValueIOSerializable {
     public static final int HOTBAR_SLOTS = 4;
     public static final int NO_SLOT = -1;
 
@@ -244,14 +248,16 @@ public class MagicData implements INBTSerializable<CompoundTag> {
 
         if (abilityHolder != null && abilityHolder.use(player, handler, magic)) {
             stack.consume(1, player);
-            player.playNotifySound(DSSounds.UPGRADE_BEACON.get(), SoundSource.PLAYERS, 1, 0);
-            PacketDistributor.sendToPlayer(player, new SyncMagicData(magic.serializeNBT(player.registryAccess())));
+            player.playSound(DSSounds.UPGRADE_BEACON.get());
+            TagValueOutput valueOutput = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, player.registryAccess());
+            magic.serialize(valueOutput);
+            PacketDistributor.sendToPlayer(player, new SyncMagicData(valueOutput.buildResult()));
         }
 
         magic.getAbilities().values().forEach(ability -> ability.value().upgrade().ifPresent(upgrade -> {
             if (upgrade.attempt(player, ability, stack.getItem())) {
                 stack.consume(1, player);
-                player.playNotifySound(SoundEvents.UI_TOAST_CHALLENGE_COMPLETE, SoundSource.PLAYERS, 1, 0);
+                player.playSound(SoundEvents.UI_TOAST_CHALLENGE_COMPLETE);
             }
         }));
     }
@@ -577,156 +583,156 @@ public class MagicData implements INBTSerializable<CompoundTag> {
         IS_EFFECT_UNLOCKED
     }
 
-    public CompoundTag serializeNBTForCurrentSpecies(@NotNull final HolderLookup.Provider provider) {
-        CompoundTag tag = new CompoundTag();
-
-        CompoundTag speciesAbilities = new CompoundTag();
-        abilities.get(this.currentSpecies).values().forEach(instance -> speciesAbilities.put(instance.key().identifier().toString(), instance.save(provider)));
-
-        CompoundTag speciesHotbar = new CompoundTag();
-        hotbar.get(this.currentSpecies).forEach((slot, key) -> speciesHotbar.putInt(key.identifier().toString(), slot));
-
-        tag.put(ABILITIES, speciesAbilities);
-        tag.put(HOTBARS, speciesHotbar);
-
-        return tag;
+    public void serializeForCurrentSpecies(@NotNull final HolderLookup.Provider provider) {
+//        CompoundTag tag = new CompoundTag();
+//
+//        CompoundTag speciesAbilities = new CompoundTag();
+//        abilities.get(this.currentSpecies).values().forEach(instance -> speciesAbilities.put(instance.key().identifier().toString(), instance.save(provider)));
+//
+//        CompoundTag speciesHotbar = new CompoundTag();
+//        hotbar.get(this.currentSpecies).forEach((slot, key) -> speciesHotbar.putInt(key.identifier().toString(), slot));
+//
+//        tag.put(ABILITIES, speciesAbilities);
+//        tag.put(HOTBARS, speciesHotbar);
+//
+//        return tag;
     }
 
-    public void deserializeNBTForCurrentSpecies(@NotNull final HolderLookup.Provider provider, @NotNull final CompoundTag tag) {
-        if (currentSpecies == null) {
-            // Unsure in which cases this can occur (if at all) - maybe when the soul has a non-registered species?
-            DragonSurvival.LOGGER.warn("Current species is not set - ability data cannot be deserialized [{}]", tag);
-            return;
-        }
-
-        getAbilities().clear();
-        getHotbar().clear();
-
-        if (tag.contains(ABILITIES)) {
-            CompoundTag storedAbilities = tag.getCompound(ABILITIES);
-            storedAbilities.getAllKeys().forEach(abilityLocation -> {
-                CompoundTag abilityTag = storedAbilities.getCompound(abilityLocation);
-                DragonAbilityInstance instance = DragonAbilityInstance.load(provider, abilityTag);
-
-                if (instance != null) {
-                    abilities.get(currentSpecies).put(instance.key(), instance);
-                }
-            });
-        }
-
-        if (tag.contains(HOTBARS)) {
-            CompoundTag storedHotbar = tag.getCompound(HOTBARS);
-            storedHotbar.getAllKeys().forEach(abilityLocation -> {
-                int slot = storedHotbar.getInt(abilityLocation);
-                ResourceKey<DragonAbility> key = ResourceKey.create(DragonAbility.REGISTRY, Identifier.parse(abilityLocation));
-
-                if (provider.holder(key).isEmpty()) {
-                    return;
-                }
-
-                hotbar.get(currentSpecies).put(slot, key);
-            });
-        }
-    }
-
-    @Override
-    public CompoundTag serializeNBT(@NotNull final HolderLookup.Provider provider) {
-        CompoundTag tag = new CompoundTag();
-
-        CompoundTag allAbilities = new CompoundTag();
-        for (Map.Entry<ResourceKey<DragonSpecies>, Map<ResourceKey<DragonAbility>, DragonAbilityInstance>> entry : abilities.entrySet()) {
-            CompoundTag abilities = new CompoundTag();
-            entry.getValue().values().forEach(instance -> abilities.put(instance.key().identifier().toString(), instance.save(provider)));
-            allAbilities.put(entry.getKey().identifier().toString(), abilities);
-        }
-
-        CompoundTag allHotbars = new CompoundTag();
-        for (Map.Entry<ResourceKey<DragonSpecies>, Map<Integer, ResourceKey<DragonAbility>>> entry : hotbar.entrySet()) {
-            CompoundTag hotbar = new CompoundTag();
-            entry.getValue().forEach((slot, key) -> hotbar.putInt(key.identifier().toString(), slot));
-            allHotbars.put(entry.getKey().identifier().toString(), hotbar);
-        }
-
-        tag.put(ABILITIES, allAbilities);
-        tag.put(HOTBARS, allHotbars);
-        tag.putFloat(CURRENT_MANA, currentMana);
-        tag.putInt(SELECTED_SLOT, selectedAbilitySlot);
-        tag.putBoolean(RENDER_ABILITIES, renderAbilities);
-
-        if (currentSpecies != null) {
-            tag.putString(CURRENT_SPECIES, currentSpecies.identifier().toString());
-        }
-
-        return tag;
+    public void deserializeForCurrentSpecies(@NotNull final HolderLookup.Provider provider, @NotNull final CompoundTag tag) {
+//        if (currentSpecies == null) {
+//            // Unsure in which cases this can occur (if at all) - maybe when the soul has a non-registered species?
+//            DragonSurvival.LOGGER.warn("Current species is not set - ability data cannot be deserialized [{}]", tag);
+//            return;
+//        }
+//
+//        getAbilities().clear();
+//        getHotbar().clear();
+//
+//        if (tag.contains(ABILITIES)) {
+//            CompoundTag storedAbilities = tag.getCompound(ABILITIES);
+//            storedAbilities.getAllKeys().forEach(abilityLocation -> {
+//                CompoundTag abilityTag = storedAbilities.getCompound(abilityLocation);
+//                DragonAbilityInstance instance = DragonAbilityInstance.load(provider, abilityTag);
+//
+//                if (instance != null) {
+//                    abilities.get(currentSpecies).put(instance.key(), instance);
+//                }
+//            });
+//        }
+//
+//        if (tag.contains(HOTBARS)) {
+//            CompoundTag storedHotbar = tag.getCompound(HOTBARS);
+//            storedHotbar.getAllKeys().forEach(abilityLocation -> {
+//                int slot = storedHotbar.getInt(abilityLocation);
+//                ResourceKey<DragonAbility> key = ResourceKey.create(DragonAbility.REGISTRY, Identifier.parse(abilityLocation));
+//
+//                if (provider.holder(key).isEmpty()) {
+//                    return;
+//                }
+//
+//                hotbar.get(currentSpecies).put(slot, key);
+//            });
+//        }
     }
 
     @Override
-    public void deserializeNBT(@NotNull final HolderLookup.Provider provider, @NotNull final CompoundTag tag) {
-        this.abilities.clear();
-        this.hotbar.clear();
+    public void serialize(@NotNull ValueOutput valueOutput) {
+//        CompoundTag tag = new CompoundTag();
+//
+//        CompoundTag allAbilities = new CompoundTag();
+//        for (Map.Entry<ResourceKey<DragonSpecies>, Map<ResourceKey<DragonAbility>, DragonAbilityInstance>> entry : abilities.entrySet()) {
+//            CompoundTag abilities = new CompoundTag();
+//            entry.getValue().values().forEach(instance -> abilities.put(instance.key().identifier().toString(), instance.save(provider)));
+//            allAbilities.put(entry.getKey().identifier().toString(), abilities);
+//        }
+//
+//        CompoundTag allHotbars = new CompoundTag();
+//        for (Map.Entry<ResourceKey<DragonSpecies>, Map<Integer, ResourceKey<DragonAbility>>> entry : hotbar.entrySet()) {
+//            CompoundTag hotbar = new CompoundTag();
+//            entry.getValue().forEach((slot, key) -> hotbar.putInt(key.identifier().toString(), slot));
+//            allHotbars.put(entry.getKey().identifier().toString(), hotbar);
+//        }
+//
+//        tag.put(ABILITIES, allAbilities);
+//        tag.put(HOTBARS, allHotbars);
+//        tag.putFloat(CURRENT_MANA, currentMana);
+//        tag.putInt(SELECTED_SLOT, selectedAbilitySlot);
+//        tag.putBoolean(RENDER_ABILITIES, renderAbilities);
+//
+//        if (currentSpecies != null) {
+//            tag.putString(CURRENT_SPECIES, currentSpecies.identifier().toString());
+//        }
+//
+//        return tag;
+    }
 
-        if (tag.contains(ABILITIES)) {
-            for (String speciesLocation : tag.getCompound(ABILITIES).getAllKeys()) {
-                ResourceKey<DragonSpecies> speciesKey = ResourceKey.create(DragonSpecies.REGISTRY, Identifier.parse(speciesLocation));
-
-                if (provider.holder(speciesKey).isEmpty()) {
-                    continue;
-                }
-
-                Map<ResourceKey<DragonAbility>, DragonAbilityInstance> abilities = new HashMap<>();
-                CompoundTag storedAbilities = tag.getCompound(ABILITIES).getCompound(speciesLocation);
-
-                for (String abilityLocation : storedAbilities.getAllKeys()) {
-                    CompoundTag abilityTag = storedAbilities.getCompound(abilityLocation);
-                    DragonAbilityInstance instance = DragonAbilityInstance.load(provider, abilityTag);
-
-                    if (instance != null) {
-                        abilities.put(instance.key(), instance);
-                    }
-                }
-
-                this.abilities.put(speciesKey, abilities);
-            }
-        }
-
-        if (tag.contains(HOTBARS)) {
-            for (String speciesLocation : tag.getCompound(HOTBARS).getAllKeys()) {
-                ResourceKey<DragonSpecies> speciesKey = ResourceKey.create(DragonSpecies.REGISTRY, Identifier.parse(speciesLocation));
-
-                if (provider.holder(speciesKey).isEmpty()) {
-                    continue;
-                }
-
-                Map<Integer, ResourceKey<DragonAbility>> hotbar = new HashMap<>();
-                CompoundTag storedHotbar = tag.getCompound(HOTBARS).getCompound(speciesLocation);
-
-                for (String abilityLocation : storedHotbar.getAllKeys()) {
-                    int slot = storedHotbar.getInt(abilityLocation);
-                    ResourceKey<DragonAbility> key = ResourceKey.create(DragonAbility.REGISTRY, Identifier.parse(abilityLocation));
-
-                    if (provider.holder(key).isEmpty()) {
-                        continue;
-                    }
-
-                    hotbar.put(slot, key);
-                }
-
-                this.hotbar.put(speciesKey, hotbar);
-            }
-        }
-
-        currentMana = tag.getFloat(CURRENT_MANA);
-        selectedAbilitySlot = tag.getInt(SELECTED_SLOT);
-        renderAbilities = tag.getBoolean(RENDER_ABILITIES);
-
-        if (tag.contains(CURRENT_SPECIES)) {
-            currentSpecies = ResourceKey.create(DragonSpecies.REGISTRY, Identifier.parse(tag.getString(CURRENT_SPECIES)));
-
-            if (provider.holder(currentSpecies).isEmpty()) {
-                DragonSurvival.LOGGER.warn("Failed to load current species for magic data! Did you remove a species from this save? Defaulting to cave dragon");
-                currentSpecies = BuiltInDragonSpecies.CAVE_DRAGON;
-            }
-        }
+    @Override
+    public void deserialize(@NotNull ValueInput valueInput) {
+//        this.abilities.clear();
+//        this.hotbar.clear();
+//
+//        if (tag.contains(ABILITIES)) {
+//            for (String speciesLocation : tag.getCompound(ABILITIES).getAllKeys()) {
+//                ResourceKey<DragonSpecies> speciesKey = ResourceKey.create(DragonSpecies.REGISTRY, Identifier.parse(speciesLocation));
+//
+//                if (provider.holder(speciesKey).isEmpty()) {
+//                    continue;
+//                }
+//
+//                Map<ResourceKey<DragonAbility>, DragonAbilityInstance> abilities = new HashMap<>();
+//                CompoundTag storedAbilities = tag.getCompound(ABILITIES).getCompound(speciesLocation);
+//
+//                for (String abilityLocation : storedAbilities.getAllKeys()) {
+//                    CompoundTag abilityTag = storedAbilities.getCompound(abilityLocation);
+//                    DragonAbilityInstance instance = DragonAbilityInstance.load(provider, abilityTag);
+//
+//                    if (instance != null) {
+//                        abilities.put(instance.key(), instance);
+//                    }
+//                }
+//
+//                this.abilities.put(speciesKey, abilities);
+//            }
+//        }
+//
+//        if (tag.contains(HOTBARS)) {
+//            for (String speciesLocation : tag.getCompound(HOTBARS).getAllKeys()) {
+//                ResourceKey<DragonSpecies> speciesKey = ResourceKey.create(DragonSpecies.REGISTRY, Identifier.parse(speciesLocation));
+//
+//                if (provider.holder(speciesKey).isEmpty()) {
+//                    continue;
+//                }
+//
+//                Map<Integer, ResourceKey<DragonAbility>> hotbar = new HashMap<>();
+//                CompoundTag storedHotbar = tag.getCompound(HOTBARS).getCompound(speciesLocation);
+//
+//                for (String abilityLocation : storedHotbar.getAllKeys()) {
+//                    int slot = storedHotbar.getInt(abilityLocation);
+//                    ResourceKey<DragonAbility> key = ResourceKey.create(DragonAbility.REGISTRY, Identifier.parse(abilityLocation));
+//
+//                    if (provider.holder(key).isEmpty()) {
+//                        continue;
+//                    }
+//
+//                    hotbar.put(slot, key);
+//                }
+//
+//                this.hotbar.put(speciesKey, hotbar);
+//            }
+//        }
+//
+//        currentMana = tag.getFloat(CURRENT_MANA);
+//        selectedAbilitySlot = tag.getInt(SELECTED_SLOT);
+//        renderAbilities = tag.getBoolean(RENDER_ABILITIES);
+//
+//        if (tag.contains(CURRENT_SPECIES)) {
+//            currentSpecies = ResourceKey.create(DragonSpecies.REGISTRY, Identifier.parse(tag.getString(CURRENT_SPECIES)));
+//
+//            if (provider.holder(currentSpecies).isEmpty()) {
+//                DragonSurvival.LOGGER.warn("Failed to load current species for magic data! Did you remove a species from this save? Defaulting to cave dragon");
+//                currentSpecies = BuiltInDragonSpecies.CAVE_DRAGON;
+//            }
+//        }
     }
 
     private final String HOTBARS = "hotbars";

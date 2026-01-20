@@ -32,6 +32,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -42,6 +43,9 @@ import net.minecraft.world.item.component.CustomModelData;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.TagValueInput;
+import net.minecraft.world.level.storage.TagValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -149,19 +153,24 @@ public class DragonSoulItem extends BlockItem {
         if (data != null && !data.dragonData().isEmpty()) {
             if (handler.isDragon()) {
                 // Swap the player's dragon data with the item's NBT
-                CompoundTag currentDragonData = handler.serializeNBT(level.registryAccess(), true);
+                TagValueOutput valueOutput = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, level.registryAccess());
+                handler.serialize(valueOutput, true);
+                CompoundTag currentDragonData = valueOutput.buildResult();
 
                 // Preserve spin/flight grant state
                 boolean flightGranted = handler.flightWasGranted;
                 boolean spinGranted = handler.spinWasGranted;
-                handler.deserializeNBT(level.registryAccess(), data.dragonData(), true);
+                ValueInput valueInput = TagValueInput.create(ProblemReporter.DISCARDING, level.registryAccess(), data.dragonData());
+                handler.deserialize(valueInput, true);
                 handler.flightWasGranted = flightGranted;
                 handler.spinWasGranted = spinGranted;
 
-                CompoundTag currentAbilityData = magicData.serializeNBTForCurrentSpecies(level.registryAccess());
+                TagValueOutput valueOutputAbility = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, level.registryAccess());
+                magicData.serializeForCurrentSpecies(level.registryAccess());
+                CompoundTag currentAbilityData = valueOutputAbility.buildResult();
 
                 magicData.setCurrentSpecies(player, handler.speciesKey());
-                magicData.deserializeNBTForCurrentSpecies(level.registryAccess(), data.abilityData());
+                magicData.deserializeForCurrentSpecies(level.registryAccess(), data.abilityData());
 
                 PenaltySupply.clear(player);
 
@@ -171,19 +180,24 @@ public class DragonSoulItem extends BlockItem {
                 // Preserve spin/flight grant state
                 boolean flightGranted = handler.flightWasGranted;
                 boolean spinGranted = handler.spinWasGranted;
-                handler.deserializeNBT(level.registryAccess(), data.dragonData(), true);
+                ValueInput valueInput = TagValueInput.create(ProblemReporter.DISCARDING, level.registryAccess(), data.dragonData());
+                handler.deserialize(valueInput, true);
                 handler.flightWasGranted = flightGranted;
                 handler.spinWasGranted = spinGranted;
 
                 magicData.setCurrentSpecies(player, handler.speciesKey());
-                magicData.deserializeNBTForCurrentSpecies(level.registryAccess(), data.abilityData());
+                magicData.deserializeForCurrentSpecies(level.registryAccess(), data.abilityData());
 
                 stack.remove(DSDataComponents.DRAGON_SOUL);
                 stack.remove(DataComponents.CUSTOM_MODEL_DATA);
             }
         } else if (handler.isDragon()) {
-            CompoundTag currentDragonData = handler.serializeNBT(level.registryAccess(), true);
-            CompoundTag currentAbilityData = magicData.serializeNBTForCurrentSpecies(level.registryAccess());
+            TagValueOutput valueOutputDragon = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, level.registryAccess());
+            handler.serialize(valueOutputDragon, true);
+            CompoundTag currentDragonData = valueOutputDragon.buildResult();
+            TagValueOutput valueOutputAbility = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, level.registryAccess());
+            magicData.serializeForCurrentSpecies(level.registryAccess());
+            CompoundTag currentAbilityData = valueOutputAbility.buildResult();
 
             stack.set(DSDataComponents.DRAGON_SOUL, new DragonSoulData(currentDragonData, currentAbilityData, player.getScale()));
             stack.set(DataComponents.CUSTOM_MODEL_DATA, new CustomModelData(List.of(), List.of(), List.of(), List.of(getCustomModelData(level.registryAccess(), currentDragonData))));
@@ -204,7 +218,9 @@ public class DragonSoulItem extends BlockItem {
         }
 
         if (player instanceof ServerPlayer serverPlayer) {
-            PacketDistributor.sendToPlayer(serverPlayer, new SyncMagicData(magicData.serializeNBT(player.registryAccess())));
+            TagValueOutput valueOutput = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, player.registryAccess());
+            magicData.serialize(valueOutput);
+            PacketDistributor.sendToPlayer(serverPlayer, new SyncMagicData(valueOutput.buildResult()));
         }
 
         level.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SoundEvents.ENDER_DRAGON_GROWL, entity.getSoundSource(), 0.6f, 1);

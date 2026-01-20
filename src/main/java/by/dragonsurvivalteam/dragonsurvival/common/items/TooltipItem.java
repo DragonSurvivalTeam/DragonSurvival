@@ -7,11 +7,13 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class TooltipItem extends Item {
@@ -25,12 +27,12 @@ public class TooltipItem extends Item {
     }
 
     @Override
-    public void appendHoverText(@NotNull final ItemStack stack, @NotNull final Item.TooltipContext context, @NotNull final List<Component> tooltips, @NotNull final TooltipFlag flag) {
-        super.appendHoverText(stack, context, tooltips, flag);
+    public void appendHoverText(@NotNull ItemStack stack, @NotNull TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
+        super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
         String key = Translation.Type.DESCRIPTION.wrap(keySupplier.apply(stack));
 
         if (I18n.exists(key)) {
-            tooltips.add(Component.translatable(key));
+            tooltipAdder.accept(Component.translatable(key));
         }
     }
 }
