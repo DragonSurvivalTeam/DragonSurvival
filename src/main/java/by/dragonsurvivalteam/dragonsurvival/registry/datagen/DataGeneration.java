@@ -62,7 +62,7 @@ import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.server.packs.repository.PackSource;
 import net.minecraft.world.flag.FeatureFlagSet;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
+import net.minecraft.world.level.storage.loot.parameters.ContextKeySets;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.common.data.BlockTagsProvider;
@@ -129,7 +129,7 @@ public class DataGeneration {
         generator.addProvider(event.includeClient(), new DSLanguageProvider(output, lookup, "en_us"));
 
         // Server
-        LootTableProvider.SubProviderEntry blockLootTableSubProvider = new LootTableProvider.SubProviderEntry(BlockLootTableSubProvider::new, LootContextParamSets.BLOCK);
+        LootTableProvider.SubProviderEntry blockLootTableSubProvider = new LootTableProvider.SubProviderEntry(BlockLootTableSubProvider::new, ContextKeySets.BLOCK);
         generator.addProvider(event.includeServer(), (DataProvider.Factory<LootTableProvider>) lootTableOutput -> new LootTableProvider(lootTableOutput, Collections.emptySet(), List.of(blockLootTableSubProvider), event.getLookupProvider()));
 
         if (event.includeServer()) {
@@ -285,14 +285,14 @@ public class DataGeneration {
     private static void addSilentGemsLootTables(final DataGenerator generator, final CompletableFuture<HolderLookup.Provider> lookup) {
         DataGenerator.PackGenerator datapack = generator.getBuiltinDatapack(true, DragonSurvival.MODID, SILENT_GEMS_DATAPACK);
         datapack.addProvider(output -> PackMetadataGenerator.forFeaturePack(output, Component.translatable(SILENT_GEMS_DATAPACK_DESCRIPTION), FeatureFlagSet.of()));
-        LootTableProvider.SubProviderEntry subProvider = new LootTableProvider.SubProviderEntry(SilentGemsDatapack::new, LootContextParamSets.BLOCK);
+        LootTableProvider.SubProviderEntry subProvider = new LootTableProvider.SubProviderEntry(SilentGemsDatapack::new, ContextKeySets.BLOCK);
         datapack.addProvider(output -> new SilentGemsDatapack.Provider(output, Collections.emptySet(), List.of(subProvider), lookup));
     }
 
     private static void addCreateLootTables(final DataGenerator generator, final CompletableFuture<HolderLookup.Provider> lookup) {
         DataGenerator.PackGenerator datapack = generator.getBuiltinDatapack(true, DragonSurvival.MODID, CREATE_DATAPACK);
         datapack.addProvider(output -> PackMetadataGenerator.forFeaturePack(output, Component.translatable(CREATE_DATAPACK_DESCRIPTION), FeatureFlagSet.of()));
-        LootTableProvider.SubProviderEntry subProvider = new LootTableProvider.SubProviderEntry(CreateDatapack::new, LootContextParamSets.BLOCK);
+        LootTableProvider.SubProviderEntry subProvider = new LootTableProvider.SubProviderEntry(CreateDatapack::new, ContextKeySets.BLOCK);
         datapack.addProvider(output -> new CreateDatapack.Provider(output, Collections.emptySet(), List.of(subProvider), lookup));
     }
 }

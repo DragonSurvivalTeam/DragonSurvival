@@ -4,6 +4,7 @@ import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
@@ -29,55 +30,57 @@ public record DietEntry(String items, Optional<FoodProperties> properties, Optio
     ).apply(instance, DietEntry::new));
 
     public static Map<Item, FoodProperties> map(final List<DietEntry> entries) {
-        Map<Item, FoodProperties> diet = new HashMap<>();
-
-        for (DietEntry entry : entries) {
-            IdentifierWrapper.map(entry.items(), BuiltInRegistries.ITEM).forEach(resource -> {
-                Item item = BuiltInRegistries.ITEM.get(resource);
-
-                if (item != null) {
-                    FoodProperties properties = entry.properties().orElse(item.getDefaultInstance().getFoodProperties(null));
-
-                    if (properties == null) {
-                        DragonSurvival.LOGGER.warn("Diet entry [{}] has neither original nor custom food properties - item will not be edible", entry);
-                        return;
-                    }
-
-                    List<FoodProperties.PossibleEffect> effects = new ArrayList<>(properties.effects());
-
-                    if (entry.retainEffects().isPresent() && entry.properties().isPresent()) {
-                        FoodProperties original = item.getDefaultInstance().getFoodProperties(null);
-
-                        if (original != null) {
-                            for (FoodProperties.PossibleEffect effect : original.effects()) {
-                                if (entry.retainEffects().get().map(Function.identity(), check -> check.retain(effect.effect()))) {
-                                    effects.add(effect);
-                                }
-                            }
-                        }
-                    } else if (entry.retainEffects().isPresent()) {
-                        // Only retain specific effects of the original item
-                        effects.removeIf(effect -> !entry.retainEffects().get().map(Function.identity(), check -> check.retain(effect.effect())));
-                    } else if (entry.properties().isEmpty()) {
-                        // Don't retain effects of the original item
-                        effects.clear();
-                    }
-
-                    properties = new FoodProperties(
-                            properties.nutrition(),
-                            properties.saturation(),
-                            properties.canAlwaysEat(),
-                            properties.eatSeconds(),
-                            properties.usingConvertsTo(),
-                            effects
-                    );
-
-                    diet.put(item, properties);
-                }
-            });
-        }
-
-        return diet;
+//        Map<Item, FoodProperties> diet = new HashMap<>();
+//
+//        for (DietEntry entry : entries) {
+//            IdentifierWrapper.map(entry.items(), BuiltInRegistries.ITEM).forEach(resource -> {
+//                Item item = BuiltInRegistries.ITEM.get(resource).orElseThrow().value();
+//
+//                if (item != null) {
+//                    FoodProperties properties = entry.properties().orElse(item.getDefaultInstance().get(DataComponents.FOOD));
+//
+//                    if (properties == null) {
+//                        DragonSurvival.LOGGER.warn("Diet entry [{}] has neither original nor custom food properties - item will not be edible", entry);
+//                        return;
+//                    }
+//
+//                    List<FoodProperties.PossibleEffect> effects = new ArrayList<>(properties.effects());
+//
+//                    if (entry.retainEffects().isPresent() && entry.properties().isPresent()) {
+//                        FoodProperties original = item.getDefaultInstance().getFoodProperties(null);
+//
+//                        if (original != null) {
+//                            for (FoodProperties.PossibleEffect effect : original.effects()) {
+//                                if (entry.retainEffects().get().map(Function.identity(), check -> check.retain(effect.effect()))) {
+//                                    effects.add(effect);
+//                                }
+//                            }
+//                        }
+//                    } else if (entry.retainEffects().isPresent()) {
+//                        // Only retain specific effects of the original item
+//                        effects.removeIf(effect -> !entry.retainEffects().get().map(Function.identity(), check -> check.retain(effect.effect())));
+//                    } else if (entry.properties().isEmpty()) {
+//                        // Don't retain effects of the original item
+//                        effects.clear();
+//                    }
+//
+//                    properties = new FoodProperties(
+//                            properties.nutrition(),
+//                            properties.saturation(),
+//                            properties.canAlwaysEat(),
+//                            properties.eatSeconds(),
+//                            properties.usingConvertsTo(),
+//                            effects
+//                    );
+//
+//                    diet.put(item, properties);
+//                }
+//            });
+//        }
+//
+//        return diet;
+        // FIXME Move this to consumables
+        return Map.of();
     }
 
     public static Builder create(final String items) {
@@ -85,7 +88,7 @@ public record DietEntry(String items, Optional<FoodProperties> properties, Optio
     }
 
     public static Builder create(final TagKey<Item> tag) {
-        return create("#" + tag.identifier());
+        return create("#" + tag.location());
     }
 
     public static Builder create(final Identifier location) {
@@ -150,7 +153,7 @@ public record DietEntry(String items, Optional<FoodProperties> properties, Optio
         private boolean canAlwaysEat;
         private float seconds = DEFAULT_EAT_SECONDS;
 
-        private final List<FoodProperties.PossibleEffect> effects = new ArrayList<>();
+    //    private final List<FoodProperties.PossibleEffect> effects = new ArrayList<>();
         private Optional<ItemStack> convertsTo = Optional.empty();
 
         public Builder(final String items) {
@@ -188,8 +191,8 @@ public record DietEntry(String items, Optional<FoodProperties> properties, Optio
         }
 
         public Builder effect(final Supplier<MobEffectInstance> effect, final float probability) {
-            this.effects.add(new FoodProperties.PossibleEffect(effect, probability));
-            this.customProperties = true;
+//            this.effects.add(new FoodProperties.PossibleEffect(effect, probability));
+//            this.customProperties = true;
             return this;
         }
 
@@ -226,7 +229,7 @@ public record DietEntry(String items, Optional<FoodProperties> properties, Optio
 
         public DietEntry build() {
             if (customProperties && properties.isEmpty()) {
-                properties = Optional.of(new FoodProperties(nutriton, saturation, canAlwaysEat, seconds, convertsTo, effects));
+                //properties = Optional.of(new FoodProperties(nutriton, saturation, canAlwaysEat, seconds, convertsTo));
             }
 
             Either<Boolean, RetainEffects> retainEffects;

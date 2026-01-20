@@ -2,9 +2,9 @@ package by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import software.bernie.geckolib.animation.Animation;
-import software.bernie.geckolib.animation.AnimationState;
 import software.bernie.geckolib.animation.RawAnimation;
+import software.bernie.geckolib.animation.object.LoopType;
+import software.bernie.geckolib.animation.state.AnimationTest;
 
 public record SimpleAbilityAnimation(String animationKey, AnimationLayer layer, int transitionLength, boolean locksNeck, boolean locksTail) implements AbilityAnimation {
     public static final Codec<SimpleAbilityAnimation> CODEC = RecordCodecBuilder.create(instance -> instance.group(
@@ -45,7 +45,7 @@ public record SimpleAbilityAnimation(String animationKey, AnimationLayer layer, 
             rawAnimation = rawAnimation.thenLoop(animationKey);
         } else if (type == AnimationType.PLAY_ONCE) {
             //noinspection DataFlowIssue -> probably not the same value due to a different animation key
-            rawAnimation = rawAnimation.then(animationKey, Animation.LoopType.PLAY_ONCE);
+            rawAnimation = rawAnimation.then(animationKey, LoopType.PLAY_ONCE);
         }
 
         return rawAnimation;
@@ -73,7 +73,7 @@ public record SimpleAbilityAnimation(String animationKey, AnimationLayer layer, 
         }
 
         public Builder transitionLength(final int transitionLength) {
-            this.setTransitionTicks = transitionLength;
+            this.transitionLength = transitionLength;
             return this;
         }
 

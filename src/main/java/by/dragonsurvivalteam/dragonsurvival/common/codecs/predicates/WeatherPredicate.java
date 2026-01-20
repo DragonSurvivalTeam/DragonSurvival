@@ -50,7 +50,7 @@ public record WeatherPredicate(Optional<Boolean> isRaining, Optional<Boolean> is
         }
 
         Biome biome = level.getBiome(position).value();
-        return biome.getPrecipitationAt(position) == Biome.Precipitation.SNOW;
+        return biome.getPrecipitationAt(position, level.getSeaLevel()) == Biome.Precipitation.SNOW;
     }
 
     private boolean isRainingOrSnowing(final ServerLevel level, final BlockPos position) {
@@ -64,7 +64,7 @@ public record WeatherPredicate(Optional<Boolean> isRaining, Optional<Boolean> is
         }
 
         Biome biome = level.getBiome(position).value();
-        Biome.Precipitation precipitation = biome.getPrecipitationAt(position);
+        Biome.Precipitation precipitation = biome.getPrecipitationAt(position, level.getSeaLevel());
         return precipitation == Biome.Precipitation.RAIN || precipitation == Biome.Precipitation.SNOW;
     }
 }

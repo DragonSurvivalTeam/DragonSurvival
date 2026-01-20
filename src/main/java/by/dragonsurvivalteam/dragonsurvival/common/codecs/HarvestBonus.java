@@ -26,7 +26,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.item.Tiers;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -90,13 +89,14 @@ public class HarvestBonus extends DurationInstanceBase<HarvestBonuses, HarvestBo
 
         Component baseSpeed = null;
 
-        if (tiers.isPresent()) {
-            Tiers tier = tiers.get().get(abilityLevel);
-
-            if (tier != null) {
-                baseSpeed = DSLanguageProvider.enumValue(tier);
-            }
-        }
+        // FIXME
+//        if (tiers.isPresent()) {
+//            Tiers tier = tiers.get().get(abilityLevel);
+//
+//            if (tier != null) {
+//                baseSpeed = DSLanguageProvider.enumValue(tier);
+//            }
+//        }
 
         if (baseSpeed == null) {
             baseSpeed = Component.translatable(DEFAULT);
@@ -149,11 +149,12 @@ public class HarvestBonus extends DurationInstanceBase<HarvestBonuses, HarvestBo
                 return BASE_SPEED;
             }
 
-            Tiers tier = baseData().tiers().get().get(appliedAbilityLevel());
-
-            if (tier != null) {
-                return tier.getSpeed();
-            }
+            // FIXME
+//            Tiers tier = baseData().tiers().get().get(appliedAbilityLevel());
+//
+//            if (tier != null) {
+//                return tier.getSpeed();
+//            }
 
             return BASE_SPEED;
         }

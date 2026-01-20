@@ -129,7 +129,7 @@ public record DragonAbilityHolder(List<AbilityPair> pairs, Optional<LootItemCond
             }
         }
 
-        if (!conditions.map(conditions -> conditions.test(Condition.entityContext(player.serverLevel(), player))).orElse(true)) {
+        if (!conditions.map(conditions -> conditions.test(Condition.entityContext(player.level(), player))).orElse(true)) {
             player.sendSystemMessage(Component.translatable(REQUIREMENTS_NOT_MET).withStyle(ChatFormatting.RED));
             return false;
         }
@@ -159,7 +159,7 @@ public record DragonAbilityHolder(List<AbilityPair> pairs, Optional<LootItemCond
 
         // Handle removal first, allowing the addition of an ability that is also removed (for whatever reason)
         totalToRemove.forEach(key -> magic.removeAbility(player, key));
-        totalToAdd.forEach(key -> registry.getHolder(key).ifPresent(ability -> magic.addAbility(player, ability)));
+        totalToAdd.forEach(key -> registry.get(key).ifPresent(ability -> magic.addAbility(player, ability)));
 
         return true;
     }

@@ -75,7 +75,7 @@ public record PotionData(
                 }
 
                 if (effect.value().isInstantenous()) {
-                    effect.value().applyInstantenousEffect(dragon, null, livingTarget, calculated.amplifier(), /* Seems to be the effect strength */ 1);
+                    effect.value().applyInstantenousEffect(dragon.level(), dragon, null, dragon, calculated.amplifier(), /* Seems to be the effect strength */ 1);
                 } else {
                     livingTarget.addEffect(new MobEffectInstance(effect, calculated.duration(), calculated.amplifier(), false, effectParticles, showIcon), dragon);
                 }
@@ -92,7 +92,7 @@ public record PotionData(
                     return;
                 }
 
-                if (dragon == null || ((AdditionalEffectData) instance).dragonSurvival$getApplier(dragon.serverLevel()) == dragon) {
+                if (dragon == null || ((AdditionalEffectData) instance).dragonSurvival$getApplier(dragon.level()) == dragon) {
                     livingEntity.removeEffect(effect);
                 }
             });
@@ -138,7 +138,7 @@ public record PotionData(
             instances.add(new MobEffectInstance(effect, calculated.duration(), calculated.amplifier(), false, effectParticles()));
         }
 
-        return new PotionContents(Optional.empty(), Optional.empty(), instances);
+        return new PotionContents(Optional.empty(), Optional.empty(), instances, Optional.empty());
     }
 
     @SafeVarargs

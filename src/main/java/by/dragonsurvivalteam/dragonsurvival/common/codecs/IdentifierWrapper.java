@@ -38,7 +38,7 @@ public class IdentifierWrapper {
 
     public static <T> Set<Identifier> getEntries(final String location, final Registry<T> registry) {
         if (location.startsWith("#")) {
-            Optional<HolderSet.Named<T>> optional = registry.getTag(TagKey.create(registry.key(), Identifier.parse(location.substring(1))));
+            Optional<HolderSet.Named<T>> optional = registry.get(TagKey.create(registry.key(), Identifier.parse(location.substring(1))));
             //noinspection DataFlowIssue -> key is expected to be present
             return optional.map(entries -> entries.stream().map(entry -> entry.getKey().identifier()).collect(Collectors.toSet())).orElse(Set.of());
         } else {
@@ -93,7 +93,7 @@ public class IdentifierWrapper {
      * (Format example: #minecraft:ores)
      */
     public static String convert(final TagKey<?> tag) {
-        return "#" + tag.identifier();
+        return "#" + tag.location();
     }
 
     /** Helper method to format the {@link net.minecraft.resources.ResourceKey} into a string in the format of a resource location */

@@ -15,7 +15,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.LootParams;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParamSet;
+import net.minecraft.world.level.storage.loot.parameters.ContextKeySet;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.Vec3;
 
@@ -23,13 +23,13 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ProjectileEffect<T> {
-    LootContextParamSet POSITION_CONTEXT = new LootContextParamSet.Builder()
+    ContextKeySet POSITION_CONTEXT = new ContextKeySet.Builder()
             .required(LootContextParams.THIS_ENTITY)
             .required(LootContextParams.ORIGIN)
             .required(LootContextParams.BLOCK_STATE)
             .build();
 
-    LootContextParamSet ENTITY_CONTEXT = new LootContextParamSet.Builder()
+    ContextKeySet ENTITY_CONTEXT = new ContextKeySet.Builder()
             .required(LootContextParams.THIS_ENTITY)
             .required(LootContextParams.ATTACKING_ENTITY)
             .required(LootContextParams.ORIGIN)

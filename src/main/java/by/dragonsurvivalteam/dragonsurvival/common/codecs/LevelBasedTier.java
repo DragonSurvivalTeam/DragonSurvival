@@ -4,7 +4,6 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilit
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.util.ExtraCodecs;
-import net.minecraft.world.item.Tiers;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -22,19 +21,20 @@ public record LevelBasedTier(List<Entry> entries) {
             }, Function.identity()).fieldOf("tiers").forGetter(LevelBasedTier::entries)
     ).apply(instance, LevelBasedTier::new));
 
-    public @Nullable Tiers get(final int level) {
-        for (Entry entry : entries) {
-            if (level >= entry.fromLevel()) {
-                return entry.tier();
-            }
-        }
+    // FIXME
+//    public @Nullable Tiers get(final int level) {
+//        for (Entry entry : entries) {
+//            if (level >= entry.fromLevel()) {
+//                return entry.tier();
+//            }
+//        }
+//
+//        return null;
+//    }
 
-        return null;
-    }
-
-    public record Entry(Tiers tier, int fromLevel) implements Comparable<Entry> {
+    public record Entry(/*Tiers tier,*/ int fromLevel) implements Comparable<Entry> {
         public static final Codec<Entry> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                MiscCodecs.enumCodec(Tiers.class).fieldOf("tier").forGetter(Entry::tier),
+//                MiscCodecs.enumCodec(Tiers.class).fieldOf("tier").forGetter(Entry::tier),
                 ExtraCodecs.intRange(DragonAbilityInstance.MIN_LEVEL, DragonAbilityInstance.MAX_LEVEL).fieldOf("from_level").forGetter(Entry::fromLevel)
         ).apply(instance, Entry::new));
 

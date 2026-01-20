@@ -40,7 +40,7 @@ public record GrowthItem(HolderSet<Item> items, int growthInTicks, int maximumUs
     }
 
     public static GrowthItem create(int growthInTicks, int maximumUsages, final TagKey<Item> tag) {
-        return new GrowthItem(BuiltInRegistries.ITEM.getOrCreateTag(tag), growthInTicks, maximumUsages);
+        return new GrowthItem(BuiltInRegistries.ITEM.getOrThrow(tag), growthInTicks, maximumUsages);
     }
 
     public static GrowthItem create(int growthInTicks, final Item... items) {

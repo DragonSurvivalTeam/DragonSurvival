@@ -9,7 +9,7 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.LootParams;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParamSet;
+import net.minecraft.world.level.storage.loot.parameters.ContextKeySet;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 
@@ -22,7 +22,7 @@ public record ConditionUpgrade(List<LootItemCondition> conditions, boolean requi
             Codec.BOOL.optionalFieldOf("require_previous", true).forGetter(ConditionUpgrade::requirePrevious)
     ).apply(instance, ConditionUpgrade::new));
 
-    private static final LootContextParamSet CONTEXT = new LootContextParamSet.Builder()
+    private static final ContextKeySet CONTEXT = new ContextKeySet.Builder()
             .required(LootContextParams.THIS_ENTITY)
             .required(LootContextParams.ORIGIN)
             .required(LootContextParams.TOOL)
