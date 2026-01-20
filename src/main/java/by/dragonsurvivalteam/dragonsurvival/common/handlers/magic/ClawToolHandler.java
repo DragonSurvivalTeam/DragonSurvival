@@ -9,6 +9,8 @@ import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachmen
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.HarvestBonuses;
 import by.dragonsurvivalteam.dragonsurvival.util.ToolUtils;
 import com.mojang.datafixers.util.Pair;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -16,15 +18,14 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.DiggerItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentEffectComponents;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.ClipContext;
-import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.gamerules.GameRules;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.neoforged.bus.api.EventPriority;
@@ -66,18 +67,18 @@ public class ClawToolHandler {
         ItemStack repairTime = stacks.get(player.getRandom().nextInt(stacks.size()));
 
         if (!repairTime.isEmpty() && repairTime.isDamaged()) {
-            int i = Math.min((int) (event.getOrb().value * repairTime.getXpRepairRatio()), repairTime.getDamageValue());
-            event.getOrb().value -= i * 2;
+            int i = Math.min((int) (event.getOrb().getValue() * repairTime.getXpRepairRatio()), repairTime.getDamageValue());
+            event.getOrb().setValue(event.getOrb().getValue() - i * 2);
             repairTime.setDamageValue(repairTime.getDamageValue() - i);
         }
 
-        event.getOrb().value = Math.max(0, event.getOrb().value);
+        event.getOrb().setValue(Math.max(0, event.getOrb().getValue()));
         player.detectEquipmentUpdates();
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST) // In order to add the drops early for other mods (e.g. grave mods)
     public static void playerDieEvent(LivingDropsEvent event) {
-        if (!ServerConfig.retainClawItems && event.getEntity() instanceof Player player && !player.level().getGameRules().getBoolean(GameRules.RULE_KEEPINVENTORY)) {
+        if (!ServerConfig.retainClawItems && event.getEntity() instanceof Player player && player.level() instanceof ServerLevel level && !level.getGameRules().get(GameRules.KEEP_INVENTORY)) {
             SimpleContainer clawInventory = ClawInventoryData.getData(player).getContainer();
             for (int i = 0; i < ClawInventoryData.Slot.size(); i++) {
                 ItemStack stack = clawInventory.getItem(i);
@@ -115,7 +116,7 @@ public class ClawToolHandler {
     }
 
     public static ItemStack getDragonHarvestTool(final Player player, final BlockState state) {
-        ItemStack mainStack = player.getInventory().getSelected();
+        ItemStack mainStack = player.getInventory().getSelectedItem();
         float newSpeed = 0F;
 
         if (!ToolUtils.shouldUseDragonTools(mainStack)) {
@@ -130,8 +131,8 @@ public class ClawToolHandler {
             if (!breakingItem.isEmpty() && breakingItem.isCorrectToolForDrops(state)) {
                 float tempSpeed = breakingItem.getDestroySpeed(state);
 
-                if (breakingItem.getItem() instanceof DiggerItem item) {
-                    tempSpeed = item.getDestroySpeed(breakingItem, state);
+                if (breakingItem.getItem().components().has(DataComponents.TOOL)) {
+                    tempSpeed = breakingItem.getItem().components().get(DataComponents.TOOL).getMiningSpeed(state);
                 }
 
                 if (tempSpeed > newSpeed) {
@@ -145,7 +146,7 @@ public class ClawToolHandler {
     }
 
     public static Pair<ItemStack, Integer> getDragonHarvestToolAndSlot(final Player player, final BlockState state) {
-        ItemStack mainStack = player.getInventory().getSelected();
+        ItemStack mainStack = player.getInventory().getSelectedItem();
         float newSpeed = 0F;
 
         if (!ToolUtils.shouldUseDragonTools(mainStack)) {
@@ -162,8 +163,8 @@ public class ClawToolHandler {
             if (!breakingItem.isEmpty() && breakingItem.isCorrectToolForDrops(state)) {
                 float tempSpeed = breakingItem.getDestroySpeed(state);
 
-                if (breakingItem.getItem() instanceof DiggerItem item) {
-                    tempSpeed = item.getDestroySpeed(breakingItem, state);
+                if (breakingItem.getItem().components().has(DataComponents.TOOL)) {
+                    tempSpeed = breakingItem.getItem().components().get(DataComponents.TOOL).getMiningSpeed(state);
                 }
 
                 if (tempSpeed > newSpeed) {
@@ -178,7 +179,7 @@ public class ClawToolHandler {
     }
 
     public static ItemStack getDragonHarvestTool(final Player player) {
-        ItemStack mainStack = player.getInventory().getSelected();
+        ItemStack mainStack = player.getInventory().getSelectedItem();
 
         if (!ToolUtils.shouldUseDragonTools(mainStack)) {
             return mainStack;
@@ -227,14 +228,14 @@ public class ClawToolHandler {
             ItemStack clawTool = getDragonHarvestTool(player);
 
             if (ItemStack.matches(clawTool, event.getOriginal())) {
-                clawTool.hurtAndBreak(1, player, LivingEntity.getSlotForHand(event.getHand()));
+                clawTool.hurtAndBreak(1, player, event.getHand().asEquipmentSlot());
             } else if (!player.level().isClientSide()) {
                 ClawInventoryData clawInventory = ClawInventoryData.getData(player);
 
                 if (clawInventory.switchedTool) {
                     // When attacking minecraft checks if the stack is the same java object as the mainhand stack - meaning we cannot modify that slot here
                     // Otherwise it will think it was the offhand item that broke and delete it
-                    player.level().playSound(null, player.blockPosition(), SoundEvents.ITEM_BREAK, SoundSource.PLAYERS, 1, 1);
+                    player.level().playSound(null, player.blockPosition(), SoundEvents.ITEM_BREAK.value(), SoundSource.PLAYERS);
                     PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new SyncBrokenTool(player.getId(), clawInventory.switchedTool ? clawInventory.switchedToolSlot : ClawInventoryData.Slot.SWORD.ordinal()));
                 }
             }

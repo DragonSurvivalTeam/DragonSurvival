@@ -25,7 +25,6 @@ import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import software.bernie.geckolib.util.Color;
 
 /**
  * Handles things related to the hunter ability (or the effect to be more precise) <br>
@@ -183,23 +182,6 @@ public class HunterHandler { // FIXME :: disable shadows in EntityRenderDispatch
 
         float alpha = calculateAlpha(data, entity == DragonSurvival.PROXY.getLocalPlayer());
         return applyAlpha(alpha, packedColor);
-    }
-
-    /** Returns the packed color in the {@link Color#ofARGB(int, int, int, int)} format */
-    public static Color modifyAlpha(@Nullable final Entity entity, Color color) {
-        if (entity == null) {
-            return color;
-        }
-
-        HunterData data = entity.getExistingData(DSDataAttachments.HUNTER).orElse(null);
-
-        if (data == null || !data.hasHunterStacks()) {
-            return color;
-        }
-
-        int packedColor = color.getColor();
-        float alpha = calculateAlpha(data, entity == DragonSurvival.PROXY.getLocalPlayer());
-        return Color.ofARGB((int) (alpha * 255), ARGB.red(packedColor), ARGB.green(packedColor), ARGB.blue(packedColor));
     }
 
     public static int calculateAlpha(final Entity entity) {

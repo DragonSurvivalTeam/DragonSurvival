@@ -27,7 +27,7 @@ public class EffectHandler {
 
         if (event.getEntity() instanceof Player player && event.getEffectInstance().getEffect().is(DSEffects.EXHAUSTED_SOUL)) {
             // Only for the visuals - we return 'false' for the cooldown check
-            player.getCooldowns().addCooldown(DSItems.DRAGON_SOUL.value(), event.getEffectInstance().getDuration());
+            player.getCooldowns().addCooldown(DSItems.DRAGON_SOUL.unwrapKey().orElseThrow().identifier(), event.getEffectInstance().getDuration());
         }
     }
 
@@ -61,7 +61,7 @@ public class EffectHandler {
             MobEffectInstance instance = event.getEffectInstance();
 
             if (instance != null && instance.getEffect().is(DSEffects.EXHAUSTED_SOUL)) {
-                player.getCooldowns().removeCooldown(DSItems.DRAGON_SOUL.value());
+                player.getCooldowns().removeCooldown(DSItems.DRAGON_SOUL.unwrapKey().orElseThrow().identifier());
             }
         }
     }
