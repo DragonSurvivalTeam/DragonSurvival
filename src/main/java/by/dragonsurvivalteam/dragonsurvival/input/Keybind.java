@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.input;
 
+import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
@@ -78,8 +79,8 @@ public enum Keybind {
     @Translation(type = Translation.Type.KEYBIND, comments = "Toggle dragon soul placement")
     TOGGLE_DRAGON_SOUL_PLACEMENT(KeyConflictContext.IN_GAME, GLFW.GLFW_KEY_UNKNOWN);
 
-    @Translation(comments = "Dragon Survival")
-    private static final String CATEGORY = Translation.Type.KEYBIND.wrap("category");
+    // FIXME :: Add translation key
+    private static final KeyMapping.Category CATEGORY = new KeyMapping.Category(DragonSurvival.res("category"));
 
     private final IKeyConflictContext keyConflictContext;
     private final KeyModifier defaultModifier;
@@ -99,10 +100,13 @@ public enum Keybind {
 
     @SubscribeEvent
     public static void registerAllKeys(final RegisterKeyMappingsEvent event) {
+        event.registerCategory(CATEGORY);
+
         for (Keybind keybind : values()) {
             event.register(keybind.get());
         }
     }
+
 
     public KeyMapping get() {
         if (keyMapping == null) {
