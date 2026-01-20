@@ -14,7 +14,9 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.util.ARGB;
+import net.minecraft.util.RandomSource;
 import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 
@@ -54,7 +56,7 @@ public class CustomGlowParticle extends GlowParticle {
             this.sprites = sprites;
         }
 
-        public Particle createParticle(@NotNull final SimpleParticleType type, @NotNull final ClientLevel level, final double x, final double y, final double z, final double blockId, final double ySpeed, final double colorOffset) {
+        public Particle createParticle(@NotNull final SimpleParticleType type, @NotNull final ClientLevel level, final double x, final double y, final double z, final double blockId, final double ySpeed, final double colorOffset, RandomSource random) {
             CustomGlowParticle particle = new CustomGlowParticle(level, x, y, z, blockId, ySpeed, colorOffset, sprites);
 
             LocalPlayer player = Minecraft.getInstance().player;
