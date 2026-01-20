@@ -125,7 +125,7 @@ public class DragonSpecies implements AttributeModifierSupplier {
                 return;
             }
 
-            boolean isUnlocked = behaviour.unlockCondition().map(condition -> condition.test(Condition.entityContext(player.serverLevel(), player))).orElse(true);
+            boolean isUnlocked = behaviour.unlockCondition().map(condition -> condition.test(Condition.entityContext(player.level(), player))).orElse(true);
             UnlockableBehavior.Visibility visibility = behaviour.visibility().orElse(null);
 
             if (isAltar) {

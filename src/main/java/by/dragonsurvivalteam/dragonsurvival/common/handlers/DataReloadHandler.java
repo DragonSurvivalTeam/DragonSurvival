@@ -20,9 +20,9 @@ public class DataReloadHandler {
         // to have a multiserver architecture) you'll end up throwing errors during this
         // stage that you actually would want to ignore.
         try {
-            DragonStage.update(event.getRegistryAccess());
-            DragonSpecies.validate(event.getRegistryAccess());
-            DragonAbility.validate(event.getRegistryAccess());
+            DragonStage.update(event.getLookupProvider());
+            DragonSpecies.validate(event.getLookupProvider());
+            DragonAbility.validate(event.getLookupProvider());
         } catch (Exception e) {
             DragonSurvival.LOGGER.error("An error was thrown while trying to reload datapacks: {}", e.toString());
         }

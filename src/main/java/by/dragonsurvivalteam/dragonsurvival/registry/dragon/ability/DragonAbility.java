@@ -16,6 +16,7 @@ import by.dragonsurvivalteam.dragonsurvival.util.ResourceHelper;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -72,7 +73,7 @@ public record DragonAbility(
      * Handle validation that cannot be done through the codec </br>
      * Since they require more context
      */
-    public static void validate(final RegistryAccess access) {
+    public static void validate(final HolderLookup.Provider access) {
         StringBuilder errorMessage = new StringBuilder("The following abilities are incorrectly defined:");
         AtomicBoolean isDefinitionValid = new AtomicBoolean(true);
 

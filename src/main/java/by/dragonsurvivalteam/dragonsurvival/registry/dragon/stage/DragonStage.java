@@ -67,7 +67,7 @@ public record DragonStage(
     private static double minGrowth;
     private static double maxGrowth;
 
-    public static void update(final RegistryAccess access) {
+    public static void update(final HolderLookup.Provider access) {
         Pair<Double, Double> sizes = calculateGrowthBounds(access);
         minGrowth = sizes.getFirst();
         maxGrowth = sizes.getSecond();
@@ -76,7 +76,7 @@ public record DragonStage(
         validate(access);
     }
 
-    private static void validate(final RegistryAccess access) {
+    private static void validate(final HolderLookup.Provider access) {
         boolean areBuiltInLevelsValid = true;
         StringBuilder builtInCheck = new StringBuilder("The following required built-in dragon levels are missing:");
 

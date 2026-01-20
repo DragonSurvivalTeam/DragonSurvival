@@ -10,6 +10,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.data_maps.DietEntryCache;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
@@ -67,17 +68,19 @@ public class DragonFoodHandler {
 
     /** Checks if the item can be eaten (not whether it makes sense, see {@link DragonFoodHandler#getBadFoodProperties()}) */
     public static boolean isEdible(final Player player, final ItemStack stack) {
-        return stack.getFoodProperties(player) != null;
+        return stack.getComponents().get(DataComponents.FOOD) != null;
     }
 
     public static int getUseDuration(final ItemStack stack, final Player entity, int original) {
         FoodProperties properties = getDragonFoodProperties(DragonStateProvider.getData(entity).species(), stack, null);
 
-        if (properties != null) {
-            return properties.eatDurationTicks();
-        } else {
-            return original;
-        }
+        // FIXME
+//        if (properties != null) {
+//            return properties.eatDurationTicks();
+//        } else {
+//            return original;
+//        }
+        return original;
     }
 
     @SubscribeEvent
@@ -96,9 +99,10 @@ public class DragonFoodHandler {
 
     private static FoodProperties getBadFoodProperties() {
         FoodProperties.Builder builder = new FoodProperties.Builder();
-        builder.effect(() -> new MobEffectInstance(MobEffects.HUNGER, 600, 0), 1.0F);
-        builder.effect(() -> new MobEffectInstance(MobEffects.POISON, 600, 0), badFoodPoisonChance);
-        builder.nutrition(1);
+        // FIXME
+//        builder.effect(() -> new MobEffectInstance(MobEffects.HUNGER, 600, 0), 1.0F);
+//        builder.effect(() -> new MobEffectInstance(MobEffects.POISON, 600, 0), badFoodPoisonChance);
+//        builder.nutrition(1);
         return builder.build();
     }
 }

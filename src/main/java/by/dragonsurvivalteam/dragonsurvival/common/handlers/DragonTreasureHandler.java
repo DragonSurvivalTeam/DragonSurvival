@@ -89,11 +89,11 @@ public class DragonTreasureHandler {
 
         if (treasureData.isResting() != wasResting && player instanceof ServerPlayer serverPlayer) {
             PacketDistributor.sendToPlayersTrackingEntityAndSelf(serverPlayer, new SyncResting(serverPlayer.getId(), treasureData.isResting()));
-            serverPlayer.serverLevel().updateSleepingPlayerList();
+            serverPlayer.level().updateSleepingPlayerList();
         }
 
         if (treasureData.isResting()) {
-            if (player.level().isDay()) {
+            if (!player.level().isDarkOutside()) {
                 treasureData.sleepingTicks = 0;
             } else {
                 treasureData.sleepingTicks++;
@@ -111,7 +111,7 @@ public class DragonTreasureHandler {
             if (treasureData.isResting()) {
                 treasureData.setResting(false);
                 PacketDistributor.sendToPlayersTrackingEntityAndSelf(serverPlayer, new SyncResting(serverPlayer.getId(), treasureData.isResting()));
-                serverPlayer.serverLevel().updateSleepingPlayerList();
+                serverPlayer.level().updateSleepingPlayerList();
             }
         }
     }

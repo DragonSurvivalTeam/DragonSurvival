@@ -137,7 +137,7 @@ public class DragonGrowthHandler {
             // "accumulate" growth over time and gain it all at once if in an enclosed space
             boolean isGrowthAllowed = isGrowthAllowed(player, handler, desiredGrowth);
 
-            if (!isGrowthAllowed || oldGrowth == desiredGrowth || dragonStage.isNaturalGrowthStopped().map(condition -> condition.matches(player.serverLevel(), player.position(), player)).orElse(false)) {
+            if (!isGrowthAllowed || oldGrowth == desiredGrowth || dragonStage.isNaturalGrowthStopped().map(condition -> condition.matches(player.level(), player.position(), player)).orElse(false)) {
                 if (handler.isGrowing) {
                     handler.isGrowing = false;
                     PacketDistributor.sendToPlayer(player, new SyncGrowthState(false));

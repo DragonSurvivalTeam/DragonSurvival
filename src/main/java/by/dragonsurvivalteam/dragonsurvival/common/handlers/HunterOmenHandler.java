@@ -19,10 +19,10 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
-import net.minecraft.world.entity.animal.IronGolem;
-import net.minecraft.world.entity.npc.AbstractVillager;
-import net.minecraft.world.entity.npc.Villager;
-import net.minecraft.world.entity.npc.VillagerProfession;
+import net.minecraft.world.entity.animal.golem.IronGolem;
+import net.minecraft.world.entity.npc.villager.AbstractVillager;
+import net.minecraft.world.entity.npc.villager.Villager;
+import net.minecraft.world.entity.npc.villager.VillagerProfession;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -96,7 +96,7 @@ public class HunterOmenHandler {
         }
 
         // Have the cartographer drop a hunter's castle map if the player kills them (but not from stealing)
-        if (level instanceof ServerLevel serverLevel && villager.getVillagerData().getProfession() == VillagerProfession.CARTOGRAPHER) {
+        if (level instanceof ServerLevel serverLevel && villager.getVillagerData().profession() == VillagerProfession.CARTOGRAPHER) {
             for (ItemStack stack : loot) {
                 if (stack.getItem() != Items.MAP) {
                     continue;
@@ -140,11 +140,11 @@ public class HunterOmenHandler {
             return;
         }
 
-        generateVillagerLoot(genericVillager, player.level(), player, true).forEach(genericVillager::spawnAtLocation);
+        generateVillagerLoot(genericVillager, player.level(), player, true).forEach(stack -> genericVillager.spawnAtLocation((ServerLevel)player.level(), stack));
         int experience;
 
         if (genericVillager instanceof Villager villager) {
-            experience = (int) Math.pow(2, villager.getVillagerData().getLevel());
+            experience = (int) Math.pow(2, villager.getVillagerData().level());
         } else {
             // This happens with the wandering trader in vanilla.
             experience = 4;
@@ -173,7 +173,7 @@ public class HunterOmenHandler {
         Entity entity = event.getEntity();
 
         if (entity instanceof IronGolem golem) {
-            golem.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(golem, Player.class, 0, true, false, livingEntity -> livingEntity.hasEffect(DSEffects.HUNTER_OMEN)));
+            golem.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(golem, Player.class, 0, true, false, (livingEntity, level) -> livingEntity.hasEffect(DSEffects.HUNTER_OMEN)));
         }
     }
 
