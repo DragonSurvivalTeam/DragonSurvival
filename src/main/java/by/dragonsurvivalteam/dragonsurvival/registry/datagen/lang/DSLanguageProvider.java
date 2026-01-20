@@ -7,6 +7,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSItemTags;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.BuiltInDragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.util.ResourceHelper;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
@@ -129,6 +130,10 @@ public class DSLanguageProvider extends LanguageProvider {
         add(Tags.getTagTranslationKey(BlockTags.MINEABLE_WITH_PICKAXE), "Mineable with Pickaxe");
         add(Tags.getTagTranslationKey(BlockTags.MINEABLE_WITH_AXE), "Mineable with Axe");
         add(Tags.getTagTranslationKey(BlockTags.MINEABLE_WITH_SHOVEL), "Mineable with Shovel");
+
+        for (Direction direction : Direction.values()) {
+            add(enumClassKey(direction) + "." + direction.name().toLowerCase(Locale.ENGLISH), capitalize(direction.getName()));
+        }
     }
 
     private void handleTranslationAnnotations(final Set<ModFileScanData.AnnotationData> annotationDataSet) {
