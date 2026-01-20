@@ -29,7 +29,7 @@ public class ConfigUtils {
             TagKey<Item> tag = TagKey.create(Registries.ITEM, location);
             return stack -> stack.is(tag);
         } else {
-            Item item = BuiltInRegistries.ITEM.get(location);
+            Item item = BuiltInRegistries.ITEM.get(location).orElseThrow().value();
             return stack -> stack.is(item);
         }
     }
@@ -42,7 +42,7 @@ public class ConfigUtils {
             TagKey<Item> tag = TagKey.create(Registries.ITEM, location);
             return item -> item.builtInRegistryHolder().is(tag);
         } else {
-            Item itemToCheck = BuiltInRegistries.ITEM.get(location);
+            Item itemToCheck = BuiltInRegistries.ITEM.get(location).orElseThrow().value();
             return item -> item == itemToCheck;
         }
     }
@@ -55,7 +55,7 @@ public class ConfigUtils {
             TagKey<Block> tag = TagKey.create(Registries.BLOCK, location);
             return stack -> stack.is(tag);
         } else {
-            Block block = BuiltInRegistries.BLOCK.get(location);
+            Block block = BuiltInRegistries.BLOCK.get(location).orElseThrow().value();
             return stack -> stack.is(block);
         }
     }
@@ -68,12 +68,12 @@ public class ConfigUtils {
             TagKey<Item> tag = TagKey.create(Registries.ITEM, location);
 
             return () -> {
-                Optional<HolderSet.Named<Item>> optional = BuiltInRegistries.ITEM.getTag(tag);
+                Optional<HolderSet.Named<Item>> optional = BuiltInRegistries.ITEM.get(tag);
                 return optional.isPresent() ? optional.get() : HolderSet.empty();
             };
         } else {
             return () -> {
-                Optional<Holder.Reference<Item>> optional = BuiltInRegistries.ITEM.getHolder(location);
+                Optional<Holder.Reference<Item>> optional = BuiltInRegistries.ITEM.get(location);
                 return optional.isPresent() ? HolderSet.direct(optional.get()) : HolderSet.empty();
             };
         }
@@ -121,7 +121,7 @@ public class ConfigUtils {
     @SuppressWarnings("deprecation") // ignore
     public static String location(final Object object) {
         if (object instanceof TagKey<?> tag) {
-            return "#" + tag.identifier();
+            return "#" + tag.location();
         }
 
         if (object instanceof Block block) {

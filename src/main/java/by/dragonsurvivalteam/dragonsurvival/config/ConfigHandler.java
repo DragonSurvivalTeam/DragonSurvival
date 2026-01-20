@@ -11,6 +11,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.DSLanguageProv
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import com.electronwill.nightconfig.core.EnumGetMethod;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
@@ -101,7 +102,7 @@ public class ConfigHandler {
                 ModAnnotation.EnumHolder sidesValue = (ModAnnotation.EnumHolder) annotationData.annotationData().get("side");
                 Dist side = Objects.equals(sidesValue.value(), "CLIENT") ? Dist.CLIENT : Dist.DEDICATED_SERVER;
 
-                if (side == FMLEnvironment.dist || side == Dist.DEDICATED_SERVER) {
+                if (side == FMLEnvironment.getDist() || side == Dist.DEDICATED_SERVER) {
                     try {
                         DragonSurvival.LOGGER.debug("Loading class [{}] for config option [{}]", annotationData.clazz().getClassName(), annotationData.memberName());
                         Class<?> classType = Class.forName(annotationData.clazz().getClassName());
@@ -158,7 +159,7 @@ public class ConfigHandler {
 
         ModContainer modContainer = ModLoadingContext.get().getActiveContainer();
 
-        if (FMLLoader.getDist().isClient()) {
+        if (FMLLoader.getCurrent().getDist().isClient()) {
             Pair<ClientConfig, ModConfigSpec> clientConfig = new ModConfigSpec.Builder().configure(ClientConfig::new);
             modContainer.registerConfig(ModConfig.Type.CLIENT, clientConfig.getRight());
         }
@@ -415,9 +416,9 @@ public class ConfigHandler {
      */
     private static <T> List<T> parseIdentifier(@NotNull final Registry<T> registry, final String location) {
         // There are configuration which have additional information after the resource location (e.g. food configuration)
-        Identifier Identifier = Identifier.tryParse(location);
+        Identifier identifier = Identifier.tryParse(location);
 
-        if (Identifier == null) {
+        if (identifier == null) {
             // Only split the namespace from the (potential) regex path
             String[] splitLocation = location.split(":", 2);
 
@@ -437,7 +438,7 @@ public class ConfigHandler {
                     Matcher matcher = pattern.matcher(keyLocation.getPath());
 
                     if (matcher.matches()) {
-                        list.add(registry.get(key));
+                        list.add(registry.get(key).orElseThrow().value());
                     }
                 }
             });
@@ -445,21 +446,21 @@ public class ConfigHandler {
             return list;
         }
 
-        if (registry.containsKey(Identifier)) {
-            Optional<Holder.Reference<T>> optional = registry.getHolder(Identifier);
+        if (registry.containsKey(identifier)) {
+            Optional<Holder.Reference<T>> optional = registry.get(identifier);
 
             if (optional.isPresent() && optional.get().isBound()) {
                 return List.of(optional.get().value());
             }
         } else {
-            Optional<TagKey<T>> tag = registry.getTagNames().filter(registryTag -> registryTag.identifier().equals(Identifier)).findAny();
+            Optional<HolderSet.Named<T>> tag = registry.getTags().filter(registryTag -> registryTag.key().location().equals(identifier)).findAny();
 
             if (tag.isPresent()) {
                 List<T> list = new ArrayList<>();
 
-                registry.holders().forEach(holder -> holder.tags().forEach(
+                registry.asHolderIdMap().forEach(holder -> holder.tags().forEach(
                                 holderTag -> {
-                                    if (tag.get().equals(holderTag)) {
+                                    if (tag.orElseThrow().key().equals(holderTag)) {
                                         list.add(holder.value());
                                     }
                                 }
