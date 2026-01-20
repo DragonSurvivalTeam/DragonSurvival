@@ -7,6 +7,9 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.util.ProblemReporter;
+import net.minecraft.world.level.storage.TagValueInput;
+import net.minecraft.world.level.storage.ValueInput;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
@@ -19,7 +22,10 @@ public record SyncMagicData(CompoundTag magicData) implements CustomPacketPayloa
     );
 
     public static void handleClient(final SyncMagicData packet, final IPayloadContext context) {
-        context.enqueueWork(() -> MagicData.getData(context.player()).deserializeNBT(context.player().registryAccess(), packet.magicData()));
+        context.enqueueWork(() -> {
+            ValueInput valueInput = TagValueInput.create(ProblemReporter.DISCARDING, context.player().registryAccess(), packet.magicData());
+            MagicData.getData(context.player()).deserialize(valueInput);
+        });
     }
 
     @Override

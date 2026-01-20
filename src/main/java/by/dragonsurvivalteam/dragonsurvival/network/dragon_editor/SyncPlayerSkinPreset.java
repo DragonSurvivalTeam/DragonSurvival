@@ -11,7 +11,10 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.storage.TagValueInput;
+import net.minecraft.world.level.storage.ValueInput;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
@@ -30,7 +33,8 @@ public record SyncPlayerSkinPreset(int playerId, ResourceKey<DragonSpecies> drag
         context.enqueueWork(() -> {
             if (context.player().level().getEntity(packet.playerId()) instanceof Player player) {
                 SkinPreset newPreset = new SkinPreset();
-                newPreset.deserializeNBT(player.registryAccess(), packet.preset());
+                ValueInput valueInput = TagValueInput.create(ProblemReporter.DISCARDING, player.registryAccess(), packet.preset());
+                newPreset.deserialize(valueInput);
 
                 DragonStateHandler handler = DragonStateProvider.getData(player);
                 handler.setSkinPresetForType(packet.dragonSpecies(), newPreset);
@@ -43,7 +47,8 @@ public record SyncPlayerSkinPreset(int playerId, ResourceKey<DragonSpecies> drag
         context.enqueueWork(() -> {
             if (context.player().level().getEntity(packet.playerId()) instanceof Player player) {
                 SkinPreset newPreset = new SkinPreset();
-                newPreset.deserializeNBT(player.registryAccess(), packet.preset());
+                ValueInput valueInput = TagValueInput.create(ProblemReporter.DISCARDING, player.registryAccess(), packet.preset());
+                newPreset.deserialize(valueInput);
                 DragonStateProvider.getData(player).setSkinPresetForType(packet.dragonSpecies(), newPreset);
             }
         }).thenRun(() -> PacketDistributor.sendToPlayersTrackingEntityAndSelf(context.player(), packet));

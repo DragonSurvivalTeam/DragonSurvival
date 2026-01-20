@@ -15,7 +15,10 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.storage.TagValueInput;
+import net.minecraft.world.level.storage.ValueInput;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
@@ -49,7 +52,8 @@ public record SyncComplete(int playerId, CompoundTag data) implements CustomPack
         context.enqueueWork(() -> {
             if (context.player().level().getEntity(packet.playerId()) instanceof Player player) {
                 DragonStateHandler handler = DragonStateProvider.getData(player);
-                handler.deserializeNBT(player.registryAccess(), packet.data());
+                ValueInput valueInput = TagValueInput.create(ProblemReporter.DISCARDING, player.registryAccess(), packet.data());
+                handler.deserialize(valueInput);
                 player.refreshDimensions();
             }
         });
@@ -61,7 +65,8 @@ public record SyncComplete(int playerId, CompoundTag data) implements CustomPack
 
             DragonStateHandler handler = DragonStateProvider.getData(player);
             Holder<DragonSpecies> previousType = handler.species();
-            handler.deserializeNBT(player.registryAccess(), packet.data());
+            ValueInput valueInput = TagValueInput.create(ProblemReporter.DISCARDING, player.registryAccess(), packet.data());
+            handler.deserialize(valueInput);
             handleDragonSync(player, false);
 
             if (!handler.isDragon()) {
