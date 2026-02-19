@@ -29,6 +29,8 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
@@ -144,12 +146,12 @@ public class ModifierWithDuration extends DurationInstanceBase<ModifiersWithDura
             }
         }
 
-        public Tag save(@NotNull final HolderLookup.Provider provider) {
-            return CODEC.encodeStart(provider.createSerializationContext(NbtOps.INSTANCE), this).getOrThrow();
+        public void save(@NotNull ValueOutput valueOutput, final String key) {
+            valueOutput.store(key, CODEC, this);
         }
 
-        public static @Nullable Instance load(@NotNull final HolderLookup.Provider provider, final CompoundTag nbt) {
-            return CODEC.parse(provider.createSerializationContext(NbtOps.INSTANCE), nbt).resultOrPartial(DragonSurvival.LOGGER::error).orElse(null);
+        public static @Nullable ModifierWithDuration.Instance load(@NotNull ValueInput valueInput, final String key) {
+            return valueInput.read(key, CODEC).orElse(null);
         }
 
         @Override

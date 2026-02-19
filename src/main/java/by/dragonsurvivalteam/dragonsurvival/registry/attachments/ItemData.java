@@ -2,18 +2,20 @@ package by.dragonsurvivalteam.dragonsurvival.registry.attachments;
 
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncData;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.ProblemReporter;
+import net.minecraft.world.level.storage.TagValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.common.util.ValueIOSerializable;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
 @EventBusSubscriber
-public class ItemData implements INBTSerializable<CompoundTag> {
+public class ItemData implements ValueIOSerializable {
     private static final int SMELT_PROGRESS_RESET = Functions.secondsToTicks(3);
 
     public boolean isFireImmune;
@@ -42,7 +44,10 @@ public class ItemData implements INBTSerializable<CompoundTag> {
                     data.smeltingProgress = 0;
                     data.noSmeltingChange = 0;
 
-                    PacketDistributor.sendToPlayersNear(serverLevel, null, event.getEntity().getX(), event.getEntity().getY(), event.getEntity().getZ(), 16, new SyncData(event.getEntity().getId(), DSDataAttachments.ITEM.getId(), data.serializeNBT(serverLevel.registryAccess())));
+                    TagValueOutput tagValueOutput = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, serverLevel.registryAccess());
+                    data.serialize(tagValueOutput);
+
+                    PacketDistributor.sendToPlayersNear(serverLevel, null, event.getEntity().getX(), event.getEntity().getY(), event.getEntity().getZ(), 16, new SyncData(event.getEntity().getId(), DSDataAttachments.ITEM.getId(), tagValueOutput.buildResult()));
                 }
             } else {
                 data.noSmeltingChange = 0;
@@ -53,19 +58,17 @@ public class ItemData implements INBTSerializable<CompoundTag> {
     }
 
     @Override
-    public CompoundTag serializeNBT(@NotNull final HolderLookup.Provider provider) {
-        CompoundTag tag = new CompoundTag();
-        tag.putBoolean(IS_FIRE_IMMUNE, isFireImmune);
-        tag.putDouble(SMELTING_TIME, smeltingTime);
-        tag.putDouble(SMELTING_PROGRESS, smeltingProgress);
-        return tag;
+    public void serialize(@NotNull final ValueOutput valueOutput) {
+        valueOutput.putBoolean(IS_FIRE_IMMUNE, isFireImmune);
+        valueOutput.putDouble(SMELTING_TIME, smeltingTime);
+        valueOutput.putDouble(SMELTING_PROGRESS, smeltingProgress);
     }
 
     @Override
-    public void deserializeNBT(@NotNull final HolderLookup.Provider provider, @NotNull final CompoundTag tag) {
-        isFireImmune = tag.getBoolean(IS_FIRE_IMMUNE);
-        smeltingTime = tag.getDouble(SMELTING_TIME);
-        smeltingProgress = tag.getDouble(SMELTING_PROGRESS);
+    public void deserialize(@NotNull final ValueInput valueInput) {
+        isFireImmune = valueInput.getBooleanOr(IS_FIRE_IMMUNE, false);
+        smeltingTime = valueInput.getDoubleOr(SMELTING_TIME, 0.0);
+        smeltingProgress = valueInput.getDoubleOr(SMELTING_PROGRESS, 0.0);
     }
 
     public static final String IS_FIRE_IMMUNE = "is_fire_immune";

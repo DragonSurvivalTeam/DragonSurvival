@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.attachments;
 
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.EffectModification;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.HarvestBonus;
 import by.dragonsurvivalteam.dragonsurvival.util.ToolUtils;
 import net.minecraft.core.HolderLookup;
@@ -8,6 +9,8 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.attachment.AttachmentType;
@@ -91,13 +94,13 @@ public class HarvestBonuses extends Storage<HarvestBonus.Instance> {
     }
 
     @Override
-    protected Tag save(@NotNull final HolderLookup.Provider provider, final HarvestBonus.Instance entry) {
-        return entry.save(provider);
+    protected void save(@NotNull ValueOutput valueOutput, final HarvestBonus.Instance entry, final String key) {
+        entry.save(valueOutput, key);
     }
 
     @Override
-    protected HarvestBonus.Instance load(@NotNull final HolderLookup.Provider provider, final CompoundTag tag) {
-        return HarvestBonus.Instance.load(provider, tag);
+    protected HarvestBonus.Instance load(@NotNull ValueInput valueInput, final String key) {
+        return HarvestBonus.Instance.load(valueInput, key);
     }
 
     @Override

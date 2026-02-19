@@ -1,17 +1,16 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.attachments;
 
 import by.dragonsurvivalteam.dragonsurvival.network.player.SyncPitchAndYaw;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.common.util.ValueIOSerializable;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.UnknownNullability;
 
-public class MovementData implements INBTSerializable<CompoundTag> {
+public class MovementData implements ValueIOSerializable {
     public static final String HEAD_YAW = "headYaw";
     public static final String HEAD_PITCH = "headPitch";
     public static final String BODY_YAW = "bodyYaw";
@@ -97,18 +96,16 @@ public class MovementData implements INBTSerializable<CompoundTag> {
     }
 
     @Override
-    public @UnknownNullability CompoundTag serializeNBT(HolderLookup.@NotNull Provider provider) {
-        CompoundTag movementData = new CompoundTag();
-        movementData.putDouble(HEAD_YAW, headYaw);
-        movementData.putDouble(BODY_YAW, bodyYaw);
-        movementData.putDouble(HEAD_PITCH, headPitch);
-        return movementData;
+    public void serialize(@NotNull final ValueOutput valueOutput) {
+        valueOutput.putDouble(HEAD_YAW, headYaw);
+        valueOutput.putDouble(BODY_YAW, bodyYaw);
+        valueOutput.putDouble(HEAD_PITCH, headPitch);
     }
 
     @Override
-    public void deserializeNBT(HolderLookup.@NotNull Provider provider, @NotNull CompoundTag nbt) {
-        headYaw = nbt.getDouble(HEAD_YAW);
-        bodyYaw = nbt.getDouble(BODY_YAW);
-        headPitch = nbt.getDouble(HEAD_PITCH);
+    public void deserialize(@NotNull final ValueInput valueInput) {
+        headYaw = valueInput.getDoubleOr(HEAD_YAW, 0.0f);
+        bodyYaw = valueInput.getDoubleOr(BODY_YAW, 0.0f);
+        headPitch = valueInput.getDoubleOr(HEAD_PITCH, 0.0f);
     }
 }

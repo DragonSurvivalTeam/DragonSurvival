@@ -1,6 +1,5 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.common_effects;
 
-import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ModifierType;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.duration_instance.CommonData;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.duration_instance.DurationInstance;
@@ -36,15 +35,14 @@ import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtOps;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.random.SimpleWeightedRandomList;
-import net.minecraft.util.random.WeightedEntry;
+import net.minecraft.util.ProblemReporter;
+import net.minecraft.util.random.WeightedList;
+import net.minecraft.util.random.Weighted;
 import net.minecraft.util.random.WeightedRandom;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -62,6 +60,10 @@ import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.TagValueInput;
+import net.minecraft.world.level.storage.TagValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
@@ -89,7 +91,7 @@ public class SummonEntityEffect extends DurationInstanceBase<SummonedEntities, S
     public static final MapCodec<SummonEntityEffect> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
                     DurationInstanceBase.CODEC.fieldOf("base").forGetter(identity -> identity),
                     Codec.either(
-                            SimpleWeightedRandomList.wrappedCodec(BuiltInRegistries.ENTITY_TYPE.byNameCodec()),
+                            WeightedList.codec(BuiltInRegistries.ENTITY_TYPE.byNameCodec()),
                             RegistryCodecs.homogeneousList(Registries.ENTITY_TYPE)
                     ).fieldOf("entities").forGetter(SummonEntityEffect::entities),
                     LevelBasedValue.CODEC.fieldOf("max_summons").forGetter(SummonEntityEffect::maxSummons),
@@ -123,7 +125,7 @@ public class SummonEntityEffect extends DurationInstanceBase<SummonedEntities, S
         }
     }
 
-    private final Either<SimpleWeightedRandomList<EntityType<?>>, HolderSet<EntityType<?>>> entities;
+    private final Either<WeightedList<EntityType<?>>, HolderSet<EntityType<?>>> entities;
     private final LevelBasedValue maxSummons;
     private final List<AttributeScale> attributeScales;
     private final Optional<CompoundTag> nbt;
@@ -131,7 +133,7 @@ public class SummonEntityEffect extends DurationInstanceBase<SummonedEntities, S
 
     public SummonEntityEffect(
             final DurationInstanceBase<?, ?> base,
-            final Either<SimpleWeightedRandomList<EntityType<?>>, HolderSet<EntityType<?>>> entities,
+            final Either<WeightedList<EntityType<?>>, HolderSet<EntityType<?>>> entities,
             final LevelBasedValue maxSummons,
             final List<AttributeScale> attributeScales,
             final Optional<CompoundTag> nbt,
@@ -181,11 +183,11 @@ public class SummonEntityEffect extends DurationInstanceBase<SummonedEntities, S
         MutableComponent component = Component.translatable(SUMMON, DSColors.dynamicValue(maxSummons.calculate(ability.level())));
 
         entities.ifLeft(list -> {
-            int totalWeight = WeightedRandom.getTotalWeight(list.unwrap());
+            int totalWeight = WeightedRandom.getTotalWeight(list.unwrap(), Weighted::weight);
 
             list.unwrap().forEach(wrapper -> {
-                Component entityName = DSColors.dynamicValue(wrapper.data().getDescription());
-                double chance = (double) wrapper.getWeight().asInt() / totalWeight;
+                Component entityName = DSColors.dynamicValue(wrapper.value().getDescription());
+                double chance = (double) wrapper.weight() / totalWeight;
                 component.append(Component.translatable(SUMMON_CHANCE, DSColors.dynamicValue(entityName), DSColors.dynamicValue(NumberFormat.getPercentInstance().format(chance))));
             });
 
@@ -225,7 +227,7 @@ public class SummonEntityEffect extends DurationInstanceBase<SummonedEntities, S
         return DSDataAttachments.SUMMONED_ENTITIES.value();
     }
 
-    public Either<SimpleWeightedRandomList<EntityType<?>>, HolderSet<EntityType<?>>> entities() {
+    public Either<WeightedList<EntityType<?>>, HolderSet<EntityType<?>>> entities() {
         return entities;
     }
 
@@ -333,7 +335,7 @@ public class SummonEntityEffect extends DurationInstanceBase<SummonedEntities, S
 
         private void summon(final ServerPlayer storageHolder, final BlockPos spawnPosition, final SummonedEntities summonData) {
             EntityType<?> type = baseData().entities().map(
-                    list -> list.getRandom(storageHolder.getRandom()).map(WeightedEntry.Wrapper::data).orElse(null),
+                    list -> list.getRandom(storageHolder.getRandom()).orElse(null),
                     set -> set.getRandomElement(storageHolder.getRandom()).map(Holder::value).orElse(null)
             );
 
@@ -357,7 +359,7 @@ public class SummonEntityEffect extends DurationInstanceBase<SummonedEntities, S
                 }
             }
 
-            Entity entity = type.spawn(storageHolder.serverLevel(), spawnPosition.above(), EntitySpawnReason.TRIGGERED);
+            Entity entity = type.spawn(storageHolder.level(), spawnPosition.above(), EntitySpawnReason.TRIGGERED);
 
             if (entity == null) {
                 return;
@@ -382,9 +384,12 @@ public class SummonEntityEffect extends DurationInstanceBase<SummonedEntities, S
             setAllied(storageHolder, entity);
 
             if (baseData().nbt().isPresent()) {
-                CompoundTag entityTag = entity.saveWithoutId(new CompoundTag());
-                entityTag.merge(baseData().nbt().get());
-                entity.load(entityTag);
+                TagValueOutput valueOutput = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, storageHolder.level().registryAccess());
+                entity.saveWithoutId(valueOutput);
+                valueOutput.store(baseData().nbt().get());
+
+                ValueInput valueInput = TagValueInput.create(ProblemReporter.DISCARDING, storageHolder.level().registryAccess(), valueOutput.buildResult());
+                entity.load(valueInput);
             }
 
             SummonData summon = entity.getData(DSDataAttachments.SUMMON);
@@ -402,7 +407,7 @@ public class SummonEntityEffect extends DurationInstanceBase<SummonedEntities, S
             }
 
             if (entity instanceof TamableAnimal tamable) {
-                tamable.setOwnerUUID(dragon.getUUID());
+                tamable.setOwner(dragon);
                 tamable.setTame(true, true);
             }
 
@@ -457,12 +462,12 @@ public class SummonEntityEffect extends DurationInstanceBase<SummonedEntities, S
             }
         }
 
-        public Tag save(@NotNull final HolderLookup.Provider provider) {
-            return CODEC.encodeStart(provider.createSerializationContext(NbtOps.INSTANCE), this).getOrThrow();
+        public void save(@NotNull ValueOutput valueOutput, final String key) {
+            valueOutput.store(key, CODEC, this);
         }
 
-        public static @Nullable SummonEntityEffect.Instance load(@NotNull final HolderLookup.Provider provider, final CompoundTag nbt) {
-            return CODEC.parse(provider.createSerializationContext(NbtOps.INSTANCE), nbt).resultOrPartial(DragonSurvival.LOGGER::error).orElse(null);
+        public static @Nullable SummonEntityEffect.Instance load(@NotNull ValueInput valueInput, final String key) {
+            return valueInput.read(key, CODEC).orElse(null);
         }
 
         public CopyOnWriteArrayList<UUID> entityUUIDs() {

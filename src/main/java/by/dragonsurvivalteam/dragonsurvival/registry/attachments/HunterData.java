@@ -1,13 +1,13 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.attachments;
 
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.HunterHandler;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.LivingEntity;
-import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.common.util.ValueIOSerializable;
 import org.jetbrains.annotations.NotNull;
 
-public class HunterData implements INBTSerializable<CompoundTag> {
+public class HunterData implements ValueIOSerializable {
     /** Only needs to be updated on effect removal (server -> client) */
     private int hunterStacks;
     /** Translucent rendering in the inventory screen leads to issues (invisible model) */
@@ -69,11 +69,11 @@ public class HunterData implements INBTSerializable<CompoundTag> {
         transparencyDisabled = false;
     }
 
-    @Override
-    public CompoundTag serializeNBT(@NotNull final HolderLookup.Provider provider) {
-        return new CompoundTag();
-    }
+    // None of this data actually needs to be saved
 
     @Override
-    public void deserializeNBT(@NotNull final HolderLookup.Provider provider, @NotNull final CompoundTag tag) { /* Nothing to do */ }
+    public void serialize(@NotNull final ValueOutput valueOutput) {}
+
+    @Override
+    public void deserialize(@NotNull final ValueInput valueInput) {}
 }

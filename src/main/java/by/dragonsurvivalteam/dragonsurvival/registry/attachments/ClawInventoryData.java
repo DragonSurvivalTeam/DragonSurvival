@@ -7,11 +7,10 @@ import by.dragonsurvivalteam.dragonsurvival.network.claw.SyncDragonClawsMenu;
 import by.dragonsurvivalteam.dragonsurvival.util.ToolUtils;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.SimpleContainer;
@@ -22,14 +21,17 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.minecraft.world.level.storage.TagValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.common.util.ValueIOSerializable;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
 import java.util.Optional;
 
-public class ClawInventoryData implements INBTSerializable<CompoundTag> {
+public class ClawInventoryData implements ValueIOSerializable {
     public static final String IS_MENU_OPEN = "is_menu_open";
     public static final String SHOULD_RENDER_CLAWS = "should_render_claws";
 
@@ -237,7 +239,9 @@ public class ClawInventoryData implements INBTSerializable<CompoundTag> {
             return;
         }
 
-        PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new SyncDragonClawsMenu(player.getId(), isMenuOpen, serializeNBT(player.registryAccess())));
+        TagValueOutput tagValueOutput = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, player.registryAccess());
+        serialize(tagValueOutput);
+        PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new SyncDragonClawsMenu(player.getId(), isMenuOpen, tagValueOutput.buildResult()));
     }
 
     public static ClawInventoryData getData(final Player player) {
@@ -245,36 +249,27 @@ public class ClawInventoryData implements INBTSerializable<CompoundTag> {
     }
 
     @Override
-    public CompoundTag serializeNBT(@NotNull final HolderLookup.Provider provider) {
-        CompoundTag tag = new CompoundTag();
-        tag.putBoolean(IS_MENU_OPEN, isMenuOpen);
+    public void serialize(@NotNull final ValueOutput valueOutput) {
+        valueOutput.putBoolean(IS_MENU_OPEN, isMenuOpen);
 
         for (ClawInventoryData.Slot slot : ClawInventoryData.Slot.values()) {
             if (clawsInventory.getItem(slot.ordinal()).isEmpty()) {
                 continue;
             }
 
-            tag.put(slot.name(), clawsInventory.getItem(slot.ordinal()).save(provider));
+            valueOutput.store(slot.name(), ItemStack.CODEC, clawsInventory.getItem(slot.ordinal()));
         }
 
-        tag.putBoolean(SHOULD_RENDER_CLAWS, shouldRenderClaws);
-
-        return tag;
+        valueOutput.putBoolean(SHOULD_RENDER_CLAWS, shouldRenderClaws);
     }
 
     @Override
-    public void deserializeNBT(@NotNull final HolderLookup.Provider provider, @NotNull final CompoundTag tag) {
-        setMenuOpen(tag.getBoolean(IS_MENU_OPEN));
-        shouldRenderClaws = tag.getBoolean(SHOULD_RENDER_CLAWS);
+    public void deserialize(@NotNull final ValueInput valueInput) {
+        setMenuOpen(valueInput.getBooleanOr(IS_MENU_OPEN, false));
+        shouldRenderClaws = valueInput.getBooleanOr(SHOULD_RENDER_CLAWS, false);
 
         for (ClawInventoryData.Slot slot : ClawInventoryData.Slot.values()) {
-            CompoundTag slotTag = tag.getCompound(slot.name());
-
-            if (slotTag.isEmpty()) {
-                continue;
-            }
-
-            Optional<ItemStack> stack = ItemStack.parse(provider, slotTag);
+            Optional<ItemStack> stack = valueInput.read(slot.name(), ItemStack.CODEC);
 
             if (stack.isEmpty()) {
                 continue;

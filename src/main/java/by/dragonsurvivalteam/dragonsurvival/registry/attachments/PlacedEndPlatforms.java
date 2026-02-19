@@ -1,15 +1,15 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.attachments;
 
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.Identifier;
-import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.common.util.ValueIOSerializable;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
 import java.util.Set;
 
-public class PlacedEndPlatforms implements INBTSerializable<CompoundTag> {
+public class PlacedEndPlatforms implements ValueIOSerializable {
     private final Set<Identifier> platforms = new HashSet<>();
 
     public boolean wasPlaced(final Identifier resource) {
@@ -21,15 +21,13 @@ public class PlacedEndPlatforms implements INBTSerializable<CompoundTag> {
     }
 
     @Override
-    public CompoundTag serializeNBT(@NotNull final HolderLookup.Provider provider) {
-        CompoundTag tag = new CompoundTag();
-        platforms.forEach(resource -> tag.putBoolean(resource.toString(), true));
-        return tag;
+    public void serialize(@NotNull final ValueOutput valueOutput) {
+        platforms.forEach(resource -> valueOutput.putBoolean(resource.toString(), true));
     }
 
     @Override
-    public void deserializeNBT(@NotNull final HolderLookup.Provider provider, final CompoundTag tag) {
+    public void deserialize(@NotNull final ValueInput valueInput) {
         platforms.clear();
-        tag.getAllKeys().forEach(key -> platforms.add(Identifier.tryParse(key)));
+        valueInput.keySet().forEach(key -> platforms.add(Identifier.tryParse(key)));
     }
 }

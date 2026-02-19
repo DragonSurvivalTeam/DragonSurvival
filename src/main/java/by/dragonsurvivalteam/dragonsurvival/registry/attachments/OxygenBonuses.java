@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.attachments;
 
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.EffectModification;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.OxygenBonus;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
@@ -7,6 +8,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.attachment.AttachmentType;
@@ -46,13 +49,13 @@ public class OxygenBonuses extends Storage<OxygenBonus.Instance> {
     }
 
     @Override
-    protected Tag save(HolderLookup.@NotNull Provider provider, OxygenBonus.Instance entry) {
-        return entry.save(provider);
+    protected void save(@NotNull ValueOutput valueOutput, final OxygenBonus.Instance entry, final String key) {
+        entry.save(valueOutput, key);
     }
 
     @Override
-    protected OxygenBonus.Instance load(HolderLookup.@NotNull Provider provider, CompoundTag tag) {
-        return OxygenBonus.Instance.load(provider, tag);
+    protected OxygenBonus.Instance load(@NotNull ValueInput valueInput, final String key) {
+        return OxygenBonus.Instance.load(valueInput, key);
     }
 
     @Override

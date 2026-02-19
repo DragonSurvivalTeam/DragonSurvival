@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.attachments;
 
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.EffectModification;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ModifierWithDuration;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncModifierWithDuration;
 import net.minecraft.core.HolderLookup;
@@ -7,6 +8,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.attachment.AttachmentType;
@@ -42,13 +45,13 @@ public class ModifiersWithDuration extends Storage<ModifierWithDuration.Instance
     }
 
     @Override
-    protected Tag save(@NotNull final HolderLookup.Provider provider, final ModifierWithDuration.Instance entry) {
-        return entry.save(provider);
+    protected void save(@NotNull ValueOutput valueOutput, final ModifierWithDuration.Instance entry, final String key) {
+        entry.save(valueOutput, key);
     }
 
     @Override
-    protected ModifierWithDuration.Instance load(@NotNull final HolderLookup.Provider provider, final CompoundTag tag) {
-        return ModifierWithDuration.Instance.load(provider, tag);
+    protected ModifierWithDuration.Instance load(@NotNull ValueInput valueInput, final String key) {
+        return ModifierWithDuration.Instance.load(valueInput, key);
     }
 
     @Override

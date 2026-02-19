@@ -1,11 +1,14 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.attachments;
 
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.DamageModification;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.EffectModification;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.attachment.AttachmentType;
@@ -81,13 +84,13 @@ public class EffectModifications extends Storage<EffectModification.Instance> {
     }
 
     @Override
-    protected Tag save(@NotNull final HolderLookup.Provider provider, final EffectModification.Instance entry) {
-        return entry.save(provider);
+    protected void save(@NotNull ValueOutput valueOutput, final EffectModification.Instance entry, final String key) {
+        entry.save(valueOutput, key);
     }
 
     @Override
-    protected EffectModification.Instance load(@NotNull final HolderLookup.Provider provider, final CompoundTag tag) {
-        return EffectModification.Instance.load(provider, tag);
+    protected EffectModification.Instance load(@NotNull ValueInput valueInput, final String key) {
+        return EffectModification.Instance.load(valueInput, key);
     }
 
     @Override

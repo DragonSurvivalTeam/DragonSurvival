@@ -10,13 +10,14 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.util.ExtraCodecs;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import org.joml.Vector3f;
+import org.joml.Vector3fc;
 
 import java.util.function.Supplier;
 
 public class DSDataComponents {
     public static final DeferredRegister.DataComponents REGISTRY = DeferredRegister.createDataComponents(Registries.DATA_COMPONENT_TYPE, DragonSurvival.MODID);
 
-    public static final Supplier<DataComponentType<Vector3f>> TARGET_POSITION = REGISTRY.registerComponentType("target_position", builder -> builder.persistent(ExtraCodecs.VECTOR3F).networkSynchronized(ByteBufCodecs.VECTOR3F));
+    public static final Supplier<DataComponentType<Vector3fc>> TARGET_POSITION = REGISTRY.registerComponentType("target_position", builder -> builder.persistent(ExtraCodecs.VECTOR3F).networkSynchronized(ByteBufCodecs.VECTOR3F));
     public static final Supplier<DataComponentType<SourceOfMagicData>> SOURCE_OF_MAGIC = REGISTRY.registerComponentType("source_of_magic", builder -> builder.persistent(SourceOfMagicData.CODEC).networkSynchronized(SourceOfMagicData.STREAM_CODEC));
     public static final Supplier<DataComponentType<DragonBeaconData>> DRAGON_BEACON = REGISTRY.registerComponentType("dragon_beacon_data", builder -> builder.persistent(DragonBeaconData.CODEC));
     public static final Supplier<DataComponentType<DragonAbilityHolder>> DRAGON_ABILITIES = REGISTRY.registerComponentType("dragon_abilities", builder -> builder.persistent(DragonAbilityHolder.CODEC));

@@ -7,9 +7,13 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.storage.TagValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.attachment.AttachmentType;
-import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.common.util.ValueIOSerializable;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import org.jetbrains.annotations.NotNull;
@@ -21,13 +25,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public abstract class Storage<T extends StorageEntry> implements INBTSerializable<CompoundTag> {
+public abstract class Storage<T extends StorageEntry> implements ValueIOSerializable {
     public static final String STORAGE = "storage";
 
     @Nullable protected Map<Identifier, T> storage;
 
     public void sync(final ServerPlayer player) {
-        player.getExistingData(type()).ifPresent(data -> PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new SyncData(player.getId(), NeoForgeRegistries.ATTACHMENT_TYPES.getKey(type()), serializeNBT(player.registryAccess()))));
+        TagValueOutput tagValueOutput = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, player.registryAccess());
+        serialize(tagValueOutput);
+
+        player.getExistingData(type()).ifPresent(data -> PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new SyncData(player.getId(), NeoForgeRegistries.ATTACHMENT_TYPES.getKey(type()), tagValueOutput.buildResult())));
     }
 
     public void tick(final Entity storageHolder) {
@@ -134,27 +141,25 @@ public abstract class Storage<T extends StorageEntry> implements INBTSerializabl
     }
 
     @Override
-    public CompoundTag serializeNBT(@NotNull final HolderLookup.Provider provider) {
-        CompoundTag tag = new CompoundTag();
-
+    public void serialize(@NotNull final ValueOutput valueOutput) {
         if (storage == null) {
-            return tag;
+            return;
         }
 
-        ListTag entries = new ListTag();
-        storage.values().forEach(entry -> entries.add(save(provider, entry)));
-        tag.put(STORAGE, entries);
-
-        return tag;
+        ValueOutput entries = valueOutput.child(STORAGE);
+        List<T> objects = storage.values().stream().toList();
+        for (int i = 0; i < storage.size(); i++) {
+            save(entries, objects.get(i), Integer.toString(i));
+        }
     }
 
     @Override
-    public void deserializeNBT(@NotNull final HolderLookup.Provider provider, @NotNull final CompoundTag tag) {
+    public void deserialize(@NotNull final ValueInput valueInput) {
         Map<Identifier, T> storage = new HashMap<>();
-        ListTag entries = tag.getList(STORAGE, ListTag.TAG_COMPOUND);
+        ValueInput entries = valueInput.childOrEmpty(STORAGE);
 
-        for (int i = 0; i < entries.size(); i++) {
-            T entry = load(provider, entries.getCompound(i));
+        for (String key : entries.keySet()) {
+            T entry = load(entries, key);
 
             if (entry != null) {
                 storage.put(entry.id(), entry);
@@ -167,7 +172,7 @@ public abstract class Storage<T extends StorageEntry> implements INBTSerializabl
 
     public abstract AttachmentType<?> type();
 
-    protected abstract Tag save(@NotNull final HolderLookup.Provider provider, final T entry);
+    protected abstract void save(@NotNull ValueOutput valueOutput, final T entry, final String key);
 
-    protected abstract T load(@NotNull final HolderLookup.Provider provider, final CompoundTag tag);
+    protected abstract T load(@NotNull ValueInput valueInput, final String key);
 }

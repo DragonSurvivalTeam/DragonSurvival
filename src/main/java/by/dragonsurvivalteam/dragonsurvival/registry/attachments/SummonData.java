@@ -11,14 +11,16 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.common.util.ValueIOSerializable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 import java.util.UUID;
 
-public class SummonData implements INBTSerializable<CompoundTag> {
+public class SummonData implements ValueIOSerializable  {
     public static final Codec<SummonData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             UUIDUtil.CODEC.optionalFieldOf("owner_uuid").forGetter(data -> Optional.ofNullable(data.ownerUUID)),
             Codec.BOOL.optionalFieldOf("is_allied", false).forGetter(data -> data.isAllied),
@@ -82,21 +84,15 @@ public class SummonData implements INBTSerializable<CompoundTag> {
     }
 
     @Override
-    public CompoundTag serializeNBT(@NotNull final HolderLookup.Provider provider) {
-        CompoundTag tag = new CompoundTag();
-
-        CODEC.encodeStart(provider.createSerializationContext(NbtOps.INSTANCE), this).resultOrPartial(DragonSurvival.LOGGER::error)
-                .ifPresent(compound -> tag.put(DATA, compound));
-
-        return tag;
+    public void serialize(@NotNull final ValueOutput valueOutput) {
+        valueOutput.store(DATA, CODEC, this);
     }
 
     @Override
-    public void deserializeNBT(@NotNull final HolderLookup.Provider provider, @NotNull final CompoundTag tag) {
-        CODEC.decode(NbtOps.INSTANCE, tag.getCompound(DATA)).resultOrPartial(DragonSurvival.LOGGER::error).ifPresent(data -> {
-            ownerUUID = data.getFirst().ownerUUID;
-            attackBehaviour = data.getFirst().attackBehaviour;
-            movementBehaviour = data.getFirst().movementBehaviour;
-        });
+    public void deserialize(@NotNull final ValueInput valueInput) {
+        SummonData data = valueInput.read(DATA, CODEC).orElseThrow();
+        ownerUUID = data.ownerUUID;
+        attackBehaviour = data.attackBehaviour;
+        movementBehaviour = data.movementBehaviour;
     }
 }

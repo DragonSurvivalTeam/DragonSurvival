@@ -5,18 +5,18 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.duration_instance.Dura
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.ClientEffectProvider;
-import com.mojang.datafixers.util.Pair;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.RegistryCodecs;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.minecraft.world.level.storage.TagValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.common.util.ValueIOSerializable;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
@@ -25,7 +25,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
-public class FlightData implements INBTSerializable<CompoundTag> {
+public class FlightData implements ValueIOSerializable {
     public static final Identifier DEFAULT_ICON = DragonSurvival.res("textures/ability_effect/generic_icons/dragon_wings.png");
 
     public Identifier icon = DEFAULT_ICON;
@@ -43,48 +43,50 @@ public class FlightData implements INBTSerializable<CompoundTag> {
     }
 
     @Override
-    public CompoundTag serializeNBT(@NotNull final HolderLookup.Provider provider) {
-        CompoundTag tag = new CompoundTag();
-        tag.putBoolean(ARE_WINGS_SPREAD, areWingsSpread);
-        tag.putBoolean(FLIGHT, hasFlight);
-        tag.putBoolean(SPIN, hasSpin);
-        tag.putInt(COOLDOWN, cooldown);
-        tag.putInt(DURATION, duration);
+    public void serialize(@NotNull final ValueOutput valueOutput) {
+        valueOutput.putBoolean(ARE_WINGS_SPREAD, areWingsSpread);
+        valueOutput.putBoolean(FLIGHT, hasFlight);
+        valueOutput.putBoolean(SPIN, hasSpin);
+        valueOutput.putInt(COOLDOWN, cooldown);
+        valueOutput.putInt(DURATION, duration);
 
         if (inFluid != null) {
-            RegistryCodecs.homogeneousList(NeoForgeRegistries.Keys.FLUID_TYPES).encodeStart(provider.createSerializationContext(NbtOps.INSTANCE), inFluid)
-                    .resultOrPartial(DragonSurvival.LOGGER::error).ifPresent(list -> tag.put(IN_FLUID, list));
+            valueOutput.store(IN_FLUID, RegistryCodecs.homogeneousList(NeoForgeRegistries.Keys.FLUID_TYPES), inFluid);
         }
 
-        tag.putString(ICON, icon.toString());
-        return tag;
+        valueOutput.putString(ICON, icon.toString());
     }
 
     @Override
-    public void deserializeNBT(@NotNull final HolderLookup.Provider provider, @NotNull final CompoundTag tag) {
-        areWingsSpread = tag.getBoolean(ARE_WINGS_SPREAD);
-        hasFlight = tag.getBoolean(FLIGHT);
-        hasSpin = tag.getBoolean(SPIN);
-        cooldown = tag.getInt(COOLDOWN);
-        duration = tag.getInt(DURATION);
+    public void deserialize(@NotNull final ValueInput valueInput) {
+        areWingsSpread = valueInput.getBooleanOr(ARE_WINGS_SPREAD, false);
+        hasFlight = valueInput.getBooleanOr(FLIGHT, false);
+        hasSpin = valueInput.getBooleanOr(SPIN, false);
+        cooldown = valueInput.getInt(COOLDOWN).orElseThrow();
+        duration = valueInput.getInt(DURATION).orElseThrow();
 
-        if (tag.contains(IN_FLUID)) {
-            inFluid = RegistryCodecs.homogeneousList(NeoForgeRegistries.Keys.FLUID_TYPES).decode(provider.createSerializationContext(NbtOps.INSTANCE), tag.get(IN_FLUID))
-                    .resultOrPartial(DragonSurvival.LOGGER::error).map(Pair::getFirst).orElse(null);
+        if (valueInput.keySet().contains(IN_FLUID)) {
+            inFluid = valueInput.read(IN_FLUID, RegistryCodecs.homogeneousList(NeoForgeRegistries.Keys.FLUID_TYPES)).orElseThrow();
         } else {
             inFluid = null;
         }
 
-        icon = Objects.requireNonNullElse(Identifier.tryParse(tag.getString(ICON)), DEFAULT_ICON);
+        icon = Objects.requireNonNullElse(Identifier.tryParse(valueInput.getString(ICON).orElseThrow()), DEFAULT_ICON);
     }
 
     public void sync(final ServerPlayer player) {
-        PacketDistributor.sendToPlayer(player, new SyncData(player.getId(), DSDataAttachments.FLIGHT.getId(), serializeNBT(player.registryAccess())));
+        TagValueOutput tagValueOutput = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, player.registryAccess());
+        serialize(tagValueOutput);
+
+        PacketDistributor.sendToPlayer(player, new SyncData(player.getId(), DSDataAttachments.FLIGHT.getId(), tagValueOutput.buildResult()));
     }
 
     // Needed for when a player enters tracking range, as the flight data has a visual impact (whether the wings are spread or not)
     public void sync(final ServerPlayer source, final ServerPlayer target) {
-        PacketDistributor.sendToPlayer(target, new SyncData(source.getId(), DSDataAttachments.FLIGHT.getId(), serializeNBT(source.registryAccess())));
+        TagValueOutput tagValueOutput = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, source.registryAccess());
+        serialize(tagValueOutput);
+
+        PacketDistributor.sendToPlayer(target, new SyncData(source.getId(), DSDataAttachments.FLIGHT.getId(), tagValueOutput.buildResult()));
     }
 
     public boolean hasFlight() {

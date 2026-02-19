@@ -13,6 +13,8 @@ import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -96,12 +98,12 @@ public class Fear extends DurationInstanceBase<FearData, Fear.Instance> {
             return sprintSpeed;
         }
 
-        public Tag save(@NotNull final HolderLookup.Provider provider) {
-            return CODEC.encodeStart(provider.createSerializationContext(NbtOps.INSTANCE), this).getOrThrow();
+        public void save(@NotNull ValueOutput valueOutput, final String key) {
+            valueOutput.store(key, CODEC, this);
         }
 
-        public static @Nullable Instance load(@NotNull final HolderLookup.Provider provider, final CompoundTag nbt) {
-            return CODEC.parse(provider.createSerializationContext(NbtOps.INSTANCE), nbt).resultOrPartial(DragonSurvival.LOGGER::error).orElse(null);
+        public static @Nullable Fear.Instance load(@NotNull ValueInput valueInput, final String key) {
+            return valueInput.read(key, CODEC).orElse(null);
         }
     }
 }

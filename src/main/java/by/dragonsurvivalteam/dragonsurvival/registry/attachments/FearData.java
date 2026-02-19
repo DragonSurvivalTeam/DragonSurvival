@@ -1,6 +1,8 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.attachments;
 
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.DamageModification;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.EffectModification;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Fear;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -8,6 +10,8 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.attachment.AttachmentType;
@@ -66,13 +70,13 @@ public class FearData extends Storage<Fear.Instance> {
     }
 
     @Override
-    protected Tag save(@NotNull final HolderLookup.Provider provider, final Fear.Instance entry) {
-        return entry.save(provider);
+    protected void save(@NotNull ValueOutput valueOutput, final Fear.Instance entry, final String key) {
+        entry.save(valueOutput, key);
     }
 
     @Override
-    protected Fear.Instance load(@NotNull final HolderLookup.Provider provider, final CompoundTag tag) {
-        return Fear.Instance.load(provider, tag);
+    protected Fear.Instance load(@NotNull ValueInput valueInput, final String key) {
+        return Fear.Instance.load(valueInput, key);
     }
 
     @Override

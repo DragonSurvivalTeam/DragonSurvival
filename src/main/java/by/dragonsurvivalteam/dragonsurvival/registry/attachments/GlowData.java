@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.attachments;
 
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.EffectModification;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Glow;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncData;
 import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
@@ -8,6 +9,8 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.attachment.AttachmentType;
@@ -55,13 +58,13 @@ public class GlowData extends Storage<Glow.Instance> {
     }
 
     @Override
-    protected Tag save(@NotNull final HolderLookup.Provider provider, final Glow.Instance entry) {
-        return entry.save(provider);
+    protected void save(@NotNull ValueOutput valueOutput, final Glow.Instance entry, final String key) {
+        entry.save(valueOutput, key);
     }
 
     @Override
-    protected Glow.Instance load(@NotNull final HolderLookup.Provider provider, final CompoundTag tag) {
-        return Glow.Instance.load(provider, tag);
+    protected Glow.Instance load(@NotNull ValueInput valueInput, final String key) {
+        return Glow.Instance.load(valueInput, key);
     }
 
     @Override

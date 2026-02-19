@@ -2,13 +2,15 @@ package by.dragonsurvivalteam.dragonsurvival.registry.attachments;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.common.util.ValueIOSerializable;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
 import java.util.Set;
 
-public class PlayerData implements INBTSerializable<CompoundTag> {
+public class PlayerData implements ValueIOSerializable {
     public boolean enabledDragonSoulPlacement = true;
 
     /** Tracks which keys are currently held down */
@@ -30,28 +32,17 @@ public class PlayerData implements INBTSerializable<CompoundTag> {
     }
 
     @Override
-    public CompoundTag serializeNBT(@NotNull final HolderLookup.Provider provider) {
-        CompoundTag nbt = new CompoundTag();
-        nbt.putBoolean(ENABLED_DRAGON_SOUL_PLACEMENT, enabledDragonSoulPlacement);
-
-        CompoundTag keys = new CompoundTag();
+    public void serialize(@NotNull final ValueOutput valueOutput) {
+        valueOutput.putBoolean(ENABLED_DRAGON_SOUL_PLACEMENT, enabledDragonSoulPlacement);
+        ValueOutput keys = valueOutput.child(KEYS);
         this.keys.forEach(key -> keys.putBoolean(String.valueOf(key), true));
-        nbt.put(KEYS, keys);
-
-        return nbt;
     }
 
     @Override
-    public void deserializeNBT(@NotNull final HolderLookup.Provider provider, @NotNull final CompoundTag nbt) {
+    public void deserialize(@NotNull final ValueInput valueInput) {
         this.keys.clear();
-
-        // TODO 1.22 :: check not needed anymore, only exists due to a rename of the field
-        if (nbt.contains(ENABLED_DRAGON_SOUL_PLACEMENT)) {
-            enabledDragonSoulPlacement = nbt.getBoolean(ENABLED_DRAGON_SOUL_PLACEMENT);
-        }
-
-        CompoundTag keys = nbt.getCompound(KEYS);
-        this.keys.addAll(keys.getAllKeys());
+        enabledDragonSoulPlacement = valueInput.getBooleanOr(ENABLED_DRAGON_SOUL_PLACEMENT, false);
+        this.keys.addAll(valueInput.child(KEYS).orElseThrow().keySet());
     }
 
     private final String ENABLED_DRAGON_SOUL_PLACEMENT = "enabled_dragon_soul_placement";

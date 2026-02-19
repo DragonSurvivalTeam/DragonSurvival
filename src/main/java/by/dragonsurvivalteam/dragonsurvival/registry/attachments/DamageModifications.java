@@ -6,6 +6,8 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.damagesource.DamageType;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.attachment.AttachmentType;
@@ -79,13 +81,13 @@ public class DamageModifications extends Storage<DamageModification.Instance> {
     }
 
     @Override
-    protected Tag save(@NotNull final HolderLookup.Provider provider, final DamageModification.Instance entry) {
-        return entry.save(provider);
+    protected void save(@NotNull ValueOutput valueOutput, final DamageModification.Instance entry, final String key) {
+        entry.save(valueOutput, key);
     }
 
     @Override
-    protected DamageModification.Instance load(@NotNull final HolderLookup.Provider provider, final CompoundTag tag) {
-        return DamageModification.Instance.load(provider, tag);
+    protected DamageModification.Instance load(@NotNull ValueInput valueInput, final String key) {
+        return DamageModification.Instance.load(valueInput, key);
     }
 
     @Override

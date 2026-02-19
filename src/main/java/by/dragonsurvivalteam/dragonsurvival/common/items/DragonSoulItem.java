@@ -166,11 +166,12 @@ public class DragonSoulItem extends BlockItem {
                 handler.spinWasGranted = spinGranted;
 
                 TagValueOutput valueOutputAbility = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, level.registryAccess());
-                magicData.serializeForCurrentSpecies(level.registryAccess());
+                magicData.serializeForCurrentSpecies(valueOutputAbility);
                 CompoundTag currentAbilityData = valueOutputAbility.buildResult();
 
                 magicData.setCurrentSpecies(player, handler.speciesKey());
-                magicData.deserializeForCurrentSpecies(level.registryAccess(), data.abilityData());
+                ValueInput input = TagValueInput.create(ProblemReporter.DISCARDING, level.registryAccess(), data.abilityData());
+                magicData.deserializeForCurrentSpecies(input);
 
                 PenaltySupply.clear(player);
 
@@ -186,7 +187,8 @@ public class DragonSoulItem extends BlockItem {
                 handler.spinWasGranted = spinGranted;
 
                 magicData.setCurrentSpecies(player, handler.speciesKey());
-                magicData.deserializeForCurrentSpecies(level.registryAccess(), data.abilityData());
+                ValueInput input = TagValueInput.create(ProblemReporter.DISCARDING, level.registryAccess(), data.abilityData());
+                magicData.deserializeForCurrentSpecies(input);
 
                 stack.remove(DSDataComponents.DRAGON_SOUL);
                 stack.remove(DataComponents.CUSTOM_MODEL_DATA);
@@ -196,7 +198,7 @@ public class DragonSoulItem extends BlockItem {
             handler.serialize(valueOutputDragon, true);
             CompoundTag currentDragonData = valueOutputDragon.buildResult();
             TagValueOutput valueOutputAbility = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, level.registryAccess());
-            magicData.serializeForCurrentSpecies(level.registryAccess());
+            magicData.serializeForCurrentSpecies(valueOutputAbility);
             CompoundTag currentAbilityData = valueOutputAbility.buildResult();
 
             stack.set(DSDataComponents.DRAGON_SOUL, new DragonSoulData(currentDragonData, currentAbilityData, player.getScale()));

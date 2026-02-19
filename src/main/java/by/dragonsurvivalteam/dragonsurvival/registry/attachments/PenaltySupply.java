@@ -16,11 +16,15 @@ import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.TagValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.common.util.ValueIOSerializable;
 import net.neoforged.neoforge.event.entity.living.LivingEntityUseItemEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
@@ -30,7 +34,7 @@ import java.util.List;
 import java.util.Optional;
 
 @EventBusSubscriber
-public class PenaltySupply implements INBTSerializable<CompoundTag> {
+public class PenaltySupply implements ValueIOSerializable {
     public static final int NO_ENTRY = -1;
 
     private final HashMap<Identifier, Data> supplyData = new HashMap<>();
@@ -157,7 +161,10 @@ public class PenaltySupply implements INBTSerializable<CompoundTag> {
     }
 
     public void sync(final ServerPlayer player) {
-        PacketDistributor.sendToPlayer(player, new SyncPenaltySupply(serializeNBT(player.registryAccess())));
+        TagValueOutput tagValueOutput = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, player.registryAccess());
+        serialize(tagValueOutput);
+
+        PacketDistributor.sendToPlayer(player, new SyncPenaltySupply(tagValueOutput.buildResult()));
     }
 
     public List<Identifier> getSupplyTypes() {
@@ -231,20 +238,18 @@ public class PenaltySupply implements INBTSerializable<CompoundTag> {
     }
 
     @Override
-    public CompoundTag serializeNBT(@NotNull final HolderLookup.Provider provider) {
-        CompoundTag tag = new CompoundTag();
-        supplyData.forEach((supplyType, value) -> tag.put(supplyType.toString(), value.serializeNBT(provider)));
-        return tag;
+    public void serialize(@NotNull final ValueOutput valueOutput) {
+        supplyData.forEach((supplyType, value) -> valueOutput.store(supplyType.toString(), Data.CODEC, value));
     }
 
     @Override
-    public void deserializeNBT(@NotNull final HolderLookup.Provider provider, @NotNull final CompoundTag tag) {
+    public void deserialize(@NotNull final ValueInput valueInput) {
         supplyData.clear();
-        tag.getAllKeys().forEach(supplyType -> {
+        valueInput.keySet().forEach(supplyType -> {
             Identifier resource = Identifier.tryParse(supplyType);
 
             if (resource != null) {
-                supplyData.put(resource, Data.deserializeNBT(provider, tag.get(supplyType)));
+                supplyData.put(resource, valueInput.read(supplyType, Data.CODEC).orElseThrow());
             }
         });
     }
@@ -315,16 +320,6 @@ public class PenaltySupply implements INBTSerializable<CompoundTag> {
 
         public int currentTick() {
             return currentTick;
-        }
-
-        public Tag serializeNBT(final HolderLookup.Provider provider) {
-            return CODEC.encodeStart(provider.createSerializationContext(NbtOps.INSTANCE), this)
-                    .resultOrPartial(DragonSurvival.LOGGER::error).orElseThrow();
-        }
-
-        public static Data deserializeNBT(final HolderLookup.Provider provider, final Tag tag) {
-            return CODEC.decode(provider.createSerializationContext(NbtOps.INSTANCE), tag)
-                    .resultOrPartial(DragonSurvival.LOGGER::error).orElseThrow().getFirst();
         }
 
         @Override

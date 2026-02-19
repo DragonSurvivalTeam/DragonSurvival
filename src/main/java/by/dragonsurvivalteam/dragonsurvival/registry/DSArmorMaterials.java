@@ -4,6 +4,7 @@ import by.dragonsurvivalteam.dragonsurvival.client.models.aligned_armor.DragonBo
 import by.dragonsurvivalteam.dragonsurvival.client.models.aligned_armor.DragonChestplate;
 import by.dragonsurvivalteam.dragonsurvival.client.models.aligned_armor.DragonHelmet;
 import by.dragonsurvivalteam.dragonsurvival.client.models.aligned_armor.DragonLeggings;
+import net.minecraft.core.Holder;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.equipment.ArmorMaterial;
@@ -21,7 +22,7 @@ public class DSArmorMaterials
         37,
         ArmorMaterials.makeDefense(3, 6, 8, 3, 11),
         15,
-        SoundEvents.IRON_GOLEM_STEP,
+        new Holder.Direct<>(SoundEvents.IRON_GOLEM_STEP),
         3.0F,
         0.1F,
         ItemTags.REPAIRS_NETHERITE_ARMOR,

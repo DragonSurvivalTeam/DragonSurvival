@@ -3,9 +3,6 @@ package by.dragonsurvivalteam.dragonsurvival.registry.attachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.common_effects.SummonEntityEffect;
 import com.mojang.serialization.Codec;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.StringRepresentable;
@@ -13,6 +10,8 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -47,6 +46,9 @@ public class SummonedEntities extends Storage<SummonEntityEffect.Instance> {
      * (is the entity retained?)
      * (e.g. are the goals retained?)
      */
+
+    // Copied from LivingEntity.java
+    private static final int DEFAULT_MEMORY_TIME = 100;
 
     public static final String MOVEMENT_BEHAVIOUR = "movement_behaviour";
     public static final String ATTACK_BEHAVIOUR = "attack_behaviour";
@@ -217,7 +219,7 @@ public class SummonedEntities extends Storage<SummonEntityEffect.Instance> {
 
         entity.getExistingData(DSDataAttachments.SUMMON).ifPresent(data -> {
             if (data.isAllied && data.getOwner(entity.level()) instanceof Player player) {
-                event.getEntity().setLastHurtByPlayer(player);
+                event.getEntity().setLastHurtByPlayer(player, DEFAULT_MEMORY_TIME);
             }
         });
     }
@@ -283,28 +285,27 @@ public class SummonedEntities extends Storage<SummonEntityEffect.Instance> {
     }
 
     @Override
-    protected Tag save(@NotNull final HolderLookup.Provider provider, final SummonEntityEffect.Instance entry) {
-        return entry.save(provider);
+    protected void save(@NotNull ValueOutput valueOutput, final SummonEntityEffect.Instance entry, final String key) {
+        entry.save(valueOutput, key);
     }
 
     @Override
-    protected SummonEntityEffect.Instance load(@NotNull final HolderLookup.Provider provider, final CompoundTag tag) {
-        return SummonEntityEffect.Instance.load(provider, tag);
+    protected SummonEntityEffect.Instance load(@NotNull ValueInput valueInput, final String key) {
+        return SummonEntityEffect.Instance.load(valueInput, key);
     }
 
     @Override
-    public CompoundTag serializeNBT(@NotNull final HolderLookup.Provider provider) {
-        CompoundTag tag = super.serializeNBT(provider);
-        tag.putInt(MOVEMENT_BEHAVIOUR, movementBehaviour.ordinal());
-        tag.putInt(ATTACK_BEHAVIOUR, attackBehaviour.ordinal());
-        return tag;
+    public void serialize(@NotNull final ValueOutput valueOutput) {
+        super.serialize(valueOutput);
+        valueOutput.putInt(MOVEMENT_BEHAVIOUR, movementBehaviour.ordinal());
+        valueOutput.putInt(ATTACK_BEHAVIOUR, attackBehaviour.ordinal());
     }
 
     @Override
-    public void deserializeNBT(@NotNull final HolderLookup.Provider provider, @NotNull final CompoundTag tag) {
-        super.deserializeNBT(provider, tag);
-        movementBehaviour = MovementBehaviour.values()[tag.getInt(MOVEMENT_BEHAVIOUR)];
-        attackBehaviour = AttackBehaviour.values()[tag.getInt(ATTACK_BEHAVIOUR)];
+    public void deserialize(@NotNull final ValueInput valueInput) {
+        super.deserialize(valueInput);
+        movementBehaviour = MovementBehaviour.values()[valueInput.getInt(MOVEMENT_BEHAVIOUR).orElseThrow()];
+        attackBehaviour = AttackBehaviour.values()[valueInput.getInt(ATTACK_BEHAVIOUR).orElseThrow()];
     }
 
     @Override

@@ -1,20 +1,19 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.attachments;
 
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.common.util.ValueIOSerializable;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.UnknownNullability;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-public class EnderDragonDamageHistory implements INBTSerializable<CompoundTag> {
+public class EnderDragonDamageHistory implements ValueIOSerializable {
     private final Map<UUID, Float> damageHistory = new HashMap<>();
 
     public static EnderDragonDamageHistory getData(EnderDragon dragon) {
@@ -41,15 +40,13 @@ public class EnderDragonDamageHistory implements INBTSerializable<CompoundTag> {
     }
 
     @Override
-    public @UnknownNullability CompoundTag serializeNBT(HolderLookup.@NotNull Provider provider) {
-        CompoundTag nbt = new CompoundTag();
-        damageHistory.forEach((uuid, damage) -> nbt.putFloat(uuid.toString(), damage));
-        return nbt;
+    public void serialize(@NotNull final ValueOutput valueOutput) {
+        damageHistory.forEach((uuid, damage) -> valueOutput.putFloat(uuid.toString(), damage));
     }
 
     @Override
-    public void deserializeNBT(HolderLookup.@NotNull Provider provider, CompoundTag nbt) {
+    public void deserialize(@NotNull final ValueInput valueInput) {
         damageHistory.clear();
-        nbt.getAllKeys().forEach(uuid -> damageHistory.put(UUID.fromString(uuid), nbt.getFloat(uuid)));
+        valueInput.keySet().forEach(uuid -> damageHistory.put(UUID.fromString(uuid), valueInput.getFloatOr(uuid, 0f)));
     }
 }

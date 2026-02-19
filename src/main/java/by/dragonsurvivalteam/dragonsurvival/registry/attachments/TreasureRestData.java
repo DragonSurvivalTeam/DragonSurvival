@@ -1,14 +1,14 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.attachments;
 
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.common.util.ValueIOSerializable;
 import org.jetbrains.annotations.NotNull;
 
 // No need to store the resting state if someone re-logs they shouldn't be considered sleeping
-public class TreasureRestData implements INBTSerializable<CompoundTag> {
+public class TreasureRestData implements ValueIOSerializable {
     public static final int TICKS_TO_SLEEP = Functions.secondsToTicks(5);
 
     public int restingTicks;
@@ -40,10 +40,8 @@ public class TreasureRestData implements INBTSerializable<CompoundTag> {
     }
 
     @Override
-    public CompoundTag serializeNBT(@NotNull final HolderLookup.Provider provider) {
-        return new CompoundTag();
-    }
+    public void serialize(@NotNull final ValueOutput valueOutput) {}
 
     @Override
-    public void deserializeNBT(@NotNull final HolderLookup.Provider provider, @NotNull final CompoundTag tag) { /* Nothing to do */ }
+    public void deserialize(@NotNull final ValueInput valueInput) {}
 }
