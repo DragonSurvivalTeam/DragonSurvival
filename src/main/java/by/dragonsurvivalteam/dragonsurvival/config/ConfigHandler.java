@@ -15,7 +15,6 @@ import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
@@ -109,7 +108,7 @@ public class ConfigHandler {
                         Field field = classType.getDeclaredField(annotationData.memberName());
                         instances.add(field);
                     } catch (Exception e) {
-                        DragonSurvival.LOGGER.error(e);
+                        DragonSurvival.LOGGER.error("Config field loading failed!", e);
                     }
                 }
             });

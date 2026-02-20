@@ -1,11 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.attachments;
 
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.EffectModification;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.HarvestBonus;
 import by.dragonsurvivalteam.dragonsurvival.util.ToolUtils;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;

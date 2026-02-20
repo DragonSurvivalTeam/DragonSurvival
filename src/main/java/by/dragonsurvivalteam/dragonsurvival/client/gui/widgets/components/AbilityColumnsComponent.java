@@ -5,7 +5,6 @@ import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.AbilityBu
 import by.dragonsurvivalteam.dragonsurvival.mixins.client.ScreenAccessor;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 

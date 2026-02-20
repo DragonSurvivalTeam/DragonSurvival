@@ -3,7 +3,6 @@ package by.dragonsurvivalteam.dragonsurvival.registry.data_components;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.nbt.CompoundTag;
-import org.jetbrains.annotations.Nullable;
 
 // TODO :: store uuid of the player to display custom skins? but what if they want to see the skin stored inside the soul (for other players)?
 public record DragonSoulData(CompoundTag dragonData, CompoundTag abilityData, double scale) {

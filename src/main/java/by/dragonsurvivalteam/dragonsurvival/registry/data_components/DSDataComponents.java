@@ -9,7 +9,6 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.util.ExtraCodecs;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import org.joml.Vector3f;
 import org.joml.Vector3fc;
 
 import java.util.function.Supplier;

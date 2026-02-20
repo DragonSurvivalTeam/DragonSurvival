@@ -1,9 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.compat.create;
 
-import by.dragonsurvivalteam.dragonsurvival.compat.ModCheck;
-//import by.dragonsurvivalteam.dragonsurvival.mixins.create.PlayerSkyhookRendererAccessor;
 
-import java.util.Set;
 import java.util.UUID;
 
 public class SkyhookRendererHelper {

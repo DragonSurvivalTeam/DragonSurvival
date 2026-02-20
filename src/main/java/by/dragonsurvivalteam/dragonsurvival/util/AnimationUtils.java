@@ -1,6 +1,5 @@
 package by.dragonsurvivalteam.dragonsurvival.util;
 
-import java.util.List;
 import by.dragonsurvivalteam.dragonsurvival.mixins.client.AnimationControllerAccessor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.LivingEntity;
@@ -10,6 +9,7 @@ import software.bernie.geckolib.animation.RawAnimation;
 import software.bernie.geckolib.cache.GeckoLibResources;
 import software.bernie.geckolib.loading.object.BakedAnimations;
 import software.bernie.geckolib.model.GeoModel;
+
 
 public class AnimationUtils {
     /** Time in MS of 1 frame for 60 FPS */

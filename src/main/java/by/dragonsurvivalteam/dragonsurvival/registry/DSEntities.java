@@ -1,6 +1,5 @@
 package by.dragonsurvivalteam.dragonsurvival.registry;
 
-import java.util.Optional;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.creatures.AmbusherEntity;
@@ -35,6 +34,8 @@ import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.neoforge.event.entity.RegisterSpawnPlacementsEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
+
+import java.util.Optional;
 
 @EventBusSubscriber
 public class DSEntities {

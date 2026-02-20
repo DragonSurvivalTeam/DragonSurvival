@@ -4,8 +4,8 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TextColor;
-import net.minecraft.util.ColorRGBA;
 import net.minecraft.util.ARGB;
+import net.minecraft.util.ColorRGBA;
 
 /** Colors are defined as RGB (no alpha) */
 public class DSColors {

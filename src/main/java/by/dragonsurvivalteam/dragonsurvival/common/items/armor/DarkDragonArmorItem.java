@@ -1,7 +1,5 @@
 package by.dragonsurvivalteam.dragonsurvival.common.items.armor;
 
-import java.util.ArrayList;
-import java.util.List;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEnchantments;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSItemTags;
@@ -14,6 +12,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.item.equipment.Equippable;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class DarkDragonArmorItem extends Item implements PermanentEnchantmentItem {
     public ItemEnchantments getDefaultEnchantments() {

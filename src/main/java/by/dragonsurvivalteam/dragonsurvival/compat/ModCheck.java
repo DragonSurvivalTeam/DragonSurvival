@@ -2,7 +2,6 @@ package by.dragonsurvivalteam.dragonsurvival.compat;
 
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.loading.FMLLoader;
-import net.neoforged.fml.loading.LoadingModList;
 
 import java.util.HashMap;
 import java.util.List;

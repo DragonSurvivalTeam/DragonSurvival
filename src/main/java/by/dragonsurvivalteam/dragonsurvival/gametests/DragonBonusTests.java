@@ -1,6 +1,5 @@
 package by.dragonsurvivalteam.dragonsurvival.gametests;
 
-import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.config.ConfigHandler;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
 import net.minecraft.server.level.ServerLevel;

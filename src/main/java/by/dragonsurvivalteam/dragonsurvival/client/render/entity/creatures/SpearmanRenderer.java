@@ -1,9 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.client.render.entity.creatures;
 
 import by.dragonsurvivalteam.dragonsurvival.common.entity.creatures.SpearmanEntity;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;

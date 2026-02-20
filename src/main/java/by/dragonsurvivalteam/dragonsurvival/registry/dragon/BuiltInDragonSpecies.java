@@ -12,8 +12,8 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty.DragonPenalt
 import net.minecraft.core.HolderSet;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.network.chat.TextColor;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 
 import java.util.Optional;
 

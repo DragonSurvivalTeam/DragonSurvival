@@ -3,11 +3,8 @@ package by.dragonsurvivalteam.dragonsurvival.client.gui.widgets;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
-import net.minecraft.client.renderer.LightTexture;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
-import org.joml.Matrix4f;
 
 public class ClientTimeComponent implements ClientTooltipComponent {
     private static final int ICON_SIZE = 20;
