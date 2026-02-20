@@ -20,6 +20,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.MenuProvider;
@@ -31,11 +32,14 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.TagValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoBlockEntity;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.animation.AnimatableManager;
+import software.bernie.geckolib.animatable.manager.AnimatableManager;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.ArrayList;
@@ -161,35 +165,32 @@ public class SourceOfMagicBlockEntity extends BlockEntity implements Container, 
     }
 
     @Override
-    public void loadAdditional(@NotNull final CompoundTag tag, @NotNull final HolderLookup.Provider provider) {
-        super.loadAdditional(tag, provider);
+    public void loadAdditional(@NotNull ValueInput valueInput) {
+        super.loadAdditional(valueInput);
 
         inputItem = NonNullList.withSize(getContainerSize(), ItemStack.EMPTY);
-        ContainerHelper.loadAllItems(tag, inputItem, provider);
+        ContainerHelper.loadAllItems(valueInput, inputItem);
 
-        if (tag.contains(SOURCE_OF_MAGIC_DATA)) {
-            SourceOfMagicData.CODEC.decode(provider.createSerializationContext(NbtOps.INSTANCE), tag.getCompound(SOURCE_OF_MAGIC_DATA))
-                    .resultOrPartial(DragonSurvival.LOGGER::error)
-                    .ifPresent(data -> {
-                        SourceOfMagicData sourceOfMagicData = data.getFirst();
-                        setConsumables(sourceOfMagicData.consumables());
-                        setApplicableSpecies(sourceOfMagicData.applicableSpecies());
-                    });
+        if (valueInput.keySet().contains(SOURCE_OF_MAGIC_DATA)) {
+            SourceOfMagicData sourceOfMagicData = valueInput.read(SOURCE_OF_MAGIC_DATA, SourceOfMagicData.CODEC).orElseThrow();
+            setConsumables(sourceOfMagicData.consumables());
+            setApplicableSpecies(sourceOfMagicData.applicableSpecies());
         }
     }
 
     @Override // Make sure client receives the data when re-joining the world
     public @NotNull CompoundTag getUpdateTag(@NotNull final HolderLookup.Provider registries) {
         CompoundTag tag = super.getUpdateTag(registries);
-        saveAdditional(tag, registries);
-        return tag;
+        TagValueOutput valueOutput = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, registries);
+        saveAdditional(valueOutput);
+        return valueOutput.buildResult();
     }
 
     @Override
-    public void saveAdditional(@NotNull final CompoundTag tag, @NotNull final HolderLookup.Provider provider) {
-        super.saveAdditional(tag, provider);
+    public void saveAdditional(@NotNull ValueOutput valueOutput) {
+        super.saveAdditional(valueOutput);
 
-        ContainerHelper.saveAllItems(tag, inputItem, provider);
+        ContainerHelper.saveAllItems(valueOutput, inputItem, true);
         List<SourceOfMagicData.Consumable> consumables = getConsumables();
         List<ResourceKey<DragonSpecies>> applicableSpecies = new ArrayList<>();
 
@@ -198,9 +199,7 @@ public class SourceOfMagicBlockEntity extends BlockEntity implements Container, 
         }
 
         SourceOfMagicData sourceOfMagicData = new SourceOfMagicData(consumables, applicableSpecies);
-        SourceOfMagicData.CODEC.encodeStart(provider.createSerializationContext(NbtOps.INSTANCE), sourceOfMagicData)
-                .resultOrPartial(DragonSurvival.LOGGER::error)
-                .ifPresent(compound -> tag.put(SOURCE_OF_MAGIC_DATA, compound));
+        valueOutput.store(SOURCE_OF_MAGIC_DATA, SourceOfMagicData.CODEC, sourceOfMagicData);
     }
 
     @Override
@@ -226,7 +225,7 @@ public class SourceOfMagicBlockEntity extends BlockEntity implements Container, 
     }
 
     @Override
-    public void registerControllers(final AnimatableManager.ControllerRegistrar controllers) { /* Nothing to do */ }
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {}
 
     @Override
     public AnimatableInstanceCache getAnimatableInstanceCache() {
