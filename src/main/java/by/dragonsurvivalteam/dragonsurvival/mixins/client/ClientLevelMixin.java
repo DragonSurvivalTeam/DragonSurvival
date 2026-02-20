@@ -1,7 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.mixins.client;
 
 import by.dragonsurvivalteam.dragonsurvival.client.handlers.DragonDestructionHandler;
-import by.dragonsurvivalteam.dragonsurvival.client.render.BlockVisionHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.blocks.SourceOfMagicBlock;
 import by.dragonsurvivalteam.dragonsurvival.server.tileentity.SourceOfMagicPlaceholder;
 import net.minecraft.client.Minecraft;
@@ -24,10 +23,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.function.Supplier;
 
+// 1.21.11 Verified
+
 @Mixin(ClientLevel.class)
 public abstract class ClientLevelMixin extends Level {
-    protected ClientLevelMixin(WritableLevelData pLevelData, ResourceKey<Level> pDimension, RegistryAccess pRegistryAccess, Holder<DimensionType> pDimensionTypeRegistration, Supplier<ProfilerFiller> pProfiler, boolean pIsClientSide, boolean pIsDebug, long pBiomeZoomSeed, int pMaxChainedNeighborUpdates) {
-        super(pLevelData, pDimension, pRegistryAccess, pDimensionTypeRegistration, pProfiler, pIsClientSide, pIsDebug, pBiomeZoomSeed, pMaxChainedNeighborUpdates);
+    protected ClientLevelMixin(WritableLevelData levelData, ResourceKey<Level> dimension, RegistryAccess registryAccess, Holder<DimensionType> dimensionTypeRegistration, boolean isClientSide, boolean isDebug, long biomeZoomSeed, int maxChainedNeighborUpdates) {
+        super(levelData, dimension, registryAccess, dimensionTypeRegistration, isClientSide, isDebug, biomeZoomSeed, maxChainedNeighborUpdates);
     }
 
     // TODO :: there is probably an event which could be used instead
@@ -59,9 +60,10 @@ public abstract class ClientLevelMixin extends Level {
         return position;
     }
 
-    /** Update the ore vision handler while a search is pending or not scheduled */
-    @Inject(method = "sendBlockUpdated", at = @At("HEAD"))
-    private void dragonSurvival$updateBlockVision(final BlockPos position, final BlockState oldState, final BlockState newState, final int flags, final CallbackInfo callback) {
-        BlockVisionHandler.updateEntry(position, oldState, newState);
-    }
+    // FIXME
+//    /** Update the ore vision handler while a search is pending or not scheduled */
+//    @Inject(method = "sendBlockUpdated", at = @At("HEAD"))
+//    private void dragonSurvival$updateBlockVision(final BlockPos position, final BlockState oldState, final BlockState newState, final int flags, final CallbackInfo callback) {
+//        BlockVisionHandler.updateEntry(position, oldState, newState);
+//    }
 }

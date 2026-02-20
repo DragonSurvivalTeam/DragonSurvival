@@ -9,11 +9,10 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.ItemInHandRenderer;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.world.InteractionHand;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.UseAnim;
+import net.minecraft.world.item.ItemUseAnimation;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -25,13 +24,15 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class ItemInHandRendererMixin {
     @Shadow @Final private Minecraft minecraft;
 
-    /** In case the item cannot be naturally eaten, replace the animation with the eating animation if we consider it as food */
-    @ModifyExpressionValue(method = "renderArmWithItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;getUseAnimation()Lnet/minecraft/world/item/UseAnim;"))
-    private UseAnim dragonSurvival$dragonRenderArmWithItem(UseAnim original, AbstractClientPlayer player, float partialTicks, float pitch, InteractionHand hand, float swingProgress, ItemStack stack, float equippedProgress, PoseStack poseStack, MultiBufferSource buffer, int combinedLight) {
+    /**
+     * In case the item cannot be naturally eaten, replace the animation with the eating animation if we consider it as food
+     */
+    @ModifyExpressionValue(method = "renderArmWithItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;getUseAnimation()Lnet/minecraft/world/item/ItemUseAnimation;"))
+    private ItemUseAnimation dragonSurvival$dragonRenderArmWithItem(ItemUseAnimation original, @Local(argsOnly = true) AbstractClientPlayer player, @Local(argsOnly = true) ItemStack item) {
         DragonStateHandler data = DragonStateProvider.getData(player);
 
         if (!DragonFoodHandler.dragonFoodHandlingIsDisabled() && data.isDragon()) {
-            return (DragonFoodHandler.isEdible(player, stack) && original != UseAnim.DRINK) ? UseAnim.EAT : original;
+            return (DragonFoodHandler.isEdible(player, item) && original != ItemUseAnimation.DRINK) ? ItemUseAnimation.EAT : original;
         }
 
         return original;
@@ -49,9 +50,9 @@ public class ItemInHandRendererMixin {
 
     /** Don't render the actual hand ('RenderHandEvent' cannot be used since it would also hide the item) */
     @Inject(at = @At(value = "HEAD"), method = "renderPlayerArm", cancellable = true)
-    private void dragonSurvival$skipRender(PoseStack poseStack, MultiBufferSource buffer, int combinedLight, float equippedProgress, float swingProgress, HumanoidArm side, CallbackInfo callback) {
+    private void dragonSurvival$skipRender(PoseStack poseStack, SubmitNodeCollector nodeCollector, int packedLight, float equippedProgress, float swingProgress, HumanoidArm arm, CallbackInfo ci) {
         if (DragonStateProvider.isDragon(minecraft.player)) {
-            callback.cancel();
+            ci.cancel();
         }
     }
 
