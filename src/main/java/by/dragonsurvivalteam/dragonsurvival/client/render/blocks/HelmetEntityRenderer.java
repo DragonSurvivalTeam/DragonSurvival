@@ -5,14 +5,14 @@ import by.dragonsurvivalteam.dragonsurvival.server.tileentity.HelmetBlockEntity;
 import com.google.common.collect.Maps;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.SkullModel;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
+import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
@@ -26,41 +26,51 @@ import java.util.Map;
 
 import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 
-public class HelmetEntityRenderer implements BlockEntityRenderer<HelmetBlockEntity> {
-    private static final Map<Block, Identifier> TEXTURE_BY_TYPE = Util.make(Maps.newHashMap(), IdentifierHashMap -> {
-        IdentifierHashMap.put(DSBlocks.GRAY_KNIGHT_HELMET.get(), Identifier.fromNamespaceAndPath(MODID, "textures/block/gray_knight_helmet.png"));
-        IdentifierHashMap.put(DSBlocks.GOLDEN_KNIGHT_HELMET.get(), Identifier.fromNamespaceAndPath(MODID, "textures/block/golden_knight_helmet.png"));
-        IdentifierHashMap.put(DSBlocks.BLACK_KNIGHT_HELMET.get(), Identifier.fromNamespaceAndPath(MODID, "textures/block/black_knight_helmet.png"));
-    });
-    static SkullModel humanoidHeadModel = new SkullModel(Minecraft.getInstance().getEntityModels().bakeLayer(ModelLayers.PLAYER_HEAD));
+public class HelmetEntityRenderer<T extends HelmetBlockEntity> implements BlockEntityRenderer<T, BlockEntityRenderState> {
+//    private static final Map<Block, Identifier> TEXTURE_BY_TYPE = Util.make(Maps.newHashMap(), IdentifierHashMap -> {
+//        IdentifierHashMap.put(DSBlocks.GRAY_KNIGHT_HELMET.get(), Identifier.fromNamespaceAndPath(MODID, "textures/block/gray_knight_helmet.png"));
+//        IdentifierHashMap.put(DSBlocks.GOLDEN_KNIGHT_HELMET.get(), Identifier.fromNamespaceAndPath(MODID, "textures/block/golden_knight_helmet.png"));
+//        IdentifierHashMap.put(DSBlocks.BLACK_KNIGHT_HELMET.get(), Identifier.fromNamespaceAndPath(MODID, "textures/block/black_knight_helmet.png"));
+//    });
+//    static SkullModel humanoidHeadModel = new SkullModel(Minecraft.getInstance().getEntityModels().bakeLayer(ModelLayers.PLAYER_HEAD));
 
     public HelmetEntityRenderer(BlockEntityRendererProvider.Context context) { /* Nothing to do */ }
 
+//    @Override
+//    public void render(HelmetBlockEntity helmetEntity, float partialTick, @NotNull PoseStack PoseStack, @NotNull MultiBufferSource renderTypeBuffer, int packedLight, int packedOverlay) {
+//        BlockState blockstate = helmetEntity.getBlockState();
+//        float f1 = 22.5F * blockstate.getValue(SkullBlock.ROTATION);
+//        renderHelmet(null, f1, blockstate.getBlock(), 0, PoseStack, renderTypeBuffer, packedLight);
+//    }
+//
+//    public static void renderHelmet(
+//            @Nullable Direction direction, float p_228879_1_, Block helmetBlock, float p_228879_4_, PoseStack PoseStack, MultiBufferSource renderTypeBuffer, int p_228879_7_) {
+//        PoseStack.pushMatrix();
+//        if (direction == null) {
+//            PoseStack.translate(0.5D, 0.0D, 0.5D);
+//        } else {
+//            PoseStack.translate(0.5F - (float) direction.getStepX() * 0.25F, 0.25D, 0.5F - (float) direction.getStepZ() * 0.25F);
+//        }
+//
+//        PoseStack.scale(-1.0F, -1.0F, 1.0F);
+//        VertexConsumer ivertexbuilder = renderTypeBuffer.getBuffer(getRenderType(helmetBlock));
+//        humanoidHeadModel.setupAnim(p_228879_4_, p_228879_1_, 0.0F);
+//        humanoidHeadModel.renderToBuffer(PoseStack, ivertexbuilder, p_228879_7_, OverlayTexture.NO_OVERLAY);
+//        PoseStack.popMatrix();
+//    }
+//
+//    private static RenderType getRenderType(Block block) {
+//        Identifier Identifier = TEXTURE_BY_TYPE.get(block);
+//        return RenderType.entityCutoutNoCullZOffset(Identifier);
+//    }
+
     @Override
-    public void render(HelmetBlockEntity helmetEntity, float partialTick, @NotNull PoseStack PoseStack, @NotNull MultiBufferSource renderTypeBuffer, int packedLight, int packedOverlay) {
-        BlockState blockstate = helmetEntity.getBlockState();
-        float f1 = 22.5F * blockstate.getValue(SkullBlock.ROTATION);
-        renderHelmet(null, f1, blockstate.getBlock(), 0, PoseStack, renderTypeBuffer, packedLight);
+    public BlockEntityRenderState createRenderState() {
+        return null;
     }
 
-    public static void renderHelmet(
-            @Nullable Direction direction, float p_228879_1_, Block helmetBlock, float p_228879_4_, PoseStack PoseStack, MultiBufferSource renderTypeBuffer, int p_228879_7_) {
-        PoseStack.pushMatrix();
-        if (direction == null) {
-            PoseStack.translate(0.5D, 0.0D, 0.5D);
-        } else {
-            PoseStack.translate(0.5F - (float) direction.getStepX() * 0.25F, 0.25D, 0.5F - (float) direction.getStepZ() * 0.25F);
-        }
-
-        PoseStack.scale(-1.0F, -1.0F, 1.0F);
-        VertexConsumer ivertexbuilder = renderTypeBuffer.getBuffer(getRenderType(helmetBlock));
-        humanoidHeadModel.setupAnim(p_228879_4_, p_228879_1_, 0.0F);
-        humanoidHeadModel.renderToBuffer(PoseStack, ivertexbuilder, p_228879_7_, OverlayTexture.NO_OVERLAY);
-        PoseStack.popMatrix();
-    }
-
-    private static RenderType getRenderType(Block block) {
-        Identifier Identifier = TEXTURE_BY_TYPE.get(block);
-        return RenderType.entityCutoutNoCullZOffset(Identifier);
+    @Override
+    public void submit(BlockEntityRenderState renderState, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState cameraRenderState) {
+        // FIXME
     }
 }
