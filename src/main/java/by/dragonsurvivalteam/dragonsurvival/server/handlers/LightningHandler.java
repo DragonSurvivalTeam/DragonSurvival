@@ -3,40 +3,36 @@ package by.dragonsurvivalteam.dragonsurvival.server.handlers;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.common.util.ValueIOSerializable;
 import net.neoforged.neoforge.event.entity.EntityStruckByLightningEvent;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.UnknownNullability;
 
 @EventBusSubscriber
-public class LightningHandler implements INBTSerializable<CompoundTag> {
+public class LightningHandler implements ValueIOSerializable {
     public boolean ignoresItemsAndExperience;
     public boolean spawnsFire;
     public boolean canHurtSelf;
 
     @Override
-    public @UnknownNullability CompoundTag serializeNBT(HolderLookup.@NotNull Provider provider) {
-        CompoundTag tag = new CompoundTag();
-        tag.putBoolean("ignores_items_and_experience", ignoresItemsAndExperience);
-        tag.putBoolean("spawns_fire", spawnsFire);
-        tag.putBoolean("can_hurt_self", canHurtSelf);
-        return tag;
+    public void serialize(ValueOutput valueOutput) {
+        valueOutput.putBoolean("ignores_items_and_experience", ignoresItemsAndExperience);
+        valueOutput.putBoolean("spawns_fire", spawnsFire);
+        valueOutput.putBoolean("can_hurt_self", canHurtSelf);
     }
 
     @Override
-    public void deserializeNBT(HolderLookup.@NotNull Provider provider, CompoundTag nbt) {
-        ignoresItemsAndExperience = nbt.getBoolean("ignores_items_and_experience");
-        spawnsFire = nbt.getBoolean("spawns_fire");
-        canHurtSelf = nbt.getBoolean("can_hurt_self");
+    public void deserialize(ValueInput valueInput) {
+        ignoresItemsAndExperience = valueInput.getBooleanOr("ignores_items_and_experience", false);
+        spawnsFire = valueInput.getBooleanOr("spawns_fire", false);
+        canHurtSelf = valueInput.getBooleanOr("can_hurt_self", false);
     }
 
     public record Data(boolean ignoresItemsAndExperience, boolean spawnsFire, boolean canHurtSelf) {

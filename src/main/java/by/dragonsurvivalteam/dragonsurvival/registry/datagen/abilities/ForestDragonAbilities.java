@@ -65,20 +65,18 @@ import by.dragonsurvivalteam.dragonsurvival.registry.projectile.Projectiles;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.particles.PowerParticleOption;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.util.random.SimpleWeightedRandomList;
-import net.minecraft.util.random.WeightedRandomList;
 import net.minecraft.util.valueproviders.ConstantFloat;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.Tiers;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.NeoForgeMod;
@@ -180,8 +178,8 @@ public class ForestDragonAbilities {
                         true,
                         Sound.create().start(DSSounds.FOREST_BREATH_START.get()).looping(DSSounds.FOREST_BREATH_LOOP.get()).end(DSSounds.FOREST_BREATH_END.get()).optional(),
                         Animations.create()
-                                .startAndCharging(SimpleAbilityAnimation.create(AnimationKey.SPELL_CHARGE, AnimationLayer.BREATH).setTransitionTicks(5).build())
-                                .looping(SimpleAbilityAnimation.create(AnimationKey.BREATH, AnimationLayer.BREATH).setTransitionTicks(5).build())
+                                .startAndCharging(SimpleAbilityAnimation.create(AnimationKey.SPELL_CHARGE, AnimationLayer.BREATH).transitionLength(5).build())
+                                .looping(SimpleAbilityAnimation.create(AnimationKey.BREATH, AnimationLayer.BREATH).transitionLength(5).build())
                                 .optional()
                 ),
                 Optional.of(new ExperienceLevelUpgrade(4, LevelBasedValue.lookup(List.of(0f, 10f, 30f, 50f), LevelBasedValue.perLevel(15)))),
@@ -226,8 +224,8 @@ public class ForestDragonAbilities {
                         true,
                         Sound.create().start(DSSounds.FOREST_BREATH_START.get()).looping(DSSounds.FOREST_BREATH_LOOP.get()).end(DSSounds.FOREST_BREATH_END.get()).optional(),
                         Animations.create()
-                                .startAndCharging(SimpleAbilityAnimation.create(AnimationKey.SPELL_CHARGE, AnimationLayer.BREATH).setTransitionTicks(5).build())
-                                .looping(SimpleAbilityAnimation.create(AnimationKey.BREATH, AnimationLayer.BREATH).setTransitionTicks(5).build())
+                                .startAndCharging(SimpleAbilityAnimation.create(AnimationKey.SPELL_CHARGE, AnimationLayer.BREATH).transitionLength(5).build())
+                                .looping(SimpleAbilityAnimation.create(AnimationKey.BREATH, AnimationLayer.BREATH).transitionLength(5).build())
                                 .optional()
                 ),
                 Optional.of(new ExperienceLevelUpgrade(2, LevelBasedValue.lookup(List.of(0f, 24f), LevelBasedValue.perLevel(15)))),
@@ -236,7 +234,8 @@ public class ForestDragonAbilities {
                 List.of(
                         new ActionContainer(new DragonBreathTarget(AbilityTargeting.entity(
                                 List.of(new ItemConversionEffect(
-                                        List.of(new ItemConversionEffect.ItemConversionData(ItemCondition.is(Items.POTATO), WeightedRandomList.create(ItemConversionEffect.ItemTo.of(Items.POISONOUS_POTATO)))),
+                                        // FIXME
+                                        List.of(new ItemConversionEffect.ItemConversionData(ItemCondition.is(Items.POTATO)/*, WeightedRandomList.create(ItemConversionEffect.ItemTo.of(Items.POISONOUS_POTATO))*/)),
                                         LevelBasedValue.constant(0.5f)
                                 )),
                                 TargetingMode.ITEMS
@@ -245,13 +244,14 @@ public class ForestDragonAbilities {
                                 List.of(
                                         new BonemealEffect(LevelBasedValue.constant(2), LevelBasedValue.perLevel(0.5f)),
                                         new BlockConversionEffect(List.of(new BlockConversionEffect.BlockConversionData(
-                                                BlockCondition.blocks(Blocks.DIRT, Blocks.COARSE_DIRT),
-                                                SimpleWeightedRandomList.create(
+                                                BlockCondition.blocks(Blocks.DIRT, Blocks.COARSE_DIRT)
+                                                // FIXME
+                                                /*,SimpleWeightedRandomList.create(
                                                         new BlockConversionEffect.BlockTo(Blocks.GRASS_BLOCK.defaultBlockState(), 25, Optional.empty()),
                                                         new BlockConversionEffect.BlockTo(Blocks.PODZOL.defaultBlockState(), 5, Optional.empty()),
                                                         new BlockConversionEffect.BlockTo(Blocks.MYCELIUM.defaultBlockState(), 1, Optional.empty()),
                                                         new BlockConversionEffect.BlockTo(Blocks.COARSE_DIRT.defaultBlockState(), 3, Optional.empty())
-                                                ))
+                                                )*/)
                                         ), LevelBasedValue.constant(0.2f))
                                 )
                         ), LevelBasedValue.constant(1)), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(10)),
@@ -280,7 +280,7 @@ public class ForestDragonAbilities {
                         Notification.DEFAULT,
                         true,
                         Sound.create().end(SoundEvents.ARROW_SHOOT).optional(),
-                        Animations.create().startAndCharging(SimpleAbilityAnimation.create(AnimationKey.SPELL_CHARGE, AnimationLayer.BREATH).setTransitionTicks(5).build()).optional()
+                        Animations.create().startAndCharging(SimpleAbilityAnimation.create(AnimationKey.SPELL_CHARGE, AnimationLayer.BREATH).transitionLength(5).build()).optional()
                 ),
                 Optional.of(new ExperienceLevelUpgrade(4, LevelBasedValue.lookup(List.of(0f, 20f, 30f, 40f), LevelBasedValue.perLevel(15)))),
                 Optional.empty(),
@@ -316,7 +316,7 @@ public class ForestDragonAbilities {
                         false,
                         Sound.create().end(SoundEvents.UI_TOAST_IN).optional(),
                         Animations.create()
-                                .startAndCharging(SimpleAbilityAnimation.create(AnimationKey.CAST_MASS_BUFF, AnimationLayer.BASE).setTransitionTicks(2).locksNeck().locksTail().build())
+                                .startAndCharging(SimpleAbilityAnimation.create(AnimationKey.CAST_MASS_BUFF, AnimationLayer.BASE).transitionLength(2).locksNeck().locksTail().build())
                                 .end(SimpleAbilityAnimation.create(AnimationKey.MASS_BUFF, AnimationLayer.BASE).locksNeck().locksTail().build())
                                 .optional()
                 ),
@@ -350,7 +350,7 @@ public class ForestDragonAbilities {
                         false,
                         Sound.create().end(SoundEvents.UI_TOAST_IN).optional(),
                         Animations.create()
-                                .startAndCharging(SimpleAbilityAnimation.create(AnimationKey.CAST_MASS_BUFF, AnimationLayer.BASE).setTransitionTicks(2).locksNeck().locksTail().build())
+                                .startAndCharging(SimpleAbilityAnimation.create(AnimationKey.CAST_MASS_BUFF, AnimationLayer.BASE).transitionLength(2).locksNeck().locksTail().build())
                                 .end(SimpleAbilityAnimation.create(AnimationKey.MASS_BUFF, AnimationLayer.BASE).locksNeck().locksTail().build())
                                 .optional()
                 ),
@@ -361,7 +361,7 @@ public class ForestDragonAbilities {
                         List.of(
                                 new PotionEffect(PotionData.create(DSEffects.HUNTER).amplifierPer(1).durationPer(30).build()),
                                 new ParticleEffect(
-                                        new SpawnParticles(ParticleTypes.DRAGON_BREATH, SpawnParticles.inBoundingBox(), SpawnParticles.inBoundingBox(), SpawnParticles.fixedVelocity(ConstantFloat.of(0.1f)), SpawnParticles.fixedVelocity(ConstantFloat.of(0.1f)), ConstantFloat.of(0.1f)),
+                                        new SpawnParticles(PowerParticleOption.create(ParticleTypes.DRAGON_BREATH, 1.0f), SpawnParticles.inBoundingBox(), SpawnParticles.inBoundingBox(), SpawnParticles.fixedVelocity(ConstantFloat.of(0.1f)), SpawnParticles.fixedVelocity(ConstantFloat.of(0.1f)), ConstantFloat.of(0.1f)),
                                         LevelBasedValue.constant(20)
                                 )
                         ), TargetingMode.NON_ENEMIES
@@ -496,8 +496,9 @@ public class ForestDragonAbilities {
                                 DurationInstanceBase.create(DragonSurvival.res("forest_claws_and_teeth")).removeAutomatically().customIcon(DragonSurvival.res("textures/ability_effect/forest_claw.png")).build(),
                                 Optional.of(context.lookup(Registries.BLOCK).getOrThrow(BlockTags.MINEABLE_WITH_AXE)),
                                 Optional.of(new LevelBasedTier(List.of(
-                                        new LevelBasedTier.Entry(Tiers.WOOD, 1),
-                                        new LevelBasedTier.Entry(Tiers.STONE, 2)
+                                        // FIXME
+                                        new LevelBasedTier.Entry(/*Tiers.WOOD,*/ 1),
+                                        new LevelBasedTier.Entry(/*Tiers.STONE,*/ 2)
                                 ))),
                                 LevelBasedValue.perLevel(1, 0.5f),
                                 LevelBasedValue.perLevel(0.25f)

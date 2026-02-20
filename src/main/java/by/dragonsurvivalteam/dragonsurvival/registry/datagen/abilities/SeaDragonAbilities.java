@@ -76,7 +76,6 @@ import net.minecraft.util.valueproviders.ConstantFloat;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.item.Tiers;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
 import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.common.Tags;
@@ -176,8 +175,8 @@ public class SeaDragonAbilities {
                         true,
                         Sound.create().start(DSSounds.STORM_BREATH_START.get()).looping(DSSounds.STORM_BREATH_LOOP.get()).end(DSSounds.STORM_BREATH_END.get()).optional(),
                         Animations.create()
-                                .startAndCharging(SimpleAbilityAnimation.create(AnimationKey.SPELL_CHARGE, AnimationLayer.BREATH).setTransitionTicks(5).build())
-                                .looping(SimpleAbilityAnimation.create(AnimationKey.BREATH, AnimationLayer.BREATH).setTransitionTicks(5).build())
+                                .startAndCharging(SimpleAbilityAnimation.create(AnimationKey.SPELL_CHARGE, AnimationLayer.BREATH).transitionLength(5).build())
+                                .looping(SimpleAbilityAnimation.create(AnimationKey.BREATH, AnimationLayer.BREATH).transitionLength(5).build())
                                 .optional()
                 ),
                 Optional.of(new ExperienceLevelUpgrade(4, LevelBasedValue.lookup(List.of(0f, 10f, 30f, 50f), LevelBasedValue.perLevel(15)))),
@@ -227,7 +226,7 @@ public class SeaDragonAbilities {
                         Notification.DEFAULT,
                         true,
                         Optional.empty(),
-                        Animations.create().startAndCharging(SimpleAbilityAnimation.create(AnimationKey.SPELL_CHARGE, AnimationLayer.BREATH).setTransitionTicks(5).build()).optional()
+                        Animations.create().startAndCharging(SimpleAbilityAnimation.create(AnimationKey.SPELL_CHARGE, AnimationLayer.BREATH).transitionLength(5).build()).optional()
                 ),
                 Optional.of(new ExperienceLevelUpgrade(4, LevelBasedValue.lookup(List.of(0f, 20f, 45f, 50f), LevelBasedValue.perLevel(15)))),
                 Optional.empty(),
@@ -263,8 +262,8 @@ public class SeaDragonAbilities {
                         false,
                         Sound.create().end(SoundEvents.UI_TOAST_IN).optional(),
                         Animations.create()
-                                .startAndCharging(SimpleAbilityAnimation.create(AnimationKey.CAST_MAGIC_ALT, AnimationLayer.BASE).setTransitionTicks(5).build())
-                                .end(SimpleAbilityAnimation.create(AnimationKey.MAGIC_ALT, AnimationLayer.BASE).setTransitionTicks(4).build())
+                                .startAndCharging(SimpleAbilityAnimation.create(AnimationKey.CAST_MAGIC_ALT, AnimationLayer.BASE).transitionLength(5).build())
+                                .end(SimpleAbilityAnimation.create(AnimationKey.MAGIC_ALT, AnimationLayer.BASE).transitionLength(4).build())
                                 .optional()
                 ),
                 Optional.of(new ExperienceLevelUpgrade(4, LevelBasedValue.lookup(List.of(0f, 25f, 45f, 60f), LevelBasedValue.perLevel(15)))),
@@ -295,7 +294,7 @@ public class SeaDragonAbilities {
                         false,
                         Sound.create().end(SoundEvents.UI_TOAST_IN).optional(),
                         Animations.create()
-                                .startAndCharging(SimpleAbilityAnimation.create(AnimationKey.CAST_MASS_BUFF, AnimationLayer.BASE).setTransitionTicks(2).locksNeck().locksTail().build())
+                                .startAndCharging(SimpleAbilityAnimation.create(AnimationKey.CAST_MASS_BUFF, AnimationLayer.BASE).transitionLength(2).locksNeck().locksTail().build())
                                 .end(SimpleAbilityAnimation.create(AnimationKey.MASS_BUFF, AnimationLayer.BASE).locksNeck().locksTail().build())
                                 .optional()
                 ),
@@ -461,7 +460,7 @@ public class SeaDragonAbilities {
                         false,
                         Sound.create().end(SoundEvents.UI_TOAST_IN).optional(),
                         Animations.create()
-                                .startAndCharging(SimpleAbilityAnimation.create(AnimationKey.CAST_MASS_BUFF, AnimationLayer.BASE).setTransitionTicks(2).locksNeck().locksTail().build())
+                                .startAndCharging(SimpleAbilityAnimation.create(AnimationKey.CAST_MASS_BUFF, AnimationLayer.BASE).transitionLength(2).locksNeck().locksTail().build())
                                 .end(SimpleAbilityAnimation.create(AnimationKey.MASS_BUFF, AnimationLayer.BASE).locksNeck().locksTail().build())
                                 .optional()
                 ),
@@ -605,8 +604,9 @@ public class SeaDragonAbilities {
                                 DurationInstanceBase.create(DragonSurvival.res("sea_claws_and_teeth")).removeAutomatically().customIcon(DragonSurvival.res("textures/ability_effect/sea_claw.png")).build(),
                                 Optional.of(context.lookup(Registries.BLOCK).getOrThrow(BlockTags.MINEABLE_WITH_SHOVEL)),
                                 Optional.of(new LevelBasedTier(List.of(
-                                        new LevelBasedTier.Entry(Tiers.WOOD, 1),
-                                        new LevelBasedTier.Entry(Tiers.STONE, 2)
+                                        // FIXME
+                                        new LevelBasedTier.Entry(/*Tiers.WOOD,*/ 1),
+                                        new LevelBasedTier.Entry(/*Tiers.STONE,*/ 2)
                                 ))),
                                 LevelBasedValue.perLevel(1, 0.5f),
                                 LevelBasedValue.perLevel(0.25f)

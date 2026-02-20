@@ -75,7 +75,6 @@ import net.minecraft.tags.FluidTags;
 import net.minecraft.util.valueproviders.ConstantFloat;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.item.Tiers;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -192,8 +191,8 @@ public class CaveDragonAbilities {
                         true,
                         Sound.create().start(DSSounds.FIRE_BREATH_START.get()).looping(DSSounds.FIRE_BREATH_LOOP.get()).end(DSSounds.FIRE_BREATH_END.get()).optional(),
                         Animations.create()
-                                .startAndCharging(SimpleAbilityAnimation.create(AnimationKey.SPELL_CHARGE, AnimationLayer.BREATH).setTransitionTicks(5).build())
-                                .looping(SimpleAbilityAnimation.create(AnimationKey.BREATH, AnimationLayer.BREATH).setTransitionTicks(5).build())
+                                .startAndCharging(SimpleAbilityAnimation.create(AnimationKey.SPELL_CHARGE, AnimationLayer.BREATH).transitionLength(5).build())
+                                .looping(SimpleAbilityAnimation.create(AnimationKey.BREATH, AnimationLayer.BREATH).transitionLength(5).build())
                                 .optional()
                 ),
                 Optional.of(new ExperienceLevelUpgrade(4, LevelBasedValue.lookup(List.of(0f, 10f, 30f, 50f), LevelBasedValue.perLevel(15)))),
@@ -244,8 +243,8 @@ public class CaveDragonAbilities {
                         true,
                         Sound.create().start(DSSounds.FIRE_BREATH_START.get()).looping(DSSounds.FIRE_BREATH_LOOP.get()).end(DSSounds.FIRE_BREATH_END.get()).optional(),
                         Animations.create()
-                                .startAndCharging(SimpleAbilityAnimation.create(AnimationKey.SPELL_CHARGE, AnimationLayer.BREATH).setTransitionTicks(5).build())
-                                .looping(SimpleAbilityAnimation.create(AnimationKey.BREATH, AnimationLayer.BREATH).setTransitionTicks(5).build())
+                                .startAndCharging(SimpleAbilityAnimation.create(AnimationKey.SPELL_CHARGE, AnimationLayer.BREATH).transitionLength(5).build())
+                                .looping(SimpleAbilityAnimation.create(AnimationKey.BREATH, AnimationLayer.BREATH).transitionLength(5).build())
                                 .optional()
                 ),
                 Optional.of(new ExperienceLevelUpgrade(4, LevelBasedValue.lookup(List.of(0f, 12f, 32f, 64f), LevelBasedValue.perLevel(15)))),
@@ -289,7 +288,7 @@ public class CaveDragonAbilities {
                         Notification.DEFAULT,
                         true,
                         Sound.create().end(SoundEvents.FIRECHARGE_USE).optional(),
-                        Animations.create().startAndCharging(SimpleAbilityAnimation.create(AnimationKey.SPELL_CHARGE, AnimationLayer.BREATH).setTransitionTicks(5).build()).optional()
+                        Animations.create().startAndCharging(SimpleAbilityAnimation.create(AnimationKey.SPELL_CHARGE, AnimationLayer.BREATH).transitionLength(5).build()).optional()
                 ),
                 Optional.of(new ExperienceLevelUpgrade(4, LevelBasedValue.lookup(List.of(0f, 20f, 40f, 45f), LevelBasedValue.perLevel(15)))),
                 // Disable underwater
@@ -324,7 +323,7 @@ public class CaveDragonAbilities {
                         false,
                         Sound.create().end(SoundEvents.UI_TOAST_IN).optional(),
                         Animations.create()
-                                .startAndCharging(SimpleAbilityAnimation.create(AnimationKey.CAST_MASS_BUFF, AnimationLayer.BASE).setTransitionTicks(2).locksNeck().locksTail().build())
+                                .startAndCharging(SimpleAbilityAnimation.create(AnimationKey.CAST_MASS_BUFF, AnimationLayer.BASE).transitionLength(2).locksNeck().locksTail().build())
                                 .end(SimpleAbilityAnimation.create(AnimationKey.MASS_BUFF, AnimationLayer.BASE).locksNeck().locksTail().build())
                                 .optional()
                 ),
@@ -358,7 +357,7 @@ public class CaveDragonAbilities {
                         false,
                         Sound.create().end(SoundEvents.UI_TOAST_IN).optional(),
                         Animations.create()
-                                .startAndCharging(SimpleAbilityAnimation.create(AnimationKey.CAST_MASS_BUFF, AnimationLayer.BASE).setTransitionTicks(2).locksNeck().locksTail().build())
+                                .startAndCharging(SimpleAbilityAnimation.create(AnimationKey.CAST_MASS_BUFF, AnimationLayer.BASE).transitionLength(2).locksNeck().locksTail().build())
                                 .end(SimpleAbilityAnimation.create(AnimationKey.MASS_BUFF, AnimationLayer.BASE).locksNeck().locksTail().build())
                                 .optional()
                 ),
@@ -392,8 +391,8 @@ public class CaveDragonAbilities {
                         false,
                         Sound.create().end(SoundEvents.UI_TOAST_IN).optional(),
                         Animations.create()
-                                .startAndCharging(SimpleAbilityAnimation.create(AnimationKey.CAST_MAGIC_ALT, AnimationLayer.BASE).setTransitionTicks(5).build())
-                                .end(SimpleAbilityAnimation.create(AnimationKey.MAGIC_ALT, AnimationLayer.BASE).setTransitionTicks(4).build())
+                                .startAndCharging(SimpleAbilityAnimation.create(AnimationKey.CAST_MAGIC_ALT, AnimationLayer.BASE).transitionLength(5).build())
+                                .end(SimpleAbilityAnimation.create(AnimationKey.MAGIC_ALT, AnimationLayer.BASE).transitionLength(4).build())
                                 .optional()
                 ),
                 Optional.of(new ExperienceLevelUpgrade(4, LevelBasedValue.lookup(List.of(0f, 25f, 45f, 60f), LevelBasedValue.perLevel(15)))),
@@ -536,8 +535,9 @@ public class CaveDragonAbilities {
                                 DurationInstanceBase.create(DragonSurvival.res("cave_claws_and_teeth")).removeAutomatically().customIcon(DragonSurvival.res("textures/ability_effect/cave_claw.png")).build(),
                                 Optional.of(context.lookup(Registries.BLOCK).getOrThrow(BlockTags.MINEABLE_WITH_PICKAXE)),
                                 Optional.of(new LevelBasedTier(List.of(
-                                        new LevelBasedTier.Entry(Tiers.WOOD, 1),
-                                        new LevelBasedTier.Entry(Tiers.STONE, 2)
+                                        // FIXME
+                                        new LevelBasedTier.Entry(/*Tiers.WOOD,*/ 1),
+                                        new LevelBasedTier.Entry(/*Tiers.STONE,*/ 2)
                                 ))),
                                 LevelBasedValue.perLevel(1, 0.5f),
                                 LevelBasedValue.perLevel(0.25f)
