@@ -2,7 +2,6 @@ package by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty;
 
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.IdentifierWrapper;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.DataReloadHandler;
-import by.dragonsurvivalteam.dragonsurvival.compat.ModCheck;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ClawInventoryData;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -12,11 +11,11 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.items.IItemHandlerModifiable;
-import top.theillusivec4.curios.api.CuriosApi;
 
 import java.util.HashSet;
 import java.util.List;
@@ -35,11 +34,20 @@ public class ItemBlacklistPenalty implements PenaltyEffect {
         this.items = items;
     }
 
+    public static NonNullList<ItemStack> getArmorItems(final Inventory inventory) {
+        return NonNullList.of(
+                inventory.getItem(EquipmentSlot.FEET.getIndex(Inventory.INVENTORY_SIZE)),
+                inventory.getItem(EquipmentSlot.LEGS.getIndex(Inventory.INVENTORY_SIZE)),
+                inventory.getItem(EquipmentSlot.CHEST.getIndex(Inventory.INVENTORY_SIZE)),
+                inventory.getItem(EquipmentSlot.HEAD.getIndex(Inventory.INVENTORY_SIZE))
+        );
+    }
+
     @Override
     public void apply(final ServerPlayer player, final Holder<DragonPenalty> penalty) {
-        dropAllItemsInList(player, player.getInventory().armor);
-        dropAllItemsInList(player, player.getInventory().offhand);
-        dropCurios(player);
+        dropAllItemsInList(player, getArmorItems(player.getInventory()));
+        dropAllItemsInList(player, NonNullList.of(player.getInventory().getItem(Inventory.SLOT_OFFHAND)));
+        //dropCurios(player);
 
         ClawInventoryData clawData = ClawInventoryData.getData(player);
         SimpleContainer clawContainer = clawData.getContainer();
@@ -84,7 +92,8 @@ public class ItemBlacklistPenalty implements PenaltyEffect {
         });
     }
 
-    private void dropCurios(final Player player) {
+    // FIXME :: Curios
+    /*private void dropCurios(final Player player) {
         if (!ModCheck.isModLoaded(ModCheck.CURIOS)) {
             return;
         }
@@ -102,7 +111,7 @@ public class ItemBlacklistPenalty implements PenaltyEffect {
                 }
             }
         });
-    }
+    }*/
 
     private Set<ResourceKey<Item>> map(final List<String> entries) {
         Set<ResourceKey<Item>> blacklisted = new HashSet<>();

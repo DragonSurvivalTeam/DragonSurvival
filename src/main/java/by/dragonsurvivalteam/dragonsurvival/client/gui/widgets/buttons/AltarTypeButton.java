@@ -30,8 +30,11 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.storage.TagValueOutput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.client.gui.widget.ExtendedButton;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import org.jetbrains.annotations.NotNull;
@@ -186,7 +189,11 @@ public class AltarTypeButton extends ExtendedButton implements HoverDisableable 
             DragonStateHandler data = DragonStateProvider.getData(player);
             data.revertToHumanForm(player, false);
             ClientPacketDistributor.sendToServer(new SyncAltarCooldown(Functions.secondsToTicks(ServerConfig.altarUsageCooldown)));
-            ClientPacketDistributor.sendToServer(new SyncComplete(player.getId(), data.serializeNBT(player.registryAccess())));
+
+            TagValueOutput valueOutput = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, player.registryAccess());
+            data.serialize(valueOutput);
+
+            ClientPacketDistributor.sendToServer(new SyncComplete(player.getId(), valueOutput.buildResult()));
 
             player.closeContainer();
         } else {
