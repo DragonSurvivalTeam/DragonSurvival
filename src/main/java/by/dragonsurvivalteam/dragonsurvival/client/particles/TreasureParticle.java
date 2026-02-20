@@ -2,25 +2,22 @@ package by.dragonsurvivalteam.dragonsurvival.client.particles;
 
 import by.dragonsurvivalteam.dragonsurvival.common.particles.TreasureParticleOption;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.particle.Particle;
-import net.minecraft.client.particle.ParticleProvider;
-import net.minecraft.client.particle.ParticleRenderType;
-import net.minecraft.client.particle.SpriteSet;
-import net.minecraft.client.particle.TextureSheetParticle;
+import net.minecraft.client.particle.*;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import org.jetbrains.annotations.NotNull;
 
-public class TreasureParticle extends TextureSheetParticle {
+public class TreasureParticle extends SingleQuadParticle {
     public TreasureParticle(ClientLevel pLevel, double pX, double pY, double pZ, double pXSpeed, double pYSpeed, double pZSpeed, TreasureParticleOption data, SpriteSet spriteSet) {
-        super(pLevel, pX, pY, pZ, pXSpeed, pYSpeed, pZSpeed);
+        super(pLevel, pX, pY, pZ, pXSpeed, pYSpeed, pZSpeed, spriteSet.first());
         rCol = data.red();
         gCol = data.green();
         bCol = data.blue();
         quadSize *= 0.75F * data.scale();
         int i = (int) (8.0D / (Math.random() * 0.8D + 0.2D));
         lifetime = (int) Math.max((float) i * data.scale(), 1.0F);
-        pickSprite(spriteSet);
+        setSpriteFromAge(spriteSet);
     }
 
     @Override
@@ -36,8 +33,8 @@ public class TreasureParticle extends TextureSheetParticle {
     }
 
     @Override
-    public @NotNull ParticleRenderType getRenderType() {
-        return ParticleRenderType.PARTICLE_SHEET_OPAQUE;
+    protected @NotNull Layer getLayer() {
+        return SingleQuadParticle.Layer.OPAQUE;
     }
 
     @Override
@@ -55,8 +52,8 @@ public class TreasureParticle extends TextureSheetParticle {
         }
 
         @Override
-        public Particle createParticle(@NotNull TreasureParticleOption type, @NotNull ClientLevel worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
-            return new TreasureParticle(worldIn, x, y, z, xSpeed, ySpeed, zSpeed, type, sprites);
+        public Particle createParticle(TreasureParticleOption type, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, RandomSource random) {
+            return new TreasureParticle(level, x, y, z, xSpeed, ySpeed, zSpeed, type, sprites);
         }
     }
 }

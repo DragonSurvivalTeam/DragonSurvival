@@ -5,7 +5,7 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
-import org.jetbrains.annotations.NotNull;
+import net.minecraft.util.RandomSource;
 
 public class LargePoisonParticle extends DragonParticle {
     protected LargePoisonParticle(ClientLevel pLevel, double pX, double pY, double pZ, double pXSpeed, double pYSpeed, double pZSpeed, double duration, boolean swirls, SpriteSet sprite) {
@@ -20,7 +20,7 @@ public class LargePoisonParticle extends DragonParticle {
         }
 
         @Override
-        public @NotNull Particle createParticle(LargePoisonParticleOption type, @NotNull ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+        public Particle createParticle(LargePoisonParticleOption type, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, RandomSource random) {
             LargePoisonParticle particle = new LargePoisonParticle(level, x, y, z, xSpeed, ySpeed, zSpeed, type.duration(), type.swirls(), spriteSet);
             particle.setSpriteFromAge(spriteSet);
             return particle;

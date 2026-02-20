@@ -5,9 +5,6 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.DragonBeaconData;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSBlockEntities;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSBlocks;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtOps;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.player.Player;
@@ -15,6 +12,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -80,29 +79,27 @@ public class DragonBeaconBlockEntity extends BlockEntity {
         }
 
         if (level.getBlockState(position.below()).getBlock() == DSBlocks.DRAGON_MEMORY_BLOCK.get()) {
-            level.getEntitiesOfClass(Player.class, new AABB(position).inflate(50).expandTowards(0, level.getMaxBuildHeight(), 0)).forEach(player -> beacon.applyEffects(player, false));
+            level.getEntitiesOfClass(Player.class, new AABB(position).inflate(50).expandTowards(0, level.getMaxY(), 0)).forEach(player -> beacon.applyEffects(player, false));
         }
     }
 
     @Override
-    public void loadAdditional(@NotNull final CompoundTag tag, @NotNull final HolderLookup.Provider provider) {
-        super.loadAdditional(tag, provider);
+    public void loadAdditional(@NotNull ValueInput valueInput) {
+        super.loadAdditional(valueInput);
 
-        if (tag.contains(DRAGON_BEACON_DATA)) {
-            DragonBeaconData.CODEC.decode(provider.createSerializationContext(NbtOps.INSTANCE), tag.getCompound(DRAGON_BEACON_DATA))
-                    .resultOrPartial(DragonSurvival.LOGGER::error)
-                    .ifPresent(data -> this.data = data.getFirst());
+        if (valueInput.keySet().contains(DRAGON_BEACON_DATA)) {
+            valueInput.read(DRAGON_BEACON_DATA, DragonBeaconData.CODEC).ifPresentOrElse(
+                    data -> this.data = data,
+                    () -> DragonSurvival.LOGGER.error("Beacon parsing failed!"));
         }
     }
 
     @Override
-    public void saveAdditional(@NotNull final CompoundTag tag, @NotNull final HolderLookup.Provider provider) {
-        super.saveAdditional(tag, provider);
+    public void saveAdditional(@NotNull ValueOutput valueOutput) {
+        super.saveAdditional(valueOutput);
 
         if (data != null) {
-            DragonBeaconData.CODEC.encodeStart(provider.createSerializationContext(NbtOps.INSTANCE), data)
-                    .resultOrPartial(DragonSurvival.LOGGER::error)
-                    .ifPresent(compound -> tag.put(DRAGON_BEACON_DATA, compound));
+            valueOutput.store(DRAGON_BEACON_DATA, DragonBeaconData.CODEC, data);
         }
     }
 }

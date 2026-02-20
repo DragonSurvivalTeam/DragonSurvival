@@ -1,24 +1,21 @@
 package by.dragonsurvivalteam.dragonsurvival.client.particles.dragon;
 
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.particle.ParticleRenderType;
+import net.minecraft.client.particle.SingleQuadParticle;
 import net.minecraft.client.particle.SpriteSet;
-import net.minecraft.client.particle.TextureSheetParticle;
 import org.jetbrains.annotations.NotNull;
 import org.joml.AxisAngle4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
-public class DragonParticle extends TextureSheetParticle {
+public class DragonParticle extends SingleQuadParticle {
     private final SpriteSet sprites;
     private final float spread;
     private final boolean swirls;
     private int swirlTick;
 
     protected DragonParticle(ClientLevel pLevel, double pX, double pY, double pZ, double pXSpeed, double pYSpeed, double pZSpeed, double duration, boolean swirls, SpriteSet sprite) {
-        super(pLevel, pX, pY, pZ);
+        super(pLevel, pX, pY, pZ, pXSpeed, pYSpeed, pZSpeed, sprite.first());
         setSize(1, 1);
         xd = pXSpeed;
         yd = pYSpeed;
@@ -41,6 +38,11 @@ public class DragonParticle extends TextureSheetParticle {
 
     protected float getV1() {
         return super.getV1() - (super.getV1() - super.getV0()) / 8f;
+    }
+
+    @Override
+    protected @NotNull Layer getLayer() {
+        return SingleQuadParticle.Layer.OPAQUE;
     }
 
     @Override
@@ -72,21 +74,11 @@ public class DragonParticle extends TextureSheetParticle {
         age++;
         swirlTick++;
         setSpriteFromAge(sprites);
-    }
 
-    @Override
-    public @NotNull ParticleRenderType getRenderType() {
-        return ParticleRenderType.PARTICLE_SHEET_OPAQUE;
-    }
-
-    @Override
-    public void render(@NotNull VertexConsumer buffer, @NotNull Camera renderInfo, float partialTicks) {
-        float var = (age + partialTicks) / (float) lifetime;
+        float var = age / (float) lifetime;
         alpha = (float) (1 - Math.exp(10 * (var - 1)) - Math.pow(2000, -var));
         if (alpha < 0.1) {
             alpha = 0.1f;
         }
-
-        super.render(buffer, renderInfo, partialTicks);
     }
 }

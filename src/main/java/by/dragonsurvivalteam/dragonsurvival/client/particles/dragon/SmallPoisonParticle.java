@@ -6,7 +6,8 @@ import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.core.particles.ParticleTypes;
-import org.jetbrains.annotations.NotNull;
+import net.minecraft.core.particles.PowerParticleOption;
+import net.minecraft.util.RandomSource;
 
 public class SmallPoisonParticle extends DragonParticle {
     protected SmallPoisonParticle(ClientLevel pLevel, double pX, double pY, double pZ, double pXSpeed, double pYSpeed, double pZSpeed, double duration, boolean swirls, SpriteSet sprite) {
@@ -15,7 +16,7 @@ public class SmallPoisonParticle extends DragonParticle {
 
     @Override
     public void remove() {
-        level.addParticle(ParticleTypes.DRAGON_BREATH, x, y, z, 0, 0.01, 0);
+        level.addParticle(PowerParticleOption.create(ParticleTypes.DRAGON_BREATH, 1.0f), x, y, z, 0, 0.01, 0);
         super.remove();
     }
 
@@ -27,7 +28,7 @@ public class SmallPoisonParticle extends DragonParticle {
         }
 
         @Override
-        public Particle createParticle(SmallPoisonParticleOption type, @NotNull ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+        public Particle createParticle(SmallPoisonParticleOption type, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, RandomSource random) {
             SmallPoisonParticle particle = new SmallPoisonParticle(level, x, y, z, xSpeed, ySpeed, zSpeed, type.duration(), type.swirls(), spriteSet);
             particle.setSpriteFromAge(spriteSet);
             return particle;

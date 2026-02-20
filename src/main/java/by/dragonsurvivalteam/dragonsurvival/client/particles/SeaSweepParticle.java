@@ -2,18 +2,15 @@ package by.dragonsurvivalteam.dragonsurvival.client.particles;
 
 import by.dragonsurvivalteam.dragonsurvival.common.particles.SeaSweepParticleOption;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.particle.Particle;
-import net.minecraft.client.particle.ParticleProvider;
-import net.minecraft.client.particle.ParticleRenderType;
-import net.minecraft.client.particle.SpriteSet;
-import net.minecraft.client.particle.TextureSheetParticle;
+import net.minecraft.client.particle.*;
+import net.minecraft.util.RandomSource;
 import org.jetbrains.annotations.NotNull;
 
-public class SeaSweepParticle extends TextureSheetParticle {
+public class SeaSweepParticle extends SingleQuadParticle {
     private final SpriteSet sprites;
 
     public SeaSweepParticle(ClientLevel level, double x, double y, double z, double quadSize, SpriteSet spriteSet) {
-        super(level, x, y, z, 0.0D, 0.0D, 0.0D);
+        super(level, x, y, z, 0.0D, 0.0D, 0.0D, spriteSet.first());
         sprites = spriteSet;
         lifetime = 4;
         float f = random.nextFloat() * 0.6F + 0.4F;
@@ -37,8 +34,8 @@ public class SeaSweepParticle extends TextureSheetParticle {
     }
 
     @Override
-    public @NotNull ParticleRenderType getRenderType() {
-        return ParticleRenderType.PARTICLE_SHEET_LIT;
+    protected @NotNull Layer getLayer() {
+        return SingleQuadParticle.Layer.OPAQUE;
     }
 
     @Override
@@ -54,8 +51,8 @@ public class SeaSweepParticle extends TextureSheetParticle {
         }
 
         @Override
-        public Particle createParticle(@NotNull SeaSweepParticleOption data, @NotNull ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
-            return new SeaSweepParticle(level, x, y, z, data.quadSize(), sprites);
+        public Particle createParticle(SeaSweepParticleOption type, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, RandomSource random) {
+            return new SeaSweepParticle(level, x, y, z, type.quadSize(), sprites);
         }
     }
 }

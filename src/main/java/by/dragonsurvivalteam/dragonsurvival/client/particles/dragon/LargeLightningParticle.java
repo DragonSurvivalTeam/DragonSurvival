@@ -6,7 +6,7 @@ import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.util.ARGB;
-import org.jetbrains.annotations.NotNull;
+import net.minecraft.util.RandomSource;
 
 
 public class LargeLightningParticle extends DragonParticle {
@@ -30,7 +30,7 @@ public class LargeLightningParticle extends DragonParticle {
         }
 
         @Override
-        public Particle createParticle(LargeLightningParticleOption type, @NotNull ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+        public Particle createParticle(LargeLightningParticleOption type, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, RandomSource random) {
             LargeLightningParticle particle = new LargeLightningParticle(level, x, y, z, xSpeed, ySpeed, zSpeed, type.duration(), type.swirls(), spriteSet);
             particle.setSpriteFromAge(spriteSet);
             return particle;

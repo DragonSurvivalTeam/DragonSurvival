@@ -1,21 +1,19 @@
 package by.dragonsurvivalteam.dragonsurvival.client.particles;
 
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.particle.Particle;
-import net.minecraft.client.particle.ParticleProvider;
-import net.minecraft.client.particle.ParticleRenderType;
-import net.minecraft.client.particle.SpriteSet;
-import net.minecraft.client.particle.TextureSheetParticle;
+import net.minecraft.client.particle.*;
 import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.util.RandomSource;
 import org.jetbrains.annotations.NotNull;
 
-public class BeaconParticle extends TextureSheetParticle {
+public class BeaconParticle extends SingleQuadParticle {
     private final double fallSpeed;
 
-    public BeaconParticle(ClientLevel level, double x, double y, double z, double xd, double yd, double zd) {
-        super(level, x, y, z, xd, yd, zd);
+    public BeaconParticle(ClientLevel level, double x, double y, double z, double xd, double yd, double zd, SpriteSet sprite) {
+        super(level, x, y, z, xd, yd, zd, sprite.first());
         gravity = 0.9f;
         fallSpeed = 0.02;
+        setSpriteFromAge(sprite);
     }
 
     @Override
@@ -41,14 +39,12 @@ public class BeaconParticle extends TextureSheetParticle {
     }
 
     public static BeaconParticle createParticle(ClientLevel level, double x, double y, double z, double xd, double yd, double zd, SpriteSet spriteSet) {
-        BeaconParticle beaconParticle = new BeaconParticle(level, x, y, z, xd, yd, zd);
-        beaconParticle.pickSprite(spriteSet);
-        return beaconParticle;
+        return new BeaconParticle(level, x, y, z, xd, yd, zd, spriteSet);
     }
 
     @Override
-    public @NotNull ParticleRenderType getRenderType() {
-        return ParticleRenderType.PARTICLE_SHEET_OPAQUE;
+    protected @NotNull Layer getLayer() {
+        return SingleQuadParticle.Layer.OPAQUE;
     }
 
     public static class FireFactory implements ParticleProvider<SimpleParticleType> {
@@ -59,8 +55,8 @@ public class BeaconParticle extends TextureSheetParticle {
         }
 
         @Override
-        public Particle createParticle(@NotNull SimpleParticleType type, @NotNull ClientLevel level, double x, double y, double z, double xd, double yd, double zd) {
-            return BeaconParticle.createParticle(level, x, y, z, xd, yd, zd, spriteSet);
+        public Particle createParticle(SimpleParticleType particleType, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, RandomSource random) {
+            return BeaconParticle.createParticle(level, x, y, z, xSpeed, ySpeed, zSpeed, spriteSet);
         }
     }
 
@@ -72,8 +68,8 @@ public class BeaconParticle extends TextureSheetParticle {
         }
 
         @Override
-        public Particle createParticle(@NotNull SimpleParticleType type, @NotNull ClientLevel level, double x, double y, double z, double xd, double yd, double zd) {
-            return BeaconParticle.createParticle(level, x, y, z, xd, yd, zd, spriteSet);
+        public Particle createParticle(SimpleParticleType particleType, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, RandomSource random) {
+            return BeaconParticle.createParticle(level, x, y, z, xSpeed, ySpeed, zSpeed, spriteSet);
         }
     }
 
@@ -85,8 +81,8 @@ public class BeaconParticle extends TextureSheetParticle {
         }
 
         @Override
-        public Particle createParticle(@NotNull SimpleParticleType type, @NotNull ClientLevel level, double x, double y, double z, double xd, double yd, double zd) {
-            return BeaconParticle.createParticle(level, x, y, z, xd, yd, zd, spriteSet);
+        public Particle createParticle(SimpleParticleType particleType, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, RandomSource random) {
+            return BeaconParticle.createParticle(level, x, y, z, xSpeed, ySpeed, zSpeed, spriteSet);
         }
     }
 }
