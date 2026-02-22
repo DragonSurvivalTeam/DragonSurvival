@@ -4,21 +4,19 @@ import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.tags.TagsProvider;
+import net.minecraft.data.tags.KeyTagProvider;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.effect.MobEffect;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.CompletableFuture;
 
-public class DSEffectTags extends TagsProvider<MobEffect> {
+public class DSEffectTags extends KeyTagProvider<MobEffect> {
     public static final TagKey<MobEffect> OVERWHELMING_MIGHT_BLACKLIST = key("overwhelming_might_blacklist");
     public static final TagKey<MobEffect> UNBREAKABLE_SPIRIT_BLACKLIST = key("unbreakable_spirit_blacklist");
 
-    public DSEffectTags(final PackOutput output, final CompletableFuture<HolderLookup.Provider> provider, @Nullable final ExistingFileHelper helper) {
-        super(output, Registries.MOB_EFFECT, provider, DragonSurvival.MODID, helper);
+    public DSEffectTags(final PackOutput output, final CompletableFuture<HolderLookup.Provider> provider) {
+        super(output, Registries.MOB_EFFECT, provider, DragonSurvival.MODID);
     }
 
     @Override

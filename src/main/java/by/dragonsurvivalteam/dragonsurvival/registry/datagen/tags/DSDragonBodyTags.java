@@ -6,10 +6,9 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.tags.TagsProvider;
+import net.minecraft.data.tags.KeyTagProvider;
 import net.minecraft.tags.TagKey;
 import net.neoforged.neoforge.common.CommonHooks;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -17,11 +16,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-public class DSDragonBodyTags extends TagsProvider<DragonBody> {
+public class DSDragonBodyTags extends KeyTagProvider<DragonBody> {
     public static final TagKey<DragonBody> ORDER = key("order");
 
-    public DSDragonBodyTags(final PackOutput output, final CompletableFuture<HolderLookup.Provider> provider, @Nullable final ExistingFileHelper helper) {
-        super(output, DragonBody.REGISTRY, provider, DragonSurvival.MODID, helper);
+    public DSDragonBodyTags(final PackOutput output, final CompletableFuture<HolderLookup.Provider> provider) {
+        super(output, DragonBody.REGISTRY, provider, DragonSurvival.MODID);
     }
 
     @Override

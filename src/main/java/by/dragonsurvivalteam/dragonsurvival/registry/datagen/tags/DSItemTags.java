@@ -11,22 +11,26 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.BuiltInDragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.tags.ItemTagsProvider;
+import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.TagBuilder;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.SwordItem;
+import net.minecraft.world.item.equipment.Equippable;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.Tags;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.common.data.ItemTagsProvider;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 public class DSItemTags extends ItemTagsProvider {
@@ -70,8 +74,20 @@ public class DSItemTags extends ItemTagsProvider {
     @Translation(comments = "Primordial Anchor Fuel")
     public static final TagKey<Item> PRIMORDIAL_ANCHOR_FUEL = key("primordial_anchor_fuel");
 
-    public DSItemTags(PackOutput output, CompletableFuture<HolderLookup.Provider> provider, CompletableFuture<TagLookup<Block>> blockTags, @Nullable ExistingFileHelper helper) {
-        super(output, provider, blockTags, DragonSurvival.MODID, helper);
+    private final CompletableFuture<TagsProvider.TagLookup<Block>> blockTags;
+    private final Map<TagKey<Block>, TagKey<Item>> tagsToCopy = new HashMap<>();
+
+    public DSItemTags(PackOutput output, CompletableFuture<HolderLookup.Provider> provider, CompletableFuture<TagsProvider.TagLookup<Block>> blockTags) {
+        super(output, provider, DragonSurvival.MODID);
+
+        this.blockTags = blockTags;
+    }
+
+    /**
+     * Copies the entries from a block tag into an item tag.
+     */
+    protected void copy(TagKey<Block> blockTag, TagKey<Item> itemTag) {
+        this.tagsToCopy.put(blockTag, itemTag);
     }
 
     @Override
@@ -121,7 +137,7 @@ public class DSItemTags extends ItemTagsProvider {
                 .add(Items.SNOW)
                 .add(Items.SNOW_BLOCK)
                 .add(Items.POWDER_SNOW_BUCKET)
-                .addOptional(Identifier.fromNamespaceAndPath("immersive_weathering", "icicle"));
+                .addOptionalTag(TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath("immersive_weathering", "icicle")));
 
         tag(PRIMORDIAL_ANCHOR_FUEL).add(Items.ENDER_PEARL);
 
@@ -155,6 +171,22 @@ public class DSItemTags extends ItemTagsProvider {
         copy(DSBlockTags.WOODEN_DRAGON_DOORS, WOODEN_DRAGON_DOORS);
     }
 
+
+    // Copied from old 1.21.1 ItemTagsProvider
+    @Override
+    protected @NotNull CompletableFuture<HolderLookup.Provider> createContentsProvider() {
+        return super.createContentsProvider().thenCombine(this.blockTags, (provider, blockLookup) -> {
+            this.tagsToCopy.forEach((blockKey, itemKey) -> {
+                TagBuilder tagbuilder = this.getOrCreateRawBuilder(itemKey);
+                Optional<TagBuilder> optional = blockLookup.apply(blockKey);
+                var fromBuilder = optional.orElseThrow(() -> new IllegalStateException("Missing block tag " + itemKey.location()));
+                fromBuilder.build().forEach(tagbuilder::add);
+                fromBuilder.getRemoveEntries().forEach(tagbuilder::remove);
+            });
+            return provider;
+        });
+    }
+
     private void tagDragonSpeciesFood(@NotNull final HolderLookup.Provider provider) {
         provider.lookupOrThrow(DragonSpecies.REGISTRY).listElements().forEach(species -> {
             //noinspection DataFlowIssue -> key is present
@@ -174,9 +206,9 @@ public class DSItemTags extends ItemTagsProvider {
 
             for (DietEntry entry : diet) {
                 if (entry.items().startsWith("#")) {
-                    tag(dragonFood).addOptionalTag(Identifier.parse(entry.items().substring(1)));
+                    tag(dragonFood).addOptionalTag(TagKey.create(Registries.ITEM, Identifier.parse(entry.items().substring(1))));
                 } else {
-                    tag(dragonFood).addOptional(Identifier.parse(entry.items()));
+                    tag(dragonFood).addOptionalTag(TagKey.create(Registries.ITEM, Identifier.parse(entry.items())));
                 }
             }
         });
@@ -186,14 +218,15 @@ public class DSItemTags extends ItemTagsProvider {
         DSItems.REGISTRY.getEntries().forEach(holder -> {
             Item item = holder.value();
 
-            if (item instanceof ArmorItem armor) {
-                switch (armor.getEquipmentSlot()) {
+            if (item.components().has(DataComponents.EQUIPPABLE)) {
+                Equippable equippable = item.components().get(DataComponents.EQUIPPABLE);
+                switch (equippable.slot()) {
                     case HEAD -> tag(ItemTags.HEAD_ARMOR).add(item);
                     case CHEST -> tag(ItemTags.CHEST_ARMOR).add(item);
                     case FEET -> tag(ItemTags.FOOT_ARMOR).add(item);
                     case LEGS -> tag(ItemTags.LEG_ARMOR).add(item);
                 }
-            } else if (item instanceof SwordItem) {
+            } else if (item.components().has(DataComponents.WEAPON)) {
                 tag(ItemTags.SWORDS).add(item);
             }
         });

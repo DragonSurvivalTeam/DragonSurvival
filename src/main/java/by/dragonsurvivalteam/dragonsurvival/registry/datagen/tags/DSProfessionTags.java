@@ -18,8 +18,8 @@ public class DSProfessionTags extends TagsProvider<VillagerProfession> {
     @Translation(comments = "Professions that cannot be pillaged")
     public static final TagKey<VillagerProfession> PILLAGE_BLACKLIST = TagKey.create(BuiltInRegistries.VILLAGER_PROFESSION.key(), DragonSurvival.res("pillage_blacklist"));
 
-    public DSProfessionTags(PackOutput output, ResourceKey<? extends Registry<VillagerProfession>> registryKey, CompletableFuture<HolderLookup.Provider> lookupProvider, String modId) {
-        super(output, registryKey, lookupProvider, modId);
+    public DSProfessionTags(PackOutput output, ResourceKey<? extends Registry<VillagerProfession>> registryKey, CompletableFuture<HolderLookup.Provider> lookupProvider) {
+        super(output, registryKey, lookupProvider, DragonSurvival.MODID);
     }
 
     @Override

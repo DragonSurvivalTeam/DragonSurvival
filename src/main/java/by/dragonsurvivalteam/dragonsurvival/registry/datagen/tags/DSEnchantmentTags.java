@@ -9,9 +9,7 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.EnchantmentTagsProvider;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.enchantment.Enchantment;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -19,8 +17,8 @@ public class DSEnchantmentTags extends EnchantmentTagsProvider {
     @Translation(comments = "Anti-Dragon (Exclusive Set)")
     public static final TagKey<Enchantment> ANTI_DRAGON = exclusiveSet("anti_dragon");
 
-    public DSEnchantmentTags(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, @Nullable ExistingFileHelper existingFileHelper) {
-        super(output, lookupProvider, DragonSurvival.MODID, existingFileHelper);
+    public DSEnchantmentTags(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
+        super(output, lookupProvider, DragonSurvival.MODID);
     }
 
     @Override

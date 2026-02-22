@@ -8,9 +8,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.tags.TagKey;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -32,8 +30,8 @@ public class DSDragonSpeciesTags extends TagsProvider<DragonSpecies> {
     @Translation(comments = "Sea Dragons")
     public static final TagKey<DragonSpecies> SEA_DRAGONS = key("sea_dragons");
 
-    public DSDragonSpeciesTags(final PackOutput output, final CompletableFuture<HolderLookup.Provider> provider, @Nullable final ExistingFileHelper helper) {
-        super(output, DragonSpecies.REGISTRY, provider, DragonSurvival.MODID, helper);
+    public DSDragonSpeciesTags(final PackOutput output, final CompletableFuture<HolderLookup.Provider> provider) {
+        super(output, DragonSpecies.REGISTRY, provider, DragonSurvival.MODID);
     }
 
     @Override

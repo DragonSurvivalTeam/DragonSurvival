@@ -4,8 +4,7 @@ import net.minecraft.client.renderer.texture.atlas.sources.SingleFile;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.Identifier;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
-import net.neoforged.neoforge.common.data.SpriteSourceProvider;
+import net.neoforged.neoforge.client.data.SpriteSourceProvider;
 
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -14,13 +13,15 @@ import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 
 public class DataSpriteSourceProvider extends SpriteSourceProvider {
 
-    public DataSpriteSourceProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper existingFileHelper) {
-        super(output, lookupProvider, MODID, existingFileHelper);
+    private static final Identifier BLOCKS_ATLAS = Identifier.withDefaultNamespace("blocks");
+
+    public DataSpriteSourceProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, String modId) {
+        super(output, lookupProvider, modId);
     }
 
     @Override
     protected void gather() {
-        atlas(SpriteSourceProvider.BLOCKS_ATLAS)
+        atlas(BLOCKS_ATLAS)
                 .addSource(new SingleFile(Identifier.fromNamespaceAndPath(MODID, "te/star/cage"), Optional.empty()))
                 .addSource(new SingleFile(Identifier.fromNamespaceAndPath(MODID, "te/star/wind"), Optional.empty()))
                 .addSource(new SingleFile(Identifier.fromNamespaceAndPath(MODID, "te/star/open_eye"), Optional.empty()))

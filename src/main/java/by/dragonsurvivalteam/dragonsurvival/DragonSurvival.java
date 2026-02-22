@@ -2,7 +2,6 @@ package by.dragonsurvivalteam.dragonsurvival;
 
 import by.dragonsurvivalteam.dragonsurvival.config.ConfigHandler;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAdvancementTriggers;
-import by.dragonsurvivalteam.dragonsurvival.registry.DSArmorMaterials;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAttributes;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSBlockEntities;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSBlocks;
@@ -30,7 +29,10 @@ import by.dragonsurvivalteam.dragonsurvival.util.proxy.ClientProxy;
 import by.dragonsurvivalteam.dragonsurvival.util.proxy.Proxy;
 import by.dragonsurvivalteam.dragonsurvival.util.proxy.ServerProxy;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.tags.TagKey;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
@@ -51,13 +53,12 @@ public class DragonSurvival {
     public static Proxy PROXY;
 
     public DragonSurvival(final IEventBus bus, final ModContainer ignored) {
-        PROXY = FMLLoader.getDist().isClient() ? new ClientProxy() : new ServerProxy();
+        PROXY = FMLLoader.getCurrent().getDist().isClient() ? new ClientProxy() : new ServerProxy();
         ConfigHandler.initConfig();
 
         DSDataAttachments.REGISTRY.register(bus);
         DSDataComponents.REGISTRY.register(bus);
         DSAttributes.REGISTRY.register(bus);
-        DSArmorMaterials.REGISTRY.register(bus);
         DSBlocks.REGISTRY.register(bus); // Needs to happen before items
         DSItems.REGISTRY.register(bus);
         DSEffects.REGISTRY.register(bus);
@@ -90,5 +91,9 @@ public class DragonSurvival {
 
     public static Identifier location(final String namespace, final String path) {
         return Identifier.fromNamespaceAndPath(namespace, path);
+    }
+
+    public static <T> TagKey<T> tagKey(ResourceKey<? extends Registry<T>> registry, final String namespace, final String path) {
+        return TagKey.create(registry, Identifier.fromNamespaceAndPath(namespace, path));
     }
 }

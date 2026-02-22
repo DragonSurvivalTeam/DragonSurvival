@@ -62,12 +62,11 @@ import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.server.packs.repository.PackSource;
 import net.minecraft.world.flag.FeatureFlagSet;
-import net.minecraft.world.level.storage.loot.parameters.ContextKeySets;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.common.data.BlockTagsProvider;
 import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.neoforged.neoforge.event.AddPackFindersEvent;
 
@@ -119,23 +118,23 @@ public class DataGeneration {
     public static void generateData(final GatherDataEvent event) {
         DataGenerator generator = event.getGenerator();
         PackOutput output = generator.getPackOutput();
-        ExistingFileHelper helper = event.getExistingFileHelper();
         CompletableFuture<HolderLookup.Provider> lookup = event.getLookupProvider();
 
         // Client
-        generator.addProvider(event.includeClient(), new DataBlockStateProvider(output, helper));
-        generator.addProvider(event.includeClient(), new DataItemModelProvider(output, helper));
-        generator.addProvider(event.includeClient(), new DataSpriteSourceProvider(output, lookup, helper));
-        generator.addProvider(event.includeClient(), new DSLanguageProvider(output, lookup, "en_us"));
+        generator.addProvider(true /*Client*/, new DataBlockStateProvider(output, DragonSurvival.MODID));
+        generator.addProvider(true /*Client*/, new DataItemModelProvider(output, DragonSurvival.MODID));
+        generator.addProvider(true /*Client*/, new DataSpriteSourceProvider(output, lookup, DragonSurvival.MODID));
+        generator.addProvider(true /*Client*/, new DSLanguageProvider(output, lookup, "en_us"));
 
         // Server
-        LootTableProvider.SubProviderEntry blockLootTableSubProvider = new LootTableProvider.SubProviderEntry(BlockLootTableSubProvider::new, ContextKeySets.BLOCK);
-        generator.addProvider(event.includeServer(), (DataProvider.Factory<LootTableProvider>) lootTableOutput -> new LootTableProvider(lootTableOutput, Collections.emptySet(), List.of(blockLootTableSubProvider), event.getLookupProvider()));
+        LootTableProvider.SubProviderEntry blockLootTableSubProvider = new LootTableProvider.SubProviderEntry(BlockLootTableSubProvider::new, LootContextParamSets.BLOCK);
+        generator.addProvider(true /*Server*/, (DataProvider.Factory<LootTableProvider>) lootTableOutput -> new LootTableProvider(lootTableOutput, Collections.emptySet(), List.of(blockLootTableSubProvider), event.getLookupProvider()));
 
-        if (event.includeServer()) {
-            addSilentGemsLootTables(generator, lookup);
-            addCreateLootTables(generator, lookup);
-        }
+        // FIXME :: How to best check for server here?
+        //if (event.includeServer()) {
+           // addSilentGemsLootTables(generator, lookup);
+            //addCreateLootTables(generator, lookup);
+        //}
 
         // built-in registries
         RegistrySetBuilder builder = new RegistrySetBuilder();
@@ -149,7 +148,7 @@ public class DataGeneration {
         builder.add(DragonPenalty.REGISTRY, DragonPenalties::registerPenalties);
         builder.add(DragonSpecies.REGISTRY, BuiltInDragonSpecies::registerTypes);
         DatapackBuiltinEntriesProvider datapackProvider = new DatapackBuiltinEntriesProvider(output, lookup, builder, Set.of(DragonSurvival.MODID));
-        generator.addProvider(event.includeServer(), datapackProvider);
+        generator.addProvider(true /*Server*/, datapackProvider);
 
         // Update the lookup provider with our registries
         lookup = datapackProvider.getRegistryProvider();
@@ -158,34 +157,35 @@ public class DataGeneration {
         addAncientStageDatapack(generator, lookup);
         addAncientStageDatapackNoCrushing(generator, lookup);
         addUnlockWingsDatapack(generator, lookup);
-        addNoPenaltiesDatapack(generator, lookup, helper);
+        addNoPenaltiesDatapack(generator, lookup);
         addNoExperienceConversionDatapack(generator, lookup);
 
-        BlockTagsProvider blockTagsProvider = new DSBlockTags(output, lookup, helper);
-        generator.addProvider(event.includeServer(), blockTagsProvider);
-        generator.addProvider(event.includeServer(), new DSItemTags(output, lookup, blockTagsProvider.contentsGetter(), helper));
-        generator.addProvider(event.includeServer(), new DSDamageTypeTags(output, lookup, helper));
-        generator.addProvider(event.includeServer(), new DSEntityTypeTags(output, lookup, helper));
-        generator.addProvider(event.includeServer(), new DSEffectTags(output, lookup, helper));
-        generator.addProvider(event.includeServer(), new DSPoiTypeTags(output, lookup, helper));
-        generator.addProvider(event.includeServer(), new DSProfessionTags(output, BuiltInRegistries.VILLAGER_PROFESSION.key(), lookup, DragonSurvival.MODID));
-        generator.addProvider(event.includeServer(), new DSEnchantmentTags(output, lookup, helper));
-        generator.addProvider(event.includeServer(), new DSDragonBodyTags(output, lookup, helper));
-        generator.addProvider(event.includeServer(), new DSDragonAbilityTags(output, lookup, helper));
-        generator.addProvider(event.includeServer(), new DSDragonPenaltyTags(output, lookup, helper));
-        generator.addProvider(event.includeServer(), new DSDragonSpeciesTags(output, lookup, helper));
-        generator.addProvider(event.includeServer(), new DietEntryProvider(output, lookup));
-        generator.addProvider(event.includeServer(), new EndPlatformProvider(output, lookup));
-        generator.addProvider(event.includeServer(), new DragonBeaconDataProvider(output, lookup));
-        generator.addProvider(event.includeServer(), new StageResourceProvider(output, lookup));
-        generator.addProvider(event.includeServer(), new BodyIconProvider(output, lookup));
+        BlockTagsProvider blockTagsProvider = new DSBlockTags(output, lookup);
+        generator.addProvider(true /*Server*/, blockTagsProvider);
+        generator.addProvider(true /*Server*/, new DSItemTags(output, lookup, blockTagsProvider.contentsGetter()));
+        generator.addProvider(true /*Server*/, new DSDamageTypeTags(output, lookup));
+        generator.addProvider(true /*Server*/, new DSEntityTypeTags(output, lookup));
+        generator.addProvider(true /*Server*/, new DSEffectTags(output, lookup));
+        generator.addProvider(true /*Server*/, new DSPoiTypeTags(output, lookup));
+        generator.addProvider(true /*Server*/, new DSProfessionTags(output, BuiltInRegistries.VILLAGER_PROFESSION.key(), lookup));
+        generator.addProvider(true /*Server*/, new DSEnchantmentTags(output, lookup));
+        generator.addProvider(true /*Server*/, new DSDragonBodyTags(output, lookup));
+        generator.addProvider(true /*Server*/, new DSDragonAbilityTags(output, lookup));
+        generator.addProvider(true /*Server*/, new DSDragonPenaltyTags(output, lookup));
+        generator.addProvider(true /*Server*/, new DSDragonSpeciesTags(output, lookup));
+        generator.addProvider(true /*Server*/, new DietEntryProvider(output, lookup));
+        generator.addProvider(true /*Server*/, new EndPlatformProvider(output, lookup));
+        generator.addProvider(true /*Server*/, new DragonBeaconDataProvider(output, lookup));
+        generator.addProvider(true /*Server*/, new StageResourceProvider(output, lookup));
+        generator.addProvider(true /*Server*/, new BodyIconProvider(output, lookup));
 
-        generator.addProvider(event.includeServer(), new DataBlockModelProvider(output, helper));
+        generator.addProvider(true /*Server*/, new DataBlockModelProvider(output));
         // TODO :: Re-add this when we update to 1.22
 //        generator.addProvider(event.includeServer(), new AdvancementProvider(output, lookup, helper, List.of(new DSAdvancements())));
 
         // Should run last due to doing weird registry things
-        generator.addProvider(event.includeServer(), new DSRecipes(output, lookup));
+        // FIXME :: RecipeOutput?
+       // generator.addProvider(true /*Server*/, new DSRecipes(lookup, /*recipe?*/));
     }
 
     @SubscribeEvent
@@ -240,11 +240,11 @@ public class DataGeneration {
         datapack.addProvider(output -> new DatapackBuiltinEntriesProvider(output, lookup, builder, Set.of(DragonSurvival.MODID)));
     }
 
-    private static void addNoPenaltiesDatapack(final DataGenerator generator, final CompletableFuture<HolderLookup.Provider> lookup, ExistingFileHelper helper) {
+    private static void addNoPenaltiesDatapack(final DataGenerator generator, final CompletableFuture<HolderLookup.Provider> lookup) {
         DataGenerator.PackGenerator datapack = generator.getBuiltinDatapack(true, DragonSurvival.MODID, NO_PENALTIES_DATAPACK);
         datapack.addProvider(output -> PackMetadataGenerator.forFeaturePack(output, Component.translatable(NO_PENALTIES_DATAPACK_DESCRIPTION), FeatureFlagSet.of()));
-        datapack.addProvider(output -> new NoPenaltiesPenaltyProvider(output, DragonPenalty.REGISTRY, lookup, DragonSurvival.MODID, helper));
-        datapack.addProvider(output -> new NoPenaltiesAbilityProvider(output, DragonAbility.REGISTRY, lookup, DragonSurvival.MODID, helper));
+        datapack.addProvider(output -> new NoPenaltiesPenaltyProvider(output, lookup));
+        datapack.addProvider(output -> new NoPenaltiesAbilityProvider(output, lookup));
     }
 
     private static void addNoExperienceConversionDatapack(final DataGenerator generator, final CompletableFuture<HolderLookup.Provider> lookup) {
@@ -285,14 +285,14 @@ public class DataGeneration {
     private static void addSilentGemsLootTables(final DataGenerator generator, final CompletableFuture<HolderLookup.Provider> lookup) {
         DataGenerator.PackGenerator datapack = generator.getBuiltinDatapack(true, DragonSurvival.MODID, SILENT_GEMS_DATAPACK);
         datapack.addProvider(output -> PackMetadataGenerator.forFeaturePack(output, Component.translatable(SILENT_GEMS_DATAPACK_DESCRIPTION), FeatureFlagSet.of()));
-        LootTableProvider.SubProviderEntry subProvider = new LootTableProvider.SubProviderEntry(SilentGemsDatapack::new, ContextKeySets.BLOCK);
+        LootTableProvider.SubProviderEntry subProvider = new LootTableProvider.SubProviderEntry(SilentGemsDatapack::new, LootContextParamSets.BLOCK);
         datapack.addProvider(output -> new SilentGemsDatapack.Provider(output, Collections.emptySet(), List.of(subProvider), lookup));
     }
 
     private static void addCreateLootTables(final DataGenerator generator, final CompletableFuture<HolderLookup.Provider> lookup) {
         DataGenerator.PackGenerator datapack = generator.getBuiltinDatapack(true, DragonSurvival.MODID, CREATE_DATAPACK);
         datapack.addProvider(output -> PackMetadataGenerator.forFeaturePack(output, Component.translatable(CREATE_DATAPACK_DESCRIPTION), FeatureFlagSet.of()));
-        LootTableProvider.SubProviderEntry subProvider = new LootTableProvider.SubProviderEntry(CreateDatapack::new, ContextKeySets.BLOCK);
+        LootTableProvider.SubProviderEntry subProvider = new LootTableProvider.SubProviderEntry(CreateDatapack::new, LootContextParamSets.BLOCK);
         datapack.addProvider(output -> new CreateDatapack.Provider(output, Collections.emptySet(), List.of(subProvider), lookup));
     }
 }

@@ -6,15 +6,13 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty.DragonPenalt
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty.DragonPenalty;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.tags.TagsProvider;
+import net.minecraft.data.tags.KeyTagProvider;
 import net.minecraft.tags.TagKey;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.CompletableFuture;
 
-public class DSDragonPenaltyTags extends TagsProvider<DragonPenalty> {
+public class DSDragonPenaltyTags extends KeyTagProvider<DragonPenalty> {
     @Translation(comments = "Cave Dragon Penalties")
     public static final TagKey<DragonPenalty> CAVE = key("cave_dragon");
     @Translation(comments = "Sea Dragon Penalties")
@@ -22,8 +20,8 @@ public class DSDragonPenaltyTags extends TagsProvider<DragonPenalty> {
     @Translation(comments = "Forest Dragon Penalties")
     public static final TagKey<DragonPenalty> FOREST = key("forest_dragon");
 
-    public DSDragonPenaltyTags(final PackOutput output, final CompletableFuture<HolderLookup.Provider> provider, @Nullable final ExistingFileHelper helper) {
-        super(output, DragonPenalty.REGISTRY, provider, DragonSurvival.MODID, helper);
+    public DSDragonPenaltyTags(final PackOutput output, final CompletableFuture<HolderLookup.Provider> provider) {
+        super(output, DragonPenalty.REGISTRY, provider, DragonSurvival.MODID);
     }
 
     @Override

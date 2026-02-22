@@ -12,9 +12,7 @@ import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.damagesource.DamageTypes;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -31,8 +29,8 @@ public class DSDamageTypeTags extends DamageTypeTagsProvider {
     @Translation(comments = "Water Burn")
     public static final TagKey<DamageType> WATER_BURN = key("water_burn");
 
-    public DSDamageTypeTags(final PackOutput output, final CompletableFuture<HolderLookup.Provider> provider, @Nullable final ExistingFileHelper helper) {
-        super(output, provider, DragonSurvival.MODID, helper);
+    public DSDamageTypeTags(final PackOutput output, final CompletableFuture<HolderLookup.Provider> provider) {
+        super(output, provider, DragonSurvival.MODID);
     }
 
     @Override

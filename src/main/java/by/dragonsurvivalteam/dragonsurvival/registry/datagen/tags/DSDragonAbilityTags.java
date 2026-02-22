@@ -9,19 +9,17 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilit
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbility;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.tags.TagsProvider;
+import net.minecraft.data.tags.KeyTagProvider;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-public class DSDragonAbilityTags extends TagsProvider<DragonAbility> {
+public class DSDragonAbilityTags extends KeyTagProvider<DragonAbility> {
     @Translation(comments = "Ability Sorting Order")
     public static final TagKey<DragonAbility> ORDER = key("order");
 
@@ -35,8 +33,8 @@ public class DSDragonAbilityTags extends TagsProvider<DragonAbility> {
     @Translation(comments = "Test Abilities")
     public static final TagKey<DragonAbility> TEST_ABILITIES = key("test_abilities");
 
-    public DSDragonAbilityTags(final PackOutput output, final CompletableFuture<HolderLookup.Provider> provider, @Nullable final ExistingFileHelper helper) {
-        super(output, DragonAbility.REGISTRY, provider, DragonSurvival.MODID, helper);
+    public DSDragonAbilityTags(final PackOutput output, final CompletableFuture<HolderLookup.Provider> provider) {
+        super(output, DragonAbility.REGISTRY, provider, DragonSurvival.MODID);
     }
 
     @Override
