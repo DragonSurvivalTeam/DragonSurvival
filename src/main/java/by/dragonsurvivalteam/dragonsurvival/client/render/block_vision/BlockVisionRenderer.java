@@ -1,6 +1,5 @@
 package by.dragonsurvivalteam.dragonsurvival.client.render.block_vision;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 
 // FIXME
 public interface BlockVisionRenderer {

@@ -1,8 +1,5 @@
 package by.dragonsurvivalteam.dragonsurvival.client.render.block_vision;
 
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.VertexFormat;
-import net.minecraft.client.renderer.texture.TextureAtlas;
 
 /**
  * This mostly exists due to the cutout render type, otherwise it will render full planes instead of the proper texture </br>

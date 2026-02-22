@@ -1,10 +1,5 @@
 package by.dragonsurvivalteam.dragonsurvival.client.render.block_vision;
 
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.block_vision.BlockVision;
-import by.dragonsurvivalteam.dragonsurvival.registry.DSParticles;
-import net.minecraft.client.Minecraft;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.enchantment.effects.SpawnParticlesEffect;
 
 // FIXME
