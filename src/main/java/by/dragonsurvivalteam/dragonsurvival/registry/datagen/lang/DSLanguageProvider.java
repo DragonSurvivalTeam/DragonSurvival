@@ -19,7 +19,6 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageType;
-import net.minecraft.world.item.Tiers;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.loading.modscan.ModAnnotation;
 import net.neoforged.neoforge.common.Tags;
@@ -118,10 +117,11 @@ public class DSLanguageProvider extends LanguageProvider {
             add(Translation.Type.DAMAGE_TYPE.wrap(damageType.identifier()), capitalize(damageType.identifier().getPath()));
         }
 
-        // Used by 'HarvestBonuses'
-        for (Tiers tier : Tiers.values()) {
-            add(enumValueKey(tier), capitalize(tier.name().toLowerCase(Locale.ENGLISH)));
-        }
+        // FIXME :: Tiers don't exist anymore
+//        // Used by 'HarvestBonuses'
+//        for (Tiers tier : Tiers.values()) {
+//            add(enumValueKey(tier), capitalize(tier.name().toLowerCase(Locale.ENGLISH)));
+//        }
 
         // Tags are not available during data generation
         add(Tags.getTagTranslationKey(DamageTypeTags.IS_FIRE), "Fire");

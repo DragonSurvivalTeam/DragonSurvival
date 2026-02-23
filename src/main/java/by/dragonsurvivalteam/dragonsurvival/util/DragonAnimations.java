@@ -1,7 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.util;
 
-import software.bernie.geckolib.animation.Animation;
 import software.bernie.geckolib.animation.RawAnimation;
+import software.bernie.geckolib.animation.object.LoopType;
 
 import java.util.function.Function;
 
@@ -35,8 +35,8 @@ public enum DragonAnimations {
     CLIMBING_UP("climbing_up", name -> RawAnimation.begin().thenLoop(name)),
     CLIMBING_DOWN("climbing_down", name -> RawAnimation.begin().thenLoop(name)),
 
-    JUMP("jump", name -> RawAnimation.begin().then(name, Animation.LoopType.PLAY_ONCE)),
-    FLY_LAND_END("fly_land_end", name -> RawAnimation.begin().then(name, Animation.LoopType.PLAY_ONCE)),
+    JUMP("jump", name -> RawAnimation.begin().then(name, LoopType.PLAY_ONCE)),
+    FLY_LAND_END("fly_land_end", name -> RawAnimation.begin().then(name, LoopType.PLAY_ONCE)),
 
     // Special create animation
     CREATE_SKYHOOK_RIDING("create_skyhook_riding", name -> RawAnimation.begin().thenLoop(name));

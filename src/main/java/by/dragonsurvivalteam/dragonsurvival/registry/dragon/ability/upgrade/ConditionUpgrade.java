@@ -7,9 +7,9 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.context.ContextKeySet;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.LootParams;
-import net.minecraft.world.level.storage.loot.parameters.ContextKeySet;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 
@@ -58,7 +58,7 @@ public record ConditionUpgrade(List<LootItemCondition> conditions, boolean requi
     }
 
     private LootContext createContext(final ServerPlayer dragon) {
-        LootParams parameters = new LootParams.Builder(dragon.serverLevel())
+        LootParams parameters = new LootParams.Builder(dragon.level())
                 .withParameter(LootContextParams.THIS_ENTITY, dragon)
                 .withParameter(LootContextParams.ORIGIN, dragon.position())
                 .withParameter(LootContextParams.TOOL, dragon.getMainHandItem())

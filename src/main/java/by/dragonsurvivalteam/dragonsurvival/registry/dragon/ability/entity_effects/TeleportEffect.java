@@ -14,7 +14,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
 import net.minecraft.world.level.ClipContext;
-import net.minecraft.world.level.portal.DimensionTransition;
+import net.minecraft.world.level.portal.TeleportTransition;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 
@@ -40,11 +40,8 @@ public record TeleportEffect(TargetDirection targetDirection, LevelBasedValue ma
     public void apply(final ServerPlayer dragon, final DragonAbilityInstance ability, final Entity target) {
         if (target.level() instanceof ServerLevel serverLevel && serverLevel.isLoaded(target.getOnPos())) {
             if (targetDirection.direction().left().orElse(null) == TargetDirection.Type.TOWARDS_ENTITY) {
-                dragon.changeDimension(
-                        new DimensionTransition(
-                                serverLevel, target.getPosition(0), target.getDeltaMovement(), target.getYRot(), target.getXRot(), DimensionTransition.DO_NOTHING
-                        )
-                );
+                TeleportTransition transition = new TeleportTransition(serverLevel, target.getPosition(0), target.getDeltaMovement(), target.getYRot(), target.getXRot(), TeleportTransition.DO_NOTHING);
+                dragon.teleport(transition);
                 return;
             }
             Vec3 direction = null;
@@ -68,11 +65,8 @@ public record TeleportEffect(TargetDirection targetDirection, LevelBasedValue ma
                     Vec3 destination = new Vec3(res.getLocation().toVector3f()).add(new Vec3(res.getDirection().step()));
 
                     if (dragon.level().isLoaded(BlockPos.containing(destination))) {
-                        target.changeDimension(
-                                new DimensionTransition(
-                                        serverLevel, destination, target.getDeltaMovement(), target.getYRot(), target.getXRot(), DimensionTransition.DO_NOTHING
-                                )
-                        );
+                        TeleportTransition transition = new TeleportTransition(serverLevel, destination, target.getDeltaMovement(), target.getYRot(), target.getXRot(), TeleportTransition.DO_NOTHING);
+                        dragon.teleport(transition);
                         break;
                     }
                 }

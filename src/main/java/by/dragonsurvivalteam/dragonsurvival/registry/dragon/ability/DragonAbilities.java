@@ -3,7 +3,6 @@ package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Glow;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.LevelBasedResource;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.ParticleData;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.SpawnParticles;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.TargetDirection;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.ActionContainer;
@@ -62,7 +61,6 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.util.random.WeightedRandomList;
 import net.minecraft.util.valueproviders.ConstantFloat;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.EntityType;
@@ -204,7 +202,7 @@ public class DragonAbilities {
                         true,
                         Optional.empty(),
                         Animations.create()
-                                .startAndCharging(SimpleAbilityAnimation.create(AnimationKey.CAST_MAGIC_ALT, AnimationLayer.BASE).setTransitionTicks(5).build())
+                                .startAndCharging(SimpleAbilityAnimation.create(AnimationKey.CAST_MAGIC_ALT, AnimationLayer.BASE).transitionLength(5).build())
                                 .end(SimpleAbilityAnimation.create(AnimationKey.MAGIC_ALT, AnimationLayer.BASE).build())
                                 .optional()
                 ),
@@ -310,7 +308,7 @@ public class DragonAbilities {
                         true,
                         Sound.create().end(SoundEvents.PLAYER_TELEPORT).optional(),
                         Animations.create()
-                                .startAndCharging(SimpleAbilityAnimation.create(AnimationKey.CAST_MAGIC_ALT, AnimationLayer.BASE).setTransitionTicks(5).build())
+                                .startAndCharging(SimpleAbilityAnimation.create(AnimationKey.CAST_MAGIC_ALT, AnimationLayer.BASE).transitionLength(5).build())
                                 .end(SimpleAbilityAnimation.create(AnimationKey.MAGIC_ALT, AnimationLayer.BASE).build())
                                 .optional()
                 ),
@@ -349,7 +347,7 @@ public class DragonAbilities {
                         true,
                         Sound.create().end(SoundEvents.PLAYER_TELEPORT).optional(),
                         Animations.create()
-                                .startAndCharging(SimpleAbilityAnimation.create(AnimationKey.CAST_MAGIC_ALT, AnimationLayer.BASE).setTransitionTicks(5).build())
+                                .startAndCharging(SimpleAbilityAnimation.create(AnimationKey.CAST_MAGIC_ALT, AnimationLayer.BASE).transitionLength(5).build())
                                 .end(SimpleAbilityAnimation.create(AnimationKey.MAGIC_ALT, AnimationLayer.BASE).build())
                                 .optional()
                 ),
@@ -387,7 +385,7 @@ public class DragonAbilities {
                         true,
                         Sound.create().end(SoundEvents.EVOKER_PREPARE_SUMMON).optional(),
                         Animations.create()
-                                .startAndCharging(SimpleAbilityAnimation.create(AnimationKey.CAST_MAGIC_ALT, AnimationLayer.BASE).setTransitionTicks(5).build())
+                                .startAndCharging(SimpleAbilityAnimation.create(AnimationKey.CAST_MAGIC_ALT, AnimationLayer.BASE).transitionLength(5).build())
                                 .end(SimpleAbilityAnimation.create(AnimationKey.MAGIC_ALT, AnimationLayer.BASE).build())
                                 .optional()
                 ),
@@ -421,7 +419,7 @@ public class DragonAbilities {
                         true,
                         Optional.empty(),
                         Animations.create()
-                                .startAndCharging(SimpleAbilityAnimation.create(AnimationKey.CAST_MAGIC_ALT, AnimationLayer.BASE).setTransitionTicks(5).build())
+                                .startAndCharging(SimpleAbilityAnimation.create(AnimationKey.CAST_MAGIC_ALT, AnimationLayer.BASE).transitionLength(5).build())
                                 .end(SimpleAbilityAnimation.create(AnimationKey.MAGIC_ALT, AnimationLayer.BASE).build())
                                 .optional()
                 ),
@@ -432,7 +430,9 @@ public class DragonAbilities {
                                 List.of(
                                         new ItemConversionEffect(
                                                 List.of(
-                                                        new ItemConversionEffect.ItemConversionData(ItemCondition.is(Items.IRON_INGOT), WeightedRandomList.create(
+                                                        new ItemConversionEffect.ItemConversionData(ItemCondition.is(Items.IRON_INGOT)
+                                                                // FIXME
+                                                                /*WeightedRandomList.create(
                                                                 ItemConversionEffect.ItemTo.of(
                                                                         Items.GOLD_INGOT,
                                                                         12,
@@ -442,7 +442,7 @@ public class DragonAbilities {
                                                                                 LevelBasedValue.constant(20)
                                                                         )
                                                                 )
-                                                        ))
+                                                        )*/)
                                                 ),
                                                 LevelBasedValue.constant(1)
                                         )

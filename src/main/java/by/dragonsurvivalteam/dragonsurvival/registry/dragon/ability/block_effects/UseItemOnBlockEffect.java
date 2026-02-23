@@ -11,7 +11,6 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
@@ -37,10 +36,10 @@ public record UseItemOnBlockEffect(ItemStack item, LevelBasedValue probability, 
             return;
         }
 
-        if (validBlocks.isEmpty() || validBlocks.get().test(dragon.serverLevel(), position)) {
+        if (validBlocks.isEmpty() || validBlocks.get().test(dragon.level(), position)) {
             ItemStack newStack = new ItemStack(item.getItem());
             InteractionResult result = newStack.useOn(
-                    new UseOnContext(dragon.serverLevel(), dragon, InteractionHand.MAIN_HAND, newStack,
+                    new UseOnContext(dragon.level(), dragon, InteractionHand.MAIN_HAND, newStack,
                     new BlockHitResult(dragon.position(), Objects.requireNonNullElse(direction, dragon.getDirection()), position, false))
             );
 
@@ -48,7 +47,7 @@ public record UseItemOnBlockEffect(ItemStack item, LevelBasedValue probability, 
                 sound.ifPresent(soundHolder -> dragon.level().playSound(null, position, soundHolder.value(), SoundSource.BLOCKS, 1, 1));
             } else {
                 newStack = new ItemStack(item.getItem());
-                ItemInteractionResult newResult = dragon.serverLevel().getBlockState(position).useItemOn(newStack, dragon.serverLevel(), dragon, InteractionHand.MAIN_HAND,
+                InteractionResult newResult = dragon.level().getBlockState(position).useItemOn(newStack, dragon.level(), dragon, InteractionHand.MAIN_HAND,
                         new BlockHitResult(dragon.position(), Objects.requireNonNullElse(direction, dragon.getDirection()), position, false)
                 );
 

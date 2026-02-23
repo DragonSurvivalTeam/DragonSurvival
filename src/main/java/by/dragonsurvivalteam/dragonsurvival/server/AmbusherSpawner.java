@@ -4,16 +4,16 @@ import by.dragonsurvivalteam.dragonsurvival.common.entity.creatures.AmbusherEnti
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.tags.BiomeTags;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.attribute.EnvironmentAttributes;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.monster.PatrollingMonster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.CustomSpawner;
-import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.NaturalSpawner;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.gamerules.GameRules;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -26,32 +26,32 @@ public class AmbusherSpawner implements CustomSpawner {
     private int nextTick;
 
     @Override
-    public int tick(@NotNull ServerLevel level, boolean spawnEnemies, boolean spawnFriendlies) {
-        if (!spawnEnemies || !level.getGameRules().getBoolean(GameRules.RULE_DO_PATROL_SPAWNING)) {
-            return 0;
+    public void tick(@NotNull ServerLevel level, boolean spawnEnemies) {
+        if (!spawnEnemies || !level.getGameRules().get(GameRules.SPAWN_PATROLS)) {
+            return;
         }
 
         nextTick--;
 
         if (nextTick > 0) {
-            return 0;
+            return;
         }
 
         // The random is used to vary the spawn rate a bit
         nextTick = nextTick + AmbusherEntity.SPAWN_FREQUENCY + level.getRandom().nextInt(AmbusherEntity.SPAWN_FREQUENCY / 10);
 
-        if (!level.isDay() || level.getRandom().nextDouble() > AmbusherEntity.SPAWN_CHANCE) {
-            return 0;
+        if (!level.isBrightOutside() || level.getRandom().nextDouble() > AmbusherEntity.SPAWN_CHANCE) {
+            return;
         }
 
         if (level.players().isEmpty()) {
-            return 0;
+            return;
         }
 
         Player player = level.players().get(level.getRandom().nextInt(level.players().size()));
 
         if (player.isCreative() || player.isSpectator()) {
-            return 0;
+            return;
         }
 
         int x = (24 + level.getRandom().nextInt(24)) * (level.getRandom().nextBoolean() ? -1 : 1);
@@ -59,17 +59,17 @@ public class AmbusherSpawner implements CustomSpawner {
         BlockPos.MutableBlockPos spawnPosition = player.blockPosition().mutable().move(x, 0, z);
 
         if (!level.hasChunksAt(spawnPosition.getX() - 10, spawnPosition.getZ() - 10, spawnPosition.getX() + 10, spawnPosition.getZ() + 10)) {
-            return 0;
+            return;
         }
 
-        if (level.getBiome(spawnPosition).is(BiomeTags.WITHOUT_PATROL_SPAWNS)) {
-            return 0;
+        if (level.environmentAttributes().getValue(EnvironmentAttributes.CAN_PILLAGER_PATROL_SPAWN, spawnPosition)) {
+            return;
         }
 
         spawnPosition.setY(level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, spawnPosition).getY());
         spawnAmbusher(level, spawnPosition, level.getRandom());
 
-        return 1;
+        return;
     }
 
     private void spawnAmbusher(ServerLevel level, BlockPos spawnPosition, RandomSource random) {
@@ -83,7 +83,7 @@ public class AmbusherSpawner implements CustomSpawner {
             return;
         }
 
-        AmbusherEntity ambusher = DSEntities.HUNTER_AMBUSHER.get().create(level);
+        AmbusherEntity ambusher = DSEntities.HUNTER_AMBUSHER.get().create(level, EntitySpawnReason.PATROL);
 
         if (ambusher == null) {
             return;

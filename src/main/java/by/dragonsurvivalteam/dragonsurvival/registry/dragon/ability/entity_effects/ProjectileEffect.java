@@ -20,8 +20,8 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
 import net.minecraft.world.phys.Vec3;
 
@@ -81,7 +81,7 @@ public record ProjectileEffect(
                     launchPosition = dragon.getLookAngle().scale(scale).add(dragon.getEyePosition());
                 }
 
-                GenericBallEntity projectile = new GenericBallEntity(projectileData.generalData(), data, ability.level(), launchPosition, dragon.serverLevel());
+                GenericBallEntity projectile = new GenericBallEntity(projectileData.generalData(), data, ability.level(), launchPosition, dragon.level());
                 projectile.setOwner(target);
                 projectile.accelerationPower = 0;
 
@@ -99,7 +99,7 @@ public record ProjectileEffect(
                     launchPosition = new Vec3(dragon.getX(), dragon.getEyeY() - 0.1f, dragon.getZ());
                 }
 
-                GenericArrowEntity arrow = new GenericArrowEntity(projectileData.generalData(), data, ability.level(), launchPosition, dragon.serverLevel());
+                GenericArrowEntity arrow = new GenericArrowEntity(projectileData.generalData(), data, ability.level(), launchPosition, dragon.level());
                 arrow.setOwner(target);
                 arrow.pickup = AbstractArrow.Pickup.DISALLOWED;
 

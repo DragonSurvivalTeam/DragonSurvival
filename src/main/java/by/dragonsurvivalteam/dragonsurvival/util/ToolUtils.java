@@ -1,19 +1,12 @@
 package by.dragonsurvivalteam.dragonsurvival.util;
 
-import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSItemTags;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.PickaxeItem;
-import net.minecraft.world.item.ShovelItem;
-import net.minecraft.world.item.SwordItem;
-import net.minecraft.world.item.TieredItem;
-import net.minecraft.world.item.Tiers;
 import net.minecraft.world.item.component.Tool;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -21,9 +14,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.common.ItemAbilities;
 import net.neoforged.neoforge.common.Tags;
 
+
 public class ToolUtils {
     public static boolean shouldUseDragonTools(final ItemStack itemStack) {
-        return !(itemStack.getItem() instanceof TieredItem) && !isHarvestTool(itemStack) && !isWeapon(itemStack);
+        return !isHarvestTool(itemStack) && !isWeapon(itemStack);
     }
 
     public static boolean isHarvestTool(final ItemStack itemStack) {
@@ -31,23 +25,23 @@ public class ToolUtils {
     }
 
     public static boolean isWeapon(final ItemStack itemStack) {
-        return itemStack.getItem() instanceof SwordItem || itemStack.canPerformAction(ItemAbilities.SWORD_SWEEP) || itemStack.canPerformAction(ItemAbilities.SWORD_DIG) || itemStack.is(DSItemTags.CLAW_WEAPONS);
+        return itemStack.getComponents().has(DataComponents.WEAPON) || itemStack.getComponents().has(DataComponents.KINETIC_WEAPON) || itemStack.getComponents().has(DataComponents.KINETIC_WEAPON);
     }
 
     public static boolean isPickaxe(final ItemStack itemStack) {
-        return itemStack.getItem() instanceof PickaxeItem || itemStack.canPerformAction(ItemAbilities.PICKAXE_DIG) || itemStack.is(ItemTags.PICKAXES) || itemStack.isCorrectToolForDrops(Blocks.STONE.defaultBlockState());
+        return itemStack.is(ItemTags.PICKAXES) || itemStack.isCorrectToolForDrops(Blocks.STONE.defaultBlockState());
     }
 
     public static boolean isAxe(final ItemStack itemStack) {
-        return itemStack.getItem() instanceof AxeItem || itemStack.canPerformAction(ItemAbilities.AXE_STRIP) || itemStack.canPerformAction(ItemAbilities.AXE_DIG) || itemStack.canPerformAction(ItemAbilities.AXE_SCRAPE) || itemStack.is(ItemTags.AXES) || itemStack.isCorrectToolForDrops(Blocks.OAK_LOG.defaultBlockState());
+        return itemStack.canPerformAction(ItemAbilities.AXE_STRIP) || itemStack.canPerformAction(ItemAbilities.AXE_SCRAPE) || itemStack.is(ItemTags.AXES) || itemStack.isCorrectToolForDrops(Blocks.OAK_LOG.defaultBlockState());
     }
 
     public static boolean isShovel(final ItemStack itemStack) {
-        return itemStack.getItem() instanceof ShovelItem || itemStack.canPerformAction(ItemAbilities.SHOVEL_FLATTEN) || itemStack.canPerformAction(ItemAbilities.SHOVEL_DIG) || itemStack.is(ItemTags.SHOVELS) || itemStack.isCorrectToolForDrops(Blocks.DIRT.defaultBlockState());
+        return itemStack.canPerformAction(ItemAbilities.SHOVEL_FLATTEN) || itemStack.is(ItemTags.SHOVELS) || itemStack.isCorrectToolForDrops(Blocks.DIRT.defaultBlockState());
     }
 
     public static boolean isHoe(final ItemStack itemStack) {
-        return itemStack.canPerformAction(ItemAbilities.HOE_DIG) || itemStack.canPerformAction(ItemAbilities.HOE_TILL) || itemStack.is(ItemTags.HOES);
+        return itemStack.canPerformAction(ItemAbilities.HOE_TILL) || itemStack.is(ItemTags.HOES);
     }
 
     public static boolean isShears(final ItemStack itemStack) {
@@ -76,15 +70,19 @@ public class ToolUtils {
         Item item = stack.getItem();
         int level = 0;
 
-        if (item instanceof TieredItem tiered) {
-            level = switch (tiered.getTier()) {
-                case Tiers.WOOD, Tiers.GOLD -> 1;
-                case Tiers.STONE -> 2;
-                case Tiers.IRON -> 3;
-                case Tiers.DIAMOND -> 4;
-                case Tiers.NETHERITE -> 5;
-                default -> 0;
-            };
+        if (item.components().has(DataComponents.TOOL)) {
+            Tool tool = item.components().get(DataComponents.TOOL);
+            // FIXME :: No idea how to do this, mojang seems hell bent on removing tiers as a concept, so we might need to re-evaluate this system as a whole
+            // There is no way to actually reverse what INCORRECT_FOR_X_TOOL tag was used initially without grabbing the
+            // entire HolderSet for the tag and comparing one by one which is horribly inefficient
+//            level = switch (tool.isCorrectForDrops()) {
+//                case Tiers.WOOD, Tiers.GOLD -> 1;
+//                case Tiers.STONE -> 2;
+//                case Tiers.IRON -> 3;
+//                case Tiers.DIAMOND -> 4;
+//                case Tiers.NETHERITE -> 5;
+//                default -> 0;
+//            };
         }
 
         if (level == 0) {
