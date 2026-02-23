@@ -30,22 +30,23 @@ public abstract class PlayerMixin extends LivingEntity {
         super(type, level);
     }
 
-    @Inject(method = "isInvulnerableTo", at = @At("HEAD"), cancellable = true)
-    public void dragonSurvival$disableSuffocationDamage(DamageSource source, CallbackInfoReturnable<Boolean> callback) {
-        if (ServerConfig.disableDragonSuffocation && source == damageSources().inWall() && DragonStateProvider.isDragon(this)) {
-            callback.setReturnValue(true);
-        }
-    }
-
-    /** Disables the mining speed penalty for not being on the ground (if the dragon can swim in the fluid) */
-    @WrapOperation(method = "getDigSpeed", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;onGround()Z"))
-    private boolean dragonSurvival$disablePenalty(final Player instance, final Operation<Boolean> original) {
-        if (SwimData.getData(instance).canSwimIn(instance.getMaxHeightFluidType())) {
-            return true;
-        }
-
-        return original.call(instance);
-    }
+    // FIXME
+//    @Inject(method = "isInvulnerableTo", at = @At("HEAD"), cancellable = true)
+//    public void dragonSurvival$disableSuffocationDamage(DamageSource source, CallbackInfoReturnable<Boolean> callback) {
+//        if (ServerConfig.disableDragonSuffocation && source == damageSources().inWall() && DragonStateProvider.isDragon(this)) {
+//            callback.setReturnValue(true);
+//        }
+//    }
+//
+//    /** Disables the mining speed penalty for not being on the ground (if the dragon can swim in the fluid) */
+//    @WrapOperation(method = "getDigSpeed", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;onGround()Z"))
+//    private boolean dragonSurvival$disablePenalty(final Player instance, final Operation<Boolean> original) {
+//        if (SwimData.getData(instance).canSwimIn(instance.getMaxHeightFluidType())) {
+//            return true;
+//        }
+//
+//        return original.call(instance);
+//    }
 
     /** Prevent the player from moving when casting certain abilities or using emotes */
     @Inject(method = "isImmobile", at = @At("HEAD"), cancellable = true)
@@ -82,13 +83,14 @@ public abstract class PlayerMixin extends LivingEntity {
         }
     }
 
-    @ModifyExpressionValue(method = "aiStep", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;isSwimming()Z"))
-    private boolean dragonSurvival$consideredSwimmingEvenWhenGroundedInWater(boolean isSwimming) {
-        if (isSwimming) {
-            return true;
-        }
-
-        Player self = (Player) (Object) this;
-        return DragonStateProvider.isDragon(self) && DragonEntity.isConsideredSwimmingForAnimation(self);
-    }
+    // FIXME
+//    @ModifyExpressionValue(method = "aiStep", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;isSwimming()Z"))
+//    private boolean dragonSurvival$consideredSwimmingEvenWhenGroundedInWater(boolean isSwimming) {
+//        if (isSwimming) {
+//            return true;
+//        }
+//
+//        Player self = (Player) (Object) this;
+//        return DragonStateProvider.isDragon(self) && DragonEntity.isConsideredSwimmingForAnimation(self);
+//    }
 }

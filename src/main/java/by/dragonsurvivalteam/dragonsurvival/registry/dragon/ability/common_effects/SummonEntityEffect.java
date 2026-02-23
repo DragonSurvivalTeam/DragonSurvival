@@ -43,13 +43,7 @@ import net.minecraft.util.ProblemReporter;
 import net.minecraft.util.random.Weighted;
 import net.minecraft.util.random.WeightedList;
 import net.minecraft.util.random.WeightedRandom;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntitySpawnReason;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LightningBolt;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.TamableAnimal;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -377,7 +371,7 @@ public class SummonEntityEffect extends DurationInstanceBase<SummonedEntities, S
             }
 
             if (entity instanceof PrimedTntAccess access) {
-                access.dragonSurvival$setOwner(storageHolder);
+                access.dragonSurvival$setOwner(EntityReference.of(storageHolder));
             }
 
             setAllied(storageHolder, entity);

@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.At;
 public class FireworkRocketItemMixin {
     /** If the {@link DSEnchantments#AERODYNAMIC_MASTERY} enchantment is present don't always shrink the itemstack */
     @WrapWithCondition(method = "use", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;consume(ILnet/minecraft/world/entity/LivingEntity;)V"))
-    private boolean dragonSurvival$applyEnchantmentEffect(ItemStack instance, int amount, LivingEntity entity, @Local FireworkRocketEntity rocket) {
+    private boolean dragonSurvival$applyEnchantmentEffect(ItemStack instance, int amount, LivingEntity entity) {
         int level = EnchantmentUtils.getLevel(entity, DSEnchantments.AERODYNAMIC_MASTERY);
         return level == 0 || entity.getRandom().nextInt(0, level) == 0;
     }

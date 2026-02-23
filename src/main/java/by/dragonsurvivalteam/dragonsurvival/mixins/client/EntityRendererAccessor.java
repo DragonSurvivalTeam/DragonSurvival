@@ -9,11 +9,11 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 import org.spongepowered.asm.mixin.gen.Invoker;
 
-@Mixin(EntityRenderer.class)
+//Mixin(EntityRenderer.class)
 public interface EntityRendererAccessor {
-    @Accessor("shadowRadius")
-    void dragonSurvival$setShadowRadius(float radius);
-
-    @Invoker("renderNameTag")
-    void dragonSurvival$renderNameTag(Entity pEntity, Component pDisplayName, PoseStack pPoseStack, MultiBufferSource pBuffer, int pPackedLight, float pPartialTick);
+//    @Accessor("shadowRadius")
+//    void dragonSurvival$setShadowRadius(float radius);
+//
+//    @Invoker("renderNameTag")
+//    void dragonSurvival$renderNameTag(Entity pEntity, Component pDisplayName, PoseStack pPoseStack, MultiBufferSource pBuffer, int pPackedLight, float pPartialTick);
 }

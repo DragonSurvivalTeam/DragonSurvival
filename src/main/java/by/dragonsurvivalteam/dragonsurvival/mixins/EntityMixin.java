@@ -37,7 +37,7 @@ public abstract class EntityMixin {
 
     /** Correctly position the passenger when riding a player dragon */
     @ModifyReturnValue(method = "getPassengerAttachmentPoint", at = @At("RETURN"))
-    protected Vec3 dragonSurvival$modifyPassengerAttachmentPoint(Vec3 original, @Local(argsOnly = true, index = 0) Entity entity) {
+    protected Vec3 dragonSurvival$modifyPassengerAttachmentPoint(Vec3 original, @Local(argsOnly = true) Entity entity) {
         Entity mount = (Entity) (Object) this;
         if (!(entity instanceof Player passenger) || !hasPassenger(passenger)) {
             return original;
@@ -241,7 +241,7 @@ public abstract class EntityMixin {
         }
     }
 
-    @ModifyExpressionValue(method = "move", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity$MovementEmission;emitsSounds()Z"))
+    @ModifyExpressionValue(method = "applyMovementEmissionAndPlaySound", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity$MovementEmission;emitsSounds()Z"))
     private boolean dragonSurvival$modifyWalkSoundsWhenWalkingUnderwater(boolean original) {
         Entity self = (Entity) (Object) this;
 

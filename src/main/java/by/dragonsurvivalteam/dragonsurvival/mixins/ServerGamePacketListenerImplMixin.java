@@ -14,7 +14,7 @@ public abstract class ServerGamePacketListenerImplMixin {
     @Shadow public ServerPlayer player;
 
     /** Don't disconnect dragons that are currently flying when on a server */
-    @ModifyExpressionValue(method = "tick", at = @At(value = "FIELD", opcode = Opcodes.GETFIELD, target = "Lnet/minecraft/server/network/ServerGamePacketListenerImpl;clientIsFloating:Z"))
+    @ModifyExpressionValue(method = "tickPlayer", at = @At(value = "FIELD", opcode = Opcodes.GETFIELD, target = "Lnet/minecraft/server/network/ServerGamePacketListenerImpl;clientIsFloating:Z"))
     private boolean dragonSurvival$preventDisconnect(boolean clientIsFloating) {
         if (clientIsFloating && ServerFlightHandler.isFlying(player)) {
             return false;

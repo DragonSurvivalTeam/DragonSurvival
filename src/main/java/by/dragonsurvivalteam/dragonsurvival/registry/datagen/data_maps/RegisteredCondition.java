@@ -19,9 +19,10 @@ public record RegisteredCondition<T>(ResourceKey<T> registryKey) implements ICon
         this(ResourceKey.create(ResourceKey.createRegistryKey(registryType), registryName));
     }
 
+    // FIXME
     @Override
     public boolean test(@NotNull final IContext context) {
-        return ((ContextExtension) context).dragonSurvival$getRegistryAccess().holder(registryKey).map(Holder::isBound).orElse(false);
+        return false;//((ContextExtension) context).dragonSurvival$getRegistryAccess().holder(registryKey).map(Holder::isBound).orElse(false);
     }
 
     @Override

@@ -21,11 +21,12 @@ public class AnimationUtils {
             return;
         }
 
-        if (controller.getCurrentRawAnimation() != null) {
-            double distance = currentAnimationTick - ((AnimationControllerAccessor) controller).dragonSurvival$getTickOffset();
-            ((AnimationControllerAccessor) controller).dragonSurvival$setTickOffset(currentAnimationTick - distance * (controller.getAnimationSpeed() / speed));
-            controller.setAnimationSpeed(speed);
-        }
+        // FIXME
+//        if (controller.getCurrentRawAnimation() != null) {
+//            double distance = currentAnimationTick - ((AnimationControllerAccessor) controller).dragonSurvival$getTickOffset();
+//            ((AnimationControllerAccessor) controller).dragonSurvival$setTickOffset(currentAnimationTick - distance * (controller.getAnimationSpeed() / speed));
+//            controller.setAnimationSpeed(speed);
+//        }
     }
 
     // TODO: This is a hack since GeckoLib's state.isCurrentAnimation() doesn't work. If they ever fix that, we can remove this.

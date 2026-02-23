@@ -441,6 +441,7 @@ public class MagicHUD {
 
     @SuppressWarnings("SameParameterValue") // ignore
     private static void blit(final GuiGraphics graphics, final Identifier resource, int x, int y, int size, float alpha, float red, float green, float blue) {
-        ((GuiGraphicsAccess) graphics).dragonSurvival$innerBlit(resource, x, x + size, y, y + size, 0, 0, 1, 0, 1, red, green, blue, alpha);
+        // FIXME
+        //((GuiGraphicsAccess) graphics).dragonSurvival$innerBlit(resource, x, x + size, y, y + size, 0, 0, 1, 0, 1, red, green, blue, alpha);
     }
 }

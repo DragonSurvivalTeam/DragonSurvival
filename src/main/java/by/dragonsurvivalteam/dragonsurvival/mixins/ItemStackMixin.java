@@ -11,6 +11,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -23,8 +24,8 @@ import java.util.function.Consumer;
  */
 @Mixin(ItemStack.class)
 public abstract class ItemStackMixin {
-    @WrapOperation(method = "getTooltipLines", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;addToTooltip(Lnet/minecraft/core/component/DataComponentType;Lnet/minecraft/world/item/Item$TooltipContext;Ljava/util/function/Consumer;Lnet/minecraft/world/item/TooltipFlag;)V", ordinal = 3))
-    public void dragonSurvival$getTooltipLines(ItemStack instance, DataComponentType<ItemEnchantments> component, Item.TooltipContext context, Consumer<Component> consumer, TooltipFlag flag, Operation<Void> original) {
+    @WrapOperation(method = "addDetailsToTooltip", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;addToTooltip(Lnet/minecraft/core/component/DataComponentType;Lnet/minecraft/world/item/Item$TooltipContext;Lnet/minecraft/world/item/component/TooltipDisplay;Ljava/util/function/Consumer;Lnet/minecraft/world/item/TooltipFlag;)V", ordinal = 16))
+    public void dragonSurvival$getTooltipLines(ItemStack instance, DataComponentType<ItemEnchantments> component, Item.TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> consumer, TooltipFlag flag, Operation<Void> original) {
         if (instance.getItem() instanceof PermanentEnchantmentItem) {
             HolderLookup.Provider lookup = context.registries();
 
@@ -39,7 +40,7 @@ public abstract class ItemStackMixin {
             instance.addToTooltip(DataComponents.ENCHANTMENTS, context, consumer, flag);
             instance.set(DataComponents.ENCHANTMENTS, oldEnchantments);
         } else {
-            original.call(instance, component, context, consumer, flag);
+            original.call(instance, component, context, tooltipDisplay, consumer, flag);
         }
     }
 }
