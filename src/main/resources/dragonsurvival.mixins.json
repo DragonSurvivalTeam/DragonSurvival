@@ -55,7 +55,6 @@
     "client.LocalPlayerAccessor",
     "client.LocalPlayerMixin",
     "client.MinecraftMixin",
-    "client.ModelManagerMixin",
     "client.ScreenAccessor",
     "iris.GameRendererMixin",
     "sodium.ClientNeoForgeModMixin",

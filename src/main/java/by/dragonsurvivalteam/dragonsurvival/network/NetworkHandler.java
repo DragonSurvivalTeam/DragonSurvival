@@ -89,6 +89,63 @@ public class NetworkHandler {
         // Sets the current network version
         final PayloadRegistrar registrar = event.registrar(PROTOCOL_VERSION);
 
+        // Client
+
+        // Generic
+        registrar.playToClient(SyncPlayerJump.TYPE, SyncPlayerJump.STREAM_CODEC);
+        registrar.playToClient(SyncBrokenTool.TYPE, SyncBrokenTool.STREAM_CODEC);
+        registrar.playToClient(SyncFlyingPlayerAbility.TYPE, SyncFlyingPlayerAbility.STREAM_CODEC);
+        registrar.playToClient(SyncEffectModification.TYPE, SyncEffectModification.STREAM_CODEC);
+        registrar.playToClient(SyncOxygenBonus.TYPE, SyncOxygenBonus.STREAM_CODEC);
+        registrar.playToClient(SyncDragonPassengerID.TYPE, SyncDragonPassengerID.STREAM_CODEC);
+
+        // Status
+        registrar.playToClient(SyncGrowthState.TYPE, SyncGrowthState.STREAM_CODEC);
+        registrar.playToClient(SyncGrowth.TYPE, SyncGrowth.STREAM_CODEC);
+        registrar.playToClient(SyncDesiredGrowth.TYPE, SyncDesiredGrowth.STREAM_CODEC);
+        registrar.playToClient(SyncEnderDragonMark.TYPE, SyncEnderDragonMark.STREAM_CODEC);
+        registrar.playToClient(SyncAltarState.TYPE, SyncAltarState.STREAM_CODEC);
+
+        // Flight
+        registrar.playToClient(SyncWingIcon.TYPE, SyncWingIcon.STREAM_CODEC);
+
+        // Render settings
+        registrar.playToClient(SyncDragonClawsMenu.TYPE, SyncDragonClawsMenu.STREAM_CODEC);
+
+        // Ability packets
+        registrar.playToClient(SyncMagicData.TYPE, SyncMagicData.STREAM_CODEC);
+        registrar.playToClient(SyncHunterStacksRemoval.TYPE, SyncHunterStacksRemoval.STREAM_CODEC);
+        registrar.playToClient(StartTickingSound.TYPE, StartTickingSound.STREAM_CODEC);
+        registrar.playToClient(StopTickingSound.TYPE, StopTickingSound.STREAM_CODEC);
+        registrar.playToClient(StopAbilityAnimation.TYPE, StopAbilityAnimation.STREAM_CODEC);
+        registrar.playToClient(SyncAbilityAnimation.TYPE, SyncAbilityAnimation.STREAM_CODEC);
+        registrar.playToClient(SyncModifierWithDuration.TYPE, SyncModifierWithDuration.STREAM_CODEC);
+        registrar.playToClient(SyncAbilityLevel.TYPE, SyncAbilityLevel.STREAM_CODEC);
+        registrar.playToClient(SyncHarvestBonus.TYPE, SyncHarvestBonus.STREAM_CODEC);
+        registrar.playToClient(SyncAddPenaltySupply.TYPE, SyncAddPenaltySupply.STREAM_CODEC);
+        registrar.playToClient(SyncRemovePenaltySupply.TYPE, SyncRemovePenaltySupply.STREAM_CODEC);
+        registrar.playToClient(SyncPenaltySupplyAmount.TYPE, SyncPenaltySupplyAmount.STREAM_CODEC);
+        registrar.playToClient(SyncPenaltySupply.TYPE, SyncPenaltySupply.STREAM_CODEC);
+        registrar.playToClient(SyncDamageModification.TYPE, SyncDamageModification.STREAM_CODEC);
+        registrar.playToClient(SyncSwimDataEntry.TYPE, SyncSwimDataEntry.STREAM_CODEC);
+        registrar.playToClient(SyncSummonedEntity.TYPE, SyncSummonedEntity.STREAM_CODEC);
+        registrar.playToClient(SyncGlowInstance.TYPE, SyncGlowInstance.STREAM_CODEC);
+        registrar.playToClient(SyncBlockVision.TYPE, SyncBlockVision.STREAM_CODEC);
+
+        // Potion sync
+        registrar.playToClient(SyncVisualEffectRemoval.TYPE, SyncVisualEffectRemoval.STREAM_CODEC);
+        registrar.playToClient(SyncVisualEffectAdded.TYPE, SyncVisualEffectAdded.STREAM_CODEC);
+
+        // Client data
+        registrar.playToClient(SyncDragonSoulLock.TYPE, SyncDragonSoulLock.STREAM_CODEC);
+        registrar.playToClient(RequestClientData.TYPE, RequestClientData.STREAM_CODEC);
+        registrar.playToClient(SyncDragonSoulData.TYPE, SyncDragonSoulData.STREAM_CODEC);
+        registrar.playToClient(SyncParticleTrail.TYPE, SyncParticleTrail.STREAM_CODEC);
+        registrar.playToClient(SyncBreathParticles.TYPE, SyncBreathParticles.STREAM_CODEC);
+        registrar.playToClient(SyncMana.TYPE, SyncMana.STREAM_CODEC);
+        registrar.playToClient(SyncCooldown.TYPE, SyncCooldown.STREAM_CODEC);
+
+        // Server
         registrar.playToServer(SortInventory.TYPE, SortInventory.STREAM_CODEC, SortInventory::handleServer);
         registrar.playToServer(SyncAltarCooldown.TYPE, SyncAltarCooldown.STREAM_CODEC, SyncAltarCooldown::handleServer);
         registrar.playToServer(RequestOpenDragonInventory.TYPE, RequestOpenDragonInventory.STREAM_CODEC, RequestOpenDragonInventory::handleServer);
@@ -96,6 +153,17 @@ public class NetworkHandler {
         registrar.playToServer(SyncLargeDragonDestruction.TYPE, SyncLargeDragonDestruction.STREAM_CODEC, SyncLargeDragonDestruction::handleServer);
         registrar.playToServer(RequestDragonSoulData.TYPE, RequestDragonSoulData.STREAM_CODEC, RequestDragonSoulData::handleServer);
 
+        registrar.playToServer(SyncDragonSoulPlacement.TYPE, SyncDragonSoulPlacement.STREAM_CODEC, SyncDragonSoulPlacement::handleServer);
+        registrar.playToServer(SyncKey.TYPE, SyncKey.STREAM_CODEC, SyncKey::handleServer);
+        registrar.playToServer(SyncMultiMining.TYPE, SyncMultiMining.STREAM_CODEC, SyncMultiMining::handleServer);
+        registrar.playToServer(SyncDragonClawMenuToggle.TYPE, SyncDragonClawMenuToggle.STREAM_CODEC, SyncDragonClawMenuToggle::handleServer);
+
+        registrar.playToServer(SyncSlotAssignment.TYPE, SyncSlotAssignment.STREAM_CODEC, SyncSlotAssignment::handleServer);
+        registrar.playToServer(AttemptManualUpgrade.TYPE, AttemptManualUpgrade.STREAM_CODEC, AttemptManualUpgrade::handleServer);
+        registrar.playToServer(SyncBeginCast.TYPE, SyncBeginCast.STREAM_CODEC, SyncBeginCast::handleServer);
+        registrar.playToServer(SyncSummonedEntitiesBehaviour.TYPE, SyncSummonedEntitiesBehaviour.STREAM_CODEC, SyncSummonedEntitiesBehaviour::handleServer);
+
+        // Bidirectional
         registrar.playBidirectional(OpenDragonEditor.TYPE, OpenDragonEditor.STREAM_CODEC, OpenDragonEditor::handleServer);
         registrar.playBidirectional(OpenDragonAltar.TYPE, OpenDragonAltar.STREAM_CODEC, OpenDragonAltar::handleServer);
         registrar.playBidirectional(FlightStatus.TYPE, FlightStatus.STREAM_CODEC, FlightStatus::handleServer);
@@ -104,22 +172,12 @@ public class NetworkHandler {
         registrar.playBidirectional(ToggleFlight.TYPE, ToggleFlight.STREAM_CODEC, ToggleFlight::handleServer);
         registrar.playBidirectional(SyncPitchAndYaw.TYPE, SyncPitchAndYaw.STREAM_CODEC, SyncPitchAndYaw::handleServer);
 
-        registrar.playToServer(SyncMultiMining.TYPE, SyncMultiMining.STREAM_CODEC, SyncMultiMining::handleServer);
-
         registrar.playBidirectional(SyncResting.TYPE, SyncResting.STREAM_CODEC, SyncResting::handleClient);
 
         registrar.playBidirectional(SyncWingsSpread.TYPE, SyncWingsSpread.STREAM_CODEC, SyncWingsSpread::handleServer);
         registrar.playBidirectional(SyncDeltaMovement.TYPE, SyncDeltaMovement.STREAM_CODEC, SyncDeltaMovement::handleServer);
         registrar.playBidirectional(SyncSpinStatus.TYPE, SyncSpinStatus.STREAM_CODEC, SyncSpinStatus::handleServer);
         registrar.playBidirectional(SpinDurationAndCooldown.TYPE, SpinDurationAndCooldown.STREAM_CODEC, SpinDurationAndCooldown::handleServer);
-
-        registrar.playToServer(SyncDragonClawMenuToggle.TYPE, SyncDragonClawMenuToggle.STREAM_CODEC, SyncDragonClawMenuToggle::handleServer);
-
-
-        registrar.playToServer(SyncSlotAssignment.TYPE, SyncSlotAssignment.STREAM_CODEC, SyncSlotAssignment::handleServer);
-        registrar.playToServer(AttemptManualUpgrade.TYPE, AttemptManualUpgrade.STREAM_CODEC, AttemptManualUpgrade::handleServer);
-        registrar.playToServer(SyncBeginCast.TYPE, SyncBeginCast.STREAM_CODEC, SyncBeginCast::handleServer);
-        registrar.playToServer(SyncSummonedEntitiesBehaviour.TYPE, SyncSummonedEntitiesBehaviour.STREAM_CODEC, SyncSummonedEntitiesBehaviour::handleServer);
 
         registrar.playBidirectional(SyncData.TYPE, SyncData.STREAM_CODEC, SyncData::handleCommon);
         registrar.playBidirectional(SyncStopCast.TYPE, SyncStopCast.STREAM_CODEC, SyncStopCast::handleServer);
@@ -128,9 +186,6 @@ public class NetworkHandler {
         // Emote packets
         registrar.playBidirectional(SyncEmote.TYPE, SyncEmote.STREAM_CODEC, SyncEmote::handleServer);
         registrar.playBidirectional(StopAllEmotes.TYPE, StopAllEmotes.STREAM_CODEC, StopAllEmotes::handleServer);
-
-        registrar.playToServer(SyncDragonSoulPlacement.TYPE, SyncDragonSoulPlacement.STREAM_CODEC, SyncDragonSoulPlacement::handleServer);
-        registrar.playToServer(SyncKey.TYPE, SyncKey.STREAM_CODEC, SyncKey::handleServer);
 
         registrar.playBidirectional(SyncDragonSoulAnimation.TYPE, SyncDragonSoulAnimation.STREAM_CODEC, SyncDragonSoulAnimation::handleServer);
         registrar.playBidirectional(SyncPlayerSkinPreset.TYPE, SyncPlayerSkinPreset.STREAM_CODEC, SyncPlayerSkinPreset::handleServer);
@@ -185,6 +240,7 @@ public class NetworkHandler {
         event.register(SyncVisualEffectRemoval.TYPE, SyncVisualEffectRemoval::handleClient);
         event.register(SyncVisualEffectAdded.TYPE, SyncVisualEffectAdded::handleClient);
 
+        // Client data
         event.register(SyncDragonSoulLock.TYPE, SyncDragonSoulLock::handleClient);
         event.register(RequestClientData.TYPE, RequestClientData::handleClient);
         event.register(SyncDragonSoulData.TYPE, SyncDragonSoulData::handleClient);

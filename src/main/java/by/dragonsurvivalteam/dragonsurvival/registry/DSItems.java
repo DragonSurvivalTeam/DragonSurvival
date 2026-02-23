@@ -397,7 +397,10 @@ public class DSItems {
 
     @Translation(type = Translation.Type.ITEM, comments = "Dark Upgrade")
     @Translation(type = Translation.Type.DESCRIPTION, comments = "■§7 A rare item that allows you to upgrade your Netherite Armor to Dark Armor. The armor will have built-in enchantments to help you effectively shed blood in the name of evil.")
-    public static final Holder<Item> DARK_UPGRADE = REGISTRY.register("dark_upgrade", location -> new TooltipItem(new Properties().rarity(Rarity.RARE), location.getPath()));
+    public static final Holder<Item> DARK_UPGRADE = REGISTRY.registerItem(
+            "dark_upgrade",
+            properties -> new TooltipItem(properties, "dark_upgrade"),
+            () -> new Properties().rarity(Rarity.RARE));
 
     @Translation(type = Translation.Type.ITEM, comments = "Dark Helmet")
     public static final Holder<Item> DARK_DRAGON_HELMET = REGISTRY.registerItem(

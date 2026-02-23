@@ -15,6 +15,7 @@ public interface LivingRendererAccessor {
     @SuppressWarnings("rawtypes")
     List<RenderLayer> dragonSurvival$getRenderLayers();
 
-    @Invoker("shouldShowName")
-    boolean dragonSurvival$callShouldShowName(LivingEntity entity);
+    // FIXME
+//    @Invoker("shouldShowName")
+//    boolean dragonSurvival$callShouldShowName(LivingEntity entity);
 }

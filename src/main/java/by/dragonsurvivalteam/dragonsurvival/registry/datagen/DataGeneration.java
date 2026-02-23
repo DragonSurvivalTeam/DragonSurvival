@@ -115,7 +115,7 @@ public class DataGeneration {
     private static final String CREATE_DATAPACK_DESCRIPTION = Translation.Type.GUI.wrap("datapack." + CREATE_DATAPACK);
 
     @SubscribeEvent
-    public static void generateData(final GatherDataEvent event) {
+    public static void generateData(final GatherDataEvent.Client event) {
         DataGenerator generator = event.getGenerator();
         PackOutput output = generator.getPackOutput();
         CompletableFuture<HolderLookup.Provider> lookup = event.getLookupProvider();
@@ -125,16 +125,21 @@ public class DataGeneration {
         generator.addProvider(true /*Client*/, new DataItemModelProvider(output, DragonSurvival.MODID));
         generator.addProvider(true /*Client*/, new DataSpriteSourceProvider(output, lookup, DragonSurvival.MODID));
         generator.addProvider(true /*Client*/, new DSLanguageProvider(output, lookup, "en_us"));
+    }
+
+    @SubscribeEvent
+    public static void generateData(final GatherDataEvent.Server event) {
+        DataGenerator generator = event.getGenerator();
+        PackOutput output = generator.getPackOutput();
+        CompletableFuture<HolderLookup.Provider> lookup = event.getLookupProvider();
 
         // Server
         LootTableProvider.SubProviderEntry blockLootTableSubProvider = new LootTableProvider.SubProviderEntry(BlockLootTableSubProvider::new, LootContextParamSets.BLOCK);
         generator.addProvider(true /*Server*/, (DataProvider.Factory<LootTableProvider>) lootTableOutput -> new LootTableProvider(lootTableOutput, Collections.emptySet(), List.of(blockLootTableSubProvider), event.getLookupProvider()));
 
-        // FIXME :: How to best check for server here?
-        //if (event.includeServer()) {
-           // addSilentGemsLootTables(generator, lookup);
-            //addCreateLootTables(generator, lookup);
-        //}
+
+        addSilentGemsLootTables(generator, lookup);
+        addCreateLootTables(generator, lookup);
 
         // built-in registries
         RegistrySetBuilder builder = new RegistrySetBuilder();
@@ -185,7 +190,7 @@ public class DataGeneration {
 
         // Should run last due to doing weird registry things
         // FIXME :: RecipeOutput?
-       // generator.addProvider(true /*Server*/, new DSRecipes(lookup, /*recipe?*/));
+        // generator.addProvider(true /*Server*/, new DSRecipes(lookup, /*recipe?*/));
     }
 
     @SubscribeEvent
