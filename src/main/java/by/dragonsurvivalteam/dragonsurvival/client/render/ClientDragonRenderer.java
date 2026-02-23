@@ -542,16 +542,6 @@ public class ClientDragonRenderer {
             return new BodyAngles(calculateNextBodyYaw(realtimeDeltaTick, player, movement, posDelta, viewYRot), headAngles.getA(), headAngles.getB());
         }
 
-        // Copied from 1.21.1 RenderUtil.java
-        private static double lerpYaw(double delta, double start, double end) {
-            start = Mth.wrapDegrees(start);
-            end = Mth.wrapDegrees(end);
-            double diff = start - end;
-            end = diff > 180 || diff < -180 ? start + Math.copySign(360 - Math.abs(diff), diff) : end;
-
-            return Mth.lerp(delta, start, end);
-        }
-
         private static double calculateNextBodyYaw(float realtimeDeltaTick, Player player, MovementData movement, Vec3 posDelta, float viewYRot) {
             // Handle bodyYaw
             double bodyYaw = movement.bodyYaw;
@@ -584,7 +574,7 @@ public class ClientDragonRenderer {
                 if (isFirstPerson) {
                     bodyYaw = Functions.lerpAngleAwayFrom(realtimeDeltaTick * factor, bodyYaw, targetAngle, viewYRot + 180);
                 } else {
-                    bodyYaw = lerpYaw(realtimeDeltaTick * factor, bodyYaw, targetAngle);
+                    bodyYaw = Functions.lerpYaw(realtimeDeltaTick * factor, bodyYaw, targetAngle);
                 }
             } else if (hasPosDelta && !player.onGround()) {
                 // When moving without input and in the air, slowly align to the move vector
@@ -597,7 +587,7 @@ public class ClientDragonRenderer {
                 double deltaMagFactor = Math.min(1, (posDelta.horizontalDistance() - MOVE_DELTA_EPSILON) / MOVE_DELTA_FULL_EFFECT_MIN_MAG);
                 factor *= deltaMagFactor;
 
-                bodyYaw = lerpYaw(realtimeDeltaTick * factor, bodyYaw, posDeltaAngle);
+                bodyYaw = Functions.lerpYaw(realtimeDeltaTick * factor, bodyYaw, posDeltaAngle);
             }
 
             // Limit body angle based on view direction and PoV

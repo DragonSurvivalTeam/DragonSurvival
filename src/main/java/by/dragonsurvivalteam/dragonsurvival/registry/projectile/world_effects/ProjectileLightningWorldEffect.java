@@ -5,6 +5,7 @@ import by.dragonsurvivalteam.dragonsurvival.server.handlers.LightningHandler;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.projectile.Projectile;
@@ -16,7 +17,7 @@ public record ProjectileLightningWorldEffect(LightningHandler.Data data) impleme
 
     @Override
     public void apply(final Projectile projectile, final Void target, final int level) {
-        LightningBolt bolt = EntityType.LIGHTNING_BOLT.create(projectile.level());
+        LightningBolt bolt = EntityType.LIGHTNING_BOLT.create(projectile.level(), EntitySpawnReason.TRIGGERED);
         bolt.snapTo(projectile.position());
 
         if (projectile.getOwner() instanceof ServerPlayer serverPlayer) {

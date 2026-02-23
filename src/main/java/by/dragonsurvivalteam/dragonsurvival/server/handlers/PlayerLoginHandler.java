@@ -63,7 +63,7 @@ public class PlayerLoginHandler {
 
         // Clear the state from the previous session
         player.getData(DSDataAttachments.PLAYER_DATA).clearKeys();
-        PacketDistributor.sendToPlayer(player, new SyncData(player.getId(), DSDataAttachments.PLAYER_DATA.getId(), player.getData(DSDataAttachments.PLAYER_DATA).serializeNBT(player.registryAccess())));
+        PacketDistributor.sendToPlayer(player, new SyncData(player.getId(), DSDataAttachments.PLAYER_DATA.getId(), DSDataAttachments.serializeToCompoundTag(player.getData(DSDataAttachments.PLAYER_DATA), player.registryAccess())));
 
         DragonStateHandler handler = DragonStateProvider.getData(player);
 
@@ -147,10 +147,10 @@ public class PlayerLoginHandler {
     /** Synchronizes the dragon data to the player and all tracking players */
     public static void syncHandler(final ServerPlayer serverPlayer) {
         DragonStateHandler handler = DragonStateProvider.getData(serverPlayer);
-        PacketDistributor.sendToPlayersTrackingEntityAndSelf(serverPlayer, new SyncComplete(serverPlayer.getId(), handler.serializeNBT(serverPlayer.registryAccess())));
+        PacketDistributor.sendToPlayersTrackingEntityAndSelf(serverPlayer, new SyncComplete(serverPlayer.getId(), DSDataAttachments.serializeToCompoundTag(handler, serverPlayer.registryAccess())));
 
         serverPlayer.getExistingData(DSDataAttachments.FLIGHT).ifPresent(data ->
-                PacketDistributor.sendToPlayersTrackingEntityAndSelf(serverPlayer, new SyncData(serverPlayer.getId(), DSDataAttachments.FLIGHT.getId(), data.serializeNBT(serverPlayer.registryAccess())))
+                PacketDistributor.sendToPlayersTrackingEntityAndSelf(serverPlayer, new SyncData(serverPlayer.getId(), DSDataAttachments.FLIGHT.getId(), DSDataAttachments.serializeToCompoundTag(data, serverPlayer.registryAccess())))
         );
     }
 
@@ -158,7 +158,7 @@ public class PlayerLoginHandler {
     public static void syncHandler(final Player syncTo, final Entity syncFrom) {
         if (syncTo instanceof ServerPlayer target && syncFrom instanceof ServerPlayer source) {
             DragonStateHandler handler = DragonStateProvider.getData(source);
-            PacketDistributor.sendToPlayer(target, new SyncComplete(source.getId(), handler.serializeNBT(source.registryAccess())));
+            PacketDistributor.sendToPlayer(target, new SyncComplete(source.getId(), DSDataAttachments.serializeToCompoundTag(handler, source.registryAccess())));
 
             // Make sure to sync the FLIGHT data, otherwise the flight animation will be displayed incorrectly when tracking begins
             syncFrom.getExistingData(DSDataAttachments.FLIGHT).ifPresent(data -> data.sync(source, target));
@@ -177,7 +177,7 @@ public class PlayerLoginHandler {
         if (entity instanceof ServerPlayer player) {
             DragonStateProvider.getOptional(player).ifPresent(handler -> {
                 SyncComplete.handleDragonSync(player, true);
-                PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new SyncComplete(player.getId(), handler.serializeNBT(player.registryAccess())));
+                PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new SyncComplete(player.getId(), DSDataAttachments.serializeToCompoundTag(handler, player.registryAccess())));
             });
 
             syncDataAttachments(player);

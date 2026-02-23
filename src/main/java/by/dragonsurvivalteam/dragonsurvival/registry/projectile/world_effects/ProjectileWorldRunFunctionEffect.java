@@ -3,11 +3,11 @@ package by.dragonsurvivalteam.dragonsurvival.registry.projectile.world_effects;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.commands.Commands;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.ServerFunctionManager;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.permissions.LevelBasedPermissionSet;
 import net.minecraft.world.entity.projectile.Projectile;
 
 public record ProjectileWorldRunFunctionEffect(Identifier function) implements ProjectileWorldEffect {
@@ -23,7 +23,7 @@ public record ProjectileWorldRunFunctionEffect(Identifier function) implements P
 
         manager.get(function).ifPresent(source -> {
             CommandSourceStack stack = server.createCommandSourceStack()
-                    .withPermission(Commands.LEVEL_GAMEMASTERS)
+                    .withPermission(LevelBasedPermissionSet.GAMEMASTER)
                     .withSuppressedOutput()
                     .withEntity(projectile)
                     .withLevel(serverLevel)

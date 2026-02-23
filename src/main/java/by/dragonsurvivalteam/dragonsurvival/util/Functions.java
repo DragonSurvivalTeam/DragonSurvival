@@ -13,13 +13,13 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.attribute.EnvironmentAttributes;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.neoforge.common.Tags;
-import software.bernie.geckolib.util.RenderUtil;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -145,6 +145,15 @@ public class Functions {
         return center + delta;
     }
 
+    // Copied from 1.21.1 RenderUtil.java
+    public static double lerpYaw(double delta, double start, double end) {
+        start = Mth.wrapDegrees(start);
+        end = Mth.wrapDegrees(end);
+        double diff = start - end;
+        end = diff > 180 || diff < -180 ? start + Math.copySign(360 - Math.abs(diff), diff) : end;
+
+        return Mth.lerp(delta, start, end);
+    }
 
     /**
      * Instead of strictly limiting the angle, this enforces a soft spring-like limit.
@@ -159,7 +168,7 @@ public class Functions {
     public static double limitAngleDeltaSoft(double value, double center, double halfRange, double pullCoeff) {
         pullCoeff = Math.clamp(pullCoeff, 0, 1);
         double targetAngle = limitAngleDelta(value, center, halfRange);
-        return RenderUtil.lerpYaw(pullCoeff, value, targetAngle);
+        return lerpYaw(pullCoeff, value, targetAngle);
     }
 
     /**
@@ -174,7 +183,7 @@ public class Functions {
     public static double lerpAngleAwayFrom(double t, double start, double end, double avoidAngle) {
         if (Math.abs(Mth.wrapDegrees(avoidAngle - end)) < 0.0001) {
             // You're trying to go to the same angle that you're trying to avoid - too bad!
-            return RenderUtil.lerpYaw(t, start, end);
+            return lerpYaw(t, start, end);
         }
 
         start = Mth.wrapDegrees(start);
@@ -264,7 +273,7 @@ public class Functions {
     }
 
     public static double getSunPosition(final Entity entity) {
-        float sunAngle = entity.level().getSunAngle(1);
+        float sunAngle = entity.level().environmentAttributes().getValue(EnvironmentAttributes.SUN_ANGLE, entity.position()) * (float) (Math.PI / 180.0);
         float angleTarget = sunAngle < (float) Math.PI ? 0 : (float) Math.PI * 2f;
         sunAngle = sunAngle + (angleTarget - sunAngle) * 0.2f;
         // 1 means it's a time of 6000 (sun is at the highest point)
@@ -371,7 +380,7 @@ public class Functions {
         int currentIndex = (int) (Math.floor(sizeIndex) % colorsARGB.size());
         int nextIndex = (currentIndex + 1) % colorsARGB.size();
 
-        return ARGB.lerp(sizeIndex - currentIndex, colorsARGB.get(currentIndex), colorsARGB.get(nextIndex));
+        return ARGB.srgbLerp(sizeIndex - currentIndex, colorsARGB.get(currentIndex), colorsARGB.get(nextIndex));
     }
 
     /** Makes sure to return an enum value (instead of an exception) */
@@ -399,7 +408,7 @@ public class Functions {
     }
 
     public static void logOrThrow(final String message) {
-        if (FMLLoader.isProduction()) {
+        if (FMLLoader.getCurrent().isProduction()) {
             DragonSurvival.LOGGER.error(message);
         } else {
             throw new IllegalStateException(message);

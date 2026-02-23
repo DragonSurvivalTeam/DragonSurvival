@@ -3,6 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.server.handlers;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.network.syncing.SyncComplete;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -31,7 +32,7 @@ public class ServerPlayerStatusSync {
 
         if (data.isDragon() && player.tickCount >= data.lastSync + SYNC_RATE) {
             data.lastSync = player.tickCount;
-            PacketDistributor.sendToPlayersTrackingEntity(player, new SyncComplete(player.getId(), data.serializeNBT(player.registryAccess())));
+            PacketDistributor.sendToPlayersTrackingEntity(player, new SyncComplete(player.getId(), DSDataAttachments.serializeToCompoundTag(data, player.registryAccess())));
         }
     }
 }
