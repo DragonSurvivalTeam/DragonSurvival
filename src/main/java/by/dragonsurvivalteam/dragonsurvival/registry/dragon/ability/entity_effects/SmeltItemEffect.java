@@ -56,21 +56,22 @@ public record SmeltItemEffect(Optional<ItemPredicate> itemPredicate, Optional<Le
             return;
         }
 
-        RecipeHolder<SmeltingRecipe> recipe = dragon.level().getRecipeManager().getRecipeFor(RecipeType.SMELTING, new SingleRecipeInput(stack), dragon.level()).orElse(null);
+        RecipeHolder<SmeltingRecipe> recipe = dragon.level().recipeAccess().getRecipeFor(RecipeType.SMELTING, new SingleRecipeInput(stack), dragon.level()).orElse(null);
 
-        if (recipe == null || recipe.value().getResultItem(dragon.registryAccess()).isEmpty()) {
+        // FIXME
+        if (recipe == null /*|| recipe.value().getResultItem(dragon.registryAccess()).isEmpty()*/) {
             return;
         }
 
         if (progress.isPresent()) {
             ItemData data = itemEntity.getData(DSDataAttachments.ITEM);
             data.smeltingProgress += progress.get().calculate(ability.level());
-            data.smeltingTime = recipe.value().getCookingTime() * stack.getCount();
+            data.smeltingTime = recipe.value().cookingTime() * stack.getCount();
 
             // There may be some race conditions with the progress reset packet sent from 'ItemData'
             // But for that you'd have to wait until it is almost ready to send the packet and then time the breath to it
             // Causing both packets to potentially switch in order when the client receives them - in general probably unlikely to happen
-            PacketDistributor.sendToPlayersNear(dragon.serverLevel(), null, itemEntity.getX(), itemEntity.getY(), itemEntity.getZ(), 16, new SyncData(itemEntity.getId(), DSDataAttachments.ITEM.getId(), data.serializeNBT(dragon.registryAccess())));
+            PacketDistributor.sendToPlayersNear(dragon.level(), null, itemEntity.getX(), itemEntity.getY(), itemEntity.getZ(), 16, new SyncData(itemEntity.getId(), DSDataAttachments.ITEM.getId(), data.serializeNBT(dragon.registryAccess())));
 
             if (data.smeltingProgress < data.smeltingTime) {
                 return;
@@ -79,7 +80,8 @@ public record SmeltItemEffect(Optional<ItemPredicate> itemPredicate, Optional<Le
             data.smeltingProgress = 0;
         }
 
-        ItemStack result = recipe.value().getResultItem(dragon.registryAccess());
+        // FIXME
+        /*ItemStack result = recipe.value().getResultItem(dragon.registryAccess());
         itemEntity.setItem(result.copyWithCount(result.getCount() * stack.getCount()));
 
         if (!dropsExperience) {
@@ -90,7 +92,7 @@ public record SmeltItemEffect(Optional<ItemPredicate> itemPredicate, Optional<Le
 
         if (experience > 0) {
             dragon.giveExperiencePoints((int) experience);
-        }
+        }*/
     }
 
     @Override

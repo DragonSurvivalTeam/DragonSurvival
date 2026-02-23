@@ -46,6 +46,7 @@ import software.bernie.geckolib.animation.AnimationController;
 import software.bernie.geckolib.animation.RawAnimation;
 import software.bernie.geckolib.animation.object.PlayState;
 import software.bernie.geckolib.animation.state.AnimationTest;
+import software.bernie.geckolib.cache.GeckoLibResources;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.List;
@@ -403,15 +404,25 @@ public class GenericBallEntity extends AbstractHurtingProjectile implements GeoE
     }
 
     public Identifier getTextureResource() {
-        return getTypeData().resources().get(projectileLevel);
+        Identifier resource = getTypeData().resources().get(projectileLevel);
+        Identifier path = Identifier.fromNamespaceAndPath(resource.getNamespace(), "geo/projectiles/" + resource.getPath() + ".geo.json");
+        try {
+            GeckoLibResources.getBakedModels().getModel(path);
+        } catch (Exception e) {
+            DragonSurvival.LOGGER.error("Model not found for projectile: {}", path);
+            return Identifier.fromNamespaceAndPath(resource.getNamespace(), "geo/projectiles/generic_ball.geo.json");
+        }
+        return Identifier.fromNamespaceAndPath(resource.getNamespace(), "geo/projectiles/" + resource.getPath() + ".geo.json");
     }
 
     public Identifier getAnimationResource() {
-        return getTypeData().resources().get(projectileLevel);
+        Identifier resource = getTypeData().resources().get(projectileLevel);
+        return Identifier.fromNamespaceAndPath(resource.getNamespace(), "animations/projectiles/" + resource.getPath() + ".animation.json");
     }
 
     public Identifier getModelResource() {
-        return getTypeData().resources().get(projectileLevel);
+        Identifier resource = getTypeData().resources().get(projectileLevel);
+        return Identifier.fromNamespaceAndPath(resource.getNamespace(), "textures/entity/projectiles/" + resource.getPath() + ".png");
     }
 
     private int getMaxBounces() {

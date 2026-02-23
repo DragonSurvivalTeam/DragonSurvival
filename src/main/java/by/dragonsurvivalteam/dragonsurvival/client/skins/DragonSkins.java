@@ -119,7 +119,7 @@ public class DragonSkins {
         try {
             resource = Identifier.fromNamespaceAndPath(MODID, resourceName.toLowerCase(Locale.ENGLISH));
         } catch (IdentifierException exception) {
-            DragonSurvival.LOGGER.error(exception);
+            DragonSurvival.LOGGER.error(exception.getMessage());
             return null;
         }
 

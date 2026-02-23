@@ -36,6 +36,7 @@ import by.dragonsurvivalteam.dragonsurvival.network.status.SyncAltarCooldown;
 import by.dragonsurvivalteam.dragonsurvival.network.syncing.SyncComplete;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AltarData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ClawInventoryData;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.FlightData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
@@ -63,7 +64,12 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.level.storage.TagValueInput;
+import net.minecraft.world.level.storage.TagValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -309,11 +315,15 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
 
     // FIXME :: Known issue: if I switch to a body type that invalidates my preset, my preset data will be lost even if I undo
     public final Function<CompoundTag, CompoundTag> setSkinPresetAction = tag -> {
-        CompoundTag prevTag = HANDLER.getCurrentSkinPreset().serializeNBT(Objects.requireNonNull(Minecraft.getInstance().player).registryAccess());
-        HANDLER.getCurrentSkinPreset().deserializeNBT(Minecraft.getInstance().player.registryAccess(), tag);
+        //noinspection DataFlowIssue -> player is present
+        TagValueOutput prevValueOutput = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, Minecraft.getInstance().player.registryAccess());
+        HANDLER.getCurrentSkinPreset().serialize(prevValueOutput);
+
+        ValueInput newValueInput = TagValueInput.create(ProblemReporter.DISCARDING, Minecraft.getInstance().player.registryAccess(), tag);
+        HANDLER.getCurrentSkinPreset().deserialize(newValueInput);
         HANDLER.recompileCurrentSkin();
         update();
-        return prevTag;
+        return prevValueOutput.buildResult();
     };
 
     public final Function<Holder<DragonBody>, Holder<DragonBody>> dragonBodySelectAction = dragonBody -> {
@@ -648,7 +658,7 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
         SkinPreset skinPreset = localHandler.getSkinPresetForSpecies(species, body);
         SkinPreset copy = new SkinPreset();
         //noinspection DataFlowIssue -> player is present
-        copy.deserializeNBT(minecraft.player.registryAccess(), skinPreset.serializeNBT(minecraft.player.registryAccess()));
+        DSDataAttachments.copy(skinPreset, copy, minecraft.player.registryAccess());
 
         if (copy.getModel().equals(body.value().model())) {
             HANDLER.setCurrentSkinPreset(copy);
@@ -850,7 +860,7 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
             // Don't actually modify the skin preset here, do it inside setSkinPresetAction
             SkinPreset preset = new SkinPreset();
             preset.initDefaults(species, body.value().model());
-            preset.deserializeNBT(access, this.preset.serializeNBT(access));
+            DSDataAttachments.copy(this.preset, preset, access);
 
             for (SkinLayer layer : SkinLayer.values()) {
                 Map<String, DragonPart> parts;
@@ -894,7 +904,7 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
                 settings.isModified = true;
             }
 
-            actionHistory.add(new EditorAction<>(setSkinPresetAction, preset.serializeNBT(access)));
+            actionHistory.add(new EditorAction<>(setSkinPresetAction, DSDataAttachments.serializeToCompoundTag(preset, access)));
         });
 
         randomButton.setTooltip(Tooltip.create(Component.translatable(RANDOMIZE)));
@@ -911,12 +921,12 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
         // Copy to all stages button
         HoverButton copyToAllStagesButton = new HoverButton(guiLeft - 75, 10, 18, 18, 18, 18, COPY_ALL_MAIN, COPY_ALL_HOVER, button -> {
             Lazy<DragonStageCustomization> lazy = preset.get(Objects.requireNonNull(stage.getKey()));
-            CompoundTag storedPresetData = lazy.get().serializeNBT(access);
+            CompoundTag storedPresetData = DSDataAttachments.serializeToCompoundTag(lazy.get(), access);
 
             for (Holder<DragonStage> stage : ResourceHelper.all(access, DragonStage.REGISTRY)) {
                 this.preset.put(Objects.requireNonNull(stage.getKey()), Lazy.of(() -> {
                     DragonStageCustomization customization = new DragonStageCustomization();
-                    customization.deserializeNBT(access, storedPresetData);
+                    DSDataAttachments.deserializeFromCompoundTag(customization, storedPresetData, access);
                     return customization;
                 }));
             }
@@ -940,7 +950,8 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
             public void renderWidget(@NotNull final GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
                 Identifier texture = preset.get(Objects.requireNonNull(stage.getKey())).get().wings ? ALTERNATIVE_ON : ALTERNATIVE_OFF;
                 guiGraphics.pose().pushMatrix();
-                guiGraphics.pose().translate(0, 0, 100);
+                // FIXME :: UI Rendering
+                //guiGraphics.pose().translate(0, 0, 100);
                 guiGraphics.blit(texture, getX(), getY(), 0, 0, 20, 20, 20, 20);
                 guiGraphics.pose().popMatrix();
             }
@@ -953,7 +964,8 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
             public void renderWidget(@NotNull final GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
                 Identifier texture = showUi ? SHOW_UI_ON : SHOW_UI_OFF;
                 guiGraphics.pose().pushMatrix();
-                guiGraphics.pose().translate(0, 0, 100);
+                // FIXME :: UI Rendering
+                //guiGraphics.pose().translate(0, 0, 100);
                 guiGraphics.blit(texture, getX(), getY(), 0, 0, 20, 20, 20, 20);
                 guiGraphics.pose().popMatrix();
             }
@@ -966,9 +978,9 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
             // Don't actually modify the skin preset here, do it inside setSkinPresetAction
             SkinPreset preset = new SkinPreset();
             preset.initDefaults(species, body.value().model());
-            preset.deserializeNBT(access, this.preset.serializeNBT(access));
+            DSDataAttachments.copy(this.preset, preset, access);
             preset.put(stage.getKey(), Lazy.of(() -> new DragonStageCustomization(stage.getKey(), species.getKey(), body.value().model())));
-            actionHistory.add(new EditorAction<>(setSkinPresetAction, preset.serializeNBT(access)));
+            actionHistory.add(new EditorAction<>(setSkinPresetAction, DSDataAttachments.serializeToCompoundTag(preset, access)));
         });
         resetButton.setTooltip(Tooltip.create(Component.translatable(RESET)));
         addRenderableWidget(resetButton);
@@ -1142,10 +1154,10 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
             altarData.isInAltar = false;
 
             ClientPacketDistributor.sendToServer(new SyncAltarCooldown(altarData.altarCooldown));
-            ClientPacketDistributor.sendToServer(new SyncComplete(minecraft.player.getId(), data.serializeNBT(minecraft.player.registryAccess())));
+            ClientPacketDistributor.sendToServer(new SyncComplete(minecraft.player.getId(), DSDataAttachments.serializeToCompoundTag(data, minecraft.player.registryAccess())));
         } else {
             data.setCurrentSkinPreset(preset);
-            ClientPacketDistributor.sendToServer(new SyncPlayerSkinPreset(minecraft.player.getId(), HANDLER.speciesKey(), HANDLER.getCurrentSkinPreset().serializeNBT(minecraft.player.registryAccess())));
+            ClientPacketDistributor.sendToServer(new SyncPlayerSkinPreset(minecraft.player.getId(), HANDLER.speciesKey(), DSDataAttachments.serializeToCompoundTag(HANDLER.getCurrentSkinPreset(), minecraft.player.registryAccess())));
         }
 
         minecraft.player.closeContainer();

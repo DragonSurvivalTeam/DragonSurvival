@@ -2,6 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.network.status;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AltarData;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -21,7 +22,7 @@ public record SyncAltarState(CompoundTag altarData) implements CustomPacketPaylo
     public static void handleClient(final SyncAltarState message, final IPayloadContext context) {
         context.enqueueWork(() -> {
             AltarData data = AltarData.getData(context.player());
-            data.deserializeNBT(context.player().registryAccess(), message.altarData());
+            DSDataAttachments.deserializeFromCompoundTag(data, message.altarData(), context.player().registryAccess());
         });
     }
 

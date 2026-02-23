@@ -72,13 +72,13 @@ public class DragonHeartLootModifier extends LootModifier {
 
     @Override
     protected @NotNull ObjectArrayList<ItemStack> doApply(@NotNull final ObjectArrayList<ItemStack> generatedLoot, final LootContext context) {
-        Entity entity = context.getParamOrNull(LootContextParams.THIS_ENTITY);
+        Entity entity = context.getOptionalParameter(LootContextParams.THIS_ENTITY);
 
         if (!(entity instanceof LivingEntity livingEntity) || /* Players don't drop the hearts */ entity instanceof Player) {
             return generatedLoot;
         }
 
-        Player player = context.getParamOrNull(LootContextParams.LAST_DAMAGE_PLAYER);
+        Player player = context.getOptionalParameter(LootContextParams.LAST_DAMAGE_PLAYER);
 
         if (player == null) {
             // If it wasn't killed by a player, don't drop anything

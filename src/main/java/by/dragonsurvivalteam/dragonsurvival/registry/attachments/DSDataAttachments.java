@@ -4,8 +4,15 @@ import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.EntityStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.server.handlers.LightningHandler;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.storage.TagValueInput;
+import net.minecraft.world.level.storage.TagValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
 import net.neoforged.neoforge.attachment.AttachmentType;
+import net.neoforged.neoforge.common.util.ValueIOSerializable;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
@@ -87,5 +94,26 @@ public class DSDataAttachments {
         });
 
         return storages;
+    }
+
+    // Copy from one ValueIOSerializable object to another
+    public static <T extends ValueIOSerializable> void copy(T source, T target, HolderLookup.Provider lookup) {
+        TagValueOutput valueOutput = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, lookup);
+        source.serialize(valueOutput);
+
+        ValueInput valueInput = TagValueInput.create(ProblemReporter.DISCARDING, lookup, valueOutput.buildResult());
+        target.deserialize(valueInput);
+    }
+
+    public static <T extends ValueIOSerializable> CompoundTag serializeToCompoundTag(T serializable, HolderLookup.Provider lookup) {
+        TagValueOutput valueOutput = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, lookup);
+        serializable.serialize(valueOutput);
+
+        return valueOutput.buildResult();
+    }
+
+    public static <T extends ValueIOSerializable> void deserializeFromCompoundTag(T deserializable, CompoundTag tag, HolderLookup.Provider lookup) {
+        ValueInput valueInput = TagValueInput.create(ProblemReporter.DISCARDING, lookup, tag);
+        deserializable.deserialize(valueInput);
     }
 }

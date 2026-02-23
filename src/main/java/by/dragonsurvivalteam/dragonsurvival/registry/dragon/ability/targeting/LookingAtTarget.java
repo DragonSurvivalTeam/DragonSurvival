@@ -39,7 +39,7 @@ public record LookingAtTarget(Either<BlockTargeting, EntityTargeting> target, Le
                 return;
             }
 
-            if (!blockTarget.matches(dragon, blockHitResult.getBlockPos()) || /* This is always checked by the predicate */ !dragon.serverLevel().isLoaded(blockHitResult.getBlockPos())) {
+            if (!blockTarget.matches(dragon, blockHitResult.getBlockPos()) || /* This is always checked by the predicate */ !dragon.level().isLoaded(blockHitResult.getBlockPos())) {
                 return;
             }
 

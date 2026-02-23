@@ -41,7 +41,7 @@ public record ProjectileAreaCloudEffect(
             }
 
             cloud.setDuration((int) duration.calculate(level));
-            cloud.setParticle(particle);
+            cloud.setCustomParticle(particle);
 
             if (projectile.getOwner() instanceof LivingEntity living) {
                 cloud.setOwner(living);

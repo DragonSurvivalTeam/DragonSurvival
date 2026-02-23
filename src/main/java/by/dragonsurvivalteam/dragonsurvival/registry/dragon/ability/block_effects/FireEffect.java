@@ -22,7 +22,7 @@ public record FireEffect(LevelBasedValue igniteProbability) implements AbilityBl
 
     @Override
     public void apply(final ServerPlayer dragon, final DragonAbilityInstance ability, final BlockPos position, final Direction direction) {
-        BlockState state = dragon.serverLevel().getBlockState(position);
+        BlockState state = dragon.level().getBlockState(position);
         Block block = state.getBlock();
 
         if (block instanceof TntBlock tnt) {

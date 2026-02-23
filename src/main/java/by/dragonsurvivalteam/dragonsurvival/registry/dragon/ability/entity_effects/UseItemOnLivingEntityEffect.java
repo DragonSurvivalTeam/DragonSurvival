@@ -38,7 +38,7 @@ public record UseItemOnLivingEntityEffect(ItemStack item, LevelBasedValue probab
                 return;
             }
 
-            ServerLevel level = dragon.serverLevel();
+            ServerLevel level = dragon.level();
             if (validEntities.isEmpty() || validEntities.get().matches(level, dragon.position(), target)) {
                 InteractionResult ir = item.getItem().interactLivingEntity(item, dragon, livingEntity, InteractionHand.MAIN_HAND);
 

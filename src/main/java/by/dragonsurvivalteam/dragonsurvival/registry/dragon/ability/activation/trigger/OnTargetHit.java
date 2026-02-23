@@ -31,7 +31,7 @@ public record OnTargetHit(Optional<LootItemCondition> condition) implements Acti
                 return;
             }
 
-            LootContext context = Condition.damageContext(player.serverLevel(), event.getEntity(), event.getSource(), player.getMainHandItem());
+            LootContext context = Condition.damageContext(player.level(), event.getEntity(), event.getSource(), player.getMainHandItem());
             MagicData.getData(player).filterPassiveByTrigger(trigger -> trigger instanceof OnTargetHit onTargetHit && onTargetHit.test(context))
                     .forEach(ability -> {
                         if (!ability.triggered) {

@@ -49,7 +49,7 @@ public class GlowData extends Storage<Glow.Instance> {
         Entity target = event.getTarget();
 
         target.getExistingData(DSDataAttachments.GLOW).ifPresent(data -> {
-            PacketDistributor.sendToPlayersTrackingEntity(target, new SyncData(target.getId(), NeoForgeRegistries.ATTACHMENT_TYPES.getKey(data.type()), data.serializeNBT(target.registryAccess())));
+            PacketDistributor.sendToPlayersTrackingEntity(target, new SyncData(target.getId(), NeoForgeRegistries.ATTACHMENT_TYPES.getKey(data.type()), DSDataAttachments.serializeToCompoundTag(data, target.registryAccess())));
         });
     }
 

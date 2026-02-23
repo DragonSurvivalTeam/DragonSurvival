@@ -6,6 +6,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.network.syncing.SyncComplete;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSCommands;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.commands.CommandSourceStack;
@@ -48,7 +49,7 @@ public class DragonBodyCommand {
             handler.setBody(target, body);
 
             SyncComplete.handleDragonSync(target, false);
-            PacketDistributor.sendToPlayersTrackingEntityAndSelf(target, new SyncComplete(target.getId(), handler.serializeNBT(target.registryAccess())));
+            PacketDistributor.sendToPlayersTrackingEntityAndSelf(target, new SyncComplete(target.getId(), DSDataAttachments.serializeToCompoundTag(handler, target.registryAccess())));
 
             processed++;
         }

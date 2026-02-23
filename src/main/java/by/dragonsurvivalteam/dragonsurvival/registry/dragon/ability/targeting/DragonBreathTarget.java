@@ -36,7 +36,8 @@ public record DragonBreathTarget(Either<BlockTargeting, EntityTargeting> target,
         target().ifLeft(blockTarget -> {
             // Used by 'BlockGetter#clip' to determine the direction
             // 'Entity#pick' -> from: 'getEyePosition' / to: 'getEyePosition + getViewVector'
-            Direction direction = Direction.getNearest(dragon.getEyePosition());
+            Vec3 eyePos = dragon.getEyePosition();
+            Direction direction = Direction.getNearest((int)eyePos.x, (int)eyePos.y, (int)eyePos.z, null);
 
             BlockPos.betweenClosedStream(calculateBreathArea(dragon, ability)).forEach(position -> {
                 if (blockTarget.matches(dragon, position)) {
@@ -44,7 +45,7 @@ public record DragonBreathTarget(Either<BlockTargeting, EntityTargeting> target,
                 }
             });
         }).ifRight(entityTarget -> {
-            dragon.serverLevel().getEntities(EntityTypeTest.forClass(Entity.class), calculateBreathArea(dragon, ability),
+            dragon.level().getEntities(EntityTypeTest.forClass(Entity.class), calculateBreathArea(dragon, ability),
                     entity -> entityTarget.targetingMode().isEntityRelevant(dragon, entity) && entityTarget.matches(dragon, entity, entity.position())
             ).forEach(entity -> entityTarget.effects().forEach(target -> target.apply(dragon, ability, entity)));
         });

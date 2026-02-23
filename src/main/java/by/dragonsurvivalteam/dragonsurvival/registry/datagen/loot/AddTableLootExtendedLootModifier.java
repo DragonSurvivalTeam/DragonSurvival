@@ -68,15 +68,16 @@ public class AddTableLootExtendedLootModifier extends LootModifier {
                 if (parsedTable != null) {
                     resolvedTables.add(ResourceKey.create(Registries.LOOT_TABLE, parsedTable));
                 } else {
-                    // Try regex if we don't have a valid key
-                    context.getLevel().getServer().reloadableRegistries().get().lookupOrThrow(Registries.LOOT_TABLE).registryKeySet().forEach(
-                            key -> {
-                                String path = key.identifier().toString();
-                                if (path.matches(table) && !path.equals(this.table.identifier().toString())) {
-                                    resolvedTables.add(key);
-                                }
-                            }
-                    );
+                    // FIXME
+//                    // Try regex if we don't have a valid key
+//                    context.getLevel().getServer().reloadableRegistries().get().lookupOrThrow(Registries.LOOT_TABLE).registryKeySet().forEach(
+//                            key -> {
+//                                String path = key.identifier().toString();
+//                                if (path.matches(table) && !path.equals(this.table.identifier().toString())) {
+//                                    resolvedTables.add(key);
+//                                }
+//                            }
+//                    );
                 }
             }
             hasResolvedTables = true;
@@ -89,12 +90,13 @@ public class AddTableLootExtendedLootModifier extends LootModifier {
             return generatedLoot;
         }
 
-        context.getResolver().get(Registries.LOOT_TABLE, this.table).ifPresent(extraTable -> {
-            // Don't run loot modifiers for subtables;
-            // the added loot will be modifiable by downstream loot modifiers modifying the target table,
-            // so if we modify it here then it could get modified twice.
-            extraTable.value().getRandomItemsRaw(context, LootTable.createStackSplitter(context.getLevel(), generatedLoot::add));
-        });
+        // FIXME
+//        context.getResolver().get(Registries.LOOT_TABLE, this.table).ifPresent(extraTable -> {
+//            // Don't run loot modifiers for subtables;
+//            // the added loot will be modifiable by downstream loot modifiers modifying the target table,
+//            // so if we modify it here then it could get modified twice.
+//            extraTable.value().getRandomItemsRaw(context, LootTable.createStackSplitter(context.getLevel(), generatedLoot::add));
+//        });
         return generatedLoot;
     }
 

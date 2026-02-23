@@ -6,6 +6,8 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.NotNull;
 
 public class SourceOfMagicPlaceholder extends BlockEntity {
@@ -16,14 +18,14 @@ public class SourceOfMagicPlaceholder extends BlockEntity {
     }
 
     @Override
-    public void loadAdditional(@NotNull final CompoundTag tag, @NotNull final HolderLookup.Provider provider) {
-        super.loadAdditional(tag, provider);
-        rootPos = BlockPos.of(tag.getLong("root"));
+    public void loadAdditional(@NotNull ValueInput valueInput) {
+        super.loadAdditional(valueInput);
+        rootPos = BlockPos.of(valueInput.getLong("root").orElseThrow());
     }
 
     @Override
-    protected void saveAdditional(@NotNull final CompoundTag tag, @NotNull final HolderLookup.Provider provider) {
-        super.saveAdditional(tag, provider);
-        tag.putLong("root", rootPos.asLong());
+    protected void saveAdditional(@NotNull ValueOutput valueOutput) {
+        super.saveAdditional(valueOutput);
+        valueOutput.putLong("root", rootPos.asLong());
     }
 }

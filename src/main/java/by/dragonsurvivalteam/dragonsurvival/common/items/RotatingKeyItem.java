@@ -18,6 +18,7 @@ import net.minecraft.world.level.chunk.status.ChunkStatus;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureStart;
 import org.joml.Vector3f;
+import org.joml.Vector3fc;
 import org.jspecify.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoItem;
 import software.bernie.geckolib.animatable.client.GeoRenderProvider;
@@ -39,8 +40,8 @@ public class RotatingKeyItem extends TooltipItem implements GeoItem {
     public final RawAnimation NO_TARGET = RawAnimation.begin().thenPlay("no_target");
 
     // Client data used for rendering
-    public final Vector3f fake_target = new Vector3f();
-    public Vector3f currentTarget = new Vector3f();
+    public final Vector3fc fake_target = new Vector3f();
+    public Vector3fc currentTarget = new Vector3f();
     public Player playerHoldingItem;
 
     public RotatingKeyItem(Properties properties, Identifier model, Identifier texture, Identifier target) {

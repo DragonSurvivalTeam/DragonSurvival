@@ -42,7 +42,7 @@ public class CustomSoulIconLoader {
         // SimpleJsonResourceReloadListener.scanDirectory(manager, "custom_soul_icons", new Gson(), resources);
 
         resources.forEach((location, element) -> CustomSoulIcon.CODEC.decode(JsonOps.INSTANCE, element)
-                .ifError(DragonSurvival.LOGGER::error).map(Pair::getFirst)
+                .ifError(error -> DragonSurvival.LOGGER.error(error.message())).map(Pair::getFirst)
                 .ifSuccess(result -> {
                     ResourceKey<DragonStage> stage = result.stage().orElse(null);
                     ICONS.computeIfAbsent(result.species(), key -> new HashMap<>()).put(stage, result.model());

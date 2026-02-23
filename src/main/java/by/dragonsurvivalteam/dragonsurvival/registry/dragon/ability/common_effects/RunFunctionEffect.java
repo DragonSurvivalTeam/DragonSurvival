@@ -14,6 +14,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.ServerFunctionManager;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.permissions.LevelBasedPermissionSet;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.enchantment.effects.RunFunction;
@@ -32,15 +33,15 @@ public record RunFunctionEffect(Identifier function) implements AbilityEntityEff
 
     @Override
     public void apply(final ServerPlayer dragon, final DragonAbilityInstance ability, final Entity target) {
-        MinecraftServer server = dragon.serverLevel().getServer();
+        MinecraftServer server = dragon.level().getServer();
         ServerFunctionManager manager = server.getFunctions();
 
         manager.get(function).ifPresent(source -> {
             CommandSourceStack stack = server.createCommandSourceStack()
-                    .withPermission(Commands.LEVEL_GAMEMASTERS)
+                    .withPermission(LevelBasedPermissionSet.GAMEMASTER)
                     .withSuppressedOutput()
                     .withEntity(target)
-                    .withLevel(dragon.serverLevel())
+                    .withLevel(dragon.level())
                     .withPosition(target.position())
                     .withRotation(target.getRotationVector());
 
@@ -50,14 +51,14 @@ public record RunFunctionEffect(Identifier function) implements AbilityEntityEff
 
     @Override
     public void apply(final ServerPlayer dragon, final DragonAbilityInstance ability, final BlockPos position, @Nullable final Direction direction) {
-        MinecraftServer server = dragon.serverLevel().getServer();
+        MinecraftServer server = dragon.level().getServer();
         ServerFunctionManager manager = server.getFunctions();
 
         manager.get(function).ifPresent(source -> {
             CommandSourceStack stack = server.createCommandSourceStack()
-                    .withPermission(Commands.LEVEL_GAMEMASTERS)
+                    .withPermission(LevelBasedPermissionSet.GAMEMASTER)
                     .withSuppressedOutput()
-                    .withLevel(dragon.serverLevel())
+                    .withLevel(dragon.level())
                     .withPosition(position.getCenter());
 
             if (direction != null) {

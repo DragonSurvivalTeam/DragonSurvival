@@ -53,20 +53,20 @@ public class DSEntityTypeTags extends EntityTypeTagsProvider {
                 .add(EntityType.WOLF)
                 .add(EntityType.HOGLIN)
                 .add(EntityType.BEE)
-                .addOptional(Identifier.fromNamespaceAndPath("cobblemon", "pokemon"))
-                .addOptional(Identifier.fromNamespaceAndPath("bee_queen_ds", "bee_guard"))
-                .addOptional(Identifier.fromNamespaceAndPath("bee_queen_ds", "tamed_bee"));
+                .addOptionalTag(DragonSurvival.tagKey(Registries.ENTITY_TYPE, "cobblemon", "pokemon"))
+                .addOptionalTag(DragonSurvival.tagKey(Registries.ENTITY_TYPE,"bee_queen_ds", "bee_guard"))
+                .addOptionalTag(DragonSurvival.tagKey(Registries.ENTITY_TYPE,"bee_queen_ds", "tamed_bee"));
 
         tag(VEHICLE_WHITELIST)
                 .addTag(Tags.EntityTypes.BOATS)
                 .addTag(Tags.EntityTypes.MINECARTS)
-                .addOptional(Identifier.fromNamespaceAndPath("littlelogistics", "seater_barge"))
-                .addOptional(Identifier.fromNamespaceAndPath("create", "seat"))
-                .addOptional(Identifier.fromNamespaceAndPath("create", "contraption"))
-                .addOptional(Identifier.fromNamespaceAndPath("create", "gantry_contraption"))
-                .addOptional(Identifier.fromNamespaceAndPath("create", "stationary_contraption"))
-                .addOptional(Identifier.fromNamespaceAndPath("hexerei", "broom"))
-                .addOptional(Identifier.fromNamespaceAndPath("botania", "player_mover"));
+                .addOptionalTag(DragonSurvival.tagKey(Registries.ENTITY_TYPE,"littlelogistics", "seater_barge"))
+                .addOptionalTag(DragonSurvival.tagKey(Registries.ENTITY_TYPE,"create", "seat"))
+                .addOptionalTag(DragonSurvival.tagKey(Registries.ENTITY_TYPE,"create", "contraption"))
+                .addOptionalTag(DragonSurvival.tagKey(Registries.ENTITY_TYPE,"create", "gantry_contraption"))
+                .addOptionalTag(DragonSurvival.tagKey(Registries.ENTITY_TYPE,"create", "stationary_contraption"))
+                .addOptionalTag(DragonSurvival.tagKey(Registries.ENTITY_TYPE,"hexerei", "broom"))
+                .addOptionalTag(DragonSurvival.tagKey(Registries.ENTITY_TYPE,"botania", "player_mover"));
 
         tag(CHARGED_SPREAD_BLACKLIST)
                 .add(EntityType.ARMOR_STAND)
@@ -75,8 +75,8 @@ public class DSEntityTypeTags extends EntityTypeTagsProvider {
                 .add(EntityType.GUARDIAN)
                 .add(EntityType.ELDER_GUARDIAN)
                 .add(EntityType.ENDERMAN)
-                .addOptional(Identifier.fromNamespaceAndPath("upgrade_aquatic", "thrasher"))
-                .addOptional(Identifier.fromNamespaceAndPath("upgrade_aquatic", "great_thrasher"));
+                .addOptionalTag(DragonSurvival.tagKey(Registries.ENTITY_TYPE,"upgrade_aquatic", "thrasher"))
+                .addOptionalTag(DragonSurvival.tagKey(Registries.ENTITY_TYPE,"upgrade_aquatic", "great_thrasher"));
 
         tag(HUNTER_TARGETS)
                 .add(EntityType.EVOKER)
@@ -100,7 +100,7 @@ public class DSEntityTypeTags extends EntityTypeTagsProvider {
                 .add(EntityType.WITCH)
                 .add(EntityType.WITHER_SKELETON)
                 .add(EntityType.WITHER)
-                .addOptionalTag(Identifier.fromNamespaceAndPath("zombiemobs", "zombie_animals"));
+                .addOptionalTag(DragonSurvival.tagKey(Registries.ENTITY_TYPE,"zombiemobs", "zombie_animals"));
 
         // Used in 'curse_of_kindness' enchantment
         tag(HUNTER_FACTION)

@@ -37,7 +37,7 @@ public record AreaTarget(Either<BlockTargeting, EntityTargeting> target, LevelBa
                 }
             });
         }).ifRight(entityTarget -> { // TODO :: for auto removal the search for relevant entities would have to be different
-            dragon.serverLevel().getEntities(EntityTypeTest.forClass(Entity.class), calculateAffectedArea(dragon, ability),
+            dragon.level().getEntities(EntityTypeTest.forClass(Entity.class), calculateAffectedArea(dragon, ability),
                     entity -> entityTarget.targetingMode().isEntityRelevant(dragon, entity) && entityTarget.matches(dragon, entity, entity.position())
             ).forEach(entity -> entityTarget.effects().forEach(target -> target.apply(dragon, ability, entity)));
         });

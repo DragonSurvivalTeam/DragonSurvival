@@ -7,6 +7,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.network.syncing.SyncComplete;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSCommands;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
@@ -106,7 +107,7 @@ public class DragonCommand {
         handler.isGrowing = true;
 
         SyncComplete.handleDragonSync(player, false);
-        PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new SyncComplete(player.getId(), handler.serializeNBT(player.registryAccess())));
+        PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new SyncComplete(player.getId(), DSDataAttachments.serializeToCompoundTag(handler, player.registryAccess())));
         return 1;
     }
 }

@@ -30,7 +30,7 @@ public record BlockHarvestEffect(BlockPredicate validBlocks, LevelBasedValue pro
             return;
         }
 
-        if (validBlocks.test(dragon.serverLevel(), position)) {
+        if (validBlocks.test(dragon.level(), position)) {
             ItemStack blockTool = tool.orElse(ItemStack.EMPTY);
             BlockState blockState = dragon.level().getBlockState(position);
             BlockEntity blockEntity = blockState.hasBlockEntity() ? dragon.level().getBlockEntity(position) : null;

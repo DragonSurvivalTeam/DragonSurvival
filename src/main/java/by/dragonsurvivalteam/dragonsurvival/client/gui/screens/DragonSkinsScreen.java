@@ -18,6 +18,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
 import by.dragonsurvivalteam.dragonsurvival.config.ConfigHandler;
 import by.dragonsurvivalteam.dragonsurvival.network.client.ClientProxy;
 import by.dragonsurvivalteam.dragonsurvival.network.dragon_editor.SyncDragonSkinSettings;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.datapacks.AncientDatapacks;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
@@ -47,6 +48,10 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.Mth;
+import net.minecraft.util.ProblemReporter;
+import net.minecraft.world.level.storage.TagValueInput;
+import net.minecraft.world.level.storage.TagValueOutput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.client.gui.widget.ExtendedButton;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import org.jetbrains.annotations.NotNull;
@@ -288,7 +293,7 @@ public class DragonSkinsScreen extends Screen {
 
         //noinspection DataFlowIssue -> player is present
         DragonStateHandler playerHandler = DragonStateProvider.getData(minecraft.player);
-        handler.deserializeNBT(minecraft.player.registryAccess(), playerHandler.serializeNBT(minecraft.player.registryAccess()));
+        DSDataAttachments.copy(playerHandler, handler, minecraft.player.registryAccess());
 
         if (!DragonSpecies.isBuiltIn(handler.speciesKey())) {
             // TODO :: maybe don't throw and find some alternative, in case cave species is removed?

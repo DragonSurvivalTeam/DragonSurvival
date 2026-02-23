@@ -25,7 +25,7 @@ public record ExplodeBlockEffect(LevelBasedValue probability, LevelBasedValue po
 
     @Override
     public void apply(ServerPlayer dragon, DragonAbilityInstance ability, BlockPos position, @Nullable Direction direction) {
-        dragon.serverLevel().explode(dragon, new DamageSource(damageType, dragon), null, position.getCenter(), power.calculate(ability.level()), fire, Level.ExplosionInteraction.BLOCK);
+        dragon.level().explode(dragon, new DamageSource(damageType, dragon), null, position.getCenter(), power.calculate(ability.level()), fire, Level.ExplosionInteraction.BLOCK);
     }
 
     @Override

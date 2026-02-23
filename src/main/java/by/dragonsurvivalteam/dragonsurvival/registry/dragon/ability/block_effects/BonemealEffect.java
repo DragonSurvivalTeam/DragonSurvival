@@ -27,14 +27,14 @@ public record BonemealEffect(LevelBasedValue attempts, LevelBasedValue probabili
             // We need to re-fetch the state every time since some blocks may modify the block at the current position
             // For example: Saplings grow a tree and always return 'true' for being a valid bonemeal target
             // This results in another attempt to grow the tree, which fails and re-places the sapling into the trunk of the grown tree
-            BlockState state = dragon.serverLevel().getBlockState(position);
+            BlockState state = dragon.level().getBlockState(position);
 
             if (state.getBlock() instanceof BonemealableBlock bonemealableBlock) {
                 if (!bonemealableBlock.isValidBonemealTarget(dragon.level(), position, state)) {
                     return;
                 }
 
-                bonemealableBlock.performBonemeal(dragon.serverLevel(), dragon.getRandom(), position, state);
+                bonemealableBlock.performBonemeal(dragon.level(), dragon.getRandom(), position, state);
                 // '15' is the particle count, see BoneMealItem#addGrowthParticles
                 dragon.level().levelEvent(LevelEvent.PARTICLES_AND_SOUND_PLANT_GROWTH, position, 15);
             }

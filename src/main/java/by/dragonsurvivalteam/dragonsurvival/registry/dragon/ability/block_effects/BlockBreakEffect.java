@@ -26,8 +26,8 @@ public record BlockBreakEffect(BlockPredicate validBlocks, LevelBasedValue proba
             return;
         }
 
-        if (validBlocks.test(dragon.serverLevel(), position)) {
-            dragon.serverLevel().destroyBlock(position, dropLoot);
+        if (validBlocks.test(dragon.level(), position)) {
+            dragon.level().destroyBlock(position, dropLoot);
         }
     }
 

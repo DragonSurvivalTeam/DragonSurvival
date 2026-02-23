@@ -62,15 +62,15 @@ public class DragonOreLootModifier extends LootModifier {
 
     @Override
     protected @NotNull ObjectArrayList<ItemStack> doApply(@NotNull final ObjectArrayList<ItemStack> generatedLoot, final LootContext context) {
-        BlockState state = context.getParamOrNull(LootContextParams.BLOCK_STATE);
-        Entity entity = context.getParamOrNull(LootContextParams.THIS_ENTITY);
-        Vec3 origin = context.getParamOrNull(LootContextParams.ORIGIN);
+        BlockState state = context.getOptionalParameter(LootContextParams.BLOCK_STATE);
+        Entity entity = context.getOptionalParameter(LootContextParams.THIS_ENTITY);
+        Vec3 origin = context.getOptionalParameter(LootContextParams.ORIGIN);
 
         if (!(entity instanceof Player player) || origin == null || state == null || !state.is(DSBlockTags.DRAGON_ORE_DROP)) {
             return generatedLoot;
         }
 
-        ItemStack tool = context.getParamOrNull(LootContextParams.TOOL);
+        ItemStack tool = context.getOptionalParameter(LootContextParams.TOOL);
         int fortuneLevel = 0;
 
         if (tool != null) {

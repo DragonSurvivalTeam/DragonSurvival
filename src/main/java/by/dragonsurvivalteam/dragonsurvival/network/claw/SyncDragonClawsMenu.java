@@ -2,6 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.network.claw;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ClawInventoryData;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -26,7 +27,7 @@ public record SyncDragonClawsMenu(int playerId, boolean isOpen, CompoundTag data
             if (context.player().level().getEntity(packet.playerId()) instanceof Player player) {
                 ClawInventoryData data = ClawInventoryData.getData(player);
                 data.setMenuOpen(packet.isOpen());
-                data.deserializeNBT(player.registryAccess(), packet.data());
+                DSDataAttachments.deserializeFromCompoundTag(data, packet.data(), player.registryAccess());
             }
         });
     }

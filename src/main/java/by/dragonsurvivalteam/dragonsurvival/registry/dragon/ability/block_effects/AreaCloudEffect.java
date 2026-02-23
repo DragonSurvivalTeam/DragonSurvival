@@ -31,7 +31,7 @@ public record AreaCloudEffect(PotionData potion, LevelBasedValue duration, Level
             AreaEffectCloud cloud = new AreaEffectCloud(dragon.level(), position.above().getX(), position.above().getY(), position.above().getZ());
             cloud.setPotionContents(potion.toPotionContents(dragon.getRandom(), ability.level()));
             cloud.setDuration((int) duration.calculate(ability.level()));
-            cloud.setParticle(particle);
+            cloud.setCustomParticle(particle);
             cloud.setOwner(dragon);
             cloud.setWaitTime((int) delay.orElse(LevelBasedValue.constant(0)).calculate(ability.level()));
             cloud.setRadius((int) radius.orElse(LevelBasedValue.constant(1)).calculate(ability.level()));

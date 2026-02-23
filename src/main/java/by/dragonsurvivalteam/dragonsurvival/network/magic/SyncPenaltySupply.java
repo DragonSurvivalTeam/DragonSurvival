@@ -22,7 +22,7 @@ public record SyncPenaltySupply(CompoundTag nbt) implements CustomPacketPayload 
     public static void handleClient(final SyncPenaltySupply packet, final IPayloadContext context) {
         context.enqueueWork(() -> {
             PenaltySupply penaltySupply = context.player().getData(DSDataAttachments.PENALTY_SUPPLY);
-            penaltySupply.deserializeNBT(context.player().registryAccess(), packet.nbt());
+            DSDataAttachments.deserializeFromCompoundTag(penaltySupply, packet.nbt(), context.player().registryAccess());
         });
     }
 

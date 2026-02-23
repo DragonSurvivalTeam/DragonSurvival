@@ -6,13 +6,14 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.BuiltInDragonSpecies
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
+import net.minecraft.data.tags.KeyTagProvider;
 import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.tags.TagKey;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.CompletableFuture;
 
-public class DSDragonSpeciesTags extends TagsProvider<DragonSpecies> {
+public class DSDragonSpeciesTags extends KeyTagProvider<DragonSpecies> {
     @Translation(comments = "Dragon Species Sorting Order")
     public static final TagKey<DragonSpecies> ORDER = key("order");
 

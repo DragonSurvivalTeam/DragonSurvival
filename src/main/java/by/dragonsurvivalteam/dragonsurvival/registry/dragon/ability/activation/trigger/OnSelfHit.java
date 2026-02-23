@@ -34,7 +34,7 @@ public record OnSelfHit(Optional<LootItemCondition> condition) implements Activa
                 return;
             }
 
-            LootContext context = Condition.damageContext(player.serverLevel(), player, event.getSource(), event.getSource().getEntity() instanceof LivingEntity livingEntity ? livingEntity.getMainHandItem() : ItemStack.EMPTY);
+            LootContext context = Condition.damageContext(player.level(), player, event.getSource(), event.getSource().getEntity() instanceof LivingEntity livingEntity ? livingEntity.getMainHandItem() : ItemStack.EMPTY);
             MagicData.getData(player).filterPassiveByTrigger(trigger -> trigger instanceof OnSelfHit onSelfHit && onSelfHit.test(context))
                     .forEach(ability -> {
                         if (!ability.triggered) {
