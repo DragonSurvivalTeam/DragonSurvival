@@ -2,8 +2,6 @@ package by.dragonsurvivalteam.dragonsurvival.server.tileentity;
 
 import by.dragonsurvivalteam.dragonsurvival.registry.DSBlockEntities;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;

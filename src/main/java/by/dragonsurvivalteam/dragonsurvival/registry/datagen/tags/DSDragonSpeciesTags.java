@@ -7,7 +7,6 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.KeyTagProvider;
-import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.tags.TagKey;
 import org.jetbrains.annotations.NotNull;
 
