@@ -9,6 +9,8 @@ import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.DragonSizeHandler;
 import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
 import by.dragonsurvivalteam.dragonsurvival.util.DragonUtils;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Pose;
@@ -20,7 +22,6 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
@@ -153,25 +154,23 @@ public abstract class MixinEntity extends net.minecraftforge.common.capabilities
 		}
 	}
 
-	@Redirect( method = "canEnterPose(Lnet/minecraft/world/entity/Pose;)Z", at = @At( value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;getBoundingBoxForPose(Lnet/minecraft/world/entity/Pose;)Lnet/minecraft/world/phys/AABB;" ) )
-	public AABB dragonPoseBB(Entity entity, Pose pose){
-		if(DragonUtils.isDragon(entity) && ServerConfig.sizeChangesHitbox){
+	@WrapOperation(method = "canEnterPose(Lnet/minecraft/world/entity/Pose;)Z", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;getBoundingBoxForPose(Lnet/minecraft/world/entity/Pose;)Lnet/minecraft/world/phys/AABB;"))
+	public AABB dragonPoseBB(final Entity entity, final Pose pose, final Operation<AABB> original) {
+		if (DragonUtils.isDragon(entity) && ServerConfig.sizeChangesHitbox) {
 			boolean squish = DragonUtils.getDragonBody(entity) != null ? DragonUtils.getDragonBody(entity).isSquish() : false;
 			double heightMult = 1.0;
+
 			if (DragonUtils.getDragonBody(entity) != null) {
 				squish = DragonUtils.getDragonBody(entity).isSquish();
 				heightMult = DragonUtils.getDragonBody(entity).getHeightMult();
 			}
+
 			double size = DragonUtils.getHandler(entity).getSize();
 			double height = DragonSizeHandler.calculateModifiedHeight(DragonSizeHandler.calculateDragonHeight(size, ServerConfig.hitboxGrowsPastHuman), pose, ServerConfig.sizeChangesHitbox, squish) * heightMult;
 			double width = DragonSizeHandler.calculateDragonWidth(size, ServerConfig.hitboxGrowsPastHuman) / 2.0D;
 			return DragonSizeHandler.calculateDimensions(width, height).makeBoundingBox(entity.position());
-		}else
-			return getBoundingBoxForPose(pose);
-	}
-
-	@Shadow
-	protected AABB getBoundingBoxForPose(Pose pose){
-		throw new IllegalStateException("Mixin failed to shadow getBoundingBoxForPose()");
+		} else {
+			return original.call(entity, pose);
+		}
 	}
 }
