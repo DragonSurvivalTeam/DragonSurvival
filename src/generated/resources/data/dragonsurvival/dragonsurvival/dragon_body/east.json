@@ -3,8 +3,13 @@
   "backpack_offset": {
     "position_offset": [
       0.0,
-      -6.5,
-      0.0
+      0.0,
+      0.1
+    ],
+    "rotation_offset": [
+      180.0,
+      0.0,
+      180.0
     ],
     "scale": [
       0.9,
