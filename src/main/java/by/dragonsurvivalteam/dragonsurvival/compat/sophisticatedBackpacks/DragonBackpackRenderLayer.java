@@ -39,7 +39,7 @@ public class DragonBackpackRenderLayer extends GeoRenderLayer<DragonEntity> {
     @ConfigOption(side = ConfigSide.CLIENT, category = "rendering", key = "backpack_slot")
     public static String CURIOS_SLOT = "back";
 
-    private static final ItemDisplayContext WORN = ItemDisplayContext.valueOf("SOPHISTICATEDBACKPACKS_WORN");
+    private static ItemDisplayContext WORN;
     private static final String BONE = "BackpackBone";
 
     private final boolean isCurioLoaded;
@@ -54,6 +54,11 @@ public class DragonBackpackRenderLayer extends GeoRenderLayer<DragonEntity> {
     public void renderForBone(PoseStack poseStack, DragonEntity animatable, GeoBone bone, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
         if (!SHOULD_RENDER) {
             return;
+        }
+
+        if (WORN == null) {
+            // Trying to create this value without 'Sophisticated Backpacks' being present causes an exception
+            WORN = ItemDisplayContext.valueOf("SOPHISTICATEDBACKPACKS_WORN");
         }
 
         if (!bone.getName().equals(BONE)) {
