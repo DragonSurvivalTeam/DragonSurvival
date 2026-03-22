@@ -33,6 +33,7 @@ import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.input.InputWithModifiers;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
@@ -98,6 +99,7 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
 
     private DragonEditorConfirmComponent confirmComponent;
     private AltarTypeButton humanButton;
+    private ExtendedButton dragonEditorButton;
     private Renderable renderButton;
     private boolean confirmation;
 
@@ -275,11 +277,18 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
             }
         }
 
+        if (dragonEditorButton != null) {
+            dragonEditorButton.active = getCurrentDragonSpecies() != null;
+        }
+
         // Pass 3: render standard widgets and tooltips on top of the background/previews.
         super.render(graphics, mouseX, mouseY, partialTick);
 
         // Pass 4: title/overlay text last so it stays above widget chrome and preview entities.
-        TextRenderUtil.drawCenteredScaledText(graphics, width / 2 + 7, 10, 2f, Component.translatable(TITLE).getString(), DyeColor.WHITE.getTextColor());
+        graphics.pose().pushMatrix();
+        graphics.pose().scale(2.0F, 2.0F);
+        graphics.drawCenteredString(font, Component.translatable(TITLE), (width / 4) + 3, 5, DyeColor.WHITE.getTextColor());
+        graphics.pose().popMatrix();
 
         // Pass 5: modal confirmation overlay always renders above the rest of the altar UI.
         if (confirmation && confirmComponent != null) {
@@ -326,8 +335,8 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
     }
 
     public static void renderBorders(@NotNull final GuiGraphics graphics, final Identifier texture, final int x0, final int x1, final int y0, final int y1, final int width, final int height) {
-        graphics.blit(texture, x0, 0, 0, 0, width, y0, 32, 32);
-        graphics.blit(texture, x0, y1, 0, y1 % 32, width, height - y1, 32, 32);
+        graphics.blit(RenderPipelines.GUI_TEXTURED, texture, x0, 0, 0, 0, width, y0, 32, 32);
+        graphics.blit(RenderPipelines.GUI_TEXTURED, texture, x0, y1, 0, y1 % 32, width, height - y1, 32, 32);
         graphics.fillGradient(x0, y0, x1, y0 + 4, 0xFF000000, 0x00000000);
         graphics.fillGradient(x0, y1 - 4, x1, y1, 0x00000000, 0xFF000000);
     }
@@ -406,15 +415,26 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
                 -13, 215, 60, 12, 19,
                 ALTAR_ARROW_LEFT_HOVER, ALTAR_ARROW_LEFT_MAIN, ALTAR_ARROW_RIGHT_HOVER, ALTAR_ARROW_RIGHT_MAIN));
 
-        DragonStateHandler handler = DragonStateProvider.getData(minecraft.player);
+        dragonEditorButton = addRenderableWidget(new ExtendedButton(xPos + 32, height - 25, 150, 20, Component.translatable(LangKey.GUI_DRAGON_EDITOR), action -> {
+            Holder<DragonSpecies> editorSpecies = getCurrentDragonSpecies();
 
-        if (handler.isDragon()) {
-            ResourceKey<DragonSpecies> species = handler.speciesKey();
-            addRenderableWidget(new ExtendedButton(xPos + 32, height - 25, 150, 20, Component.translatable(LangKey.GUI_DRAGON_EDITOR), action -> ClientProxy.openDragonEditor(species, true)));
-        }
+            if (editorSpecies != null) {
+                ClientProxy.openDragonEditor(editorSpecies.getKey(), true);
+            }
+        }));
+        dragonEditorButton.active = getCurrentDragonSpecies() != null;
 
         confirmComponent = new DragonEditorConfirmComponent(this, width / 2 - 130 / 2, height / 2 - 181 / 2, 130, 154);
         confirmation = false;
+    }
+
+    private Holder<DragonSpecies> getCurrentDragonSpecies() {
+        if (minecraft.player == null) {
+            return null;
+        }
+
+        DragonStateHandler handler = DragonStateProvider.getData(minecraft.player);
+        return handler.isDragon() ? handler.species() : null;
     }
 
     @Override

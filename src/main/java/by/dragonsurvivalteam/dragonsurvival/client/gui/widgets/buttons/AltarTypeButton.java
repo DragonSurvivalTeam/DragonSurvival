@@ -23,6 +23,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.input.InputWithModifiers;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.resources.language.I18n;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
@@ -33,6 +34,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.TagValueOutput;
 import net.neoforged.neoforge.client.gui.widget.ExtendedButton;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
@@ -102,23 +104,19 @@ public class AltarTypeButton extends ExtendedButton implements HoverDisableable 
         }
 
         graphics.renderOutline(getX() - 1, getY() - 1, width + 2, height + 2, Color.black.getRGB());
-        // FIXME :: UI RENDERING
-        // RenderSystem.enableBlend(); // Needs to happen after the outline for the transparent locked banner to render correctly
 
         if (speciesEntry != null) {
-            graphics.blit(speciesEntry.species().value().miscResources().altarBanner(), getX(), getY(), 0, isHovered() ? 0 : 147, 49, 147, 49, 294);
+            graphics.blit(RenderPipelines.GUI_TEXTURED, speciesEntry.species().value().miscResources().altarBanner(), getX(), getY(), 0, isHovered() ? 0 : 147, 49, 147, 49, 294);
 
             if (speciesEntry.isUnlocked()) {
                 StageResources.GrowthIcon growthIcon = StageResources.getGrowthIcon(speciesEntry.species(), speciesEntry.species().value().getStartingStage(null).getKey());
-                graphics.blit(isHovered() && isTop(mouseY) ? growthIcon.hoverIcon() : growthIcon.icon(), getX() + 1, getY() + 1, 0, 0, 18, 18, 18, 18);
+                graphics.blit(RenderPipelines.GUI_TEXTURED, isHovered() && isTop(mouseY) ? growthIcon.hoverIcon() : growthIcon.icon(), getX() + 1, getY() + 1, 0, 0, 18, 18, 18, 18);
             } else {
-                graphics.blit(LOCKED_BANNER, getX(), getY(), 0, 0, 49, 147, 49, 147);
+                graphics.blit(RenderPipelines.GUI_TEXTURED, LOCKED_BANNER, getX(), getY(), 0, 0, 49, 147, 49, 147);
             }
         } else {
-            graphics.blit(HUMAN_BANNER, getX(), getY(), 0, isHovered() ? 0 : 147, 49, 147, 49, 294);
+            graphics.blit(RenderPipelines.GUI_TEXTURED, HUMAN_BANNER, getX(), getY(), 0, isHovered() ? 0 : 147, 49, 147, 49, 294);
         }
-
-        // RenderSystem.disableBlend();
     }
 
     private void handleTooltip(@NotNull final GuiGraphics graphics, int mouseX, int mouseY) {
@@ -165,8 +163,7 @@ public class AltarTypeButton extends ExtendedButton implements HoverDisableable 
         }
 
         if (!components.isEmpty()) {
-            // FIXME :: UI RENDERING
-            //graphics.renderComponentTooltipFromElements(Minecraft.getInstance().font, components, mouseX, mouseY, ItemStack.EMPTY);
+            graphics.setComponentTooltipFromElementsForNextFrame(Minecraft.getInstance().font, components, mouseX, mouseY, ItemStack.EMPTY);
         }
     }
 
