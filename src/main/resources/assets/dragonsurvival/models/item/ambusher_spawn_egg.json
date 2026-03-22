@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:builtin/entity",
+  "textures": {
+    "particle": "minecraft:item/egg"
+  },
+  "gui_light": "front"
+}

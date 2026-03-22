@@ -7,6 +7,7 @@ import net.minecraft.client.data.models.ModelProvider;
 import net.minecraft.client.data.models.model.ItemModelUtils;
 import net.minecraft.client.data.models.model.ModelTemplate;
 import net.minecraft.client.data.models.model.ModelTemplates;
+import net.minecraft.client.data.models.model.TextureSlot;
 import net.minecraft.client.data.models.model.TextureMapping;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.data.PackOutput;
@@ -20,17 +21,24 @@ import java.util.Set;
 
 public class DataItemModelProvider extends ModelProvider {
     private static final ModelTemplate SPAWN_EGG_TEMPLATE = new ModelTemplate(
-            java.util.Optional.of(Identifier.withDefaultNamespace("item/template_spawn_egg")),
-            java.util.Optional.empty()
+            java.util.Optional.of(Identifier.withDefaultNamespace("builtin/entity")),
+            java.util.Optional.empty(),
+            TextureSlot.PARTICLE
     );
     private static final Set<String> MANUALLY_AUTHORED = Set.of(
+            "ambusher_spawn_egg",
             "dragon_hunting_mesh",
+            "griffin_spawn_egg",
+            "hound_spawn_egg",
             "hunter_partisan",
             "hunter_partisan_diamond",
             "hunter_partisan_netherite",
             "hunter_key",
+            "knight_spawn_egg",
+            "leader_spawn_egg",
             "dark_key",
             "light_key",
+            "spearman_spawn_egg",
             "dragon_soul"
     );
 
@@ -54,12 +62,6 @@ public class DataItemModelProvider extends ModelProvider {
 
             if (MANUALLY_AUTHORED.contains(name)) {
                 itemModels.declareCustomModelItem(item);
-                return;
-            }
-
-            if (item instanceof SpawnEggItem) {
-                Identifier model = SPAWN_EGG_TEMPLATE.create(item, new TextureMapping(), itemModels.modelOutput);
-                itemModels.itemModelOutput.accept(item, ItemModelUtils.plainModel(model));
                 return;
             }
 

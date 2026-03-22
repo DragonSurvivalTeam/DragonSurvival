@@ -1,5 +1,8 @@
 {
 		"parent": "builtin/entity",
+		"textures": {
+			"particle": "dragonsurvival:item/hunter_key"
+		},
 		"display": {
 			"thirdperson_righthand": {
 				"translation": [0, 3, 1],
