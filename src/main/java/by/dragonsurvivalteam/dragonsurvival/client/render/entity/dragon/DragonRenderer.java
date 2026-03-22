@@ -107,8 +107,9 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
             MathParser.setVariable("query.head_pitch", state -> movement.headPitch);
         }
 
-        double gravity = player.getAttributeValue(Attributes.GRAVITY);
-        MathParser.setVariable("query.gravity", state -> gravity);
+        // FIXME
+        //double gravity = player.getAttributeValue(Attributes.GRAVITY);
+        //MathParser.setVariable("query.gravity", state -> gravity);
 
         double bodyYawAvg;
         double headYawAvg;
@@ -200,7 +201,12 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
             dragon.currentTailMotionUp = Mth.lerp(lerpRate, dragon.currentTailMotionUp, -verticalVelocityAvg);
         }
 
-        if (dragon.tailLocked) {
+        // GeckoLib 5.4.3 is currently unstable here when we register the dragon-only "change" queries
+        // during render-state extraction. Leaving them unset is safer than crashing the whole player renderer;
+        // Molang expressions that reference them will fall back to their default behavior.
+        // FIXME
+        /*
+         if (dragon.tailLocked) {
             MathParser.setVariable("query.tail_motion_up", state -> 0);
             MathParser.setVariable("query.body_yaw_change", state -> 0);
         } else {
@@ -210,6 +216,7 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
 
         MathParser.setVariable("query.head_yaw_change", state -> dragon.currentHeadYawChange);
         MathParser.setVariable("query.head_pitch_change", state -> dragon.currentHeadPitchChange);
+         */
     }
 
     @Override

@@ -322,6 +322,7 @@ public class ClientDragonRenderer {
 
             MovementData movement = MovementData.getData(player);
             handleFlightMovement(player, dragon, movement, partialTick);
+            syncDragonRenderState(player, dragon);
 
             var dispatcher = Minecraft.getInstance().getEntityRenderDispatcher();
             try {
@@ -347,6 +348,19 @@ public class ClientDragonRenderer {
                 event.setCanceled(false);
             }
         }
+    }
+
+    private static void syncDragonRenderState(final Player player, final DragonEntity dragon) {
+        dragon.setPos(player.position());
+        dragon.xo = player.xo;
+        dragon.yo = player.yo;
+        dragon.zo = player.zo;
+        dragon.setYRot(player.getYRot());
+        dragon.setXRot(player.getXRot());
+        dragon.yHeadRot = player.getYHeadRot();
+        dragon.yHeadRotO = player.yHeadRotO;
+        dragon.yBodyRot = player.yBodyRot;
+        dragon.yBodyRotO = player.yBodyRotO;
     }
 
     private static void handleFlightMovement(final Player player, final DragonEntity dragon, final MovementData movement, final float partialTick) {
