@@ -13,7 +13,7 @@
               "damage_type": "minecraft:generic",
               "effect_type": "dragonsurvival:damage",
               "expression": "amount * scale * 10",
-              "scale": "minecraft:generic.attack_damage",
+              "scale": "minecraft:attack_damage",
               "use_claw": true
             }
           ],

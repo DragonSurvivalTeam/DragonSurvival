@@ -8,12 +8,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "C": {
-      "tag": "minecraft:coals"
-    },
-    "R": {
-      "item": "regions_unexplored:redstone_bulb"
-    }
+    "C": "#minecraft:coals",
+    "R": "regions_unexplored:redstone_bulb"
   },
   "pattern": [
     "RRR",

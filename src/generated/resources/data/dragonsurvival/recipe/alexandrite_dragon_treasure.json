@@ -8,12 +8,8 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "silentgems:alexandrite"
-    },
-    {
-      "item": "dragonsurvival:elder_dragon_dust"
-    }
+    "silentgems:alexandrite",
+    "dragonsurvival:elder_dragon_dust"
   ],
   "result": {
     "count": 1,

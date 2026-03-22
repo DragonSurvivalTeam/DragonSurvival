@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "tag": "c:ingots/copper"
-    },
-    {
-      "item": "dragonsurvival:elder_dragon_dust"
-    }
+    "#c:ingots/copper",
+    "dragonsurvival:elder_dragon_dust"
   ],
   "result": {
     "count": 1,

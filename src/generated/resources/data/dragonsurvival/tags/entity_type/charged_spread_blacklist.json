@@ -7,11 +7,11 @@
     "minecraft:elder_guardian",
     "minecraft:enderman",
     {
-      "id": "upgrade_aquatic:thrasher",
+      "id": "#upgrade_aquatic:thrasher",
       "required": false
     },
     {
-      "id": "upgrade_aquatic:great_thrasher",
+      "id": "#upgrade_aquatic:great_thrasher",
       "required": false
     }
   ]

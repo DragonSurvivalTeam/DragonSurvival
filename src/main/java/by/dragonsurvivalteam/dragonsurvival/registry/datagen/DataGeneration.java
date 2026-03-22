@@ -7,6 +7,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.DSEnchantments;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.abilities.CaveDragonAbilities;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.abilities.ForestDragonAbilities;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.abilities.SeaDragonAbilities;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.advancements.DSAdvancements;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.compat.CreateDatapack;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.compat.SilentGemsDatapack;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.data_maps.BodyIconProvider;
@@ -53,9 +54,11 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
+import net.minecraft.data.advancements.AdvancementProvider;
 import net.minecraft.data.loot.LootTableProvider;
 import net.minecraft.data.metadata.PackMetadataGenerator;
 import net.minecraft.data.registries.RegistryPatchGenerator;
+import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.packs.PackType;
@@ -120,11 +123,8 @@ public class DataGeneration {
         PackOutput output = generator.getPackOutput();
         CompletableFuture<HolderLookup.Provider> lookup = event.getLookupProvider();
 
-        // Client
-        generator.addProvider(true /*Client*/, new DataBlockStateProvider(output, DragonSurvival.MODID));
-        generator.addProvider(true /*Client*/, new DataItemModelProvider(output, DragonSurvival.MODID));
-        generator.addProvider(true /*Client*/, new DataSpriteSourceProvider(output, lookup, DragonSurvival.MODID));
-        generator.addProvider(true /*Client*/, new DSLanguageProvider(output, lookup, "en_us"));
+        addClientProviders(generator, output, lookup);
+        addServerProviders(generator, output, lookup);
     }
 
     @SubscribeEvent
@@ -133,9 +133,19 @@ public class DataGeneration {
         PackOutput output = generator.getPackOutput();
         CompletableFuture<HolderLookup.Provider> lookup = event.getLookupProvider();
 
-        // Server
+        addServerProviders(generator, output, lookup);
+    }
+
+    private static void addClientProviders(final DataGenerator generator, final PackOutput output, final CompletableFuture<HolderLookup.Provider> lookup) {
+        generator.addProvider(true /*Client*/, new DataBlockStateProvider(output, DragonSurvival.MODID));
+        generator.addProvider(true /*Client*/, new DataSpriteSourceProvider(output, lookup, DragonSurvival.MODID));
+        generator.addProvider(true /*Client*/, new DSLanguageProvider(output, lookup, "en_us"));
+    }
+
+    private static void addServerProviders(final DataGenerator generator, final PackOutput output, CompletableFuture<HolderLookup.Provider> lookup) {
+        CompletableFuture<HolderLookup.Provider> initialLookup = lookup;
         LootTableProvider.SubProviderEntry blockLootTableSubProvider = new LootTableProvider.SubProviderEntry(BlockLootTableSubProvider::new, LootContextParamSets.BLOCK);
-        generator.addProvider(true /*Server*/, (DataProvider.Factory<LootTableProvider>) lootTableOutput -> new LootTableProvider(lootTableOutput, Collections.emptySet(), List.of(blockLootTableSubProvider), event.getLookupProvider()));
+        generator.addProvider(true /*Server*/, (DataProvider.Factory<LootTableProvider>) lootTableOutput -> new LootTableProvider(lootTableOutput, Collections.emptySet(), List.of(blockLootTableSubProvider), initialLookup));
 
 
         addSilentGemsLootTables(generator, lookup);
@@ -184,13 +194,19 @@ public class DataGeneration {
         generator.addProvider(true /*Server*/, new StageResourceProvider(output, lookup));
         generator.addProvider(true /*Server*/, new BodyIconProvider(output, lookup));
 
-        generator.addProvider(true /*Server*/, new DataBlockModelProvider(output));
-        // TODO :: Re-add this when we update to 1.22
-//        generator.addProvider(event.includeServer(), new AdvancementProvider(output, lookup, helper, List.of(new DSAdvancements())));
+        generator.addProvider(true /*Server*/, new RecipeProvider.Runner(output, lookup) {
+            @Override
+            protected RecipeProvider createRecipeProvider(final HolderLookup.Provider registries, final net.minecraft.data.recipes.RecipeOutput recipeOutput) {
+                return new DSRecipes(registries, recipeOutput);
+            }
 
-        // Should run last due to doing weird registry things
-        // FIXME :: RecipeOutput?
-        // generator.addProvider(true /*Server*/, new DSRecipes(lookup, /*recipe?*/));
+            @Override
+            public String getName() {
+                return "Dragon Survival Recipes";
+            }
+        });
+
+        generator.addProvider(true /*Server*/, new AdvancementProvider(output, lookup, List.of(new DSAdvancements())));
     }
 
     @SubscribeEvent

@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "tag": "c:gems/diamond"
-    },
-    {
-      "item": "dragonsurvival:elder_dragon_dust"
-    }
+    "#c:gems/diamond",
+    "dragonsurvival:elder_dragon_dust"
   ],
   "result": {
     "count": 1,

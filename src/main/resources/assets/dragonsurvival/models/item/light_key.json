@@ -1,5 +1,4 @@
 {
-	"base": {
 		"parent": "builtin/entity",
 		"display": {
 			"thirdperson_righthand": {
@@ -49,16 +48,6 @@
 					}
 				]
 			}
-		]
-	},
-	"loader": "neoforge:separate_transforms",
-	"gui_light": "front",
-	"perspectives": {
-		"gui": {
-			"parent": "minecraft:item/generated",
-			"textures": {
-				"layer0": "dragonsurvival:item/light_key_icon"
-			}
-		}
-	}
+		],
+	"gui_light": "front"
 }

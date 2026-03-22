@@ -1,11 +1,11 @@
-// 1.21.1	2025-10-28T09:07:04.3877537	Tags for minecraft:entity_type mod id dragonsurvival
-45756ef0fe22153733dba53a829e33acb4e30beb data/dragonsurvival/tags/entity_type/animal_avoid_blacklist.json
+// 1.21.11	2026-03-22T12:56:35.7787321	Tags for minecraft:entity_type mod id dragonsurvival
+4088d5559f6f745e8078744534c97abefd2eaec7 data/dragonsurvival/tags/entity_type/animal_avoid_blacklist.json
 a4f6e3d52d68769113e22077030c2597ae94f2a3 data/dragonsurvival/tags/entity_type/can_fly.json
-4cf72c424dcd8484399dd32f9d6fba9dd92777e6 data/dragonsurvival/tags/entity_type/charged_spread_blacklist.json
+d0750bca4634a34a46faa49d7014a5ef90d1d25d data/dragonsurvival/tags/entity_type/charged_spread_blacklist.json
 e00f2931577049b9a4400a87ed9c249373be376c data/dragonsurvival/tags/entity_type/dragons.json
 40edf96c0f7fd391ccce6bdd1e4c2e5ba63417a2 data/dragonsurvival/tags/entity_type/drops_dragon_heart_shard.json
 40edf96c0f7fd391ccce6bdd1e4c2e5ba63417a2 data/dragonsurvival/tags/entity_type/drops_elder_dragon_heart.json
 40edf96c0f7fd391ccce6bdd1e4c2e5ba63417a2 data/dragonsurvival/tags/entity_type/drops_weak_dragon_heart.json
 ceb85f11d4b5f10a30e4e6ea5098b7c660d1357b data/dragonsurvival/tags/entity_type/hunter_faction.json
 3ea0d4fdac87d561064f3af83baa802d28cb6300 data/dragonsurvival/tags/entity_type/hunter_targets.json
-8ed1eafceb87de1770fca21e83fe3b93cf64dc27 data/dragonsurvival/tags/entity_type/vehicle_whitelist.json
+95497d75246b10cf5ca8520c0dfdd1b3cc397ca1 data/dragonsurvival/tags/entity_type/vehicle_whitelist.json

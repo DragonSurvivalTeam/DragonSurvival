@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shapeless",
   "category": "redstone",
   "ingredients": [
-    {
-      "item": "minecraft:spruce_door"
-    },
-    {
-      "item": "minecraft:spruce_door"
-    },
-    {
-      "item": "minecraft:spruce_door"
-    }
+    "minecraft:spruce_door",
+    "minecraft:spruce_door",
+    "minecraft:spruce_door"
   ],
   "result": {
     "count": 2,

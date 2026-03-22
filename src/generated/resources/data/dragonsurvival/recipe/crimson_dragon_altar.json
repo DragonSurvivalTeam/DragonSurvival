@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "minecraft:crimson_planks"
-    },
-    {
-      "item": "dragonsurvival:elder_dragon_bone"
-    }
+    "minecraft:crimson_planks",
+    "dragonsurvival:elder_dragon_bone"
   ],
   "result": {
     "count": 1,

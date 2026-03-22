@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "minecraft:bamboo_planks"
-    },
-    {
-      "item": "dragonsurvival:elder_dragon_bone"
-    }
+    "minecraft:bamboo_planks",
+    "dragonsurvival:elder_dragon_bone"
   ],
   "result": {
     "count": 1,

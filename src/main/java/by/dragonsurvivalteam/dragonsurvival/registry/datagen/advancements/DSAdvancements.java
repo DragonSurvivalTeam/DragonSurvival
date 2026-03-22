@@ -101,7 +101,7 @@ public class DSAdvancements implements AdvancementSubProvider {
     @Override
     public void generate(HolderLookup.@NotNull Provider registries, @NotNull Consumer<AdvancementHolder> writer) {
         this.registries = registries;
-        this.saver = saver;
+        this.saver = writer;
 
         AdvancementHolder root = create(LangKey.ROOT)
                 .type(AdvancementType.GOAL)
@@ -358,7 +358,7 @@ public class DSAdvancements implements AdvancementSubProvider {
                 .displayItem(forestSoul)
                 .showToast()
                 .announceChat()
-                .criteria(beDragon(registries.holderOrThrow(BuiltInDragonSpecies.FOREST_DRAGON)))
+                .criteria("be_forest_dragon", beDragon(registries.holderOrThrow(BuiltInDragonSpecies.FOREST_DRAGON)))
                 .experienceReward(12)
                 .build(saver);
         buildBeForestDragonChildren(beForestDragon);
@@ -407,7 +407,7 @@ public class DSAdvancements implements AdvancementSubProvider {
         AdvancementHolder diamondsInLava = create(LangKey.CAVE_DIAMONDS_IN_LAVA)
                 .parent(swimInLava)
                 .displayItem(Items.DIAMOND_ORE)
-                .criteria("mine_diamond_in_lava", mineBlockInLava(Tags.Blocks.ORES_DIAMOND))
+                .criteria("mine_diamond_in_lava", mineBlockInLava(Blocks.DIAMOND_ORE, Blocks.DEEPSLATE_DIAMOND_ORE))
                 .experienceReward(40)
                 .build(saver);
 

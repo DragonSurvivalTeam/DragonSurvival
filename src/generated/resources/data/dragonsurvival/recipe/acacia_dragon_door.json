@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shapeless",
   "category": "redstone",
   "ingredients": [
-    {
-      "item": "minecraft:acacia_door"
-    },
-    {
-      "item": "minecraft:acacia_door"
-    },
-    {
-      "item": "minecraft:acacia_door"
-    }
+    "minecraft:acacia_door",
+    "minecraft:acacia_door",
+    "minecraft:acacia_door"
   ],
   "result": {
     "count": 2,

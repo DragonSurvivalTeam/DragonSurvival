@@ -20,37 +20,37 @@
   "modifiers": [
     {
       "amount": 2.0,
-      "attribute": "minecraft:generic.armor",
+      "attribute": "minecraft:armor",
       "operation": "add_value"
     },
     {
       "amount": -1.0,
-      "attribute": "minecraft:generic.attack_damage",
+      "attribute": "minecraft:attack_damage",
       "operation": "add_value"
     },
     {
       "amount": -1.0,
-      "attribute": "minecraft:generic.attack_knockback",
+      "attribute": "minecraft:attack_knockback",
       "operation": "add_value"
     },
     {
       "amount": 2.0,
-      "attribute": "minecraft:generic.safe_fall_distance",
+      "attribute": "minecraft:safe_fall_distance",
       "operation": "add_value"
     },
     {
       "amount": 0.1,
-      "attribute": "minecraft:generic.gravity",
+      "attribute": "minecraft:gravity",
       "operation": "add_multiplied_total"
     },
     {
       "amount": 0.1,
-      "attribute": "minecraft:generic.jump_strength",
+      "attribute": "minecraft:jump_strength",
       "operation": "add_value"
     },
     {
       "amount": 0.1,
-      "attribute": "minecraft:generic.movement_speed",
+      "attribute": "minecraft:movement_speed",
       "operation": "add_multiplied_total"
     },
     {

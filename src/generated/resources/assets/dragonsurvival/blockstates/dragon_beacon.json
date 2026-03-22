@@ -1,15 +1,6 @@
 {
   "variants": {
-    "lit=false,waterlogged=false": {
-      "model": "dragonsurvival:block/empty"
-    },
-    "lit=false,waterlogged=true": {
-      "model": "dragonsurvival:block/empty"
-    },
-    "lit=true,waterlogged=false": {
-      "model": "dragonsurvival:block/empty"
-    },
-    "lit=true,waterlogged=true": {
+    "": {
       "model": "dragonsurvival:block/empty"
     }
   }

@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shapeless",
   "category": "redstone",
   "ingredients": [
-    {
-      "item": "dragonsurvival:spruce_dragon_door"
-    }
+    "dragonsurvival:spruce_dragon_door"
   ],
   "result": {
     "count": 3,

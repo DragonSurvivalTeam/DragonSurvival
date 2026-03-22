@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "minecraft:end_stone"
-    },
-    {
-      "item": "dragonsurvival:elder_dragon_bone"
-    }
+    "minecraft:end_stone",
+    "dragonsurvival:elder_dragon_bone"
   ],
   "result": {
     "count": 1,

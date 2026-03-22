@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shapeless",
   "category": "redstone",
   "ingredients": [
-    {
-      "item": "minecraft:oak_door"
-    },
-    {
-      "item": "minecraft:oak_door"
-    },
-    {
-      "item": "minecraft:oak_door"
-    }
+    "minecraft:oak_door",
+    "minecraft:oak_door",
+    "minecraft:oak_door"
   ],
   "result": {
     "count": 2,

@@ -8,12 +8,8 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "silentgems:iolite"
-    },
-    {
-      "item": "dragonsurvival:elder_dragon_dust"
-    }
+    "silentgems:iolite",
+    "dragonsurvival:elder_dragon_dust"
   ],
   "result": {
     "count": 1,

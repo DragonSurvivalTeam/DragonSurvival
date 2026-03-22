@@ -16,7 +16,7 @@
                   "modifiers": [
                     {
                       "amount": 0.8,
-                      "attribute": "minecraft:player.submerged_mining_speed",
+                      "attribute": "minecraft:submerged_mining_speed",
                       "operation": "add_value"
                     }
                   ]

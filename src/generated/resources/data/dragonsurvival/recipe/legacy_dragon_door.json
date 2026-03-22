@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shapeless",
   "category": "redstone",
   "ingredients": [
-    {
-      "tag": "dragonsurvival:wooden_dragon_doors"
-    },
-    {
-      "item": "minecraft:iron_helmet"
-    }
+    "#dragonsurvival:wooden_dragon_doors",
+    "minecraft:iron_helmet"
   ],
   "result": {
     "count": 1,

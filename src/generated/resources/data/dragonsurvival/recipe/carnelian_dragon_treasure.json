@@ -8,12 +8,8 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "silentgems:carnelian"
-    },
-    {
-      "item": "dragonsurvival:elder_dragon_dust"
-    }
+    "silentgems:carnelian",
+    "dragonsurvival:elder_dragon_dust"
   ],
   "result": {
     "count": 1,

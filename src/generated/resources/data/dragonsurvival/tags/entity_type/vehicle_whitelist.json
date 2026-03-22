@@ -3,31 +3,31 @@
     "#c:boats",
     "#c:minecarts",
     {
-      "id": "littlelogistics:seater_barge",
+      "id": "#littlelogistics:seater_barge",
       "required": false
     },
     {
-      "id": "create:seat",
+      "id": "#create:seat",
       "required": false
     },
     {
-      "id": "create:contraption",
+      "id": "#create:contraption",
       "required": false
     },
     {
-      "id": "create:gantry_contraption",
+      "id": "#create:gantry_contraption",
       "required": false
     },
     {
-      "id": "create:stationary_contraption",
+      "id": "#create:stationary_contraption",
       "required": false
     },
     {
-      "id": "hexerei:broom",
+      "id": "#hexerei:broom",
       "required": false
     },
     {
-      "id": "botania:player_mover",
+      "id": "#botania:player_mover",
       "required": false
     }
   ]

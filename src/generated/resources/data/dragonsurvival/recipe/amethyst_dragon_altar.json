@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "minecraft:amethyst_block"
-    },
-    {
-      "item": "dragonsurvival:elder_dragon_bone"
-    }
+    "minecraft:amethyst_block",
+    "dragonsurvival:elder_dragon_bone"
   ],
   "result": {
     "count": 1,

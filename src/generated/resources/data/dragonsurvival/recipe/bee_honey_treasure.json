@@ -8,12 +8,8 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "bee_queen_ds:caramelized_nectar"
-    },
-    {
-      "item": "dragonsurvival:elder_dragon_dust"
-    }
+    "bee_queen_ds:caramelized_nectar",
+    "dragonsurvival:elder_dragon_dust"
   ],
   "result": {
     "count": 1,

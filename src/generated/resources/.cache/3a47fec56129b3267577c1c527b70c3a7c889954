@@ -1,4 +1,4 @@
-// 1.21.1	2025-02-22T09:40:49.5198162	Tags for minecraft:enchantment mod id dragonsurvival
+// 1.21.11	2026-03-22T12:56:35.7917461	Tags for minecraft:enchantment mod id dragonsurvival
 47aaeb09df58ccf9f088d56d2c4e5c2b36c30c62 data/dragonsurvival/tags/enchantment/exclusive_set/anti_dragon.json
-a6323cf3378240d45d0c2e9b370537491088a2ed data/dragonsurvival/tags/enchantment/exclusive_set/dark_dragon.json
-5ccb58a66a4a559d756f036c10df116f6ad322e4 data/dragonsurvival/tags/enchantment/exclusive_set/light_dragon.json
+47644d3186506f456564303ea092c4496d213f93 data/dragonsurvival/tags/enchantment/exclusive_set/dark_dragon.json
+734ae9e20e096c638120265384d4e2185799a0ac data/dragonsurvival/tags/enchantment/exclusive_set/light_dragon.json

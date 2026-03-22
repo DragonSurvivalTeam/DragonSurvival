@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shapeless",
   "category": "redstone",
   "ingredients": [
-    {
-      "item": "dragonsurvival:cave_dragon_door"
-    }
+    "dragonsurvival:cave_dragon_door"
   ],
   "result": {
     "count": 3,

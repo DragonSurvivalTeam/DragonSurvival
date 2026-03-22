@@ -1,5 +1,5 @@
 {
-  "parent": "minecraft:block/orientable",
+  "parent": "minecraft:block/cube",
   "textures": {
     "down": "dragonsurvival:block/red_nether_brick_dragon_altar_top",
     "east": "dragonsurvival:block/red_nether_brick_dragon_altar_east",

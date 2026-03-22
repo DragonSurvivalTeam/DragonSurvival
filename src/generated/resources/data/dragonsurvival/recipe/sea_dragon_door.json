@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shapeless",
   "category": "redstone",
   "ingredients": [
-    {
-      "tag": "dragonsurvival:wooden_dragon_doors"
-    },
-    {
-      "item": "minecraft:prismarine"
-    }
+    "#dragonsurvival:wooden_dragon_doors",
+    "minecraft:prismarine"
   ],
   "result": {
     "count": 1,

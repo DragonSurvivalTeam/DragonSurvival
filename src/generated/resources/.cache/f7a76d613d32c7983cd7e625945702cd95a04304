@@ -1,4 +1,4 @@
-// 1.21.1	2025-10-03T20:38:50.1734572	Tags for minecraft:damage_type mod id dragonsurvival
+// 1.21.11	2026-03-22T12:56:35.7912451	Tags for minecraft:damage_type mod id dragonsurvival
 d64a77e508c77c894e55cf2cce3d1adb8bc6533c data/dragonsurvival/tags/damage_type/anti_dragon.json
 a356111ea1c106266ab5016081ce5c405756e4a6 data/dragonsurvival/tags/damage_type/dragon_breath.json
 fdab1bba170a2fc2f60c645294ee5c304da2e633 data/dragonsurvival/tags/damage_type/dragon_magic.json

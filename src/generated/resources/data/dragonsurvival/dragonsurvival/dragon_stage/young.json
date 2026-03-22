@@ -31,17 +31,17 @@
   "modifiers": [
     {
       "amount": 2.0,
-      "attribute": "minecraft:generic.attack_damage",
+      "attribute": "minecraft:attack_damage",
       "operation": "add_value"
     },
     {
       "amount": 0.05,
-      "attribute": "minecraft:generic.jump_strength",
+      "attribute": "minecraft:jump_strength",
       "operation": "add_value"
     },
     {
       "amount": 0.5,
-      "attribute": "minecraft:generic.safe_fall_distance",
+      "attribute": "minecraft:safe_fall_distance",
       "operation": "add_value"
     },
     {
@@ -49,7 +49,7 @@
         "precise_amount": 0.033333335,
         "precise_base": -0.55
       },
-      "attribute": "minecraft:generic.scale",
+      "attribute": "minecraft:scale",
       "operation": "add_value"
     },
     {
@@ -58,7 +58,7 @@
         "base": 0.6666667,
         "per_level_above_first": 0.6666667
       },
-      "attribute": "minecraft:generic.max_health",
+      "attribute": "minecraft:max_health",
       "operation": "add_value"
     },
     {

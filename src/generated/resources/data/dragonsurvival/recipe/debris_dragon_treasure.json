@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "minecraft:netherite_scrap"
-    },
-    {
-      "item": "dragonsurvival:elder_dragon_dust"
-    }
+    "minecraft:netherite_scrap",
+    "dragonsurvival:elder_dragon_dust"
   ],
   "result": {
     "count": 1,

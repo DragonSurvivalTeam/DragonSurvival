@@ -1,9 +1,24 @@
 {
   "values": [
-    "dragonsurvival:aerodynamic_mastery",
-    "dragonsurvival:combat_recovery",
-    "dragonsurvival:sacred_scales",
-    "dragonsurvival:unbreakable_spirit",
-    "dragonsurvival:curse_of_kindness"
+    {
+      "id": "dragonsurvival:aerodynamic_mastery",
+      "required": false
+    },
+    {
+      "id": "dragonsurvival:combat_recovery",
+      "required": false
+    },
+    {
+      "id": "dragonsurvival:sacred_scales",
+      "required": false
+    },
+    {
+      "id": "dragonsurvival:unbreakable_spirit",
+      "required": false
+    },
+    {
+      "id": "dragonsurvival:curse_of_kindness",
+      "required": false
+    }
   ]
 }

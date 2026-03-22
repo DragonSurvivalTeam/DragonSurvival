@@ -7,7 +7,7 @@
     "minecraft:snow_block",
     "minecraft:powder_snow_bucket",
     {
-      "id": "immersive_weathering:icicle",
+      "id": "#immersive_weathering:icicle",
       "required": false
     }
   ]

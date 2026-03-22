@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "minecraft:cobbled_deepslate"
-    },
-    {
-      "item": "dragonsurvival:elder_dragon_bone"
-    }
+    "minecraft:cobbled_deepslate",
+    "dragonsurvival:elder_dragon_bone"
   ],
   "result": {
     "count": 1,

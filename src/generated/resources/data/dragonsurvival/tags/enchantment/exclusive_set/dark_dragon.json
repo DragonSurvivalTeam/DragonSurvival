@@ -1,9 +1,24 @@
 {
   "values": [
-    "dragonsurvival:blood_siphon",
-    "dragonsurvival:draconic_superiority",
-    "dragonsurvival:murderers_cunning",
-    "dragonsurvival:overwhelming_might",
-    "dragonsurvival:curse_of_outlaw"
+    {
+      "id": "dragonsurvival:blood_siphon",
+      "required": false
+    },
+    {
+      "id": "dragonsurvival:draconic_superiority",
+      "required": false
+    },
+    {
+      "id": "dragonsurvival:murderers_cunning",
+      "required": false
+    },
+    {
+      "id": "dragonsurvival:overwhelming_might",
+      "required": false
+    },
+    {
+      "id": "dragonsurvival:curse_of_outlaw",
+      "required": false
+    }
   ]
 }

@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "minecraft:dark_oak_planks"
-    },
-    {
-      "item": "dragonsurvival:elder_dragon_bone"
-    }
+    "minecraft:dark_oak_planks",
+    "dragonsurvival:elder_dragon_bone"
   ],
   "result": {
     "count": 1,

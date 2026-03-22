@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "minecraft:prismarine_bricks"
-    },
-    {
-      "item": "dragonsurvival:elder_dragon_bone"
-    }
+    "minecraft:prismarine_bricks",
+    "dragonsurvival:elder_dragon_bone"
   ],
   "result": {
     "count": 1,

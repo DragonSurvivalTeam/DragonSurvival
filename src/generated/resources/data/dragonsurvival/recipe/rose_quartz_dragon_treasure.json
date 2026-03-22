@@ -8,12 +8,8 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "silentgems:rose_quartz"
-    },
-    {
-      "item": "dragonsurvival:elder_dragon_dust"
-    }
+    "silentgems:rose_quartz",
+    "dragonsurvival:elder_dragon_dust"
   ],
   "result": {
     "count": 1,

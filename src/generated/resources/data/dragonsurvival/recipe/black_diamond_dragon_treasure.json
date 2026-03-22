@@ -8,12 +8,8 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "silentgems:black_diamond"
-    },
-    {
-      "item": "dragonsurvival:elder_dragon_dust"
-    }
+    "silentgems:black_diamond",
+    "dragonsurvival:elder_dragon_dust"
   ],
   "result": {
     "count": 1,

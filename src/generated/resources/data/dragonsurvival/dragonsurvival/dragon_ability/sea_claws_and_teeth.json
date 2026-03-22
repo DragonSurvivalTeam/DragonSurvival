@@ -16,12 +16,10 @@
                   "base_speed": {
                     "tiers": [
                       {
-                        "from_level": 1,
-                        "tier": "WOOD"
+                        "from_level": 1
                       },
                       {
-                        "from_level": 2,
-                        "tier": "STONE"
+                        "from_level": 2
                       }
                     ]
                   },

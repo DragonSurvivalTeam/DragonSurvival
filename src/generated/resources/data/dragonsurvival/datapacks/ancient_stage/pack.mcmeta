@@ -6,6 +6,10 @@
     "description": {
       "translate": "dragonsurvival.gui.datapack.ancient_stage"
     },
-    "pack_format": 48
+    "max_format": 94,
+    "min_format": [
+      94,
+      1
+    ]
   }
 }

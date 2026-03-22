@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "tag": "c:gems/emerald"
-    },
-    {
-      "item": "dragonsurvival:elder_dragon_dust"
-    }
+    "#c:gems/emerald",
+    "dragonsurvival:elder_dragon_dust"
   ],
   "result": {
     "count": 1,

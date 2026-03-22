@@ -31,7 +31,8 @@
                   "base": 0.1
                 },
                 "particle": {
-                  "type": "minecraft:dragon_breath"
+                  "type": "minecraft:dragon_breath",
+                  "power": 1.0
                 },
                 "speed": 0.1,
                 "vertical_position": {

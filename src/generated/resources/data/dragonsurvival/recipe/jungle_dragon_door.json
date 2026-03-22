@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shapeless",
   "category": "redstone",
   "ingredients": [
-    {
-      "item": "minecraft:jungle_door"
-    },
-    {
-      "item": "minecraft:jungle_door"
-    },
-    {
-      "item": "minecraft:jungle_door"
-    }
+    "minecraft:jungle_door",
+    "minecraft:jungle_door",
+    "minecraft:jungle_door"
   ],
   "result": {
     "count": 2,

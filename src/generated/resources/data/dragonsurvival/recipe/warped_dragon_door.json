@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shapeless",
   "category": "redstone",
   "ingredients": [
-    {
-      "item": "minecraft:warped_door"
-    },
-    {
-      "item": "minecraft:warped_door"
-    },
-    {
-      "item": "minecraft:warped_door"
-    }
+    "minecraft:warped_door",
+    "minecraft:warped_door",
+    "minecraft:warped_door"
   ],
   "result": {
     "count": 2,

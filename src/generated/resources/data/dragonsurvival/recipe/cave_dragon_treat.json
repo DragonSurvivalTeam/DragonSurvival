@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "C": {
-      "tag": "dragonsurvival:charred_food"
-    },
-    "D": {
-      "item": "dragonsurvival:elder_dragon_dust"
-    }
+    "C": "#dragonsurvival:charred_food",
+    "D": "dragonsurvival:elder_dragon_dust"
   },
   "pattern": [
     "DDD",

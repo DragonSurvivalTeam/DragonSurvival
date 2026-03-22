@@ -31,19 +31,19 @@ public class DSEnchantmentTags extends EnchantmentTagsProvider {
 
         // Used in enchantments
         tag(exclusiveSet("dark_dragon"))
-                .add(DSEnchantments.BLOOD_SIPHON)
-                .add(DSEnchantments.DRACONIC_SUPERIORITY)
-                .add(DSEnchantments.MURDERERS_CUNNING)
-                .add(DSEnchantments.OVERWHELMING_MIGHT)
-                .add(DSEnchantments.CURSE_OF_OUTLAW);
+                .addOptional(DSEnchantments.BLOOD_SIPHON)
+                .addOptional(DSEnchantments.DRACONIC_SUPERIORITY)
+                .addOptional(DSEnchantments.MURDERERS_CUNNING)
+                .addOptional(DSEnchantments.OVERWHELMING_MIGHT)
+                .addOptional(DSEnchantments.CURSE_OF_OUTLAW);
 
         // Used in enchantments
         tag(exclusiveSet("light_dragon"))
-                .add(DSEnchantments.AERODYNAMIC_MASTERY)
-                .add(DSEnchantments.COMBAT_RECOVERY)
-                .add(DSEnchantments.SACRED_SCALES)
-                .add(DSEnchantments.UNBREAKABLE_SPIRIT)
-                .add(DSEnchantments.CURSE_OF_KINDNESS);
+                .addOptional(DSEnchantments.AERODYNAMIC_MASTERY)
+                .addOptional(DSEnchantments.COMBAT_RECOVERY)
+                .addOptional(DSEnchantments.SACRED_SCALES)
+                .addOptional(DSEnchantments.UNBREAKABLE_SPIRIT)
+                .addOptional(DSEnchantments.CURSE_OF_KINDNESS);
     }
 
     private void addToVanillaTags() {

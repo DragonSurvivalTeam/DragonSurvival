@@ -12,11 +12,11 @@
       "required": false
     },
     {
-      "id": "netherdepthsupgrade:wet_lava_sponge",
+      "id": "#netherdepthsupgrade:wet_lava_sponge",
       "required": false
     },
     {
-      "id": "regions_unexplored:brimwood_log_magma",
+      "id": "#regions_unexplored:brimwood_log_magma",
       "required": false
     }
   ]

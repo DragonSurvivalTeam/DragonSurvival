@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "tag": "dragonsurvival:charred_food"
-    }
+    "#dragonsurvival:charred_food"
   ],
   "result": {
     "count": 1,

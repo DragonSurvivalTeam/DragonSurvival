@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "minecraft:red_nether_bricks"
-    },
-    {
-      "item": "dragonsurvival:elder_dragon_bone"
-    }
+    "minecraft:red_nether_bricks",
+    "dragonsurvival:elder_dragon_bone"
   ],
   "result": {
     "count": 1,

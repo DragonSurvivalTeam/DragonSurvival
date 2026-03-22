@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shapeless",
   "category": "redstone",
   "ingredients": [
-    {
-      "tag": "dragonsurvival:wooden_dragon_doors"
-    },
-    {
-      "item": "minecraft:gilded_blackstone"
-    }
+    "#dragonsurvival:wooden_dragon_doors",
+    "minecraft:gilded_blackstone"
   ],
   "result": {
     "count": 1,

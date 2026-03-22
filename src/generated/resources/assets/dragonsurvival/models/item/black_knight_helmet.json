@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "dragonsurvival:item/black_knight_helmet"
+    "layer0": "dragonsurvival:block/black_knight_helmet"
   }
 }

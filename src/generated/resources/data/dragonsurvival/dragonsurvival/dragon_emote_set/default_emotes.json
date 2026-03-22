@@ -363,7 +363,7 @@
       "sound": {
         "interval": 160,
         "pitch": 0.2,
-        "sound_event": "minecraft:entity.wolf.growl"
+        "sound_event": "minecraft:entity.ender_dragon.growl"
       },
       "speed": 0.001,
       "translation_override": "growl"

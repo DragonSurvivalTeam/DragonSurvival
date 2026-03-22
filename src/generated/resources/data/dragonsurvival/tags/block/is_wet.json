@@ -8,111 +8,111 @@
     "minecraft:mud",
     "dragonsurvival:sea_source_of_magic",
     {
-      "id": "immersive_weathering:thin_ice",
+      "id": "#immersive_weathering:thin_ice",
       "required": false
     },
     {
-      "id": "immersive_weathering:cryosol",
+      "id": "#immersive_weathering:cryosol",
       "required": false
     },
     {
-      "id": "immersive_weathering:permafrost",
+      "id": "#immersive_weathering:permafrost",
       "required": false
     },
     {
-      "id": "immersive_weathering:frosty_grass",
+      "id": "#immersive_weathering:frosty_grass",
       "required": false
     },
     {
-      "id": "immersive_weathering:frosty_fern",
+      "id": "#immersive_weathering:frosty_fern",
       "required": false
     },
     {
-      "id": "immersive_weathering:icicle",
+      "id": "#immersive_weathering:icicle",
       "required": false
     },
     {
-      "id": "immersive_weathering:snowy_stone",
+      "id": "#immersive_weathering:snowy_stone",
       "required": false
     },
     {
-      "id": "immersive_weathering:snowy_stone_slab",
+      "id": "#immersive_weathering:snowy_stone_slab",
       "required": false
     },
     {
-      "id": "immersive_weathering:snowy_stone_wall",
+      "id": "#immersive_weathering:snowy_stone_wall",
       "required": false
     },
     {
-      "id": "immersive_weathering:snowy_stone_stairs",
+      "id": "#immersive_weathering:snowy_stone_stairs",
       "required": false
     },
     {
-      "id": "immersive_weathering:snowy_stone_bricks",
+      "id": "#immersive_weathering:snowy_stone_bricks",
       "required": false
     },
     {
-      "id": "immersive_weathering:snowy_stone_brick_slab",
+      "id": "#immersive_weathering:snowy_stone_brick_slab",
       "required": false
     },
     {
-      "id": "immersive_weathering:snowy_stone_brick_wall",
+      "id": "#immersive_weathering:snowy_stone_brick_wall",
       "required": false
     },
     {
-      "id": "immersive_weathering:snowy_stone_brick_stairs",
+      "id": "#immersive_weathering:snowy_stone_brick_stairs",
       "required": false
     },
     {
-      "id": "immersive_weathering:snowy_cobblestone",
+      "id": "#immersive_weathering:snowy_cobblestone",
       "required": false
     },
     {
-      "id": "immersive_weathering:snowy_cobblestone_slab",
+      "id": "#immersive_weathering:snowy_cobblestone_slab",
       "required": false
     },
     {
-      "id": "immersive_weathering:snowy_cobblestone_wall",
+      "id": "#immersive_weathering:snowy_cobblestone_wall",
       "required": false
     },
     {
-      "id": "immersive_weathering:snowy_cobblestone_stairs",
+      "id": "#immersive_weathering:snowy_cobblestone_stairs",
       "required": false
     },
     {
-      "id": "immersive_weathering:snow_bricks",
+      "id": "#immersive_weathering:snow_bricks",
       "required": false
     },
     {
-      "id": "immersive_weathering:snow_brick_slab",
+      "id": "#immersive_weathering:snow_brick_slab",
       "required": false
     },
     {
-      "id": "immersive_weathering:snow_brick_wall",
+      "id": "#immersive_weathering:snow_brick_wall",
       "required": false
     },
     {
-      "id": "immersive_weathering:snow_brick_stairs",
+      "id": "#immersive_weathering:snow_brick_stairs",
       "required": false
     },
     {
-      "id": "immersive_weathering:snowy_chiseled_stone_bricks",
+      "id": "#immersive_weathering:snowy_chiseled_stone_bricks",
       "required": false
     },
     {
-      "id": "regions_unexplored:plains_mud",
+      "id": "#regions_unexplored:plains_mud",
       "required": false
     },
     {
-      "id": "regions_unexplored:silt_mud",
+      "id": "#regions_unexplored:silt_mud",
       "required": false
     },
     {
-      "id": "regions_unexplored:peat_mud",
+      "id": "#regions_unexplored:peat_mud",
       "required": false
     },
     {
-      "id": "regions_unexplored:forest_mud",
+      "id": "#regions_unexplored:forest_mud",
       "required": false
     }
   ]

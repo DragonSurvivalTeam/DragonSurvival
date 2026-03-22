@@ -1,5 +1,5 @@
 {
-  "parent": "minecraft:block/orientable",
+  "parent": "minecraft:block/cube",
   "textures": {
     "down": "dragonsurvival:block/jungle_dragon_altar_top",
     "east": "dragonsurvival:block/jungle_dragon_altar_east",

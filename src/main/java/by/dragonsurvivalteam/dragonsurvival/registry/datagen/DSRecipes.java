@@ -745,8 +745,9 @@ public class DSRecipes extends RecipeProvider {
     public record ProxyItem(String namespace, String path) implements ItemLike {
         @Override
         public @NotNull Item asItem() {
-            Item item = new Item(new Item.Properties());
-            ((Holder$ReferenceAccess) item.builtInRegistryHolder()).dragonSurvival$bindKey(ResourceKey.create(Registries.ITEM, DragonSurvival.location(namespace, path)));
+            ResourceKey<Item> key = ResourceKey.create(Registries.ITEM, DragonSurvival.location(namespace, path));
+            Item item = new Item(new Item.Properties().setId(key));
+            ((Holder$ReferenceAccess) item.builtInRegistryHolder()).dragonSurvival$bindKey(key);
             ((Holder$ReferenceAccess) item.builtInRegistryHolder()).dragonSurvival$bindValue(item);
             return item;
         }

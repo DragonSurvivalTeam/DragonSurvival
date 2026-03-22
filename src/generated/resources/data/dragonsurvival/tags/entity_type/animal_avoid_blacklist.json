@@ -4,15 +4,15 @@
     "minecraft:hoglin",
     "minecraft:bee",
     {
-      "id": "cobblemon:pokemon",
+      "id": "#cobblemon:pokemon",
       "required": false
     },
     {
-      "id": "bee_queen_ds:bee_guard",
+      "id": "#bee_queen_ds:bee_guard",
       "required": false
     },
     {
-      "id": "bee_queen_ds:tamed_bee",
+      "id": "#bee_queen_ds:tamed_bee",
       "required": false
     }
   ]

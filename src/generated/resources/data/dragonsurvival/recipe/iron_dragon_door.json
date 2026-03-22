@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shapeless",
   "category": "redstone",
   "ingredients": [
-    {
-      "item": "minecraft:iron_door"
-    },
-    {
-      "item": "minecraft:iron_door"
-    },
-    {
-      "item": "minecraft:iron_door"
-    }
+    "minecraft:iron_door",
+    "minecraft:iron_door",
+    "minecraft:iron_door"
   ],
   "result": {
     "count": 2,

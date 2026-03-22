@@ -1,28 +1,29 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.datagen;
 
+import by.dragonsurvivalteam.dragonsurvival.registry.DSItems;
 import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
 import net.minecraft.client.data.models.ModelProvider;
+import net.minecraft.client.data.models.model.ItemModelUtils;
+import net.minecraft.client.data.models.model.ModelTemplate;
+import net.minecraft.client.data.models.model.ModelTemplates;
+import net.minecraft.client.data.models.model.TextureMapping;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.data.PackOutput;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.SpawnEggItem;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
+import java.util.Set;
 
 public class DataItemModelProvider extends ModelProvider {
-    public static final String BLOCK_FOLDER = "block";
-
-    public DataItemModelProvider(PackOutput output, String modId) {
-        super(output, modId);
-    }
-
-    private static final List<String> BLOCK_MODELS_AS_BASIC = List.of(
-            "door",
-            "source",
-            "helmet",
-            "beacon"
+    private static final ModelTemplate SPAWN_EGG_TEMPLATE = new ModelTemplate(
+            java.util.Optional.of(Identifier.withDefaultNamespace("item/template_spawn_egg")),
+            java.util.Optional.empty()
     );
-
-    private static final List<String> MANUALLY_AUTHORED = List.of(
+    private static final Set<String> MANUALLY_AUTHORED = Set.of(
             "dragon_hunting_mesh",
             "hunter_partisan",
             "hunter_partisan_diamond",
@@ -33,51 +34,42 @@ public class DataItemModelProvider extends ModelProvider {
             "dragon_soul"
     );
 
+    public DataItemModelProvider(final PackOutput output, final String modId) {
+        super(output, modId);
+    }
+
     @Override
-    protected void registerModels(@NotNull BlockModelGenerators blockModels, @NotNull ItemModelGenerators itemModels) {
-//        DSItems.REGISTRY.getEntries().forEach((holder) -> {
-//            if (MANUALLY_AUTHORED.stream().anyMatch(holder.getId().getPath()::contains)) {
-//                return;
-//            }
-//
-//            if (holder.get() instanceof BlockItem blockItem && BLOCK_MODELS_AS_BASIC.stream().noneMatch(blockItem.toString()::contains)) {
-//                if (blockItem.toString().contains("skeleton")) {
-//                    // Parse the string up to "_skin"
-//                    String[] split = holder.getId().getPath().split("_skin");
-//
-//                    // The last character has the number for the skin to select, so parse it
-//                    String skin = split[1].substring(split[1].length() - 1);
-//
-//                    getBuilder(blockItem.toString())
-//                            .parent(new ModelFile.UncheckedModelFile(Identifier.fromNamespaceAndPath(DragonSurvival.MODID, BLOCK_FOLDER + "/" + split[0])))
-//                            .texture("skeleton_texture", Identifier.fromNamespaceAndPath(DragonSurvival.MODID, BLOCK_FOLDER + "/" + "skeleton_dragon_" + skin))
-//                            .transforms().transform(ItemDisplayContext.GUI).rotation(30, 160, 0).scale(0.5f).end();
-//                } else if (blockItem.toString().contains("vault")) {
-//                    getBuilder(blockItem.toString()).parent(new ModelFile.UncheckedModelFile(Identifier.fromNamespaceAndPath(DragonSurvival.MODID, BLOCK_FOLDER + "/" + holder.getId().getPath()) + "_inactive"));
-//                } else if (blockItem.getBlock() instanceof TreasureBlock) {
-//                    // Show the 1 layer texture
-//                    Identifier parent = Identifier.fromNamespaceAndPath(DragonSurvival.MODID, BLOCK_FOLDER + "/" + holder.getId().getPath() + "2");
-//                    getBuilder(blockItem.toString()).parent(new ModelFile.UncheckedModelFile(parent));
-//                } else if (blockItem.getBlock() instanceof PrimordialAnchorBlock) {
-//                    getBuilder(blockItem.toString())
-//                            .parent(new ModelFile.UncheckedModelFile(Identifier.fromNamespaceAndPath(DragonSurvival.MODID, BLOCK_FOLDER + "/" + holder.getId().getPath())))
-//                            .texture("1", Identifier.fromNamespaceAndPath(DragonSurvival.MODID, BLOCK_FOLDER + "/" + "primordial_anchor_empty"));
-//                } else {
-//                    getBuilder(blockItem.toString()).parent(new ModelFile.UncheckedModelFile(Identifier.fromNamespaceAndPath(DragonSurvival.MODID, BLOCK_FOLDER + "/" + holder.getId().getPath())));
-//                }
-//            } else {
-//                if (holder.get() instanceof SpawnEggItem item) {
-//                    getBuilder(item.toString()).parent(new ModelFile.UncheckedModelFile(Identifier.withDefaultNamespace("item/template_spawn_egg")));
-//                } else if (holder.get().components().has(DataComponents.WEAPON)) {
-//                    Identifier itemLoc = Objects.requireNonNull(BuiltInRegistries.ITEM.getKey(item));
-//                    getBuilder(itemLoc.toString())
-//                            .parent(new ModelFile.UncheckedModelFile("item/handheld"))
-//                            .texture("layer0", Identifier.fromNamespaceAndPath(DragonSurvival.MODID, "item/" + itemLoc.getPath()));
-//                } else {
-//                    basicItem(holder.get());
-//                }
-//            }
-//        });
+    protected void registerModels(@NotNull final BlockModelGenerators blockModels, @NotNull final ItemModelGenerators itemModels) {
+        registerItemModels(itemModels);
+    }
+
+    public static void registerItemModels(@NotNull final ItemModelGenerators itemModels) {
+        DSItems.REGISTRY.getEntries().forEach(holder -> {
+            Item item = holder.get();
+            String name = holder.getId().getPath();
+
+            if (item instanceof BlockItem) {
+                return;
+            }
+
+            if (MANUALLY_AUTHORED.contains(name)) {
+                itemModels.declareCustomModelItem(item);
+                return;
+            }
+
+            if (item instanceof SpawnEggItem) {
+                Identifier model = SPAWN_EGG_TEMPLATE.create(item, new TextureMapping(), itemModels.modelOutput);
+                itemModels.itemModelOutput.accept(item, ItemModelUtils.plainModel(model));
+                return;
+            }
+
+            if (item.components().has(DataComponents.WEAPON)) {
+                itemModels.generateFlatItem(item, ModelTemplates.FLAT_HANDHELD_ITEM);
+                return;
+            }
+
+            itemModels.generateFlatItem(item, ModelTemplates.FLAT_ITEM);
+        });
     }
 
     @Override

@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "tag": "dragonsurvival:dragon_treasures"
-    }
+    "#dragonsurvival:dragon_treasures"
   ],
   "result": {
     "count": 1,

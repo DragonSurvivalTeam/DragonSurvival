@@ -1,12 +1,6 @@
 {
   "variants": {
-    "axis=x": {
-      "model": "dragonsurvival:block/dragon_memory_block"
-    },
-    "axis=y": {
-      "model": "dragonsurvival:block/dragon_memory_block"
-    },
-    "axis=z": {
+    "": {
       "model": "dragonsurvival:block/dragon_memory_block"
     }
   }

@@ -27,22 +27,22 @@
   "modifiers": [
     {
       "amount": 0.5,
-      "attribute": "minecraft:generic.step_height",
+      "attribute": "minecraft:step_height",
       "operation": "add_value"
     },
     {
       "amount": 3.0,
-      "attribute": "minecraft:generic.attack_damage",
+      "attribute": "minecraft:attack_damage",
       "operation": "add_value"
     },
     {
       "amount": 0.1,
-      "attribute": "minecraft:generic.jump_strength",
+      "attribute": "minecraft:jump_strength",
       "operation": "add_value"
     },
     {
       "amount": 1.0,
-      "attribute": "minecraft:generic.safe_fall_distance",
+      "attribute": "minecraft:safe_fall_distance",
       "operation": "add_value"
     },
     {
@@ -50,7 +50,7 @@
         "precise_amount": 0.025,
         "precise_base": -0.05
       },
-      "attribute": "minecraft:generic.scale",
+      "attribute": "minecraft:scale",
       "operation": "add_value"
     },
     {
@@ -59,7 +59,7 @@
         "base": 10.5,
         "per_level_above_first": 0.5
       },
-      "attribute": "minecraft:generic.max_health",
+      "attribute": "minecraft:max_health",
       "operation": "add_value"
     },
     {
@@ -77,7 +77,7 @@
         "base": 0.05,
         "per_level_above_first": 0.05
       },
-      "attribute": "minecraft:player.entity_interaction_range",
+      "attribute": "minecraft:entity_interaction_range",
       "operation": "add_value"
     },
     {
@@ -86,7 +86,7 @@
         "base": 0.05,
         "per_level_above_first": 0.05
       },
-      "attribute": "minecraft:player.block_interaction_range",
+      "attribute": "minecraft:block_interaction_range",
       "operation": "add_value"
     }
   ],
