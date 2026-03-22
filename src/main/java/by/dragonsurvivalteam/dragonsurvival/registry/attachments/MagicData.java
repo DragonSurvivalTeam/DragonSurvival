@@ -599,18 +599,19 @@ public class MagicData implements ValueIOSerializable {
         getHotbar().clear();
 
         if (valueInput.keySet().contains(ALL_ABILITIES)) {
-            ValueInput storedAbilities = valueInput.child(ALL_ABILITIES).orElseThrow();
+            ValueInput storedAbilities = valueInput.childOrEmpty(ALL_ABILITIES);
             storedAbilities.keySet().forEach(abilityLocation -> {
                 Optional<DragonAbilityInstance> instance = storedAbilities.read(abilityLocation, DragonAbilityInstance.CODEC);
 
                 if (instance.isPresent()) {
-                    abilities.get(currentSpecies).put(instance.orElseThrow().key(), instance.orElseThrow());
+                    DragonAbilityInstance abilityInstance = instance.get();
+                    abilities.get(currentSpecies).put(abilityInstance.key(), abilityInstance);
                 }
             });
         }
 
         if (valueInput.keySet().contains(ALL_HOTBARS)) {
-            ValueInput storedHotbar = valueInput.child(ALL_HOTBARS).orElseThrow();
+            ValueInput storedHotbar = valueInput.childOrEmpty(ALL_HOTBARS);
             storedHotbar.keySet().forEach(abilityLocation -> {
                 int slot = storedHotbar.getIntOr(abilityLocation, 0);
                 ResourceKey<DragonAbility> key = ResourceKey.create(DragonAbility.REGISTRY, Identifier.parse(abilityLocation));
@@ -653,62 +654,79 @@ public class MagicData implements ValueIOSerializable {
         this.hotbar.clear();
 
         if (valueInput.keySet().contains(ALL_ABILITIES)) {
-            for (String speciesLocation : valueInput.child(ALL_ABILITIES).orElseThrow().keySet()) {
-                ResourceKey<DragonSpecies> speciesKey = ResourceKey.create(DragonSpecies.REGISTRY, Identifier.parse(speciesLocation));
+            try {
+                ValueInput allAbilities = valueInput.childOrEmpty(ALL_ABILITIES);
 
-                if (valueInput.lookup().holder(speciesKey).isEmpty()) {
-                    continue;
-                }
+                for (String speciesLocation : allAbilities.keySet()) {
+                    ResourceKey<DragonSpecies> speciesKey = ResourceKey.create(DragonSpecies.REGISTRY, Identifier.parse(speciesLocation));
 
-                Map<ResourceKey<DragonAbility>, DragonAbilityInstance> abilities = new HashMap<>();
-                ValueInput storedAbilities = valueInput.child(ALL_ABILITIES).orElseThrow().child(speciesLocation).orElseThrow();
-
-                for (String abilityLocation : storedAbilities.keySet()) {
-                    Optional<DragonAbilityInstance> instance = storedAbilities.read(abilityLocation, DragonAbilityInstance.CODEC);
-
-                    if (instance.isPresent()) {
-                        abilities.put(instance.orElseThrow().key(), instance.orElseThrow());
+                    if (valueInput.lookup().holder(speciesKey).isEmpty()) {
+                        continue;
                     }
-                }
 
-                this.abilities.put(speciesKey, abilities);
+                    Map<ResourceKey<DragonAbility>, DragonAbilityInstance> abilities = new HashMap<>();
+                    ValueInput storedAbilities = allAbilities.childOrEmpty(speciesLocation);
+
+                    for (String abilityLocation : storedAbilities.keySet()) {
+                        Optional<DragonAbilityInstance> instance = storedAbilities.read(abilityLocation, DragonAbilityInstance.CODEC);
+
+                        if (instance.isPresent()) {
+                            DragonAbilityInstance abilityInstance = instance.get();
+                            abilities.put(abilityInstance.key(), abilityInstance);
+                        }
+                    }
+
+                    this.abilities.put(speciesKey, abilities);
+                }
+            } catch (RuntimeException ignored) {
+                // Ignore malformed nested sync payloads and fall back to empty ability data.
             }
         }
 
         if (valueInput.keySet().contains(ALL_HOTBARS)) {
-            for (String speciesLocation : valueInput.child(ALL_HOTBARS).orElseThrow().keySet()) {
-                ResourceKey<DragonSpecies> speciesKey = ResourceKey.create(DragonSpecies.REGISTRY, Identifier.parse(speciesLocation));
+            try {
+                ValueInput allHotbars = valueInput.childOrEmpty(ALL_HOTBARS);
 
-                if (valueInput.lookup().holder(speciesKey).isEmpty()) {
-                    continue;
-                }
+                for (String speciesLocation : allHotbars.keySet()) {
+                    ResourceKey<DragonSpecies> speciesKey = ResourceKey.create(DragonSpecies.REGISTRY, Identifier.parse(speciesLocation));
 
-                Map<Integer, ResourceKey<DragonAbility>> hotbar = new HashMap<>();
-                ValueInput storedHotbar = valueInput.child(ALL_HOTBARS).orElseThrow().child(speciesLocation).orElseThrow();
-
-                for (String abilityLocation : storedHotbar.keySet()) {
-                    int slot = storedHotbar.getInt(abilityLocation).orElseThrow();
-                    ResourceKey<DragonAbility> key = ResourceKey.create(DragonAbility.REGISTRY, Identifier.parse(abilityLocation));
-
-                    if (valueInput.lookup().holder(key).isEmpty()) {
+                    if (valueInput.lookup().holder(speciesKey).isEmpty()) {
                         continue;
                     }
 
-                    hotbar.put(slot, key);
-                }
+                    Map<Integer, ResourceKey<DragonAbility>> hotbar = new HashMap<>();
+                    ValueInput storedHotbar = allHotbars.childOrEmpty(speciesLocation);
 
-                this.hotbar.put(speciesKey, hotbar);
+                    for (String abilityLocation : storedHotbar.keySet()) {
+                        int slot = storedHotbar.getIntOr(abilityLocation, 0);
+                        ResourceKey<DragonAbility> key = ResourceKey.create(DragonAbility.REGISTRY, Identifier.parse(abilityLocation));
+
+                        if (valueInput.lookup().holder(key).isEmpty()) {
+                            continue;
+                        }
+
+                        hotbar.put(slot, key);
+                    }
+
+                    this.hotbar.put(speciesKey, hotbar);
+                }
+            } catch (RuntimeException ignored) {
+                // Ignore malformed nested sync payloads and fall back to empty hotbar data.
             }
         }
 
         currentMana = valueInput.getFloatOr(CURRENT_MANA, 0.0f);
-        selectedAbilitySlot = valueInput.getInt(SELECTED_SLOT).orElseThrow();
+        selectedAbilitySlot = valueInput.getIntOr(SELECTED_SLOT, 0);
         renderAbilities = valueInput.getBooleanOr(RENDER_ABILITIES, false);
 
         if (valueInput.keySet().contains(CURRENT_SPECIES)) {
-            currentSpecies = ResourceKey.create(DragonSpecies.REGISTRY, Identifier.parse(valueInput.getString(CURRENT_SPECIES).orElseThrow()));
+            String currentSpeciesId = valueInput.getStringOr(CURRENT_SPECIES, null);
 
-            if (valueInput.lookup().holder(currentSpecies).isEmpty()) {
+            if (currentSpeciesId != null) {
+                currentSpecies = ResourceKey.create(DragonSpecies.REGISTRY, Identifier.parse(currentSpeciesId));
+            }
+
+            if (currentSpecies != null && valueInput.lookup().holder(currentSpecies).isEmpty()) {
                 DragonSurvival.LOGGER.warn("Failed to load current species for magic data! Did you remove a species from this save? Defaulting to cave dragon");
                 currentSpecies = BuiltInDragonSpecies.CAVE_DRAGON;
             }

@@ -649,33 +649,30 @@ public class DragonStateHandler extends EntityStateHandler {
     }
 
     public void deserialize(ValueInput valueInput, boolean isDragonSoul) {
-        // FIXME How to do decodeKey now?
-//        ResourceKey<DragonSpecies> species = ResourceHelper.decodeKey(valueInput.lookup(), DragonSpecies.REGISTRY, tag, DRAGON_SPECIES);
-//
-//        if (species != null) {
-//            dragonSpecies = valueInput.lookup().holderOrThrow(species);
-//        } else {
-//            dragonSpecies = null;
-//        }
-//
-//        ResourceKey<DragonBody> body = ResourceHelper.decodeKey(valueInput.lookup(), DragonBody.REGISTRY, tag, DRAGON_BODY);
-//
-//        if (body != null) {
-//            dragonBody = valueInput.lookup().holderOrThrow(body);
-//        } else {
-//            dragonBody = null;
-//        }
-//
-//        ResourceKey<DragonStage> stage = ResourceHelper.decodeKey(valueInput.lookup(), DragonStage.REGISTRY, tag, DRAGON_STAGE);
-//
-//        if (stage != null) {
-//            dragonStage = valueInput.lookup().holderOrThrow(stage);
-//        } else {
-//            dragonStage = null;
-//        }
+        dragonSpecies = null;
+        dragonBody = null;
+        dragonStage = null;
 
-        multiMining = Functions.getEnum(MultiMining.class, valueInput.getString(MULTI_MINING).orElseThrow());
-        largeDragonDestruction = Functions.getEnum(LargeDragonDestruction.class, valueInput.getString(GIANT_DRAGON_DESTRUCTION).orElseThrow());
+        String speciesId = valueInput.getStringOr(DRAGON_SPECIES, null);
+        if (speciesId != null) {
+            ResourceKey<DragonSpecies> speciesKey = ResourceKey.create(DragonSpecies.REGISTRY, Identifier.parse(speciesId));
+            dragonSpecies = ResourceHelper.get(valueInput.lookup(), speciesKey).orElse(null);
+        }
+
+        String bodyId = valueInput.getStringOr(DRAGON_BODY, null);
+        if (bodyId != null) {
+            ResourceKey<DragonBody> bodyKey = ResourceKey.create(DragonBody.REGISTRY, Identifier.parse(bodyId));
+            dragonBody = ResourceHelper.get(valueInput.lookup(), bodyKey).orElse(null);
+        }
+
+        String stageId = valueInput.getStringOr(DRAGON_STAGE, null);
+        if (stageId != null) {
+            ResourceKey<DragonStage> stageKey = ResourceKey.create(DragonStage.REGISTRY, Identifier.parse(stageId));
+            dragonStage = ResourceHelper.get(valueInput.lookup(), stageKey).orElse(null);
+        }
+
+        multiMining = Functions.getEnum(MultiMining.class, valueInput.getStringOr(MULTI_MINING, MultiMining.ENABLED.name()));
+        largeDragonDestruction = Functions.getEnum(LargeDragonDestruction.class, valueInput.getStringOr(GIANT_DRAGON_DESTRUCTION, LargeDragonDestruction.ENABLED.name()));
 
         if (dragonSpecies != null) {
             if (dragonBody == null) {
@@ -701,10 +698,10 @@ public class DragonStateHandler extends EntityStateHandler {
                 savedGrowth.put(speciesKey(), growth);
             } else {
                 for (ResourceKey<DragonSpecies> type : ResourceHelper.keys(valueInput.lookup(), DragonSpecies.REGISTRY)) {
-                    Optional<ValueInput> valueInputChild = valueInput.child(speciesId() + SAVED_GROWTH_SUFFIX);
+                    Optional<ValueInput> valueInputChild = valueInput.child(type.identifier() + SAVED_GROWTH_SUFFIX);
 
                     if (!valueInputChild.isEmpty()) {
-                        savedGrowth.put(type, loadSavedStage(type, valueInputChild.orElseThrow()));
+                        savedGrowth.put(type, loadSavedStage(type, valueInput));
                     }
                 }
             }
@@ -713,7 +710,7 @@ public class DragonStateHandler extends EntityStateHandler {
         this.usedGrowthItems = valueInput.read(USED_GROWTH_ITEMS, USED_GROWTH_ITEMS_CODEC).orElse(new HashMap<>());
 
         skinData = new SkinData();
-        skinData.deserialize(valueInput.child(SKIN_DATA).orElseThrow(), dragonBody);
+        skinData.deserialize(valueInput.childOrEmpty(SKIN_DATA), dragonBody);
         super.deserialize(valueInput.childOrEmpty(ENTITY_STATE));
 
         if (isDragon()) {

@@ -40,7 +40,12 @@ public class PlayerData implements ValueIOSerializable {
     public void deserialize(@NotNull final ValueInput valueInput) {
         this.keys.clear();
         enabledDragonSoulPlacement = valueInput.getBooleanOr(ENABLED_DRAGON_SOUL_PLACEMENT, false);
-        this.keys.addAll(valueInput.child(KEYS).orElseThrow().keySet());
+
+        try {
+            valueInput.child(KEYS).ifPresent(keys -> this.keys.addAll(keys.keySet()));
+        } catch (RuntimeException ignored) {
+            // Older or partial sync payloads may omit the nested key object entirely.
+        }
     }
 
     private final String ENABLED_DRAGON_SOUL_PLACEMENT = "enabled_dragon_soul_placement";

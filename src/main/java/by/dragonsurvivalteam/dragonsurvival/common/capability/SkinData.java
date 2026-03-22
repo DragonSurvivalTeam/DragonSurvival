@@ -70,6 +70,10 @@ public class SkinData implements ValueIOSerializable {
         renderCustomSkin = valueInput.getBooleanOr(RENDER_CUSTOM_SKIN, false);
 
         for (String key : valueInput.keySet()) {
+            if (RENDER_CUSTOM_SKIN.equals(key)) {
+                continue;
+            }
+
             ResourceKey<DragonSpecies> dragonSpecies = ResourceKey.create(DragonSpecies.REGISTRY, Identifier.parse(key));
 
             if (valueInput.lookup().lookup(DragonSpecies.REGISTRY).flatMap(lookup -> lookup.get(dragonSpecies)).isPresent()) {
@@ -96,6 +100,10 @@ public class SkinData implements ValueIOSerializable {
         renderCustomSkin = valueInput.getBooleanOr(RENDER_CUSTOM_SKIN, false);
 
         for (String key : valueInput.keySet()) {
+            if (RENDER_CUSTOM_SKIN.equals(key)) {
+                continue;
+            }
+
             ResourceKey<DragonSpecies> dragonSpecies = ResourceKey.create(DragonSpecies.REGISTRY, Identifier.parse(key));
 
             if (valueInput.lookup().lookup(DragonSpecies.REGISTRY).flatMap(lookup -> lookup.get(dragonSpecies)).isPresent()) {

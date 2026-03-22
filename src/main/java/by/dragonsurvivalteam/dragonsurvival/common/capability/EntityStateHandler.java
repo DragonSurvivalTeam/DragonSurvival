@@ -115,8 +115,8 @@ public class EntityStateHandler implements ValueIOSerializable {
 
     @Override
     public void deserialize(final ValueInput valueInput) {
-        chainCount = valueInput.getInt(CHAIN_COUNT).orElseThrow();
-        pillageCooldown = valueInput.getInt(PILLAGE_COOLDOWN_KEY).orElseThrow();
+        chainCount = valueInput.getIntOr(CHAIN_COUNT, 0);
+        pillageCooldown = valueInput.getIntOr(PILLAGE_COOLDOWN_KEY, 0);
 
         Vec3 readLastPos = new Vec3(valueInput.getDoubleOr(LAST_POSITION_X, 0.0), valueInput.getDoubleOr(LAST_POSITION_Y, 0.0), valueInput.getDoubleOr(LAST_POSITION_Z, 0.0));
         if (!readLastPos.equals(Vec3.ZERO)) {

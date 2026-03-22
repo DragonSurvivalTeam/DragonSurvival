@@ -148,8 +148,17 @@ public class SkinPreset implements ValueIOSerializable {
 
     @Override
     public void deserialize(@NotNull ValueInput valueInput) {
-        this.species = ResourceKey.create(DragonSpecies.REGISTRY, Identifier.parse(valueInput.getString(SPECIES).orElseThrow()));
-        Identifier.read(valueInput.getString(MODEL).orElseThrow()).ifSuccess(model -> this.model = model);
+        String speciesId = valueInput.getStringOr(SPECIES, null);
+        if (speciesId != null) {
+            this.species = ResourceKey.create(DragonSpecies.REGISTRY, Identifier.parse(speciesId));
+        } else {
+            this.species = null;
+        }
+
+        String modelId = valueInput.getStringOr(MODEL, null);
+        if (modelId != null) {
+            Identifier.read(modelId).ifSuccess(model -> this.model = model);
+        }
 
         List<ResourceKey<DragonStage>> stageKeys;
         if (species != null) {
@@ -163,7 +172,7 @@ public class SkinPreset implements ValueIOSerializable {
             if (valueInput.child(dragonStage.identifier().toString()).isPresent()) {
                 skins.get().put(dragonStage, Lazy.of(() -> {
                     DragonStageCustomization group = new DragonStageCustomization();
-                    ValueInput dragonStageData = valueInput.child(dragonStage.identifier().toString()).orElseThrow();
+                    ValueInput dragonStageData = valueInput.childOrEmpty(dragonStage.identifier().toString());
                     group.deserialize(dragonStageData);
                     return group;
                 }));
