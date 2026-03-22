@@ -1,15 +1,11 @@
 {
-    "type": "minecraft:crafting_shapeless",
-    "ingredients": [
-        {
-            "tag": "c:gems/quartz"
-        },
-        {
-            "item": "minecraft:amethyst_shard"
-        }
-    ],
-    "result": {
-        "id": "dragonsurvival:double_quartz",
-        "count": 1
-    }
+    "type":  "minecraft:crafting_shapeless",
+    "ingredients":  [
+                        "#c:gems/quartz",
+                        "minecraft:amethyst_shard"
+                    ],
+    "result":  {
+                   "id":  "dragonsurvival:double_quartz",
+                   "count":  1
+               }
 }

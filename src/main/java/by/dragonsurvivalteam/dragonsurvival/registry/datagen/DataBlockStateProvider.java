@@ -161,7 +161,7 @@ public class DataBlockStateProvider extends ModelProvider {
     }
 
     private void createSmallDragonDoor(final BlockModelGenerators blockModels, final SmallDragonDoor block, final String name) {
-        Identifier bottomTexture = blockTexture(name + "_bottom");
+        Identifier bottomTexture = blockTexture(name);
         TextureMapping mapping = new TextureMapping()
                 .put(SMALL_DOOR_BOTTOM, bottomTexture)
                 .put(TextureSlot.PARTICLE, bottomTexture);

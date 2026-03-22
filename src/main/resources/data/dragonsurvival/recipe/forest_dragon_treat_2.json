@@ -1,20 +1,16 @@
 {
-  "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "CCC",
-    "CSC",
-    "CCC"
-  ],
-  "key": {
-    "C": {
-      "item": "dragonsurvival:elder_dragon_dust"
-    },
-    "S": {
-      "item": "minecraft:spider_eye"
-    }
-  },
-  "result": {
-    "id": "dragonsurvival:forest_dragon_treat",
-    "count": 1
-  }
+    "type":  "minecraft:crafting_shaped",
+    "pattern":  [
+                    "CCC",
+                    "CSC",
+                    "CCC"
+                ],
+    "key":  {
+                "C":  "dragonsurvival:elder_dragon_dust",
+                "S":  "minecraft:spider_eye"
+            },
+    "result":  {
+                   "id":  "dragonsurvival:forest_dragon_treat",
+                   "count":  1
+               }
 }

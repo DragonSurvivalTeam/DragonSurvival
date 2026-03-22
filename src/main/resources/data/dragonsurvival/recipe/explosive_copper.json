@@ -1,15 +1,11 @@
 {
-    "type": "minecraft:crafting_shapeless",
-    "ingredients": [
-        {
-            "item": "minecraft:raw_copper"
-        },
-        {
-            "tag": "c:gunpowders"
-        }
-    ],
-    "result": {
-        "id": "dragonsurvival:explosive_copper",
-        "count": 1
-    }
+    "type":  "minecraft:crafting_shapeless",
+    "ingredients":  [
+                        "minecraft:raw_copper",
+                        "#c:gunpowders"
+                    ],
+    "result":  {
+                   "id":  "dragonsurvival:explosive_copper",
+                   "count":  1
+               }
 }

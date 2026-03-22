@@ -1,11 +1,9 @@
 {
-  "type": "minecraft:smelting",
-  "ingredient": {
-    "tag": "c:foods/cooked_meat"
-  },
-  "result": {
-    "id": "dragonsurvival:charred_meat"
-  },
-  "experience": 0.35,
-  "cookingtime": 50
+    "type":  "minecraft:smelting",
+    "ingredient":  "#c:foods/cooked_meat",
+    "result":  {
+                   "id":  "dragonsurvival:charred_meat"
+               },
+    "experience":  0.35,
+    "cookingtime":  50
 }

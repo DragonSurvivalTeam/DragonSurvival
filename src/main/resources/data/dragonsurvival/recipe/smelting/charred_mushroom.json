@@ -1,11 +1,9 @@
 {
-  "type": "minecraft:smelting",
-  "ingredient": {
-    "tag": "dragonsurvival:cooked_mushrooms"
-  },
-  "result": {
-    "id": "dragonsurvival:charred_mushroom"
-  },
-  "experience": 0.35,
-  "cookingtime": 50
+    "type":  "minecraft:smelting",
+    "ingredient":  "#dragonsurvival:cooked_mushrooms",
+    "result":  {
+                   "id":  "dragonsurvival:charred_mushroom"
+               },
+    "experience":  0.35,
+    "cookingtime":  50
 }

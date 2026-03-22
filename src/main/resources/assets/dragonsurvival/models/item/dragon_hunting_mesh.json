@@ -2,7 +2,8 @@
   "credit": "BlackAures",
   "texture_size": [64, 64],
   "textures": {
-    "0": "dragonsurvival:item/dragon_hunting_mesh"
+    "0": "dragonsurvival:item/dragon_hunting_mesh",
+    "particle": "dragonsurvival:item/dragon_hunting_mesh"
   },
   "elements": [
     {

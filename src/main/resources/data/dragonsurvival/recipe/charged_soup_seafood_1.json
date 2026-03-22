@@ -1,29 +1,19 @@
 {
-  "type": "minecraft:crafting_shaped",
-  "pattern": [
-    " C ",
-    "SVM",
-    " L "
-  ],
-  "key": {
-    "C": {
-      "item": "dragonsurvival:charged_coal"
-    },
-    "S": {
-      "item": "dragonsurvival:charred_seafood"
-    },
-    "V": {
-      "item": "dragonsurvival:charred_vegetable"
-    },
-    "M": {
-      "item": "dragonsurvival:charred_mushroom"
-    },
-    "L": {
-      "item": "minecraft:lava_bucket"
-    }
-  },
-  "result": {
-    "id": "dragonsurvival:charged_soup",
-    "count": 1
-  }
+    "type":  "minecraft:crafting_shaped",
+    "pattern":  [
+                    " C ",
+                    "SVM",
+                    " L "
+                ],
+    "key":  {
+                "C":  "dragonsurvival:charged_coal",
+                "S":  "dragonsurvival:charred_seafood",
+                "V":  "dragonsurvival:charred_vegetable",
+                "M":  "dragonsurvival:charred_mushroom",
+                "L":  "minecraft:lava_bucket"
+            },
+    "result":  {
+                   "id":  "dragonsurvival:charged_soup",
+                   "count":  1
+               }
 }

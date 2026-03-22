@@ -1,18 +1,12 @@
 {
-    "type": "minecraft:crafting_shapeless",
-    "ingredients": [
-        {
-            "item": "minecraft:pufferfish"
-        },
-        {
-            "tag": "dragonsurvival:dragon_corals"
-        },
-        {
-            "item": "minecraft:raw_gold"
-        }
-    ],
-    "result": {
-        "id": "dragonsurvival:golden_coral_pufferfish",
-        "count": 1
-    }
+    "type":  "minecraft:crafting_shapeless",
+    "ingredients":  [
+                        "minecraft:pufferfish",
+                        "#dragonsurvival:dragon_corals",
+                        "minecraft:raw_gold"
+                    ],
+    "result":  {
+                   "id":  "dragonsurvival:golden_coral_pufferfish",
+                   "count":  1
+               }
 }

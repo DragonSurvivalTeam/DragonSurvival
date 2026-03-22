@@ -1,11 +1,9 @@
 {
-  "type": "minecraft:campfire_cooking",
-  "ingredient": {
-    "tag": "c:foods/cooked_meat"
-  },
-  "result": {
-    "id": "dragonsurvival:charred_meat"
-  },
-  "experience": 0.35,
-  "cookingtime": 100
+    "type":  "minecraft:campfire_cooking",
+    "ingredient":  "#c:foods/cooked_meat",
+    "result":  {
+                   "id":  "dragonsurvival:charred_meat"
+               },
+    "experience":  0.35,
+    "cookingtime":  100
 }

@@ -1,21 +1,13 @@
 {
-    "type": "minecraft:crafting_shapeless",
-    "ingredients": [
-        {
-            "tag": "c:foods/raw_meat"
-        },
-        {
-            "item": "minecraft:bone_meal"
-        },
-        {
-            "item": "minecraft:bone_meal"
-        },
-        {
-            "item": "minecraft:bone_meal"
-        }
-    ],
-    "result": {
-        "id": "dragonsurvival:smelly_meat_porridge",
-        "count": 1
-    }
+    "type":  "minecraft:crafting_shapeless",
+    "ingredients":  [
+                        "#c:foods/raw_meat",
+                        "minecraft:bone_meal",
+                        "minecraft:bone_meal",
+                        "minecraft:bone_meal"
+                    ],
+    "result":  {
+                   "id":  "dragonsurvival:smelly_meat_porridge",
+                   "count":  1
+               }
 }

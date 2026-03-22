@@ -1,18 +1,12 @@
 {
-    "type": "minecraft:crafting_shapeless",
-    "ingredients": [
-        {
-            "item": "minecraft:salmon"
-        },
-        {
-            "item": "minecraft:ink_sac"
-        },
-        {
-            "item": "minecraft:kelp"
-        }
-    ],
-    "result": {
-        "id": "dragonsurvival:seasoned_fish",
-        "count": 1
-    }
+    "type":  "minecraft:crafting_shapeless",
+    "ingredients":  [
+                        "minecraft:salmon",
+                        "minecraft:ink_sac",
+                        "minecraft:kelp"
+                    ],
+    "result":  {
+                   "id":  "dragonsurvival:seasoned_fish",
+                   "count":  1
+               }
 }

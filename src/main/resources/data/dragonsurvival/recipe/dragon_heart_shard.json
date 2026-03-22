@@ -1,17 +1,15 @@
 {
-  "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "eee",
-    "eee",
-    "eee"
-  ],
-  "key": {
-    "e": {
-      "item": "dragonsurvival:elder_dragon_bone"
-    }
-  },
-  "result": {
-    "id": "dragonsurvival:heart_element",
-    "count": 1
-  }
+    "type":  "minecraft:crafting_shaped",
+    "pattern":  [
+                    "eee",
+                    "eee",
+                    "eee"
+                ],
+    "key":  {
+                "e":  "dragonsurvival:elder_dragon_bone"
+            },
+    "result":  {
+                   "id":  "dragonsurvival:heart_element",
+                   "count":  1
+               }
 }

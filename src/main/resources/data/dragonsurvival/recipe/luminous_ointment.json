@@ -1,18 +1,12 @@
 {
-    "type": "minecraft:crafting_shapeless",
-    "ingredients": [
-        {
-            "item": "minecraft:glow_berries"
-        },
-        {
-            "item": "minecraft:glowstone_dust"
-        },
-        {
-            "item": "minecraft:glow_ink_sac"
-        }
-    ],
-    "result": {
-        "id": "dragonsurvival:luminous_ointment",
-        "count": 1
-    }
+    "type":  "minecraft:crafting_shapeless",
+    "ingredients":  [
+                        "minecraft:glow_berries",
+                        "minecraft:glowstone_dust",
+                        "minecraft:glow_ink_sac"
+                    ],
+    "result":  {
+                   "id":  "dragonsurvival:luminous_ointment",
+                   "count":  1
+               }
 }

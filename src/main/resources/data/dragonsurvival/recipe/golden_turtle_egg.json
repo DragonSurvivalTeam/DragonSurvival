@@ -1,37 +1,18 @@
 {
-    "type": "minecraft:crafting_shapeless",
-    "ingredients": [
-        {
-            "item": "minecraft:gold_nugget"
-        },
-        {
-            "item": "minecraft:gold_nugget"
-        },
-        {
-            "item": "minecraft:gold_nugget"
-        },
-        {
-            "item": "minecraft:gold_nugget"
-        },
-        {
-            "item": "minecraft:gold_nugget"
-        },
-        {
-            "item": "minecraft:turtle_egg"
-        },
-        {
-            "item": "dragonsurvival:elder_dragon_dust"
-        },
-        {
-            "item": "dragonsurvival:elder_dragon_dust"
-        },
-        {
-            "item": "dragonsurvival:elder_dragon_dust"
-        }
-
-    ],
-    "result": {
-        "id": "dragonsurvival:golden_turtle_egg",
-        "count": 1
-    }
+    "type":  "minecraft:crafting_shapeless",
+    "ingredients":  [
+                        "minecraft:gold_nugget",
+                        "minecraft:gold_nugget",
+                        "minecraft:gold_nugget",
+                        "minecraft:gold_nugget",
+                        "minecraft:gold_nugget",
+                        "minecraft:turtle_egg",
+                        "dragonsurvival:elder_dragon_dust",
+                        "dragonsurvival:elder_dragon_dust",
+                        "dragonsurvival:elder_dragon_dust"
+                    ],
+    "result":  {
+                   "id":  "dragonsurvival:golden_turtle_egg",
+                   "count":  1
+               }
 }

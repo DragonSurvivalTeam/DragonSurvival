@@ -1,11 +1,9 @@
 {
-  "type": "minecraft:campfire_cooking",
-  "ingredient": {
-    "tag": "c:foods/cooked_fish"
-  },
-  "result": {
-    "id": "dragonsurvival:charred_seafood"
-  },
-  "experience": 0.35,
-  "cookingtime": 60
+    "type":  "minecraft:campfire_cooking",
+    "ingredient":  "#c:foods/cooked_fish",
+    "result":  {
+                   "id":  "dragonsurvival:charred_seafood"
+               },
+    "experience":  0.35,
+    "cookingtime":  60
 }

@@ -1,15 +1,11 @@
 {
-  "type": "minecraft:crafting_shapeless",
-  "ingredients": [
-    {
-      "item": "dragonsurvival:star_bone"
-    },
-    {
-      "item": "dragonsurvival:elder_dragon_heart"
-    }
-  ],
-  "result": {
-    "id": "dragonsurvival:star_heart",
-    "count": 1
-  }
+    "type":  "minecraft:crafting_shapeless",
+    "ingredients":  [
+                        "dragonsurvival:star_bone",
+                        "dragonsurvival:elder_dragon_heart"
+                    ],
+    "result":  {
+                   "id":  "dragonsurvival:star_heart",
+                   "count":  1
+               }
 }

@@ -1,11 +1,9 @@
 {
-  "type": "minecraft:smoking",
-  "ingredient": {
-    "tag": "c:foods/cooked_fish"
-  },
-  "result": {
-    "id": "dragonsurvival:charred_seafood"
-  },
-  "experience": 0.35,
-  "cookingtime": 50
+    "type":  "minecraft:smoking",
+    "ingredient":  "#c:foods/cooked_fish",
+    "result":  {
+                   "id":  "dragonsurvival:charred_seafood"
+               },
+    "experience":  0.35,
+    "cookingtime":  50
 }

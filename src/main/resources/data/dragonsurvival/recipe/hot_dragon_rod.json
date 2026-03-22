@@ -1,16 +1,18 @@
 {
-    "type": "minecraft:crafting_shapeless",
-    "ingredients": [
-        {
-            "item": "minecraft:blaze_rod"
-        },
-        {
-            "item": "dragonsurvival:elder_dragon_dust",
-			"count": 8
-        }
-    ],
-    "result": {
-        "id": "dragonsurvival:hot_dragon_rod",
-        "count": 1
-    }
+    "type":  "minecraft:crafting_shapeless",
+    "ingredients":  [
+                        "minecraft:blaze_rod",
+                        "dragonsurvival:elder_dragon_dust",
+                        "dragonsurvival:elder_dragon_dust",
+                        "dragonsurvival:elder_dragon_dust",
+                        "dragonsurvival:elder_dragon_dust",
+                        "dragonsurvival:elder_dragon_dust",
+                        "dragonsurvival:elder_dragon_dust",
+                        "dragonsurvival:elder_dragon_dust",
+                        "dragonsurvival:elder_dragon_dust"
+                    ],
+    "result":  {
+                   "id":  "dragonsurvival:hot_dragon_rod",
+                   "count":  1
+               }
 }

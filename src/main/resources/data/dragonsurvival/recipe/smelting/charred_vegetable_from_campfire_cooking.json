@@ -1,11 +1,9 @@
 {
-  "type": "minecraft:campfire_cooking",
-  "ingredient": {
-    "tag": "dragonsurvival:cooked_vegetables"
-  },
-  "result": {
-    "id": "dragonsurvival:charred_vegetable"
-  },
-  "experience": 0.35,
-  "cookingtime": 100
+    "type":  "minecraft:campfire_cooking",
+    "ingredient":  "#dragonsurvival:cooked_vegetables",
+    "result":  {
+                   "id":  "dragonsurvival:charred_vegetable"
+               },
+    "experience":  0.35,
+    "cookingtime":  100
 }

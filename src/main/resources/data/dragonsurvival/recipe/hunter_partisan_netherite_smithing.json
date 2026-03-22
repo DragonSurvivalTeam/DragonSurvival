@@ -1,16 +1,10 @@
 {
-  "type": "minecraft:smithing_transform",
-  "addition": {
-    "item": "minecraft:netherite_ingot"
-  },
-  "base": {
-    "item": "dragonsurvival:hunter_partisan_diamond"
-  },
-  "result": {
-    "count": 1,
-    "id": "dragonsurvival:hunter_partisan_netherite"
-  },
-  "template": {
-    "item": "minecraft:netherite_upgrade_smithing_template"
-  }
+    "type":  "minecraft:smithing_transform",
+    "addition":  "minecraft:netherite_ingot",
+    "base":  "dragonsurvival:hunter_partisan_diamond",
+    "result":  {
+                   "count":  1,
+                   "id":  "dragonsurvival:hunter_partisan_netherite"
+               },
+    "template":  "minecraft:netherite_upgrade_smithing_template"
 }

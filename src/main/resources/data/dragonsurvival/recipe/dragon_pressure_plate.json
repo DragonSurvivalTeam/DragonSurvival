@@ -1,15 +1,11 @@
 {
-  "type": "minecraft:crafting_shapeless",
-  "ingredients": [
-    {
-      "item": "minecraft:stone_pressure_plate"
-    },
-    {
-      "item": "dragonsurvival:elder_dragon_dust"
-    }
-  ],
-  "result": {
-    "id": "dragonsurvival:dragon_pressure_plate",
-    "count": 1
-  }
+    "type":  "minecraft:crafting_shapeless",
+    "ingredients":  [
+                        "minecraft:stone_pressure_plate",
+                        "dragonsurvival:elder_dragon_dust"
+                    ],
+    "result":  {
+                   "id":  "dragonsurvival:dragon_pressure_plate",
+                   "count":  1
+               }
 }

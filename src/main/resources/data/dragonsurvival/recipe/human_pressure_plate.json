@@ -1,15 +1,11 @@
 {
-  "type": "minecraft:crafting_shapeless",
-  "ingredients": [
-    {
-      "item": "minecraft:stone_pressure_plate"
-    },
-    {
-      "item": "minecraft:armor_stand"
-    }
-  ],
-  "result": {
-    "id": "dragonsurvival:human_pressure_plate",
-    "count": 1
-  }
+    "type":  "minecraft:crafting_shapeless",
+    "ingredients":  [
+                        "minecraft:stone_pressure_plate",
+                        "minecraft:armor_stand"
+                    ],
+    "result":  {
+                   "id":  "dragonsurvival:human_pressure_plate",
+                   "count":  1
+               }
 }

@@ -1,11 +1,9 @@
 {
-  "type": "minecraft:smelting",
-  "ingredient": {
-    "tag": "c:foods/cooked_fish"
-  },
-  "result": {
-    "id": "dragonsurvival:charred_seafood"
-  },
-  "experience": 0.35,
-  "cookingtime": 50
+    "type":  "minecraft:smelting",
+    "ingredient":  "#c:foods/cooked_fish",
+    "result":  {
+                   "id":  "dragonsurvival:charred_seafood"
+               },
+    "experience":  0.35,
+    "cookingtime":  50
 }

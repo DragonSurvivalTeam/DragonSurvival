@@ -1,18 +1,12 @@
 {
-    "type": "minecraft:crafting_shapeless",
-    "ingredients": [
-        {
-            "item": "minecraft:rabbit"
-        },
-        {
-            "item": "minecraft:spider_eye"
-        },
-        {
-            "item": "minecraft:honey_bottle"
-        }
-    ],
-    "result": {
-        "id": "dragonsurvival:sweet_sour_rabbit",
-        "count": 1
-    }
+    "type":  "minecraft:crafting_shapeless",
+    "ingredients":  [
+                        "minecraft:rabbit",
+                        "minecraft:spider_eye",
+                        "minecraft:honey_bottle"
+                    ],
+    "result":  {
+                   "id":  "dragonsurvival:sweet_sour_rabbit",
+                   "count":  1
+               }
 }

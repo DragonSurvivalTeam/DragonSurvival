@@ -1,32 +1,20 @@
 {
-  "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "LDL",
-    "OEO",
-    "GWG"
-  ],
-  "key": {
-    "L": {
-      "item": "minecraft:lapis_ore"
-    },
-    "D": {
-      "item": "minecraft:diamond"
-    },
-    "O": {
-      "item": "minecraft:obsidian"
-    },
-    "E": {
-      "item": "dragonsurvival:elder_dragon_heart"
-    },
-    "G": {
-      "item": "minecraft:dark_prismarine"
-    },
-    "W": {
-      "item": "minecraft:water_bucket"
-    }
-  },
-  "result": {
-    "id": "dragonsurvival:sea_source_of_magic",
-    "count": 1
-  }
+    "type":  "minecraft:crafting_shaped",
+    "pattern":  [
+                    "LDL",
+                    "OEO",
+                    "GWG"
+                ],
+    "key":  {
+                "L":  "minecraft:lapis_ore",
+                "D":  "minecraft:diamond",
+                "O":  "minecraft:obsidian",
+                "E":  "dragonsurvival:elder_dragon_heart",
+                "G":  "minecraft:dark_prismarine",
+                "W":  "minecraft:water_bucket"
+            },
+    "result":  {
+                   "id":  "dragonsurvival:sea_source_of_magic",
+                   "count":  1
+               }
 }

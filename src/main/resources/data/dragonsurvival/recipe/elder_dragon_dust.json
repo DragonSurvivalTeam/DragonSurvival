@@ -1,12 +1,10 @@
 {
-  "type": "minecraft:crafting_shapeless",
-  "ingredients": [
-    {
-      "item": "dragonsurvival:elder_dragon_bone"
-    }
-  ],
-  "result": {
-    "id": "dragonsurvival:elder_dragon_dust",
-    "count": 9
-  }
+    "type":  "minecraft:crafting_shapeless",
+    "ingredients":  [
+                        "dragonsurvival:elder_dragon_bone"
+                    ],
+    "result":  {
+                   "id":  "dragonsurvival:elder_dragon_dust",
+                   "count":  9
+               }
 }

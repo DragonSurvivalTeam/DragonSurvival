@@ -1,36 +1,18 @@
 {
-    "type": "minecraft:crafting_shapeless",
-    "ingredients": [
-        {
-            "tag": "dragonsurvival:cold_items"
-        },
-        {
-            "tag": "dragonsurvival:cold_items"
-        },
-        {
-            "tag": "dragonsurvival:cold_items"
-        },
-        {
-            "tag": "dragonsurvival:cold_items"
-        },
-        {
-            "tag": "dragonsurvival:cold_items"
-        },
-        {
-            "tag": "dragonsurvival:cold_items"
-        },
-        {
-            "tag": "dragonsurvival:cold_items"
-        },
-        {
-            "tag": "dragonsurvival:cold_items"
-        },
-        {
-            "tag": "c:foods/raw_fish"
-        }
-    ],
-    "result": {
-        "id": "dragonsurvival:frozen_raw_fish",
-        "count": 1
-    }
+    "type":  "minecraft:crafting_shapeless",
+    "ingredients":  [
+                        "#dragonsurvival:cold_items",
+                        "#dragonsurvival:cold_items",
+                        "#dragonsurvival:cold_items",
+                        "#dragonsurvival:cold_items",
+                        "#dragonsurvival:cold_items",
+                        "#dragonsurvival:cold_items",
+                        "#dragonsurvival:cold_items",
+                        "#dragonsurvival:cold_items",
+                        "#c:foods/raw_fish"
+                    ],
+    "result":  {
+                   "id":  "dragonsurvival:frozen_raw_fish",
+                   "count":  1
+               }
 }

@@ -1,32 +1,20 @@
 {
-  "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "#L#",
-    "SDS",
-    "OWO"
-  ],
-  "key": {
-    "#": {
-      "item": "minecraft:nether_gold_ore"
-    },
-    "S": {
-      "item": "minecraft:basalt"
-    },
-    "O": {
-      "item": "minecraft:magma_block"
-    },
-    "D": {
-      "item": "dragonsurvival:elder_dragon_heart"
-    },
-    "L": {
-      "item": "minecraft:chiseled_polished_blackstone"
-    },
-    "W": {
-      "item": "minecraft:lava_bucket"
-    }
-  },
-  "result": {
-    "id": "dragonsurvival:cave_source_of_magic",
-    "count": 1
-  }
+    "type":  "minecraft:crafting_shaped",
+    "pattern":  [
+                    "#L#",
+                    "SDS",
+                    "OWO"
+                ],
+    "key":  {
+                "#":  "minecraft:nether_gold_ore",
+                "S":  "minecraft:basalt",
+                "O":  "minecraft:magma_block",
+                "D":  "dragonsurvival:elder_dragon_heart",
+                "L":  "minecraft:chiseled_polished_blackstone",
+                "W":  "minecraft:lava_bucket"
+            },
+    "result":  {
+                   "id":  "dragonsurvival:cave_source_of_magic",
+                   "count":  1
+               }
 }

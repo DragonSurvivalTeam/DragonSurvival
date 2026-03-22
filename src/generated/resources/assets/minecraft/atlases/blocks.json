@@ -2,22 +2,6 @@
   "sources": [
     {
       "type": "minecraft:single",
-      "resource": "dragonsurvival:te/star/cage"
-    },
-    {
-      "type": "minecraft:single",
-      "resource": "dragonsurvival:te/star/wind"
-    },
-    {
-      "type": "minecraft:single",
-      "resource": "dragonsurvival:te/star/open_eye"
-    },
-    {
-      "type": "minecraft:single",
-      "resource": "dragonsurvival:te/star/wind_vertical"
-    },
-    {
-      "type": "minecraft:single",
       "resource": "dragonsurvival:gui/dragon_claws_axe"
     },
     {

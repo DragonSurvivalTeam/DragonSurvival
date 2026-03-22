@@ -1,25 +1,17 @@
 {
-  "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "MSM",
-    "VCV",
-    "MVM"
-  ],
-  "key": {
-    "C": {
-      "item": "minecraft:experience_bottle"
-    },
-    "S": {
-      "item": "dragonsurvival:heart_element"
-    },
-    "V": {
-      "item": "dragonsurvival:elder_dragon_bone"
-    },
-    "M": {
-      "item": "dragonsurvival:elder_dragon_dust"
-    }
-  },
-  "result": {
-    "id": "dragonsurvival:dragon_memory_block"
-  }
+    "type":  "minecraft:crafting_shaped",
+    "pattern":  [
+                    "MSM",
+                    "VCV",
+                    "MVM"
+                ],
+    "key":  {
+                "C":  "minecraft:experience_bottle",
+                "S":  "dragonsurvival:heart_element",
+                "V":  "dragonsurvival:elder_dragon_bone",
+                "M":  "dragonsurvival:elder_dragon_dust"
+            },
+    "result":  {
+                   "id":  "dragonsurvival:dragon_memory_block"
+               }
 }

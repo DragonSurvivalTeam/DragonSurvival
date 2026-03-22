@@ -1,33 +1,17 @@
 {
-    "type": "minecraft:crafting_shapeless",
-    "ingredients": [
-        {
-            "item": "minecraft:dragon_breath"
-        },
-        {
-            "item": "minecraft:chorus_fruit"
-        },
-        {
-            "item": "minecraft:chorus_fruit"
-        },
-        {
-            "item": "minecraft:chorus_fruit"
-        },
-        {
-            "item": "minecraft:chorus_fruit"
-        },
-        {
-            "item": "minecraft:chorus_fruit"
-        },
-        {
-            "item": "minecraft:chorus_fruit"
-        },
-        {
-            "tag": "c:gems/diamond"
-        }
-    ],
-    "result": {
-        "id": "dragonsurvival:diamond_chorus",
-        "count": 6
-    }
+    "type":  "minecraft:crafting_shapeless",
+    "ingredients":  [
+                        "minecraft:dragon_breath",
+                        "minecraft:chorus_fruit",
+                        "minecraft:chorus_fruit",
+                        "minecraft:chorus_fruit",
+                        "minecraft:chorus_fruit",
+                        "minecraft:chorus_fruit",
+                        "minecraft:chorus_fruit",
+                        "#c:gems/diamond"
+                    ],
+    "result":  {
+                   "id":  "dragonsurvival:diamond_chorus",
+                   "count":  6
+               }
 }
