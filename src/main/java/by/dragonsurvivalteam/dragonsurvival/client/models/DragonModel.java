@@ -126,10 +126,10 @@ public class DragonModel extends GeoModel<DragonEntity> {
             Holder<DragonBody> body = handler.body();
 
             if (body != null) {
-                return body.value().animation().withPrefix("animations/").withSuffix(".json");
+                return body.value().animation();
             }
         }
 
-        return DragonSurvival.res("animations/dragon_center.json");
+        return DragonSurvival.res("dragon_center");
     }
 }
