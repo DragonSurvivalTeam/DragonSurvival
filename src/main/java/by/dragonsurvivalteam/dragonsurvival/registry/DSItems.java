@@ -557,7 +557,7 @@ public class DSItems {
         LIGHT_KEY_ID,
         properties -> new LightKeyItem(
             properties,
-            DragonSurvival.res("geo/" + LIGHT_KEY_ID + ".geo.json"),
+            DragonSurvival.res(LIGHT_KEY_ID),
             DragonSurvival.res("textures/item/" + LIGHT_KEY_ID + ".png"),
             DragonSurvival.res("light_treasure")),
         () -> new Item.Properties().rarity(Rarity.UNCOMMON).component(DSDataComponents.TARGET_POSITION, new Vector3f())
@@ -571,7 +571,7 @@ public class DSItems {
         DARK_KEY_ID,
         properties -> new DarkKeyItem(
             properties,
-            DragonSurvival.res("geo/" + DARK_KEY_ID + ".geo.json"),
+            DragonSurvival.res(DARK_KEY_ID),
             DragonSurvival.res("textures/item/" + DARK_KEY_ID + ".png"),
             DragonSurvival.res("dark_treasure")),
         () -> new Item.Properties().rarity(Rarity.UNCOMMON).component(DSDataComponents.TARGET_POSITION, new Vector3f())
@@ -585,7 +585,7 @@ public class DSItems {
         HUNTER_KEY_ID,
         properties -> new HunterKeyItem(
             properties,
-            DragonSurvival.res("geo/" + HUNTER_KEY_ID + ".geo.json"),
+            DragonSurvival.res(HUNTER_KEY_ID),
             DragonSurvival.res("textures/item/" + HUNTER_KEY_ID + ".png"),
             DragonSurvival.res("hunter_treasure")),
         () -> new Item.Properties().rarity(Rarity.UNCOMMON).component(DSDataComponents.TARGET_POSITION, new Vector3f())

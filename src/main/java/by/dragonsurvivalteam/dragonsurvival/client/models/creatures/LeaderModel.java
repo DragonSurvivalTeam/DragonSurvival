@@ -10,7 +10,7 @@ import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 public class LeaderModel extends GeoModel<LeaderEntity> {
     @Override
     public Identifier getModelResource(GeoRenderState renderState) {
-        return Identifier.fromNamespaceAndPath(MODID, "geo/hunter_leader.geo.json");
+        return Identifier.fromNamespaceAndPath(MODID, "hunter_leader");
     }
 
     @Override
@@ -20,6 +20,6 @@ public class LeaderModel extends GeoModel<LeaderEntity> {
 
     @Override
     public Identifier getAnimationResource(LeaderEntity animatable) {
-        return Identifier.fromNamespaceAndPath(MODID, "animations/hunter_leader.animation.json");
+        return Identifier.fromNamespaceAndPath(MODID, "hunter_leader");
     }
 }

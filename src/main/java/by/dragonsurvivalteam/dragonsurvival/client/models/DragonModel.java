@@ -24,6 +24,7 @@ import software.bernie.geckolib.model.GeoModel;
 import software.bernie.geckolib.renderer.base.GeoRenderState;
 
 public class DragonModel extends GeoModel<DragonEntity> {
+    private static final Identifier DEFAULT_ANIMATION = DragonSurvival.res("dragon_center.animation");
 
     // FIXME 'dragon_dragon'?
     private final Identifier defaultTexture = DragonSurvival.res("textures/dragon_dragon/newborn.png");
@@ -40,8 +41,6 @@ public class DragonModel extends GeoModel<DragonEntity> {
         } else {
             model = DragonStateProvider.getData(dragon.getPlayer()).getModel();
         }
-
-        model = model.withPrefix("geo/").withSuffix(".geo.json");
 
         try {
             getBakedModel(model);
@@ -112,8 +111,7 @@ public class DragonModel extends GeoModel<DragonEntity> {
 
     @Override
     public @NotNull Identifier getAnimationResource(final DragonEntity dragon) {
-        Player player = dragon.getPlayer();
-        return getAnimationResource(player);
+        return getAnimationResource(dragon.getPlayer());
     }
 
     public void setOverrideTexture(final Identifier overrideTexture) {
@@ -130,6 +128,6 @@ public class DragonModel extends GeoModel<DragonEntity> {
             }
         }
 
-        return DragonSurvival.res("dragon_center");
+        return DEFAULT_ANIMATION;
     }
 }

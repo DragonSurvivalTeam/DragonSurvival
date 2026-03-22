@@ -405,19 +405,19 @@ public class GenericBallEntity extends AbstractHurtingProjectile implements GeoE
 
     public Identifier getTextureResource() {
         Identifier resource = getTypeData().resources().get(projectileLevel);
-        Identifier path = Identifier.fromNamespaceAndPath(resource.getNamespace(), "geo/projectiles/" + resource.getPath() + ".geo.json");
+        Identifier path = Identifier.fromNamespaceAndPath(resource.getNamespace(), "projectiles/" + resource.getPath());
         try {
             GeckoLibResources.getBakedModels().getModel(path);
         } catch (Exception e) {
             DragonSurvival.LOGGER.error("Model not found for projectile: {}", path);
-            return Identifier.fromNamespaceAndPath(resource.getNamespace(), "geo/projectiles/generic_ball.geo.json");
+            return Identifier.fromNamespaceAndPath(resource.getNamespace(), "projectiles/generic_ball");
         }
-        return Identifier.fromNamespaceAndPath(resource.getNamespace(), "geo/projectiles/" + resource.getPath() + ".geo.json");
+        return Identifier.fromNamespaceAndPath(resource.getNamespace(), "projectiles/" + resource.getPath());
     }
 
     public Identifier getAnimationResource() {
         Identifier resource = getTypeData().resources().get(projectileLevel);
-        return Identifier.fromNamespaceAndPath(resource.getNamespace(), "animations/projectiles/" + resource.getPath() + ".animation.json");
+        return Identifier.fromNamespaceAndPath(resource.getNamespace(), "projectiles/" + resource.getPath());
     }
 
     public Identifier getModelResource() {

@@ -11,7 +11,7 @@ import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 public class KnightModel extends GeoModel<@NotNull KnightEntity> {
     @Override
     public @NotNull Identifier getModelResource(@NotNull GeoRenderState renderState) {
-        return Identifier.fromNamespaceAndPath(MODID, "geo/hunter_knight.geo.json");
+        return Identifier.fromNamespaceAndPath(MODID, "hunter_knight");
     }
 
     @Override
@@ -21,6 +21,6 @@ public class KnightModel extends GeoModel<@NotNull KnightEntity> {
 
     @Override
     public @NotNull Identifier getAnimationResource(KnightEntity animatable) {
-        return Identifier.fromNamespaceAndPath(MODID, "animations/hunter_knight.animation.json");
+        return Identifier.fromNamespaceAndPath(MODID, "hunter_knight");
     }
 }

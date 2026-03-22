@@ -10,7 +10,7 @@ import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 public class GriffinModel extends GeoModel<GriffinEntity> {
     @Override
     public Identifier getModelResource(GeoRenderState renderState) {
-        return Identifier.fromNamespaceAndPath(MODID, "geo/hunter_griffin.geo.json");
+        return Identifier.fromNamespaceAndPath(MODID, "hunter_griffin");
     }
 
     @Override
@@ -20,6 +20,6 @@ public class GriffinModel extends GeoModel<GriffinEntity> {
 
     @Override
     public Identifier getAnimationResource(GriffinEntity animatable) {
-        return Identifier.fromNamespaceAndPath(MODID, "animations/hunter_griffin.animation.json");
+        return Identifier.fromNamespaceAndPath(MODID, "hunter_griffin");
     }
 }

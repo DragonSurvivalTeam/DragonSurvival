@@ -10,7 +10,7 @@ import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 public class SpearmanModel extends GeoModel<SpearmanEntity> {
     @Override
     public Identifier getModelResource(GeoRenderState renderState) {
-        return Identifier.fromNamespaceAndPath(MODID, "geo/hunter_spearman.geo.json");
+        return Identifier.fromNamespaceAndPath(MODID, "hunter_spearman");
     }
 
     @Override
@@ -20,6 +20,6 @@ public class SpearmanModel extends GeoModel<SpearmanEntity> {
 
     @Override
     public Identifier getAnimationResource(SpearmanEntity animatable) {
-        return Identifier.fromNamespaceAndPath(MODID, "animations/hunter_spearman.animation.json");
+        return Identifier.fromNamespaceAndPath(MODID, "hunter_spearman");
     }
 }

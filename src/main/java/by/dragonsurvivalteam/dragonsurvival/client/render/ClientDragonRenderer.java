@@ -4,18 +4,29 @@ import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.render.entity.dragon.DragonRenderer;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.ActionContainer;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
+import by.dragonsurvivalteam.dragonsurvival.common.handlers.DragonSizeHandler;
 import by.dragonsurvivalteam.dragonsurvival.compat.Compat;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
 import by.dragonsurvivalteam.dragonsurvival.input.Keybind;
+import by.dragonsurvivalteam.dragonsurvival.mixins.client.EntityRendererAccessor;
+import by.dragonsurvivalteam.dragonsurvival.mixins.client.LivingRendererAccessor;
 import by.dragonsurvivalteam.dragonsurvival.network.flight.SyncDeltaMovement;
 import by.dragonsurvivalteam.dragonsurvival.network.player.SyncDragonMovement;
 import by.dragonsurvivalteam.dragonsurvival.network.player.SyncPitchAndYaw;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEntities;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MovementData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.AbilityTargeting;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.AreaTarget;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.DiscTarget;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.DragonBreathTarget;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.LookingAtTarget;
 import by.dragonsurvivalteam.dragonsurvival.server.handlers.ServerFlightHandler;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -25,14 +36,26 @@ import net.minecraft.client.gui.components.debug.DebugScreenEntries;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.ClientInput;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.renderer.LevelRenderer;
+import net.minecraft.client.renderer.ShapeRenderer;
+import net.minecraft.client.renderer.entity.state.AvatarRenderState;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import net.minecraft.util.TriState;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -44,17 +67,20 @@ import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 import net.neoforged.neoforge.client.event.RenderNameTagEvent;
 import net.neoforged.neoforge.client.event.RenderPlayerEvent;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
+import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.EntityLeaveLevelEvent;
 import net.neoforged.neoforge.event.level.LevelEvent;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
 @EventBusSubscriber(Dist.CLIENT)
 public class ClientDragonRenderer {
+    private static final Set<String> DRAGON_RENDER_FAILURES = ConcurrentHashMap.newKeySet();
 
     // FIXME :: figure out at what point it can be called from other threads - that shouldn't happen but it does?
     //  See: https://github.com/DragonSurvivalTeam/DragonSurvival/issues/763
@@ -150,17 +176,16 @@ public class ClientDragonRenderer {
                 return;
             }
 
-            // FIXME
-            /*VertexConsumer buffer = Minecraft.getInstance().renderBuffers().bufferSource().getBuffer(RenderType.LINES);
-            Vec3 camera = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
+            VertexConsumer buffer = Minecraft.getInstance().renderBuffers().bufferSource().getBuffer(RenderTypes.lines());
+            Vec3 camera = event.getLevelRenderState().cameraRenderState.pos;
 
             PoseStack pose = event.getPoseStack();
-//            renderCollisionBox(pose, player, buffer, camera);
+            // renderCollisionBox(pose, player, buffer, camera);
 
-            pose.pushMatrix();
+            pose.pushPose();
             pose.translate(-camera.x(), -camera.y(), -camera.z());
             renderAbilityHitbox(player, pose, buffer);
-            pose.popMatrix();*/
+            pose.popPose();
         }
     }
 
@@ -169,64 +194,64 @@ public class ClientDragonRenderer {
 
     /** See {@link net.minecraft.client.renderer.debug.CollisionBoxRenderer} */
     private static void renderCollisionBox(final PoseStack pose, final LocalPlayer player, final VertexConsumer buffer, final Vec3 camera) {
-//        EntityDimensions dimensions = player.getDimensions(player.getPose());
-//        double width = dimensions.width();
-//        double height = dimensions.height();
-//
-//        double current = Util.getNanos();
-//
-//        if (current - lastUpdate > 1.0E8) {
-//            AABB boundingBox = DragonSizeHandler.createPlayerBounds(player, dimensions, dimensions, height);
-//            shape = DragonSizeHandler.createCollisionShape(player, boundingBox, width, height);
-//            lastUpdate = current;
-//        }
-//
-//        LevelRenderer.renderVoxelShape(pose, buffer, shape, -camera.x(), -camera.y(), -camera.z(), 1, 1, 1, 0.5f, true);
+        EntityDimensions dimensions = player.getDimensions(player.getPose());
+        double width = dimensions.width();
+        double height = dimensions.height();
+
+        double current = System.nanoTime();
+
+        if (current - lastUpdate > 1.0E8) {
+            AABB boundingBox = DragonSizeHandler.createPlayerBounds(player, dimensions, dimensions, height);
+            shape = DragonSizeHandler.createCollisionShape(player, boundingBox, width, height);
+            lastUpdate = current;
+        }
+
+        ShapeRenderer.renderShape(pose, buffer, shape, -camera.x(), -camera.y(), -camera.z(), ARGB.colorFromFloat(0.5f, 1.0f, 1.0f, 1.0f), 1.0f);
     }
 
     private static void renderAbilityHitbox(final LocalPlayer player, final PoseStack pose, final VertexConsumer buffer) {
-//        if (!DragonStateProvider.isDragon(player)) {
-//            return;
-//        }
-//
-//        MagicData magicData = MagicData.getData(player);
-//        DragonAbilityInstance ability = magicData.fromSlot(magicData.getSelectedAbilitySlot());
-//
-//        if (ability == null) {
-//            return;
-//        }
-//
-//        for (ActionContainer action : ability.value().actions()) {
-//            AbilityTargeting targeting = action.effect();
-//
-//            if (targeting instanceof DragonBreathTarget breathTarget) {
-//                LevelRenderer.renderLineBox(pose, buffer, breathTarget.calculateBreathArea(player, ability), 1, 0, 0, 1);
-//            } else if (targeting instanceof LookingAtTarget lookingAtTarget) {
-//                HitResult result;
-//
-//                if (lookingAtTarget.target().left().isPresent()) {
-//                    result = lookingAtTarget.getBlockHitResult(player, ability);
-//                } else if (lookingAtTarget.target().right().isPresent()) {
-//                    result = lookingAtTarget.getEntityHitResult(player, entity -> true, ability);
-//                } else {
-//                    continue;
-//                }
-//
-//                if (result.getType() == HitResult.Type.BLOCK) {
-//                    BlockHitResult blockResult = (BlockHitResult) result;
-//                    LevelRenderer.renderLineBox(pose, buffer, new AABB(blockResult.getBlockPos()), 0, 1, 0, 1);
-//                } else if (result.getType() == HitResult.Type.ENTITY) {
-//                    EntityHitResult entityResult = (EntityHitResult) result;
-//                    LevelRenderer.renderLineBox(pose, buffer, entityResult.getEntity().getBoundingBox().inflate(1.5), 0, 1, 0, 1);
-//                }
-//            } else if (targeting instanceof AreaTarget areaTarget) {
-//                LevelRenderer.renderLineBox(pose, buffer, areaTarget.calculateAffectedArea(player, ability), 0, 0, 1, 1);
-//            } else if (targeting instanceof DiscTarget discTarget) {
-//                int radius = (int) discTarget.radius().calculate(ability.level());
-//                int height = (int) discTarget.height().calculate(ability.level());
-//                LevelRenderer.renderLineBox(pose, buffer, discTarget.calculateAffectedArea(player.position(), radius, height), 0, 1, 0, 1);
-//            }
-//        }
+        if (!DragonStateProvider.isDragon(player)) {
+            return;
+        }
+
+        MagicData magicData = MagicData.getData(player);
+        DragonAbilityInstance ability = magicData.fromSlot(magicData.getSelectedAbilitySlot());
+
+        if (ability == null) {
+            return;
+        }
+
+        for (ActionContainer action : ability.value().actions()) {
+            AbilityTargeting targeting = action.effect();
+
+            if (targeting instanceof DragonBreathTarget breathTarget) {
+                ShapeRenderer.renderShape(pose, buffer, Shapes.create(breathTarget.calculateBreathArea(player, ability)), 0, 0, 0, ARGB.color(255, 255, 0, 0), 1.0f);
+            } else if (targeting instanceof LookingAtTarget lookingAtTarget) {
+                HitResult result;
+
+                if (lookingAtTarget.target().left().isPresent()) {
+                    result = lookingAtTarget.getBlockHitResult(player, ability);
+                } else if (lookingAtTarget.target().right().isPresent()) {
+                    result = lookingAtTarget.getEntityHitResult(player, entity -> true, ability);
+                } else {
+                    continue;
+                }
+
+                if (result.getType() == HitResult.Type.BLOCK) {
+                    BlockHitResult blockResult = (BlockHitResult) result;
+                    ShapeRenderer.renderShape(pose, buffer, Shapes.create(new AABB(blockResult.getBlockPos())), 0, 0, 0, ARGB.color(255, 0, 255, 0), 1.0f);
+                } else if (result.getType() == HitResult.Type.ENTITY) {
+                    EntityHitResult entityResult = (EntityHitResult) result;
+                    ShapeRenderer.renderShape(pose, buffer, Shapes.create(entityResult.getEntity().getBoundingBox().inflate(1.5)), 0, 0, 0, ARGB.color(255, 0, 255, 0), 1.0f);
+                }
+            } else if (targeting instanceof AreaTarget areaTarget) {
+                ShapeRenderer.renderShape(pose, buffer, Shapes.create(areaTarget.calculateAffectedArea(player, ability)), 0, 0, 0, ARGB.color(255, 0, 0, 255), 1.0f);
+            } else if (targeting instanceof DiscTarget discTarget) {
+                int radius = (int) discTarget.radius().calculate(ability.level());
+                int height = (int) discTarget.height().calculate(ability.level());
+                ShapeRenderer.renderShape(pose, buffer, Shapes.create(discTarget.calculateAffectedArea(player.position(), radius, height)), 0, 0, 0, ARGB.color(255, 0, 255, 0), 1.0f);
+            }
+        }
     }
 
     @SubscribeEvent(receiveCanceled = true)
@@ -237,32 +262,43 @@ public class ClientDragonRenderer {
     }
 
     @SubscribeEvent(receiveCanceled = true)
-    public static void renderDragon(final RenderPlayerEvent.Pre<AbstractClientPlayer> event) {
-//        DragonStateHandler handler = DragonStateProvider.getData(player);
-//
-//        if (!handler.isDragon()) {
-//            return;
-//        }
-//
-//        DragonEntity dragon = getOrCreateDragon(player);
-//        dragon.renderingWasCancelled = event.isCanceled();
-//
-//        if (event.isCanceled()) {
-//            return;
-//        }
-//
-//        // FIXME :: BetterCombat
-////        if (BetterCombat.isAttacking(player)) {
-////            event.getRenderer().getModel().setAllVisible(false);
-////        } else {
-//            event.setCanceled(true);
-////        }
-//
-//        if (SKIP_SHADER_SHADOWS && Compat.isRenderingShadows()) {
-//            return;
-//        }
-//
-//        partialTick = event.getPartialTick();
+    public static void renderDragon(final RenderPlayerEvent.Pre event) {
+        if (Minecraft.getInstance().level == null) {
+            return;
+        }
+
+        if (!(event.getRenderState() instanceof AvatarRenderState playerRenderState)) {
+            return;
+        }
+
+        Entity entity = Minecraft.getInstance().level.getEntity(playerRenderState.id);
+
+        if (!(entity instanceof AbstractClientPlayer player)) {
+            return;
+        }
+
+        DragonStateHandler handler = DragonStateProvider.getData(player);
+
+        if (!handler.isDragon()) {
+            return;
+        }
+
+        DragonEntity dragon = getOrCreateDragon(player);
+        dragon.renderingWasCancelled = event.isCanceled();
+
+        if (event.isCanceled()) {
+            return;
+        }
+
+        if (!isBetterCombatAttacking(player)) {
+            event.setCanceled(true);
+        }
+
+        if (SKIP_SHADER_SHADOWS && Compat.isRenderingShadows()) {
+            return;
+        }
+
+        partialTick = event.getPartialTick();
 
         // FIXME :: Nametags
         // We need to get access to the cameraRenderState, which is not actually passed through the RenderPlayerEvent (even though it probably should)
@@ -279,17 +315,38 @@ public class ClientDragonRenderer {
 
         // FIXME :: Main render
         // Same reason as above
-//        if (player != Minecraft.getInstance().player || !Minecraft.getInstance().options.getCameraType().isFirstPerson() || !ServerFlightHandler.isGliding(player) || renderFirstPersonFlight) {
-//            if (!dragon.isInInventory) {
-//                ClientDragonRenderer.setDragonMovementData(player, Minecraft.getInstance().getDeltaTracker().getRealtimeDeltaTicks());
-//            }
-//
-//            MovementData movement = MovementData.getData(player);
-//            handleFlightMovement(player, dragon, movement, partialTick);
-//
-//            Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(dragon).submit(dragon, event.getPoseStack(), event.getSubmitNodeCollector(), event.getCameraRenderState());
-//            Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(dragon).render(dragon, player.getViewYRot(partialTick), partialTick, event.getPoseStack(), event.getMultiBufferSource(), event.getPackedLight());
-//        }
+        if (player != Minecraft.getInstance().player || !Minecraft.getInstance().options.getCameraType().isFirstPerson() || !ServerFlightHandler.isGliding(player) || renderFirstPersonFlight) {
+            if (!dragon.isInInventory) {
+                ClientDragonRenderer.setDragonMovementData(player, Minecraft.getInstance().getDeltaTracker().getRealtimeDeltaTicks());
+            }
+
+            MovementData movement = MovementData.getData(player);
+            handleFlightMovement(player, dragon, movement, partialTick);
+
+            var dispatcher = Minecraft.getInstance().getEntityRenderDispatcher();
+            try {
+                var dragonRenderState = dispatcher.extractEntity(dragon, partialTick);
+                var cameraRenderState = Minecraft.getInstance().gameRenderer.getLevelRenderState().cameraRenderState;
+                Vec3 cameraPos = cameraRenderState.pos;
+                dispatcher.submit(
+                    dragonRenderState,
+                    cameraRenderState,
+                    dragonRenderState.x - cameraPos.x(),
+                    dragonRenderState.y - cameraPos.y(),
+                    dragonRenderState.z - cameraPos.z(),
+                    event.getPoseStack(),
+                    event.getSubmitNodeCollector()
+                );
+            } catch (RuntimeException exception) {
+                String playerName = player.getName().getString();
+
+                if (DRAGON_RENDER_FAILURES.add(playerName)) {
+                    DragonSurvival.LOGGER.error("Failed to render dragon form for player [{}]; falling back to vanilla player renderer", playerName, exception);
+                }
+
+                event.setCanceled(false);
+            }
+        }
     }
 
     private static void handleFlightMovement(final Player player, final DragonEntity dragon, final MovementData movement, final float partialTick) {
@@ -414,6 +471,10 @@ public class ClientDragonRenderer {
             BodyAngles newAngles = BodyAngles.calculateNext(player, movement, realtimeDeltaTick);
             movement.set(newAngles.bodyYaw, newAngles.headYaw, newAngles.headPitch, moveVector);
         }
+    }
+
+    private static boolean isBetterCombatAttacking(final Player player) {
+        return false;
     }
 
     @SubscribeEvent

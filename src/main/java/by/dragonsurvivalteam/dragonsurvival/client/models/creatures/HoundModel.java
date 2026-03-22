@@ -11,7 +11,7 @@ import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 public class HoundModel extends GeoModel<HoundEntity> {
     @Override
     public Identifier getModelResource(GeoRenderState renderState) {
-        return Identifier.fromNamespaceAndPath(MODID, "geo/hunter_hound.geo.json");
+        return Identifier.fromNamespaceAndPath(MODID, "hunter_hound");
     }
 
     @Override
@@ -32,6 +32,6 @@ public class HoundModel extends GeoModel<HoundEntity> {
 
     @Override
     public Identifier getAnimationResource(HoundEntity animatable) {
-        return Identifier.fromNamespaceAndPath(MODID, "animations/hunter_hound.animation.json");
+        return Identifier.fromNamespaceAndPath(MODID, "hunter_hound");
     }
 }
