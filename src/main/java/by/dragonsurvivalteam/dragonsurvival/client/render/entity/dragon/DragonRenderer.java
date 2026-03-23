@@ -107,9 +107,8 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
             MathParser.setVariable("query.head_pitch", state -> movement.headPitch);
         }
 
-        // FIXME
-        //double gravity = player.getAttributeValue(Attributes.GRAVITY);
-        //MathParser.setVariable("query.gravity", state -> gravity);
+        double gravity = player.getAttributeValue(Attributes.GRAVITY);
+        MathParser.setVariable("query.gravity", state -> gravity);
 
         double bodyYawAvg;
         double headYawAvg;
@@ -201,12 +200,7 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
             dragon.currentTailMotionUp = Mth.lerp(lerpRate, dragon.currentTailMotionUp, -verticalVelocityAvg);
         }
 
-        // GeckoLib 5.4.3 is currently unstable here when we register the dragon-only "change" queries
-        // during render-state extraction. Leaving them unset is safer than crashing the whole player renderer;
-        // Molang expressions that reference them will fall back to their default behavior.
-        // FIXME
-        /*
-         if (dragon.tailLocked) {
+        if (dragon.tailLocked) {
             MathParser.setVariable("query.tail_motion_up", state -> 0);
             MathParser.setVariable("query.body_yaw_change", state -> 0);
         } else {
@@ -216,7 +210,6 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
 
         MathParser.setVariable("query.head_yaw_change", state -> dragon.currentHeadYawChange);
         MathParser.setVariable("query.head_pitch_change", state -> dragon.currentHeadPitchChange);
-         */
     }
 
     @Override
@@ -353,13 +346,9 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
     }
 
     private void setupRender(final DragonEntity dragon, final Player player, final PoseStack pose, final float partialTick) {
-        MovementData movement = MovementData.getData(player);
-
-        // This is normally used in 'EntityRenderDispatcher#render', but that isn't triggered for 'DragonEntity'
+        // Offset the rendering so that the hitbox for the player is in the correct spot (near the dragon's head)
         Vec3 offset = getRenderOffset(dragon, partialTick);
         pose.translate(-offset.x(), -offset.y(), -offset.z());
-
-        pose.mulPose(Axis.YN.rotationDegrees((float) movement.bodyYaw));
 
         if (ServerFlightHandler.isGliding(player) || (player.isPassenger() && DragonStateProvider.isDragon(player.getVehicle()) && ServerFlightHandler.isGliding((Player) player.getVehicle()))) {
             // Responsible for the pitch (rotating entity downward / upward)
