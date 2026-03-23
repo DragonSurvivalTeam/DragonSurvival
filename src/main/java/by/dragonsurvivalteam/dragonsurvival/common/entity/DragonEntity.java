@@ -782,7 +782,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
         // So instantly transition to prevent the player from seeing a T-Pose -> animation transition
         // This usually happens when changing dimensions, or new clientside dragons are initialized in the UI
         if(animationWasNullBeforePredicate) {
-            transitionTicks = 10;
+            transitionTicks = 0;
         }
 
         if (animationToChangeTo != null) {

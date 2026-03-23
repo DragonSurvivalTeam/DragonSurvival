@@ -37,7 +37,7 @@ public abstract class ItemStackMixin {
             ItemEnchantments oldEnchantments = instance.get(DataComponents.ENCHANTMENTS);
             // TODO :: should we only pass the component + the (merged) permanent enchantments (for mod compatibility / performance)?
             instance.set(DataComponents.ENCHANTMENTS, instance.getAllEnchantments(lookup.lookupOrThrow(Registries.ENCHANTMENT)));
-            instance.addToTooltip(DataComponents.ENCHANTMENTS, context, consumer, flag);
+            instance.addToTooltip(DataComponents.ENCHANTMENTS, context, tooltipDisplay, consumer, flag);
             instance.set(DataComponents.ENCHANTMENTS, oldEnchantments);
         } else {
             original.call(instance, component, context, tooltipDisplay, consumer, flag);
