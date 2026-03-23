@@ -46,6 +46,7 @@
     "client.FrustumAccess",
     "client.GameRendererMixin",
     "client.GuiAccessor",
+    "client.InventoryScreenMixin",
     "client.ItemInHandRendererMixin",
     "client.KeyMappingAccess",
     "client.LevelRendererAccess",

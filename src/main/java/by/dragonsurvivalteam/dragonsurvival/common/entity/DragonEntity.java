@@ -816,13 +816,6 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
         return PlayState.CONTINUE;
     }
 
-    // FIXME :: Uncertain if this is required elsewhere, but getTick is gone now
-    /*@Override
-    public double getTick(Object obj) { // using 'getPlayer' breaks animations even though it returns the same entity...?
-        // Prevent being on a negative tick (will cause t-posing!) by adding 200 here
-        return (playerId != null ? level().getEntity(playerId).tickCount : globalTickCount) + 200;
-    }*/
-
     @Override
     public @NotNull Vec3 position() {
         Player player = getPlayer();
