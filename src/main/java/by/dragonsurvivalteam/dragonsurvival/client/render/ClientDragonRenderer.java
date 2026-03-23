@@ -358,12 +358,12 @@ public class ClientDragonRenderer {
         dragon.yo = player.yo;
         dragon.zo = player.zo;
         dragon.tickCount = player.tickCount;
-        dragon.setYRot(player.getYRot());
-        dragon.setXRot(player.getXRot());
-        dragon.yHeadRot = player.getYHeadRot();
-        dragon.yHeadRotO = player.yHeadRotO;
-        dragon.yBodyRot = player.yBodyRot;
-        dragon.yBodyRotO = player.yBodyRotO;
+//        dragon.setYRot(player.getYRot());
+//        dragon.setXRot(player.getXRot());
+        //dragon.yHeadRot = player.getYHeadRot();
+        //dragon.yHeadRotO = player.yHeadRotO;
+        //dragon.yBodyRot = player.yBodyRot;
+        //dragon.yBodyRotO = player.yBodyRotO;
     }
 
     private static void handleFlightMovement(final Player player, final DragonEntity dragon, final MovementData movement, final float partialTick) {
@@ -608,7 +608,6 @@ public class ClientDragonRenderer {
         static final double HEAD_PITCH_FACTOR = 0.3D;
 
         public static BodyAngles calculateNext(Player player, MovementData movement, float realtimeDeltaTick) {
-            // Handle headYaw
             float viewYRot = player.getViewYRot(realtimeDeltaTick);
             float viewXRot = player.getViewXRot(realtimeDeltaTick);
 

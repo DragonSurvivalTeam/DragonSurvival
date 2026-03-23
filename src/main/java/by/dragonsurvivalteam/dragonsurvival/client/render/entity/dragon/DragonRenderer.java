@@ -331,7 +331,8 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
             return Vec3.ZERO;
         }
 
-        float angle = -(float) MovementData.getData(player).bodyYaw * ((float) Math.PI / 180);
+        MovementData movement = MovementData.getData(player);
+        float angle = -(float)movement.bodyYaw * ((float)Math.PI / 180.0F);
         float x = Mth.sin(angle);
         float z = Mth.cos(angle);
 
@@ -349,6 +350,9 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
         // Offset the rendering so that the hitbox for the player is in the correct spot (near the dragon's head)
         Vec3 offset = getRenderOffset(dragon, partialTick);
         pose.translate(-offset.x(), -offset.y(), -offset.z());
+
+        MovementData movement = MovementData.getData(player);
+        pose.mulPose(Axis.YN.rotationDegrees((float) movement.bodyYaw));
 
         if (ServerFlightHandler.isGliding(player) || (player.isPassenger() && DragonStateProvider.isDragon(player.getVehicle()) && ServerFlightHandler.isGliding((Player) player.getVehicle()))) {
             // Responsible for the pitch (rotating entity downward / upward)
