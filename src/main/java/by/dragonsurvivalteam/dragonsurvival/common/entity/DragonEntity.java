@@ -75,8 +75,6 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
     /** Durations of jumps */
     public static final ConcurrentHashMap<Integer, Boolean> DRAGONS_JUMPING = new ConcurrentHashMap<>();
 
-    private static double globalTickCount;
-
     public final ArrayList<Double> headYawHistory = new ArrayList<>();
     public double currentHeadYawChange;
 
@@ -638,46 +636,48 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
             return state.setAndContinue(DragonAnimations.SIT.getAnimation());
         }
 
+        int transitionTicks = 0;
+        RawAnimation animationToChangeTo = null;
         if (player.getAbilities().flying || ServerFlightHandler.isFlying(player)) {
             if (ServerFlightHandler.isGliding(player)) {
                 if (ServerFlightHandler.isSpin(player)) {
                     animationSpeed = 2;
-                    state.setAnimation(DragonAnimations.FLY_SPIN.getAnimation());
-                    animationController.setTransitionTicks(5);
+                    animationToChangeTo = DragonAnimations.FLY_SPIN.getAnimation();
+                    transitionTicks = 5;
                 } else if (deltaMovement.y < -1) {
-                    state.setAnimation(DragonAnimations.FLY_DIVE_ALT.getAnimation());
-                    animationController.setTransitionTicks(4);
+                    animationToChangeTo = DragonAnimations.FLY_DIVE_ALT.getAnimation();
+                    transitionTicks = 4;
                 } else if (deltaMovement.y < -0.25) {
-                    state.setAnimation(DragonAnimations.FLY_DIVE.getAnimation());
-                    animationController.setTransitionTicks(4);
+                    animationToChangeTo = DragonAnimations.FLY_DIVE.getAnimation();
+                    transitionTicks = 4;
                 } else if (deltaMovement.y > 0.5) {
                     animationSpeed = 1.5;
-                    state.setAnimation(DragonAnimations.FLY.getAnimation());
-                    animationController.setTransitionTicks(2);
+                    animationToChangeTo = DragonAnimations.FLY.getAnimation();
+                    transitionTicks = 2;
                 } else {
-                    state.setAnimation(DragonAnimations.FLY_SOARING.getAnimation());
-                    animationController.setTransitionTicks(4);
+                    animationToChangeTo = DragonAnimations.FLY_SOARING.getAnimation();
+                    transitionTicks = 4;
                 }
             } else {
                 if (movement.desiredMoveVec.y < 0 && deltaMovement.y < 0 && distanceFromGround < 10 && deltaMovement.length() < 4) {
-                    state.setAnimation(DragonAnimations.FLY_LAND.getAnimation());
-                    animationController.setTransitionTicks(2);
+                    animationToChangeTo = DragonAnimations.FLY_LAND.getAnimation();
+                    transitionTicks = 2;
                 } else if (ServerFlightHandler.isSpin(player)) {
-                    state.setAnimation(DragonAnimations.FLY_SPIN.getAnimation());
-                    animationController.setTransitionTicks(2);
+                    animationToChangeTo = DragonAnimations.FLY_SPIN.getAnimation();
+                    transitionTicks = 2;
                 } else {
                     if (movement.desiredMoveVec.y > 0) {
                         animationSpeed = 2;
                     }
 
-                    state.setAnimation(DragonAnimations.FLY.getAnimation());
-                    animationController.setTransitionTicks(2);
+                    animationToChangeTo = DragonAnimations.FLY.getAnimation();
+                    transitionTicks = 2;
                 }
             }
         } else if (player.getPose() == Pose.SWIMMING) {
             if (ServerFlightHandler.isSpin(player)) {
-                state.setAnimation(DragonAnimations.FLY_SPIN.getAnimation());
-                animationController.setTransitionTicks(2);
+                animationToChangeTo = DragonAnimations.FLY_SPIN.getAnimation();
+                transitionTicks = 2;
             } else {
                 // Clear vertical velocity if we just transitioned to this pose, to prevent the dragon from jerking up when landing in water
                 if (
@@ -690,14 +690,14 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
 
                 useDynamicScaling = true;
                 baseSpeed = DEFAULT_FAST_SWIM_SPEED; // Default base fast speed for the player
-                state.setAnimation(DragonAnimations.SWIM_FAST.getAnimation());
-                animationController.setTransitionTicks(4);
+                animationToChangeTo = DragonAnimations.SWIM_FAST.getAnimation();
+                transitionTicks = 4;
             }
         } else if (isSwimming) {
             if (ServerFlightHandler.isSpin(player)) {
                 animationSpeed = 2;
-                state.setAnimation(DragonAnimations.FLY_SPIN.getAnimation());
-                animationController.setTransitionTicks(2);
+                animationToChangeTo = DragonAnimations.FLY_SPIN.getAnimation();
+                transitionTicks = 2;
             } else {
                 // Clear vertical velocity if we just transitioned to this pose, to prevent the dragon from jerking up when landing in water
                 if (
@@ -710,34 +710,33 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
 
                 useDynamicScaling = true;
                 baseSpeed = DEFAULT_SWIM_SPEED;
-                state.setAnimation(DragonAnimations.SWIM.getAnimation());
-                animationController.setTransitionTicks(2);
+                animationToChangeTo = DragonAnimations.SWIM.getAnimation();
+                transitionTicks = 2;
             }
         } else if (AnimationUtils.isAnimationPlaying(animationController, DragonAnimations.FLY_LAND.getAnimation())) {
-            state.setAnimation(DragonAnimations.FLY_LAND_END.getAnimation());
+            animationToChangeTo = DragonAnimations.FLY_LAND_END.getAnimation();
+            transitionTicks = 2;
 
             if (!DragonAnimations.FLY_LAND_END.getAnimation().getAnimationStages().isEmpty()) {
                 animationTickTimer.putAnimation(DRAGON_MODEL, this, DragonAnimations.FLY_LAND_END.getAnimation());
             }
-
-            animationController.setTransitionTicks(2);
         } else if (animationTickTimer.getDuration(DragonAnimations.FLY_LAND_END.getAnimation()) > 0) {
             // Don't add any animation
         } else if (player.onClimbable()) {
             if (movement.deltaMovement.y() < 0) {
-                state.setAnimation(DragonAnimations.CLIMBING_DOWN.getAnimation());
+                animationToChangeTo = DragonAnimations.CLIMBING_DOWN.getAnimation();
             } else {
-                state.setAnimation(DragonAnimations.CLIMBING_UP.getAnimation());
+                animationToChangeTo = DragonAnimations.CLIMBING_UP.getAnimation();
             }
 
             useDynamicScaling = true;
             baseSpeed = DEFAULT_CLIMB_SPEED;
-            animationController.setTransitionTicks(2);
+            transitionTicks = 2;
         } else if (DRAGONS_JUMPING.getOrDefault(this.playerId, false)) {
             // FIXME :: Was state.resetCurrentAnimation -> state.controller.reset(). Not sure if this works.
             state.controller().reset();
-            state.setAnimation(DragonAnimations.JUMP.getAnimation());
-            animationController.setTransitionTicks(2);
+            animationToChangeTo = DragonAnimations.JUMP.getAnimation();
+            transitionTicks = 2;
             animationTickTimer.putAnimation(DRAGON_MODEL, this, DragonAnimations.JUMP.getAnimation());
             DRAGONS_JUMPING.remove(this.playerId);
         } else if (animationTickTimer.isPresent(DragonAnimations.JUMP.getAnimation()) && DRAGONS_JUMPING.getOrDefault(this.playerId, true)) {
@@ -746,44 +745,49 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
             //
             // Let the jump animation complete
         } else if (!player.onGround()) {
-            state.setAnimation(DragonAnimations.FALL_LOOP.getAnimation());
-            animationController.setTransitionTicks(5);
+            animationToChangeTo = DragonAnimations.FALL_LOOP.getAnimation();
+            transitionTicks = 5;
         } else if (player.isShiftKeyDown() || !DragonSizeHandler.canPoseFit(player, Pose.STANDING) && DragonSizeHandler.canPoseFit(player, Pose.CROUCHING)) {
             // Player is Sneaking
             if (movement.isMovingHorizontally()) {
                 useDynamicScaling = true;
                 baseSpeed = DEFAULT_SNEAK_SPEED;
-                state.setAnimation(DragonAnimations.SNEAK_WALK.getAnimation());
-                animationController.setTransitionTicks(5);
+                animationToChangeTo = DragonAnimations.SNEAK_WALK.getAnimation();
+                transitionTicks = 5;
             } else if (movement.dig) {
-                state.setAnimation(DragonAnimations.DIG_SNEAK.getAnimation());
-                animationController.setTransitionTicks(3);
+                animationToChangeTo = DragonAnimations.DIG_SNEAK.getAnimation();
+                transitionTicks = 3;
             } else {
-                state.setAnimation(DragonAnimations.SNEAK.getAnimation());
-                animationController.setTransitionTicks(3);
+                animationToChangeTo = DragonAnimations.SNEAK.getAnimation();
+                transitionTicks = 3;
             }
         } else if (player.isSprinting()) {
             useDynamicScaling = true;
             baseSpeed = DEFAULT_SPRINT_SPEED;
-            state.setAnimation(DragonAnimations.RUN.getAnimation());
-            animationController.setTransitionTicks(4);
+            animationToChangeTo = DragonAnimations.RUN.getAnimation();
+            transitionTicks = 4;
         } else if (movement.isMovingHorizontally()) {
             useDynamicScaling = true;
-            state.setAnimation(DragonAnimations.WALK.getAnimation());
-            animationController.setTransitionTicks(3);
+            animationToChangeTo = DragonAnimations.WALK.getAnimation();
+            transitionTicks = 3;
         } else if (movement.dig) {
-            state.setAnimation(DragonAnimations.DIG.getAnimation());
-            animationController.setTransitionTicks(6);
+            animationToChangeTo = DragonAnimations.DIG.getAnimation();
+            transitionTicks = 6;
         } else {
-            state.setAnimation(DragonAnimations.IDLE.getAnimation());
-            animationController.setTransitionTicks(3);
+            animationToChangeTo = DragonAnimations.IDLE.getAnimation();
+            transitionTicks = 3;
         }
 
         // If the animation was null, that means we were T-Posing before this animation was triggered
         // So instantly transition to prevent the player from seeing a T-Pose -> animation transition
         // This usually happens when changing dimensions, or new clientside dragons are initialized in the UI
         if(animationWasNullBeforePredicate) {
-            animationController.setTransitionTicks(10);
+            transitionTicks = 10;
+        }
+
+        if (animationToChangeTo != null) {
+            animationController.setTransitionTicks(transitionTicks);
+            state.setAndContinue(animationToChangeTo);
         }
 
         double finalAnimationSpeed = animationSpeed;
@@ -810,11 +814,6 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
         }
 
         return PlayState.CONTINUE;
-    }
-
-    @SubscribeEvent
-    public static void tickEntity(final RenderFrameEvent.Pre event) {
-        globalTickCount += event.getPartialTick().getRealtimeDeltaTicks();
     }
 
     // FIXME :: Uncertain if this is required elsewhere, but getTick is gone now

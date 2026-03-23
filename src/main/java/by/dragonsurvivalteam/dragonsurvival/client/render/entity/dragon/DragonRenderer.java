@@ -370,7 +370,7 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
     }
 
     @Override
-    public void performRenderPass(R renderState, @NotNull PoseStack poseStack, @NotNull SubmitNodeCollector renderTasks, @NotNull CameraRenderState cameraState) {
+    public void performRenderPass(R renderState, PoseStack poseStack, SubmitNodeCollector renderTasks, CameraRenderState cameraState, RenderPassInfo.@Nullable BoneUpdater<R> boneUpdater) {
         DragonEntity animatable = renderState.getGeckolibData(DRAGON_ENTITY);
         Player player = animatable.getPlayer();
 
@@ -381,7 +381,7 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
 
         poseStack.pushPose();
         setupRender(animatable, player, poseStack, renderState.partialTick);
-        super.performRenderPass(renderState, poseStack, renderTasks, cameraState);
+        super.performRenderPass(renderState, poseStack, renderTasks, cameraState, boneUpdater);
         poseStack.popPose();
     }
 }

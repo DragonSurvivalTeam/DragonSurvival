@@ -328,13 +328,12 @@ public class ClientDragonRenderer {
             try {
                 var dragonRenderState = dispatcher.extractEntity(dragon, partialTick);
                 var cameraRenderState = Minecraft.getInstance().gameRenderer.getLevelRenderState().cameraRenderState;
-                Vec3 cameraPos = cameraRenderState.pos;
                 dispatcher.submit(
                     dragonRenderState,
                     cameraRenderState,
-                    dragonRenderState.x - cameraPos.x(),
-                    dragonRenderState.y - cameraPos.y(),
-                    dragonRenderState.z - cameraPos.z(),
+                    0.0f,
+                    0.0f,
+                    0.0f,
                     event.getPoseStack(),
                     event.getSubmitNodeCollector()
                 );
@@ -352,9 +351,13 @@ public class ClientDragonRenderer {
 
     private static void syncDragonRenderState(final Player player, final DragonEntity dragon) {
         dragon.setPos(player.position());
+        dragon.xOld = player.xOld;
+        dragon.yOld = player.yOld;
+        dragon.zOld = player.zOld;
         dragon.xo = player.xo;
         dragon.yo = player.yo;
         dragon.zo = player.zo;
+        dragon.tickCount = player.tickCount;
         dragon.setYRot(player.getYRot());
         dragon.setXRot(player.getXRot());
         dragon.yHeadRot = player.getYHeadRot();
