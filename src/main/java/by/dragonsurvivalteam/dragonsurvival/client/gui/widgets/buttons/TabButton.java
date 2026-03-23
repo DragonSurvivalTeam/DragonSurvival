@@ -17,6 +17,7 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.input.InputWithModifiers;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.neoforged.neoforge.client.gui.widget.ExtendedButton;
 import org.jetbrains.annotations.NotNull;
@@ -73,18 +74,20 @@ public class TabButton extends ExtendedButton {
 
     @Override
     public void renderWidget(@NotNull final GuiGraphics guiGraphics, int mouseX, int mouseY, float p_230431_4_) {
-        if (isCurrent()) {
-            guiGraphics.blit(MagicHUD.WIDGET_TEXTURES, getX(), getY(), 28, 0, 28, 32, 256, 256);
+        boolean current = isCurrent();
+
+        if (current) {
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, MagicHUD.WIDGET_TEXTURES, getX(), getY(), 28, 0, 28, 32, 256, 256);
         } else if (isHovered()) {
-            guiGraphics.blit(MagicHUD.WIDGET_TEXTURES, getX(), getY(), 84, 0, 28, 32, 256, 256);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, MagicHUD.WIDGET_TEXTURES, getX(), getY(), 84, 0, 28, 32, 256, 256);
         } else {
-            guiGraphics.blit(MagicHUD.WIDGET_TEXTURES, getX(), getY(), 56, 0, 28, 32, 256, 256);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, MagicHUD.WIDGET_TEXTURES, getX(), getY(), 56, 0, 28, 32, 256, 256);
         }
 
-        if (isHovered() || isCurrent()) {
-            guiGraphics.blit(MagicHUD.WIDGET_TEXTURES, getX() + 2, getY() + 2 + (isCurrent() ? 2 : 0), tabButtonType.ordinal() * 24, 67, 24, 24, 256, 256);
+        if (isHovered() || current) {
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, MagicHUD.WIDGET_TEXTURES, getX() + 2, getY() + 2 + (current ? 2 : 0), tabButtonType.ordinal() * 24, 67, 24, 24, 256, 256);
         } else {
-            guiGraphics.blit(MagicHUD.WIDGET_TEXTURES, getX() + 2, getY() + 2 + (isCurrent() ? 2 : 0), tabButtonType.ordinal() * 24, 41, 24, 24, 256, 256);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, MagicHUD.WIDGET_TEXTURES, getX() + 2, getY() + 2, tabButtonType.ordinal() * 24, 41, 24, 24, 256, 256);
         }
     }
 

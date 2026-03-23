@@ -4,6 +4,7 @@ import by.dragonsurvivalteam.dragonsurvival.client.render.AbilityAndPenaltyToolt
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty.DragonPenalty;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
@@ -33,9 +34,7 @@ public class PenaltyButton extends ExtendedButton {
 
         if (isHovered()) {
             graphics.pose().pushMatrix();
-            // Render above the other UI elements
-            // FIXME :: UI GRAPHICS
-            //graphics.pose().translate(0, 0, 250);
+            graphics.nextStratum();
             AbilityAndPenaltyTooltipRenderer.drawPenaltyTooltip(graphics, mouseX, mouseY, penalty);
             graphics.pose().popMatrix();
         }
@@ -43,8 +42,6 @@ public class PenaltyButton extends ExtendedButton {
 
     // TODO :: add in generic helper method
     private void blit(final GuiGraphics graphics, final Identifier texture, int x, int y, int size) {
-        // FIXME :: UI GRAPHICS
-        // Sprite blit is no longer functional
-        //graphics.blit(x, y, 0, size, size, Minecraft.getInstance().getGuiSprites().getSprite(texture), 1, 1, 1, alpha);
+        graphics.blitSprite(RenderPipelines.GUI_TEXTURED, texture, x, y, size, size);
     }
 }

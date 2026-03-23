@@ -27,13 +27,13 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.fml.ModList;
-import net.neoforged.fml.earlydisplay.render.GlState;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.client.gui.widget.ExtendedButton;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
@@ -233,10 +233,7 @@ public class DragonInventoryScreen extends AbstractContainerScreen<DragonContain
 
     @Override
     protected void renderBg(@NotNull final GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
-        GlState.enableBlend(true);
-        // FIXME :: This will be a lot easier to understand once we get local variable names inside of the source code. The blit code is a mess to read right now
-        //guiGraphics.blit(BACKGROUND, leftPos, topPos, 0, 0, imageWidth, imageHeight);
-        GlState.enableBlend(false);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND, leftPos, topPos, 0, 0, imageWidth, imageHeight, 256, 256);
 
         int scissorY1 = topPos + 77;
         int scissorX1 = leftPos + 101;
@@ -253,8 +250,7 @@ public class DragonInventoryScreen extends AbstractContainerScreen<DragonContain
             return;
         }
 
-        // FIXME :: This will be a lot easier to understand once we get local variable names inside of the source code. The blit code is a mess to read right now
-        //guiGraphics.blit(CLAWS_TEXTURE, leftPos - 33, topPos, 0, 0, 77, 170);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, CLAWS_TEXTURE, leftPos - 33, topPos, 0, 0, 77, 170, 256, 256);
     }
 
     @Override
@@ -264,11 +260,7 @@ public class DragonInventoryScreen extends AbstractContainerScreen<DragonContain
 
         if (clawsMenu) {
             Identifier texture = ClientDragonRenderer.renderDragonClaws ? CLAW_DISPLAY_ON : CLAW_DISPLAY_OFF;
-            graphics.pose().pushMatrix();
-            // FIXME :: You aren't allowed to do translates like this anymore in GUI code
-            //graphics.pose().translate(0, 0, 100);
-            graphics.blit(texture, leftPos - 30, topPos + 120, 0, 0, 24, 42, 24, 42);
-            graphics.pose().popMatrix();
+            graphics.blit(RenderPipelines.GUI_TEXTURED, texture, leftPos - 30, topPos + 120, 0, 0, 24, 42, 24, 42);
         }
 
         renderTooltip(graphics, mouseX, mouseY);

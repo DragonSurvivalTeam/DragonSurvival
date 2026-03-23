@@ -38,7 +38,7 @@ public class AbilityAndPenaltyTooltipRenderer {
 
     private static final Identifier EFFECT_HEADER = DragonSurvival.res("ability_effect_header");
     private static final Identifier BARS = DragonSurvival.res("textures/gui/widget_bars.png");
-
+    private static final int BARS_TEXTURE_SIZE = 256;
     private static final int MAX_SHOWN_LINES = 15;
     private static int maxScrollAmount = Integer.MAX_VALUE;
 
@@ -62,6 +62,8 @@ public class AbilityAndPenaltyTooltipRenderer {
             final Identifier icon,
             int scrollAmount
     ) {
+        graphics.nextStratum();
+
         FormattedText textContents = formatText(shiftInfo);
 
         int maxLineWidth = 150; // Tooltip#MAX_WIDTH is 170
@@ -77,24 +79,21 @@ public class AbilityAndPenaltyTooltipRenderer {
         List<FormattedCharSequence> description = Minecraft.getInstance().font.split(rawDescription, backgroundWidth - 7);
 
         int backgroundHeight = 35 + 24 + description.size() * 9;
-        int sideWidth = Minecraft.getInstance().hasShiftDown() ? maxLineWidth : 15;
-        int sideHeight = Minecraft.getInstance().hasShiftDown() ? 36 + Math.min(skipFirstLine ? lines.size() - 1 : lines.size(), MAX_SHOWN_LINES) * 9 : backgroundHeight - 10;
+        boolean hasShiftDown = Minecraft.getInstance().hasShiftDown();
+        int sideWidth = hasShiftDown ? maxLineWidth : 15;
+        int sideHeight = hasShiftDown ? 36 + Math.min(skipFirstLine ? lines.size() - 1 : lines.size(), MAX_SHOWN_LINES) * 9 : backgroundHeight - 10;
 
-        ClientTooltipPositioner positioner = new AbilityTooltipPositioner(Minecraft.getInstance().hasShiftDown() ? sideWidth : 0);
+        ClientTooltipPositioner positioner = new AbilityTooltipPositioner(hasShiftDown ? sideWidth : 0);
         Vector2ic position = positioner.positionTooltip(graphics.guiWidth(), graphics.guiHeight(), x, y, maxLineWidth + 5, Math.max(sideHeight, backgroundHeight));
 
         int trueX = position.x();
         int trueY = position.y();
 
         if (!shiftInfo.isEmpty()) {
-            // Backing for info tab
-            // FIXME :: GUI GRAPHICS
-            //graphics.blitWithBorder(BARS, trueX - (Minecraft.getInstance().hasShiftDown() ? maxLineWidth : 10), trueY + 3, 40, 20, sideWidth, sideHeight, 20, 20, 3);
-            // Top bar for info tab
-            // FIXME :: GUI GRAPHICS
-            //graphics.blitWithBorder(BARS, trueX - (Minecraft.getInstance().hasShiftDown() ? maxLineWidth : 10) + 3, trueY + 9, colorXPos, colorYPos, Minecraft.getInstance().hasShiftDown() ? maxLineWidth : 15, 20, 20, 20, 3);
+            blitWithBorder(graphics, BARS, trueX - (hasShiftDown ? maxLineWidth : 10), trueY + 3, 40, 20, sideWidth, sideHeight, 20, 20, 3);
+            blitWithBorder(graphics, BARS, trueX - (hasShiftDown ? maxLineWidth : 10) + 3, trueY + 9, colorXPos, colorYPos, hasShiftDown ? maxLineWidth : 15, 20, 20, 20, 3);
 
-            if (Minecraft.getInstance().hasShiftDown()) {
+            if (hasShiftDown) {
                 graphics.drawString(Minecraft.getInstance().font, Component.translatable(LangKey.INFO), trueX - maxLineWidth + 10, trueY + 15, -1);
                 int counter = 0;
 
@@ -111,8 +110,7 @@ public class AbilityAndPenaltyTooltipRenderer {
                     if (isEffectHeader(text)) {
                         RenderingUtils.setShaderColor(DSColors.withAlpha(DSColors.GOLD, 1));
                         graphics.blitSprite(RenderPipelines.GUI, EFFECT_HEADER, startPosition, textY - 4, maxLineWidth - 10, 9);
-                        // FIXME :: GUI GRAPHICS
-                        // RenderSystem.setShaderColor(1, 1, 1, 1);
+                        RenderingUtils.setShaderColor(0xFFFFFFFF);
                     } else {
                         graphics.drawString(Minecraft.getInstance().font, text, startPosition, textY, DSColors.GRAY);
                     }
@@ -126,15 +124,9 @@ public class AbilityAndPenaltyTooltipRenderer {
             }
         }
 
-        // Background of the main description
-        // FIXME :: GUI GRAPHICS
-        // graphics.blitWithBorder(BARS, trueX - 2, trueY - 4, 40, 20, backgroundWidth + 5, backgroundHeight, 20, 20, 3, 3, 3, 3);
-        // Top bar of the main description
-        // FIXME :: GUI GRAPHICS
-        // graphics.blitWithBorder(BARS, trueX, trueY + 3, colorXPos, colorYPos, backgroundWidth, 20, 20, 20, 3);
-        // Backing square for ability icon
-        // FIXME :: GUI GRAPHICS
-        // graphics.blitWithBorder(BARS, trueX, trueY, 0, 100, 26, 26, 24, 24, 3);
+        blitWithBorder(graphics, BARS, trueX - 2, trueY - 4, 40, 20, backgroundWidth + 5, backgroundHeight, 20, 20, 3, 3, 3, 3);
+        blitWithBorder(graphics, BARS, trueX, trueY + 3, colorXPos, colorYPos, backgroundWidth, 20, 20, 20, 3);
+        blitWithBorder(graphics, BARS, trueX, trueY, 0, 100, 26, 26, 24, 24, 3);
 
         graphics.drawCenteredString(Minecraft.getInstance().font, Component.translatable(headerTranslationKey), trueX + backgroundWidth / 2, trueY + 30, tooltipBackgroundColor);
 
@@ -154,6 +146,62 @@ public class AbilityAndPenaltyTooltipRenderer {
         }
 
         graphics.blitSprite(RenderPipelines.GUI, icon, trueX + 5, trueY + 5, 16, 16);
+    }
+
+    private static void blitWithBorder(final GuiGraphics graphics, final Identifier texture, final int x, final int y, final int u, final int v, final int width, final int height, final int regionWidth, final int regionHeight, final int border) {
+        blitWithBorder(graphics, texture, x, y, u, v, width, height, regionWidth, regionHeight, border, border, border, border);
+    }
+
+    private static void blitWithBorder(
+            final GuiGraphics graphics,
+            final Identifier texture,
+            final int x,
+            final int y,
+            final int u,
+            final int v,
+            final int width,
+            final int height,
+            final int regionWidth,
+            final int regionHeight,
+            final int leftBorder,
+            final int rightBorder,
+            final int topBorder,
+            final int bottomBorder
+    ) {
+        int innerSourceWidth = Math.max(0, regionWidth - leftBorder - rightBorder);
+        int innerSourceHeight = Math.max(0, regionHeight - topBorder - bottomBorder);
+        int innerWidth = Math.max(0, width - leftBorder - rightBorder);
+        int innerHeight = Math.max(0, height - topBorder - bottomBorder);
+
+        blitRegion(graphics, texture, x, y, u, v, leftBorder, topBorder, leftBorder, topBorder);
+        blitRegion(graphics, texture, x + width - rightBorder, y, u + regionWidth - rightBorder, v, rightBorder, topBorder, rightBorder, topBorder);
+        blitRegion(graphics, texture, x, y + height - bottomBorder, u, v + regionHeight - bottomBorder, leftBorder, bottomBorder, leftBorder, bottomBorder);
+        blitRegion(graphics, texture, x + width - rightBorder, y + height - bottomBorder, u + regionWidth - rightBorder, v + regionHeight - bottomBorder, rightBorder, bottomBorder, rightBorder, bottomBorder);
+
+        blitRegion(graphics, texture, x + leftBorder, y, u + leftBorder, v, innerWidth, topBorder, innerSourceWidth, topBorder);
+        blitRegion(graphics, texture, x + leftBorder, y + height - bottomBorder, u + leftBorder, v + regionHeight - bottomBorder, innerWidth, bottomBorder, innerSourceWidth, bottomBorder);
+        blitRegion(graphics, texture, x, y + topBorder, u, v + topBorder, leftBorder, innerHeight, leftBorder, innerSourceHeight);
+        blitRegion(graphics, texture, x + width - rightBorder, y + topBorder, u + regionWidth - rightBorder, v + topBorder, rightBorder, innerHeight, rightBorder, innerSourceHeight);
+        blitRegion(graphics, texture, x + leftBorder, y + topBorder, u + leftBorder, v + topBorder, innerWidth, innerHeight, innerSourceWidth, innerSourceHeight);
+    }
+
+    private static void blitRegion(
+            final GuiGraphics graphics,
+            final Identifier texture,
+            final int x,
+            final int y,
+            final int u,
+            final int v,
+            final int width,
+            final int height,
+            final int sourceWidth,
+            final int sourceHeight
+    ) {
+        if (width <= 0 || height <= 0 || sourceWidth <= 0 || sourceHeight <= 0) {
+            return;
+        }
+
+        graphics.blit(RenderPipelines.GUI_TEXTURED, texture, x, y, u, v, width, height, sourceWidth, sourceHeight, BARS_TEXTURE_SIZE, BARS_TEXTURE_SIZE);
     }
 
     private static boolean isEffectHeader(final FormattedCharSequence text) {

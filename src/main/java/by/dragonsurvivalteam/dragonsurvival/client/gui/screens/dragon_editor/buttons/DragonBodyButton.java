@@ -13,6 +13,7 @@ import by.dragonsurvivalteam.dragonsurvival.util.DragonUtils;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -135,10 +136,10 @@ public class DragonBodyButton extends ExtendedButton implements HoverDisableable
 
         if (this.useBackground) {
             Identifier background = state == SELECTED ? SELECTED_BACKGROUND : DESELECTED_BACKGROUND;
-            graphics.blit(background, getX(), getY(), 0, 0, this.width, this.height, 35, 35);
-            graphics.blit(icon, getX() + 5, getY() + 5, 0, state * 25, 25, 25, 32, 104);
+            graphics.blit(RenderPipelines.GUI_TEXTURED, background, getX(), getY(), 0, 0, this.width, this.height, 35, 35);
+            graphics.blit(RenderPipelines.GUI_TEXTURED, icon, getX() + 5, getY() + 5, 0, state * 25, 25, 25, 32, 104);
         } else {
-            graphics.blit(icon, getX(), getY(), 0, state * this.height, this.width, this.height, 32, 104);
+            graphics.blit(RenderPipelines.GUI_TEXTURED, icon, getX(), getY(), 0, state * this.height, this.width, this.height, 32, 104);
         }
     }
 

@@ -7,6 +7,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -40,17 +41,21 @@ public class GrowthCrystalButton extends ExtendedButton {
         double percentageFull = stage.value().getProgress(handler.getGrowth());
 
         if (percentageFull > 1) {
-            graphics.blit(handler.species().value().miscResources().growthCrystal().full(), getX(), getY(), 0, 0, width, height, 8, 16);
+            graphics.blit(RenderPipelines.GUI_TEXTURED, handler.species().value().miscResources().growthCrystal().full(), getX(), getY(), 0, 0, width, height, 8, 16);
             return;
         }
 
-        graphics.blit(handler.species().value().miscResources().growthCrystal().empty(), getX(), getY(), 0, 0, width, height, 8, 16);
+        graphics.blit(RenderPipelines.GUI_TEXTURED, handler.species().value().miscResources().growthCrystal().empty(), getX(), getY(), 0, 0, width, height, 8, 16);
 
         if (percentageFull > 0) {
             int scissorHeight = (int) (percentageFull * height);
             graphics.enableScissor(getX(), getY() + (height - scissorHeight), getX() + width, getY() + height);
-            graphics.blit(handler.species().value().miscResources().growthCrystal().full(), getX(), getY(), 0, 0, width, height, 8, 16);
+            graphics.blit(RenderPipelines.GUI_TEXTURED, handler.species().value().miscResources().growthCrystal().full(), getX(), getY(), 0, 0, width, height, 8, 16);
             graphics.disableScissor();
+        }
+
+        if (super.isHovered()) {
+            graphics.setTooltipForNextFrame(Minecraft.getInstance().font, tooltip, mouseX, mouseY);
         }
     }
 
@@ -79,12 +84,6 @@ public class GrowthCrystalButton extends ExtendedButton {
         if (!isHovered && scrollAmount > 0) {
             scrollAmount = 0;
             updateTooltip();
-        }
-
-        if (isHovered) {
-            //noinspection DataFlowIssue -> screen is not null
-            // FIXME:: UI RENDERING
-            //Minecraft.getInstance().screen.setTooltipForNextRenderPass(tooltip);
         }
 
         return isHovered;

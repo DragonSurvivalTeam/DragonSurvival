@@ -258,9 +258,7 @@ public class AbilityButton extends ExtendedButton {
 
         if (isHovered() && shouldShowDescription()) {
             graphics.pose().pushMatrix();
-            // Render above the other UI elements
-            // FIXME :: UI GRAPHICS
-            //graphics.pose().translate(0, 0, 150);
+            graphics.nextStratum();
             AbilityAndPenaltyTooltipRenderer.drawAbilityTooltip(graphics, mouseX, mouseY, ability, scrollAmount);
             graphics.pose().popMatrix();
         }

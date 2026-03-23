@@ -32,6 +32,7 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
@@ -158,7 +159,7 @@ public class DragonSpeciesScreen extends Screen {
         int startY = guiTop - 13;
 
         DragonStateHandler data = DragonStateProvider.getData(minecraft.player);
-        graphics.blit(BACKGROUND_MAIN, startX, startY, 0, 0, 256, 256, 256, 256);
+        graphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND_MAIN, startX, startY, 0, 0, 256, 256, 256, 256);
 
         for (ScrollableComponent component : scrollableComponents) {
             component.update();
@@ -224,14 +225,14 @@ public class DragonSpeciesScreen extends Screen {
             @Override
             public void renderWidget(@NotNull final GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
                 if (isHovered() && isTop(mouseY)) {
-                    graphics.blit(data.species().value().miscResources().altarBanner(), getX(), getY(), 0, 0, 49, 147, 49, 294);
+                    graphics.blit(RenderPipelines.GUI_TEXTURED, data.species().value().miscResources().altarBanner(), getX(), getY(), 0, 0, 49, 147, 49, 294);
                     List<Either<FormattedText, TooltipComponent>> components = new ArrayList<>();
                     //noinspection DataFlowIssue -> key is present
                     components.addFirst(Either.left(Component.translatable(Translation.Type.DRAGON_SPECIES_INVENTORY_DESCRIPTION.wrap(species.getKey().identifier()))));
                     // FIXME :: UI RENDERING
                     // graphics.renderComponentTooltipFromElements(Minecraft.getInstance().font, components, mouseX, mouseY, ItemStack.EMPTY);
                 } else {
-                    graphics.blit(data.species().value().miscResources().altarBanner(), getX(), getY(), 0, 147, 49, 147, 49, 294);
+                    graphics.blit(RenderPipelines.GUI_TEXTURED, data.species().value().miscResources().altarBanner(), getX(), getY(), 0, 147, 49, 147, 49, 294);
                 }
             }
         };
