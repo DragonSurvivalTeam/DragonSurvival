@@ -787,7 +787,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
 
         if (animationToChangeTo != null) {
             animationController.setTransitionTicks(transitionTicks);
-            state.setAndContinue(animationToChangeTo);
+            state.setAnimation(animationToChangeTo);
         }
 
         double finalAnimationSpeed = animationSpeed;
