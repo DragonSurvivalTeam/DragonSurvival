@@ -54,6 +54,7 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
     public static final Map<Integer, Map<String, Vec3>> BONE_POSITIONS = new HashMap<>();
     private static final List<String> BONES = List.of("BreathSource");
     private static final Map<Integer, DragonAnimationState> ANIMATION_STATES = new HashMap<>();
+    private static final ThreadLocal<InventoryRenderOverrides> INVENTORY_RENDER_OVERRIDES = new ThreadLocal<>();
 
     private static final int RENDER_COLOR = ARGB.color(255, 255, 255);
     private static final int TRANSPARENT_RENDER_COLOR = ARGB.colorFromFloat(HunterHandler.MIN_ALPHA, 1, 1, 1);
@@ -111,6 +112,8 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
         private final List<Double> verticalVelocityHistory = new java.util.ArrayList<>();
         private double currentTailMotionUp;
     }
+
+    private record InventoryRenderOverrides(double bodyYaw, double headYaw, double headPitch) { }
 
     public DragonRenderer(final EntityRendererProvider.Context context, final GeoModel<DragonEntity> model) {
         super(context, model);
@@ -182,7 +185,7 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
         boolean hasWings = handler.body() == null || !handler.body().value().canHideWings() || handler.getCurrentStageCustomization().wings;
         List<String> bonesToHideForToggle = handler.body() == null ? List.of() : List.copyOf(handler.body().value().bonesToHideForToggle());
 
-        return new DragonRenderData(
+        DragonRenderData renderData = new DragonRenderData(
             dragon.getId(),
             player,
             dragon.overrideUUIDWithLocalPlayerForTextureFetch ? Minecraft.getInstance().player : player,
@@ -211,6 +214,14 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
             handler.getVisualScale(player, partialTick),
             bodyScaleMultiplier
         );
+
+        InventoryRenderOverrides inventoryRenderOverrides = INVENTORY_RENDER_OVERRIDES.get();
+
+        if (inventoryRenderOverrides != null) {
+            return createInventoryRenderData(renderData, inventoryRenderOverrides.bodyYaw(), inventoryRenderOverrides.headYaw(), inventoryRenderOverrides.headPitch());
+        }
+
+        return renderData;
     }
 
     public static void clearAnimationState(final int dragonId) {
@@ -219,6 +230,50 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
 
     public static void clearAnimationStates() {
         ANIMATION_STATES.clear();
+    }
+
+    public static DragonRenderData createInventoryRenderData(final DragonRenderData renderData, final double bodyYaw, final double headYaw, final double headPitch) {
+        return new DragonRenderData(
+            renderData.dragonId(),
+            renderData.player(),
+            renderData.texturePlayer(),
+            renderData.handler(),
+            renderData.modelResource(),
+            true,
+            renderData.neckLocked(),
+            renderData.tailLocked(),
+            renderData.overrideUUIDWithLocalPlayerForTextureFetch(),
+            renderData.spectator(),
+            renderData.invisible(),
+            renderData.invisibleToLocalPlayer(),
+            false,
+            renderData.hasWings(),
+            renderData.bonesToHideForToggle(),
+            renderData.prevXRot(),
+            renderData.prevZRot(),
+            bodyYaw,
+            headYaw,
+            headPitch,
+            renderData.gravity(),
+            0,
+            0,
+            0,
+            0,
+            renderData.visualScale(),
+            renderData.bodyScaleMultiplier()
+        );
+    }
+
+    public static void pushInventoryRenderOverrides(final double bodyYaw, final double headYaw, final double headPitch) {
+        INVENTORY_RENDER_OVERRIDES.set(new InventoryRenderOverrides(bodyYaw, headYaw, headPitch));
+    }
+
+    public static void clearInventoryRenderOverrides() {
+        INVENTORY_RENDER_OVERRIDES.remove();
+    }
+
+    public static boolean useInventoryAnimationCache() {
+        return INVENTORY_RENDER_OVERRIDES.get() != null;
     }
 
     private static void updateAnimationState(final DragonEntity dragon) {
@@ -394,7 +449,7 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
     }
 
     // Also used by the layers
-    public int getRenderColor(final DragonRenderData renderData) {
+    public static int getRenderColor(final DragonRenderData renderData) {
         int color;
 
         if (renderData.invisible() && !renderData.invisibleToLocalPlayer()) {

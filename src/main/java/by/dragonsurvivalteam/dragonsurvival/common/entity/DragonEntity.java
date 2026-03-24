@@ -3,6 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.common.entity;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.render.ClientDragonRenderer;
 import by.dragonsurvivalteam.dragonsurvival.client.render.util.AnimationTickTimer;
+import by.dragonsurvivalteam.dragonsurvival.client.render.entity.dragon.DragonRenderer;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.AbilityAnimation;
@@ -116,6 +117,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
     private final boolean[] soundForEmoteHasAlreadyPlayedThisTick = new boolean[MAX_EMOTES];
     private final AnimationTickTimer animationTickTimer = new AnimationTickTimer();
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
+    private final AnimatableInstanceCache inventoryCache = GeckoLibUtil.createInstanceCache(this);
 
     private @Nullable Pair<AbilityAnimation, AnimationType> currentAbilityAnimation;
     private boolean begunPlayingAbilityAnimation;
@@ -829,7 +831,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
 
     @Override
     public AnimatableInstanceCache getAnimatableInstanceCache() {
-        return cache;
+        return DragonRenderer.useInventoryAnimationCache() ? inventoryCache : cache;
     }
 
     // FIXME :: How to do this now?
