@@ -1,19 +1,26 @@
 package by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic;
 
+import com.mojang.datafixers.util.Either;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.FormattedText;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.inventory.tooltip.TooltipComponent;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec2;
 import net.neoforged.neoforge.client.gui.widget.ExtendedButton;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
 import java.util.function.Supplier;
 
 public class HoverButton extends ExtendedButton implements HoverDisableable {
     private final Identifier main;
     private final Identifier hover;
+    private Supplier<List<Either<FormattedText, TooltipComponent>>> tooltipElements;
 
     private boolean disableHover;
     private final int originalWidth;
@@ -69,6 +76,10 @@ public class HoverButton extends ExtendedButton implements HoverDisableable {
         return !disableHover && super.isFocused();
     }
 
+    public void setTooltipElements(final Supplier<List<Either<FormattedText, TooltipComponent>>> tooltipElements) {
+        this.tooltipElements = tooltipElements;
+    }
+
     @Override
     public void renderWidget(@NotNull final GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         // Scale about the center of the button
@@ -86,6 +97,10 @@ public class HoverButton extends ExtendedButton implements HoverDisableable {
         Identifier texture = isHovered() ? hover : main;
         graphics.blit(RenderPipelines.GUI_TEXTURED, texture, getX(), getY(), uOffset, vOffset, originalWidth, originalHeight, textureWidth, textureHeight);
         graphics.pose().popMatrix();
+
+        if (tooltipElements != null && isHovered()) {
+            graphics.setComponentTooltipFromElementsForNextFrame(Minecraft.getInstance().font, tooltipElements.get(), mouseX, mouseY, ItemStack.EMPTY);
+        }
 
         this.renderDefaultLabel(graphics.textRendererForWidget(this, GuiGraphics.HoveredTextEffects.NONE));
     }

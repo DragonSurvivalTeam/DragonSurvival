@@ -21,6 +21,8 @@ import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
+
 import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 
 public class AbilityButton extends ExtendedButton {
@@ -256,13 +258,6 @@ public class AbilityButton extends ExtendedButton {
 
         graphics.pose().popMatrix();
 
-        if (isHovered() && shouldShowDescription()) {
-            graphics.pose().pushMatrix();
-            graphics.nextStratum();
-            AbilityAndPenaltyTooltipRenderer.drawAbilityTooltip(graphics, mouseX, mouseY, ability, scrollAmount);
-            graphics.pose().popMatrix();
-        }
-
         graphics.pose().popMatrix();
     }
 
@@ -286,6 +281,18 @@ public class AbilityButton extends ExtendedButton {
         }
 
         return isHovered;
+    }
+
+    public boolean shouldRenderTooltip() {
+        return visible && ability != null && isHovered() && shouldShowDescription();
+    }
+
+    public DragonAbilityInstance getTooltipAbility() {
+        return Objects.requireNonNull(ability);
+    }
+
+    public int getTooltipScrollAmount() {
+        return scrollAmount;
     }
 
     private void blit(final GuiGraphics graphics, final Identifier texture, int x, int y, int size) {

@@ -7,6 +7,7 @@ import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic.C
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic.HelpButton;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components.AbilityColumnsComponent;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components.ScrollableComponent;
+import by.dragonsurvivalteam.dragonsurvival.client.render.AbilityAndPenaltyTooltipRenderer;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.mixins.HolderSet$NamedAccess;
@@ -178,6 +179,17 @@ public class DragonAbilityScreen extends Screen {
         }
 
         super.render(graphics, mouseX, mouseY, partialTick);
+        renderDeferredTooltip(graphics, mouseX, mouseY);
+    }
+
+    private void renderDeferredTooltip(final GuiGraphics graphics, final int mouseX, final int mouseY) {
+        for (int i = renderables.size() - 1; i >= 0; i--) {
+            if (renderables.get(i) instanceof AbilityButton button && button.shouldRenderTooltip()) {
+                graphics.nextStratum();
+                AbilityAndPenaltyTooltipRenderer.drawAbilityTooltip(graphics, mouseX, mouseY, button.getTooltipAbility(), button.getTooltipScrollAmount());
+                return;
+            }
+        }
     }
 
     private void drawExperienceBar(final GuiGraphics guiGraphics, int y, int initialX, float hoverProgress) {

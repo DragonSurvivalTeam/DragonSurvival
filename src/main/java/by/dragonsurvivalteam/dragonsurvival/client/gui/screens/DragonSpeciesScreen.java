@@ -8,6 +8,7 @@ import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic.H
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components.BarComponent;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components.DietMenuComponent;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components.ScrollableComponent;
+import by.dragonsurvivalteam.dragonsurvival.client.render.AbilityAndPenaltyTooltipRenderer;
 import by.dragonsurvivalteam.dragonsurvival.client.util.TextRenderUtil;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
@@ -175,6 +176,18 @@ public class DragonSpeciesScreen extends Screen {
                 renderable.render(graphics, mouseX, mouseY, partialTick);
             }
         }
+
+        renderDeferredTooltip(graphics, mouseX, mouseY);
+    }
+
+    private void renderDeferredTooltip(final GuiGraphics graphics, final int mouseX, final int mouseY) {
+        for (int i = renderables.size() - 1; i >= 0; i--) {
+            if (renderables.get(i) instanceof PenaltyButton button && button.shouldRenderTooltip()) {
+                graphics.nextStratum();
+                AbilityAndPenaltyTooltipRenderer.drawPenaltyTooltip(graphics, mouseX, mouseY, button.getPenalty());
+                return;
+            }
+        }
     }
 
     @Override
@@ -269,10 +282,11 @@ public class DragonSpeciesScreen extends Screen {
 
         // Growth stage button
         StageResources.GrowthIcon growthIcon = StageResources.getGrowthIcon(data.species(), data.stageKey());
-        growthButton = new HoverButton(startX + 99, startY - 21, 20, growthIcon.icon(), growthIcon.hoverIcon(), () -> {
+        growthButton = new HoverButton(startX + 99, startY - 21, 20, growthIcon.icon(), growthIcon.hoverIcon());
+        growthButton.setTooltipElements(() -> {
             DragonStateHandler handler = DragonStateProvider.getData(minecraft.player);
-            Pair<Tooltip, Integer> growthDescriptionResult = handler.getGrowthDescription(growthTooltipScroll);
-            Tooltip components = growthDescriptionResult.getFirst();
+            Pair<List<Either<FormattedText, TooltipComponent>>, Integer> growthDescriptionResult = handler.getGrowthDescription(growthTooltipScroll);
+            List<Either<FormattedText, TooltipComponent>> components = growthDescriptionResult.getFirst();
             growthTooltipScroll = growthDescriptionResult.getSecond();
 
             return components;

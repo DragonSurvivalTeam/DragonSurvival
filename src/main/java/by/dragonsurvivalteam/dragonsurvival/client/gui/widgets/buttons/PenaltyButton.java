@@ -1,6 +1,5 @@
 package by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons;
 
-import by.dragonsurvivalteam.dragonsurvival.client.render.AbilityAndPenaltyTooltipRenderer;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty.DragonPenalty;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import net.minecraft.client.gui.GuiGraphics;
@@ -31,13 +30,14 @@ public class PenaltyButton extends ExtendedButton {
     public void renderWidget(@NotNull final GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         Identifier icon = penalty.value().icon().orElse(MissingTextureAtlasSprite.getLocation());
         blit(graphics, icon, getX(), getY(), SIZE);
+    }
 
-        if (isHovered()) {
-            graphics.pose().pushMatrix();
-            graphics.nextStratum();
-            AbilityAndPenaltyTooltipRenderer.drawPenaltyTooltip(graphics, mouseX, mouseY, penalty);
-            graphics.pose().popMatrix();
-        }
+    public boolean shouldRenderTooltip() {
+        return visible && isHovered();
+    }
+
+    public Holder<DragonPenalty> getPenalty() {
+        return penalty;
     }
 
     // TODO :: add in generic helper method

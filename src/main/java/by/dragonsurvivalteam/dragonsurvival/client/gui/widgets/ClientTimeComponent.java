@@ -34,8 +34,7 @@ public class ClientTimeComponent implements ClientTooltipComponent {
 
     @Override
     public void renderText(@NotNull GuiGraphics graphics, @NotNull Font font, int x, int y) {
-        // Y offset to align the height of the text with the center of the item
-        // FIXME :: UI RENDERING
-        //font.drawInBatch(tooltip, mouseX + ICON_SIZE, mouseY + 4, -1, true, matrix, bufferSource, Font.DisplayMode.NORMAL, 0, LightTexture.FULL_BRIGHT);
+        // Offset the text slightly so it centers against the 16x16 item icon.
+        graphics.drawString(font, tooltip, x + ICON_SIZE, y + 4, 0xFFFFFFFF, true);
     }
 }

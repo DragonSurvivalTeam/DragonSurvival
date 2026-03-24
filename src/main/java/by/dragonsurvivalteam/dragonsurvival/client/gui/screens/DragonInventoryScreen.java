@@ -19,6 +19,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import by.dragonsurvivalteam.dragonsurvival.server.containers.DragonContainer;
 import com.mojang.blaze3d.platform.InputConstants;
+import com.mojang.datafixers.util.Either;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -30,9 +31,11 @@ import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.FormattedText;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.client.gui.widget.ExtendedButton;
@@ -172,10 +175,11 @@ public class DragonInventoryScreen extends AbstractContainerScreen<DragonContain
 
         // Growth stage button
         StageResources.GrowthIcon growthIcon = StageResources.getGrowthIcon(data.species(), data.stageKey());
-        growthButton = new HoverButton(leftPos + 175, topPos + 4, 20, growthIcon.icon(), growthIcon.hoverIcon(), () -> {
+        growthButton = new HoverButton(leftPos + 175, topPos + 4, 20, growthIcon.icon(), growthIcon.hoverIcon());
+        growthButton.setTooltipElements(() -> {
             DragonStateHandler handler = DragonStateProvider.getData(minecraft.player);
-            Pair<Tooltip, Integer> growthDescriptionResult = handler.getGrowthDescription(growthTooltipScroll);
-            Tooltip tooltip = growthDescriptionResult.getFirst();
+            Pair<List<Either<FormattedText, TooltipComponent>>, Integer> growthDescriptionResult = handler.getGrowthDescription(growthTooltipScroll);
+            List<Either<FormattedText, TooltipComponent>> tooltip = growthDescriptionResult.getFirst();
             growthTooltipScroll = growthDescriptionResult.getSecond();
 
             return tooltip;

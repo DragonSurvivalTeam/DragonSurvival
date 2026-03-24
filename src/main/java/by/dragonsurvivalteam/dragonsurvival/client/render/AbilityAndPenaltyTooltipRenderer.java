@@ -109,10 +109,10 @@ public class AbilityAndPenaltyTooltipRenderer {
 
                     if (isEffectHeader(text)) {
                         RenderingUtils.setShaderColor(DSColors.withAlpha(DSColors.GOLD, 1));
-                        graphics.blitSprite(RenderPipelines.GUI, EFFECT_HEADER, startPosition, textY - 4, maxLineWidth - 10, 9);
+                        graphics.blitSprite(RenderPipelines.GUI_TEXTURED, EFFECT_HEADER, startPosition, textY - 4, maxLineWidth - 10, 9);
                         RenderingUtils.setShaderColor(0xFFFFFFFF);
                     } else {
-                        graphics.drawString(Minecraft.getInstance().font, text, startPosition, textY, DSColors.GRAY);
+                        graphics.drawString(Minecraft.getInstance().font, text, startPosition, textY, DSColors.withAlpha(DSColors.GRAY, 1));
                     }
 
                     counter++;
@@ -142,10 +142,10 @@ public class AbilityAndPenaltyTooltipRenderer {
         }
 
         if (!shiftInfo.isEmpty()) {
-            graphics.drawCenteredString(Minecraft.getInstance().font, Component.translatable(INFO_SHIFT).withStyle(ChatFormatting.DARK_GRAY), trueX + backgroundWidth / 2, trueY + 47 + (description.size() - 1) * 9, 0);
+            graphics.drawCenteredString(Minecraft.getInstance().font, Component.translatable(INFO_SHIFT).withStyle(ChatFormatting.DARK_GRAY), trueX + backgroundWidth / 2, trueY + 47 + (description.size() - 1) * 9, DSColors.withAlpha(DSColors.DARK_GRAY, 1));
         }
 
-        graphics.blitSprite(RenderPipelines.GUI, icon, trueX + 5, trueY + 5, 16, 16);
+        graphics.blitSprite(RenderPipelines.GUI_TEXTURED, icon, trueX + 5, trueY + 5, 16, 16);
     }
 
     private static void blitWithBorder(final GuiGraphics graphics, final Identifier texture, final int x, final int y, final int u, final int v, final int width, final int height, final int regionWidth, final int regionHeight, final int border) {
