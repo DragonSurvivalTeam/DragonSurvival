@@ -33,19 +33,15 @@ public class DragonModel extends GeoModel<DragonEntity> {
 
     @Override
     public @NotNull Identifier getModelResource(@NotNull GeoRenderState renderState) {
-        DragonEntity dragon = renderState.getGeckolibData(DragonRenderer.DRAGON_ENTITY);
-        Identifier model;
-
-        if (dragon.getPlayer() == null) {
-            model = DragonBody.DEFAULT_MODEL;
-        } else {
-            model = DragonStateProvider.getData(dragon.getPlayer()).getModel();
-        }
+        DragonRenderer.DragonRenderData renderData = renderState.getGeckolibData(DragonRenderer.DRAGON_RENDER_DATA);
+        Identifier model = renderData == null ? DragonBody.DEFAULT_MODEL : renderData.modelResource();
 
         try {
             getBakedModel(model);
         } catch (Exception e) {
-            DragonSurvival.LOGGER.error("Model not found for dragon species: {}", Translation.Type.DRAGON_SPECIES.wrap(DragonStateProvider.getData(dragon.getPlayer()).speciesKey().identifier()));
+            if (renderData != null && renderData.handler() != null) {
+                DragonSurvival.LOGGER.error("Model not found for dragon species: {}", Translation.Type.DRAGON_SPECIES.wrap(renderData.handler().speciesKey().identifier()));
+            }
             return DragonBody.DEFAULT_MODEL;
         }
 
@@ -54,23 +50,22 @@ public class DragonModel extends GeoModel<DragonEntity> {
 
     @Override
     public @NotNull Identifier getTextureResource(final GeoRenderState renderState) {
-        DragonEntity dragon = renderState.getGeckolibData(DragonRenderer.DRAGON_ENTITY);
+        DragonRenderer.DragonRenderData renderData = renderState.getGeckolibData(DragonRenderer.DRAGON_RENDER_DATA);
         if (overrideTexture != null && RenderingUtils.hasTexture(overrideTexture)) {
             return overrideTexture;
         }
 
-        Player player;
-        if (dragon.overrideUUIDWithLocalPlayerForTextureFetch) {
-            player = Minecraft.getInstance().player;
-        } else {
-            player = dragon.getPlayer();
-        }
+        Player player = renderData == null ? null : renderData.texturePlayer();
 
         if (player == null) {
             return defaultTexture;
         }
 
-        DragonStateHandler handler = DragonStateProvider.getData(player);
+        DragonStateHandler handler = renderData != null ? renderData.handler() : null;
+
+        if (handler == null) {
+            return defaultTexture;
+        }
         DragonStageCustomization customization = handler.getCurrentStageCustomization();
 
         // Don't try to fetch skins if it is a fake client player; the only case where we need custom skins for a fake client player
@@ -89,7 +84,7 @@ public class DragonModel extends GeoModel<DragonEntity> {
 
         ResourceKey<DragonStage> stageKey = handler.stageKey();
         if (handler.needsSkinRecompilation()) {
-            DragonEditorHandler.generateSkinTextures(dragon);
+            DragonEditorHandler.generateSkinTextures(player, handler);
             handler.getSkinData().isCompiled.put(handler.stageKey(), true);
             handler.getSkinData().recompileSkin.put(handler.stageKey(), false);
         }

@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.client.util;
 
+import by.dragonsurvivalteam.dragonsurvival.client.render.entity.dragon.DragonRenderer;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEntities;
@@ -14,6 +15,7 @@ import software.bernie.geckolib.animation.AnimationController;
 import software.bernie.geckolib.animation.RawAnimation;
 import software.bernie.geckolib.animation.object.PlayState;
 
+import java.util.function.Consumer;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
@@ -76,6 +78,10 @@ public class FakeClientPlayerUtils {
         return index;
     }
 
+    public static void processDragons(final Consumer<DragonEntity> processor) {
+        FAKE_DRAGONS.values().forEach(processor);
+    }
+
     @SubscribeEvent
     public static void clientTick(final ClientTickEvent.Pre event) {
         FAKE_PLAYERS.forEach((index, player) -> {
@@ -86,6 +92,7 @@ public class FakeClientPlayerUtils {
                 if (dragon != null) {
                     dragon.remove(RemovalReason.DISCARDED);
                     FAKE_DRAGONS.remove(index);
+                    DragonRenderer.clearAnimationState(dragon.getId());
                 }
 
                 FAKE_PLAYERS.remove(index);

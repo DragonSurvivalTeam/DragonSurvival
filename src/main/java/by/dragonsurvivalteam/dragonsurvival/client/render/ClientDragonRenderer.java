@@ -153,6 +153,7 @@ public class ClientDragonRenderer {
 
             if (dragon != null) {
                 DragonRenderer.BONE_POSITIONS.remove(dragon.getId());
+                DragonRenderer.clearAnimationState(dragon.getId());
             }
         }
     }
@@ -161,6 +162,7 @@ public class ClientDragonRenderer {
     public static void clearEntries(final LevelEvent.Unload event) {
         PLAYER_DRAGON_MAP.clear();
         DragonRenderer.BONE_POSITIONS.clear();
+        DragonRenderer.clearAnimationStates();
     }
 
     @SubscribeEvent

@@ -1,6 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system;
 
-import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
+import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
+import net.minecraft.world.entity.player.Player;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.fml.common.EventBusSubscriber;
 
@@ -9,14 +10,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 public class DragonEditorHandler {
     //private static ShaderInstance skinGenerationShader;
 
-    public static void generateSkinTextures(final DragonEntity dragon) {
-//        Player player = dragon.getPlayer();
-//
-//        if (player == null) {
-//            return;
-//        }
-//
-//        DragonStateHandler handler = DragonStateProvider.getData(player);
+    public static void generateSkinTextures(final Player player, final DragonStateHandler handler) {
 //        DragonBody.TextureSize textureSize = handler.body().value().textureSize();
 //
 //        GlStateBackup state = new GlStateBackup();
