@@ -1,0 +1,34 @@
+{
+  "variants": {
+    "facing=east,filled=false": {
+      "model": "dragonsurvival:block/cave_source_of_magic_empty",
+      "y": 90
+    },
+    "facing=east,filled=true": {
+      "model": "dragonsurvival:block/cave_source_of_magic",
+      "y": 90
+    },
+    "facing=north,filled=false": {
+      "model": "dragonsurvival:block/cave_source_of_magic_empty"
+    },
+    "facing=north,filled=true": {
+      "model": "dragonsurvival:block/cave_source_of_magic"
+    },
+    "facing=south,filled=false": {
+      "model": "dragonsurvival:block/cave_source_of_magic_empty",
+      "y": 180
+    },
+    "facing=south,filled=true": {
+      "model": "dragonsurvival:block/cave_source_of_magic",
+      "y": 180
+    },
+    "facing=west,filled=false": {
+      "model": "dragonsurvival:block/cave_source_of_magic_empty",
+      "y": 270
+    },
+    "facing=west,filled=true": {
+      "model": "dragonsurvival:block/cave_source_of_magic",
+      "y": 270
+    }
+  }
+}

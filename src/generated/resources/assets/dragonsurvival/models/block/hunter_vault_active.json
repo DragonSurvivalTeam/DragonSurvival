@@ -1,0 +1,9 @@
+{
+  "parent": "minecraft:block/template_vault",
+  "textures": {
+    "bottom": "dragonsurvival:block/hunter_vault_bottom",
+    "front": "dragonsurvival:block/hunter_vault_front_on",
+    "side": "dragonsurvival:block/hunter_vault_side_on",
+    "top": "dragonsurvival:block/hunter_vault_top"
+  }
+}

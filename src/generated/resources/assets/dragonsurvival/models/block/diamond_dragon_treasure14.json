@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/snow_height14",
+  "textures": {
+    "particle": "dragonsurvival:block/diamond_dragon_treasure",
+    "texture": "dragonsurvival:block/diamond_dragon_treasure"
+  }
+}

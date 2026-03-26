@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/door_bottom_left",
+  "textures": {
+    "bottom": "dragonsurvival:block/gothic_dragon_door_center",
+    "top": "dragonsurvival:block/gothic_dragon_door_center"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "dragonsurvival:block/skeleton_dragon_tail_1_skin6",
+      "y": 270
+    },
+    "facing=north": {
+      "model": "dragonsurvival:block/skeleton_dragon_tail_1_skin6",
+      "y": 180
+    },
+    "facing=south": {
+      "model": "dragonsurvival:block/skeleton_dragon_tail_1_skin6"
+    },
+    "facing=west": {
+      "model": "dragonsurvival:block/skeleton_dragon_tail_1_skin6",
+      "y": 90
+    }
+  }
+}

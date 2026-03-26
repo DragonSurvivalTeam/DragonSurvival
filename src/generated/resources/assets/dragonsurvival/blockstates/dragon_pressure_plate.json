@@ -1,0 +1,34 @@
+{
+  "variants": {
+    "facing=east,powered=false": {
+      "model": "dragonsurvival:block/dragon_pressure_plate",
+      "y": 90
+    },
+    "facing=east,powered=true": {
+      "model": "dragonsurvival:block/dragon_pressure_plate_down",
+      "y": 90
+    },
+    "facing=north,powered=false": {
+      "model": "dragonsurvival:block/dragon_pressure_plate"
+    },
+    "facing=north,powered=true": {
+      "model": "dragonsurvival:block/dragon_pressure_plate_down"
+    },
+    "facing=south,powered=false": {
+      "model": "dragonsurvival:block/dragon_pressure_plate",
+      "y": 180
+    },
+    "facing=south,powered=true": {
+      "model": "dragonsurvival:block/dragon_pressure_plate_down",
+      "y": 180
+    },
+    "facing=west,powered=false": {
+      "model": "dragonsurvival:block/dragon_pressure_plate",
+      "y": 270
+    },
+    "facing=west,powered=true": {
+      "model": "dragonsurvival:block/dragon_pressure_plate_down",
+      "y": 270
+    }
+  }
+}

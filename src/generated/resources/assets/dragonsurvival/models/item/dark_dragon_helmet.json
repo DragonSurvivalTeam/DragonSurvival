@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "dragonsurvival:item/dark_dragon_helmet"
+  }
+}

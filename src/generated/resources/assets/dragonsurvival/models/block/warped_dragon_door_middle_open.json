@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/door_bottom_left_open",
+  "textures": {
+    "bottom": "dragonsurvival:block/warped_dragon_door_center",
+    "top": "dragonsurvival:block/warped_dragon_door_center"
+  }
+}

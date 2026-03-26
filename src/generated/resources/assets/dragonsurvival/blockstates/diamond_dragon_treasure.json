@@ -1,0 +1,28 @@
+{
+  "variants": {
+    "layers=1": {
+      "model": "dragonsurvival:block/diamond_dragon_treasure2"
+    },
+    "layers=2": {
+      "model": "dragonsurvival:block/diamond_dragon_treasure4"
+    },
+    "layers=3": {
+      "model": "dragonsurvival:block/diamond_dragon_treasure6"
+    },
+    "layers=4": {
+      "model": "dragonsurvival:block/diamond_dragon_treasure8"
+    },
+    "layers=5": {
+      "model": "dragonsurvival:block/diamond_dragon_treasure10"
+    },
+    "layers=6": {
+      "model": "dragonsurvival:block/diamond_dragon_treasure12"
+    },
+    "layers=7": {
+      "model": "dragonsurvival:block/diamond_dragon_treasure14"
+    },
+    "layers=8": {
+      "model": "dragonsurvival:block/diamond_dragon_treasure"
+    }
+  }
+}

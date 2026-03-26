@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/pressure_plate_down",
+  "textures": {
+    "texture": "dragonsurvival:block/forest_dragon_pressure_plate"
+  }
+}

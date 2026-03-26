@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "dragonsurvival:block/rose_quartz_dragon_treasure"
+  }
+}

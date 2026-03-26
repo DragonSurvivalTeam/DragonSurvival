@@ -1,0 +1,6 @@
+{
+  "parent": "dragonsurvival:block/primordial_anchor",
+  "textures": {
+    "2": "dragonsurvival:block/primordial_anchor_empty"
+  }
+}

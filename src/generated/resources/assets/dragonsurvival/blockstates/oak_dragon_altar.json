@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "dragonsurvival:block/oak_dragon_altar",
+      "y": 270
+    },
+    "facing=north": {
+      "model": "dragonsurvival:block/oak_dragon_altar",
+      "y": 180
+    },
+    "facing=south": {
+      "model": "dragonsurvival:block/oak_dragon_altar"
+    },
+    "facing=west": {
+      "model": "dragonsurvival:block/oak_dragon_altar",
+      "y": 90
+    }
+  }
+}

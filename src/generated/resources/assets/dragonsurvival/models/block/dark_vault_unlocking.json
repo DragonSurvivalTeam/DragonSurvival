@@ -1,0 +1,9 @@
+{
+  "parent": "minecraft:block/template_vault",
+  "textures": {
+    "bottom": "dragonsurvival:block/dark_vault_bottom",
+    "front": "dragonsurvival:block/dark_vault_front_ejecting",
+    "side": "dragonsurvival:block/dark_vault_side_off",
+    "top": "dragonsurvival:block/dark_vault_top"
+  }
+}
