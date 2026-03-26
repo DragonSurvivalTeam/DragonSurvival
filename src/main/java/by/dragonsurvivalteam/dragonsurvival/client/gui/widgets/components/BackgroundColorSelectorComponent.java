@@ -77,8 +77,8 @@ public class BackgroundColorSelectorComponent extends AbstractContainerEventHand
             GuiGraphicsExtractor.renderOutline(x, y + 14, xSize, ySize - 18, Color.black.getRGB());
             GuiGraphicsExtractor.renderOutline(x + 1, y + 15, xSize - 2, ySize - 20, INNER_BORDER_COLOR);
 
-            colorPicker.render(GuiGraphicsExtractor, pMouseX, pMouseY, pPartialTicks);
-            resetButton.render(GuiGraphicsExtractor, pMouseX, pMouseY, pPartialTicks);
+            colorPicker.extractRenderState(GuiGraphicsExtractor, pMouseX, pMouseY, pPartialTicks);
+            resetButton.extractRenderState(GuiGraphicsExtractor, pMouseX, pMouseY, pPartialTicks);
             GuiGraphicsExtractor.pose().popMatrix();
         }
     }

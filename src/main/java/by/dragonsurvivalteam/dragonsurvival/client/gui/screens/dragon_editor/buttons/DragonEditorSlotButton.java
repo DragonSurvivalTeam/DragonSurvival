@@ -43,7 +43,7 @@ public class DragonEditorSlotButton extends ExtendedButton {
     }
 
     @Override
-    public void renderWidget(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partialTick) {
+    public void extractRenderState(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partialTick) {
         active = visible = screen.showUi;
 
         if (screen.selectedSaveSlot == slot) {

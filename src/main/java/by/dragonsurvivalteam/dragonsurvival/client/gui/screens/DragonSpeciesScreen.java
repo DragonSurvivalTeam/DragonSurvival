@@ -166,7 +166,7 @@ public class DragonSpeciesScreen extends Screen {
             component.update();
         }
 
-        this.renderBackground(graphics, mouseX, mouseY, partialTick);
+        this.extractBackground(graphics, mouseX, mouseY, partialTick);
 
         // Hack to absolutely ensure the banner is rendered behind everything else
         speciesBanner.render(graphics, mouseX, mouseY, partialTick);
@@ -191,7 +191,7 @@ public class DragonSpeciesScreen extends Screen {
     }
 
     @Override
-    public void renderBackground(@NotNull final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
+    public void extractBackground(@NotNull final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         // Don't render the vanilla background, it darkens the UI in an undesirable way
     }
 
@@ -216,7 +216,7 @@ public class DragonSpeciesScreen extends Screen {
         if (DietEntryCache.isEmpty(species)) {
             ExtendedButton noDietText = new ExtendedButton(startX + 77, startY + 30, 140, 20, Component.empty(), button -> {}) {
                 @Override
-                public void renderWidget(@NotNull final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
+                public void extractRenderState(@NotNull final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
                     final FormattedText buttonText = Minecraft.getInstance().font.ellipsize(this.getMessage(), this.width + 26); // Remove 6 pixels so that the text is always contained within the button's borders
                     TextRenderUtil.drawScaledText(graphics, this.getX(), this.getY() + (float) (this.height - 8) / 2, 0.8f, buttonText.getString(), getFGColor());
                 }
@@ -236,7 +236,7 @@ public class DragonSpeciesScreen extends Screen {
             }
 
             @Override
-            public void renderWidget(@NotNull final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
+            public void extractRenderState(@NotNull final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
                 if (isHovered() && isTop(mouseY)) {
                     graphics.blit(RenderPipelines.GUI_TEXTURED, data.species().value().miscResources().altarBanner(), getX(), getY(), 0, 0, 49, 147, 49, 294);
                     List<Either<FormattedText, TooltipComponent>> components = new ArrayList<>();
@@ -340,7 +340,7 @@ public class DragonSpeciesScreen extends Screen {
         } else {
             ExtendedButton noPenaltiesText = new ExtendedButton(startX + 82, startY + 100, 140, 10, Component.empty(), button -> { /* Nothing to do */ }) {
                 @Override
-                public void renderWidget(@NotNull final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
+                public void extractRenderState(@NotNull final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
                     final FormattedText buttonText = Minecraft.getInstance().font.ellipsize(this.getMessage(), this.width + 26); // Remove 6 pixels so that the text is always contained within the button's borders
                     TextRenderUtil.drawScaledText(graphics, this.getX(), this.getY() + (float) (this.height - 8) / 2, 0.8f, buttonText.getString(), getFGColor());
                 }

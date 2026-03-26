@@ -46,13 +46,13 @@ public class BackgroundColorButton extends ExtendedButton {
         if (!toggled) {
             renderButton = new ExtendedButton(0, 0, 0, 0, Component.empty(), button -> { /* Nothing to do */ }) {
                 @Override
-                public void renderWidget(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int p_230430_2_, int p_230430_3_, float p_230430_4_) {
+                public void extractRenderState(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int p_230430_2_, int p_230430_3_, float p_230430_4_) {
                     active = visible = false;
 
                     if (colorComponent != null) {
                         colorComponent.visible = BackgroundColorButton.this.visible;
                         if (colorComponent.visible) {
-                            colorComponent.render(GuiGraphicsExtractor, p_230430_2_, p_230430_3_, p_230430_4_);
+                            colorComponent.extractRenderState(GuiGraphicsExtractor, p_230430_2_, p_230430_3_, p_230430_4_);
                         }
                     }
                 }
@@ -71,7 +71,7 @@ public class BackgroundColorButton extends ExtendedButton {
     }
 
     @Override
-    public void renderWidget(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partial) {
+    public void extractRenderState(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partial) {
         active = !screen.preset.get(screen.stage.getKey()).get().defaultSkin;
 
         if (toggled && (!visible || !isMouseOver(mouseX, mouseY) && (colorComponent == null || !colorComponent.isMouseOver(mouseX, mouseY)))) {

@@ -150,7 +150,7 @@ public class DragonEmoteScreen extends Screen {
     }
 
     @Override
-    public void renderBackground(@NotNull final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
+    public void extractBackground(@NotNull final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         // Don't render the vanilla background, it darkens the UI in an undesirable way
     }
 

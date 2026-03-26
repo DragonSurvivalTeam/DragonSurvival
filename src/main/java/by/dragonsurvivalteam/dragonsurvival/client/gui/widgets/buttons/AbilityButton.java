@@ -203,7 +203,7 @@ public class AbilityButton extends ExtendedButton {
     }
 
     @Override
-    public void renderWidget(@NotNull final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
+    public void extractRenderState(@NotNull final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         if (isHotbar) {
             // Currently the easiest way to track assignments (and not end up with duplicate icons)
             // Alternative would be to go through all buttons and remove the ability that matches the swapped ability (in 'onRelease')

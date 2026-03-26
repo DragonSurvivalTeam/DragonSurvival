@@ -56,7 +56,7 @@ public class SourceOfMagicScreen extends AbstractContainerScreen<SourceOfMagicCo
     }
 
     @Override
-    protected void renderLabels(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY) { /* Nothing to do */ }
+    protected void extractLabels(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY) { /* Nothing to do */ }
 
     @Override
     public boolean mouseScrolled(final double mouseX, final double mouseY, final double scrollX, final double scrollY) {

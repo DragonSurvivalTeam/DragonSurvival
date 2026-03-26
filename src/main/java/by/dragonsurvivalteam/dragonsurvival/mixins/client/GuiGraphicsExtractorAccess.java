@@ -1,10 +1,5 @@
 package by.dragonsurvivalteam.dragonsurvival.mixins.client;
 
-import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.resources.Identifier;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.gen.Invoker;
-
 // FIXME
 //@Mixin(GuiGraphicsExtractor.class)
 public interface GuiGraphicsExtractorAccess {

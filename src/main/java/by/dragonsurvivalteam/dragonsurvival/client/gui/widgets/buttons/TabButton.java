@@ -73,7 +73,7 @@ public class TabButton extends ExtendedButton {
     }
 
     @Override
-    public void renderWidget(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float p_230431_4_) {
+    public void extractRenderState(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float p_230431_4_) {
         boolean current = isCurrent();
 
         if (current) {

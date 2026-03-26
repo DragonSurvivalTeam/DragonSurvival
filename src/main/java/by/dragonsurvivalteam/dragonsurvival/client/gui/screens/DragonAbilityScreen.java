@@ -197,7 +197,7 @@ public class DragonAbilityScreen extends Screen {
     }
 
     @Override
-    public void renderBackground(@NotNull GuiGraphicsExtractor pGuiGraphicsExtractor, int pMouseX, int pMouseY, float pPartialTick) {
+    public void extractBackground(@NotNull GuiGraphicsExtractor pGuiGraphicsExtractor, int pMouseX, int pMouseY, float pPartialTick) {
         // Don't render the vanilla background, it darkens the UI in an undesirable way
     }
 

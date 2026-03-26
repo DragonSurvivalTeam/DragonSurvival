@@ -187,7 +187,7 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
 
     @Override
     public void render(@NotNull final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
-        renderBackground(graphics, mouseX, mouseY, partialTick);
+        extractBackground(graphics, mouseX, mouseY, partialTick);
 
         tick++;
 
@@ -329,7 +329,7 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
     }
 
     @Override
-    public void renderBackground(@NotNull final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
+    public void extractBackground(@NotNull final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         graphics.fillGradient(0, 0, width, height, -1072689136, -804253680);
         renderBorders(graphics, BACKGROUND_TEXTURE, 0, width, 25, height - 25, width, height);
     }
@@ -361,8 +361,8 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
             boolean toggled;
 
             @Override
-            public void renderWidget(@NotNull final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partial) {
-                super.renderWidget(graphics, mouseX, mouseY, partial);
+            public void extractRenderState(@NotNull final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partial) {
+                super.extractRenderState(graphics, mouseX, mouseY, partial);
                 if (toggled && (!visible || !confirmation)) {
                     toggled = false;
                     Screen screen = Minecraft.getInstance().screen;
@@ -383,12 +383,12 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
                     if (!toggled) {
                         renderButton = new ExtendedButton(0, 0, 0, 0, Component.empty(), button -> { }) {
                             @Override
-                            public void renderWidget(@NotNull final GuiGraphicsExtractor graphics, int pMouseX, int pMouseY, float pPartialTick) {
+                            public void extractRenderState(@NotNull final GuiGraphicsExtractor graphics, int pMouseX, int pMouseY, float pPartialTick) {
                                 if (confirmComponent != null && confirmation) {
                                     confirmComponent.render(graphics, pMouseX, pMouseY, pPartialTick);
                                 }
 
-                                super.renderWidget(graphics, pMouseX, pMouseY, pPartialTick);
+                                super.extractRenderState(graphics, pMouseX, pMouseY, pPartialTick);
                             }
                         };
                         ((ScreenAccessor) DragonAltarScreen.this).dragonSurvival$children().add(confirmComponent);

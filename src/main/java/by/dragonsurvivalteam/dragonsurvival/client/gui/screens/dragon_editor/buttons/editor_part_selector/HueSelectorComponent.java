@@ -84,7 +84,7 @@ public class HueSelectorComponent extends AbstractContainerEventHandler implemen
             screen.actionHistory.add(new DragonEditorScreen.EditorAction<>(setGlowingAction, !settingsSupplier.get().isGlowing));
         }) {
             @Override
-            public void renderWidget(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partialTick) {
+            public void extractRenderState(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partialTick) {
                 Identifier texture = settingsSupplier.get().isGlowing ? GLOW_ON : GLOW_OFF;
                 GuiGraphicsExtractor.pose().pushMatrix();
                 // FIXME :: UI GRAPHICS
@@ -132,7 +132,7 @@ public class HueSelectorComponent extends AbstractContainerEventHandler implemen
             }
 
             @Override
-            public void renderWidget(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partial) {
+            public void extractRenderState(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partial) {
                 if (visible) {
                     this.isHovered = mouseX >= getX() && mouseY >= getY() && mouseX < getX() + getWidth() && mouseY < getY() + getHeight();
                     // FIXME :: UI GRAPHICS
@@ -187,7 +187,7 @@ public class HueSelectorComponent extends AbstractContainerEventHandler implemen
             }
 
             @Override
-            public void renderWidget(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partial) {
+            public void extractRenderState(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partial) {
                 if (visible) {
                     this.isHovered = mouseX >= getX() && mouseY >= getY() && mouseX < getX() + getWidth() && mouseY < getY() + getHeight();
                     float value1 = (hueSlider.getValueInt()) / 360f;
@@ -247,7 +247,7 @@ public class HueSelectorComponent extends AbstractContainerEventHandler implemen
             }
 
             @Override
-            public void renderWidget(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partial) {
+            public void extractRenderState(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partial) {
                 if (visible) {
                     this.isHovered = mouseX >= getX() && mouseY >= getY() && mouseX < getX() + getWidth() && mouseY < getY() + getHeight();
                     float value1 = (hueSlider.getValueInt()) / 360f;
@@ -309,15 +309,15 @@ public class HueSelectorComponent extends AbstractContainerEventHandler implemen
         GuiGraphicsExtractor.renderOutline(x, y, xSize + 2, ySize - 10, Color.black.getRGB());
         GuiGraphicsExtractor.renderOutline(x + 1, y + 1, xSize, ySize - 12, INNER_BORDER_COLOR);
 
-        glowing.render(GuiGraphicsExtractor, pMouseX, pMouseY, pPartialTicks);
+        glowing.extractRenderState(GuiGraphicsExtractor, pMouseX, pMouseY, pPartialTicks);
 
-        hueReset.render(GuiGraphicsExtractor, pMouseX, pMouseY, pPartialTicks);
-        saturationReset.render(GuiGraphicsExtractor, pMouseX, pMouseY, pPartialTicks);
-        brightnessReset.render(GuiGraphicsExtractor, pMouseX, pMouseY, pPartialTicks);
+        hueReset.extractRenderState(GuiGraphicsExtractor, pMouseX, pMouseY, pPartialTicks);
+        saturationReset.extractRenderState(GuiGraphicsExtractor, pMouseX, pMouseY, pPartialTicks);
+        brightnessReset.extractRenderState(GuiGraphicsExtractor, pMouseX, pMouseY, pPartialTicks);
 
-        hueSlider.render(GuiGraphicsExtractor, pMouseX, pMouseY, pPartialTicks);
-        saturationSlider.render(GuiGraphicsExtractor, pMouseX, pMouseY, pPartialTicks);
-        brightnessSlider.render(GuiGraphicsExtractor, pMouseX, pMouseY, pPartialTicks);
+        hueSlider.extractRenderState(GuiGraphicsExtractor, pMouseX, pMouseY, pPartialTicks);
+        saturationSlider.extractRenderState(GuiGraphicsExtractor, pMouseX, pMouseY, pPartialTicks);
+        brightnessSlider.extractRenderState(GuiGraphicsExtractor, pMouseX, pMouseY, pPartialTicks);
         GuiGraphicsExtractor.pose().popMatrix();
     }
 }

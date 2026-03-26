@@ -121,7 +121,7 @@ public class InventoryScreenHandler {
                     ClientProxy.openDragonAltar();
                 }) {
                     @Override
-                    public void renderWidget(@NotNull GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partialTick) {
+                    public void extractRenderState(@NotNull GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partialTick) {
                         GuiGraphicsExtractor.blit(DS_LOGO, getX(), getY(), 0, 0, 32, 32, 32, 32);
                     }
                 };
@@ -154,7 +154,7 @@ public class InventoryScreenHandler {
                     openDragonInventory();
                 }) {
                     @Override
-                    public void renderWidget(@NotNull GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partialTick) {
+                    public void extractRenderState(@NotNull GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partialTick) {
                         float u = 21f;
                         float v = isHoveredOrFocused() ? 20f : 0f;
                         GuiGraphicsExtractor.blit(RenderPipelines.GUI, INVENTORY_TOGGLE_BUTTON, getX(), getY(), u, v, 20, 18, 256, 256);
@@ -171,7 +171,7 @@ public class InventoryScreenHandler {
                     openDragonInventory();
                 }) {
                     @Override
-                    public void renderWidget(@NotNull GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partialTick) {
+                    public void extractRenderState(@NotNull GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partialTick) {
                         float u = 21f;
                         float v = isHoveredOrFocused() ? 20f : 0f;
                         GuiGraphicsExtractor.blit(RenderPipelines.GUI, INVENTORY_TOGGLE_BUTTON, getX(), getY(), u, v, 20, 18, 256, 256);
