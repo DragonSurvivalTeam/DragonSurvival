@@ -31,18 +31,18 @@ public class HUDHandler {
             return;
         }
 
-        int screenWidth = event.getGuiGraphicsExtractor().guiWidth();
-        int screenHeight = event.getGuiGraphicsExtractor().guiHeight();
+        int screenWidth = event.getGuiGraphics().guiWidth();
+        int screenHeight = event.getGuiGraphics().guiHeight();
         Identifier id = event.getName();
 
         if (!DragonFoodHandler.dragonFoodHandlingIsDisabled() && !vanillaFoodLevel && id == VanillaGuiLayers.FOOD_LEVEL) {
-            boolean wasRendered = FoodBar.render(event.getGuiGraphicsExtractor(), screenWidth, screenHeight);
+            boolean wasRendered = FoodBar.render(event.getGuiGraphics(), screenWidth, screenHeight);
 
             if (wasRendered) {
                 event.setCanceled(true);
             }
         } else if (!vanillaExperienceBar && id == VanillaGuiLayers.CONTEXTUAL_INFO_BAR) {
-            boolean wasRendered = MagicHUD.renderExperienceBar(event.getGuiGraphicsExtractor(), screenWidth);
+            boolean wasRendered = MagicHUD.renderExperienceBar(event.getGuiGraphics(), screenWidth);
 
             if (wasRendered) {
                 event.setCanceled(true);
