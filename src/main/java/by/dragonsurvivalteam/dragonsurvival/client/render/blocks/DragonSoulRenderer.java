@@ -9,7 +9,7 @@ import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
-import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 
 public class DragonSoulRenderer<T extends DragonSoulBlockEntity> implements BlockEntityRenderer<T, BlockEntityRenderState> {
     @Translation(key = "enable_soul_block_indicator", type = Translation.Type.CONFIGURATION, comments = "Renders the soul block base if enabled, as a visual indicator for the actual block")

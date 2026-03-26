@@ -22,7 +22,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
@@ -442,7 +442,7 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
         DragonRenderData renderData = renderState.getGeckolibData(DRAGON_RENDER_DATA);
 
         if (renderData != null && renderData.hunterTransparent()) {
-            return RenderTypes.itemEntityTranslucentCull(texture);
+            return RenderTypes.itemTranslucent(texture);
         }
 
         return RenderTypes.entityCutout(texture);
@@ -541,7 +541,7 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
     }
 
     @Override
-    public void performRenderPass(R renderState, PoseStack poseStack, SubmitNodeCollector renderTasks, CameraRenderState cameraState, RenderPassInfo.@Nullable BoneUpdater<R> boneUpdater) {
+    public void performRenderPass(R renderState, PoseStack poseStack, SubmitNodeCollector renderTasks, CameraRenderState cameraState, List<RenderPassInfo.@Nullable BoneUpdater<R>> boneUpdater) {
         DragonRenderData renderData = renderState.getGeckolibData(DRAGON_RENDER_DATA);
 
         if (renderData == null || renderData.player() == null || renderData.spectator() || renderData.invisibleToLocalPlayer()) {
