@@ -26,7 +26,7 @@ public class BurnEffect extends ModifiableMobEffect {
 
     @Override
     public boolean applyEffectTick(@NotNull ServerLevel level, final LivingEntity entity, int amplifier) {
-        if (entity.fireImmune() || entity.isEyeInFluidType(NeoForgeMod.WATER_TYPE.value()) || entity.isInWaterOrRain()) {
+        if (entity.fireImmune() || by.dragonsurvivalteam.dragonsurvival.util.FluidTypeUtil.getEyeFluidType(entity) == NeoForgeMod.WATER_TYPE.value() || entity.isInWaterOrRain()) {
             return false;
         }
 

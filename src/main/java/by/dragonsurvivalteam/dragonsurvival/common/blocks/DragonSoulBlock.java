@@ -10,6 +10,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.DSLanguageProvider;
 import by.dragonsurvivalteam.dragonsurvival.server.tileentity.DragonSoulBlockEntity;
 import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
+import by.dragonsurvivalteam.dragonsurvival.util.PlayerMessageUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
@@ -109,7 +110,7 @@ public class DragonSoulBlock extends Block implements SimpleWaterloggedBlock, En
                     return InteractionResultUtils.sidedSuccess(level.isClientSide());
                 }
 
-                player.displayClientMessage(Component.translatable(INVALID_ANIMATION, DSColors.withColor(animation, DSColors.GOLD)), true);
+                PlayerMessageUtil.sendSystemMessage(player, Component.translatable(INVALID_ANIMATION, DSColors.withColor(animation, DSColors.GOLD)), true);
                 return InteractionResult.FAIL;
             } else {
                 return InteractionResultUtils.sidedSuccess(level.isClientSide());
@@ -117,7 +118,7 @@ public class DragonSoulBlock extends Block implements SimpleWaterloggedBlock, En
         } else if (stack.is(Items.PAPER)) {
             if (level.isClientSide()) {
                 Component animations = DSLanguageProvider.formatList(DragonSurvival.PROXY.getAnimations(soul), Component::literal);
-                player.displayClientMessage(Component.translatable(APPLICABLE_ANIMATIONS, DSColors.withColor(animations, DSColors.GOLD)), false);
+                PlayerMessageUtil.sendSystemMessage(player, Component.translatable(APPLICABLE_ANIMATIONS, DSColors.withColor(animations, DSColors.GOLD)), false);
             }
 
             return InteractionResultUtils.sidedSuccess(level.isClientSide());
@@ -130,7 +131,7 @@ public class DragonSoulBlock extends Block implements SimpleWaterloggedBlock, En
     protected @NotNull InteractionResult useWithoutItem(@NotNull final BlockState state, @NotNull final Level level, @NotNull final BlockPos position, @NotNull final Player player, @NotNull final BlockHitResult hitResult) {
         if (!player.getMainHandItem().isEmpty() || !player.isCrouching()) {
             if (level.isClientSide()) {
-                player.displayClientMessage(Component.translatable(INFO, DSColors.withColor(DragonSoulBlockEntity.DEFAULT_ANIMATION, DSColors.GOLD)), false);
+                PlayerMessageUtil.sendSystemMessage(player, Component.translatable(INFO, DSColors.withColor(DragonSoulBlockEntity.DEFAULT_ANIMATION, DSColors.GOLD)), false);
             }
 
             return InteractionResult.PASS;
@@ -140,7 +141,7 @@ public class DragonSoulBlock extends Block implements SimpleWaterloggedBlock, En
             soul.locked = !soul.locked;
 
             if (level.isClientSide()) {
-                player.displayClientMessage(Component.translatable(soul.locked ? LOCKED : UNLOCKED), true);
+                PlayerMessageUtil.sendSystemMessage(player, Component.translatable(soul.locked ? LOCKED : UNLOCKED), true);
             } else if (level instanceof ServerLevel serverLevel) {
                 PacketDistributor.sendToPlayersInDimension(serverLevel, new SyncDragonSoulLock(position, soul.locked));
             }

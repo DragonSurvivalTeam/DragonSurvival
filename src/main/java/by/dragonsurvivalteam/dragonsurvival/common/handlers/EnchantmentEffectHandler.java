@@ -49,14 +49,14 @@ public class EnchantmentEffectHandler {
             ChargedProjectiles charged = event.getBow().get(DataComponents.CHARGED_PROJECTILES);
 
             if (charged != null) {
-                List<ItemStack> ammo = charged.getItems();
+                List<ItemStack> ammo = charged.itemCopies();
                 List<ItemStack> projectiles = new ArrayList<>();
 
                 for (ItemStack itemStack : ammo) {
                     projectiles.add(itemStack.getItem() instanceof ArrowItem ? new ItemStack(DSItems.BOLAS.value()) : itemStack);
                 }
 
-                event.getBow().set(DataComponents.CHARGED_PROJECTILES, ChargedProjectiles.of(projectiles));
+                event.getBow().set(DataComponents.CHARGED_PROJECTILES, ChargedProjectiles.ofNonEmpty(projectiles));
             }
         }
     }

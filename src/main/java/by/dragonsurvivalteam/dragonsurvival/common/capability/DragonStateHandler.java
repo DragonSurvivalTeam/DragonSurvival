@@ -28,6 +28,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import by.dragonsurvivalteam.dragonsurvival.server.handlers.DragonRidingHandler;
 import by.dragonsurvivalteam.dragonsurvival.util.DragonUtils;
+import by.dragonsurvivalteam.dragonsurvival.util.PlayerMessageUtil;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import by.dragonsurvivalteam.dragonsurvival.util.ResourceHelper;
 import by.dragonsurvivalteam.dragonsurvival.util.ToolUtils;
@@ -753,7 +754,7 @@ public class DragonStateHandler extends EntityStateHandler {
 
     public void revertToHumanForm(final Player player, boolean isDragonSoul) {
         if (ServerConfig.noHumansAllowed) {
-            player.displayClientMessage(Component.translatable(NO_HUMANS), true);
+            PlayerMessageUtil.sendSystemMessage(player, Component.translatable(NO_HUMANS), true);
             return;
         }
 

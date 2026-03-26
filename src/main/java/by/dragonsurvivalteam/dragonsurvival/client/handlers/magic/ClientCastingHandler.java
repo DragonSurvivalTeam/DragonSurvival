@@ -7,6 +7,7 @@ import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncBeginCast;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncStopCast;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
+import by.dragonsurvivalteam.dragonsurvival.util.PlayerMessageUtil;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
@@ -72,7 +73,7 @@ public class ClientCastingHandler {
         if (Keybind.TOGGLE_ABILITIES.matches(input)) {
             magicData.setRenderAbilities(!magicData.shouldRenderAbilities());
             String message = magicData.shouldRenderAbilities() ? ABILITY_BAR_ENABLED : ABILITY_BAR_DISABLED;
-            player.displayClientMessage(Component.translatable(message), true);
+            PlayerMessageUtil.sendSystemMessage(player, Component.translatable(message), true);
         }
     }
 

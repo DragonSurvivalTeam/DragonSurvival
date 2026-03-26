@@ -39,7 +39,7 @@ public class SeaSweepParticle extends SingleQuadParticle {
     }
 
     @Override
-    public int getLightColor(float pPartialTicks) {
+    public int getLightCoords(float pPartialTicks) {
         return 15728880;
     }
 

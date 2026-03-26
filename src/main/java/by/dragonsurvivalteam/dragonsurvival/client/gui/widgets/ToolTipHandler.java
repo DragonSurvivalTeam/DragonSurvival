@@ -206,7 +206,7 @@ public class ToolTipHandler {
     @SuppressWarnings("DataFlowIssue") // resource key should be present
     public static void addCustomItemDescriptions(final ItemTooltipEvent event) {
         if (event.getEntity() != null && event.getEntity().level().isClientSide() && event.getItemStack() != ItemStack.EMPTY) {
-            Identifier location = event.getItemStack().getItemHolder().getKey().identifier();
+            Identifier location = event.getItemStack().typeHolder().getKey().identifier();
             MutableComponent description = null;
 
             if (ENCHANTMENT_DESCRIPTIONS && event.getItemStack().get(DataComponents.STORED_ENCHANTMENTS) != null) {

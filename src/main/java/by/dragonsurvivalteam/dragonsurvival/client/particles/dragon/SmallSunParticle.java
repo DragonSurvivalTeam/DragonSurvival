@@ -21,7 +21,7 @@ public class SmallSunParticle extends DragonParticle {
     }
 
     @Override // Clamp brightness between 10 and 15, depending on the particle age
-    protected int getLightColor(float partialTick) {
+    public int getLightCoords(float partialTick) {
         float progress = (age + partialTick) / lifetime;
         progress = Mth.clamp(progress, 0, 1);
         return (int) (0xF0 - (progress * (0xF0 - 0xA0)));

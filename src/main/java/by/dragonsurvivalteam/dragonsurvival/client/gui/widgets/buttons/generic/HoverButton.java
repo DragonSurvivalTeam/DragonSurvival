@@ -102,6 +102,6 @@ public class HoverButton extends ExtendedButton implements HoverDisableable {
             graphics.setComponentTooltipFromElementsForNextFrame(Minecraft.getInstance().font, tooltipElements.get(), mouseX, mouseY, ItemStack.EMPTY);
         }
 
-        this.renderDefaultLabel(graphics.textRendererForWidget(this, GuiGraphicsExtractor.HoveredTextEffects.NONE));
+        this.extractDefaultLabel(graphics.textRendererForWidget(this, GuiGraphicsExtractor.HoveredTextEffects.NONE));
     }
 }

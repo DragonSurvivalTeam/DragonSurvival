@@ -16,6 +16,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.server.tileentity.SourceOfMagicBlockEntity;
 import by.dragonsurvivalteam.dragonsurvival.server.tileentity.SourceOfMagicPlaceholder;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
+import by.dragonsurvivalteam.dragonsurvival.util.PlayerMessageUtil;
 import by.dragonsurvivalteam.dragonsurvival.util.SpawningUtils;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
@@ -171,7 +172,7 @@ public class SourceOfMagicBlock extends HorizontalDirectionalBlock implements Si
             if (isValid.get() && !SpawningUtils.isAirOrFluid(position, level, context)) {
                 if (player != null && !level.isClientSide()) {
                     // Only send on the server-side to avoid issues (message spam) with other mods that use this method for tooltips
-                    player.displayClientMessage(Component.translatable(OCCUPIED, asItem().getDefaultInstance().getDisplayName()), true);
+                PlayerMessageUtil.sendSystemMessage(player, Component.translatable(OCCUPIED, asItem().getDefaultInstance().getDisplayName()), true);
                 }
 
                 isValid.set(false);
@@ -348,7 +349,7 @@ public class SourceOfMagicBlock extends HorizontalDirectionalBlock implements Si
         BlockPos above = position.above();
 
         if (world.getFluidState(position).is(FluidTags.WATER)) {
-            world.playSound(null, position, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 0.5F, 2.6F + (world.random.nextFloat() - world.random.nextFloat()) * 0.8F);
+            world.playSound(null, position, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 0.5F, 2.6F + (world.getRandom().nextFloat() - world.getRandom().nextFloat()) * 0.8F);
             world.sendParticles(ParticleTypes.LARGE_SMOKE, (double) above.getX() + 0.5D, (double) above.getY() + 0.25D, (double) above.getZ() + 0.5D, 8, 0.5D, 0.25D, 0.5D, 0.0D);
         }
     }

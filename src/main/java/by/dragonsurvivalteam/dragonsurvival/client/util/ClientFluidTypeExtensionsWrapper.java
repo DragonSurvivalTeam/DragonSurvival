@@ -10,13 +10,9 @@ import org.jetbrains.annotations.NotNull;
 
 // FIXME
 public class ClientFluidTypeExtensionsWrapper implements IClientFluidTypeExtensions {
-//    private final IClientFluidTypeExtensions original;
-//    private final VisionHandler.VisionType type;
-//
-//    public ClientFluidTypeExtensionsWrapper(final IClientFluidTypeExtensions original, final VisionHandler.VisionType type) {
-//        this.original = original;
-//        this.type = type;
-//    }
+    public ClientFluidTypeExtensionsWrapper(final IClientFluidTypeExtensions original, final VisionHandler.VisionType type) {
+        // FIXME: restore the delegated translucency behavior once the client fluid extension hooks are re-ported.
+    }
 //
 //    @Override
 //    public @NotNull Identifier getStillTexture() {

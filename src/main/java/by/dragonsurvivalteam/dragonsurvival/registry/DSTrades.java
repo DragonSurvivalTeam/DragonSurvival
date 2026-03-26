@@ -26,6 +26,9 @@ import java.util.Optional;
 
 //@EventBusSubscriber
 public class DSTrades {
+    // Keep the structure tag available while the full villager trade port is still disabled.
+    public static final TagKey<Structure> ON_DRAGON_HUNTERS_CASTLE_MAPS = TagKey.create(Registries.STRUCTURE, DragonSurvival.res("on_dragon_hunter_maps"));
+
     // FIXME
 //    public static final DeferredRegister<PoiType> POI_REGISTRY = DeferredRegister.create(BuiltInRegistries.POINT_OF_INTEREST_TYPE, DragonSurvival.MODID);
 //    public static final DeferredRegister<VillagerProfession> PROFESSION_REGISTRY = DeferredRegister.create(BuiltInRegistries.VILLAGER_PROFESSION, DragonSurvival.MODID);
@@ -45,9 +48,6 @@ public class DSTrades {
 //                    SoundEvents.VILLAGER_WORK_ARMORER));
 //
 //    public static final Int2ObjectMap<VillagerTrades.ItemListing[]> LEADER_TRADES = new Int2ObjectOpenHashMap<>();
-//
-//    // Required for map trades
-//    public static final TagKey<Structure> ON_DRAGON_HUNTERS_CASTLE_MAPS = TagKey.create(Registries.STRUCTURE, DragonSurvival.res("on_dragon_hunter_maps"));
 //
 //    @SubscribeEvent
 //    public static void addCustomTrades(final VillagerTradesEvent event) {

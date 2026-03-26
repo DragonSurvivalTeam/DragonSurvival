@@ -41,7 +41,6 @@
   ],
   "client": [
     "client.AbstractContainerScreenAccessor",
-    "client.BlockRenderDispatcherAccess",
     "client.CameraMixin",
     "client.ClientLevelMixin",
     "client.FrustumAccess",
@@ -51,7 +50,6 @@
     "client.ItemInHandRendererMixin",
     "client.KeyMappingAccess",
     "client.LevelRendererAccess",
-    "client.LightTextureMixin",
     "client.LivingRendererAccessor",
     "client.LocalPlayerAccessor",
     "client.LocalPlayerMixin",

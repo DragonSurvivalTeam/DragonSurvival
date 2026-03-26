@@ -11,6 +11,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSItemTags;
 import by.dragonsurvivalteam.dragonsurvival.server.tileentity.DragonBeaconBlockEntity;
 import by.dragonsurvivalteam.dragonsurvival.util.ExperienceUtils;
+import by.dragonsurvivalteam.dragonsurvival.util.PlayerMessageUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -83,7 +84,7 @@ public class DragonBeacon extends Block implements SimpleWaterloggedBlock, Entit
 
             return InteractionResultUtils.sidedSuccess(player.level().isClientSide());
         } else {
-            player.displayClientMessage(Component.translatable(NOT_ENOUGH_EXPERIENCE, playerExperience, beacon.getExperienceCost()), true);
+                    PlayerMessageUtil.sendSystemMessage(player, Component.translatable(NOT_ENOUGH_EXPERIENCE, playerExperience, beacon.getExperienceCost()), true);
         }
 
         return InteractionResult.FAIL;
@@ -97,7 +98,7 @@ public class DragonBeacon extends Block implements SimpleWaterloggedBlock, Entit
 
         if (!stack.is(DSItemTags.ACTIVATES_DRAGON_BEACON)) {
             if (player.level().isClientSide()) {
-                player.displayClientMessage(Component.translatable(USE_ACTIVATOR), true);
+                PlayerMessageUtil.sendSystemMessage(player, Component.translatable(USE_ACTIVATOR), true);
             }
 
             return InteractionResult.FAIL;

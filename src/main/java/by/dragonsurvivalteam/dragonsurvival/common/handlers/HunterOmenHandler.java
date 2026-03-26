@@ -50,7 +50,7 @@ public class HunterOmenHandler {
         LivingEntity livingEntity = deathEvent.getEntity();
         Entity killer = deathEvent.getSource().getEntity();
 
-        if (killer instanceof Player player && livingEntity.getType().is(DSEntityTypeTags.HUNTER_FACTION)) {
+        if (killer instanceof Player player && livingEntity.getType().builtInRegistryHolder().is(DSEntityTypeTags.HUNTER_FACTION)) {
             applyHunterOmenFromKilling(player);
         }
     }
@@ -182,7 +182,7 @@ public class HunterOmenHandler {
         Entity target = event.getEntity();
         Player attacker = event.getSource().getEntity() instanceof Player player ? player : null;
 
-        if (attacker == null || !target.getType().is(DSEntityTypeTags.HUNTER_FACTION)) {
+        if (attacker == null || !target.getType().builtInRegistryHolder().is(DSEntityTypeTags.HUNTER_FACTION)) {
             return;
         }
 

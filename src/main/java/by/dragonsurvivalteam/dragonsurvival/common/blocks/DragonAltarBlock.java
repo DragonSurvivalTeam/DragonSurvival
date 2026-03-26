@@ -7,6 +7,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AltarData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
+import by.dragonsurvivalteam.dragonsurvival.util.PlayerMessageUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -66,7 +67,7 @@ public class DragonAltarBlock extends Block {
 
         if (ServerConfig.altarUsageCooldown > 0 && data.altarCooldown > 0) {
             Functions.Time time = Functions.Time.fromTicks(data.altarCooldown);
-            player.displayClientMessage(Component.translatable(ALTAR_COOLDOWN, time.format()), true);
+            PlayerMessageUtil.sendSystemMessage(player, Component.translatable(ALTAR_COOLDOWN, time.format()), true);
             return InteractionResult.FAIL;
         } else {
             data.altarCooldown = Functions.secondsToTicks(ServerConfig.altarUsageCooldown);

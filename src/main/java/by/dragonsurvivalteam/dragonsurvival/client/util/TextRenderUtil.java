@@ -17,7 +17,7 @@ public class TextRenderUtil {
         GuiGraphicsExtractor.pose().pushMatrix();
         GuiGraphicsExtractor.pose().translate(x - x * scale, y - y * scale);
         GuiGraphicsExtractor.pose().scale(scale, scale);
-        GuiGraphicsExtractor.drawString(Minecraft.getInstance().font, text, (int)x, (int)y, color, false);
+        GuiGraphicsExtractor.text(Minecraft.getInstance().font, text, (int)x, (int)y, color, false);
         GuiGraphicsExtractor.pose().popMatrix();
     }
 
@@ -29,7 +29,7 @@ public class TextRenderUtil {
         GuiGraphicsExtractor.pose().pushMatrix();
         GuiGraphicsExtractor.pose().translate(x - x * scale, y - y * scale);
         GuiGraphicsExtractor.pose().scale(scale, scale);
-        GuiGraphicsExtractor.drawCenteredString(Minecraft.getInstance().font, text, x, y, color);
+        GuiGraphicsExtractor.centeredText(Minecraft.getInstance().font, text, x, y, color);
         GuiGraphicsExtractor.pose().popMatrix();
     }
 
@@ -42,7 +42,7 @@ public class TextRenderUtil {
 
         for (int i = 0; i < lines.size(); i++) {
             FormattedCharSequence line = lines.get(i);
-            GuiGraphicsExtractor.drawString(Minecraft.getInstance().font, line, (x - Minecraft.getInstance().font.width(line) / 2), y + i * Minecraft.getInstance().font.lineHeight, color, true);
+            GuiGraphicsExtractor.text(Minecraft.getInstance().font, line, (x - Minecraft.getInstance().font.width(line) / 2), y + i * Minecraft.getInstance().font.lineHeight, color, true);
         }
 
         GuiGraphicsExtractor.pose().popMatrix();
@@ -57,7 +57,7 @@ public class TextRenderUtil {
 
         for (int i = 0; i < lines.size(); i++) {
             FormattedCharSequence line = lines.get(i);
-            GuiGraphicsExtractor.drawString(Minecraft.getInstance().font, line, (int)x, (int)(y + i * Minecraft.getInstance().font.lineHeight), color, true);
+            GuiGraphicsExtractor.text(Minecraft.getInstance().font, line, (int)x, (int)(y + i * Minecraft.getInstance().font.lineHeight), color, true);
         }
 
         GuiGraphicsExtractor.pose().popMatrix();

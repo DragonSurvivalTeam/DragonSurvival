@@ -18,6 +18,6 @@ public class DSPoiTypeTags extends PoiTypeTagsProvider {
     @Override
     @SuppressWarnings("DataFlowIssue") // resource key won't be null
     protected void addTags(HolderLookup.@NotNull Provider provider) {
-        tag(PoiTypeTags.ACQUIRABLE_JOB_SITE).add(DSTrades.DRAGON_RIDER_POI.getKey());
+        // FIXME: restore the custom POI once DSTrades is fully ported to 26.1.
     }
 }

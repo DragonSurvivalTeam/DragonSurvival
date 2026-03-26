@@ -342,7 +342,7 @@ public class SummonEntityEffect extends DurationInstanceBase<SummonedEntities, S
             // No explicit check for 'FlyingAnimal' or 'FlyingMob' to give full control to the entity type tag
             // Also avoids having to create an entity twice (would've been needed to utilize 'instanceof' checks)
             //noinspection deprecation -> ignore
-            if (!type.is(DSEntityTypeTags.CAN_FLY) && !state.blocksMotion()) {
+            if (!type.builtInRegistryHolder().is(DSEntityTypeTags.CAN_FLY) && !state.blocksMotion()) {
                 return;
             }
 

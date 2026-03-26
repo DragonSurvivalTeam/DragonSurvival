@@ -12,6 +12,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.attachments.PlayerData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.DSLanguageProvider;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
+import by.dragonsurvivalteam.dragonsurvival.util.PlayerMessageUtil;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.KeyMapping;
@@ -112,10 +113,10 @@ public class KeyHandler {
         data.getFirst().getExistingData(DSDataAttachments.SUMMONED_ENTITIES).ifPresent(summonData -> {
             if (Minecraft.getInstance().hasShiftDown()) {
                 summonData.movementBehaviour = Functions.cycleEnum(summonData.movementBehaviour);
-                data.getFirst().displayClientMessage(cycledEnum(summonData.movementBehaviour), true);
+                PlayerMessageUtil.sendSystemMessage(data.getFirst(), cycledEnum(summonData.movementBehaviour), true);
             } else {
                 summonData.attackBehaviour = Functions.cycleEnum(summonData.attackBehaviour);
-                data.getFirst().displayClientMessage(cycledEnum(summonData.attackBehaviour), true);
+                PlayerMessageUtil.sendSystemMessage(data.getFirst(), cycledEnum(summonData.attackBehaviour), true);
             }
 
             ClientPacketDistributor.sendToServer(new SyncSummonedEntitiesBehaviour(summonData.attackBehaviour, summonData.movementBehaviour));
@@ -130,7 +131,7 @@ public class KeyHandler {
         PlayerData playerData = data.getFirst().getData(DSDataAttachments.PLAYER_DATA);
         playerData.enabledDragonSoulPlacement = !playerData.enabledDragonSoulPlacement;
         String message = playerData.enabledDragonSoulPlacement ? DRAGON_SOUL_PLACEMENT_ENABLED : DRAGON_SOUL_PLACEMENT_DISABLED;
-        data.getFirst().displayClientMessage(Component.translatable(message), true);
+        PlayerMessageUtil.sendSystemMessage(data.getFirst(), Component.translatable(message), true);
 
         ClientPacketDistributor.sendToServer(new SyncDragonSoulPlacement(playerData.enabledDragonSoulPlacement));
     }

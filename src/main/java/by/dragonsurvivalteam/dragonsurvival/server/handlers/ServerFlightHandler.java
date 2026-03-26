@@ -18,6 +18,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SwimData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
+import by.dragonsurvivalteam.dragonsurvival.util.FluidTypeUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
@@ -296,7 +297,7 @@ public class ServerFlightHandler {
             return false;
         }
 
-        ResourceKey<FluidType> key = SwimData.key(player.getEyeInFluidType());
+                ResourceKey<FluidType> key = SwimData.key(FluidTypeUtil.getEyeFluidType(player));
 
         if (key == null) {
             // Architectury does not properly register fluid types

@@ -70,7 +70,7 @@ public class DragonOreLootModifier extends LootModifier {
             return generatedLoot;
         }
 
-        ItemStack tool = context.getOptionalParameter(LootContextParams.TOOL);
+        ItemStack tool = context.getOptionalParameter(LootContextParams.TOOL) instanceof ItemStack stack ? stack : ItemStack.EMPTY;
         int fortuneLevel = 0;
 
         if (tool != null) {

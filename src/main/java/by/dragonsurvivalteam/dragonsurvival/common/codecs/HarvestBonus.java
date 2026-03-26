@@ -141,7 +141,7 @@ public class HarvestBonus extends DurationInstanceBase<HarvestBonuses, HarvestBo
                 return BASE_SPEED;
             }
 
-            if (baseData().blocks().isPresent() && !baseData().blocks().get().contains(state.getBlockHolder())) {
+            if (baseData().blocks().isPresent() && !baseData().blocks().get().contains(state.getBlock().builtInRegistryHolder())) {
                 return BASE_SPEED;
             }
 
@@ -156,7 +156,7 @@ public class HarvestBonus extends DurationInstanceBase<HarvestBonuses, HarvestBo
         }
 
         public int getHarvestBonus(final BlockState state) {
-            if (baseData().blocks().isPresent() && !baseData().blocks().get().contains(state.getBlockHolder())) {
+            if (baseData().blocks().isPresent() && !baseData().blocks().get().contains(state.getBlock().builtInRegistryHolder())) {
                 return NO_BONUS_VALUE;
             }
 
@@ -164,7 +164,7 @@ public class HarvestBonus extends DurationInstanceBase<HarvestBonuses, HarvestBo
         }
 
         public float getSpeedMultiplier(final BlockState state) {
-            if (baseData().blocks().isPresent() && !baseData().blocks().get().contains(state.getBlockHolder())) {
+            if (baseData().blocks().isPresent() && !baseData().blocks().get().contains(state.getBlock().builtInRegistryHolder())) {
                 return NO_BONUS_VALUE;
             }
 

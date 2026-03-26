@@ -9,7 +9,7 @@ import net.neoforged.neoforge.event.enchanting.GetEnchantmentLevelEvent;
 public class CraftingHandler {
     @SubscribeEvent // Upgrades the enchantment by 1 level if the default enchantment level matches the enchantment level
     public static void getAllEnchantmentLevels(final GetEnchantmentLevelEvent event) {
-        if (event.getStack().getItem() instanceof PermanentEnchantmentItem item) {
+        if (event.getStack().typeHolder().value() instanceof PermanentEnchantmentItem item) {
             item.getDefaultEnchantments().keySet().forEach(
                     holder -> {
                         int defaultLevel = item.getDefaultEnchantments().getLevel(holder);

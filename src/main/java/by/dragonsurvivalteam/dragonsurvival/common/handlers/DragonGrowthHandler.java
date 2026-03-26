@@ -9,6 +9,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.DSAdvancementTriggers;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
+import by.dragonsurvivalteam.dragonsurvival.util.PlayerMessageUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -65,7 +66,7 @@ public class DragonGrowthHandler {
 
             if (player.level().isClientSide()) {
                 String message = handler.isGrowthStopped ? INACTIVE : ACTIVE;
-                player.displayClientMessage(Component.translatable(message), true);
+                PlayerMessageUtil.sendSystemMessage(player, Component.translatable(message), true);
             }
 
             return;
@@ -79,7 +80,7 @@ public class DragonGrowthHandler {
 
         if (!isGrowthAllowed(player, handler, desiredGrowth)) {
             if (player.level().isClientSide()) {
-                player.displayClientMessage(Component.translatable(ENCLOSED_SPACE).withStyle(ChatFormatting.RED), true);
+                PlayerMessageUtil.sendSystemMessage(player, Component.translatable(ENCLOSED_SPACE).withStyle(ChatFormatting.RED), true);
             }
 
             return;
@@ -89,7 +90,7 @@ public class DragonGrowthHandler {
 
         if (handler.getDesiredGrowth() == oldGrowth) {
             if (player.level().isClientSide()) {
-                player.displayClientMessage(Component.translatable(growth > 0 ? REACHED_LARGEST : REACHED_SMALLEST).withStyle(ChatFormatting.RED), true);
+            PlayerMessageUtil.sendSystemMessage(player, Component.translatable(growth > 0 ? REACHED_LARGEST : REACHED_SMALLEST).withStyle(ChatFormatting.RED), true);
             }
 
             return;

@@ -23,6 +23,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSDragonSpecie
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import by.dragonsurvivalteam.dragonsurvival.util.DragonUtils;
+import by.dragonsurvivalteam.dragonsurvival.util.PlayerMessageUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Renderable;
@@ -133,7 +134,7 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
         }
 
         if (!data.hasUsedAltar) {
-            player.displayClientMessage(Component.translatable(NO_CHOICE), false);
+            PlayerMessageUtil.sendSystemMessage(player, Component.translatable(NO_CHOICE), false);
         }
     }
 
@@ -186,7 +187,7 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
     }
 
     @Override
-    public void render(@NotNull final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
+    public void extractRenderState(@NotNull final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         extractBackground(graphics, mouseX, mouseY, partialTick);
 
         tick++;
@@ -282,17 +283,17 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
         }
 
         // Pass 3: render standard widgets and tooltips on top of the background/previews.
-        super.render(graphics, mouseX, mouseY, partialTick);
+        super.extractRenderState(graphics, mouseX, mouseY, partialTick);
 
         // Pass 4: title/overlay text last so it stays above widget chrome and preview entities.
         graphics.pose().pushMatrix();
         graphics.pose().scale(2.0F, 2.0F);
-        graphics.drawCenteredString(font, Component.translatable(TITLE), (width / 4) + 3, 5, DyeColor.WHITE.getTextColor());
+        graphics.centeredText(font, Component.translatable(TITLE), (width / 4) + 3, 5, DyeColor.WHITE.getTextColor());
         graphics.pose().popMatrix();
 
         // Pass 5: modal confirmation overlay always renders above the rest of the altar UI.
         if (confirmation && confirmComponent != null) {
-            confirmComponent.render(graphics, mouseX, mouseY, partialTick);
+            confirmComponent.extractRenderState(graphics, mouseX, mouseY, partialTick);
         }
     }
 
@@ -305,10 +306,10 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
         float lookY = bottomY - 30.0F;
 
         try {
-            InventoryScreen.renderEntityInInventoryFollowsMouse(graphics, leftX, topY, rightX, bottomY, scale, 0, lookX, lookY, entity);
+            InventoryScreen.extractEntityInInventoryFollowsMouse(graphics, leftX, topY, rightX, bottomY, scale, 0, lookX, lookY, entity);
         } catch (final IllegalArgumentException exception) {
             if (entity instanceof DragonEntity dragon && dragon.getPlayer() instanceof LivingEntity fallbackEntity) {
-                InventoryScreen.renderEntityInInventoryFollowsMouse(graphics, leftX, topY, rightX, bottomY, scale, 0, lookX, lookY, fallbackEntity);
+                InventoryScreen.extractEntityInInventoryFollowsMouse(graphics, leftX, topY, rightX, bottomY, scale, 0, lookX, lookY, fallbackEntity);
             }
         }
     }
@@ -385,7 +386,7 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
                             @Override
                             public void extractRenderState(@NotNull final GuiGraphicsExtractor graphics, int pMouseX, int pMouseY, float pPartialTick) {
                                 if (confirmComponent != null && confirmation) {
-                                    confirmComponent.render(graphics, pMouseX, pMouseY, pPartialTick);
+                                    confirmComponent.extractRenderState(graphics, pMouseX, pMouseY, pPartialTick);
                                 }
 
                                 super.extractRenderState(graphics, pMouseX, pMouseY, pPartialTick);

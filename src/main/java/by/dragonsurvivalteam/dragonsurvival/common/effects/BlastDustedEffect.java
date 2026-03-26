@@ -52,7 +52,7 @@ public class BlastDustedEffect extends ModifiableMobEffect {
             }
         }
 
-        if (entity.isEyeInFluidType(NeoForgeMod.WATER_TYPE.value()) || entity.isInWaterOrRain()) {
+        if (by.dragonsurvivalteam.dragonsurvival.util.FluidTypeUtil.getEyeFluidType(entity) == NeoForgeMod.WATER_TYPE.value() || entity.isInWaterOrRain()) {
             return false;
         }
 

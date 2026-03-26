@@ -73,7 +73,7 @@ public class FakeClientPlayer extends AbstractClientPlayer {
     }
 
     @Override
-    public void displayClientMessage(@NotNull Component chatComponent, boolean actionBar) {
+    public void sendSystemMessage(@NotNull Component chatComponent) {
     }
 
     @Override

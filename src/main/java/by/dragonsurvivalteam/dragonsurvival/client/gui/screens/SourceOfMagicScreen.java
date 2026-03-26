@@ -75,13 +75,12 @@ public class SourceOfMagicScreen extends AbstractContainerScreen<SourceOfMagicCo
     }
 
     @Override
-    public void render(@NotNull final GuiGraphicsExtractor graphics, final int mouseX, final int mouseY, final float partialTick) {
-        super.render(graphics, mouseX, mouseY, partialTick);
-        renderTooltip(graphics, mouseX, mouseY);
+    public void extractRenderState(@NotNull final GuiGraphicsExtractor graphics, final int mouseX, final int mouseY, final float partialTick) {
+        super.extractRenderState(graphics, mouseX, mouseY, partialTick);
     }
 
     @Override
-    protected void renderBg(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, float partialTick, int mouseX, int mouseY) {
+    public void extractBackground(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partialTick) {
         GuiGraphicsExtractor.blit(BACKGROUND, leftPos, topPos, 0, 0, imageWidth, imageHeight, 256, 256);
 
         boolean hasItem = blockEntity.getCurrentDuration() > 0;

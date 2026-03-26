@@ -5,6 +5,7 @@ import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SwimData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
+import by.dragonsurvivalteam.dragonsurvival.util.FluidTypeUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.Identifier;
 import net.neoforged.api.distmarker.Dist;
@@ -51,7 +52,7 @@ public class HUDHandler {
             //noinspection DataFlowIssue -> player is present
             SwimData data = SwimData.getData(minecraft.player);
 
-            if (data.getMaxOxygen(minecraft.player, minecraft.player.getEyeInFluidType()) == SwimData.UNLIMITED_OXYGEN) {
+            if (data.getMaxOxygen(minecraft.player, FluidTypeUtil.getEyeFluidType(minecraft.player)) == SwimData.UNLIMITED_OXYGEN) {
                 event.setCanceled(true);
             }
         }

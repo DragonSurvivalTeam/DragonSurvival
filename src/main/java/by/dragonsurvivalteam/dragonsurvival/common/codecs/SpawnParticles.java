@@ -9,6 +9,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.valueproviders.ConstantFloat;
 import net.minecraft.util.valueproviders.FloatProvider;
+import net.minecraft.util.valueproviders.FloatProviders;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.enchantment.effects.SpawnParticlesEffect;
 import net.minecraft.world.phys.Vec3;
@@ -27,7 +28,7 @@ public record SpawnParticles(
             SpawnParticlesEffect.PositionSource.CODEC.fieldOf("vertical_position").forGetter(SpawnParticles::verticalPosition),
             SpawnParticlesEffect.VelocitySource.CODEC.fieldOf("horizontal_velocity").forGetter(SpawnParticles::horizontalVelocity),
             SpawnParticlesEffect.VelocitySource.CODEC.fieldOf("vertical_velocity").forGetter(SpawnParticles::verticalVelocity),
-            FloatProvider.CODEC.optionalFieldOf("speed", ConstantFloat.ZERO).forGetter(SpawnParticles::speed)
+            FloatProviders.CODEC.optionalFieldOf("speed", ConstantFloat.ZERO).forGetter(SpawnParticles::speed)
     ).apply(instance, SpawnParticles::new));
 
     public static SpawnParticlesEffect.PositionSource offsetFromEntityPosition(float offset) {
@@ -50,14 +51,14 @@ public record SpawnParticles(
         for (int i = 0; i < count; ++i) {
             level.sendParticles(
                     this.particle,
-                    blockPos.getX() + this.horizontalPosition.getCoordinate(0.5D, 0.5D, 1.0F, level.random),
-                    blockPos.getY() + this.verticalPosition.getCoordinate(0.5D, 0.5D, 1.0F, level.random),
-                    blockPos.getZ() + this.horizontalPosition.getCoordinate(0.5D, 0.5D, 1.0F, level.random),
+                    blockPos.getX() + this.horizontalPosition.getCoordinate(0.5D, 0.5D, 1.0F, level.getRandom()),
+                    blockPos.getY() + this.verticalPosition.getCoordinate(0.5D, 0.5D, 1.0F, level.getRandom()),
+                    blockPos.getZ() + this.horizontalPosition.getCoordinate(0.5D, 0.5D, 1.0F, level.getRandom()),
                     1,
-                    this.horizontalVelocity.getVelocity(0.0D, level.random),
-                    this.verticalVelocity.getVelocity(0.0D, level.random),
-                    this.horizontalVelocity.getVelocity(0.0D, level.random),
-                    this.speed.sample(level.random)
+                    this.horizontalVelocity.getVelocity(0.0D, level.getRandom()),
+                    this.verticalVelocity.getVelocity(0.0D, level.getRandom()),
+                    this.horizontalVelocity.getVelocity(0.0D, level.getRandom()),
+                    this.speed.sample(level.getRandom())
             );
         }
     }

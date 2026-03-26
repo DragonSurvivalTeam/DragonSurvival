@@ -15,6 +15,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SummonedEntitie
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SwimData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSEntityTypeTags;
 import by.dragonsurvivalteam.dragonsurvival.server.handlers.DragonRidingHandler;
+import by.dragonsurvivalteam.dragonsurvival.util.FluidTypeUtil;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.sugar.Local;
@@ -144,7 +145,7 @@ public abstract class EntityMixin {
 
         //noinspection ConstantValue -> the check is valid
         if (ServerConfig.limitedRiding && DragonStateProvider.isDragon((Entity) (Object) this) && /* Still allow riding dragons */ !DragonStateProvider.isDragon(mount)) {
-            return mount.getType().is(DSEntityTypeTags.VEHICLE_WHITELIST);
+            return mount.getType().builtInRegistryHolder().is(DSEntityTypeTags.VEHICLE_WHITELIST);
         }
 
         return canRide;
@@ -209,7 +210,7 @@ public abstract class EntityMixin {
 
         if (self instanceof Player player) {
             SwimData swimData = SwimData.getData(player);
-            int newMaxAirSupply = swimData.getMaxOxygen(player, self.getEyeInFluidType());
+                    int newMaxAirSupply = swimData.getMaxOxygen(player, FluidTypeUtil.getEyeFluidType(self));
 
             if (newMaxAirSupply == SwimData.UNLIMITED_OXYGEN) {
                 // Unlimited oxygen is handled in the 'ILivingEntityExtensionMixin'

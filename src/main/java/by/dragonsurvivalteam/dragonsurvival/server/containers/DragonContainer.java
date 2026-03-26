@@ -253,7 +253,7 @@ public class DragonContainer extends AbstractContainerMenu {
                 RecipeHolder<CraftingRecipe> recipe = recipeOptional.get();
 
                 if (craftResult.setRecipeUsed(serverPlayer, recipe)) {
-                    itemStack = recipe.value().assemble(craftMatrix.asCraftInput(), serverPlayer.level().registryAccess());
+                    itemStack = recipe.value().assemble(craftMatrix.asCraftInput());
                 }
             }
 

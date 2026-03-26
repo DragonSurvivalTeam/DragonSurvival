@@ -166,7 +166,7 @@ public class DSEnchantments {
                                 ),
                                 new PlaySoundEffect(List.of(DSSounds.BONK), ConstantFloat.of(1), ConstantFloat.of(1))
                         ),
-                        TimeCheck.time(IntRange.exact(0)).setPeriod(100).and(Condition.thisEntity(EntityCondition.isSpecies(context.lookup(DragonSpecies.REGISTRY).getOrThrow(DSDragonSpeciesTags.TRUE_DRAGONS)))
+                        TimeCheck.time(context.lookup(Registries.WORLD_CLOCK).getOrThrow(net.minecraft.world.clock.WorldClocks.OVERWORLD), IntRange.exact(0)).setPeriod(100).and(Condition.thisEntity(EntityCondition.isSpecies(context.lookup(DragonSpecies.REGISTRY).getOrThrow(DSDragonSpeciesTags.TRUE_DRAGONS)))
                         )
                 )
                 .build(DRAGONSBANE.identifier()));

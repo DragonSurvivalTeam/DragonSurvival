@@ -57,7 +57,7 @@ public class DietMenuComponent implements ScrollableComponent, Renderable {
     }
 
     @Override
-    public void render(@NotNull final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
+    public void extractRenderState(@NotNull final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         List<Item> items = DietEntryCache.getDietItems(dragonSpecies);
 
         if (items.isEmpty()) {
@@ -71,7 +71,7 @@ public class DietMenuComponent implements ScrollableComponent, Renderable {
                 FormattedCharSequence text = formatted.get(row);
                 int xPosition = startX - Minecraft.getInstance().font.width(text) / 2;
                 int yPosition = startY + row * (Minecraft.getInstance().font.lineHeight + 2);
-                graphics.drawString(Minecraft.getInstance().font, text, xPosition, yPosition, DSColors.WHITE, false);
+                graphics.text(Minecraft.getInstance().font, text, xPosition, yPosition, DSColors.WHITE, false);
             }
 
             return;
@@ -86,7 +86,7 @@ public class DietMenuComponent implements ScrollableComponent, Renderable {
             int itemY = y + (processedRows * ITEM_SIZE);
 
             ItemStack stack = items.get(i).getDefaultInstance();
-            graphics.renderFakeItem(stack, itemX, itemY);
+            graphics.fakeItem(stack, itemX, itemY);
 
             if (mouseX >= itemX && mouseX < itemX + ITEM_SIZE && mouseY >= itemY && mouseY < itemY + ITEM_SIZE) {
                 // FIXME :: UI GRAPHICS
@@ -109,7 +109,7 @@ public class DietMenuComponent implements ScrollableComponent, Renderable {
         if (maxScroll() > 0) {
             String text = "[" + scrollAmount + "/" + maxScroll() + "]";
             int xPosition = x + (ITEMS_PER_ROW * ITEM_SIZE / 2) - Minecraft.getInstance().font.width(text) / 2;
-            graphics.drawString(Minecraft.getInstance().font, text, xPosition, maxY + 3, DSColors.WHITE, false);
+            graphics.text(Minecraft.getInstance().font, text, xPosition, maxY + 3, DSColors.WHITE, false);
         }
     }
 

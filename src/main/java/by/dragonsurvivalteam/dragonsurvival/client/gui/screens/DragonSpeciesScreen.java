@@ -149,12 +149,12 @@ public class DragonSpeciesScreen extends Screen {
     }
 
     @Override
-    public void render(@NotNull final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
+    public void extractRenderState(@NotNull final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         if (minecraft.player == null) {
             return;
         }
 
-        renderBlurredBackground(graphics);
+        extractBlurredBackground(graphics);
 
         int startX = guiLeft + 23;
         int startY = guiTop - 13;
@@ -169,11 +169,11 @@ public class DragonSpeciesScreen extends Screen {
         this.extractBackground(graphics, mouseX, mouseY, partialTick);
 
         // Hack to absolutely ensure the banner is rendered behind everything else
-        speciesBanner.render(graphics, mouseX, mouseY, partialTick);
+        speciesBanner.extractRenderState(graphics, mouseX, mouseY, partialTick);
 
         for (Renderable renderable : this.renderables) {
             if (renderable != speciesBanner) {
-                renderable.render(graphics, mouseX, mouseY, partialTick);
+                renderable.extractRenderState(graphics, mouseX, mouseY, partialTick);
             }
         }
 

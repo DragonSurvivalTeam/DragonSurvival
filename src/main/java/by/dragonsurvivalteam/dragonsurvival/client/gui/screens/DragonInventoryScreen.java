@@ -107,11 +107,9 @@ public class DragonInventoryScreen extends AbstractContainerScreen<DragonContain
     private final List<ExtendedButton> clawMenuButtons = new ArrayList<>();
 
     public DragonInventoryScreen(DragonContainer screenContainer, Inventory inv, Component titleIn) {
-        super(screenContainer, inv, titleIn);
+        super(screenContainer, inv, titleIn, 203, 166);
         player = inv.player;
         clawsMenu = ClawInventoryData.getData(player).isMenuOpen();
-        imageWidth = 203;
-        imageHeight = 166;
     }
 
     @Override
@@ -236,7 +234,7 @@ public class DragonInventoryScreen extends AbstractContainerScreen<DragonContain
     protected void extractLabels(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY) { /* Nothing to do */ }
 
     @Override
-    protected void renderBg(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, float partialTick, int mouseX, int mouseY) {
+    public void extractBackground(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partialTick) {
         GuiGraphicsExtractor.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND, leftPos, topPos, 0, 0, imageWidth, imageHeight, 256, 256);
 
         int scissorY1 = topPos + 77;
@@ -248,7 +246,7 @@ public class DragonInventoryScreen extends AbstractContainerScreen<DragonContain
         int scale = (int) (20 * player.getScale());
         scale = Math.clamp(scale, 10, 40); // Very large dragon sizes (above the default max. size) will have a < 20 scale value
 
-        InventoryScreen.renderEntityInInventoryFollowsMouse(GuiGraphicsExtractor, scissorX0, scissorY0, scissorX1, scissorY1, scale, 0, mouseX, mouseY, player);
+        InventoryScreen.extractEntityInInventoryFollowsMouse(GuiGraphicsExtractor, scissorX0, scissorY0, scissorX1, scissorY1, scale, 0, mouseX, mouseY, player);
 
         if (!clawsMenu) {
             return;
@@ -258,16 +256,14 @@ public class DragonInventoryScreen extends AbstractContainerScreen<DragonContain
     }
 
     @Override
-    public void render(@NotNull final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
+    public void extractRenderState(@NotNull final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         clawMenuButtons.forEach(button -> button.visible = clawsMenu);
-        super.render(graphics, mouseX, mouseY, partialTick);
+        super.extractRenderState(graphics, mouseX, mouseY, partialTick);
 
         if (clawsMenu) {
             Identifier texture = ClientDragonRenderer.renderDragonClaws ? CLAW_DISPLAY_ON : CLAW_DISPLAY_OFF;
             graphics.blit(RenderPipelines.GUI_TEXTURED, texture, leftPos - 30, topPos + 120, 0, 0, 24, 42, 24, 42);
         }
-
-        renderTooltip(graphics, mouseX, mouseY);
 
         // Bandaid solution since we are rendering the tooltip twice now
         // But with this it is guaranteed to be rendered after the slot icons

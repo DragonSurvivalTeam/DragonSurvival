@@ -68,7 +68,7 @@ public record CustomPredicates(
     @Override
     @SuppressWarnings("RedundantIfStatement") // ignore for clarity
     public boolean matches(@NotNull final Entity entity, @NotNull final ServerLevel level, @Nullable final Vec3 position) {
-        if (!eyeInFluid.map(fluids -> fluids.stream().anyMatch(fluid -> entity.isEyeInFluidType(fluid.value()))).orElse(true)) {
+        if (!eyeInFluid.map(fluids -> fluids.stream().anyMatch(fluid -> by.dragonsurvivalteam.dragonsurvival.util.FluidTypeUtil.getEyeFluidType(entity) == fluid.value())).orElse(true)) {
             return false;
         }
 

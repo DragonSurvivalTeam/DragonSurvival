@@ -21,8 +21,8 @@ public class SmallLightningParticle extends DragonParticle {
     }
 
     @Override
-    protected int getLightColor(float partialTick) {
-        int color = super.getLightColor(partialTick);
+    public int getLightCoords(float partialTick) {
+        int color = super.getLightCoords(partialTick);
         int red = ARGB.red(color);
         return 240 | red << 16;
     }

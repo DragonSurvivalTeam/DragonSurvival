@@ -64,7 +64,7 @@ public class ConfoundedEffect extends ModifiableMobEffect {
                 player.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, 100));
             }
         } else if (livingEntity instanceof Mob mob){
-            if (mob.getType().is(DSEntityTypeTags.CONFOUNDED_TARGET_BLACKLIST)) {
+            if (mob.getType().builtInRegistryHolder().is(DSEntityTypeTags.CONFOUNDED_TARGET_BLACKLIST)) {
                 return true; // Keep the effect but don't change targets
             }
             List<LivingEntity> list1 = mob.level().getEntitiesOfClass(LivingEntity.class, mob.getBoundingBox().inflate(5.0));
@@ -73,7 +73,7 @@ public class ConfoundedEffect extends ModifiableMobEffect {
             list1 = list1.stream().filter(e -> {
                 if (e instanceof Player p) { return !(DragonStateProvider.getData(p).species().is(DSDragonSpeciesTags.FOREST_DRAGONS)); }
                 else if (e == mob) return false;
-                else if (mob.getType().is(DSEntityTypeTags.CONFOUNDED_TARGET_BLACKLIST)) return false;
+                else if (mob.getType().builtInRegistryHolder().is(DSEntityTypeTags.CONFOUNDED_TARGET_BLACKLIST)) return false;
                 return true;
             }).toList();
             if (list1.size() <= 0) {

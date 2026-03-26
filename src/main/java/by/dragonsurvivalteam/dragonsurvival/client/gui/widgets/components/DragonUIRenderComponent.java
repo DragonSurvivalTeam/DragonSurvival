@@ -35,7 +35,7 @@ public class DragonUIRenderComponent extends AbstractContainerEventHandler imple
     }
 
     @Override
-    public void render(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int pMouseX, int pMouseY, float pPartialTicks) {
+    public void extractRenderState(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int pMouseX, int pMouseY, float pPartialTicks) {
         if (isMouseOver(pMouseX, pMouseY)) {
             screen.setFocused(this);
         }

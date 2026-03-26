@@ -124,7 +124,7 @@ public class ChargedEffect extends ModifiableMobEffect {
                 return;
             }
 
-            if (target != source && !target.getType().is(DSEntityTypeTags.CHARGED_SPREAD_BLACKLIST)) {
+            if (target != source && !target.getType().builtInRegistryHolder().is(DSEntityTypeTags.CHARGED_SPREAD_BLACKLIST)) {
                 EntityStateHandler sourceData = source.getData(DSDataAttachments.ENTITY_HANDLER);
                 EntityStateHandler targetData = target.getData(DSDataAttachments.ENTITY_HANDLER);
 

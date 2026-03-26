@@ -28,13 +28,13 @@ public class ClientTimeComponent implements ClientTooltipComponent {
     }
 
     @Override
-    public void renderImage(@NotNull Font font, int x, int y, int width, int height, @NotNull GuiGraphicsExtractor graphics) {
-        graphics.renderFakeItem(component.item().getDefaultInstance(), x, y);
+    public void extractImage(@NotNull Font font, int x, int y, int width, int height, @NotNull GuiGraphicsExtractor graphics) {
+        graphics.fakeItem(component.item().getDefaultInstance(), x, y);
     }
 
     @Override
-    public void renderText(@NotNull GuiGraphicsExtractor graphics, @NotNull Font font, int x, int y) {
+    public void extractText(@NotNull GuiGraphicsExtractor graphics, @NotNull Font font, int x, int y) {
         // Offset the text slightly so it centers against the 16x16 item icon.
-        graphics.drawString(font, tooltip, x + ICON_SIZE, y + 4, 0xFFFFFFFF, true);
+        graphics.text(font, tooltip, x + ICON_SIZE, y + 4, 0xFFFFFFFF, true);
     }
 }

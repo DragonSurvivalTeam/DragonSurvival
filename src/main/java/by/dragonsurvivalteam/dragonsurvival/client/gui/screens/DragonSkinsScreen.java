@@ -183,12 +183,12 @@ public class DragonSkinsScreen extends Screen {
     }
 
     @Override
-    public void render(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partialTick) {
+    public void extractRenderState(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partialTick) {
         if (minecraft.player == null) {
             return;
         }
 
-        this.renderBlurredBackground(GuiGraphicsExtractor);
+        this.extractBlurredBackground(GuiGraphicsExtractor);
 
         int startX = guiLeft;
         int startY = guiTop;
@@ -233,7 +233,7 @@ public class DragonSkinsScreen extends Screen {
     }
 
     public static void drawNonShadowString(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, final Font font, final Component component, int x, int y, int color) {
-        GuiGraphicsExtractor.drawString(font, Language.getInstance().getVisualOrder(component), x - font.width(component) / 2, y, color, false);
+        GuiGraphicsExtractor.text(font, Language.getInstance().getVisualOrder(component), x - font.width(component) / 2, y, color, false);
     }
 
     private void renderPreviewEntity(final GuiGraphicsExtractor GuiGraphicsExtractor, final DragonEntity dragon, final int startX, final int startY, final int mouseX, final int mouseY) {
@@ -258,10 +258,10 @@ public class DragonSkinsScreen extends Screen {
         try {
             DragonSurvivalClient.DRAGON_MODEL.setOverrideTexture(overrideTexture);
             dragonRenderer.glowTexture = overrideGlow;
-            InventoryScreen.renderEntityInInventoryFollowsMouse(GuiGraphicsExtractor, leftX, topY, rightX, bottomY, scale, 0, mouseX, mouseY, dragon);
+            InventoryScreen.extractEntityInInventoryFollowsMouse(GuiGraphicsExtractor, leftX, topY, rightX, bottomY, scale, 0, mouseX, mouseY, dragon);
         } catch (final IllegalArgumentException exception) {
             if (fallbackEntity != null) {
-                InventoryScreen.renderEntityInInventoryFollowsMouse(GuiGraphicsExtractor, leftX, topY, rightX, bottomY, scale, 0, mouseX, mouseY, fallbackEntity);
+                InventoryScreen.extractEntityInInventoryFollowsMouse(GuiGraphicsExtractor, leftX, topY, rightX, bottomY, scale, 0, mouseX, mouseY, fallbackEntity);
             }
         } finally {
             DragonSurvivalClient.DRAGON_MODEL.setOverrideTexture(null);

@@ -31,7 +31,7 @@ public record ProjectileAreaCloudEffect(
 
     @Override
     public void apply(Projectile projectile, BlockPos target, int level) {
-        if (projectile.level().random.nextDouble() < probability.calculate(level)) {
+        if (projectile.level().getRandom().nextDouble() < probability.calculate(level)) {
             AreaEffectCloud cloud = new AreaEffectCloud(projectile.level(), target.getX(), projectile.level().getBlockState(target.below()).isSolid() ? target.above().getY() : target.getY(), target.getZ());
 
             if (projectile.getOwner() != null) {

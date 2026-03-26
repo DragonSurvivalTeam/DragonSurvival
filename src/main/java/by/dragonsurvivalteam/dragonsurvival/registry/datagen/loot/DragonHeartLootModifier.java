@@ -67,7 +67,7 @@ public class DragonHeartLootModifier extends LootModifier {
             return false;
         }
 
-        return entity.getType().is(tag) == isWhiteList;
+        return entity.getType().builtInRegistryHolder().is(tag) == isWhiteList;
     }
 
     @Override

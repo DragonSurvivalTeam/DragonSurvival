@@ -137,7 +137,7 @@ public class HueSelectorComponent extends AbstractContainerEventHandler implemen
                     this.isHovered = mouseX >= getX() && mouseY >= getY() && mouseX < getX() + getWidth() && mouseY < getY() + getHeight();
                     // FIXME :: UI GRAPHICS
                     // RenderingUtils.renderPureColorSquare(GuiGraphicsExtractor.pose(), getX() + 1, getY() + 1, getWidth() - 1, getHeight() - 1);
-                    GuiGraphicsExtractor.renderOutline(getX() + 1, getY() + 1, getWidth() - 1, getHeight() - 1, Color.black.getRGB());
+                    GuiGraphicsExtractor.outline(getX() + 1, getY() + 1, getWidth() - 1, getHeight() - 1, Color.black.getRGB());
                     if (this.isHovered) {
                         GuiGraphicsExtractor.blit(SLIDER_HOVER, this.getX() + (int) (this.value * (double) (this.width - 8)), this.getY() - 3, 0, 0, 12, 26, 26, 26);
                     } else {
@@ -197,7 +197,7 @@ public class HueSelectorComponent extends AbstractContainerEventHandler implemen
 
                     // FIXME :: UI GRAPHICS
                     //RenderingUtils.drawGradientRect(GuiGraphicsExtractor.pose().last().pose(), 0, getX() + 1, getY() + 1, getX() + getWidth() - 1, getY() + getHeight() - 1, new int[]{col2, col1, col1, col2});
-                    GuiGraphicsExtractor.renderOutline(getX() + 1, getY() + 1, getWidth() - 1, getHeight() - 1, Color.black.getRGB());
+                    GuiGraphicsExtractor.outline(getX() + 1, getY() + 1, getWidth() - 1, getHeight() - 1, Color.black.getRGB());
                     if (this.isHovered) {
                         GuiGraphicsExtractor.blit(SLIDER_HOVER, this.getX() + (int) (this.value * (double) (this.width - 8)), this.getY() - 3, 0, 0, 12, 26, 26, 26);
                     } else {
@@ -257,7 +257,7 @@ public class HueSelectorComponent extends AbstractContainerEventHandler implemen
 
                     // FIXME :: UI GRAPHICS
                     // RenderingUtils.drawGradientRect(GuiGraphicsExtractor.pose().last().pose(), 0, getX() + 1, getY() + 1, getX() + getWidth() - 1, getY() + getHeight() - 1, new int[]{col2, col1, col1, col2});
-                    GuiGraphicsExtractor.renderOutline(getX() + 1, getY() + 1, getWidth() - 1, getHeight() - 1, Color.black.getRGB());
+                    GuiGraphicsExtractor.outline(getX() + 1, getY() + 1, getWidth() - 1, getHeight() - 1, Color.black.getRGB());
                     if (this.isHovered) {
                         GuiGraphicsExtractor.blit(SLIDER_HOVER, this.getX() + (int) (this.value * (double) (this.width - 8)), this.getY() - 3, 0, 0, 12, 26, 26, 26);
                     } else {
@@ -293,7 +293,7 @@ public class HueSelectorComponent extends AbstractContainerEventHandler implemen
     }
 
     @Override
-    public void render(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int pMouseX, int pMouseY, float pPartialTicks) {
+    public void extractRenderState(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int pMouseX, int pMouseY, float pPartialTicks) {
         GuiGraphicsExtractor.pose().pushMatrix();
         // Render pop-up menu content above the other elements
         // FIXME :: UI GRAPHICS
@@ -301,13 +301,13 @@ public class HueSelectorComponent extends AbstractContainerEventHandler implemen
 
         // Background for glow button
         GuiGraphicsExtractor.fill(x + 2, y - 25, x + 32, y + 5, BACKGROUND_COLOR);
-        GuiGraphicsExtractor.renderOutline(x + 2, y - 26, 30, 31, Color.black.getRGB());
-        GuiGraphicsExtractor.renderOutline(x + 3, y - 25, 28, 29, INNER_BORDER_COLOR);
+        GuiGraphicsExtractor.outline(x + 2, y - 26, 30, 31, Color.black.getRGB());
+        GuiGraphicsExtractor.outline(x + 3, y - 25, 28, 29, INNER_BORDER_COLOR);
 
         // Main background
         GuiGraphicsExtractor.fill(x, y, x + xSize + 2, y + ySize - 10, BACKGROUND_COLOR);
-        GuiGraphicsExtractor.renderOutline(x, y, xSize + 2, ySize - 10, Color.black.getRGB());
-        GuiGraphicsExtractor.renderOutline(x + 1, y + 1, xSize, ySize - 12, INNER_BORDER_COLOR);
+        GuiGraphicsExtractor.outline(x, y, xSize + 2, ySize - 10, Color.black.getRGB());
+        GuiGraphicsExtractor.outline(x + 1, y + 1, xSize, ySize - 12, INNER_BORDER_COLOR);
 
         glowing.extractRenderState(GuiGraphicsExtractor, pMouseX, pMouseY, pPartialTicks);
 

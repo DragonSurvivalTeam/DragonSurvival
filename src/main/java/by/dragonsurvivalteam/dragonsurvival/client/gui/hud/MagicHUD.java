@@ -147,11 +147,11 @@ public class MagicHUD {
             int width = (guiScaledWidth - Minecraft.getInstance().font.width(s)) / 2;
             int height = guiScaledHeight - 31 - 4;
 
-            GuiGraphicsExtractor.drawString(Minecraft.getInstance().font, s, (width + 1), height, 0, false);
-            GuiGraphicsExtractor.drawString(Minecraft.getInstance().font, s, (width - 1), height, 0, false);
-            GuiGraphicsExtractor.drawString(Minecraft.getInstance().font, s, width, (height + 1), 0, false);
-            GuiGraphicsExtractor.drawString(Minecraft.getInstance().font, s, width, (height - 1), 0, false);
-            GuiGraphicsExtractor.drawString(Minecraft.getInstance().font, s, width, height, DSColors.RED, false);
+            GuiGraphicsExtractor.text(Minecraft.getInstance().font, s, (width + 1), height, 0, false);
+            GuiGraphicsExtractor.text(Minecraft.getInstance().font, s, (width - 1), height, 0, false);
+            GuiGraphicsExtractor.text(Minecraft.getInstance().font, s, width, (height + 1), 0, false);
+            GuiGraphicsExtractor.text(Minecraft.getInstance().font, s, width, (height - 1), 0, false);
+            GuiGraphicsExtractor.text(Minecraft.getInstance().font, s, width, height, DSColors.RED, false);
 
             Profiler.get().pop();
         }
@@ -435,7 +435,7 @@ public class MagicHUD {
         }
 
         if (errorTicks > 0) {
-            graphics.drawString(Minecraft.getInstance().font, errorMessage.getVisualOrderText(), (int) (graphics.guiWidth() / 2f - Minecraft.getInstance().font.width(errorMessage) / 2f), graphics.guiHeight() - 70, DSColors.NONE);
+            graphics.text(Minecraft.getInstance().font, errorMessage.getVisualOrderText(), (int) (graphics.guiWidth() / 2f - Minecraft.getInstance().font.width(errorMessage) / 2f), graphics.guiHeight() - 70, DSColors.NONE);
         }
     }
 

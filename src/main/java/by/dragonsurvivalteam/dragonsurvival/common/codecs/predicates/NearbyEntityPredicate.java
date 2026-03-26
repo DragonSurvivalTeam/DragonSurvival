@@ -36,7 +36,7 @@ public record NearbyEntityPredicate(HolderSet<EntityType<?>> entityTypes, int ra
 
     public boolean matches(final ServerLevel level, final Vec3 position) {
         for (Entity entity : level.getEntities(null, AABB.ofSize(position, radius * 2, radius * 2, radius * 2))) {
-            if (entity.getType().is(entityTypes)) {
+            if (entityTypes.contains(entity.getType().builtInRegistryHolder())) {
                 return true;
             }
         }

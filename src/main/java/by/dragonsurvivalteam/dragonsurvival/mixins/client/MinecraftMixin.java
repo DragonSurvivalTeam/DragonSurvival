@@ -34,6 +34,6 @@ public abstract class MinecraftMixin {
             return isEnabled;
         }
 
-        return isEnabled || (/* Unsure why this check exists in vanilla */ !instance.gameRenderer.isPanoramicMode() && HunterHandler.FIX_TRANSLUCENCY);
+        return isEnabled || HunterHandler.FIX_TRANSLUCENCY;
     }
 }

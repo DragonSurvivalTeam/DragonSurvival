@@ -89,12 +89,12 @@ public class DragonAbilityScreen extends Screen {
     }
 
     @Override
-    public void render(@NotNull final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
+    public void extractRenderState(@NotNull final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         if (minecraft.player == null) {
             return;
         }
 
-        renderBlurredBackground(graphics);
+        extractBlurredBackground(graphics);
 
         int startX = guiLeft + 8;
         int startY = guiTop - 28;
@@ -175,10 +175,10 @@ public class DragonAbilityScreen extends Screen {
             Component expectedLevel = Component.literal(String.valueOf(newLevel)).withColor(color);
             int expLevelXPos = ((rightBarX + leftBarX) / 2 + 48 - minecraft.font.width(expectedLevel) / 2) - 1;
             int expLevelYPos = barYPos - 1;
-            graphics.drawString(minecraft.font, expectedLevel, expLevelXPos, expLevelYPos, 0, false);
+            graphics.text(minecraft.font, expectedLevel, expLevelXPos, expLevelYPos, 0, false);
         }
 
-        super.render(graphics, mouseX, mouseY, partialTick);
+        super.extractRenderState(graphics, mouseX, mouseY, partialTick);
         renderDeferredTooltip(graphics, mouseX, mouseY);
     }
 

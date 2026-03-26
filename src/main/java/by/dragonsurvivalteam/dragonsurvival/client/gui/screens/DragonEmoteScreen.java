@@ -126,7 +126,7 @@ public class DragonEmoteScreen extends Screen {
     }
 
     @Override
-    public void render(@NotNull final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
+    public void extractRenderState(@NotNull final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         if (minecraft == null || minecraft.player == null) {
             return;
         }
@@ -139,7 +139,7 @@ public class DragonEmoteScreen extends Screen {
         graphics.blit(BACKGROUND_MAIN, startX, startY, 0, 0, 256, 256, 256, 256);
         //RenderSystem.disableBlend();
 
-        super.render(graphics, mouseX, mouseY, partialTick);
+        super.extractRenderState(graphics, mouseX, mouseY, partialTick);
         int totalPages = (int) Math.ceil((double) DragonStateProvider.getData(minecraft.player).body().value().emotes().value().emotes().size() / PER_PAGE);
         TextRenderUtil.drawCenteredScaledText(graphics, guiLeft + 75, guiTop + 137, 1.0f, (emotePage + 1) + "/" + totalPages, Color.white.getRGB());
 

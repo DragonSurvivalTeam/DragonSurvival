@@ -94,7 +94,7 @@ public class AbilityAndPenaltyTooltipRenderer {
             blitWithBorder(graphics, BARS, trueX - (hasShiftDown ? maxLineWidth : 10) + 3, trueY + 9, colorXPos, colorYPos, hasShiftDown ? maxLineWidth : 15, 20, 20, 20, 3);
 
             if (hasShiftDown) {
-                graphics.drawString(Minecraft.getInstance().font, Component.translatable(LangKey.INFO), trueX - maxLineWidth + 10, trueY + 15, -1);
+                graphics.text(Minecraft.getInstance().font, Component.translatable(LangKey.INFO), trueX - maxLineWidth + 10, trueY + 15, -1);
                 int counter = 0;
 
                 for (int line = scrollAmount; line < lines.size(); line++) {
@@ -112,7 +112,7 @@ public class AbilityAndPenaltyTooltipRenderer {
                         graphics.blitSprite(RenderPipelines.GUI_TEXTURED, EFFECT_HEADER, startPosition, textY - 4, maxLineWidth - 10, 9);
                         RenderingUtils.setShaderColor(0xFFFFFFFF);
                     } else {
-                        graphics.drawString(Minecraft.getInstance().font, text, startPosition, textY, DSColors.withAlpha(DSColors.GRAY, 1));
+                        graphics.text(Minecraft.getInstance().font, text, startPosition, textY, DSColors.withAlpha(DSColors.GRAY, 1));
                     }
 
                     counter++;
@@ -128,21 +128,21 @@ public class AbilityAndPenaltyTooltipRenderer {
         blitWithBorder(graphics, BARS, trueX, trueY + 3, colorXPos, colorYPos, backgroundWidth, 20, 20, 20, 3);
         blitWithBorder(graphics, BARS, trueX, trueY, 0, 100, 26, 26, 24, 24, 3);
 
-        graphics.drawCenteredString(Minecraft.getInstance().font, Component.translatable(headerTranslationKey), trueX + backgroundWidth / 2, trueY + 30, tooltipBackgroundColor);
+        graphics.centeredText(Minecraft.getInstance().font, Component.translatable(headerTranslationKey), trueX + backgroundWidth / 2, trueY + 30, tooltipBackgroundColor);
 
         if (maxLevel > DragonAbilityInstance.MIN_LEVEL) {
-            graphics.drawCenteredString(Minecraft.getInstance().font, Component.empty().append(abilityLevel + "/" + maxLevel), trueX + backgroundWidth - 18, trueY + 9, -1);
-            graphics.drawCenteredString(Minecraft.getInstance().font, name, trueX + backgroundWidth / 2, trueY + 9, -1);
+            graphics.centeredText(Minecraft.getInstance().font, Component.empty().append(abilityLevel + "/" + maxLevel), trueX + backgroundWidth - 18, trueY + 9, -1);
+            graphics.centeredText(Minecraft.getInstance().font, name, trueX + backgroundWidth / 2, trueY + 9, -1);
         } else {
-            graphics.drawCenteredString(Minecraft.getInstance().font, name, trueX + backgroundWidth / 2 + 10, trueY + 9, -1);
+            graphics.centeredText(Minecraft.getInstance().font, name, trueX + backgroundWidth / 2 + 10, trueY + 9, -1);
         }
 
         for (int line = 0; line < description.size(); line++) {
-            graphics.drawString(Minecraft.getInstance().font, description.get(line), trueX + 5, trueY + 47 + line * 9, -5592406);
+            graphics.text(Minecraft.getInstance().font, description.get(line), trueX + 5, trueY + 47 + line * 9, -5592406);
         }
 
         if (!shiftInfo.isEmpty()) {
-            graphics.drawCenteredString(Minecraft.getInstance().font, Component.translatable(INFO_SHIFT).withStyle(ChatFormatting.DARK_GRAY), trueX + backgroundWidth / 2, trueY + 47 + (description.size() - 1) * 9, DSColors.withAlpha(DSColors.DARK_GRAY, 1));
+            graphics.centeredText(Minecraft.getInstance().font, Component.translatable(INFO_SHIFT).withStyle(ChatFormatting.DARK_GRAY), trueX + backgroundWidth / 2, trueY + 47 + (description.size() - 1) * 9, DSColors.withAlpha(DSColors.DARK_GRAY, 1));
         }
 
         graphics.blitSprite(RenderPipelines.GUI_TEXTURED, icon, trueX + 5, trueY + 5, 16, 16);

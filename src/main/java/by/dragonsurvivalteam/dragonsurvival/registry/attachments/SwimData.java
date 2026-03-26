@@ -3,6 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.registry.attachments;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.OxygenBonus;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncSwimDataEntry;
+import by.dragonsurvivalteam.dragonsurvival.util.FluidTypeUtil;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
@@ -83,7 +84,7 @@ public class SwimData {
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void handleOxygen(final LivingBreatheEvent event) {
         if (event.getEntity() instanceof Player player) {
-            FluidType currentFluid = player.getEyeInFluidType();
+            FluidType currentFluid = FluidTypeUtil.getEyeFluidType(player);
             SwimData data = getData(player);
 
             if (event.canBreathe()) {
@@ -98,7 +99,7 @@ public class SwimData {
 
             if (!isAir(currentFluid) && data.previousFluid != currentFluid) {
                 int maxAirSupply = data.getMaxOxygen(player, data.previousFluid);
-                int newMaxAirSupply = data.getMaxOxygen(player, player.getEyeInFluidType());
+                int newMaxAirSupply = data.getMaxOxygen(player, FluidTypeUtil.getEyeFluidType(player));
 
                 float airSupplyRatio = (float) newMaxAirSupply / (float) maxAirSupply;
                 player.setAirSupply((int) Math.min(newMaxAirSupply, Math.ceil(player.getAirSupply() * airSupplyRatio)));

@@ -10,10 +10,30 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 import net.neoforged.neoforge.client.event.ViewportEvent;
 
-// FIXME
+// FIXME: the full 26.1 fog event port is still pending.
 /** Handles water, lava, and block vision effects */
-//@EventBusSubscriber(Dist.CLIENT)
 public class VisionHandler {
+    public static boolean hasLavaVision() {
+        Player player = DragonSurvival.PROXY.getLocalPlayer();
+        return player != null && player.hasEffect(DSEffects.LAVA_VISION);
+    }
+
+    public static boolean hasWaterVision() {
+        Player player = DragonSurvival.PROXY.getLocalPlayer();
+        return player != null && player.hasEffect(DSEffects.WATER_VISION);
+    }
+
+    public static boolean hasVision(final VisionType type) {
+        return switch (type) {
+            case WATER -> hasWaterVision();
+            case LAVA -> hasLavaVision();
+        };
+    }
+
+    public enum VisionType {
+        WATER,
+        LAVA
+    }
 //    private static boolean hadLavaVision;
 //    private static boolean hadWaterVision;
 //

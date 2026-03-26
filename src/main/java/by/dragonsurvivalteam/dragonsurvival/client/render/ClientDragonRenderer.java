@@ -329,7 +329,7 @@ public class ClientDragonRenderer {
             var dispatcher = Minecraft.getInstance().getEntityRenderDispatcher();
             try {
                 var dragonRenderState = dispatcher.extractEntity(dragon, partialTick);
-                var cameraRenderState = Minecraft.getInstance().gameRenderer.getLevelRenderState().cameraRenderState;
+                var cameraRenderState = Minecraft.getInstance().gameRenderer.getGameRenderState().levelRenderState.cameraRenderState;
                 dispatcher.submit(
                     dragonRenderState,
                     cameraRenderState,

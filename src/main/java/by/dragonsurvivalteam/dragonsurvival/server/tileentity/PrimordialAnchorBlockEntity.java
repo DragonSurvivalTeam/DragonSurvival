@@ -22,7 +22,10 @@ public class PrimordialAnchorBlockEntity extends BlockEntity {
 
     public static void serverTick(final Level level, final BlockPos position, final BlockState state, final PrimordialAnchorBlockEntity anchor) {
         //noinspection DataFlowIssue -> server is present
-        if (ServerLifecycleHooks.getCurrentServer().getWorldData().endDragonFightData().dragonKilled() && anchorHasBloodyState) {
+        if (ServerLifecycleHooks.getCurrentServer().getLevel(Level.END) != null
+                && ServerLifecycleHooks.getCurrentServer().getLevel(Level.END).getDragonFight() != null
+                && ServerLifecycleHooks.getCurrentServer().getLevel(Level.END).getDragonFight().hasPreviouslyKilledDragon()
+                && anchorHasBloodyState) {
             level.setBlockAndUpdate(position, state.setValue(PrimordialAnchorBlock.BLOODY, true));
         } else {
             level.setBlockAndUpdate(position, state.setValue(PrimordialAnchorBlock.BLOODY, false));

@@ -109,7 +109,7 @@ public class Builder {
         }
 
         advancement.display(
-                displayItem,
+                net.minecraft.world.item.ItemStackTemplate.fromNonEmptyStack(displayItem),
                 Component.translatable(Translation.Type.ADVANCEMENT.wrap(path)),
                 showDescription ? Component.translatable(Translation.Type.ADVANCEMENT_DESCRIPTION.wrap(path)) : Component.empty(),
                 background,

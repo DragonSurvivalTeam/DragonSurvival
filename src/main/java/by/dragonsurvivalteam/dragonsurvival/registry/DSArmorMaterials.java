@@ -22,7 +22,7 @@ public class DSArmorMaterials
         37,
         ArmorMaterials.makeDefense(3, 6, 8, 3, 11),
         15,
-        new Holder.Direct<>(SoundEvents.IRON_GOLEM_STEP),
+        Holder.direct(SoundEvents.IRON_GOLEM_STEP),
         3.0F,
         0.1F,
         ItemTags.REPAIRS_NETHERITE_ARMOR,

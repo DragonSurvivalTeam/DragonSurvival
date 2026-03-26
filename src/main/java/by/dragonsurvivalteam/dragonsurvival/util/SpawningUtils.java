@@ -16,7 +16,7 @@ public class SpawningUtils {
         BlockPos.MutableBlockPos blockPos = new BlockPos.MutableBlockPos();
 
         for (int i = 0; i < attempts; i++) {
-            float f = level.random.nextFloat() * Mth.TWO_PI;
+            float f = level.getRandom().nextFloat() * Mth.TWO_PI;
             double x = worldPos.x + Mth.floor(Mth.cos(f) * radius);
             double z = worldPos.z + Mth.floor(Mth.sin(f) * radius);
             int y = level.getHeight(Heightmap.Types.WORLD_SURFACE, (int) x, (int) z);

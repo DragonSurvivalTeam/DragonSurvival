@@ -228,7 +228,7 @@ public class DragonSoulItem extends BlockItem {
         level.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SoundEvents.ENDER_DRAGON_GROWL, entity.getSoundSource(), 0.6f, 1);
 
         for (int i = 0; i < 10; i++) {
-            level.addParticle(ParticleTypes.SOUL, entity.getX() + (level.random.nextDouble() - 0.5D) * 0.5D, entity.getY() + (level.random.nextDouble() - 0.5D) * 0.5D, entity.getZ() + (level.random.nextDouble() - 0.5D) * 0.5D, (level.random.nextDouble() - 0.5D) * 0.5D, level.random.nextDouble() * 0.5D, (level.random.nextDouble() - 0.5D) * 0.5D);
+            level.addParticle(ParticleTypes.SOUL, entity.getX() + (level.getRandom().nextDouble() - 0.5D) * 0.5D, entity.getY() + (level.getRandom().nextDouble() - 0.5D) * 0.5D, entity.getZ() + (level.getRandom().nextDouble() - 0.5D) * 0.5D, (level.getRandom().nextDouble() - 0.5D) * 0.5D, level.getRandom().nextDouble() * 0.5D, (level.getRandom().nextDouble() - 0.5D) * 0.5D);
         }
 
         return stack;

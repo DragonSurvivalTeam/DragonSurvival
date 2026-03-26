@@ -561,7 +561,7 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
 
         FakeClientPlayerUtils.getFakePlayer(0, HANDLER).animationSupplier = () -> animations[curAnimation];
         extractBackground(graphics, mouseX, mouseY, partialTick);
-        children().stream().filter(DragonUIRenderComponent.class::isInstance).toList().forEach(s -> ((DragonUIRenderComponent) s).render(graphics, mouseX, mouseY, partialTick));
+        children().stream().filter(DragonUIRenderComponent.class::isInstance).toList().forEach(s -> ((DragonUIRenderComponent) s).extractRenderState(graphics, mouseX, mouseY, partialTick));
         DragonAltarScreen.renderBorders(graphics, BACKGROUND_TEXTURE, 0, width, 32, height - 32, width, height);
         TextRenderUtil.drawCenteredScaledText(graphics, width / 2, 10, 2f, DragonStage.translatableName(Objects.requireNonNull(stage.getKey())).getString().toUpperCase(), DyeColor.WHITE.getTextColor());
 
@@ -608,7 +608,7 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
                 }
             }
 
-            renderable.render(graphics, mouseX, mouseY, partialTick);
+            renderable.extractRenderState(graphics, mouseX, mouseY, partialTick);
         }
 
         uiButton.visible = true;

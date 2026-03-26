@@ -81,7 +81,7 @@ public class DragonPenaltyHandler {
 
         for (Holder<DragonPenalty> penalty : handler.species().value().penalties()) {
             //noinspection DeconstructionCanBeUsed -> spotless is too stupid to handle this
-            if (penalty.value().trigger() instanceof HitByProjectileTrigger trigger && event.getProjectile().getType().is(trigger.projectiles())) {
+            if (penalty.value().trigger() instanceof HitByProjectileTrigger trigger && trigger.projectiles().contains(event.getProjectile().getType().builtInRegistryHolder())) {
                 penalty.value().apply(serverPlayer, penalty);
             }
         }

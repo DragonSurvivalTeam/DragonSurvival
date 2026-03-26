@@ -15,12 +15,12 @@ public class HunterProjectileImpactHandler {
         if (event.getProjectile() instanceof AbstractArrow arrow) {
             Entity owner = arrow.getOwner();
 
-            if (owner == null || !owner.getType().is(DSEntityTypeTags.HUNTER_FACTION)) {
+            if (owner == null || !owner.getType().builtInRegistryHolder().is(DSEntityTypeTags.HUNTER_FACTION)) {
                 return;
             }
 
             if (event.getRayTraceResult() instanceof EntityHitResult result) {
-                if (result.getEntity().getType().is(DSEntityTypeTags.HUNTER_FACTION)) {
+                if (result.getEntity().getType().builtInRegistryHolder().is(DSEntityTypeTags.HUNTER_FACTION)) {
                     event.setCanceled(true);
                 }
             }

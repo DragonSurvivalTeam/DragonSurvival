@@ -98,12 +98,12 @@ public class AltarTypeButton extends ExtendedButton implements HoverDisableable 
     }
 
     @Override
-    protected void extractRenderState(@NotNull final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
+    public void extractRenderState(@NotNull final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         if (isHovered()) {
             handleTooltip(graphics, mouseX, mouseY);
         }
 
-        graphics.renderOutline(getX() - 1, getY() - 1, width + 2, height + 2, Color.black.getRGB());
+        graphics.outline(getX() - 1, getY() - 1, width + 2, height + 2, Color.black.getRGB());
 
         if (speciesEntry != null) {
             graphics.blit(RenderPipelines.GUI_TEXTURED, speciesEntry.species().value().miscResources().altarBanner(), getX(), getY(), 0, isHovered() ? 0 : 147, 49, 147, 49, 294);

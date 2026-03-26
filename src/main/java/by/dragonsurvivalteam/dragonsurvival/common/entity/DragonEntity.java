@@ -13,12 +13,14 @@ import by.dragonsurvivalteam.dragonsurvival.common.handlers.DragonFoodHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.DragonSizeHandler;
 import by.dragonsurvivalteam.dragonsurvival.compat.create.SkyhookRendererHelper;
 import by.dragonsurvivalteam.dragonsurvival.config.ClientConfig;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SwimData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MovementData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.TreasureRestData;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.emotes.DragonEmote;
 import by.dragonsurvivalteam.dragonsurvival.server.handlers.ServerFlightHandler;
 import by.dragonsurvivalteam.dragonsurvival.util.AnimationUtils;
 import by.dragonsurvivalteam.dragonsurvival.util.DragonAnimations;
+import by.dragonsurvivalteam.dragonsurvival.util.FluidTypeUtil;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
@@ -569,7 +571,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
      */
     public static boolean isConsideredSwimmingForAnimation(Player player) {
         boolean isInFluid = player.canSwimInFluidType(player.getInBlockState().getFluidState().getFluidType());
-        return isInFluid && !player.isPassenger() && (!player.onGround() || !player.getEyeInFluidType().isAir());
+        return isInFluid && !player.isPassenger() && (!player.onGround() || !SwimData.isAir(FluidTypeUtil.getEyeFluidType(player)));
     }
 
     private PlayState predicate(final AnimationTest<DragonEntity> state) {
