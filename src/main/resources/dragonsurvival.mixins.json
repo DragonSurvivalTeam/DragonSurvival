@@ -35,6 +35,7 @@
     "SwellGoalMixin",
     "VaultBlockEntityServerMixin",
     "VillagerHostilesSensorMixin",
+    "client.FluidRendererMixin",
     "tool_swap.ServerPlayerGameModeEndMixin",
     "tool_swap.ServerPlayerGameModeStartMixin"
   ],
@@ -51,7 +52,6 @@
     "client.KeyMappingAccess",
     "client.LevelRendererAccess",
     "client.LightTextureMixin",
-    "client.LiquidBlockRendererMixin",
     "client.LivingRendererAccessor",
     "client.LocalPlayerAccessor",
     "client.LocalPlayerMixin",
