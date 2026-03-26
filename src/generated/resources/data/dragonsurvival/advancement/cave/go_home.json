@@ -33,7 +33,6 @@
       "translate": "dragonsurvival.advancement.cave/go_home.desc"
     },
     "icon": {
-      "count": 1,
       "id": "minecraft:nether_brick_stairs"
     },
     "title": {

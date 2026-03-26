@@ -48,7 +48,6 @@
       "translate": "dragonsurvival.advancement.sea/loot_shipwreck.desc"
     },
     "icon": {
-      "count": 1,
       "id": "minecraft:heart_of_the_sea"
     },
     "show_toast": false,

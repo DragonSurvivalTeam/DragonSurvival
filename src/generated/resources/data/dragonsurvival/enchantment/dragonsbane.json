@@ -124,6 +124,7 @@
           "condition": "minecraft:all_of",
           "terms": [
             {
+              "clock": "minecraft:overworld",
               "condition": "minecraft:time_check",
               "period": 100,
               "value": 0

@@ -18,7 +18,6 @@
       "translate": "dragonsurvival.advancement.collect_heart_from_monster.desc"
     },
     "icon": {
-      "count": 1,
       "id": "dragonsurvival:elder_dragon_heart"
     },
     "show_toast": false,

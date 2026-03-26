@@ -18,7 +18,6 @@
       "translate": "dragonsurvival.advancement.collect_dust.desc"
     },
     "icon": {
-      "count": 1,
       "id": "minecraft:coal_ore"
     },
     "show_toast": false,

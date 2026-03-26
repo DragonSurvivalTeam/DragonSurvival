@@ -23,7 +23,6 @@
       "translate": "dragonsurvival.advancement.find_nether_structures.desc"
     },
     "icon": {
-      "count": 1,
       "id": "minecraft:netherrack"
     },
     "title": {

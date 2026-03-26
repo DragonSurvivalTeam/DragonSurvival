@@ -34,7 +34,6 @@
       "translate": "dragonsurvival.advancement.sea/place_snow_in_nether.desc"
     },
     "icon": {
-      "count": 1,
       "id": "minecraft:snow_block"
     },
     "show_toast": false,

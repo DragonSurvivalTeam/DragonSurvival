@@ -24,7 +24,6 @@
       "translate": "dragonsurvival.advancement.hunter/promotion.desc"
     },
     "icon": {
-      "count": 1,
       "id": "dragonsurvival:spearman_promotion"
     },
     "title": {

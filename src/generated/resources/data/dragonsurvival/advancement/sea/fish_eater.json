@@ -56,7 +56,6 @@
       "translate": "dragonsurvival.advancement.sea/fish_eater.desc"
     },
     "icon": {
-      "count": 1,
       "id": "dragonsurvival:seasoned_fish"
     },
     "show_toast": false,

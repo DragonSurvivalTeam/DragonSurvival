@@ -21,7 +21,6 @@
       "translate": "dragonsurvival.advancement.place_altar.desc"
     },
     "icon": {
-      "count": 1,
       "id": "dragonsurvival:stone_dragon_altar"
     },
     "show_toast": false,

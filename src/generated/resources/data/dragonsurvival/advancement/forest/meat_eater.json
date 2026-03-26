@@ -64,7 +64,6 @@
       "translate": "dragonsurvival.advancement.forest/meat_eater.desc"
     },
     "icon": {
-      "count": 1,
       "id": "dragonsurvival:meat_wild_berries"
     },
     "show_toast": false,

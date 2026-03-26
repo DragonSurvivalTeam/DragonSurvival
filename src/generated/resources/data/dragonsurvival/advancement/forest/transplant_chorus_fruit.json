@@ -34,7 +34,6 @@
       "translate": "dragonsurvival.advancement.forest/transplant_chorus_fruit.desc"
     },
     "icon": {
-      "count": 1,
       "id": "dragonsurvival:diamond_chorus"
     },
     "show_toast": false,

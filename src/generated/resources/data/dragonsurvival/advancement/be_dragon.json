@@ -11,7 +11,6 @@
       "translate": "dragonsurvival.advancement.be_dragon.desc"
     },
     "icon": {
-      "count": 1,
       "id": "dragonsurvival:star_bone"
     },
     "show_toast": false,

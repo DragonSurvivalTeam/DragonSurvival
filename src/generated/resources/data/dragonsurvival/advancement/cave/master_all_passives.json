@@ -35,7 +35,6 @@
       "translate": "dragonsurvival.advancement.cave/master_all_passives.desc"
     },
     "icon": {
-      "count": 1,
       "id": "dragonsurvival:cave_source_of_magic"
     },
     "title": {

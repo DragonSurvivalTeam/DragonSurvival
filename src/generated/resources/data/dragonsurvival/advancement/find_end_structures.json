@@ -23,7 +23,6 @@
       "translate": "dragonsurvival.advancement.find_end_structures.desc"
     },
     "icon": {
-      "count": 1,
       "id": "dragonsurvival:spin_grant"
     },
     "title": {

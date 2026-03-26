@@ -43,7 +43,6 @@
       "translate": "dragonsurvival.advancement.get_all_beacons.desc"
     },
     "icon": {
-      "count": 1,
       "id": "dragonsurvival:elder_dragon_dust"
     },
     "title": {

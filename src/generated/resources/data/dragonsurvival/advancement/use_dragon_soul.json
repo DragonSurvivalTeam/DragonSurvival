@@ -10,7 +10,6 @@
       "translate": "dragonsurvival.advancement.use_dragon_soul.desc"
     },
     "icon": {
-      "count": 1,
       "id": "dragonsurvival:dragon_soul"
     },
     "title": {

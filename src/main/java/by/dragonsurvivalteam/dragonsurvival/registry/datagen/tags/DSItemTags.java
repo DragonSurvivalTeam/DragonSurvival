@@ -11,7 +11,6 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.BuiltInDragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.TagsProvider;
@@ -21,7 +20,6 @@ import net.minecraft.tags.TagBuilder;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.equipment.Equippable;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.ItemTagsProvider;
@@ -215,21 +213,27 @@ public class DSItemTags extends ItemTagsProvider {
     }
 
     private void addToVanillaTags() {
-        DSItems.REGISTRY.getEntries().forEach(holder -> {
-            Item item = holder.value();
+        tag(ItemTags.HEAD_ARMOR)
+                .add(DSItems.LIGHT_DRAGON_HELMET.value())
+                .add(DSItems.DARK_DRAGON_HELMET.value());
 
-            if (item.components().has(DataComponents.EQUIPPABLE)) {
-                Equippable equippable = item.components().get(DataComponents.EQUIPPABLE);
-                switch (equippable.slot()) {
-                    case HEAD -> tag(ItemTags.HEAD_ARMOR).add(item);
-                    case CHEST -> tag(ItemTags.CHEST_ARMOR).add(item);
-                    case FEET -> tag(ItemTags.FOOT_ARMOR).add(item);
-                    case LEGS -> tag(ItemTags.LEG_ARMOR).add(item);
-                }
-            } else if (item.components().has(DataComponents.WEAPON)) {
-                tag(ItemTags.SWORDS).add(item);
-            }
-        });
+        tag(ItemTags.CHEST_ARMOR)
+                .add(DSItems.LIGHT_DRAGON_CHESTPLATE.value())
+                .add(DSItems.DARK_DRAGON_CHESTPLATE.value());
+
+        tag(ItemTags.LEG_ARMOR)
+                .add(DSItems.LIGHT_DRAGON_LEGGINGS.value())
+                .add(DSItems.DARK_DRAGON_LEGGINGS.value());
+
+        tag(ItemTags.FOOT_ARMOR)
+                .add(DSItems.LIGHT_DRAGON_BOOTS.value())
+                .add(DSItems.DARK_DRAGON_BOOTS.value());
+
+        tag(ItemTags.SWORDS)
+                .add(DSItems.DRAGON_HUNTER_SWORD.value())
+                .add(DSItems.PARTISAN.value())
+                .add(DSItems.HUNTER_PARTISAN_DIAMOND.value())
+                .add(DSItems.HUNTER_PARTISAN_NETHERITE.value());
     }
 
     public static TagKey<Item> key(@NotNull final String name) {

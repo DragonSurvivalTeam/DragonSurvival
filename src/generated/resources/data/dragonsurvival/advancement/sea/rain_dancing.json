@@ -30,7 +30,6 @@
       "translate": "dragonsurvival.advancement.sea/rain_dancing.desc"
     },
     "icon": {
-      "count": 1,
       "id": "minecraft:water_bucket"
     },
     "show_toast": false,

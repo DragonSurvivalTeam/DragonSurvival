@@ -22,7 +22,6 @@
       "translate": "dragonsurvival.advancement.path_choice.desc"
     },
     "icon": {
-      "count": 1,
       "id": "minecraft:oak_sign"
     },
     "show_toast": false,

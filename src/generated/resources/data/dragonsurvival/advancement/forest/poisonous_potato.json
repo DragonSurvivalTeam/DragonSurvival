@@ -27,7 +27,6 @@
       "translate": "dragonsurvival.advancement.forest/poisonous_potato.desc"
     },
     "icon": {
-      "count": 1,
       "id": "minecraft:poisonous_potato"
     },
     "show_toast": false,

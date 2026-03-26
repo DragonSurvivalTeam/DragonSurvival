@@ -47,7 +47,6 @@
       "translate": "dragonsurvival.advancement.light/get_armor_set.desc"
     },
     "icon": {
-      "count": 1,
       "id": "dragonsurvival:light_dragon_helmet"
     },
     "title": {

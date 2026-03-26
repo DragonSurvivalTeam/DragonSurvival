@@ -9,7 +9,7 @@ import net.minecraft.advancements.AdvancementType;
 import net.minecraft.advancements.Criterion;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.level.ItemLike;
 import org.jetbrains.annotations.Nullable;
 
@@ -25,7 +25,7 @@ public class Builder {
 
     private AdvancementHolder parent;
 
-    private ItemStack displayItem;
+    private ItemStackTemplate displayItem;
     private Identifier background;
     private AdvancementType type = AdvancementType.TASK;
 
@@ -46,13 +46,13 @@ public class Builder {
         return this;
     }
 
-    public Builder displayItem(final ItemStack displayItem) {
+    public Builder displayItem(final ItemStackTemplate displayItem) {
         this.displayItem = displayItem;
         return this;
     }
 
     public Builder displayItem(final ItemLike item) {
-        this.displayItem = item.asItem().getDefaultInstance();
+        this.displayItem = new ItemStackTemplate(item.asItem());
         return this;
     }
 
@@ -109,7 +109,7 @@ public class Builder {
         }
 
         advancement.display(
-                net.minecraft.world.item.ItemStackTemplate.fromNonEmptyStack(displayItem),
+                displayItem,
                 Component.translatable(Translation.Type.ADVANCEMENT.wrap(path)),
                 showDescription ? Component.translatable(Translation.Type.ADVANCEMENT_DESCRIPTION.wrap(path)) : Component.empty(),
                 background,

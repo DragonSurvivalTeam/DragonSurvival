@@ -28,7 +28,6 @@
       "translate": "dragonsurvival.advancement.hunter/open_vault.desc"
     },
     "icon": {
-      "count": 1,
       "id": "dragonsurvival:hunter_vault"
     },
     "title": {

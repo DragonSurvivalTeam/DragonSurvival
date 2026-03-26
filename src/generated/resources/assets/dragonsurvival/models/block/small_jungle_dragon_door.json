@@ -1,7 +1,0 @@
-{
-  "parent": "dragonsurvival:block/small_dragon_door",
-  "textures": {
-    "bottom": "dragonsurvival:block/small_jungle_dragon_door",
-    "particle": "dragonsurvival:block/small_jungle_dragon_door"
-  }
-}

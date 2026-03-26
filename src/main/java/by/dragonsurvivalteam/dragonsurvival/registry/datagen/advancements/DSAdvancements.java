@@ -55,6 +55,7 @@ import net.minecraft.advancements.criterion.UsingItemTrigger;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderSet;
+import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.component.predicates.DataComponentPredicates;
 import net.minecraft.core.component.predicates.EnchantmentsPredicate;
@@ -67,7 +68,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.CustomModelData;
 import net.minecraft.world.item.component.ResolvableProfile;
@@ -151,8 +152,9 @@ public class DSAdvancements implements AdvancementSubProvider {
     private void buildDarkAdvancements(final AdvancementHolder parent) {
         // --- Parent: path_choice --- //
 
-        ItemStack head = Items.PLAYER_HEAD.getDefaultInstance();
-        head.set(DataComponents.PROFILE, ResolvableProfile.createUnresolved("MHF_Villager"));
+        ItemStackTemplate head = new ItemStackTemplate(Items.PLAYER_HEAD, DataComponentPatch.builder()
+                .set(DataComponents.PROFILE, ResolvableProfile.createUnresolved("MHF_Villager"))
+                .build());
         AdvancementHolder affectedByHunterOmen = create(LangKey.DARK_AFFECTED_BY_HUNTER_OMEN)
                 .parent(parent)
                 .displayItem(head)
@@ -324,8 +326,9 @@ public class DSAdvancements implements AdvancementSubProvider {
     private void buildPlaceAltarChildren(final AdvancementHolder parent) {
         // --- Parent: place_altar --- //
 
-        ItemStack caveSoul = DSItems.DRAGON_SOUL.value().getDefaultInstance();
-        caveSoul.set(DataComponents.CUSTOM_MODEL_DATA, new CustomModelData(List.of(2.0f), List.of(), List.of(), List.of()));
+        ItemStackTemplate caveSoul = new ItemStackTemplate(DSItems.DRAGON_SOUL, DataComponentPatch.builder()
+                .set(DataComponents.CUSTOM_MODEL_DATA, new CustomModelData(List.of(2.0f), List.of(), List.of(), List.of()))
+                .build());
 
         AdvancementHolder beCaveDragon = create(LangKey.CAVE_BE_DRAGON)
                 .parent(parent)
@@ -337,8 +340,9 @@ public class DSAdvancements implements AdvancementSubProvider {
                 .build(saver);
         buildBeCaveDragonChildren(beCaveDragon);
 
-        ItemStack seaSoul = DSItems.DRAGON_SOUL.value().getDefaultInstance();
-        seaSoul.set(DataComponents.CUSTOM_MODEL_DATA, new CustomModelData(List.of(3.0f), List.of(), List.of(), List.of()));
+        ItemStackTemplate seaSoul = new ItemStackTemplate(DSItems.DRAGON_SOUL, DataComponentPatch.builder()
+                .set(DataComponents.CUSTOM_MODEL_DATA, new CustomModelData(List.of(3.0f), List.of(), List.of(), List.of()))
+                .build());
 
         AdvancementHolder beSeaDragon = create(LangKey.SEA_BE_DRAGON)
                 .parent(parent)
@@ -350,8 +354,9 @@ public class DSAdvancements implements AdvancementSubProvider {
                 .build(saver);
         buildBeSeaDragonChildren(beSeaDragon);
 
-        ItemStack forestSoul = DSItems.DRAGON_SOUL.value().getDefaultInstance();
-        forestSoul.set(DataComponents.CUSTOM_MODEL_DATA, new CustomModelData(List.of(1.0f), List.of(), List.of(), List.of()));
+        ItemStackTemplate forestSoul = new ItemStackTemplate(DSItems.DRAGON_SOUL, DataComponentPatch.builder()
+                .set(DataComponents.CUSTOM_MODEL_DATA, new CustomModelData(List.of(1.0f), List.of(), List.of(), List.of()))
+                .build());
 
         AdvancementHolder beForestDragon = create(LangKey.FOREST_BE_DRAGON)
                 .parent(parent)

@@ -17,7 +17,6 @@
       "translate": "dragonsurvival.advancement.light/collect_key.desc"
     },
     "icon": {
-      "count": 1,
       "id": "dragonsurvival:light_key"
     },
     "title": {

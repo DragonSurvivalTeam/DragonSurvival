@@ -80,7 +80,6 @@
       "translate": "dragonsurvival.advancement.cave/rock_eater.desc"
     },
     "icon": {
-      "count": 1,
       "id": "dragonsurvival:charged_coal"
     },
     "show_toast": false,

@@ -31,7 +31,6 @@
       "translate": "dragonsurvival.advancement.sea/peace_in_nether.desc"
     },
     "icon": {
-      "count": 1,
       "id": "minecraft:cauldron"
     },
     "show_toast": false,

@@ -33,7 +33,6 @@
       "translate": "dragonsurvival.advancement.cave/water_safety.desc"
     },
     "icon": {
-      "count": 1,
       "id": "dragonsurvival:charged_soup"
     },
     "show_toast": false,

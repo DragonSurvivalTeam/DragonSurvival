@@ -30,7 +30,6 @@
       "translate": "dragonsurvival.advancement.cave/be_old_dragon.desc"
     },
     "icon": {
-      "count": 1,
       "id": "dragonsurvival:cave_beacon"
     },
     "title": {

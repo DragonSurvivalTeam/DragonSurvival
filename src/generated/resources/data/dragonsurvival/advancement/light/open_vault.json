@@ -28,7 +28,6 @@
       "translate": "dragonsurvival.advancement.light/open_vault.desc"
     },
     "icon": {
-      "count": 1,
       "id": "dragonsurvival:light_vault"
     },
     "title": {

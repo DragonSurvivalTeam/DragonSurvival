@@ -23,7 +23,6 @@
       "translate": "dragonsurvival.advancement.find_overworld_structures.desc"
     },
     "icon": {
-      "count": 1,
       "id": "minecraft:grass_block"
     },
     "title": {

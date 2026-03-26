@@ -8,7 +8,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.level.ItemLike;
 
 import java.util.List;
@@ -148,7 +148,7 @@ public record DietEntry(String items, Optional<FoodProperties> properties, Optio
         private float seconds = DEFAULT_EAT_SECONDS;
 
     //    private final List<FoodProperties.PossibleEffect> effects = new ArrayList<>();
-        private Optional<ItemStack> convertsTo = Optional.empty();
+        private Optional<ItemStackTemplate> convertsTo = Optional.empty();
 
         public Builder(final String items) {
             this.items = items;
@@ -191,7 +191,7 @@ public record DietEntry(String items, Optional<FoodProperties> properties, Optio
         }
 
         public Builder convertsTo(final ItemLike item) {
-            this.convertsTo = Optional.of(item.asItem().getDefaultInstance());
+            this.convertsTo = Optional.of(new ItemStackTemplate(item.asItem()));
             this.customProperties = true;
             return this;
         }

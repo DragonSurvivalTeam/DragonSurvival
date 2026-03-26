@@ -30,7 +30,6 @@
       "translate": "dragonsurvival.advancement.forest/stand_on_sweet_berries.desc"
     },
     "icon": {
-      "count": 1,
       "id": "minecraft:sweet_berries"
     },
     "show_toast": false,

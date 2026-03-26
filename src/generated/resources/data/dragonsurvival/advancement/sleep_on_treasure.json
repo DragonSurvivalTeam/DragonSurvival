@@ -13,7 +13,6 @@
       "translate": "dragonsurvival.advancement.sleep_on_treasure.desc"
     },
     "icon": {
-      "count": 1,
       "id": "minecraft:gold_nugget"
     },
     "show_toast": false,

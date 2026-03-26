@@ -305,7 +305,7 @@
       "sound": {
         "interval": 160,
         "pitch": 0.8,
-        "sound_event": "minecraft:entity.cat.purr",
+        "sound_event": "minecraft:entity.baby_cat.purr",
         "volume": 1.5
       },
       "translation_override": "purr"
@@ -316,7 +316,7 @@
       "sound": {
         "interval": 160,
         "pitch": 0.3,
-        "sound_event": "minecraft:entity.cat.purreow",
+        "sound_event": "minecraft:entity.baby_cat.purreow",
         "volume": 2.0
       },
       "translation_override": "purreow"
@@ -327,7 +327,7 @@
       "sound": {
         "interval": 160,
         "pitch": 0.2,
-        "sound_event": "minecraft:entity.cat.stray_ambient",
+        "sound_event": "minecraft:entity.baby_cat.stray_ambient",
         "volume": 2.0
       },
       "speed": 0.1,
@@ -351,7 +351,7 @@
       "sound": {
         "interval": 160,
         "pitch": 0.2,
-        "sound_event": "minecraft:entity.cat.hiss",
+        "sound_event": "minecraft:entity.baby_cat.hiss",
         "volume": 1.5
       },
       "speed": 0.2,

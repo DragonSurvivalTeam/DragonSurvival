@@ -36,7 +36,6 @@
       "translate": "dragonsurvival.advancement.forest/prevent_darkness_penalty.desc"
     },
     "icon": {
-      "count": 1,
       "id": "dragonsurvival:luminous_ointment"
     },
     "show_toast": false,

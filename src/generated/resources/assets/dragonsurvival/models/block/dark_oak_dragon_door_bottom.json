@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/door_bottom_left",
-  "render_type": "minecraft:cutout",
-  "textures": {
-    "bottom": "dragonsurvival:block/dark_oak_dragon_door_bottom",
-    "top": "dragonsurvival:block/dark_oak_dragon_door_bottom"
-  }
-}

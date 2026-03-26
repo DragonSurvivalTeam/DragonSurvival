@@ -28,7 +28,6 @@
       "translate": "dragonsurvival.advancement.change_beacon.desc"
     },
     "icon": {
-      "count": 1,
       "id": "dragonsurvival:beacon_activator"
     },
     "title": {

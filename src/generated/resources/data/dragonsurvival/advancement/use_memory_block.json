@@ -28,7 +28,6 @@
       "translate": "dragonsurvival.advancement.use_memory_block.desc"
     },
     "icon": {
-      "count": 1,
       "id": "dragonsurvival:dragon_memory_block"
     },
     "title": {
