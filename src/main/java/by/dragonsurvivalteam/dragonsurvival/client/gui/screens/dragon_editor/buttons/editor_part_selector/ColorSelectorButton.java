@@ -8,7 +8,7 @@ import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.loader.Dra
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.DragonPart;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.LayerSettings;
 import by.dragonsurvivalteam.dragonsurvival.mixins.client.ScreenAccessor;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.input.InputWithModifiers;
 import net.minecraft.network.chat.Component;
@@ -48,7 +48,7 @@ public class ColorSelectorButton extends ExtendedButton {
     }
 
     @Override
-    public void renderWidget(@NotNull final GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+    public void renderWidget(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partialTick) {
         active = !screen.preset.get(screen.stage.getKey()).get().defaultSkin;
 
         String parKey = screen.preset.get(screen.stage.getKey()).get().layerSettings.get(layer).get().partKey;
@@ -59,9 +59,9 @@ public class ColorSelectorButton extends ExtendedButton {
             LayerSettings layerSettings = screen.preset.get(screen.stage.getKey()).get().layerSettings.get(layer).get();
 
             if (layerSettings.isModified) {
-                guiGraphics.blit(BUTTON_HUE_CHANGED, getX(), getY(), 0, 0, width, height, width, height);
+                GuiGraphicsExtractor.blit(BUTTON_HUE_CHANGED, getX(), getY(), 0, 0, width, height, width, height);
             } else {
-                guiGraphics.blit(BUTTON_HUE_UNCHANGED, getX(), getY(), 0, 0, width, height, width, height);
+                GuiGraphicsExtractor.blit(BUTTON_HUE_UNCHANGED, getX(), getY(), 0, 0, width, height, width, height);
             }
         }
 
@@ -89,14 +89,14 @@ public class ColorSelectorButton extends ExtendedButton {
 
             renderButton = new ExtendedButton(0, 0, 0, 0, Component.empty(), action -> { /* Nothing to do */ }) {
                 @Override
-                public void renderWidget(@NotNull final GuiGraphics guiGraphics, int p_230430_2_, int p_230430_3_, float p_230430_4_) {
+                public void renderWidget(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int p_230430_2_, int p_230430_3_, float p_230430_4_) {
                     active = visible = false;
 
                     if (hueComponent != null) {
                         hueComponent.visible = ColorSelectorButton.this.visible;
 
                         if (hueComponent.visible) {
-                            hueComponent.render(guiGraphics, p_230430_2_, p_230430_3_, p_230430_4_);
+                            hueComponent.render(GuiGraphicsExtractor, p_230430_2_, p_230430_3_, p_230430_4_);
                         }
                     }
                 }

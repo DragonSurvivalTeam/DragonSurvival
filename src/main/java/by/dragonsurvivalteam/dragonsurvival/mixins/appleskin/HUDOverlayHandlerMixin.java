@@ -8,7 +8,7 @@ package by.dragonsurvivalteam.dragonsurvival.mixins.appleskin;
 
 //@Mixin(HUDOverlayHandler.class)
 public class HUDOverlayHandlerMixin {
-//    @ModifyArgs(method="drawSaturationOverlay(FFLnet/minecraft/world/entity/player/Player;Lnet/minecraft/client/gui/GuiGraphics;IIFI)V", at= @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;blit(Lnet/minecraft/resources/Identifier;IIIIII)V"))
+//    @ModifyArgs(method="drawSaturationOverlay(FFLnet/minecraft/world/entity/player/Player;Lnet/minecraft/client/gui/GuiGraphicsExtractor;IIFI)V", at= @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;blit(Lnet/minecraft/resources/Identifier;IIIIII)V"))
 //    private static void dragonSurvival$changeSaturationIcons(Args args) {
 //        Identifier foodSprites = dragonSurvival$getDragonFoodSprites();
 //
@@ -29,8 +29,8 @@ public class HUDOverlayHandlerMixin {
 //            args.set(3, 27);
 //    }
 //
-//    @Redirect(method="drawHungerOverlay(IILnet/minecraft/world/entity/player/Player;Lnet/minecraft/client/gui/GuiGraphics;IIFZI)V", at=@At(value = "INVOKE", target="Lnet/minecraft/client/gui/GuiGraphics;blitSprite(Lnet/minecraft/resources/Identifier;IIII)V", ordinal = 1))
-//    private static void dragonSurvival$changeAppleSkinFoodIcons(GuiGraphics instance, Identifier sprite, int x, int y, int width, int height, @Local(argsOnly=true) boolean useRottenTextures, @Local(ordinal = 1) Identifier iconSprite) {
+//    @Redirect(method="drawHungerOverlay(IILnet/minecraft/world/entity/player/Player;Lnet/minecraft/client/gui/GuiGraphicsExtractor;IIFZI)V", at=@At(value = "INVOKE", target="Lnet/minecraft/client/gui/GuiGraphicsExtractor;blitSprite(Lnet/minecraft/resources/Identifier;IIII)V", ordinal = 1))
+//    private static void dragonSurvival$changeAppleSkinFoodIcons(GuiGraphicsExtractor instance, Identifier sprite, int x, int y, int width, int height, @Local(argsOnly=true) boolean useRottenTextures, @Local(ordinal = 1) Identifier iconSprite) {
 //        Identifier foodSprites = dragonSurvival$getDragonFoodSprites();
 //
 //        if (foodSprites != null) {

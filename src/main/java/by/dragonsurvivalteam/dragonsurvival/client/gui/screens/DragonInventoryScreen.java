@@ -22,7 +22,7 @@ import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.datafixers.util.Either;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
@@ -165,7 +165,7 @@ public class DragonInventoryScreen extends AbstractContainerScreen<DragonContain
             ClientPacketDistributor.sendToServer(new SyncDragonClawRender(player.getId(), ClientDragonRenderer.renderDragonClaws));
         }) {
             @Override
-            public void renderWidget(@NotNull final GuiGraphics graphics, int mouseX, int mouseY, float partialTick) { /* Texture is rendered separately */ }
+            public void renderWidget(@NotNull final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) { /* Texture is rendered separately */ }
         };
         clawRenderButton.setTooltip(Tooltip.create(Component.translatable(TOGGLE_CLAWS)));
         addRenderableWidget(clawRenderButton);
@@ -233,11 +233,11 @@ public class DragonInventoryScreen extends AbstractContainerScreen<DragonContain
     }
 
     @Override
-    protected void renderLabels(@NotNull final GuiGraphics guiGraphics, int mouseX, int mouseY) { /* Nothing to do */ }
+    protected void renderLabels(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY) { /* Nothing to do */ }
 
     @Override
-    protected void renderBg(@NotNull final GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND, leftPos, topPos, 0, 0, imageWidth, imageHeight, 256, 256);
+    protected void renderBg(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, float partialTick, int mouseX, int mouseY) {
+        GuiGraphicsExtractor.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND, leftPos, topPos, 0, 0, imageWidth, imageHeight, 256, 256);
 
         int scissorY1 = topPos + 77;
         int scissorX1 = leftPos + 101;
@@ -248,17 +248,17 @@ public class DragonInventoryScreen extends AbstractContainerScreen<DragonContain
         int scale = (int) (20 * player.getScale());
         scale = Math.clamp(scale, 10, 40); // Very large dragon sizes (above the default max. size) will have a < 20 scale value
 
-        InventoryScreen.renderEntityInInventoryFollowsMouse(guiGraphics, scissorX0, scissorY0, scissorX1, scissorY1, scale, 0, mouseX, mouseY, player);
+        InventoryScreen.renderEntityInInventoryFollowsMouse(GuiGraphicsExtractor, scissorX0, scissorY0, scissorX1, scissorY1, scale, 0, mouseX, mouseY, player);
 
         if (!clawsMenu) {
             return;
         }
 
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, CLAWS_TEXTURE, leftPos - 33, topPos, 0, 0, 77, 170, 256, 256);
+        GuiGraphicsExtractor.blit(RenderPipelines.GUI_TEXTURED, CLAWS_TEXTURE, leftPos - 33, topPos, 0, 0, 77, 170, 256, 256);
     }
 
     @Override
-    public void render(@NotNull final GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    public void render(@NotNull final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         clawMenuButtons.forEach(button -> button.visible = clawsMenu);
         super.render(graphics, mouseX, mouseY, partialTick);
 

@@ -19,7 +19,7 @@ import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import com.mojang.datafixers.util.Either;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.InputWithModifiers;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.resources.language.I18n;
@@ -98,7 +98,7 @@ public class AltarTypeButton extends ExtendedButton implements HoverDisableable 
     }
 
     @Override
-    protected void renderWidget(@NotNull final GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    protected void renderWidget(@NotNull final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         if (isHovered()) {
             handleTooltip(graphics, mouseX, mouseY);
         }
@@ -119,7 +119,7 @@ public class AltarTypeButton extends ExtendedButton implements HoverDisableable 
         }
     }
 
-    private void handleTooltip(@NotNull final GuiGraphics graphics, int mouseX, int mouseY) {
+    private void handleTooltip(@NotNull final GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
         List<Either<FormattedText, TooltipComponent>> components = new ArrayList<>();
 
         if ((speciesEntry == null || speciesEntry.isUnlocked()) && isTop(mouseY)) {

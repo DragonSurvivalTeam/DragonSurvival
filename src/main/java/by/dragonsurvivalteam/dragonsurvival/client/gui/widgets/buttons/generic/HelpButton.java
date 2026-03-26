@@ -1,6 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
@@ -39,7 +39,7 @@ public class HelpButton extends ExtendedButton {
     }
 
     @Override
-    public void renderWidget(@NotNull final GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    public void renderWidget(@NotNull final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         Identifier resource;
 
         if (isHovered()) {

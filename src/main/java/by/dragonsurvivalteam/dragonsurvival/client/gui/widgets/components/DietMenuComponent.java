@@ -5,7 +5,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
@@ -57,7 +57,7 @@ public class DietMenuComponent implements ScrollableComponent, Renderable {
     }
 
     @Override
-    public void render(@NotNull final GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    public void render(@NotNull final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         List<Item> items = DietEntryCache.getDietItems(dragonSpecies);
 
         if (items.isEmpty()) {

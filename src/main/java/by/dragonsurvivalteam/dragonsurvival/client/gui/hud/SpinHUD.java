@@ -12,7 +12,7 @@ import by.dragonsurvivalteam.dragonsurvival.server.handlers.ServerFlightHandler;
 import com.mojang.blaze3d.platform.Window;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
@@ -32,7 +32,7 @@ public class SpinHUD {
 
     private static final Identifier SPIN_COOLDOWN = Identifier.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/spin_cooldown.png");
 
-    public static void render(@NotNull final GuiGraphics graphics, @NotNull final DeltaTracker tracker) {
+    public static void render(@NotNull final GuiGraphicsExtractor graphics, @NotNull final DeltaTracker tracker) {
         Player player =  Minecraft.getInstance().player;
 
         if (player == null || player.isSpectator()) {

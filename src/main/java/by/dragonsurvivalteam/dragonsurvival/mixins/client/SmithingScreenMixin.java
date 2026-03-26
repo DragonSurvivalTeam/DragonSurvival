@@ -59,7 +59,7 @@
 //    }
 //
 //    /** Render the fake dragon instead of an armor stand */
-//    @ModifyArg(method = "renderBg", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/InventoryScreen;renderEntityInInventory(Lnet/minecraft/client/gui/GuiGraphics;FFFLorg/joml/Vector3f;Lorg/joml/Quaternionf;Lorg/joml/Quaternionf;Lnet/minecraft/world/entity/LivingEntity;)V"), index = 7)
+//    @ModifyArg(method = "renderBg", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/InventoryScreen;renderEntityInInventory(Lnet/minecraft/client/gui/GuiGraphicsExtractor;FFFLorg/joml/Vector3f;Lorg/joml/Quaternionf;Lorg/joml/Quaternionf;Lnet/minecraft/world/entity/LivingEntity;)V"), index = 7)
 //    private LivingEntity dragonSurvival$renderDragon(final LivingEntity armorStand) {
 //        if (dragonSurvival$dragon != null && DragonStateProvider.isDragon(Minecraft.getInstance().player)) {
 //            dragonSurvival$dragon.overrideUUIDWithLocalPlayerForTextureFetch = true;

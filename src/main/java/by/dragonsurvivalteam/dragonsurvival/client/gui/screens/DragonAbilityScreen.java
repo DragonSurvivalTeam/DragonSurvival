@@ -20,7 +20,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilit
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.UpgradeType;
 import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
 import by.dragonsurvivalteam.dragonsurvival.util.ExperienceUtils;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.Holder;
@@ -89,7 +89,7 @@ public class DragonAbilityScreen extends Screen {
     }
 
     @Override
-    public void render(@NotNull final GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    public void render(@NotNull final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         if (minecraft.player == null) {
             return;
         }
@@ -182,7 +182,7 @@ public class DragonAbilityScreen extends Screen {
         renderDeferredTooltip(graphics, mouseX, mouseY);
     }
 
-    private void renderDeferredTooltip(final GuiGraphics graphics, final int mouseX, final int mouseY) {
+    private void renderDeferredTooltip(final GuiGraphicsExtractor graphics, final int mouseX, final int mouseY) {
         for (int i = renderables.size() - 1; i >= 0; i--) {
             if (renderables.get(i) instanceof AbilityButton button && button.shouldRenderTooltip()) {
                 graphics.nextStratum();
@@ -192,12 +192,12 @@ public class DragonAbilityScreen extends Screen {
         }
     }
 
-    private void drawExperienceBar(final GuiGraphics guiGraphics, int y, int initialX, float hoverProgress) {
-        guiGraphics.blit(EXP_FULL, initialX, y, 0, 0, (int) (93 * hoverProgress), 6, 93, 6);
+    private void drawExperienceBar(final GuiGraphicsExtractor GuiGraphicsExtractor, int y, int initialX, float hoverProgress) {
+        GuiGraphicsExtractor.blit(EXP_FULL, initialX, y, 0, 0, (int) (93 * hoverProgress), 6, 93, 6);
     }
 
     @Override
-    public void renderBackground(@NotNull GuiGraphics pGuiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
+    public void renderBackground(@NotNull GuiGraphicsExtractor pGuiGraphicsExtractor, int pMouseX, int pMouseY, float pPartialTick) {
         // Don't render the vanilla background, it darkens the UI in an undesirable way
     }
 

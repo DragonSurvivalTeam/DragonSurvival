@@ -12,7 +12,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty.DragonPenalt
 import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipPositioner;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
@@ -47,7 +47,7 @@ public class AbilityAndPenaltyTooltipRenderer {
     }
 
     public static void drawTooltip(
-            @NotNull final GuiGraphics graphics,
+            @NotNull final GuiGraphicsExtractor graphics,
             int x,
             int y,
             final List<Component> shiftInfo,
@@ -148,12 +148,12 @@ public class AbilityAndPenaltyTooltipRenderer {
         graphics.blitSprite(RenderPipelines.GUI_TEXTURED, icon, trueX + 5, trueY + 5, 16, 16);
     }
 
-    private static void blitWithBorder(final GuiGraphics graphics, final Identifier texture, final int x, final int y, final int u, final int v, final int width, final int height, final int regionWidth, final int regionHeight, final int border) {
+    private static void blitWithBorder(final GuiGraphicsExtractor graphics, final Identifier texture, final int x, final int y, final int u, final int v, final int width, final int height, final int regionWidth, final int regionHeight, final int border) {
         blitWithBorder(graphics, texture, x, y, u, v, width, height, regionWidth, regionHeight, border, border, border, border);
     }
 
     private static void blitWithBorder(
-            final GuiGraphics graphics,
+            final GuiGraphicsExtractor graphics,
             final Identifier texture,
             final int x,
             final int y,
@@ -186,7 +186,7 @@ public class AbilityAndPenaltyTooltipRenderer {
     }
 
     private static void blitRegion(
-            final GuiGraphics graphics,
+            final GuiGraphicsExtractor graphics,
             final Identifier texture,
             final int x,
             final int y,
@@ -236,7 +236,7 @@ public class AbilityAndPenaltyTooltipRenderer {
         return textContents;
     }
 
-    public static void drawAbilityTooltip(@NotNull final GuiGraphics guiGraphics, int x, int y, final DragonAbilityInstance ability, int scrollAmount) {
+    public static void drawAbilityTooltip(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int x, int y, final DragonAbilityInstance ability, int scrollAmount) {
         int colorXPos = 0;
         int colorYPos = !ability.isPassive() ? 20 : 0;
 
@@ -266,10 +266,10 @@ public class AbilityAndPenaltyTooltipRenderer {
         }
 
         int color = ability.isPassive() ? ARGB.color(1.0f, DSColors.PASSIVE_BACKGROUND) : ARGB.color(1.0f, DSColors.ACTIVE_BACKGROUND);
-        drawTooltip(guiGraphics, x, y, info, rawDescription, colorXPos, colorYPos, ability.isPassive() ? LangKey.PASSIVE_ABILITY : LangKey.ACTIVE_ABILITY, ability.getName(), color, ability.getMaxLevel(), ability.level(), ability.getIcon(), scrollAmount);
+        drawTooltip(GuiGraphicsExtractor, x, y, info, rawDescription, colorXPos, colorYPos, ability.isPassive() ? LangKey.PASSIVE_ABILITY : LangKey.ACTIVE_ABILITY, ability.getName(), color, ability.getMaxLevel(), ability.level(), ability.getIcon(), scrollAmount);
     }
 
-    public static void drawPenaltyTooltip(@NotNull final GuiGraphics guiGraphics, int x, int y, final Holder<DragonPenalty> penalty) {
+    public static void drawPenaltyTooltip(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int x, int y, final Holder<DragonPenalty> penalty) {
         int colorXPos = 20;
         int colorYPos = 0;
 
@@ -291,6 +291,6 @@ public class AbilityAndPenaltyTooltipRenderer {
 
         Component name = Component.translatable(Translation.Type.PENALTY.wrap(penalty.getKey().identifier()));
         Identifier icon = penalty.value().icon().orElse(MissingTextureAtlasSprite.getLocation());
-        drawTooltip(guiGraphics, x, y, components, description, colorXPos, colorYPos, LangKey.PENALTY, name, ARGB.color(145, 46, 46), -1, -1, icon, 0);
+        drawTooltip(GuiGraphicsExtractor, x, y, components, description, colorXPos, colorYPos, LangKey.PENALTY, name, ARGB.color(145, 46, 46), -1, -1, icon, 0);
     }
 }

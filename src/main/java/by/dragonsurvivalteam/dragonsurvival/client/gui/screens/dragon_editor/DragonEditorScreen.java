@@ -49,7 +49,7 @@ import by.dragonsurvivalteam.dragonsurvival.util.ResourceHelper;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.Tooltip;
@@ -542,7 +542,7 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
     }
 
     @Override
-    public void render(@NotNull final GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    public void render(@NotNull final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         if (dragonRender == null) { // In the past this could occur when using the dragon editor command before using the dragon altar first
             init();
         }
@@ -615,10 +615,10 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
     }
 
     @Override
-    public void renderBackground(GuiGraphics pGuiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
+    public void renderBackground(GuiGraphicsExtractor pGuiGraphicsExtractor, int pMouseX, int pMouseY, float pPartialTick) {
         // FIXME :: UI RENDERING
         // no Z value, used to be -350
-        pGuiGraphics.fill(0, 0, width, height, backgroundColor);
+        pGuiGraphicsExtractor.fill(0, 0, width, height, backgroundColor);
     }
 
     private void initDummyDragon(final DragonStateHandler localHandler) {
@@ -797,8 +797,8 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
             boolean toggled;
 
             @Override
-            public void renderWidget(@NotNull final GuiGraphics guiGraphics, int mouseX, int mouseY, float partial) {
-                super.renderWidget(guiGraphics, mouseX, mouseY, partial);
+            public void renderWidget(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partial) {
+                super.renderWidget(GuiGraphicsExtractor, mouseX, mouseY, partial);
                 if (toggled && (!visible || !confirmation)) {
                     toggled = false;
                     Screen screen = Minecraft.getInstance().screen;
@@ -825,12 +825,12 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
                     if (!toggled) {
                         renderButton = new ExtendedButton(0, 0, 0, 0, Component.empty(), button -> { /* Nothing to do */ }) {
                             @Override
-                            public void renderWidget(@NotNull final GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
+                            public void renderWidget(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int pMouseX, int pMouseY, float pPartialTick) {
                                 if (confirmComponent != null && confirmation) {
-                                    confirmComponent.render(guiGraphics, pMouseX, pMouseY, pPartialTick);
+                                    confirmComponent.render(GuiGraphicsExtractor, pMouseX, pMouseY, pPartialTick);
                                 }
 
-                                super.renderWidget(guiGraphics, pMouseX, pMouseY, pPartialTick);
+                                super.renderWidget(GuiGraphicsExtractor, pMouseX, pMouseY, pPartialTick);
                             }
                         };
                         ((ScreenAccessor) DragonEditorScreen.this).dragonSurvival$children().add(confirmComponent);
@@ -946,13 +946,13 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
             actionHistory.add(new EditorAction<>(checkWingsButtonAction, !preset.get(Objects.requireNonNull(stage.getKey())).get().wings));
         }) {
             @Override
-            public void renderWidget(@NotNull final GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+            public void renderWidget(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partialTick) {
                 Identifier texture = preset.get(Objects.requireNonNull(stage.getKey())).get().wings ? ALTERNATIVE_ON : ALTERNATIVE_OFF;
-                guiGraphics.pose().pushMatrix();
+                GuiGraphicsExtractor.pose().pushMatrix();
                 // FIXME :: UI Rendering
-                //guiGraphics.pose().translate(0, 0, 100);
-                guiGraphics.blit(texture, getX(), getY(), 0, 0, 20, 20, 20, 20);
-                guiGraphics.pose().popMatrix();
+                //GuiGraphicsExtractor.pose().translate(0, 0, 100);
+                GuiGraphicsExtractor.blit(texture, getX(), getY(), 0, 0, 20, 20, 20, 20);
+                GuiGraphicsExtractor.pose().popMatrix();
             }
         };
         addRenderableWidget(wingsButton);
@@ -960,13 +960,13 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
         // Show UI button
         uiButton = new ExtendedButton(guiLeft - 13, height - 30, 20, 20, Component.translatable(SHOW_UI), button -> showUi = !showUi) {
             @Override
-            public void renderWidget(@NotNull final GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+            public void renderWidget(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partialTick) {
                 Identifier texture = showUi ? SHOW_UI_ON : SHOW_UI_OFF;
-                guiGraphics.pose().pushMatrix();
+                GuiGraphicsExtractor.pose().pushMatrix();
                 // FIXME :: UI Rendering
-                //guiGraphics.pose().translate(0, 0, 100);
-                guiGraphics.blit(texture, getX(), getY(), 0, 0, 20, 20, 20, 20);
-                guiGraphics.pose().popMatrix();
+                //GuiGraphicsExtractor.pose().translate(0, 0, 100);
+                GuiGraphicsExtractor.blit(texture, getX(), getY(), 0, 0, 20, 20, 20, 20);
+                GuiGraphicsExtractor.pose().popMatrix();
             }
         };
         uiButton.setTooltip(Tooltip.create(Component.translatable(SHOW_UI)));

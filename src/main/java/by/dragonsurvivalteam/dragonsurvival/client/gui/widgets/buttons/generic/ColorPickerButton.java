@@ -1,7 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic;
 
 import by.dragonsurvivalteam.dragonsurvival.client.util.RenderingUtils;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.Component;
@@ -37,10 +37,10 @@ public class ColorPickerButton extends ExtendedButton {
     }
 
     @Override
-    public void renderWidget(@NotNull final GuiGraphics guiGraphics, int mouseX, int mouseY, float partial) {
-        RenderingUtils.renderColorSquare(guiGraphics, getX(), getY(), width, height);
-        RenderingUtils.fill(guiGraphics, getX() + selectorX - 2, getY() + selectorY - 2, getX() + selectorX + 2, getY() + selectorY + 2, Color.black.getRGB());
-        RenderingUtils.fill(guiGraphics, getX() + selectorX - 1, getY() + selectorY - 1, getX() + selectorX + 1, getY() + selectorY + 1, getColor().getRGB());
+    public void renderWidget(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partial) {
+        RenderingUtils.renderColorSquare(GuiGraphicsExtractor, getX(), getY(), width, height);
+        RenderingUtils.fill(GuiGraphicsExtractor, getX() + selectorX - 2, getY() + selectorY - 2, getX() + selectorX + 2, getY() + selectorY + 2, Color.black.getRGB());
+        RenderingUtils.fill(GuiGraphicsExtractor, getX() + selectorX - 1, getY() + selectorY - 1, getX() + selectorX + 1, getY() + selectorY + 1, getColor().getRGB());
     }
 
     public Color getColor() {

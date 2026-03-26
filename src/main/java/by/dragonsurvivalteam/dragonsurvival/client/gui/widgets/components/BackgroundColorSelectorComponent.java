@@ -5,7 +5,7 @@ import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.dragon_editor.Dra
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic.ColorPickerButton;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic.HoverButton;
 import com.google.common.collect.ImmutableList;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.AbstractContainerEventHandler;
 import net.minecraft.client.gui.components.events.GuiEventListener;
@@ -60,26 +60,26 @@ public class BackgroundColorSelectorComponent extends AbstractContainerEventHand
     }
 
     @Override
-    public void render(@NotNull final GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTicks) {
+    public void render(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int pMouseX, int pMouseY, float pPartialTicks) {
         if (visible) {
-            guiGraphics.pose().pushMatrix();
+            GuiGraphicsExtractor.pose().pushMatrix();
             // FIXME :: UI GRAPHICS
-            //guiGraphics.pose().translate(0, 0, 100);
-            // guiGraphics.fill(x, y, x + xSize, y + ySize, Color.black.getRGB());
+            //GuiGraphicsExtractor.pose().translate(0, 0, 100);
+            // GuiGraphicsExtractor.fill(x, y, x + xSize, y + ySize, Color.black.getRGB());
             // Background for reset button
-            guiGraphics.fill(x + 2, y - 10, x + 32, y + 35, BACKGROUND_COLOR);
-            guiGraphics.renderOutline(x + 2, y - 11, 30, 41, Color.black.getRGB());
-            guiGraphics.renderOutline(x + 3, y - 10, 28, 39, INNER_BORDER_COLOR);
-            //guiGraphics.pose().translate(0, 0, 100);
+            GuiGraphicsExtractor.fill(x + 2, y - 10, x + 32, y + 35, BACKGROUND_COLOR);
+            GuiGraphicsExtractor.renderOutline(x + 2, y - 11, 30, 41, Color.black.getRGB());
+            GuiGraphicsExtractor.renderOutline(x + 3, y - 10, 28, 39, INNER_BORDER_COLOR);
+            //GuiGraphicsExtractor.pose().translate(0, 0, 100);
 
             // Background for color picker
-            guiGraphics.fill(x, y + 15, x + xSize, y + ySize - 5, BACKGROUND_COLOR);
-            guiGraphics.renderOutline(x, y + 14, xSize, ySize - 18, Color.black.getRGB());
-            guiGraphics.renderOutline(x + 1, y + 15, xSize - 2, ySize - 20, INNER_BORDER_COLOR);
+            GuiGraphicsExtractor.fill(x, y + 15, x + xSize, y + ySize - 5, BACKGROUND_COLOR);
+            GuiGraphicsExtractor.renderOutline(x, y + 14, xSize, ySize - 18, Color.black.getRGB());
+            GuiGraphicsExtractor.renderOutline(x + 1, y + 15, xSize - 2, ySize - 20, INNER_BORDER_COLOR);
 
-            colorPicker.render(guiGraphics, pMouseX, pMouseY, pPartialTicks);
-            resetButton.render(guiGraphics, pMouseX, pMouseY, pPartialTicks);
-            guiGraphics.pose().popMatrix();
+            colorPicker.render(GuiGraphicsExtractor, pMouseX, pMouseY, pPartialTicks);
+            resetButton.render(GuiGraphicsExtractor, pMouseX, pMouseY, pPartialTicks);
+            GuiGraphicsExtractor.pose().popMatrix();
         }
     }
 }

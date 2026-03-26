@@ -36,7 +36,7 @@ public abstract class InventoryScreenMixin extends AbstractRecipeBookScreen<Inve
         method = "renderEntityInInventoryFollowsAngle",
         at = @At("HEAD")
     )
-    private static void dragon_survival$pushInventoryRenderContext(final net.minecraft.client.gui.GuiGraphics guiGraphics, final int x1, final int y1, final int x2, final int y2, final int scale, final float offsetY, final float angleXComponent, final float angleYComponent, final LivingEntity entity, final CallbackInfo callbackInfo) {
+    private static void dragon_survival$pushInventoryRenderContext(final net.minecraft.client.gui.GuiGraphicsExtractor GuiGraphicsExtractor, final int x1, final int y1, final int x2, final int y2, final int scale, final float offsetY, final float angleXComponent, final float angleYComponent, final LivingEntity entity, final CallbackInfo callbackInfo) {
         if (entity instanceof DragonEntity || DragonStateProvider.isDragon(entity)) {
             DragonRenderer.pushInventoryRenderOverrides(0.0F, -Math.toDegrees(dragon_survival$storedXAngle), -Math.toDegrees(dragon_survival$storedYAngle));
         }
@@ -46,7 +46,7 @@ public abstract class InventoryScreenMixin extends AbstractRecipeBookScreen<Inve
         method = "renderEntityInInventoryFollowsAngle",
         at = @At("RETURN")
     )
-    private static void dragon_survival$popInventoryRenderContext(final net.minecraft.client.gui.GuiGraphics guiGraphics, final int x1, final int y1, final int x2, final int y2, final int scale, final float offsetY, final float angleXComponent, final float angleYComponent, final LivingEntity entity, final CallbackInfo callbackInfo) {
+    private static void dragon_survival$popInventoryRenderContext(final net.minecraft.client.gui.GuiGraphicsExtractor GuiGraphicsExtractor, final int x1, final int y1, final int x2, final int y2, final int scale, final float offsetY, final float angleXComponent, final float angleYComponent, final LivingEntity entity, final CallbackInfo callbackInfo) {
         if (entity instanceof DragonEntity || DragonStateProvider.isDragon(entity)) {
             DragonRenderer.clearInventoryRenderOverrides();
         }
@@ -85,7 +85,7 @@ public abstract class InventoryScreenMixin extends AbstractRecipeBookScreen<Inve
         method = "renderEntityInInventoryFollowsMouse",
         at = @At(
             value = "INVOKE",
-            target = "Lnet/minecraft/client/gui/screens/inventory/InventoryScreen;renderEntityInInventoryFollowsAngle(Lnet/minecraft/client/gui/GuiGraphics;IIIIIFFFLnet/minecraft/world/entity/LivingEntity;)V"
+            target = "Lnet/minecraft/client/gui/screens/inventory/InventoryScreen;renderEntityInInventoryFollowsAngle(Lnet/minecraft/client/gui/GuiGraphicsExtractor;IIIIIFFFLnet/minecraft/world/entity/LivingEntity;)V"
         )
     )
     private static void dragon_survival$cancelEntityAnglingForDragons(Args args) {
@@ -103,7 +103,7 @@ public abstract class InventoryScreenMixin extends AbstractRecipeBookScreen<Inve
         method = "renderEntityInInventoryFollowsMouse",
         at = @At("RETURN")
     )
-    private static void dragon_survival$clearStoredInventoryAngles(final net.minecraft.client.gui.GuiGraphics guiGraphics, final int x1, final int y1, final int x2, final int y2, final int scale, final float offsetY, final float mouseX, final float mouseY, final LivingEntity entity, final CallbackInfo callbackInfo) {
+    private static void dragon_survival$clearStoredInventoryAngles(final net.minecraft.client.gui.GuiGraphicsExtractor GuiGraphicsExtractor, final int x1, final int y1, final int x2, final int y2, final int scale, final float offsetY, final float mouseX, final float mouseY, final LivingEntity entity, final CallbackInfo callbackInfo) {
         if (entity instanceof DragonEntity || DragonStateProvider.isDragon(entity)) {
             dragon_survival$storedXAngle = 0;
             dragon_survival$storedYAngle = 0;

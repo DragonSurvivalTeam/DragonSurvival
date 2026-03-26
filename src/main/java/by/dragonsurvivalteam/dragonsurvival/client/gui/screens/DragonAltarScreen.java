@@ -24,7 +24,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import by.dragonsurvivalteam.dragonsurvival.util.DragonUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.events.GuiEventListener;
@@ -186,7 +186,7 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
     }
 
     @Override
-    public void render(@NotNull final GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    public void render(@NotNull final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         renderBackground(graphics, mouseX, mouseY, partialTick);
 
         tick++;
@@ -296,7 +296,7 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
         }
     }
 
-    private void renderPreviewEntity(final GuiGraphics graphics, final LivingEntity entity, final int centerX, final int bottomY, final int scale, final boolean leftSide) {
+    private void renderPreviewEntity(final GuiGraphicsExtractor graphics, final LivingEntity entity, final int centerX, final int bottomY, final int scale, final boolean leftSide) {
         int halfWidth = Math.max(24, scale);
         int topY = bottomY - Math.max(70, scale * 3);
         int leftX = centerX - halfWidth;
@@ -329,12 +329,12 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
     }
 
     @Override
-    public void renderBackground(@NotNull final GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    public void renderBackground(@NotNull final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         graphics.fillGradient(0, 0, width, height, -1072689136, -804253680);
         renderBorders(graphics, BACKGROUND_TEXTURE, 0, width, 25, height - 25, width, height);
     }
 
-    public static void renderBorders(@NotNull final GuiGraphics graphics, final Identifier texture, final int x0, final int x1, final int y0, final int y1, final int width, final int height) {
+    public static void renderBorders(@NotNull final GuiGraphicsExtractor graphics, final Identifier texture, final int x0, final int x1, final int y0, final int y1, final int width, final int height) {
         graphics.blit(RenderPipelines.GUI_TEXTURED, texture, x0, 0, 0, 0, width, y0, 32, 32);
         graphics.blit(RenderPipelines.GUI_TEXTURED, texture, x0, y1, 0, y1 % 32, width, height - y1, 32, 32);
         graphics.fillGradient(x0, y0, x1, y0 + 4, 0xFF000000, 0x00000000);
@@ -361,7 +361,7 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
             boolean toggled;
 
             @Override
-            public void renderWidget(@NotNull final GuiGraphics graphics, int mouseX, int mouseY, float partial) {
+            public void renderWidget(@NotNull final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partial) {
                 super.renderWidget(graphics, mouseX, mouseY, partial);
                 if (toggled && (!visible || !confirmation)) {
                     toggled = false;
@@ -383,7 +383,7 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
                     if (!toggled) {
                         renderButton = new ExtendedButton(0, 0, 0, 0, Component.empty(), button -> { }) {
                             @Override
-                            public void renderWidget(@NotNull final GuiGraphics graphics, int pMouseX, int pMouseY, float pPartialTick) {
+                            public void renderWidget(@NotNull final GuiGraphicsExtractor graphics, int pMouseX, int pMouseY, float pPartialTick) {
                                 if (confirmComponent != null && confirmation) {
                                     confirmComponent.render(graphics, pMouseX, pMouseY, pPartialTick);
                                 }

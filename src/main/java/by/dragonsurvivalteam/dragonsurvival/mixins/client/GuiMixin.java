@@ -8,7 +8,7 @@ public abstract class GuiMixin {
 //    @Unique private List<ClientEffectProvider> dragonSurvival$providers = List.of();
 //
 //    @Inject(method = "renderEffects", at = @At("HEAD"))
-//    private void dragonSurvival$storeProviders(final GuiGraphics graphics, final DeltaTracker deltaTracker, final CallbackInfo callback) {
+//    private void dragonSurvival$storeProviders(final GuiGraphicsExtractor graphics, final DeltaTracker deltaTracker, final CallbackInfo callback) {
 //        dragonSurvival$providers = ClientEffectProvider.getProviders(false);
 //    }
 //
@@ -19,7 +19,7 @@ public abstract class GuiMixin {
 //
 //    // TODO :: Do we care to determine if effects are beneficial or not? In this UI vanilla puts harmful effects below beneficial ones instead of beside them
 //    @Inject(method = "renderEffects", at = @At(value = "INVOKE", target = "Ljava/util/List;forEach(Ljava/util/function/Consumer;)V"))
-//    private void dragonSurvival$renderAbilityEffects(final GuiGraphics graphics, final DeltaTracker deltaTracker, final CallbackInfo callback, @Local(ordinal = 0) int renderedCount) {
+//    private void dragonSurvival$renderAbilityEffects(final GuiGraphicsExtractor graphics, final DeltaTracker deltaTracker, final CallbackInfo callback, @Local(ordinal = 0) int renderedCount) {
 //        Gui self = (Gui) (Object) this;
 //        int effectCount = renderedCount;
 //
@@ -85,7 +85,7 @@ public abstract class GuiMixin {
 //        return null;
 //    }
 //
-//    @ModifyArg(method = "renderAirLevel", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;blitSprite(Lnet/minecraft/resources/Identifier;IIII)V", ordinal = 0))
+//    @ModifyArg(method = "renderAirLevel", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;blitSprite(Lnet/minecraft/resources/Identifier;IIII)V", ordinal = 0))
 //    private Identifier dragonSurvival$modifyAirSprite(Identifier sprite) {
 //        Identifier replacementSprite = dragonSurvival$getSpriteForAirBubble(false);
 //
@@ -96,7 +96,7 @@ public abstract class GuiMixin {
 //        }
 //    }
 //
-//    @ModifyArg(method = "renderAirLevel", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;blitSprite(Lnet/minecraft/resources/Identifier;IIII)V", ordinal = 1))
+//    @ModifyArg(method = "renderAirLevel", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;blitSprite(Lnet/minecraft/resources/Identifier;IIII)V", ordinal = 1))
 //    private Identifier dragonSurvival$modifyAirBurstSprite(Identifier sprite) {
 //        Identifier replacementSprite = dragonSurvival$getSpriteForAirBubble(true);
 //

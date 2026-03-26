@@ -1,7 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.client.gui.widgets;
 
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
@@ -28,12 +28,12 @@ public class ClientTimeComponent implements ClientTooltipComponent {
     }
 
     @Override
-    public void renderImage(@NotNull Font font, int x, int y, int width, int height, @NotNull GuiGraphics graphics) {
+    public void renderImage(@NotNull Font font, int x, int y, int width, int height, @NotNull GuiGraphicsExtractor graphics) {
         graphics.renderFakeItem(component.item().getDefaultInstance(), x, y);
     }
 
     @Override
-    public void renderText(@NotNull GuiGraphics graphics, @NotNull Font font, int x, int y) {
+    public void renderText(@NotNull GuiGraphicsExtractor graphics, @NotNull Font font, int x, int y) {
         // Offset the text slightly so it centers against the 16x16 item icon.
         graphics.drawString(font, tooltip, x + ICON_SIZE, y + 4, 0xFFFFFFFF, true);
     }

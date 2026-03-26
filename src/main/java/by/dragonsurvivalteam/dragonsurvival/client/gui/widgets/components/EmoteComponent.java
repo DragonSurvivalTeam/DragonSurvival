@@ -12,7 +12,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.emotes.DragonEmote;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
@@ -62,7 +62,7 @@ public class EmoteComponent {
             }
         }) {
             @Override
-            public void renderWidget(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+            public void renderWidget(@NotNull GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partialTick) {
                 // Copied from ExtendedButton#renderWidget, we only want to render the text for this one
                 final FormattedText buttonText = Minecraft.getInstance().font.ellipsize(this.getMessage(), this.width + 26); // Remove 6 pixels so that the text is always contained within the button's borders
                 int color;
@@ -71,7 +71,7 @@ public class EmoteComponent {
                 } else {
                     color = getFGColor();
                 }
-                TextRenderUtil.drawScaledText(guiGraphics, this.getX(), this.getY() + (float) (this.height - 8) / 2, 0.8f, buttonText.getString(), color);
+                TextRenderUtil.drawScaledText(GuiGraphicsExtractor, this.getX(), this.getY() + (float) (this.height - 8) / 2, 0.8f, buttonText.getString(), color);
             }
         };
         emoteButton.setMessage(emote.name());
@@ -92,18 +92,18 @@ public class EmoteComponent {
             }
         }) {
             @Override
-            public void renderWidget(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+            public void renderWidget(@NotNull GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partialTick) {
                 Identifier texture = DragonSurvival.PROXY.isPlayingEmote(Minecraft.getInstance().player, emote) ? PLAY_ON : PLAY_OFF;
-                guiGraphics.blit(texture, getX(), getY(), 0, 0, 6, 6, 14, 14);
+                GuiGraphicsExtractor.blit(texture, getX(), getY(), 0, 0, 6, 6, 14, 14);
             }
         };
         keybindingButton = new ExtendedButton(xPos + 126, yPos - 1, 6, 6, Component.empty(), button -> {
             screen.currentlyKeybinding = emote.key();
         }) {
             @Override
-            public void renderWidget(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+            public void renderWidget(@NotNull GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partialTick) {
                 Identifier texture = emote.key().equals(screen.currentlyKeybinding) ? KEYBIND_ON : KEYBIND_OFF;
-                guiGraphics.blit(texture, getX(), getY(), 0, 0, 6, 6, 14, 14);
+                GuiGraphicsExtractor.blit(texture, getX(), getY(), 0, 0, 6, 6, 14, 14);
             }
         };
         refreshKeybinding();

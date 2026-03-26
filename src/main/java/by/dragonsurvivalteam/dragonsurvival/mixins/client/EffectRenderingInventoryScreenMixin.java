@@ -11,7 +11,7 @@
 //import net.minecraft.ChatFormatting;
 //import net.minecraft.client.Minecraft;
 //import net.minecraft.client.gui.Font;
-//import net.minecraft.client.gui.GuiGraphics;
+//import net.minecraft.client.gui.GuiGraphicsExtractor;
 //import net.minecraft.client.gui.screens.inventory.EffectRenderingInventoryScreen;
 //import net.minecraft.client.player.LocalPlayer;
 //import net.minecraft.client.renderer.Rect2i;
@@ -43,7 +43,7 @@
 //    @Unique private final List<Rect2i> dragonSurvival$areasBlockedByModifierUIForJEI = new ArrayList<>();
 //
 //    @Inject(method = "renderEffects", at = @At("HEAD"))
-//    private void dragonSurvival$storeProviders(final GuiGraphics graphics, int mouseX, int mouseY, final CallbackInfo callback) {
+//    private void dragonSurvival$storeProviders(final GuiGraphicsExtractor graphics, int mouseX, int mouseY, final CallbackInfo callback) {
 //        dragonSurvival$providers = ClientEffectProvider.getProviders(true);
 //        dragonSurvival$areasBlockedByModifierUIForJEI.clear();
 //    }
@@ -62,7 +62,7 @@
 //        storedEvent.set(event);
 //    }
 //
-//    @Unique private void dragonSurvival$renderAbilityBackgroundsAndIcons(final GuiGraphics graphics, int renderX, int yOffset, int initialYOffset, final List<ClientEffectProvider> providers, boolean isCompact) {
+//    @Unique private void dragonSurvival$renderAbilityBackgroundsAndIcons(final GuiGraphicsExtractor graphics, int renderX, int yOffset, int initialYOffset, final List<ClientEffectProvider> providers, boolean isCompact) {
 //        EffectRenderingInventoryScreen<?> self = (EffectRenderingInventoryScreen<?>) (Object) this;
 //        int topPos = ((AbstractContainerScreenAccessor) self).dragonSurvival$getTopPos() + initialYOffset;
 //        int width = isCompact ? 32 : 120;
@@ -75,7 +75,7 @@
 //        }
 //    }
 //
-//    @Unique private void dragonSurvival$renderAbilityLabels(final GuiGraphics graphics, int renderX, int yOffset, int initialYOffset, final List<ClientEffectProvider> providers) {
+//    @Unique private void dragonSurvival$renderAbilityLabels(final GuiGraphicsExtractor graphics, int renderX, int yOffset, int initialYOffset, final List<ClientEffectProvider> providers) {
 //        EffectRenderingInventoryScreen<?> self = (EffectRenderingInventoryScreen<?>) (Object) this;
 //        int topPos = ((AbstractContainerScreenAccessor) self).dragonSurvival$getTopPos() + initialYOffset;
 //
@@ -99,7 +99,7 @@
 //    }
 //
 //    @Inject(method = "renderEffects", at = @At(value = "TAIL"))
-//    private void dragonSurvival$renderAbilityEffects(final GuiGraphics graphics, int mouseX, int mouseY, final CallbackInfo callback, @Share("stored_event") final LocalRef<ScreenEvent.RenderInventoryMobEffects> storedEvent) {
+//    private void dragonSurvival$renderAbilityEffects(final GuiGraphicsExtractor graphics, int mouseX, int mouseY, final CallbackInfo callback, @Share("stored_event") final LocalRef<ScreenEvent.RenderInventoryMobEffects> storedEvent) {
 //        if (EmiCompat.hideEffects()) {
 //            return;
 //        }

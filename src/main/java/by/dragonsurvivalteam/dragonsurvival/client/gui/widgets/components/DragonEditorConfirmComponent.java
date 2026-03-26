@@ -8,7 +8,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.Tooltip;
@@ -59,8 +59,8 @@ public class DragonEditorConfirmComponent extends AbstractContainerEventHandler 
 
         confirmButton = new ExtendedButton(x + 3, y + 132, 60, 19, CommonComponents.GUI_YES, action -> { /* Nothing to do */ }) {
             @Override
-            public void renderWidget(@NotNull final GuiGraphics guiGraphics, int mouseX, int mouseY, float partial) {
-                guiGraphics.drawCenteredString(Minecraft.getInstance().font, getMessage(), getX() + getWidth() / 2, getY() + (getHeight() - 8) / 2, getFGColor());
+            public void renderWidget(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partial) {
+                GuiGraphicsExtractor.drawCenteredString(Minecraft.getInstance().font, getMessage(), getX() + getWidth() / 2, getY() + (getHeight() - 8) / 2, getFGColor());
             }
 
             @Override
@@ -72,8 +72,8 @@ public class DragonEditorConfirmComponent extends AbstractContainerEventHandler 
 
         cancelButton = new ExtendedButton(x + 66, y + 132, 60, 19, CommonComponents.GUI_NO, action -> { /* Nothing to do */ }) {
             @Override
-            public void renderWidget(@NotNull final GuiGraphics guiGraphics, int mouseX, int mouseY, float partial) {
-                guiGraphics.drawCenteredString(Minecraft.getInstance().font, getMessage(), getX() + getWidth() / 2, getY() + (getHeight() - 8) / 2, getFGColor());
+            public void renderWidget(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partial) {
+                GuiGraphicsExtractor.drawCenteredString(Minecraft.getInstance().font, getMessage(), getX() + getWidth() / 2, getY() + (getHeight() - 8) / 2, getFGColor());
             }
 
             @Override
@@ -95,7 +95,7 @@ public class DragonEditorConfirmComponent extends AbstractContainerEventHandler 
     }
 
     @Override
-    public void render(@NotNull final GuiGraphics graphics, int pMouseX, int pMouseY, float pPartialTicks) {
+    public void render(@NotNull final GuiGraphicsExtractor graphics, int pMouseX, int pMouseY, float pPartialTicks) {
         graphics.pose().pushMatrix();
         // Render above the rendered dragon
         // graphics.pose().translate(0, 0, 100);

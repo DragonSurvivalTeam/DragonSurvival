@@ -2,7 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic;
 
 import com.mojang.datafixers.util.Either;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
@@ -81,7 +81,7 @@ public class HoverButton extends ExtendedButton implements HoverDisableable {
     }
 
     @Override
-    public void renderWidget(@NotNull final GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    public void renderWidget(@NotNull final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         // Scale about the center of the button
         graphics.pose().pushMatrix();
         graphics.pose().translate(getX(), getY());
@@ -102,6 +102,6 @@ public class HoverButton extends ExtendedButton implements HoverDisableable {
             graphics.setComponentTooltipFromElementsForNextFrame(Minecraft.getInstance().font, tooltipElements.get(), mouseX, mouseY, ItemStack.EMPTY);
         }
 
-        this.renderDefaultLabel(graphics.textRendererForWidget(this, GuiGraphics.HoveredTextEffects.NONE));
+        this.renderDefaultLabel(graphics.textRendererForWidget(this, GuiGraphicsExtractor.HoveredTextEffects.NONE));
     }
 }

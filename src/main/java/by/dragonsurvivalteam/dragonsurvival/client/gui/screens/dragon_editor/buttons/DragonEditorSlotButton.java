@@ -3,7 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.client.gui.screens.dragon_editor.bu
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.dragon_editor.DragonEditorScreen;
 import by.dragonsurvivalteam.dragonsurvival.client.util.TextRenderUtil;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.InputWithModifiers;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -43,17 +43,17 @@ public class DragonEditorSlotButton extends ExtendedButton {
     }
 
     @Override
-    public void renderWidget(@NotNull final GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+    public void renderWidget(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partialTick) {
         active = visible = screen.showUi;
 
         if (screen.selectedSaveSlot == slot) {
-            guiGraphics.blit(SLOT_NUMBER_BACKGROUND, getX(), getY(), 0, 0, 20, 20, 20, 20);
+            GuiGraphicsExtractor.blit(SLOT_NUMBER_BACKGROUND, getX(), getY(), 0, 0, 20, 20, 20, 20);
         }
 
         if (screen.selectedSaveSlot == slot) {
-            TextRenderUtil.drawScaledText(guiGraphics, getX() + 4.5f, getY() + 3.5f, 1F, Integer.toString(slot), DyeColor.WHITE.getTextColor());
+            TextRenderUtil.drawScaledText(GuiGraphicsExtractor, getX() + 4.5f, getY() + 3.5f, 1F, Integer.toString(slot), DyeColor.WHITE.getTextColor());
         } else {
-            TextRenderUtil.drawScaledText(guiGraphics, getX() + 4.5f, getY() + 3.5f, 1F, Integer.toString(slot), DyeColor.GRAY.getTextColor());
+            TextRenderUtil.drawScaledText(GuiGraphicsExtractor, getX() + 4.5f, getY() + 3.5f, 1F, Integer.toString(slot), DyeColor.GRAY.getTextColor());
         }
     }
 }

@@ -14,7 +14,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ClawInventoryDa
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
@@ -121,8 +121,8 @@ public class InventoryScreenHandler {
                     ClientProxy.openDragonAltar();
                 }) {
                     @Override
-                    public void renderWidget(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-                        guiGraphics.blit(DS_LOGO, getX(), getY(), 0, 0, 32, 32, 32, 32);
+                    public void renderWidget(@NotNull GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partialTick) {
+                        GuiGraphicsExtractor.blit(DS_LOGO, getX(), getY(), 0, 0, 32, 32, 32, 32);
                     }
                 };
                 altarOpenButton.setTooltip(Tooltip.create(Component.translatable(TOGGLE_DRAGON_ALTAR)));
@@ -154,10 +154,10 @@ public class InventoryScreenHandler {
                     openDragonInventory();
                 }) {
                     @Override
-                    public void renderWidget(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+                    public void renderWidget(@NotNull GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partialTick) {
                         float u = 21f;
                         float v = isHoveredOrFocused() ? 20f : 0f;
-                        guiGraphics.blit(RenderPipelines.GUI, INVENTORY_TOGGLE_BUTTON, getX(), getY(), u, v, 20, 18, 256, 256);
+                        GuiGraphicsExtractor.blit(RenderPipelines.GUI, INVENTORY_TOGGLE_BUTTON, getX(), getY(), u, v, 20, 18, 256, 256);
                     }
                 };
                 dragonInventoryButton.setTooltip(Tooltip.create(Component.translatable(TOGGLE_DRAGON_INVENTORY)));
@@ -171,10 +171,10 @@ public class InventoryScreenHandler {
                     openDragonInventory();
                 }) {
                     @Override
-                    public void renderWidget(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+                    public void renderWidget(@NotNull GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partialTick) {
                         float u = 21f;
                         float v = isHoveredOrFocused() ? 20f : 0f;
-                        guiGraphics.blit(RenderPipelines.GUI, INVENTORY_TOGGLE_BUTTON, getX(), getY(), u, v, 20, 18, 256, 256);
+                        GuiGraphicsExtractor.blit(RenderPipelines.GUI, INVENTORY_TOGGLE_BUTTON, getX(), getY(), u, v, 20, 18, 256, 256);
                     }
                 };
                 creativeModeDragonInventoryButton.setTooltip(Tooltip.create(Component.translatable(TOGGLE_DRAGON_INVENTORY)));

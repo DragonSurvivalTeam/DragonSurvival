@@ -4,7 +4,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.math.Axis;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.AbstractContainerEventHandler;
 import net.minecraft.client.gui.components.events.GuiEventListener;
@@ -35,7 +35,7 @@ public class DragonUIRenderComponent extends AbstractContainerEventHandler imple
     }
 
     @Override
-    public void render(@NotNull final GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTicks) {
+    public void render(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int pMouseX, int pMouseY, float pPartialTicks) {
         if (isMouseOver(pMouseX, pMouseY)) {
             screen.setFocused(this);
         }
@@ -43,17 +43,17 @@ public class DragonUIRenderComponent extends AbstractContainerEventHandler imple
         float scale = zoom;
 
         // We need to translate this backwards with the poseStack as renderEntityInInventory pushes the poseStack forward
-        guiGraphics.pose().pushMatrix();
+        GuiGraphicsExtractor.pose().pushMatrix();
         // FIXME :: UI GRAPHICS
-        //guiGraphics.pose().translate(0, 0, -200); // We chose -200 here as the background is translated -300, and we don't want to clip with it
+        //GuiGraphicsExtractor.pose().translate(0, 0, -200); // We chose -200 here as the background is translated -300, and we don't want to clip with it
 
         Quaternionf quaternion = Axis.ZP.rotationDegrees(180);
         quaternion.mul(Axis.XP.rotationDegrees(yRot * 10));
         quaternion.rotateY((float) Math.toRadians(180 - xRot * 10));
         // FIXME :: UI GRAPHICS
-        //InventoryScreen.renderEntityInInventory(guiGraphics, x + (float) width / 2 + xOffset, y + height - 30 + yOffset, (int) scale, new Vector3f(0, 0, 0), quaternion, null, getter.get());
+        //InventoryScreen.renderEntityInInventory(GuiGraphicsExtractor, x + (float) width / 2 + xOffset, y + height - 30 + yOffset, (int) scale, new Vector3f(0, 0, 0), quaternion, null, getter.get());
 
-        guiGraphics.pose().popMatrix();
+        GuiGraphicsExtractor.pose().popMatrix();
     }
 
     @Override

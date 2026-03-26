@@ -7,7 +7,7 @@ import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.loader.Dra
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.DragonPart;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.LayerSettings;
 import com.google.common.collect.ImmutableList;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.AbstractContainerEventHandler;
 import net.minecraft.client.gui.components.events.GuiEventListener;
@@ -84,13 +84,13 @@ public class HueSelectorComponent extends AbstractContainerEventHandler implemen
             screen.actionHistory.add(new DragonEditorScreen.EditorAction<>(setGlowingAction, !settingsSupplier.get().isGlowing));
         }) {
             @Override
-            public void renderWidget(@NotNull final GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+            public void renderWidget(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partialTick) {
                 Identifier texture = settingsSupplier.get().isGlowing ? GLOW_ON : GLOW_OFF;
-                guiGraphics.pose().pushMatrix();
+                GuiGraphicsExtractor.pose().pushMatrix();
                 // FIXME :: UI GRAPHICS
-                //guiGraphics.pose().translate(0, 0, 100);
-                guiGraphics.blit(texture, getX(), getY(), 0, 0, 27, 25, 27, 25);
-                guiGraphics.pose().popMatrix();
+                //GuiGraphicsExtractor.pose().translate(0, 0, 100);
+                GuiGraphicsExtractor.blit(texture, getX(), getY(), 0, 0, 27, 25, 27, 25);
+                GuiGraphicsExtractor.pose().popMatrix();
             }
         };
 
@@ -132,16 +132,16 @@ public class HueSelectorComponent extends AbstractContainerEventHandler implemen
             }
 
             @Override
-            public void renderWidget(@NotNull final GuiGraphics guiGraphics, int mouseX, int mouseY, float partial) {
+            public void renderWidget(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partial) {
                 if (visible) {
                     this.isHovered = mouseX >= getX() && mouseY >= getY() && mouseX < getX() + getWidth() && mouseY < getY() + getHeight();
                     // FIXME :: UI GRAPHICS
-                    // RenderingUtils.renderPureColorSquare(guiGraphics.pose(), getX() + 1, getY() + 1, getWidth() - 1, getHeight() - 1);
-                    guiGraphics.renderOutline(getX() + 1, getY() + 1, getWidth() - 1, getHeight() - 1, Color.black.getRGB());
+                    // RenderingUtils.renderPureColorSquare(GuiGraphicsExtractor.pose(), getX() + 1, getY() + 1, getWidth() - 1, getHeight() - 1);
+                    GuiGraphicsExtractor.renderOutline(getX() + 1, getY() + 1, getWidth() - 1, getHeight() - 1, Color.black.getRGB());
                     if (this.isHovered) {
-                        guiGraphics.blit(SLIDER_HOVER, this.getX() + (int) (this.value * (double) (this.width - 8)), this.getY() - 3, 0, 0, 12, 26, 26, 26);
+                        GuiGraphicsExtractor.blit(SLIDER_HOVER, this.getX() + (int) (this.value * (double) (this.width - 8)), this.getY() - 3, 0, 0, 12, 26, 26, 26);
                     } else {
-                        guiGraphics.blit(SLIDER_MAIN, this.getX() + (int) (this.value * (double) (this.width - 8)), this.getY() - 3, 0, 0, 12, 26, 26, 26);
+                        GuiGraphicsExtractor.blit(SLIDER_MAIN, this.getX() + (int) (this.value * (double) (this.width - 8)), this.getY() - 3, 0, 0, 12, 26, 26, 26);
                     }
                 }
             }
@@ -187,7 +187,7 @@ public class HueSelectorComponent extends AbstractContainerEventHandler implemen
             }
 
             @Override
-            public void renderWidget(@NotNull final GuiGraphics guiGraphics, int mouseX, int mouseY, float partial) {
+            public void renderWidget(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partial) {
                 if (visible) {
                     this.isHovered = mouseX >= getX() && mouseY >= getY() && mouseX < getX() + getWidth() && mouseY < getY() + getHeight();
                     float value1 = (hueSlider.getValueInt()) / 360f;
@@ -196,12 +196,12 @@ public class HueSelectorComponent extends AbstractContainerEventHandler implemen
                     int col2 = Color.getHSBColor(value1, 1f, 1f).getRGB();
 
                     // FIXME :: UI GRAPHICS
-                    //RenderingUtils.drawGradientRect(guiGraphics.pose().last().pose(), 0, getX() + 1, getY() + 1, getX() + getWidth() - 1, getY() + getHeight() - 1, new int[]{col2, col1, col1, col2});
-                    guiGraphics.renderOutline(getX() + 1, getY() + 1, getWidth() - 1, getHeight() - 1, Color.black.getRGB());
+                    //RenderingUtils.drawGradientRect(GuiGraphicsExtractor.pose().last().pose(), 0, getX() + 1, getY() + 1, getX() + getWidth() - 1, getY() + getHeight() - 1, new int[]{col2, col1, col1, col2});
+                    GuiGraphicsExtractor.renderOutline(getX() + 1, getY() + 1, getWidth() - 1, getHeight() - 1, Color.black.getRGB());
                     if (this.isHovered) {
-                        guiGraphics.blit(SLIDER_HOVER, this.getX() + (int) (this.value * (double) (this.width - 8)), this.getY() - 3, 0, 0, 12, 26, 26, 26);
+                        GuiGraphicsExtractor.blit(SLIDER_HOVER, this.getX() + (int) (this.value * (double) (this.width - 8)), this.getY() - 3, 0, 0, 12, 26, 26, 26);
                     } else {
-                        guiGraphics.blit(SLIDER_MAIN, this.getX() + (int) (this.value * (double) (this.width - 8)), this.getY() - 3, 0, 0, 12, 26, 26, 26);
+                        GuiGraphicsExtractor.blit(SLIDER_MAIN, this.getX() + (int) (this.value * (double) (this.width - 8)), this.getY() - 3, 0, 0, 12, 26, 26, 26);
                     }
                 }
             }
@@ -247,7 +247,7 @@ public class HueSelectorComponent extends AbstractContainerEventHandler implemen
             }
 
             @Override
-            public void renderWidget(@NotNull final GuiGraphics guiGraphics, int mouseX, int mouseY, float partial) {
+            public void renderWidget(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partial) {
                 if (visible) {
                     this.isHovered = mouseX >= getX() && mouseY >= getY() && mouseX < getX() + getWidth() && mouseY < getY() + getHeight();
                     float value1 = (hueSlider.getValueInt()) / 360f;
@@ -256,12 +256,12 @@ public class HueSelectorComponent extends AbstractContainerEventHandler implemen
                     int col2 = Color.getHSBColor(value1, 1f, 1f).getRGB();
 
                     // FIXME :: UI GRAPHICS
-                    // RenderingUtils.drawGradientRect(guiGraphics.pose().last().pose(), 0, getX() + 1, getY() + 1, getX() + getWidth() - 1, getY() + getHeight() - 1, new int[]{col2, col1, col1, col2});
-                    guiGraphics.renderOutline(getX() + 1, getY() + 1, getWidth() - 1, getHeight() - 1, Color.black.getRGB());
+                    // RenderingUtils.drawGradientRect(GuiGraphicsExtractor.pose().last().pose(), 0, getX() + 1, getY() + 1, getX() + getWidth() - 1, getY() + getHeight() - 1, new int[]{col2, col1, col1, col2});
+                    GuiGraphicsExtractor.renderOutline(getX() + 1, getY() + 1, getWidth() - 1, getHeight() - 1, Color.black.getRGB());
                     if (this.isHovered) {
-                        guiGraphics.blit(SLIDER_HOVER, this.getX() + (int) (this.value * (double) (this.width - 8)), this.getY() - 3, 0, 0, 12, 26, 26, 26);
+                        GuiGraphicsExtractor.blit(SLIDER_HOVER, this.getX() + (int) (this.value * (double) (this.width - 8)), this.getY() - 3, 0, 0, 12, 26, 26, 26);
                     } else {
-                        guiGraphics.blit(SLIDER_MAIN, this.getX() + (int) (this.value * (double) (this.width - 8)), this.getY() - 3, 0, 0, 12, 26, 26, 26);
+                        GuiGraphicsExtractor.blit(SLIDER_MAIN, this.getX() + (int) (this.value * (double) (this.width - 8)), this.getY() - 3, 0, 0, 12, 26, 26, 26);
                     }
                 }
             }
@@ -293,31 +293,31 @@ public class HueSelectorComponent extends AbstractContainerEventHandler implemen
     }
 
     @Override
-    public void render(@NotNull final GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTicks) {
-        guiGraphics.pose().pushMatrix();
+    public void render(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int pMouseX, int pMouseY, float pPartialTicks) {
+        GuiGraphicsExtractor.pose().pushMatrix();
         // Render pop-up menu content above the other elements
         // FIXME :: UI GRAPHICS
-        //guiGraphics.pose().translate(0, 0, 150);
+        //GuiGraphicsExtractor.pose().translate(0, 0, 150);
 
         // Background for glow button
-        guiGraphics.fill(x + 2, y - 25, x + 32, y + 5, BACKGROUND_COLOR);
-        guiGraphics.renderOutline(x + 2, y - 26, 30, 31, Color.black.getRGB());
-        guiGraphics.renderOutline(x + 3, y - 25, 28, 29, INNER_BORDER_COLOR);
+        GuiGraphicsExtractor.fill(x + 2, y - 25, x + 32, y + 5, BACKGROUND_COLOR);
+        GuiGraphicsExtractor.renderOutline(x + 2, y - 26, 30, 31, Color.black.getRGB());
+        GuiGraphicsExtractor.renderOutline(x + 3, y - 25, 28, 29, INNER_BORDER_COLOR);
 
         // Main background
-        guiGraphics.fill(x, y, x + xSize + 2, y + ySize - 10, BACKGROUND_COLOR);
-        guiGraphics.renderOutline(x, y, xSize + 2, ySize - 10, Color.black.getRGB());
-        guiGraphics.renderOutline(x + 1, y + 1, xSize, ySize - 12, INNER_BORDER_COLOR);
+        GuiGraphicsExtractor.fill(x, y, x + xSize + 2, y + ySize - 10, BACKGROUND_COLOR);
+        GuiGraphicsExtractor.renderOutline(x, y, xSize + 2, ySize - 10, Color.black.getRGB());
+        GuiGraphicsExtractor.renderOutline(x + 1, y + 1, xSize, ySize - 12, INNER_BORDER_COLOR);
 
-        glowing.render(guiGraphics, pMouseX, pMouseY, pPartialTicks);
+        glowing.render(GuiGraphicsExtractor, pMouseX, pMouseY, pPartialTicks);
 
-        hueReset.render(guiGraphics, pMouseX, pMouseY, pPartialTicks);
-        saturationReset.render(guiGraphics, pMouseX, pMouseY, pPartialTicks);
-        brightnessReset.render(guiGraphics, pMouseX, pMouseY, pPartialTicks);
+        hueReset.render(GuiGraphicsExtractor, pMouseX, pMouseY, pPartialTicks);
+        saturationReset.render(GuiGraphicsExtractor, pMouseX, pMouseY, pPartialTicks);
+        brightnessReset.render(GuiGraphicsExtractor, pMouseX, pMouseY, pPartialTicks);
 
-        hueSlider.render(guiGraphics, pMouseX, pMouseY, pPartialTicks);
-        saturationSlider.render(guiGraphics, pMouseX, pMouseY, pPartialTicks);
-        brightnessSlider.render(guiGraphics, pMouseX, pMouseY, pPartialTicks);
-        guiGraphics.pose().popMatrix();
+        hueSlider.render(GuiGraphicsExtractor, pMouseX, pMouseY, pPartialTicks);
+        saturationSlider.render(GuiGraphicsExtractor, pMouseX, pMouseY, pPartialTicks);
+        brightnessSlider.render(GuiGraphicsExtractor, pMouseX, pMouseY, pPartialTicks);
+        GuiGraphicsExtractor.pose().popMatrix();
     }
 }

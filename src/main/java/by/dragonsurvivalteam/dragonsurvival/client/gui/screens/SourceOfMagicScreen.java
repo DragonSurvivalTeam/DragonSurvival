@@ -7,7 +7,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.DSBlocks;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.server.containers.SourceOfMagicContainer;
 import by.dragonsurvivalteam.dragonsurvival.server.tileentity.SourceOfMagicBlockEntity;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
@@ -56,7 +56,7 @@ public class SourceOfMagicScreen extends AbstractContainerScreen<SourceOfMagicCo
     }
 
     @Override
-    protected void renderLabels(@NotNull final GuiGraphics guiGraphics, int mouseX, int mouseY) { /* Nothing to do */ }
+    protected void renderLabels(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY) { /* Nothing to do */ }
 
     @Override
     public boolean mouseScrolled(final double mouseX, final double mouseY, final double scrollX, final double scrollY) {
@@ -75,14 +75,14 @@ public class SourceOfMagicScreen extends AbstractContainerScreen<SourceOfMagicCo
     }
 
     @Override
-    public void render(@NotNull final GuiGraphics graphics, final int mouseX, final int mouseY, final float partialTick) {
+    public void render(@NotNull final GuiGraphicsExtractor graphics, final int mouseX, final int mouseY, final float partialTick) {
         super.render(graphics, mouseX, mouseY, partialTick);
         renderTooltip(graphics, mouseX, mouseY);
     }
 
     @Override
-    protected void renderBg(@NotNull final GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
-        guiGraphics.blit(BACKGROUND, leftPos, topPos, 0, 0, imageWidth, imageHeight, 256, 256);
+    protected void renderBg(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, float partialTick, int mouseX, int mouseY) {
+        GuiGraphicsExtractor.blit(BACKGROUND, leftPos, topPos, 0, 0, imageWidth, imageHeight, 256, 256);
 
         boolean hasItem = blockEntity.getCurrentDuration() > 0;
         Block block = blockEntity.getBlockState().getBlock();
@@ -98,7 +98,7 @@ public class SourceOfMagicScreen extends AbstractContainerScreen<SourceOfMagicCo
         }
 
         if (resource != null) {
-            guiGraphics.blit(resource, leftPos + 8, topPos + 8, 0, 0, 160, 49, 160, 49);
+            GuiGraphicsExtractor.blit(resource, leftPos + 8, topPos + 8, 0, 0, 160, 49, 160, 49);
         }
     }
 

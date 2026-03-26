@@ -5,7 +5,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.registry.data_maps.DietEntryCache;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.profiling.Profiler;
@@ -16,7 +16,7 @@ import net.minecraft.world.food.FoodData;
 public class FoodBar {
     private static final RandomSource RANDOM = RandomSource.create();
 
-    public static boolean render(final GuiGraphics graphics, int width, int height) {
+    public static boolean render(final GuiGraphicsExtractor graphics, int width, int height) {
         Player localPlayer = DragonSurvival.PROXY.getLocalPlayer();
 
         //noinspection DataFlowIssue -> instance is present

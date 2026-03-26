@@ -9,7 +9,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.UpgradeType;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
@@ -203,7 +203,7 @@ public class AbilityButton extends ExtendedButton {
     }
 
     @Override
-    public void renderWidget(@NotNull final GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    public void renderWidget(@NotNull final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         if (isHotbar) {
             // Currently the easiest way to track assignments (and not end up with duplicate icons)
             // Alternative would be to go through all buttons and remove the ability that matches the swapped ability (in 'onRelease')
@@ -295,7 +295,7 @@ public class AbilityButton extends ExtendedButton {
         return scrollAmount;
     }
 
-    private void blit(final GuiGraphics graphics, final Identifier texture, int x, int y, int size) {
+    private void blit(final GuiGraphicsExtractor graphics, final Identifier texture, int x, int y, int size) {
         // FIXME :: UI GRAPHICS (there was an alpha value used here and it is now gone)
         graphics.blit(RenderPipelines.GUI_TEXTURED, texture, x, y, size, size, 0, 0, size, size);
     }

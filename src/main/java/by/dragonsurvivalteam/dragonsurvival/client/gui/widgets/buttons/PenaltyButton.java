@@ -2,7 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons;
 
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty.DragonPenalty;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.core.Holder;
@@ -27,7 +27,7 @@ public class PenaltyButton extends ExtendedButton {
     }
 
     @Override
-    public void renderWidget(@NotNull final GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    public void renderWidget(@NotNull final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         Identifier icon = penalty.value().icon().orElse(MissingTextureAtlasSprite.getLocation());
         blit(graphics, icon, getX(), getY(), SIZE);
     }
@@ -41,7 +41,7 @@ public class PenaltyButton extends ExtendedButton {
     }
 
     // TODO :: add in generic helper method
-    private void blit(final GuiGraphics graphics, final Identifier texture, int x, int y, int size) {
+    private void blit(final GuiGraphicsExtractor graphics, final Identifier texture, int x, int y, int size) {
         graphics.blitSprite(RenderPipelines.GUI_TEXTURED, texture, x, y, size, size);
     }
 }

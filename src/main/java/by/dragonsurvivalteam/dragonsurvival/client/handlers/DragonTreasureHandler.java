@@ -36,7 +36,7 @@ public class DragonTreasureHandler {
 
         if (renderSleepTimer > 0) {
             int darkening = ARGB.colorFromFloat(Mth.lerp(Math.min(renderSleepTimer, 100) / 100f, 0, 0.5F), 0.05f, 0.05f, 0.05f);
-            event.getGuiGraphics().fill(0, 0, window.getGuiScaledWidth(), window.getGuiScaledHeight(), darkening);
+            event.getGuiGraphicsExtractor().fill(0, 0, window.getGuiScaledWidth(), window.getGuiScaledHeight(), darkening);
         }
     }
 }

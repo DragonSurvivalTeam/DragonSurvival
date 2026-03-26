@@ -26,7 +26,7 @@ import by.dragonsurvivalteam.dragonsurvival.server.handlers.DragonRidingHandler;
 import com.mojang.datafixers.util.Either;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.Tooltip;
@@ -149,7 +149,7 @@ public class DragonSpeciesScreen extends Screen {
     }
 
     @Override
-    public void render(@NotNull final GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    public void render(@NotNull final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         if (minecraft.player == null) {
             return;
         }
@@ -180,7 +180,7 @@ public class DragonSpeciesScreen extends Screen {
         renderDeferredTooltip(graphics, mouseX, mouseY);
     }
 
-    private void renderDeferredTooltip(final GuiGraphics graphics, final int mouseX, final int mouseY) {
+    private void renderDeferredTooltip(final GuiGraphicsExtractor graphics, final int mouseX, final int mouseY) {
         for (int i = renderables.size() - 1; i >= 0; i--) {
             if (renderables.get(i) instanceof PenaltyButton button && button.shouldRenderTooltip()) {
                 graphics.nextStratum();
@@ -191,7 +191,7 @@ public class DragonSpeciesScreen extends Screen {
     }
 
     @Override
-    public void renderBackground(@NotNull final GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    public void renderBackground(@NotNull final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         // Don't render the vanilla background, it darkens the UI in an undesirable way
     }
 
@@ -216,7 +216,7 @@ public class DragonSpeciesScreen extends Screen {
         if (DietEntryCache.isEmpty(species)) {
             ExtendedButton noDietText = new ExtendedButton(startX + 77, startY + 30, 140, 20, Component.empty(), button -> {}) {
                 @Override
-                public void renderWidget(@NotNull final GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+                public void renderWidget(@NotNull final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
                     final FormattedText buttonText = Minecraft.getInstance().font.ellipsize(this.getMessage(), this.width + 26); // Remove 6 pixels so that the text is always contained within the button's borders
                     TextRenderUtil.drawScaledText(graphics, this.getX(), this.getY() + (float) (this.height - 8) / 2, 0.8f, buttonText.getString(), getFGColor());
                 }
@@ -236,7 +236,7 @@ public class DragonSpeciesScreen extends Screen {
             }
 
             @Override
-            public void renderWidget(@NotNull final GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+            public void renderWidget(@NotNull final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
                 if (isHovered() && isTop(mouseY)) {
                     graphics.blit(RenderPipelines.GUI_TEXTURED, data.species().value().miscResources().altarBanner(), getX(), getY(), 0, 0, 49, 147, 49, 294);
                     List<Either<FormattedText, TooltipComponent>> components = new ArrayList<>();
@@ -340,7 +340,7 @@ public class DragonSpeciesScreen extends Screen {
         } else {
             ExtendedButton noPenaltiesText = new ExtendedButton(startX + 82, startY + 100, 140, 10, Component.empty(), button -> { /* Nothing to do */ }) {
                 @Override
-                public void renderWidget(@NotNull final GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+                public void renderWidget(@NotNull final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
                     final FormattedText buttonText = Minecraft.getInstance().font.ellipsize(this.getMessage(), this.width + 26); // Remove 6 pixels so that the text is always contained within the button's borders
                     TextRenderUtil.drawScaledText(graphics, this.getX(), this.getY() + (float) (this.height - 8) / 2, 0.8f, buttonText.getString(), getFGColor());
                 }

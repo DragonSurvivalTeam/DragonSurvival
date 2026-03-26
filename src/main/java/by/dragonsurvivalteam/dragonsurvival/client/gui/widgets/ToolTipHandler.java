@@ -267,7 +267,7 @@ public class ToolTipHandler {
 
         tick++;
 
-        // Logic to determine width / height is from 'GuiGraphics#renderTooltipInternal'
+        // Logic to determine width / height is from 'GuiGraphicsExtractor#renderTooltipInternal'
         int width = 0;
         int height = event.getComponents().size() == 1 ? -2 : 0;
 

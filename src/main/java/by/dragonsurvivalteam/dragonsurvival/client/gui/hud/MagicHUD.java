@@ -8,7 +8,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.ManaHandler;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigRange;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
-import by.dragonsurvivalteam.dragonsurvival.mixins.client.GuiGraphicsAccess;
+import by.dragonsurvivalteam.dragonsurvival.mixins.client.GuiGraphicsExtractorAccess;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAttributes;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
@@ -20,7 +20,7 @@ import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import com.mojang.blaze3d.platform.Window;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -106,7 +106,7 @@ public class MagicHUD {
     private static boolean initializedDisabledAbilitiesColor = false;
     private static final OutlineColorData[] colors = new OutlineColorData[MagicData.HOTBAR_SLOTS];
 
-    public static boolean renderExperienceBar(GuiGraphics guiGraphics, int screenWidth) {
+    public static boolean renderExperienceBar(GuiGraphicsExtractor GuiGraphicsExtractor, int screenWidth) {
         Player localPlayer = DragonSurvival.PROXY.getLocalPlayer();
 
         //noinspection DataFlowIssue -> instance is present
@@ -131,10 +131,10 @@ public class MagicHUD {
 
             int experienceProgress = (int) (localPlayer.experienceProgress * 183.0F);
             int height = guiScaledHeight - 32 + 3;
-            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, WIDGET_TEXTURES, width, height, 0, 0, 164, 182, 5, 256, 256);
+            GuiGraphicsExtractor.blit(RenderPipelines.GUI_TEXTURED, WIDGET_TEXTURES, width, height, 0, 0, 164, 182, 5, 256, 256);
 
             if (experienceProgress > 0) {
-                guiGraphics.blit(RenderPipelines.GUI_TEXTURED, WIDGET_TEXTURES, width, height, 0, 0, 169, experienceProgress, 5, 256, 256);
+                GuiGraphicsExtractor.blit(RenderPipelines.GUI_TEXTURED, WIDGET_TEXTURES, width, height, 0, 0, 169, experienceProgress, 5, 256, 256);
             }
         }
 
@@ -147,11 +147,11 @@ public class MagicHUD {
             int width = (guiScaledWidth - Minecraft.getInstance().font.width(s)) / 2;
             int height = guiScaledHeight - 31 - 4;
 
-            guiGraphics.drawString(Minecraft.getInstance().font, s, (width + 1), height, 0, false);
-            guiGraphics.drawString(Minecraft.getInstance().font, s, (width - 1), height, 0, false);
-            guiGraphics.drawString(Minecraft.getInstance().font, s, width, (height + 1), 0, false);
-            guiGraphics.drawString(Minecraft.getInstance().font, s, width, (height - 1), 0, false);
-            guiGraphics.drawString(Minecraft.getInstance().font, s, width, height, DSColors.RED, false);
+            GuiGraphicsExtractor.drawString(Minecraft.getInstance().font, s, (width + 1), height, 0, false);
+            GuiGraphicsExtractor.drawString(Minecraft.getInstance().font, s, (width - 1), height, 0, false);
+            GuiGraphicsExtractor.drawString(Minecraft.getInstance().font, s, width, (height + 1), 0, false);
+            GuiGraphicsExtractor.drawString(Minecraft.getInstance().font, s, width, (height - 1), 0, false);
+            GuiGraphicsExtractor.drawString(Minecraft.getInstance().font, s, width, height, DSColors.RED, false);
 
             Profiler.get().pop();
         }
@@ -199,7 +199,7 @@ public class MagicHUD {
         colors[slot].color = ARGB.colorFromFloat(alpha, red, green, blue);
     }
 
-    public static void render(@NotNull final GuiGraphics graphics, @NotNull final DeltaTracker tracker) {
+    public static void render(@NotNull final GuiGraphicsExtractor graphics, @NotNull final DeltaTracker tracker) {
         if (Minecraft.getInstance().options.hideGui) {
             return;
         }
@@ -440,8 +440,8 @@ public class MagicHUD {
     }
 
     @SuppressWarnings("SameParameterValue") // ignore
-    private static void blit(final GuiGraphics graphics, final Identifier resource, int x, int y, int size, float alpha, float red, float green, float blue) {
+    private static void blit(final GuiGraphicsExtractor graphics, final Identifier resource, int x, int y, int size, float alpha, float red, float green, float blue) {
         // FIXME
-        //((GuiGraphicsAccess) graphics).dragonSurvival$innerBlit(resource, x, x + size, y, y + size, 0, 0, 1, 0, 1, red, green, blue, alpha);
+        //((GuiGraphicsExtractorAccess) graphics).dragonSurvival$innerBlit(resource, x, x + size, y, y + size, 0, 0, 1, 0, 1, red, green, blue, alpha);
     }
 }

@@ -34,7 +34,7 @@ import com.mojang.math.Axis;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.ConfirmLinkScreen;
@@ -183,12 +183,12 @@ public class DragonSkinsScreen extends Screen {
     }
 
     @Override
-    public void render(@NotNull final GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+    public void render(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partialTick) {
         if (minecraft.player == null) {
             return;
         }
 
-        this.renderBlurredBackground(guiGraphics);
+        this.renderBlurredBackground(GuiGraphicsExtractor);
 
         int startX = guiLeft;
         int startY = guiTop;
@@ -209,34 +209,34 @@ public class DragonSkinsScreen extends Screen {
                     DragonSkinsScreen.dragonStage = handler.stage();
                 }
 
-                renderPreviewEntity(guiGraphics, dragon, startX, startY, mouseX, mouseY);
+                renderPreviewEntity(GuiGraphicsExtractor, dragon, startX, startY, mouseX, mouseY);
             } else {
-                drawNonShadowString(guiGraphics, minecraft.font, Component.translatable(NO_SKIN).withStyle(ChatFormatting.RED), startX + 21, startY + 40, -1);
+                drawNonShadowString(GuiGraphicsExtractor, minecraft.font, Component.translatable(NO_SKIN).withStyle(ChatFormatting.RED), startX + 21, startY + 40, -1);
             }
         } else if (!showYourSkin && Objects.equals(playerName, minecraft.player.getGameProfile().name())) {
-            drawNonShadowString(guiGraphics, minecraft.font, Component.translatable(CUSTOM_MODEL_WARNING_1).withStyle(ChatFormatting.RED), startX + 26, startY + 40, -1);
-            drawNonShadowString(guiGraphics, minecraft.font, Component.translatable(CUSTOM_MODEL_WARNING_2).withStyle(ChatFormatting.RED), startX + 26, startY + 50, -1);
+            drawNonShadowString(GuiGraphicsExtractor, minecraft.font, Component.translatable(CUSTOM_MODEL_WARNING_1).withStyle(ChatFormatting.RED), startX + 26, startY + 40, -1);
+            drawNonShadowString(GuiGraphicsExtractor, minecraft.font, Component.translatable(CUSTOM_MODEL_WARNING_2).withStyle(ChatFormatting.RED), startX + 26, startY + 50, -1);
         }
 
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, startX + 128, startY, 0, 0, 164, 256, 256, 256);
-        drawNonShadowString(guiGraphics, minecraft.font, Component.translatable(SETTINGS).withStyle(ChatFormatting.BLACK), startX + 128 + /* image width */ 164 / 2, startY + 7, -1);
+        GuiGraphicsExtractor.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, startX + 128, startY, 0, 0, 164, 256, 256, 256);
+        drawNonShadowString(GuiGraphicsExtractor, minecraft.font, Component.translatable(SETTINGS).withStyle(ChatFormatting.BLACK), startX + 128 + /* image width */ 164 / 2, startY + 7, -1);
         playerNameDisplay.setMessage(Component.literal(playerName));
         //noinspection DataFlowIssue -> key is present
         playerStageDisplay.setMessage(DragonStage.translatableName(dragonStage.getKey()));
 
-        super.render(guiGraphics, mouseX, mouseY, partialTick);
+        super.render(GuiGraphicsExtractor, mouseX, mouseY, partialTick);
     }
 
     @Override // We override this to not blur the background
-    public void renderBackground(@NotNull GuiGraphics graphics, int pMouseX, int pMouseY, float pPartialTick) {
+    public void renderBackground(@NotNull GuiGraphicsExtractor graphics, int pMouseX, int pMouseY, float pPartialTick) {
         // Don't render the vanilla background, it darkens the UI in an undesirable way
     }
 
-    public static void drawNonShadowString(@NotNull final GuiGraphics guiGraphics, final Font font, final Component component, int x, int y, int color) {
-        guiGraphics.drawString(font, Language.getInstance().getVisualOrder(component), x - font.width(component) / 2, y, color, false);
+    public static void drawNonShadowString(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, final Font font, final Component component, int x, int y, int color) {
+        GuiGraphicsExtractor.drawString(font, Language.getInstance().getVisualOrder(component), x - font.width(component) / 2, y, color, false);
     }
 
-    private void renderPreviewEntity(final GuiGraphics guiGraphics, final DragonEntity dragon, final int startX, final int startY, final int mouseX, final int mouseY) {
+    private void renderPreviewEntity(final GuiGraphicsExtractor GuiGraphicsExtractor, final DragonEntity dragon, final int startX, final int startY, final int mouseX, final int mouseY) {
         EntityRenderer<? super DragonEntity, ?> entityRenderer = Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(dragon);
 
         if (!(entityRenderer instanceof DragonRenderer<?> dragonRenderer)) {
@@ -258,10 +258,10 @@ public class DragonSkinsScreen extends Screen {
         try {
             DragonSurvivalClient.DRAGON_MODEL.setOverrideTexture(overrideTexture);
             dragonRenderer.glowTexture = overrideGlow;
-            InventoryScreen.renderEntityInInventoryFollowsMouse(guiGraphics, leftX, topY, rightX, bottomY, scale, 0, mouseX, mouseY, dragon);
+            InventoryScreen.renderEntityInInventoryFollowsMouse(GuiGraphicsExtractor, leftX, topY, rightX, bottomY, scale, 0, mouseX, mouseY, dragon);
         } catch (final IllegalArgumentException exception) {
             if (fallbackEntity != null) {
-                InventoryScreen.renderEntityInInventoryFollowsMouse(guiGraphics, leftX, topY, rightX, bottomY, scale, 0, mouseX, mouseY, fallbackEntity);
+                InventoryScreen.renderEntityInInventoryFollowsMouse(GuiGraphicsExtractor, leftX, topY, rightX, bottomY, scale, 0, mouseX, mouseY, fallbackEntity);
             }
         } finally {
             DragonSurvivalClient.DRAGON_MODEL.setOverrideTexture(null);
@@ -401,9 +401,9 @@ public class DragonSkinsScreen extends Screen {
             ClientPacketDistributor.sendToServer(new SyncDragonSkinSettings(player.getId(), handler.getSkinData().renderCustomSkin));
         }) {
             @Override
-            public void renderWidget(@NotNull final GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-                super.renderWidget(guiGraphics, mouseX, mouseY, partialTick);
-                guiGraphics.blit(RenderPipelines.GUI_TEXTURED, DragonStateProvider.getData(Objects.requireNonNull(player)).getSkinData().renderCustomSkin ? SKIN_ON : SKIN_OFF, getX() + 3, getY() + 5, 0, 0, 14, 14, 14, 14);
+            public void renderWidget(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partialTick) {
+                super.renderWidget(GuiGraphicsExtractor, mouseX, mouseY, partialTick);
+                GuiGraphicsExtractor.blit(RenderPipelines.GUI_TEXTURED, DragonStateProvider.getData(Objects.requireNonNull(player)).getSkinData().renderCustomSkin ? SKIN_ON : SKIN_OFF, getX() + 3, getY() + 5, 0, 0, 14, 14, 14, 14);
             }
         };
 
@@ -417,9 +417,9 @@ public class DragonSkinsScreen extends Screen {
             ConfigHandler.updateConfigValue("render_other_players_custom_skins", ClientDragonRenderer.renderOtherPlayerSkins);
         }) {
             @Override
-            public void renderWidget(@NotNull final GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-                super.renderWidget(guiGraphics, mouseX, mouseY, partialTick);
-                guiGraphics.blit(RenderPipelines.GUI_TEXTURED, ClientDragonRenderer.renderOtherPlayerSkins ? SKIN_ON : SKIN_OFF, getX() + 3, getY() + 5, 0, 0, 14, 14, 14, 14);
+            public void renderWidget(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partialTick) {
+                super.renderWidget(GuiGraphicsExtractor, mouseX, mouseY, partialTick);
+                GuiGraphicsExtractor.blit(RenderPipelines.GUI_TEXTURED, ClientDragonRenderer.renderOtherPlayerSkins ? SKIN_ON : SKIN_OFF, getX() + 3, getY() + 5, 0, 0, 14, 14, 14, 14);
             }
         };
 
@@ -495,8 +495,8 @@ public class DragonSkinsScreen extends Screen {
             ClientProxy.sendClientData();
         }, Supplier::get) {
             @Override
-            public void renderWidget(@NotNull final GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-                guiGraphics.blit(RenderPipelines.GUI_TEXTURED, handler.getCurrentSkinPreset().isAnyStageUsingDefaultSkin() ? OLD_TEXTURE_ON : OLD_TEXTURE_OFF, getX(), getY(), 0, 0, 14, 14, 14, 14);
+            public void renderWidget(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partialTick) {
+                GuiGraphicsExtractor.blit(RenderPipelines.GUI_TEXTURED, handler.getCurrentSkinPreset().isAnyStageUsingDefaultSkin() ? OLD_TEXTURE_ON : OLD_TEXTURE_OFF, getX(), getY(), 0, 0, 14, 14, 14, 14);
             }
         };
 

@@ -5,7 +5,7 @@ import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components.Backgr
 import by.dragonsurvivalteam.dragonsurvival.mixins.client.ScreenAccessor;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import com.google.common.collect.ImmutableList;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.events.GuiEventListener;
@@ -46,13 +46,13 @@ public class BackgroundColorButton extends ExtendedButton {
         if (!toggled) {
             renderButton = new ExtendedButton(0, 0, 0, 0, Component.empty(), button -> { /* Nothing to do */ }) {
                 @Override
-                public void renderWidget(@NotNull final GuiGraphics guiGraphics, int p_230430_2_, int p_230430_3_, float p_230430_4_) {
+                public void renderWidget(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int p_230430_2_, int p_230430_3_, float p_230430_4_) {
                     active = visible = false;
 
                     if (colorComponent != null) {
                         colorComponent.visible = BackgroundColorButton.this.visible;
                         if (colorComponent.visible) {
-                            colorComponent.render(guiGraphics, p_230430_2_, p_230430_3_, p_230430_4_);
+                            colorComponent.render(GuiGraphicsExtractor, p_230430_2_, p_230430_3_, p_230430_4_);
                         }
                     }
                 }
@@ -71,7 +71,7 @@ public class BackgroundColorButton extends ExtendedButton {
     }
 
     @Override
-    public void renderWidget(@NotNull final GuiGraphics guiGraphics, int mouseX, int mouseY, float partial) {
+    public void renderWidget(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partial) {
         active = !screen.preset.get(screen.stage.getKey()).get().defaultSkin;
 
         if (toggled && (!visible || !isMouseOver(mouseX, mouseY) && (colorComponent == null || !colorComponent.isMouseOver(mouseX, mouseY)))) {
@@ -83,9 +83,9 @@ public class BackgroundColorButton extends ExtendedButton {
 
         if (visible) {
             if (isHovered()) {
-                guiGraphics.blit(BACKGROUND_COLOR_HOVER, getX(), getY(), 0, 0, width, height, width, height);
+                GuiGraphicsExtractor.blit(BACKGROUND_COLOR_HOVER, getX(), getY(), 0, 0, width, height, width, height);
             } else {
-                guiGraphics.blit(BACKGROUND_COLOR_MAIN, getX(), getY(), 0, 0, width, height, width, height);
+                GuiGraphicsExtractor.blit(BACKGROUND_COLOR_MAIN, getX(), getY(), 0, 0, width, height, width, height);
             }
         }
     }

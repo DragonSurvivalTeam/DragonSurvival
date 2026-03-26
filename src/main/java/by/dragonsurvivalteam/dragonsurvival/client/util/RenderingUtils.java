@@ -8,7 +8,7 @@ import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
@@ -75,8 +75,8 @@ public class RenderingUtils {
 //        RenderSystem.disableBlend();
     }
 
-    public static void renderColorSquare(@NotNull final GuiGraphics guiGraphics, int x, int y, int width, int height) {
-//        Matrix4f mat = guiGraphics.pose().last().pose();
+    public static void renderColorSquare(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int x, int y, int width, int height) {
+//        Matrix4f mat = GuiGraphicsExtractor.pose().last().pose();
 //        int zLevel = 0;
 //        RenderSystem.enableBlend();
 //        RenderSystem.defaultBlendFunc();
@@ -106,8 +106,8 @@ public class RenderingUtils {
 //        RenderSystem.disableBlend();
     }
 
-    public static void fill(@NotNull final GuiGraphics guiGraphics, double pMinX, double pMinY, double pMaxX, double pMaxY, int pColor) {
-//        Matrix4f pMatrix = guiGraphics.pose().last().pose();
+    public static void fill(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, double pMinX, double pMinY, double pMaxX, double pMaxY, int pColor) {
+//        Matrix4f pMatrix = GuiGraphicsExtractor.pose().last().pose();
 //
 //        if (pMinX < pMaxX) {
 //            double i = pMinX;
@@ -203,8 +203,8 @@ public class RenderingUtils {
 //        RenderSystem.setShaderColor(red, green, blue, alpha);
     }
 
-    public static void drawGrowthCircle(final GuiGraphics guiGraphics, float x, float y, float radius, int sides, float lineWidthPercent, float percent, float targetPercent, Color innerColor, Color outlineColor, Color addColor, Color subtractColor) {
-//        Matrix4f matrix4f = guiGraphics.pose().last().pose();
+    public static void drawGrowthCircle(final GuiGraphicsExtractor GuiGraphicsExtractor, float x, float y, float radius, int sides, float lineWidthPercent, float percent, float targetPercent, Color innerColor, Color outlineColor, Color addColor, Color subtractColor) {
+//        Matrix4f matrix4f = GuiGraphicsExtractor.pose().last().pose();
 //
 //        float z = 100;
 //        GlStateBackup state = new GlStateBackup();
