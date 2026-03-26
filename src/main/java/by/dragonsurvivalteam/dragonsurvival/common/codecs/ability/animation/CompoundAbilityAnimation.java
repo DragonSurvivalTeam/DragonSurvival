@@ -2,8 +2,8 @@ package by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import software.bernie.geckolib.animation.RawAnimation;
-import software.bernie.geckolib.animation.state.AnimationTest;
+import com.geckolib.animation.RawAnimation;
+import com.geckolib.animation.state.AnimationTest;
 
 /**
  * A compound ability animation is for when the user wants to play a starting animation that leads into a looping animation after.

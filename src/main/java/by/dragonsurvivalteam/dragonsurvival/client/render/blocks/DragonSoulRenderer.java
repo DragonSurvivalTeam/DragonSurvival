@@ -98,7 +98,7 @@ public class DragonSoulRenderer<T extends DragonSoulBlockEntity> implements Bloc
 //        }
 //    }
 //
-//    /** Taken from {@link software.bernie.geckolib.renderer.GeoBlockRenderer#rotateBlock(net.minecraft.core.Direction, com.mojang.blaze3d.vertex.PoseStack)} */
+//    /** Taken from {@link com.geckolib.renderer.GeoBlockRenderer#rotateBlock(net.minecraft.core.Direction, com.mojang.blaze3d.vertex.PoseStack)} */
 //    private void rotateBlock(final Direction facing, final PoseStack pose) {
 //        switch (facing) {
 //            case SOUTH -> pose.mulPose(Axis.YP.rotationDegrees(180));

@@ -17,9 +17,9 @@
 //import net.minecraft.client.renderer.texture.OverlayTexture;
 //import net.minecraft.resources.Identifier;
 //import net.minecraft.world.entity.player.Player;
-//import software.bernie.geckolib.cache.object.BakedGeoModel;
-//import software.bernie.geckolib.renderer.GeoEntityRenderer;
-//import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
+//import com.geckolib.cache.object.BakedGeoModel;
+//import com.geckolib.renderer.GeoEntityRenderer;
+//import com.geckolib.renderer.layer.GeoRenderLayer;
 //
 //// TODO :: geckolib has an 'AutoGlowingGeoLayer' class, could that help here?
 //// FIXME :: glow layer doesn't like translucency much (it goes dark once the alpha changes)

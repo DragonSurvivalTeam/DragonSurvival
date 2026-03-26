@@ -24,9 +24,9 @@
 //import org.jetbrains.annotations.Nullable;
 //import org.joml.Math;
 //import org.joml.Quaternionf;
-//import software.bernie.geckolib.cache.object.GeoBone;
-//import software.bernie.geckolib.renderer.GeoEntityRenderer;
-//import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
+//import com.geckolib.cache.object.GeoBone;
+//import com.geckolib.renderer.GeoEntityRenderer;
+//import com.geckolib.renderer.layer.GeoRenderLayer;
 //import top.theillusivec4.curios.api.CuriosApi;
 //import top.theillusivec4.curios.api.SlotResult;
 //

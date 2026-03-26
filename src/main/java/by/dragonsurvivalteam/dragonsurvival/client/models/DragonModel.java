@@ -20,8 +20,8 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
-import software.bernie.geckolib.model.GeoModel;
-import software.bernie.geckolib.renderer.base.GeoRenderState;
+import com.geckolib.model.GeoModel;
+import com.geckolib.renderer.base.GeoRenderState;
 
 public class DragonModel extends GeoModel<DragonEntity> {
     private static final Identifier DEFAULT_ANIMATION = DragonSurvival.res("dragon_center.animation");

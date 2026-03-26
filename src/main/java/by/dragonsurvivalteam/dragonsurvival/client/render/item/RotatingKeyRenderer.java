@@ -5,10 +5,10 @@ import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
-import software.bernie.geckolib.constant.dataticket.DataTicket;
-import software.bernie.geckolib.loading.math.MathParser;
-import software.bernie.geckolib.renderer.GeoItemRenderer;
-import software.bernie.geckolib.renderer.base.GeoRenderState;
+import com.geckolib.constant.dataticket.DataTicket;
+import com.geckolib.loading.math.MathParser;
+import com.geckolib.renderer.GeoItemRenderer;
+import com.geckolib.renderer.base.GeoRenderState;
 
 public class RotatingKeyRenderer extends GeoItemRenderer<RotatingKeyItem> {
 

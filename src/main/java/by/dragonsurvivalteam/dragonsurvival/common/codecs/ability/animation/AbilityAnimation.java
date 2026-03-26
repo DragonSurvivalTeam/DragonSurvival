@@ -1,6 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation;
 
-import software.bernie.geckolib.animation.state.AnimationTest;
+import com.geckolib.animation.state.AnimationTest;
 
 public interface AbilityAnimation {
     void play(AnimationTest<?> state, AnimationType animationType);

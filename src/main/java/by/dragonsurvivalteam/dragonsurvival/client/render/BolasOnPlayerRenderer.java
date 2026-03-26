@@ -19,7 +19,7 @@
 //import net.neoforged.bus.api.SubscribeEvent;
 //import net.neoforged.fml.common.EventBusSubscriber;
 //import net.neoforged.neoforge.client.event.RenderLivingEvent;
-//import software.bernie.geckolib.event.GeoRenderEvent;
+//import com.geckolib.event.GeoRenderEvent;
 //
 //@EventBusSubscriber(Dist.CLIENT)
 //public class BolasOnPlayerRenderer {

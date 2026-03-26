@@ -34,9 +34,9 @@
 //import net.minecraft.world.item.Items;
 //import net.minecraft.world.item.armortrim.ArmorTrim;
 //import net.minecraft.world.item.component.DyedItemColor;
-//import software.bernie.geckolib.cache.object.BakedGeoModel;
-//import software.bernie.geckolib.renderer.GeoEntityRenderer;
-//import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
+//import com.geckolib.cache.object.BakedGeoModel;
+//import com.geckolib.renderer.GeoEntityRenderer;
+//import com.geckolib.renderer.layer.GeoRenderLayer;
 //
 //import java.awt.Color;
 //import java.io.IOException;

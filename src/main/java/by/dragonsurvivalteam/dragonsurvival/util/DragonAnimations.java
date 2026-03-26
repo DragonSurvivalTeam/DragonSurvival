@@ -1,7 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.util;
 
-import software.bernie.geckolib.animation.RawAnimation;
-import software.bernie.geckolib.animation.object.LoopType;
+import com.geckolib.animation.RawAnimation;
+import com.geckolib.animation.object.LoopType;
 
 import java.util.function.Function;
 

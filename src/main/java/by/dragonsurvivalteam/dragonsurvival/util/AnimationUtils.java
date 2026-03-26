@@ -3,12 +3,12 @@ package by.dragonsurvivalteam.dragonsurvival.util;
 import by.dragonsurvivalteam.dragonsurvival.mixins.client.AnimationControllerAccessor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.LivingEntity;
-import software.bernie.geckolib.animatable.GeoAnimatable;
-import software.bernie.geckolib.animation.AnimationController;
-import software.bernie.geckolib.animation.RawAnimation;
-import software.bernie.geckolib.cache.GeckoLibResources;
-import software.bernie.geckolib.loading.object.BakedAnimations;
-import software.bernie.geckolib.model.GeoModel;
+import com.geckolib.animatable.GeoAnimatable;
+import com.geckolib.animation.AnimationController;
+import com.geckolib.animation.RawAnimation;
+import com.geckolib.cache.GeckoLibResources;
+import com.geckolib.loading.object.BakedAnimations;
+import com.geckolib.model.GeoModel;
 
 
 public class AnimationUtils {

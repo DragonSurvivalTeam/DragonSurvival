@@ -15,7 +15,7 @@ base {
 	archivesName = "DragonSurvival"
 }
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+java.toolchain.languageVersion = JavaLanguageVersion.of(25)
 
 runs {
 	configureEach {
@@ -59,7 +59,7 @@ repositories {
 		name = 'GeckoLib'
 		url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/'
 		content {
-			includeGroup("software.bernie.geckolib")
+			includeGroup("com.geckolib")
 		}
 	}
 	maven { /* Mixin Squared */ url "https://maven.bawnorton.com/releases" }
@@ -79,7 +79,7 @@ dependencies {
 
 	// --- Dependencies --- //
 
-	implementation "software.bernie.geckolib:geckolib-neoforge-${minecraft_version}:${geckolib_version}"
+	implementation "com.geckolib:geckolib-neoforge-${minecraft_version}:${geckolib_version}"
 
 	// --- Compatibility --- //
 

@@ -1,6 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.client.render.util;
 
-import software.bernie.geckolib.animation.RawAnimation;
+import com.geckolib.animation.RawAnimation;
 
 import java.util.ArrayList;
 import java.util.Collections;

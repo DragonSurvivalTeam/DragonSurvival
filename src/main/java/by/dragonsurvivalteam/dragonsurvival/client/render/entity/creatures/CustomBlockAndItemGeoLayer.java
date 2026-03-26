@@ -12,11 +12,11 @@
 //import net.minecraft.world.item.ItemDisplayContext;
 //import net.minecraft.world.item.ItemStack;
 //import org.jetbrains.annotations.Nullable;
-//import software.bernie.geckolib.animatable.GeoAnimatable;
-//import software.bernie.geckolib.cache.model.BakedGeoModel;
-//import software.bernie.geckolib.renderer.base.GeoRenderState;
-//import software.bernie.geckolib.renderer.base.GeoRenderer;
-//import software.bernie.geckolib.renderer.layer.builtin.BlockAndItemGeoLayer;
+//import com.geckolib.animatable.GeoAnimatable;
+//import com.geckolib.cache.model.BakedGeoModel;
+//import com.geckolib.renderer.base.GeoRenderState;
+//import com.geckolib.renderer.base.GeoRenderer;
+//import com.geckolib.renderer.layer.builtin.BlockAndItemGeoLayer;
 //
 //import java.util.List;
 //

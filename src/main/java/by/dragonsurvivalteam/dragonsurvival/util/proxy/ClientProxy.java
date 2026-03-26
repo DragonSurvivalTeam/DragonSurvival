@@ -33,8 +33,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import org.jetbrains.annotations.Nullable;
-import software.bernie.geckolib.cache.GeckoLibResources;
-import software.bernie.geckolib.loading.object.BakedAnimations;
+import com.geckolib.cache.GeckoLibResources;
+import com.geckolib.loading.object.BakedAnimations;
 
 import java.util.HashMap;
 import java.util.Map;

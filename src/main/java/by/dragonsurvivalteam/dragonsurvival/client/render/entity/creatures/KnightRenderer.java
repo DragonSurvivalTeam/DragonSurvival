@@ -8,12 +8,12 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.profiling.Profiler;
 import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.Nullable;
-import software.bernie.geckolib.constant.DataTickets;
-import software.bernie.geckolib.loading.math.MathParser;
-import software.bernie.geckolib.model.GeoModel;
-import software.bernie.geckolib.renderer.GeoEntityRenderer;
-import software.bernie.geckolib.renderer.base.GeoRenderState;
-import software.bernie.geckolib.renderer.base.RenderPassInfo;
+import com.geckolib.constant.DataTickets;
+import com.geckolib.loading.math.MathParser;
+import com.geckolib.model.GeoModel;
+import com.geckolib.renderer.GeoEntityRenderer;
+import com.geckolib.renderer.base.GeoRenderState;
+import com.geckolib.renderer.base.RenderPassInfo;
 
 public class KnightRenderer<R extends LivingEntityRenderState & GeoRenderState> extends GeoEntityRenderer<KnightEntity, R> {
     public KnightRenderer(final EntityRendererProvider.Context context, final GeoModel<KnightEntity> model) {

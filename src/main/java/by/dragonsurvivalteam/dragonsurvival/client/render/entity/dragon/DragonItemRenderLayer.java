@@ -10,9 +10,9 @@
 //import net.minecraft.world.item.ItemStack;
 //import net.minecraft.world.level.block.state.BlockState;
 //import org.joml.Quaternionf;
-//import software.bernie.geckolib.cache.object.GeoBone;
-//import software.bernie.geckolib.renderer.GeoRenderer;
-//import software.bernie.geckolib.renderer.layer.BlockAndItemGeoLayer;
+//import com.geckolib.cache.object.GeoBone;
+//import com.geckolib.renderer.GeoRenderer;
+//import com.geckolib.renderer.layer.BlockAndItemGeoLayer;
 //
 //import java.util.function.BiFunction;
 //
