@@ -25,7 +25,6 @@ import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.npc.villager.Villager;
 import net.minecraft.world.entity.npc.villager.VillagerData;
 import net.minecraft.world.entity.npc.villager.VillagerProfession;
-import net.minecraft.world.entity.npc.villager.VillagerTrades;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.trading.MerchantOffers;
@@ -216,11 +215,6 @@ public class LeaderEntity extends Villager implements GeoEntity, ConfigurableAtt
     }
 
     @Override
-    protected @NotNull Brain<?> makeBrain(@NotNull Dynamic<?> pDynamic) {
-        return brainProvider().makeBrain(pDynamic);
-    }
-
-    @Override
     protected @Nullable SoundEvent getAmbientSound() {
         return null;
     }
@@ -279,21 +273,22 @@ public class LeaderEntity extends Villager implements GeoEntity, ConfigurableAtt
             new RandomAnimationPicker.WeightedAnimation(RawAnimation.begin().thenLoop("idle4"), 1)
     );
 
-    // Copied from Villager.java, but with the trades changed to the ones in DSTrades
-    @Override
-    protected void updateTrades(@NotNull ServerLevel level) {
-        VillagerData villagerdata = this.getVillagerData();
-        Int2ObjectMap<VillagerTrades.ItemListing[]> int2objectmap;
-        int2objectmap = DSTrades.LEADER_TRADES;
-
-        if (!int2objectmap.isEmpty()) {
-            VillagerTrades.ItemListing[] avillagertrades$itemlisting = int2objectmap.get(villagerdata.level());
-            if (avillagertrades$itemlisting != null) {
-                MerchantOffers merchantoffers = this.getOffers();
-                this.addOffersFromItemListings(level, merchantoffers, avillagertrades$itemlisting, 2);
-            }
-        }
-    }
+    // FIXME
+//    // Copied from Villager.java, but with the trades changed to the ones in DSTrades
+//    @Override
+//    protected void updateTrades(@NotNull ServerLevel level) {
+//        VillagerData villagerdata = this.getVillagerData();
+//        Int2ObjectMap<VillagerTrades.ItemListing[]> int2objectmap;
+//        int2objectmap = DSTrades.LEADER_TRADES;
+//
+//        if (!int2objectmap.isEmpty()) {
+//            VillagerTrades.ItemListing[] avillagertrades$itemlisting = int2objectmap.get(villagerdata.level());
+//            if (avillagertrades$itemlisting != null) {
+//                MerchantOffers merchantoffers = this.getOffers();
+//                this.addOffersFromItemListings(level, merchantoffers, avillagertrades$itemlisting, 2);
+//            }
+//        }
+//    }
 
     // This prevents the trade window from closing due to this Villager not having a proper profession
     @Override
