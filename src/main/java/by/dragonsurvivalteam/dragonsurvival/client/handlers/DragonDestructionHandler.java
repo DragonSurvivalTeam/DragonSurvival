@@ -17,7 +17,6 @@ import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.BlockDestructionProgress;
@@ -47,7 +46,7 @@ public class DragonDestructionHandler {
      */
     @SubscribeEvent
     @SuppressWarnings({"DataFlowIssue", "resource"}) // level should not be null / there is no resource to close
-    public static void renderAdditionalBreakProgress(final RenderLevelStageEvent.AfterEntities event) {
+    public static void renderAdditionalBreakProgress(final RenderLevelStageEvent.AfterOpaqueFeatures event) {
         LocalPlayer player = Minecraft.getInstance().player;
 
         if (player.isCrouching()) {
@@ -99,7 +98,8 @@ public class DragonDestructionHandler {
                 event.getPoseStack().translate((double) offsetPosition.getX() - x, (double) offsetPosition.getY() - y, (double) offsetPosition.getZ() - z);
                 PoseStack.Pose lastPose = event.getPoseStack().last();
                 VertexConsumer consumer = new SheetedDecalTextureGenerator(access.dragonSurvival$getRenderBuffers().crumblingBufferSource().getBuffer(ModelBakery.DESTROY_TYPES.get(progress)), lastPose, 1.0F);
-                Minecraft.getInstance().getBlockRenderer().renderBreakingTexture(state, offsetPosition, access.dragonSurvival$getLevel(), event.getPoseStack(), consumer);
+                // FIXME
+                //Minecraft.getInstance().getBlockRenderer().renderBreakingTexture(state, offsetPosition, access.dragonSurvival$getLevel(), event.getPoseStack(), consumer);
                 event.getPoseStack().popPose();
             }
         });
@@ -118,7 +118,7 @@ public class DragonDestructionHandler {
         }
 
         handler.largeDragonDestruction = Functions.cycleEnum(handler.largeDragonDestruction);
-        data.getFirst().displayClientMessage(KeyHandler.cycledEnum(handler.largeDragonDestruction), true);
+        data.getFirst().sendSystemMessage(KeyHandler.cycledEnum(handler.largeDragonDestruction));
 
         ClientPacketDistributor.sendToServer(new SyncLargeDragonDestruction(handler.largeDragonDestruction));
     }
@@ -134,7 +134,7 @@ public class DragonDestructionHandler {
 
         DragonStateHandler handler = data.getSecond();
         handler.multiMining = Functions.cycleEnum(handler.multiMining);
-        data.getFirst().displayClientMessage(KeyHandler.cycledEnum(handler.multiMining), true);
+        data.getFirst().sendSystemMessage(KeyHandler.cycledEnum(handler.multiMining));
 
         ClientPacketDistributor.sendToServer(new SyncMultiMining(handler.multiMining));
     }
