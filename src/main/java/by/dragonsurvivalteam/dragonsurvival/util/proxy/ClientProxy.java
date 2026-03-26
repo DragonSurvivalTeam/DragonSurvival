@@ -34,7 +34,7 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import org.jetbrains.annotations.Nullable;
 import com.geckolib.cache.GeckoLibResources;
-import com.geckolib.loading.object.BakedAnimations;
+import com.geckolib.cache.animation.BakedAnimations;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -7,7 +7,7 @@ import com.geckolib.animatable.GeoAnimatable;
 import com.geckolib.animation.AnimationController;
 import com.geckolib.animation.RawAnimation;
 import com.geckolib.cache.GeckoLibResources;
-import com.geckolib.loading.object.BakedAnimations;
+import com.geckolib.cache.animation.BakedAnimations;
 import com.geckolib.model.GeoModel;
 
 
