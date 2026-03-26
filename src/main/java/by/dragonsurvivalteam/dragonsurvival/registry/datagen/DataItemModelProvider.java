@@ -1,20 +1,17 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.datagen;
 
+import by.dragonsurvivalteam.dragonsurvival.common.items.armor.DragonHunterWeapon;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSItems;
 import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
 import net.minecraft.client.data.models.ModelProvider;
-import net.minecraft.client.data.models.model.ItemModelUtils;
 import net.minecraft.client.data.models.model.ModelTemplate;
 import net.minecraft.client.data.models.model.ModelTemplates;
 import net.minecraft.client.data.models.model.TextureSlot;
-import net.minecraft.client.data.models.model.TextureMapping;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.SpawnEggItem;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Set;
@@ -65,7 +62,7 @@ public class DataItemModelProvider extends ModelProvider {
                 return;
             }
 
-            if (item.components().has(DataComponents.WEAPON)) {
+            if (item instanceof DragonHunterWeapon) {
                 itemModels.generateFlatItem(item, ModelTemplates.FLAT_HANDHELD_ITEM);
                 return;
             }

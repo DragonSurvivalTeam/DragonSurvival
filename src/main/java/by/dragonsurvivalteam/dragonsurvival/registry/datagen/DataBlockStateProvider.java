@@ -24,6 +24,7 @@ import net.minecraft.client.data.models.model.ModelTemplate;
 import net.minecraft.client.data.models.model.ModelTemplates;
 import net.minecraft.client.data.models.model.TextureMapping;
 import net.minecraft.client.data.models.model.TextureSlot;
+import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Block;
@@ -39,7 +40,6 @@ import java.util.Optional;
 
 public class DataBlockStateProvider extends ModelProvider {
     private static final String BLOCK_FOLDER = "block";
-    private static final Identifier CUTOUT_RENDER_TYPE = Identifier.fromNamespaceAndPath("minecraft", "cutout");
     private static final TextureSlot PRIMORDIAL_ANCHOR_SLOT = TextureSlot.create("2");
     private static final TextureSlot SKELETON_TEXTURE_SLOT = TextureSlot.create("skeleton_texture");
 
@@ -61,15 +61,15 @@ public class DataBlockStateProvider extends ModelProvider {
             SMALL_DOOR_BOTTOM,
             TextureSlot.PARTICLE
     );
-    private static final ModelTemplate DOOR_BOTTOM_LEFT_TEMPLATE = ModelTemplates.DOOR_BOTTOM_LEFT.extend().renderType(CUTOUT_RENDER_TYPE).build();
-    private static final ModelTemplate DOOR_BOTTOM_LEFT_OPEN_TEMPLATE = ModelTemplates.DOOR_BOTTOM_LEFT_OPEN.extend().renderType(CUTOUT_RENDER_TYPE).build();
-    private static final ModelTemplate DOOR_BOTTOM_RIGHT_TEMPLATE = ModelTemplates.DOOR_BOTTOM_RIGHT.extend().renderType(CUTOUT_RENDER_TYPE).build();
-    private static final ModelTemplate DOOR_BOTTOM_RIGHT_OPEN_TEMPLATE = ModelTemplates.DOOR_BOTTOM_RIGHT_OPEN.extend().renderType(CUTOUT_RENDER_TYPE).build();
-    private static final ModelTemplate DOOR_TOP_LEFT_TEMPLATE = ModelTemplates.DOOR_TOP_LEFT.extend().renderType(CUTOUT_RENDER_TYPE).build();
-    private static final ModelTemplate DOOR_TOP_LEFT_OPEN_TEMPLATE = ModelTemplates.DOOR_TOP_LEFT_OPEN.extend().renderType(CUTOUT_RENDER_TYPE).build();
-    private static final ModelTemplate DOOR_TOP_RIGHT_TEMPLATE = ModelTemplates.DOOR_TOP_RIGHT.extend().renderType(CUTOUT_RENDER_TYPE).build();
-    private static final ModelTemplate DOOR_TOP_RIGHT_OPEN_TEMPLATE = ModelTemplates.DOOR_TOP_RIGHT_OPEN.extend().renderType(CUTOUT_RENDER_TYPE).build();
-    private static final ModelTemplate VAULT_TEMPLATE = ModelTemplates.VAULT.extend().renderType(CUTOUT_RENDER_TYPE).build();
+    private static final ModelTemplate DOOR_BOTTOM_LEFT_TEMPLATE = ModelTemplates.DOOR_BOTTOM_LEFT;
+    private static final ModelTemplate DOOR_BOTTOM_LEFT_OPEN_TEMPLATE = ModelTemplates.DOOR_BOTTOM_LEFT_OPEN;
+    private static final ModelTemplate DOOR_BOTTOM_RIGHT_TEMPLATE = ModelTemplates.DOOR_BOTTOM_RIGHT;
+    private static final ModelTemplate DOOR_BOTTOM_RIGHT_OPEN_TEMPLATE = ModelTemplates.DOOR_BOTTOM_RIGHT_OPEN;
+    private static final ModelTemplate DOOR_TOP_LEFT_TEMPLATE = ModelTemplates.DOOR_TOP_LEFT;
+    private static final ModelTemplate DOOR_TOP_LEFT_OPEN_TEMPLATE = ModelTemplates.DOOR_TOP_LEFT_OPEN;
+    private static final ModelTemplate DOOR_TOP_RIGHT_TEMPLATE = ModelTemplates.DOOR_TOP_RIGHT;
+    private static final ModelTemplate DOOR_TOP_RIGHT_OPEN_TEMPLATE = ModelTemplates.DOOR_TOP_RIGHT_OPEN;
+    private static final ModelTemplate VAULT_TEMPLATE = ModelTemplates.VAULT;
 
     public DataBlockStateProvider(final PackOutput output, final String modId) {
         super(output, modId);
@@ -121,9 +121,9 @@ public class DataBlockStateProvider extends ModelProvider {
     }
 
     private void createDragonDoor(final BlockModelGenerators blockModels, final DragonDoor block, final String name) {
-        Identifier bottomTexture = blockTexture(name + "_bottom");
-        Identifier middleTexture = blockTexture(name + "_center");
-        Identifier topTexture = blockTexture(name + "_top");
+        Material bottomTexture = blockMaterial(name + "_bottom");
+        Material middleTexture = blockMaterial(name + "_center");
+        Material topTexture = blockMaterial(name + "_top");
 
         Identifier bottomLeft = createDoorModel(blockModels, name + "_bottom", bottomTexture, DOOR_BOTTOM_LEFT_TEMPLATE);
         Identifier bottomLeftOpen = createDoorModel(blockModels, name + "_bottom_open", bottomTexture, DOOR_BOTTOM_LEFT_OPEN_TEMPLATE);
@@ -161,7 +161,7 @@ public class DataBlockStateProvider extends ModelProvider {
     }
 
     private void createSmallDragonDoor(final BlockModelGenerators blockModels, final SmallDragonDoor block, final String name) {
-        Identifier bottomTexture = blockTexture(name);
+        Material bottomTexture = blockMaterial(name);
         TextureMapping mapping = new TextureMapping()
                 .put(SMALL_DOOR_BOTTOM, bottomTexture)
                 .put(TextureSlot.PARTICLE, bottomTexture);
@@ -182,12 +182,12 @@ public class DataBlockStateProvider extends ModelProvider {
     }
 
     private void createHelmet(final BlockModelGenerators blockModels, final HelmetBlock block, final String name) {
-        Identifier model = SKULL_TEMPLATE.create(blockModel(name), TextureMapping.singleSlot(TextureSlot.ALL, blockTexture(name)), blockModels.modelOutput);
+        Identifier model = SKULL_TEMPLATE.create(blockModel(name), TextureMapping.singleSlot(TextureSlot.ALL, blockMaterial(name)), blockModels.modelOutput);
         blockModels.blockStateOutput.accept(BlockModelGenerators.createSimpleBlock(block, BlockModelGenerators.plainVariant(model)));
     }
 
     private void createPressurePlate(final BlockModelGenerators blockModels, final DragonPressurePlates block, final String name) {
-        TextureMapping mapping = TextureMapping.singleSlot(TextureSlot.TEXTURE, blockTexture(name));
+        TextureMapping mapping = TextureMapping.singleSlot(TextureSlot.TEXTURE, blockMaterial(name));
         Identifier upModel = ModelTemplates.PRESSURE_PLATE_UP.create(blockModel(name), mapping, blockModels.modelOutput);
         Identifier downModel = ModelTemplates.PRESSURE_PLATE_DOWN.create(blockModel(name + "_down"), mapping, blockModels.modelOutput);
 
@@ -201,13 +201,13 @@ public class DataBlockStateProvider extends ModelProvider {
 
     private void createDragonAltar(final BlockModelGenerators blockModels, final DragonAltarBlock block, final String name) {
         TextureMapping mapping = new TextureMapping()
-                .put(TextureSlot.DOWN, blockTexture(name + "_top"))
-                .put(TextureSlot.UP, blockTexture(name + "_top"))
-                .put(TextureSlot.NORTH, blockTexture(name + "_north"))
-                .put(TextureSlot.SOUTH, blockTexture(name + "_south"))
-                .put(TextureSlot.EAST, blockTexture(name + "_east"))
-                .put(TextureSlot.WEST, blockTexture(name + "_west"))
-                .put(TextureSlot.PARTICLE, blockTexture(name + "_top"));
+                .put(TextureSlot.DOWN, blockMaterial(name + "_top"))
+                .put(TextureSlot.UP, blockMaterial(name + "_top"))
+                .put(TextureSlot.NORTH, blockMaterial(name + "_north"))
+                .put(TextureSlot.SOUTH, blockMaterial(name + "_south"))
+                .put(TextureSlot.EAST, blockMaterial(name + "_east"))
+                .put(TextureSlot.WEST, blockMaterial(name + "_west"))
+                .put(TextureSlot.PARTICLE, blockMaterial(name + "_top"));
         Identifier model = ModelTemplates.CUBE.create(blockModel(name), mapping, blockModels.modelOutput);
 
         blockModels.blockStateOutput.accept(
@@ -219,14 +219,14 @@ public class DataBlockStateProvider extends ModelProvider {
     }
 
     private void createTreasure(final BlockModelGenerators blockModels, final TreasureBlock block, final String name) {
-        Identifier fullModel = ModelTemplates.CUBE_ALL.create(blockModel(name), TextureMapping.cube(blockTexture(name)), blockModels.modelOutput);
+        Identifier fullModel = ModelTemplates.CUBE_ALL.create(blockModel(name), TextureMapping.cube(blockMaterial(name)), blockModels.modelOutput);
 
         for (int height = 1; height < 8; height++) {
             int pixels = height * 2;
             new ModelTemplate(Optional.of(Identifier.withDefaultNamespace("block/snow_height" + pixels)), Optional.empty(), TextureSlot.PARTICLE, TextureSlot.TEXTURE)
                     .create(blockModel(name + pixels), new TextureMapping()
-                            .put(TextureSlot.PARTICLE, blockTexture(name))
-                            .put(TextureSlot.TEXTURE, blockTexture(name)), blockModels.modelOutput);
+                            .put(TextureSlot.PARTICLE, blockMaterial(name))
+                            .put(TextureSlot.TEXTURE, blockMaterial(name)), blockModels.modelOutput);
         }
 
         blockModels.blockStateOutput.accept(
@@ -263,13 +263,13 @@ public class DataBlockStateProvider extends ModelProvider {
 
     private void createWorkbench(final BlockModelGenerators blockModels, final DragonRiderWorkbenchBlock block, final String name) {
         TextureMapping mapping = new TextureMapping()
-                .put(TextureSlot.DOWN, blockTexture(name + "_down"))
-                .put(TextureSlot.UP, blockTexture(name + "_up"))
-                .put(TextureSlot.NORTH, blockTexture(name + "_north"))
-                .put(TextureSlot.SOUTH, blockTexture(name + "_south"))
-                .put(TextureSlot.EAST, blockTexture(name + "_east"))
-                .put(TextureSlot.WEST, blockTexture(name + "_west"))
-                .put(TextureSlot.PARTICLE, blockTexture(name + "_down"));
+                .put(TextureSlot.DOWN, blockMaterial(name + "_down"))
+                .put(TextureSlot.UP, blockMaterial(name + "_up"))
+                .put(TextureSlot.NORTH, blockMaterial(name + "_north"))
+                .put(TextureSlot.SOUTH, blockMaterial(name + "_south"))
+                .put(TextureSlot.EAST, blockMaterial(name + "_east"))
+                .put(TextureSlot.WEST, blockMaterial(name + "_west"))
+                .put(TextureSlot.PARTICLE, blockMaterial(name + "_down"));
         Identifier model = ModelTemplates.CUBE.create(blockModel(name), mapping, blockModels.modelOutput);
 
         blockModels.blockStateOutput.accept(
@@ -296,8 +296,8 @@ public class DataBlockStateProvider extends ModelProvider {
         Identifier model = ModelTemplates.CUBE_COLUMN.create(
                 blockModel(name),
                 new TextureMapping()
-                        .put(TextureSlot.SIDE, blockTexture("dragons_memory_side"))
-                        .put(TextureSlot.END, blockTexture("dragons_memory_top")),
+                        .put(TextureSlot.SIDE, blockMaterial("dragons_memory_side"))
+                        .put(TextureSlot.END, blockMaterial("dragons_memory_top")),
                 blockModels.modelOutput
         );
         blockModels.blockStateOutput.accept(BlockModelGenerators.createSimpleBlock(block, BlockModelGenerators.plainVariant(model)));
@@ -313,8 +313,8 @@ public class DataBlockStateProvider extends ModelProvider {
 
         Identifier model = new ModelTemplate(Optional.of(blockModel(split[0])), Optional.empty(), SKELETON_TEXTURE_SLOT, TextureSlot.PARTICLE)
                 .create(blockModel(name), new TextureMapping()
-                        .put(SKELETON_TEXTURE_SLOT, blockTexture("skeleton_dragon_" + skin))
-                        .put(TextureSlot.PARTICLE, blockTexture("placeholder_" + skin)), blockModels.modelOutput);
+                        .put(SKELETON_TEXTURE_SLOT, blockMaterial("skeleton_dragon_" + skin))
+                        .put(TextureSlot.PARTICLE, blockMaterial("placeholder_" + skin)), blockModels.modelOutput);
 
         blockModels.blockStateOutput.accept(
                 MultiVariantGenerator.dispatch(block).with(
@@ -347,7 +347,7 @@ public class DataBlockStateProvider extends ModelProvider {
         );
     }
 
-    private Identifier createDoorModel(final BlockModelGenerators blockModels, final String name, final Identifier texture, final ModelTemplate template) {
+    private Identifier createDoorModel(final BlockModelGenerators blockModels, final String name, final Material texture, final ModelTemplate template) {
         return template.create(blockModel(name), TextureMapping.door(texture, texture), blockModels.modelOutput);
     }
 
@@ -364,17 +364,17 @@ public class DataBlockStateProvider extends ModelProvider {
         return VAULT_TEMPLATE.create(
                 blockModel(name + "_" + suffix),
                 new TextureMapping()
-                        .put(TextureSlot.BOTTOM, blockTexture(name + "_bottom"))
-                        .put(TextureSlot.FRONT, blockTexture(name + "_front" + frontState))
-                        .put(TextureSlot.SIDE, blockTexture(name + "_side" + sideState))
-                        .put(TextureSlot.TOP, blockTexture(name + "_top" + topState)),
+                        .put(TextureSlot.BOTTOM, blockMaterial(name + "_bottom"))
+                        .put(TextureSlot.FRONT, blockMaterial(name + "_front" + frontState))
+                        .put(TextureSlot.SIDE, blockMaterial(name + "_side" + sideState))
+                        .put(TextureSlot.TOP, blockMaterial(name + "_top" + topState)),
                 blockModels.modelOutput
         );
     }
 
     private Identifier createPrimordialAnchorModel(final BlockModelGenerators blockModels, final String name, final String suffix) {
         return new ModelTemplate(Optional.of(blockModel("primordial_anchor")), Optional.empty(), PRIMORDIAL_ANCHOR_SLOT)
-                .create(blockModel(name + suffix), TextureMapping.singleSlot(PRIMORDIAL_ANCHOR_SLOT, blockTexture("primordial_anchor" + suffix)), blockModels.modelOutput);
+                .create(blockModel(name + suffix), TextureMapping.singleSlot(PRIMORDIAL_ANCHOR_SLOT, blockMaterial("primordial_anchor" + suffix)), blockModels.modelOutput);
     }
 
     private MultiVariant rotatedVariant(final Identifier model, final int rotation) {
@@ -396,6 +396,10 @@ public class DataBlockStateProvider extends ModelProvider {
 
     private Identifier blockTexture(final String path) {
         return DragonSurvival.res(BLOCK_FOLDER + "/" + path);
+    }
+
+    private Material blockMaterial(final String path) {
+        return new Material(blockTexture(path));
     }
 
     private Identifier blockModel(final String path) {

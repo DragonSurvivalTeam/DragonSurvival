@@ -137,8 +137,7 @@ public class DataGeneration {
     }
 
     private static void addClientProviders(final DataGenerator generator, final PackOutput output, final CompletableFuture<HolderLookup.Provider> lookup) {
-        // FIXME: DataBlockStateProvider still needs a full 26.1 datagen API port.
-        // generator.addProvider(true /*Client*/, new DataBlockStateProvider(output, DragonSurvival.MODID));
+        generator.addProvider(true /*Client*/, new DataBlockStateProvider(output, DragonSurvival.MODID));
         generator.addProvider(true /*Client*/, new DataSpriteSourceProvider(output, lookup, DragonSurvival.MODID));
         generator.addProvider(true /*Client*/, new DSLanguageProvider(output, lookup, "en_us"));
     }
