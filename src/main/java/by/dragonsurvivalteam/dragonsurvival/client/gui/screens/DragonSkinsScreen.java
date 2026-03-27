@@ -401,7 +401,7 @@ public class DragonSkinsScreen extends Screen {
             ClientPacketDistributor.sendToServer(new SyncDragonSkinSettings(player.getId(), handler.getSkinData().renderCustomSkin));
         }) {
             @Override
-            public void extractRenderState(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partialTick) {
+            public void extractWidgetRenderState(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partialTick) {
                 super.extractRenderState(GuiGraphicsExtractor, mouseX, mouseY, partialTick);
                 GuiGraphicsExtractor.blit(RenderPipelines.GUI_TEXTURED, DragonStateProvider.getData(Objects.requireNonNull(player)).getSkinData().renderCustomSkin ? SKIN_ON : SKIN_OFF, getX() + 3, getY() + 5, 0, 0, 14, 14, 14, 14);
             }
@@ -417,7 +417,7 @@ public class DragonSkinsScreen extends Screen {
             ConfigHandler.updateConfigValue("render_other_players_custom_skins", ClientDragonRenderer.renderOtherPlayerSkins);
         }) {
             @Override
-            public void extractRenderState(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partialTick) {
+            public void extractWidgetRenderState(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partialTick) {
                 super.extractRenderState(GuiGraphicsExtractor, mouseX, mouseY, partialTick);
                 GuiGraphicsExtractor.blit(RenderPipelines.GUI_TEXTURED, ClientDragonRenderer.renderOtherPlayerSkins ? SKIN_ON : SKIN_OFF, getX() + 3, getY() + 5, 0, 0, 14, 14, 14, 14);
             }
@@ -495,7 +495,7 @@ public class DragonSkinsScreen extends Screen {
             ClientProxy.sendClientData();
         }, Supplier::get) {
             @Override
-            public void extractRenderState(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partialTick) {
+            public void extractWidgetRenderState(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partialTick) {
                 GuiGraphicsExtractor.blit(RenderPipelines.GUI_TEXTURED, handler.getCurrentSkinPreset().isAnyStageUsingDefaultSkin() ? OLD_TEXTURE_ON : OLD_TEXTURE_OFF, getX(), getY(), 0, 0, 14, 14, 14, 14);
             }
         };

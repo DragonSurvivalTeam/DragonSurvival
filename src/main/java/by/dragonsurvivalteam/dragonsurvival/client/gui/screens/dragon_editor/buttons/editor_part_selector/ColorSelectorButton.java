@@ -48,7 +48,7 @@ public class ColorSelectorButton extends ExtendedButton {
     }
 
     @Override
-    public void extractRenderState(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partialTick) {
+    public void extractWidgetRenderState(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partialTick) {
         active = !screen.preset.get(screen.stage.getKey()).get().defaultSkin;
 
         String parKey = screen.preset.get(screen.stage.getKey()).get().layerSettings.get(layer).get().partKey;
@@ -89,7 +89,7 @@ public class ColorSelectorButton extends ExtendedButton {
 
             renderButton = new ExtendedButton(0, 0, 0, 0, Component.empty(), action -> { /* Nothing to do */ }) {
                 @Override
-                public void extractRenderState(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int p_230430_2_, int p_230430_3_, float p_230430_4_) {
+                public void extractWidgetRenderState(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int p_230430_2_, int p_230430_3_, float p_230430_4_) {
                     active = visible = false;
 
                     if (hueComponent != null) {

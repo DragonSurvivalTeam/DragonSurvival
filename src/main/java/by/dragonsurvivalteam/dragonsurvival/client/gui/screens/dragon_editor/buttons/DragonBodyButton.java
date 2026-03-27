@@ -111,7 +111,7 @@ public class DragonBodyButton extends ExtendedButton implements HoverDisableable
     }
 
     @Override
-    public void extractRenderState(@NotNull GuiGraphicsExtractor graphics, int pMouseX, int pMouseY, float pPartialTick) {
+    public void extractWidgetRenderState(@NotNull GuiGraphicsExtractor graphics, int pMouseX, int pMouseY, float pPartialTick) {
         int state = 0;
 
         if (isSelected()) {

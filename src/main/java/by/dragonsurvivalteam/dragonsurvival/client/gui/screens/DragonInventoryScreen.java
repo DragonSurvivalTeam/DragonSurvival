@@ -163,7 +163,7 @@ public class DragonInventoryScreen extends AbstractContainerScreen<DragonContain
             ClientPacketDistributor.sendToServer(new SyncDragonClawRender(player.getId(), ClientDragonRenderer.renderDragonClaws));
         }) {
             @Override
-            public void extractRenderState(@NotNull final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) { /* Texture is rendered separately */ }
+            public void extractWidgetRenderState(@NotNull final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) { /* Texture is rendered separately */ }
         };
         clawRenderButton.setTooltip(Tooltip.create(Component.translatable(TOGGLE_CLAWS)));
         addRenderableWidget(clawRenderButton);

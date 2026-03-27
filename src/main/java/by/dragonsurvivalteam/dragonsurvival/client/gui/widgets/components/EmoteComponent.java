@@ -62,7 +62,7 @@ public class EmoteComponent {
             }
         }) {
             @Override
-            public void extractRenderState(@NotNull GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partialTick) {
+            public void extractWidgetRenderState(@NotNull GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partialTick) {
                 // Copied from ExtendedButton#extractRenderState, we only want to render the text for this one
                 final FormattedText buttonText = Minecraft.getInstance().font.ellipsize(this.getMessage(), this.width + 26); // Remove 6 pixels so that the text is always contained within the button's borders
                 int color;
@@ -92,7 +92,7 @@ public class EmoteComponent {
             }
         }) {
             @Override
-            public void extractRenderState(@NotNull GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partialTick) {
+            public void extractWidgetRenderState(@NotNull GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partialTick) {
                 Identifier texture = DragonSurvival.PROXY.isPlayingEmote(Minecraft.getInstance().player, emote) ? PLAY_ON : PLAY_OFF;
                 GuiGraphicsExtractor.blit(texture, getX(), getY(), 0, 0, 6, 6, 14, 14);
             }
@@ -101,7 +101,7 @@ public class EmoteComponent {
             screen.currentlyKeybinding = emote.key();
         }) {
             @Override
-            public void extractRenderState(@NotNull GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partialTick) {
+            public void extractWidgetRenderState(@NotNull GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partialTick) {
                 Identifier texture = emote.key().equals(screen.currentlyKeybinding) ? KEYBIND_ON : KEYBIND_OFF;
                 GuiGraphicsExtractor.blit(texture, getX(), getY(), 0, 0, 6, 6, 14, 14);
             }

@@ -27,7 +27,7 @@ public class PenaltyButton extends ExtendedButton {
     }
 
     @Override
-    public void extractRenderState(@NotNull final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
+    public void extractWidgetRenderState(@NotNull final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         Identifier icon = penalty.value().icon().orElse(MissingTextureAtlasSprite.getLocation());
         blit(graphics, icon, getX(), getY(), SIZE);
     }

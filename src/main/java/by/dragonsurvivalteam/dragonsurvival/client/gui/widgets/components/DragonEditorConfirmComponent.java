@@ -59,7 +59,7 @@ public class DragonEditorConfirmComponent extends AbstractContainerEventHandler 
 
         confirmButton = new ExtendedButton(x + 3, y + 132, 60, 19, CommonComponents.GUI_YES, action -> { /* Nothing to do */ }) {
             @Override
-            public void extractRenderState(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partial) {
+            public void extractWidgetRenderState(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partial) {
                 GuiGraphicsExtractor.centeredText(Minecraft.getInstance().font, getMessage(), getX() + getWidth() / 2, getY() + (getHeight() - 8) / 2, getFGColor());
             }
 
@@ -72,7 +72,7 @@ public class DragonEditorConfirmComponent extends AbstractContainerEventHandler 
 
         cancelButton = new ExtendedButton(x + 66, y + 132, 60, 19, CommonComponents.GUI_NO, action -> { /* Nothing to do */ }) {
             @Override
-            public void extractRenderState(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partial) {
+            public void extractWidgetRenderState(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partial) {
                 GuiGraphicsExtractor.centeredText(Minecraft.getInstance().font, getMessage(), getX() + getWidth() / 2, getY() + (getHeight() - 8) / 2, getFGColor());
             }
 

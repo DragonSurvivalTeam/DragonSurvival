@@ -65,11 +65,11 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
     private static final String NO_CHOICE = Translation.Type.GUI.wrap("altar.no_choice");
 
     @Translation(comments = {
-            "Â§6â–  Welcome to Dragon Survival!Â§r",
-            "â–  You can choose which Â§6speciesÂ§rÂ§r you want to become. You can change your selection using the Altar, but you may lose progress.",
-            "â– Â§7 Don't forget to read patch notes if you update our mod to avoid bugs!",
-            "â– Â§7 If you want to play as other species (griffins, eastern dragons, bees, and others), install add-ons or create them yourself via datapacks!",
-            "â– Â§7 Enjoy the game! :3"
+            "§6■ Welcome to Dragon Survival!§r",
+            "■ You can choose which §6species§r§r you want to become. You can change your selection using the Altar, but you may lose progress.",
+            "■§7 Don't forget to read patch notes if you update our mod to avoid bugs!",
+            "■§7 If you want to play as other species (griffins, eastern dragons, bees, and others), install add-ons or create them yourself via datapacks!",
+            "■§7 Enjoy the game! :3"
     })
     private static final String HELP = Translation.Type.GUI.wrap("altar.help");
 
@@ -362,8 +362,8 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
             boolean toggled;
 
             @Override
-            public void extractRenderState(@NotNull final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partial) {
-                super.extractRenderState(graphics, mouseX, mouseY, partial);
+            public void extractWidgetRenderState(@NotNull final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partial) {
+                super.extractWidgetRenderState(graphics, mouseX, mouseY, partial);
                 if (toggled && (!visible || !confirmation)) {
                     toggled = false;
                     Screen screen = Minecraft.getInstance().screen;
@@ -384,7 +384,7 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
                     if (!toggled) {
                         renderButton = new ExtendedButton(0, 0, 0, 0, Component.empty(), button -> { }) {
                             @Override
-                            public void extractRenderState(@NotNull final GuiGraphicsExtractor graphics, int pMouseX, int pMouseY, float pPartialTick) {
+                            public void extractWidgetRenderState(@NotNull final GuiGraphicsExtractor graphics, int pMouseX, int pMouseY, float pPartialTick) {
                                 if (confirmComponent != null && confirmation) {
                                     confirmComponent.extractRenderState(graphics, pMouseX, pMouseY, pPartialTick);
                                 }

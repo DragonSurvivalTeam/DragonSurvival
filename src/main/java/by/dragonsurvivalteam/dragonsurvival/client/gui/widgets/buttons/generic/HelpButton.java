@@ -39,7 +39,7 @@ public class HelpButton extends ExtendedButton {
     }
 
     @Override
-    public void extractRenderState(@NotNull final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
+    public void extractWidgetRenderState(@NotNull final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         Identifier resource;
 
         if (isHovered()) {

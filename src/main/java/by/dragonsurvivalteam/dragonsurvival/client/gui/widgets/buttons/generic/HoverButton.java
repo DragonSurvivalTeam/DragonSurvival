@@ -81,7 +81,7 @@ public class HoverButton extends ExtendedButton implements HoverDisableable {
     }
 
     @Override
-    public void extractRenderState(@NotNull final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
+    public void extractWidgetRenderState(@NotNull final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         // Scale about the center of the button
         graphics.pose().pushMatrix();
         graphics.pose().translate(getX(), getY());

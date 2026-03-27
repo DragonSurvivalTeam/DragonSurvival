@@ -84,7 +84,7 @@ public class HueSelectorComponent extends AbstractContainerEventHandler implemen
             screen.actionHistory.add(new DragonEditorScreen.EditorAction<>(setGlowingAction, !settingsSupplier.get().isGlowing));
         }) {
             @Override
-            public void extractRenderState(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partialTick) {
+            public void extractWidgetRenderState(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partialTick) {
                 Identifier texture = settingsSupplier.get().isGlowing ? GLOW_ON : GLOW_OFF;
                 GuiGraphicsExtractor.pose().pushMatrix();
                 // FIXME :: UI GRAPHICS
@@ -132,7 +132,7 @@ public class HueSelectorComponent extends AbstractContainerEventHandler implemen
             }
 
             @Override
-            public void extractRenderState(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partial) {
+            public void extractWidgetRenderState(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partial) {
                 if (visible) {
                     this.isHovered = mouseX >= getX() && mouseY >= getY() && mouseX < getX() + getWidth() && mouseY < getY() + getHeight();
                     // FIXME :: UI GRAPHICS
@@ -187,7 +187,7 @@ public class HueSelectorComponent extends AbstractContainerEventHandler implemen
             }
 
             @Override
-            public void extractRenderState(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partial) {
+            public void extractWidgetRenderState(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partial) {
                 if (visible) {
                     this.isHovered = mouseX >= getX() && mouseY >= getY() && mouseX < getX() + getWidth() && mouseY < getY() + getHeight();
                     float value1 = (hueSlider.getValueInt()) / 360f;
@@ -247,7 +247,7 @@ public class HueSelectorComponent extends AbstractContainerEventHandler implemen
             }
 
             @Override
-            public void extractRenderState(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partial) {
+            public void extractWidgetRenderState(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partial) {
                 if (visible) {
                     this.isHovered = mouseX >= getX() && mouseY >= getY() && mouseX < getX() + getWidth() && mouseY < getY() + getHeight();
                     float value1 = (hueSlider.getValueInt()) / 360f;

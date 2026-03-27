@@ -797,8 +797,8 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
             boolean toggled;
 
             @Override
-            public void extractRenderState(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partial) {
-                super.extractRenderState(GuiGraphicsExtractor, mouseX, mouseY, partial);
+            public void extractWidgetRenderState(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partial) {
+                super.extractWidgetRenderState(GuiGraphicsExtractor, mouseX, mouseY, partial);
                 if (toggled && (!visible || !confirmation)) {
                     toggled = false;
                     Screen screen = Minecraft.getInstance().screen;
@@ -825,7 +825,7 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
                     if (!toggled) {
                         renderButton = new ExtendedButton(0, 0, 0, 0, Component.empty(), button -> { /* Nothing to do */ }) {
                             @Override
-                            public void extractRenderState(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int pMouseX, int pMouseY, float pPartialTick) {
+                            public void extractWidgetRenderState(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int pMouseX, int pMouseY, float pPartialTick) {
                                 if (confirmComponent != null && confirmation) {
                                     confirmComponent.extractRenderState(GuiGraphicsExtractor, pMouseX, pMouseY, pPartialTick);
                                 }
@@ -946,7 +946,7 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
             actionHistory.add(new EditorAction<>(checkWingsButtonAction, !preset.get(Objects.requireNonNull(stage.getKey())).get().wings));
         }) {
             @Override
-            public void extractRenderState(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partialTick) {
+            public void extractWidgetRenderState(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partialTick) {
                 Identifier texture = preset.get(Objects.requireNonNull(stage.getKey())).get().wings ? ALTERNATIVE_ON : ALTERNATIVE_OFF;
                 GuiGraphicsExtractor.pose().pushMatrix();
                 // FIXME :: UI Rendering
@@ -960,7 +960,7 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
         // Show UI button
         uiButton = new ExtendedButton(guiLeft - 13, height - 30, 20, 20, Component.translatable(SHOW_UI), button -> showUi = !showUi) {
             @Override
-            public void extractRenderState(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partialTick) {
+            public void extractWidgetRenderState(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partialTick) {
                 Identifier texture = showUi ? SHOW_UI_ON : SHOW_UI_OFF;
                 GuiGraphicsExtractor.pose().pushMatrix();
                 // FIXME :: UI Rendering

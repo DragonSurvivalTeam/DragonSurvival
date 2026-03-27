@@ -97,12 +97,12 @@ public class LevelButton extends ClickHoverButton {
     }
 
     @Override
-    public void extractRenderState(@NotNull final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
+    public void extractWidgetRenderState(@NotNull final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         if (!canModify()) {
             return;
         }
 
-        super.extractRenderState(graphics, mouseX, mouseY, partialTick);
+        super.extractWidgetRenderState(graphics, mouseX, mouseY, partialTick);
 
         if (Minecraft.getInstance().screen instanceof DragonAbilityScreen abilityScreen && isHovered()) {
             abilityScreen.lastHoveredLevelButton = this;

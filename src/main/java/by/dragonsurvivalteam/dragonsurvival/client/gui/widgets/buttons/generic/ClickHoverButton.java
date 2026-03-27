@@ -32,7 +32,7 @@ public class ClickHoverButton extends ExtendedButton {
     }
 
     @Override
-    public void extractRenderState(@NotNull final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
+    public void extractWidgetRenderState(@NotNull final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         Identifier texture = isHovered() ? isClicking ? click : hover : main;
         graphics.blit(RenderPipelines.GUI_TEXTURED, texture, getX(), getY(), uOffset, vOffset, width, height, textureWidth, textureHeight);
     }

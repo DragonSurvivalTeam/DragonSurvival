@@ -35,7 +35,7 @@ public class GrowthCrystalButton extends ExtendedButton {
     }
 
     @Override
-    public void extractRenderState(@NotNull final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
+    public void extractWidgetRenderState(@NotNull final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         //noinspection DataFlowIssue -> player is present
         DragonStateHandler handler = DragonStateProvider.getData(Minecraft.getInstance().player);
         double percentageFull = stage.value().getProgress(handler.getGrowth());
