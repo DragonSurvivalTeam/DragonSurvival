@@ -402,7 +402,7 @@ public class DragonSkinsScreen extends Screen {
         }) {
             @Override
             public void extractWidgetRenderState(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partialTick) {
-                super.extractRenderState(GuiGraphicsExtractor, mouseX, mouseY, partialTick);
+                super.extractWidgetRenderState(GuiGraphicsExtractor, mouseX, mouseY, partialTick);
                 GuiGraphicsExtractor.blit(RenderPipelines.GUI_TEXTURED, DragonStateProvider.getData(Objects.requireNonNull(player)).getSkinData().renderCustomSkin ? SKIN_ON : SKIN_OFF, getX() + 3, getY() + 5, 0, 0, 14, 14, 14, 14);
             }
         };
@@ -418,7 +418,7 @@ public class DragonSkinsScreen extends Screen {
         }) {
             @Override
             public void extractWidgetRenderState(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partialTick) {
-                super.extractRenderState(GuiGraphicsExtractor, mouseX, mouseY, partialTick);
+                super.extractWidgetRenderState(GuiGraphicsExtractor, mouseX, mouseY, partialTick);
                 GuiGraphicsExtractor.blit(RenderPipelines.GUI_TEXTURED, ClientDragonRenderer.renderOtherPlayerSkins ? SKIN_ON : SKIN_OFF, getX() + 3, getY() + 5, 0, 0, 14, 14, 14, 14);
             }
         };
