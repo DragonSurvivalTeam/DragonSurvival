@@ -5,6 +5,7 @@ import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.dragon_editor.Dra
 import by.dragonsurvivalteam.dragonsurvival.client.util.TextRenderUtil;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.InputWithModifiers;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.DyeColor;
@@ -47,7 +48,7 @@ public class DragonEditorSlotButton extends ExtendedButton {
         active = visible = screen.showUi;
 
         if (screen.selectedSaveSlot == slot) {
-            GuiGraphicsExtractor.blit(SLOT_NUMBER_BACKGROUND, getX(), getY(), 0, 0, 20, 20, 20, 20);
+            GuiGraphicsExtractor.blit(RenderPipelines.GUI_TEXTURED, SLOT_NUMBER_BACKGROUND, getX(), getY(), 0, 0, 20, 20, 20, 20);
         }
 
         if (screen.selectedSaveSlot == slot) {

@@ -5,6 +5,7 @@ import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components.Backgr
 import by.dragonsurvivalteam.dragonsurvival.mixins.client.ScreenAccessor;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import com.google.common.collect.ImmutableList;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.Tooltip;
@@ -83,9 +84,9 @@ public class BackgroundColorButton extends ExtendedButton {
 
         if (visible) {
             if (isHovered()) {
-                GuiGraphicsExtractor.blit(BACKGROUND_COLOR_HOVER, getX(), getY(), 0, 0, width, height, width, height);
+                GuiGraphicsExtractor.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND_COLOR_HOVER, getX(), getY(), 0, 0, width, height, width, height);
             } else {
-                GuiGraphicsExtractor.blit(BACKGROUND_COLOR_MAIN, getX(), getY(), 0, 0, width, height, width, height);
+                GuiGraphicsExtractor.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND_COLOR_MAIN, getX(), getY(), 0, 0, width, height, width, height);
             }
         }
     }

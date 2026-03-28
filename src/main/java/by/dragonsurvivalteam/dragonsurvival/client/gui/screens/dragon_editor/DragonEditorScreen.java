@@ -57,6 +57,7 @@ import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.InputWithModifiers;
 import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
@@ -951,7 +952,7 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
                 GuiGraphicsExtractor.pose().pushMatrix();
                 // FIXME :: UI Rendering
                 //GuiGraphicsExtractor.pose().translate(0, 0, 100);
-                GuiGraphicsExtractor.blit(texture, getX(), getY(), 0, 0, 20, 20, 20, 20);
+                GuiGraphicsExtractor.blit(RenderPipelines.GUI_TEXTURED, texture, getX(), getY(), 0, 0, 20, 20, 20, 20);
                 GuiGraphicsExtractor.pose().popMatrix();
             }
         };
@@ -965,7 +966,7 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
                 GuiGraphicsExtractor.pose().pushMatrix();
                 // FIXME :: UI Rendering
                 //GuiGraphicsExtractor.pose().translate(0, 0, 100);
-                GuiGraphicsExtractor.blit(texture, getX(), getY(), 0, 0, 20, 20, 20, 20);
+                GuiGraphicsExtractor.blit(RenderPipelines.GUI_TEXTURED, texture, getX(), getY(), 0, 0, 20, 20, 20, 20);
                 GuiGraphicsExtractor.pose().popMatrix();
             }
         };
