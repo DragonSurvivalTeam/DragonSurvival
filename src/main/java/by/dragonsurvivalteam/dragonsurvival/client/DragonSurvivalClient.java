@@ -28,6 +28,7 @@ import by.dragonsurvivalteam.dragonsurvival.client.render.entity.creatures.Knigh
 import by.dragonsurvivalteam.dragonsurvival.client.render.entity.creatures.LeaderRenderer;
 import by.dragonsurvivalteam.dragonsurvival.client.render.entity.creatures.SpearmanRenderer;
 import by.dragonsurvivalteam.dragonsurvival.client.render.entity.dragon.DragonRenderer;
+import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.DragonEditorHandler;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.loader.DefaultPartLoader;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.loader.DragonPartLoader;
 import by.dragonsurvivalteam.dragonsurvival.client.util.RenderingUtils;
@@ -78,6 +79,7 @@ public class DragonSurvivalClient {
         bus.addListener(this::registerTooltips);
         bus.addListener(this::registerItemExtensions);
         bus.addListener(RenderingUtils::registerRenderPipelines);
+        bus.addListener(DragonEditorHandler::registerRenderPipelines);
 
         NeoForge.EVENT_BUS.addListener(this::incrementTimer);
         NeoForge.EVENT_BUS.addListener(this::preventThirdPersonWhenSuffocating);

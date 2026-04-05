@@ -11,9 +11,10 @@ import com.mojang.blaze3d.pipeline.ColorTargetState;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.platform.NativeImage;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.textures.GpuTexture;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import net.minecraft.client.Screenshot;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
@@ -161,7 +162,33 @@ public class RenderingUtils {
     }
 
     public static void copyTextureFromRenderTarget(RenderTarget target, Identifier key) {
-        Screenshot.takeScreenshot(target, image -> uploadTexture(image, key));
+        RenderSystem.assertOnRenderThread();
+
+        int width = target.width;
+        int height = target.height;
+        GpuTexture sourceTexture = target.getColorTexture();
+
+        if (sourceTexture == null) {
+            throw new IllegalStateException("Tried to copy an incomplete render target");
+        }
+
+        var textureManager = Minecraft.getInstance().getTextureManager();
+        AbstractTexture currentTexture = ((TextureManagerAccessor)textureManager).dragonSurvival$getTexturesByPath().get(key);
+        DynamicTexture dynamicTexture;
+
+        if (currentTexture instanceof DynamicTexture existingTexture
+            && existingTexture.getTexture().getWidth(0) == width
+            && existingTexture.getTexture().getHeight(0) == height) {
+            dynamicTexture = existingTexture;
+        } else {
+            textureManager.release(key);
+            dynamicTexture = new DynamicTexture(key::toString, width, height, true);
+            textureManager.register(key, dynamicTexture);
+        }
+
+        RenderSystem.getDevice()
+            .createCommandEncoder()
+            .copyTextureToTexture(sourceTexture, dynamicTexture.getTexture(), 0, 0, 0, 0, 0, width, height);
     }
 
     public static @Nullable NativeImage getImageFromResource(Identifier location) {
