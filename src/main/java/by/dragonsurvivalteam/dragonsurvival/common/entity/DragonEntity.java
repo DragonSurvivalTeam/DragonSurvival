@@ -105,21 +105,12 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
     // The dragon displayed in the editor doesn't want to mirror the local player's UUID, so this isn't used there either
     public boolean overrideUUIDWithLocalPlayerForTextureFetch;
 
-    /**
-     * Used for inventory / smithing screen rendering - when set to true changed movement data will not be tracked <br>
-     * - Does not set the movement data <br>
-     * - Does not apply the molang history (of head pitch, body yaw, etc.) <br>
-     * - Does not hide the head when in first person
-     */
-    public boolean isInInventory;
-
     public boolean clearVerticalVelocity;
 
     private final DragonEmote[] currentlyPlayingEmotes = new DragonEmote[MAX_EMOTES];
     private final boolean[] soundForEmoteHasAlreadyPlayedThisTick = new boolean[MAX_EMOTES];
     private final AnimationTickTimer animationTickTimer = new AnimationTickTimer();
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
-    private final AnimatableInstanceCache inventoryCache = GeckoLibUtil.createInstanceCache(this);
 
     private @Nullable Pair<AbilityAnimation, AnimationType> currentAbilityAnimation;
     private boolean begunPlayingAbilityAnimation;
@@ -833,15 +824,8 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
 
     @Override
     public AnimatableInstanceCache getAnimatableInstanceCache() {
-        return DragonRenderer.useInventoryAnimationCache() ? inventoryCache : cache;
+        return cache;
     }
-
-    // FIXME :: How to do this now?
-    /*@Override
-    public boolean shouldPlayAnimsWhileGamePaused() {
-        // Important to play animations inside menus (e.g. for fake player / dragons)
-        return true;
-    }*/
 
     @Override
     public @NotNull ItemStack getItemBySlot(@NotNull EquipmentSlot slotIn) {

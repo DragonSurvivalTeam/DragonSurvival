@@ -831,7 +831,7 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
                                     confirmComponent.extractRenderState(GuiGraphicsExtractor, pMouseX, pMouseY, pPartialTick);
                                 }
 
-                                super.extractRenderState(GuiGraphicsExtractor, pMouseX, pMouseY, pPartialTick);
+                                super.extractWidgetRenderState(GuiGraphicsExtractor, pMouseX, pMouseY, pPartialTick);
                             }
                         };
                         ((ScreenAccessor) DragonEditorScreen.this).dragonSurvival$children().add(confirmComponent);

@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components;
 
+import by.dragonsurvivalteam.dragonsurvival.client.render.entity.dragon.DragonRenderer;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.platform.InputConstants;
@@ -10,9 +11,11 @@ import net.minecraft.client.gui.components.events.AbstractContainerEventHandler;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Quaternionf;
+import org.joml.Vector3f;
 
 import java.util.List;
 import java.util.function.Supplier;
@@ -35,7 +38,7 @@ public class DragonUIRenderComponent extends AbstractContainerEventHandler imple
     }
 
     @Override
-    public void extractRenderState(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int pMouseX, int pMouseY, float pPartialTicks) {
+    public void extractRenderState(@NotNull final GuiGraphicsExtractor graphics, int pMouseX, int pMouseY, float pPartialTicks) {
         if (isMouseOver(pMouseX, pMouseY)) {
             screen.setFocused(this);
         }
@@ -43,17 +46,17 @@ public class DragonUIRenderComponent extends AbstractContainerEventHandler imple
         float scale = zoom;
 
         // We need to translate this backwards with the poseStack as renderEntityInInventory pushes the poseStack forward
-        GuiGraphicsExtractor.pose().pushMatrix();
-        // FIXME :: UI GRAPHICS
-        //GuiGraphicsExtractor.pose().translate(0, 0, -200); // We chose -200 here as the background is translated -300, and we don't want to clip with it
+        Quaternionf rotation = Axis.ZP.rotationDegrees(180);
+        rotation.mul(Axis.XP.rotationDegrees(yRot * 10));
+        rotation.rotateY((float) Math.toRadians(180 - xRot * 10));
 
-        Quaternionf quaternion = Axis.ZP.rotationDegrees(180);
-        quaternion.mul(Axis.XP.rotationDegrees(yRot * 10));
-        quaternion.rotateY((float) Math.toRadians(180 - xRot * 10));
-        // FIXME :: UI GRAPHICS
-        //InventoryScreen.renderEntityInInventory(GuiGraphicsExtractor, x + (float) width / 2 + xOffset, y + height - 30 + yOffset, (int) scale, new Vector3f(0, 0, 0), quaternion, null, getter.get());
+        EntityRenderState renderState = DragonRenderer.createUIRenderState(getter.get(), pPartialTicks, 0.0F, 0.0F, 0.0F);
 
-        GuiGraphicsExtractor.pose().popMatrix();
+        // The new GUI entity renderer anchors the pose to the center of the target rectangle,
+        // so keep the old widget framing by converting the legacy absolute center/baseline into
+        // offsets relative to this component's bounds.
+        // Vector3f translation = new Vector3f(xOffset, (float) height / 2 - 30 + yOffset, 0.0F);
+        graphics.entity(renderState, scale, new Vector3f(), rotation, null, x, y, x + width, y + height);
     }
 
     @Override

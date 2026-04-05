@@ -18,7 +18,10 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
+import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
@@ -28,6 +31,7 @@ import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import net.minecraft.util.profiling.Profiler;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
@@ -48,13 +52,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.function.ToDoubleFunction;
 
 @EventBusSubscriber(Dist.CLIENT)
 public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> extends GeoEntityRenderer<DragonEntity, R> {
     public static final Map<Integer, Map<String, Vec3>> BONE_POSITIONS = new HashMap<>();
     private static final List<String> BONES = List.of("BreathSource");
     private static final Map<Integer, DragonAnimationState> ANIMATION_STATES = new HashMap<>();
-    private static final ThreadLocal<InventoryRenderOverrides> INVENTORY_RENDER_OVERRIDES = new ThreadLocal<>();
 
     private static final int RENDER_COLOR = ARGB.color(255, 255, 255);
     private static final int TRANSPARENT_RENDER_COLOR = ARGB.colorFromFloat(HunterHandler.MIN_ALPHA, 1, 1, 1);
@@ -72,35 +77,171 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
     // Data tickets
     public static final DataTicket<DragonRenderData> DRAGON_RENDER_DATA = DataTicket.create("dragonRenderData", DragonRenderData.class);
 
-    public record DragonRenderData(
-        int dragonId,
-        @Nullable Player player,
-        @Nullable Player texturePlayer,
-        @Nullable DragonStateHandler handler,
-        Identifier modelResource,
-        boolean inInventory,
-        boolean neckLocked,
-        boolean tailLocked,
-        boolean overrideUUIDWithLocalPlayerForTextureFetch,
-        boolean spectator,
-        boolean invisible,
-        boolean invisibleToLocalPlayer,
-        boolean hunterTransparent,
-        boolean hasWings,
-        List<String> bonesToHideForToggle,
-        float prevXRot,
-        float prevZRot,
-        double bodyYaw,
-        double headYaw,
-        double headPitch,
-        double gravity,
-        double currentBodyYawChange,
-        double currentHeadYawChange,
-        double currentHeadPitchChange,
-        double currentTailMotionUp,
-        double visualScale,
-        float bodyScaleMultiplier
-    ) { }
+    public static final class DragonRenderData {
+        private final int dragonId;
+        private @Nullable Player player;
+        private @Nullable Player texturePlayer;
+        private @Nullable DragonStateHandler handler;
+        private Identifier modelResource;
+
+        /**
+         * Used for inventory / smithing screen rendering - when set to true changed movement data will not be tracked <br>
+         * - Does not set the movement data <br>
+         * - Does not apply the molang history (of head pitch, body yaw, etc.) <br>
+         * - Does not hide the head when in first person
+         */
+        private boolean inUI;
+
+        private boolean neckLocked;
+        private boolean tailLocked;
+        private boolean overrideUUIDWithLocalPlayerForTextureFetch;
+        private boolean spectator;
+        private boolean invisible;
+        private boolean invisibleToLocalPlayer;
+        private boolean hunterTransparent;
+        private boolean hasWings;
+        private List<String> bonesToHideForToggle;
+        private float prevXRot;
+        private float prevZRot;
+        private double bodyYaw;
+        private double headYaw;
+        private double headPitch;
+        private double gravity;
+        private double currentBodyYawChange;
+        private double currentHeadYawChange;
+        private double currentHeadPitchChange;
+        private double currentTailMotionUp;
+        private double visualScale;
+        private float bodyScaleMultiplier;
+
+        private DragonRenderData(final int dragonId) {
+            this.dragonId = dragonId;
+            this.modelResource = DragonBody.DEFAULT_MODEL;
+            this.bonesToHideForToggle = List.of();
+            this.hasWings = true;
+            this.visualScale = 1;
+            this.bodyScaleMultiplier = 1;
+        }
+
+        public static DragonRenderData fallback(final DragonEntity dragon) {
+            DragonRenderData renderData = new DragonRenderData(dragon.getId());
+            renderData.inUI = false;
+            renderData.neckLocked = dragon.neckLocked;
+            renderData.tailLocked = dragon.tailLocked;
+            renderData.overrideUUIDWithLocalPlayerForTextureFetch = dragon.overrideUUIDWithLocalPlayerForTextureFetch;
+            renderData.prevXRot = dragon.prevXRot;
+            renderData.prevZRot = dragon.prevZRot;
+            return renderData;
+        }
+
+        public static DragonRenderData live(
+            final DragonEntity dragon,
+            final Player player,
+            final @Nullable Player texturePlayer,
+            final DragonStateHandler handler,
+            final Identifier modelResource,
+            final boolean hasWings,
+            final List<String> bonesToHideForToggle,
+            final DragonAnimationState animationState,
+            final float partialTick
+        ) {
+            DragonRenderData renderData = fallback(dragon);
+            renderData.player = player;
+            renderData.texturePlayer = texturePlayer;
+            renderData.handler = handler;
+            renderData.modelResource = modelResource;
+            renderData.spectator = player.isSpectator();
+            renderData.invisible = dragon.isInvisible();
+            renderData.invisibleToLocalPlayer = player.isInvisibleTo(Minecraft.getInstance().player);
+            renderData.hunterTransparent = HunterData.hasTransparency(player);
+            renderData.hasWings = hasWings;
+            renderData.bonesToHideForToggle = bonesToHideForToggle;
+            renderData.bodyYaw = MovementData.getData(player).bodyYaw;
+            renderData.headYaw = MovementData.getData(player).headYaw;
+            renderData.headPitch = MovementData.getData(player).headPitch;
+            renderData.gravity = player.getAttributeValue(Attributes.GRAVITY);
+            renderData.currentBodyYawChange = animationState.currentBodyYawChange;
+            renderData.currentHeadYawChange = animationState.currentHeadYawChange;
+            renderData.currentHeadPitchChange = animationState.currentHeadPitchChange;
+            renderData.currentTailMotionUp = animationState.currentTailMotionUp;
+            renderData.visualScale = handler.getVisualScale(player, partialTick);
+            renderData.bodyScaleMultiplier = handler.body() == null ? 1.0F : (float) handler.body().value().scalingProportions().scaleMultiplier();
+            return renderData;
+        }
+
+        public DragonRenderData forUIRender(final double bodyYaw, final double headYaw, final double headPitch) {
+            DragonRenderData renderData = copy();
+            renderData.inUI = true;
+            renderData.hunterTransparent = false;
+            renderData.bodyYaw = bodyYaw;
+            renderData.headYaw = headYaw;
+            renderData.headPitch = headPitch;
+            renderData.currentBodyYawChange = 0;
+            renderData.currentHeadYawChange = 0;
+            renderData.currentHeadPitchChange = 0;
+            renderData.currentTailMotionUp = 0;
+            return renderData;
+        }
+
+        public DragonRenderData copy() {
+            DragonRenderData renderData = new DragonRenderData(this.dragonId);
+            renderData.player = this.player;
+            renderData.texturePlayer = this.texturePlayer;
+            renderData.handler = this.handler;
+            renderData.modelResource = this.modelResource;
+            renderData.inUI = this.inUI;
+            renderData.neckLocked = this.neckLocked;
+            renderData.tailLocked = this.tailLocked;
+            renderData.overrideUUIDWithLocalPlayerForTextureFetch = this.overrideUUIDWithLocalPlayerForTextureFetch;
+            renderData.spectator = this.spectator;
+            renderData.invisible = this.invisible;
+            renderData.invisibleToLocalPlayer = this.invisibleToLocalPlayer;
+            renderData.hunterTransparent = this.hunterTransparent;
+            renderData.hasWings = this.hasWings;
+            renderData.bonesToHideForToggle = this.bonesToHideForToggle;
+            renderData.prevXRot = this.prevXRot;
+            renderData.prevZRot = this.prevZRot;
+            renderData.bodyYaw = this.bodyYaw;
+            renderData.headYaw = this.headYaw;
+            renderData.headPitch = this.headPitch;
+            renderData.gravity = this.gravity;
+            renderData.currentBodyYawChange = this.currentBodyYawChange;
+            renderData.currentHeadYawChange = this.currentHeadYawChange;
+            renderData.currentHeadPitchChange = this.currentHeadPitchChange;
+            renderData.currentTailMotionUp = this.currentTailMotionUp;
+            renderData.visualScale = this.visualScale;
+            renderData.bodyScaleMultiplier = this.bodyScaleMultiplier;
+            return renderData;
+        }
+
+        public int dragonId() { return dragonId; }
+        public @Nullable Player player() { return player; }
+        public @Nullable Player texturePlayer() { return texturePlayer; }
+        public @Nullable DragonStateHandler handler() { return handler; }
+        public Identifier modelResource() { return modelResource; }
+        public boolean inInventory() { return inUI; }
+        public boolean neckLocked() { return neckLocked; }
+        public boolean tailLocked() { return tailLocked; }
+        public boolean overrideUUIDWithLocalPlayerForTextureFetch() { return overrideUUIDWithLocalPlayerForTextureFetch; }
+        public boolean spectator() { return spectator; }
+        public boolean invisible() { return invisible; }
+        public boolean invisibleToLocalPlayer() { return invisibleToLocalPlayer; }
+        public boolean hunterTransparent() { return hunterTransparent; }
+        public boolean hasWings() { return hasWings; }
+        public List<String> bonesToHideForToggle() { return bonesToHideForToggle; }
+        public float prevXRot() { return prevXRot; }
+        public float prevZRot() { return prevZRot; }
+        public double bodyYaw() { return bodyYaw; }
+        public double headYaw() { return headYaw; }
+        public double headPitch() { return headPitch; }
+        public double gravity() { return gravity; }
+        public double currentBodyYawChange() { return currentBodyYawChange; }
+        public double currentHeadYawChange() { return currentHeadYawChange; }
+        public double currentHeadPitchChange() { return currentHeadPitchChange; }
+        public double currentTailMotionUp() { return currentTailMotionUp; }
+        public double visualScale() { return visualScale; }
+        public float bodyScaleMultiplier() { return bodyScaleMultiplier; }
+    }
 
     private static final class DragonAnimationState {
         private final List<Double> headYawHistory = new java.util.ArrayList<>();
@@ -146,80 +287,27 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
         Player player = dragon.getPlayer();
 
         if (player == null) {
-            return new DragonRenderData(
-                dragon.getId(),
-                null,
-                null,
-                null,
-                DragonBody.DEFAULT_MODEL,
-                dragon.isInInventory,
-                dragon.neckLocked,
-                dragon.tailLocked,
-                dragon.overrideUUIDWithLocalPlayerForTextureFetch,
-                false,
-                false,
-                false,
-                false,
-                true,
-                List.of(),
-                dragon.prevXRot,
-                dragon.prevZRot,
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
-                1,
-                1
-            );
+            return DragonRenderData.fallback(dragon);
         }
 
         DragonStateHandler handler = DragonStateProvider.getData(player);
         DragonAnimationState animationState = ANIMATION_STATES.computeIfAbsent(dragon.getId(), key -> new DragonAnimationState());
 
         Identifier modelResource = handler.getModel();
-        float bodyScaleMultiplier = handler.body() == null ? 1.0F : (float) handler.body().value().scalingProportions().scaleMultiplier();
         boolean hasWings = handler.body() == null || !handler.body().value().canHideWings() || handler.getCurrentStageCustomization().wings;
         List<String> bonesToHideForToggle = handler.body() == null ? List.of() : List.copyOf(handler.body().value().bonesToHideForToggle());
 
-        DragonRenderData renderData = new DragonRenderData(
-            dragon.getId(),
+        DragonRenderData renderData = DragonRenderData.live(
+            dragon,
             player,
             dragon.overrideUUIDWithLocalPlayerForTextureFetch ? Minecraft.getInstance().player : player,
             handler,
             modelResource,
-            dragon.isInInventory,
-            dragon.neckLocked,
-            dragon.tailLocked,
-            dragon.overrideUUIDWithLocalPlayerForTextureFetch,
-            player.isSpectator(),
-            dragon.isInvisible(),
-            player.isInvisibleTo(Minecraft.getInstance().player),
-            HunterData.hasTransparency(player),
             hasWings,
             bonesToHideForToggle,
-            dragon.prevXRot,
-            dragon.prevZRot,
-            MovementData.getData(player).bodyYaw,
-            MovementData.getData(player).headYaw,
-            MovementData.getData(player).headPitch,
-            player.getAttributeValue(Attributes.GRAVITY),
-            animationState.currentBodyYawChange,
-            animationState.currentHeadYawChange,
-            animationState.currentHeadPitchChange,
-            animationState.currentTailMotionUp,
-            handler.getVisualScale(player, partialTick),
-            bodyScaleMultiplier
+            animationState,
+            partialTick
         );
-
-        InventoryRenderOverrides inventoryRenderOverrides = INVENTORY_RENDER_OVERRIDES.get();
-
-        if (inventoryRenderOverrides != null) {
-            return createInventoryRenderData(renderData, inventoryRenderOverrides.bodyYaw(), inventoryRenderOverrides.headYaw(), inventoryRenderOverrides.headPitch());
-        }
 
         return renderData;
     }
@@ -230,50 +318,6 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
 
     public static void clearAnimationStates() {
         ANIMATION_STATES.clear();
-    }
-
-    public static DragonRenderData createInventoryRenderData(final DragonRenderData renderData, final double bodyYaw, final double headYaw, final double headPitch) {
-        return new DragonRenderData(
-            renderData.dragonId(),
-            renderData.player(),
-            renderData.texturePlayer(),
-            renderData.handler(),
-            renderData.modelResource(),
-            true,
-            renderData.neckLocked(),
-            renderData.tailLocked(),
-            renderData.overrideUUIDWithLocalPlayerForTextureFetch(),
-            renderData.spectator(),
-            renderData.invisible(),
-            renderData.invisibleToLocalPlayer(),
-            false,
-            renderData.hasWings(),
-            renderData.bonesToHideForToggle(),
-            renderData.prevXRot(),
-            renderData.prevZRot(),
-            bodyYaw,
-            headYaw,
-            headPitch,
-            renderData.gravity(),
-            0,
-            0,
-            0,
-            0,
-            renderData.visualScale(),
-            renderData.bodyScaleMultiplier()
-        );
-    }
-
-    public static void pushInventoryRenderOverrides(final double bodyYaw, final double headYaw, final double headPitch) {
-        INVENTORY_RENDER_OVERRIDES.set(new InventoryRenderOverrides(bodyYaw, headYaw, headPitch));
-    }
-
-    public static void clearInventoryRenderOverrides() {
-        INVENTORY_RENDER_OVERRIDES.remove();
-    }
-
-    public static boolean useInventoryAnimationCache() {
-        return INVENTORY_RENDER_OVERRIDES.get() != null;
     }
 
     private static void updateAnimationState(final DragonEntity dragon) {
@@ -288,50 +332,43 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
         float deltaTick = Minecraft.getInstance().getDeltaTracker().getRealtimeDeltaTicks();
         float partialDeltaTick = Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(false);
 
+        double bodyYawChange = Functions.angleDifference(movement.bodyYaw, movement.bodyYawLastFrame) / deltaTick * DELTA_YAW_PITCH_FACTOR;
+        double headYawChange = Functions.angleDifference(movement.headYaw, movement.headYawLastFrame) / deltaTick * DELTA_YAW_PITCH_FACTOR;
+        double headPitchChange = Functions.angleDifference(movement.headPitch, movement.headPitchLastFrame) / deltaTick * DELTA_YAW_PITCH_FACTOR;
+
+        double verticalVelocity = Mth.lerp(partialDeltaTick, movement.deltaMovementLastFrame.y, movement.deltaMovement.y) * DELTA_MOVEMENT_FACTOR;
+        verticalVelocity *= 1 - Mth.abs(Mth.clampedMap(movement.prevXRot, -90, 90, -1, 1));
+
+        float deltaTickFor60FPS = AnimationUtils.getDeltaTickFor60FPS();
+        int removeSize = (int) (10 / deltaTickFor60FPS);
+
+        if (dragon.clearVerticalVelocity) {
+            animationState.verticalVelocityHistory.clear();
+
+            while (animationState.verticalVelocityHistory.size() < removeSize) {
+                animationState.verticalVelocityHistory.add(0d);
+            }
+        }
+
+        trimHistory(animationState.bodyYawHistory, removeSize);
+        trimHistory(animationState.headYawHistory, removeSize);
+        trimHistory(animationState.headPitchHistory, removeSize);
+        trimHistory(animationState.verticalVelocityHistory, removeSize);
+
+        animationState.bodyYawHistory.add(bodyYawChange);
+        animationState.headYawHistory.add(headYawChange);
+        animationState.headPitchHistory.add(headPitchChange);
+        animationState.verticalVelocityHistory.add(verticalVelocity);
+
         double bodyYawAvg;
         double headYawAvg;
         double headPitchAvg;
         double verticalVelocityAvg;
 
-        if (!dragon.isInInventory) {
-            double bodyYawChange = Functions.angleDifference(movement.bodyYaw, movement.bodyYawLastFrame) / deltaTick * DELTA_YAW_PITCH_FACTOR;
-            double headYawChange = Functions.angleDifference(movement.headYaw, movement.headYawLastFrame) / deltaTick * DELTA_YAW_PITCH_FACTOR;
-            double headPitchChange = Functions.angleDifference(movement.headPitch, movement.headPitchLastFrame) / deltaTick * DELTA_YAW_PITCH_FACTOR;
-
-            double verticalVelocity = Mth.lerp(partialDeltaTick, movement.deltaMovementLastFrame.y, movement.deltaMovement.y) * DELTA_MOVEMENT_FACTOR;
-            verticalVelocity *= 1 - Mth.abs(Mth.clampedMap(movement.prevXRot, -90, 90, -1, 1));
-
-            float deltaTickFor60FPS = AnimationUtils.getDeltaTickFor60FPS();
-            int removeSize = (int) (10 / deltaTickFor60FPS);
-
-            if (dragon.clearVerticalVelocity) {
-                animationState.verticalVelocityHistory.clear();
-
-                while (animationState.verticalVelocityHistory.size() < removeSize) {
-                    animationState.verticalVelocityHistory.add(0d);
-                }
-            }
-
-            trimHistory(animationState.bodyYawHistory, removeSize);
-            trimHistory(animationState.headYawHistory, removeSize);
-            trimHistory(animationState.headPitchHistory, removeSize);
-            trimHistory(animationState.verticalVelocityHistory, removeSize);
-
-            animationState.bodyYawHistory.add(bodyYawChange);
-            animationState.headYawHistory.add(headYawChange);
-            animationState.headPitchHistory.add(headPitchChange);
-            animationState.verticalVelocityHistory.add(verticalVelocity);
-
-            bodyYawAvg = animationState.bodyYawHistory.stream().mapToDouble(Double::doubleValue).average().orElse(0);
-            headYawAvg = animationState.headYawHistory.stream().mapToDouble(Double::doubleValue).average().orElse(0);
-            headPitchAvg = animationState.headPitchHistory.stream().mapToDouble(Double::doubleValue).average().orElse(0);
-            verticalVelocityAvg = animationState.verticalVelocityHistory.stream().mapToDouble(Double::doubleValue).average().orElse(0);
-        } else {
-            bodyYawAvg = 0;
-            headYawAvg = 0;
-            headPitchAvg = 0;
-            verticalVelocityAvg = 0;
-        }
+        bodyYawAvg = animationState.bodyYawHistory.stream().mapToDouble(Double::doubleValue).average().orElse(0);
+        headYawAvg = animationState.headYawHistory.stream().mapToDouble(Double::doubleValue).average().orElse(0);
+        headPitchAvg = animationState.headPitchHistory.stream().mapToDouble(Double::doubleValue).average().orElse(0);
+        verticalVelocityAvg = animationState.verticalVelocityHistory.stream().mapToDouble(Double::doubleValue).average().orElse(0);
 
         bodyYawAvg = Double.isNaN(bodyYawAvg) ? 0 : bodyYawAvg;
         headYawAvg = Double.isNaN(headYawAvg) ? 0 : headYawAvg;
@@ -357,36 +394,70 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
         }
     }
 
-    @Override
-    public void setMolangQueryValues(DragonEntity animatable, @Nullable Void relatedObject, R renderState, float partialTick) {
-        super.setMolangQueryValues(animatable, relatedObject, renderState, partialTick);
+    public static EntityRenderState createUIRenderState(final LivingEntity entity, final float partialTick, final double bodyYaw, final double headYaw, final double headPitch) {
+        EntityRenderDispatcher entityRenderDispatcher = Minecraft.getInstance().getEntityRenderDispatcher();
+        EntityRenderer<? super LivingEntity, ?> renderer = entityRenderDispatcher.getRenderer(entity);
+        EntityRenderState renderState = renderer.createRenderState(entity, partialTick);
+        renderState.shadowPieces.clear();
+        renderState.outlineColor = 0;
 
-        DragonRenderData renderData = renderState.getGeckolibData(DRAGON_RENDER_DATA);
+        GeoRenderState geoRenderState = (GeoRenderState)renderState;
+        DragonRenderData dragonRenderData = geoRenderState.getGeckolibData(DRAGON_RENDER_DATA);
 
-        if (renderData == null || renderData.player() == null) {
+        if (dragonRenderData != null) {
+            geoRenderState.addGeckolibData(DRAGON_RENDER_DATA, dragonRenderData.forUIRender(bodyYaw, headYaw, headPitch));
+
+            // GeckoLib compiles controller state during render-state creation, so refresh the query providers
+            // after swapping in UI-specific dragon data.
+            overrideMolangQueryValues(geoRenderState);
+        }
+
+        return renderState;
+    }
+
+    public static void overrideMolangQueryValues(GeoRenderState renderState)
+    {
+        if (renderState.getGeckolibData(DRAGON_RENDER_DATA) == null) {
             return;
         }
 
-        if (renderData.neckLocked()) {
-            MathParser.setVariable("query.head_yaw", state -> 0);
-            MathParser.setVariable("query.head_pitch", state -> 0);
-        } else {
-            MathParser.setVariable("query.head_yaw", state -> renderData.headYaw());
-            MathParser.setVariable("query.head_pitch", state -> renderData.headPitch());
-        }
+        setDragonQueryValue("query.head_yaw", DragonRenderData::headYaw, DragonRenderData::neckLocked);
+        setDragonQueryValue("query.head_pitch", DragonRenderData::headPitch, DragonRenderData::neckLocked);
+        setDragonQueryValue("query.gravity", DragonRenderData::gravity);
+        setDragonQueryValue("query.body_yaw_change", DragonRenderData::currentBodyYawChange, DragonRenderData::tailLocked);
+        setDragonQueryValue("query.tail_motion_up", DragonRenderData::currentTailMotionUp, DragonRenderData::tailLocked);
+        setDragonQueryValue("query.head_yaw_change", DragonRenderData::currentHeadYawChange);
+        setDragonQueryValue("query.head_pitch_change", DragonRenderData::currentHeadPitchChange);
+    }
 
-        MathParser.setVariable("query.gravity", state -> renderData.gravity());
+    private static @Nullable DragonRenderData getDragonRenderDataForQuery(final GeoRenderState renderState) {
+        return renderState.getGeckolibData(DRAGON_RENDER_DATA);
+    }
 
-        if (renderData.tailLocked()) {
-            MathParser.setVariable("query.tail_motion_up", state -> 0);
-            MathParser.setVariable("query.body_yaw_change", state -> 0);
-        } else {
-            MathParser.setVariable("query.body_yaw_change", state -> renderData.currentBodyYawChange());
-            MathParser.setVariable("query.tail_motion_up", state -> renderData.currentTailMotionUp());
-        }
+    private static void setDragonQueryValue(final String queryName, final ToDoubleFunction<DragonRenderData> valueGetter) {
+        MathParser.setVariable(queryName, state -> {
+            DragonRenderData renderData = getDragonRenderDataForQuery(state.renderState());
 
-        MathParser.setVariable("query.head_yaw_change", state -> renderData.currentHeadYawChange());
-        MathParser.setVariable("query.head_pitch_change", state -> renderData.currentHeadPitchChange());
+            return renderData == null ? 0 : valueGetter.applyAsDouble(renderData);
+        });
+    }
+
+    private static void setDragonQueryValue(final String queryName, final ToDoubleFunction<DragonRenderData> valueGetter, final Predicate<DragonRenderData> zeroWhen) {
+        MathParser.setVariable(queryName, state -> {
+            DragonRenderData renderData = getDragonRenderDataForQuery(state.renderState());
+
+            if (renderData == null || zeroWhen.test(renderData)) {
+                return 0;
+            }
+
+            return valueGetter.applyAsDouble(renderData);
+        });
+    }
+
+    @Override
+    public void setMolangQueryValues(DragonEntity animatable, @Nullable Void relatedObject, R renderState, float partialTick) {
+        super.setMolangQueryValues(animatable, relatedObject, renderState, partialTick);
+        overrideMolangQueryValues(renderState);
     }
 
     @Override
