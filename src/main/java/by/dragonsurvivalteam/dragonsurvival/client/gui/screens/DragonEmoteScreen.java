@@ -24,6 +24,7 @@ import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.ConfirmLinkScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
@@ -136,7 +137,7 @@ public class DragonEmoteScreen extends Screen {
 
         // FIXME :: UI RENDERING
         //RenderSystem.enableBlend();
-        graphics.blit(BACKGROUND_MAIN, startX, startY, 0, 0, 256, 256, 256, 256);
+        graphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND_MAIN, startX, startY, 0, 0, 256, 256, 256, 256);
         //RenderSystem.disableBlend();
 
         super.extractRenderState(graphics, mouseX, mouseY, partialTick);
