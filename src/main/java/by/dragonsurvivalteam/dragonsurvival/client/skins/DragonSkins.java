@@ -2,13 +2,14 @@ package by.dragonsurvivalteam.dragonsurvival.client.skins;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.render.ClientDragonRenderer;
+import by.dragonsurvivalteam.dragonsurvival.client.util.RenderingUtils;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStages;
 import com.mojang.blaze3d.platform.NativeImage;
 import net.minecraft.IdentifierException;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.renderer.texture.SimpleTexture;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.player.Player;
@@ -123,11 +124,8 @@ public class DragonSkins {
             return null;
         }
 
-        try (SimpleTexture simpleTexture = new SimpleTexture(resource)) {
-            // FIXME :: Mixin to TextureManager to add a "has texture" function so this can be done again
-            /*if (Minecraft.getInstance().getTextureManager().getTexture(resource, simpleTexture) != simpleTexture) {
-                return resource;
-            }*/
+        if (RenderingUtils.hasTexture(resource)) {
+            return resource;
         }
         if (USER_SKINS.isEmpty()) {
             init();
@@ -169,10 +167,7 @@ public class DragonSkins {
         }
 
         NativeImage customTexture = NativeImage.read(imageStream);
-        // Avoid overwriting and closing the texture (closing the image as well, leading to a crash)
-        // (Since this method is handled off-thread the image doesn't get immediately uploaded)
-        // FIXME :: Invalid now
-        //RenderSystem.recordRenderCall(() -> Minecraft.getInstance().getTextureManager().register(location, new DynamicTexture(customTexture)));
+        Minecraft.getInstance().execute(() -> RenderingUtils.uploadTexture(customTexture, location));
 
         return location;
     }

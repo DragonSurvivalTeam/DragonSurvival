@@ -11,6 +11,7 @@ import by.dragonsurvivalteam.dragonsurvival.mixins.client.ScreenAccessor;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.input.InputWithModifiers;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.client.gui.widget.ExtendedButton;
@@ -59,9 +60,9 @@ public class ColorSelectorButton extends ExtendedButton {
             LayerSettings layerSettings = screen.preset.get(screen.stage.getKey()).get().layerSettings.get(layer).get();
 
             if (layerSettings.isModified) {
-                GuiGraphicsExtractor.blit(BUTTON_HUE_CHANGED, getX(), getY(), 0, 0, width, height, width, height);
+                GuiGraphicsExtractor.blit(RenderPipelines.GUI_TEXTURED, BUTTON_HUE_CHANGED, getX(), getY(), 0, 0, width, height, width, height);
             } else {
-                GuiGraphicsExtractor.blit(BUTTON_HUE_UNCHANGED, getX(), getY(), 0, 0, width, height, width, height);
+                GuiGraphicsExtractor.blit(RenderPipelines.GUI_TEXTURED, BUTTON_HUE_UNCHANGED, getX(), getY(), 0, 0, width, height, width, height);
             }
         }
 

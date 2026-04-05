@@ -259,10 +259,10 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
     public DragonRenderer(final EntityRendererProvider.Context context, final GeoModel<DragonEntity> model) {
         super(context, model);
 
-        // FIXME
-        /*getRenderLayers().add(new DragonGlowLayerRenderer(this));
-        getRenderLayers().add(new DragonArmorRenderLayer(this));
-        getRenderLayers().add(new DragonItemRenderLayer(this, (bone, animatable) -> {
+        withRenderLayer(new DragonGlowLayerRenderer<>(this));
+        withRenderLayer(new DragonArmorRenderLayer<>(this));
+
+        /*getRenderLayers().add(new DragonItemRenderLayer(this, (bone, animatable) -> {
             if (bone.getName().equals(ClientDragonRenderer.renderItemsInMouth ? "RightItem_jaw" : "RightItem")) {
                 return animatable.getMainHandItem();
             } else if (bone.getName().equals(ClientDragonRenderer.renderItemsInMouth ? "LeftItem_jaw" : "LeftItem")) {
@@ -474,7 +474,7 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
 
         final RenderPassInfo.BoneUpdater<R> neckVisibilitySetter = (renderPassInfoForBones, snapshots) -> {
             snapshots.get("Neck").map(bone -> {
-                bone.skipRender(!(renderData.inInventory() || Compat.displayNeck()) && RenderingUtils.isFirstPerson(player));
+                bone.skipRender(!(renderData.inInventory() || Compat.displayNeck()) || RenderingUtils.isFirstPerson(player));
                 return null;
             });
         };

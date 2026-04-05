@@ -96,7 +96,7 @@ public class DragonModel extends GeoModel<DragonEntity> {
             return StageResources.getDefaultSkin(handler.species(), handler.stageKey(), false);
         }
 
-        return Identifier.withDefaultNamespace("");
+        return texture;
     }
 
     public static Identifier dynamicTexture(final Player player, final DragonStateHandler handler, boolean isGlowLayer) {

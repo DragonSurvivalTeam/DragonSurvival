@@ -1,20 +1,15 @@
-//package by.dragonsurvivalteam.dragonsurvival.compat.curios;
-//
-//import by.dragonsurvivalteam.dragonsurvival.compat.ModCheck;
-//import net.minecraft.world.entity.player.Player;
-//import net.minecraft.world.item.ItemStack;
-//import net.minecraft.world.item.Items;
-//import top.theillusivec4.curios.api.CuriosApi;
-//import top.theillusivec4.curios.api.type.capability.ICuriosItemHandler;
-//import top.theillusivec4.curios.api.type.inventory.ICurioStacksHandler;
-//
-//import java.util.ArrayList;
-//import java.util.Map;
-//import java.util.Optional;
-//
-//public class CurioAPIHelper {
-//    public static ArrayList<ItemStack> getVisibleCurioItems(Player player) {
-//        if (ModCheck.isModLoaded(ModCheck.CURIOS)) {
+package by.dragonsurvivalteam.dragonsurvival.compat.curios;
+
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+
+import java.util.ArrayList;
+
+public class CurioAPIHelper {
+    private CurioAPIHelper() { }
+
+    public static ArrayList<ItemStack> getVisibleCurioItems(final Player player) {
+        //        if (ModCheck.isModLoaded(ModCheck.CURIOS)) {
 //            Optional<ICuriosItemHandler> items = CuriosApi.getCuriosInventory(player);
 //            if (items.isPresent()) {
 //                Map<String, ICurioStacksHandler> handler = items.get().getCurios();
@@ -34,5 +29,7 @@
 //            }
 //        }
 //        return null;
-//    }
-//}
+
+        return new ArrayList<>();
+    }
+}

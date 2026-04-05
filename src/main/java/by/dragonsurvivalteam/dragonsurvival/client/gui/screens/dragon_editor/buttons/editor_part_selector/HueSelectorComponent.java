@@ -6,12 +6,14 @@ import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.SkinLayer;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.loader.DragonPartLoader;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.DragonPart;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.LayerSettings;
+import by.dragonsurvivalteam.dragonsurvival.client.util.RenderingUtils;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.AbstractContainerEventHandler;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.client.gui.widget.ExtendedButton;
@@ -89,7 +91,7 @@ public class HueSelectorComponent extends AbstractContainerEventHandler implemen
                 GuiGraphicsExtractor.pose().pushMatrix();
                 // FIXME :: UI GRAPHICS
                 //GuiGraphicsExtractor.pose().translate(0, 0, 100);
-                GuiGraphicsExtractor.blit(texture, getX(), getY(), 0, 0, 27, 25, 27, 25);
+                GuiGraphicsExtractor.blit(RenderPipelines.GUI_TEXTURED, texture, getX(), getY(), 0, 0, 27, 25, 27, 25);
                 GuiGraphicsExtractor.pose().popMatrix();
             }
         };
@@ -135,13 +137,12 @@ public class HueSelectorComponent extends AbstractContainerEventHandler implemen
             public void extractWidgetRenderState(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partial) {
                 if (visible) {
                     this.isHovered = mouseX >= getX() && mouseY >= getY() && mouseX < getX() + getWidth() && mouseY < getY() + getHeight();
-                    // FIXME :: UI GRAPHICS
-                    // RenderingUtils.renderPureColorSquare(GuiGraphicsExtractor.pose(), getX() + 1, getY() + 1, getWidth() - 1, getHeight() - 1);
+                    RenderingUtils.renderPureColorSquare(GuiGraphicsExtractor, getX() + 1, getY() + 1, getWidth() - 1, getHeight() - 1);
                     GuiGraphicsExtractor.outline(getX() + 1, getY() + 1, getWidth() - 1, getHeight() - 1, Color.black.getRGB());
                     if (this.isHovered) {
-                        GuiGraphicsExtractor.blit(SLIDER_HOVER, this.getX() + (int) (this.value * (double) (this.width - 8)), this.getY() - 3, 0, 0, 12, 26, 26, 26);
+                        GuiGraphicsExtractor.blit(RenderPipelines.GUI_TEXTURED, SLIDER_HOVER, this.getX() + (int) (this.value * (double) (this.width - 8)), this.getY() - 3, 0, 0, 12, 26, 26, 26);
                     } else {
-                        GuiGraphicsExtractor.blit(SLIDER_MAIN, this.getX() + (int) (this.value * (double) (this.width - 8)), this.getY() - 3, 0, 0, 12, 26, 26, 26);
+                        GuiGraphicsExtractor.blit(RenderPipelines.GUI_TEXTURED, SLIDER_MAIN, this.getX() + (int) (this.value * (double) (this.width - 8)), this.getY() - 3, 0, 0, 12, 26, 26, 26);
                     }
                 }
             }
@@ -195,13 +196,12 @@ public class HueSelectorComponent extends AbstractContainerEventHandler implemen
                     int col1 = Color.getHSBColor(value1, 0f, 1f).getRGB();
                     int col2 = Color.getHSBColor(value1, 1f, 1f).getRGB();
 
-                    // FIXME :: UI GRAPHICS
-                    //RenderingUtils.drawGradientRect(GuiGraphicsExtractor.pose().last().pose(), 0, getX() + 1, getY() + 1, getX() + getWidth() - 1, getY() + getHeight() - 1, new int[]{col2, col1, col1, col2});
+                    RenderingUtils.drawGradientRect(GuiGraphicsExtractor, getX() + 1, getY() + 1, getX() + getWidth() - 1, getY() + getHeight() - 1, new int[]{col2, col1, col1, col2});
                     GuiGraphicsExtractor.outline(getX() + 1, getY() + 1, getWidth() - 1, getHeight() - 1, Color.black.getRGB());
                     if (this.isHovered) {
-                        GuiGraphicsExtractor.blit(SLIDER_HOVER, this.getX() + (int) (this.value * (double) (this.width - 8)), this.getY() - 3, 0, 0, 12, 26, 26, 26);
+                        GuiGraphicsExtractor.blit(RenderPipelines.GUI_TEXTURED, SLIDER_HOVER, this.getX() + (int) (this.value * (double) (this.width - 8)), this.getY() - 3, 0, 0, 12, 26, 26, 26);
                     } else {
-                        GuiGraphicsExtractor.blit(SLIDER_MAIN, this.getX() + (int) (this.value * (double) (this.width - 8)), this.getY() - 3, 0, 0, 12, 26, 26, 26);
+                        GuiGraphicsExtractor.blit(RenderPipelines.GUI_TEXTURED, SLIDER_MAIN, this.getX() + (int) (this.value * (double) (this.width - 8)), this.getY() - 3, 0, 0, 12, 26, 26, 26);
                     }
                 }
             }
@@ -255,13 +255,12 @@ public class HueSelectorComponent extends AbstractContainerEventHandler implemen
                     int col1 = Color.getHSBColor(value1, 1f, 0f).getRGB();
                     int col2 = Color.getHSBColor(value1, 1f, 1f).getRGB();
 
-                    // FIXME :: UI GRAPHICS
-                    // RenderingUtils.drawGradientRect(GuiGraphicsExtractor.pose().last().pose(), 0, getX() + 1, getY() + 1, getX() + getWidth() - 1, getY() + getHeight() - 1, new int[]{col2, col1, col1, col2});
+                    RenderingUtils.drawGradientRect(GuiGraphicsExtractor, getX() + 1, getY() + 1, getX() + getWidth() - 1, getY() + getHeight() - 1, new int[]{col2, col1, col1, col2});
                     GuiGraphicsExtractor.outline(getX() + 1, getY() + 1, getWidth() - 1, getHeight() - 1, Color.black.getRGB());
                     if (this.isHovered) {
-                        GuiGraphicsExtractor.blit(SLIDER_HOVER, this.getX() + (int) (this.value * (double) (this.width - 8)), this.getY() - 3, 0, 0, 12, 26, 26, 26);
+                        GuiGraphicsExtractor.blit(RenderPipelines.GUI_TEXTURED, SLIDER_HOVER, this.getX() + (int) (this.value * (double) (this.width - 8)), this.getY() - 3, 0, 0, 12, 26, 26, 26);
                     } else {
-                        GuiGraphicsExtractor.blit(SLIDER_MAIN, this.getX() + (int) (this.value * (double) (this.width - 8)), this.getY() - 3, 0, 0, 12, 26, 26, 26);
+                        GuiGraphicsExtractor.blit(RenderPipelines.GUI_TEXTURED, SLIDER_MAIN, this.getX() + (int) (this.value * (double) (this.width - 8)), this.getY() - 3, 0, 0, 12, 26, 26, 26);
                     }
                 }
             }
@@ -294,11 +293,6 @@ public class HueSelectorComponent extends AbstractContainerEventHandler implemen
 
     @Override
     public void extractRenderState(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int pMouseX, int pMouseY, float pPartialTicks) {
-        GuiGraphicsExtractor.pose().pushMatrix();
-        // Render pop-up menu content above the other elements
-        // FIXME :: UI GRAPHICS
-        //GuiGraphicsExtractor.pose().translate(0, 0, 150);
-
         // Background for glow button
         GuiGraphicsExtractor.fill(x + 2, y - 25, x + 32, y + 5, BACKGROUND_COLOR);
         GuiGraphicsExtractor.outline(x + 2, y - 26, 30, 31, Color.black.getRGB());
@@ -318,6 +312,5 @@ public class HueSelectorComponent extends AbstractContainerEventHandler implemen
         hueSlider.extractRenderState(GuiGraphicsExtractor, pMouseX, pMouseY, pPartialTicks);
         saturationSlider.extractRenderState(GuiGraphicsExtractor, pMouseX, pMouseY, pPartialTicks);
         brightnessSlider.extractRenderState(GuiGraphicsExtractor, pMouseX, pMouseY, pPartialTicks);
-        GuiGraphicsExtractor.pose().popMatrix();
     }
 }

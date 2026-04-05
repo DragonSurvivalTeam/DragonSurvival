@@ -3,22 +3,27 @@ package by.dragonsurvivalteam.dragonsurvival.client.util;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
+import by.dragonsurvivalteam.dragonsurvival.mixins.client.TextureManagerAccessor;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.platform.NativeImage;
-import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.Screenshot;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.renderer.texture.AbstractTexture;
+import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.ARGB;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Matrix4f;
 
 import java.awt.Color;
 
 //@EventBusSubscriber(Dist.CLIENT)
 public class RenderingUtils {
+    private static final double TWO_PI = Math.PI * 2.0;
+
     @Translation(key = "min_near_plane", type = Translation.Type.CONFIGURATION, comments = {
             "Lower values prevent x-ray through blocks when using a small entity scale",
             "A value that is too low may cause issues when rendering chunks when certain (unknown) mods are present"
@@ -26,184 +31,142 @@ public class RenderingUtils {
     @ConfigOption(side = ConfigSide.CLIENT, category = "rendering", key = "min_near_plane")
     public static float MIN_NEAR_PLANE = 0.02f;
 
-    //private static ShaderInstance growthCircleShader;
+    private static int shaderColor = 0xFFFFFFFF;
 
-    public static void drawGradientRect(Matrix4f mat, int zLevel, int left, int top, int right, int bottom, int[] color) {
-//        float[] alpha = new float[4];
-//        float[] red = new float[4];
-//        float[] green = new float[4];
-//        float[] blue = new float[4];
-//
-//        for (int i = 0; i < 4; i++) {
-//            alpha[i] = (float) (color[i] >> 24 & 255) / 255.0F;
-//            red[i] = (float) (color[i] >> 16 & 255) / 255.0F;
-//            green[i] = (float) (color[i] >> 8 & 255) / 255.0F;
-//            blue[i] = (float) (color[i] & 255) / 255.0F;
-//        }
-//
-//        Tesselator tesselator = Tesselator.getInstance();
-//        BufferBuilder bufferbuilder = tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
-//        RenderSystem.enableBlend();
-//        RenderSystem.defaultBlendFunc();
-//        RenderSystem.setShader(GameRenderer::getPositionColorShader);
-//        bufferbuilder.addVertex(mat, right, top, zLevel).setColor(red[0], green[0], blue[0], alpha[0]);
-//        bufferbuilder.addVertex(mat, left, top, zLevel).setColor(red[1], green[1], blue[1], alpha[1]);
-//        bufferbuilder.addVertex(mat, left, bottom, zLevel).setColor(red[2], green[2], blue[2], alpha[2]);
-//        bufferbuilder.addVertex(mat, right, bottom, zLevel).setColor(red[3], green[3], blue[3], alpha[3]);
-//        BufferUploader.drawWithShader(bufferbuilder.buildOrThrow());
-//        RenderSystem.disableBlend();
+    public static void drawGradientRect(@NotNull final GuiGraphicsExtractor graphics, int left, int top, int right, int bottom, int[] color) {
+        if (color == null || color.length < 4) {
+            return;
+        }
+
+        int minX = Math.min(left, right);
+        int minY = Math.min(top, bottom);
+        int maxX = Math.max(left, right) + 1;
+        int maxY = Math.max(top, bottom) + 1;
+        int width = maxX - minX;
+
+        if (width <= 0 || maxY <= minY) {
+            return;
+        }
+
+        for (int x = 0; x < width; x++) {
+            float delta = width == 1 ? 0.0F : (float)x / (width - 1);
+            int topColor = lerpColor(color[1], color[0], delta);
+            int bottomColor = lerpColor(color[2], color[3], delta);
+            graphics.fillGradient(minX + x, minY, minX + x + 1, maxY, topColor, bottomColor);
+        }
     }
 
-    public static void renderPureColorSquare(PoseStack mStack, int x, int y, int width, int height) {
-//        Matrix4f mat = mStack.last().pose();
-//        int zLevel = 0;
-//        Tesselator tesselator = Tesselator.getInstance();
-//        BufferBuilder bufferbuilder = tesselator.begin(VertexFormat.Mode.TRIANGLE_STRIP, DefaultVertexFormat.POSITION_COLOR);
-//        RenderSystem.enableBlend();
-//        RenderSystem.defaultBlendFunc();
-//        RenderSystem.setShader(GameRenderer::getPositionColorShader);
-//
-//        for (int i = 0; i <= width; i++) {
-//            float val = (float) i / width * 360f / 360f;
-//            Color top = new Color(Color.HSBtoRGB(val, 1f, 1f));
-//            bufferbuilder.addVertex(mat, x + i, y, zLevel).setColor(top.getRed() / 255f, top.getGreen() / 255f, top.getBlue() / 255f, top.getAlpha() / 255f);
-//            bufferbuilder.addVertex(mat, x + i, y + height, zLevel).setColor(top.getRed() / 255f, top.getGreen() / 255f, top.getBlue() / 255f, top.getAlpha() / 255f);
-//        }
-//
-//        // Insecure modifications
-//        BufferUploader.drawWithShader(bufferbuilder.buildOrThrow());
-//        RenderSystem.disableBlend();
+    public static void renderPureColorSquare(@NotNull final GuiGraphicsExtractor graphics, int x, int y, int width, int height) {
+        if (width <= 0 || height <= 0) {
+            return;
+        }
+
+        for (int i = 0; i < width; i++) {
+            float hue = width == 1 ? 0.0F : (float)i / (width - 1);
+            graphics.fill(x + i, y, x + i + 1, y + height, Color.HSBtoRGB(hue, 1.0F, 1.0F));
+        }
     }
 
-    public static void renderColorSquare(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int x, int y, int width, int height) {
-//        Matrix4f mat = GuiGraphicsExtractor.pose().last().pose();
-//        int zLevel = 0;
-//        RenderSystem.enableBlend();
-//        RenderSystem.defaultBlendFunc();
-//        RenderSystem.setShader(GameRenderer::getPositionColorShader);
-//        Tesselator tesselator = Tesselator.getInstance();
-//        BufferBuilder bufferbuilder = tesselator.begin(VertexFormat.Mode.TRIANGLE_STRIP, DefaultVertexFormat.POSITION_COLOR);
-//
-//        for (int i = 0; i < width; i++) {
-//            float val = (float) i / width * 360f / 360f;
-//            Color top = new Color(Color.HSBtoRGB(val, 1f, 0f));
-//            Color bot = new Color(Color.HSBtoRGB(val, 1f, 1f));
-//
-//            bufferbuilder.addVertex(mat, x + i, y, zLevel).setColor(top.getRed() / 255f, top.getGreen() / 255f, top.getBlue() / 255f, top.getAlpha() / 255f);
-//            bufferbuilder.addVertex(mat, x + i, y + height / 2f, zLevel).setColor(bot.getRed() / 255f, bot.getGreen() / 255f, bot.getBlue() / 255f, bot.getAlpha() / 255f);
-//        }
-//
-//        for (int i = 0; i < width; i++) {
-//            float val = (float) i / width * 360f / 360f;
-//            Color top = new Color(Color.HSBtoRGB(val, 1f, 1f));
-//            Color bot = new Color(Color.HSBtoRGB(val, 0f, 1f));
-//
-//            bufferbuilder.addVertex(mat, x + i, y + height / 2f, zLevel).setColor(top.getRed() / 255f, top.getGreen() / 255f, top.getBlue() / 255f, top.getAlpha() / 255f);
-//            bufferbuilder.addVertex(mat, x + i, y + height, zLevel).setColor(bot.getRed() / 255f, bot.getGreen() / 255f, bot.getBlue() / 255f, bot.getAlpha() / 255f);
-//        }
-//
-//        BufferUploader.drawWithShader(bufferbuilder.buildOrThrow());
-//        RenderSystem.disableBlend();
+    public static void renderColorSquare(@NotNull final GuiGraphicsExtractor graphics, int x, int y, int width, int height) {
+        if (width <= 0 || height <= 0) {
+            return;
+        }
+
+        int midpoint = y + Math.max(1, height / 2);
+        int maxY = y + height;
+
+        for (int i = 0; i < width; i++) {
+            float hue = width == 1 ? 0.0F : (float)i / (width - 1);
+            int dark = Color.HSBtoRGB(hue, 1.0F, 0.0F);
+            int full = Color.HSBtoRGB(hue, 1.0F, 1.0F);
+            int pale = Color.HSBtoRGB(hue, 0.0F, 1.0F);
+
+            if (midpoint > y) {
+                graphics.fillGradient(x + i, y, x + i + 1, midpoint, dark, full);
+            }
+
+            if (maxY > midpoint) {
+                graphics.fillGradient(x + i, midpoint, x + i + 1, maxY, full, pale);
+            }
+        }
     }
 
-    public static void fill(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, double pMinX, double pMinY, double pMaxX, double pMaxY, int pColor) {
-//        Matrix4f pMatrix = GuiGraphicsExtractor.pose().last().pose();
-//
-//        if (pMinX < pMaxX) {
-//            double i = pMinX;
-//            pMinX = pMaxX;
-//            pMaxX = i;
-//        }
-//
-//        if (pMinY < pMaxY) {
-//            double j = pMinY;
-//            pMinY = pMaxY;
-//            pMaxY = j;
-//        }
-//
-//        float f3 = (float) (pColor >> 24 & 255) / 255.0F;
-//        float f = (float) (pColor >> 16 & 255) / 255.0F;
-//        float f1 = (float) (pColor >> 8 & 255) / 255.0F;
-//        float f2 = (float) (pColor & 255) / 255.0F;
-//        Tesselator tesselator = Tesselator.getInstance();
-//        BufferBuilder bufferbuilder = tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
-//        RenderSystem.enableBlend();
-//        RenderSystem.defaultBlendFunc();
-//        RenderSystem.setShader(GameRenderer::getPositionColorShader);
-//        bufferbuilder.addVertex(pMatrix, (float) pMinX, (float) pMaxY, 0.0F).setColor(f, f1, f2, f3);
-//        bufferbuilder.addVertex(pMatrix, (float) pMaxX, (float) pMaxY, 0.0F).setColor(f, f1, f2, f3);
-//        bufferbuilder.addVertex(pMatrix, (float) pMaxX, (float) pMinY, 0.0F).setColor(f, f1, f2, f3);
-//        bufferbuilder.addVertex(pMatrix, (float) pMinX, (float) pMinY, 0.0F).setColor(f, f1, f2, f3);
-//        BufferUploader.drawWithShader(bufferbuilder.buildOrThrow());
-//        RenderSystem.disableBlend();
+    public static void fill(@NotNull final GuiGraphicsExtractor graphics, double pMinX, double pMinY, double pMaxX, double pMaxY, int pColor) {
+        int minX = (int)Math.floor(Math.min(pMinX, pMaxX));
+        int minY = (int)Math.floor(Math.min(pMinY, pMaxY));
+        int maxX = (int)Math.ceil(Math.max(pMinX, pMaxX));
+        int maxY = (int)Math.ceil(Math.max(pMinY, pMaxY));
+
+        if (maxX <= minX) {
+            maxX = minX + 1;
+        }
+
+        if (maxY <= minY) {
+            maxY = minY + 1;
+        }
+
+        graphics.fill(minX, minY, maxX, maxY, pColor);
     }
 
     public static void uploadTexture(NativeImage image, Identifier key) {
-//        try (image) {
-//            // DEBUG :: Export the texture
-//            //if (key.toString().contains("dynamic_normal")) {
-//            //	File file = new File(Minecraft.getInstance().gameDirectory, "texture");
-//            //	file.mkdirs();
-//            //	file = new File(file.getPath(), key.toString().replace(":", "_") + ".png");
-//            //	image.writeToFile(file);
-//            //}
-//
-//            // the other 'getTexture' call tries to register the texture immediately
-//            DynamicTexture missing = MissingTextureAtlasSprite.getTexture();
-//
-//            if (Minecraft.getInstance().getTextureManager().getTexture(key, missing) instanceof DynamicTexture texture && texture != missing) {
-//                texture.setPixels(image);
-//                texture.upload();
-//            } else {
-//                DynamicTexture layer = new DynamicTexture(image);
-//                Minecraft.getInstance().getTextureManager().register(key, layer);
-//                image.close();
-//            }
-//        } catch (Exception exception) {
-//            DragonSurvival.LOGGER.error("Failed to upload a texture: ", exception);
-//        }
+        boolean transferredOwnership = false;
+
+        try {
+            var textureManager = Minecraft.getInstance().getTextureManager();
+            AbstractTexture texture = textureManager.getTexture(key);
+
+            if (texture instanceof DynamicTexture dynamicTexture) {
+                dynamicTexture.setPixels(image);
+                dynamicTexture.upload();
+                transferredOwnership = true;
+            } else {
+                textureManager.release(key);
+                textureManager.register(key, new DynamicTexture(key::toString, image));
+                transferredOwnership = true;
+            }
+        } catch (Exception exception) {
+            DragonSurvival.LOGGER.error("Failed to upload texture {}", key, exception);
+
+            if (!transferredOwnership) {
+                image.close();
+            }
+        }
     }
 
     public static void copyTextureFromRenderTarget(RenderTarget target, Identifier key) {
-//        NativeImage image = new NativeImage(target.width, target.height, true);
-//        RenderSystem.bindTexture(target.getColorTextureId());
-//        image.downloadTexture(0, false);
-//        uploadTexture(image, key);
+        Screenshot.takeScreenshot(target, image -> uploadTexture(image, key));
     }
 
     public static @Nullable NativeImage getImageFromResource(Identifier location) {
-        NativeImage image = null;
-
-        try {
-            image = NativeImage.read(Minecraft.getInstance().getResourceManager().getResource(location).orElseThrow().open());
+        try (var input = Minecraft.getInstance().getResourceManager().getResource(location).orElseThrow().open()) {
+            return NativeImage.read(input);
         } catch (Exception exception) {
             DragonSurvival.LOGGER.warn("Texture resource {} not found!", location.getPath(), exception);
         }
 
-        return image;
+        return null;
     }
 
     public static boolean hasTexture(final Identifier resource) {
-//        DynamicTexture missing = MissingTextureAtlasSprite.getTexture();
-//        if (resource != null) {
-//            // TODO: Why does this not fetch the texture properly if you don't call this method at least once first?
-//            Minecraft.getInstance().getTextureManager().getTexture(resource);
-//            AbstractTexture texture = Minecraft.getInstance().getTextureManager().getTexture(resource, missing);
-//            return texture != missing;
-//        }
-          return false;
+        if (resource == null) {
+            return false;
+        }
+
+        Minecraft minecraft = Minecraft.getInstance();
+
+        if (minecraft.getResourceManager().getResource(resource).isPresent()) {
+            return true;
+        }
+
+        AbstractTexture texture = ((TextureManagerAccessor)minecraft.getTextureManager()).dragonSurvival$getTexturesByPath().get(resource);
+        return texture instanceof DynamicTexture;
     }
 
     public static void setShaderColor(int color) {
-//        float alpha = ARGB.alpha(color) / 255f;
-//        float red = ARGB.red(color) / 255f;
-//        float green = ARGB.green(color) / 255f;
-//        float blue = ARGB.blue(color) / 255f;
-//
-//        RenderSystem.setShaderColor(red, green, blue, alpha);
+        shaderColor = color;
     }
 
-    public static void drawGrowthCircle(final GuiGraphicsExtractor GuiGraphicsExtractor, float x, float y, float radius, int sides, float lineWidthPercent, float percent, float targetPercent, Color innerColor, Color outlineColor, Color addColor, Color subtractColor) {
+    public static void drawGrowthCircle(final GuiGraphicsExtractor graphics, float x, float y, float radius, int sides, float lineWidthPercent, float percent, float targetPercent, Color innerColor, Color outlineColor, Color addColor, Color subtractColor) {
 //        Matrix4f matrix4f = GuiGraphicsExtractor.pose().last().pose();
 //
 //        float z = 100;
@@ -272,8 +235,11 @@ public class RenderingUtils {
         return player == Minecraft.getInstance().player && Minecraft.getInstance().options.getCameraType().isFirstPerson();
     }
 
-//    @SubscribeEvent
-//    public static void registerShaders(RegisterShadersEvent event) throws IOException {
-//        event.registerShader(new ShaderInstance(event.getResourceProvider(), DragonSurvival.res("growth_circle"), DefaultVertexFormat.POSITION_TEX), instance -> growthCircleShader = instance);
-//    }
+    private static int lerpColor(int start, int end, float delta) {
+        int alpha = Math.clamp(Math.round(ARGB.alpha(start) + (ARGB.alpha(end) - ARGB.alpha(start)) * delta), 0, 255);
+        int red = Math.clamp(Math.round(ARGB.red(start) + (ARGB.red(end) - ARGB.red(start)) * delta), 0, 255);
+        int green = Math.clamp(Math.round(ARGB.green(start) + (ARGB.green(end) - ARGB.green(start)) * delta), 0, 255);
+        int blue = Math.clamp(Math.round(ARGB.blue(start) + (ARGB.blue(end) - ARGB.blue(start)) * delta), 0, 255);
+        return ARGB.color(alpha, red, green, blue);
+    }
 }
