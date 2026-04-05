@@ -14,6 +14,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
@@ -99,7 +100,7 @@ public class GrowthHUD {
         graphics.pose().pushMatrix();
         // FIXME :: UI GRAPHICS
         //graphics.pose().translate(0, 0, 300);
-        graphics.blit(StageResources.getGrowthIcon(handler.species(), handler.stageKey()).hoverIcon(), circleX + 7, circleY + 6, 0, 0, 20, 20, 20, 20);
+        graphics.blit(RenderPipelines.GUI_TEXTURED, StageResources.getGrowthIcon(handler.species(), handler.stageKey()).hoverIcon(), circleX + 7, circleY + 6, 0, 0, 20, 20, 20, 20);
         graphics.pose().popMatrix();
     }
 }

@@ -30,6 +30,7 @@ import by.dragonsurvivalteam.dragonsurvival.client.render.entity.creatures.Spear
 import by.dragonsurvivalteam.dragonsurvival.client.render.entity.dragon.DragonRenderer;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.loader.DefaultPartLoader;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.loader.DragonPartLoader;
+import by.dragonsurvivalteam.dragonsurvival.client.util.RenderingUtils;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.mixins.client.LocalPlayerAccessor;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSBlockEntities;
@@ -48,6 +49,7 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.AddClientReloadListenersEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
+import net.neoforged.neoforge.client.event.RegisterRenderPipelinesEvent;
 import net.neoforged.neoforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
 import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
@@ -75,6 +77,7 @@ public class DragonSurvivalClient {
         bus.addListener(this::registerGuiLayers);
         bus.addListener(this::registerTooltips);
         bus.addListener(this::registerItemExtensions);
+        bus.addListener(RenderingUtils::registerRenderPipelines);
 
         NeoForge.EVENT_BUS.addListener(this::incrementTimer);
         NeoForge.EVENT_BUS.addListener(this::preventThirdPersonWhenSuffocating);

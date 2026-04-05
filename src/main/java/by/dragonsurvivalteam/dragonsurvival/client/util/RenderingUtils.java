@@ -1,20 +1,33 @@
 package by.dragonsurvivalteam.dragonsurvival.client.util;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.client.DragonSurvivalClient;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
 import by.dragonsurvivalteam.dragonsurvival.mixins.client.TextureManagerAccessor;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
+import com.mojang.blaze3d.pipeline.BlendFunction;
+import com.mojang.blaze3d.pipeline.ColorTargetState;
+import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.platform.NativeImage;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.Screenshot;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.navigation.ScreenRectangle;
+import net.minecraft.client.gui.render.TextureSetup;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.state.gui.GuiElementRenderState;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.entity.player.Player;
+import net.neoforged.neoforge.client.event.RegisterRenderPipelinesEvent;
+import org.joml.Matrix3x2f;
+import org.joml.Matrix3x2fc;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -22,7 +35,20 @@ import java.awt.Color;
 
 //@EventBusSubscriber(Dist.CLIENT)
 public class RenderingUtils {
-    private static final double TWO_PI = Math.PI * 2.0;
+    private static final Identifier GROWTH_CIRCLE_SHADER = DragonSurvival.res("core/growth_circle");
+    private static final Identifier SWIRL_NOISE_TEXTURE = DragonSurvival.res("textures/shader/swirl_noise.png");
+    private static final Identifier GROWTH_GRADIENT_TEXTURE = DragonSurvival.res("textures/shader/growth_bar_gradient.png");
+    private static final int GROWTH_CIRCLE_PARAM_TEXTURE_HEIGHT = 8;
+    private static final RenderPipeline GROWTH_CIRCLE_PIPELINE = RenderPipeline.builder(RenderPipelines.MATRICES_PROJECTION_SNIPPET)
+        .withLocation(DragonSurvival.res("pipeline/growth_circle"))
+        .withVertexShader(GROWTH_CIRCLE_SHADER)
+        .withFragmentShader(GROWTH_CIRCLE_SHADER)
+        .withSampler("Sampler0")
+        .withSampler("Sampler1")
+        .withSampler("Sampler2")
+        .withColorTargetState(new ColorTargetState(BlendFunction.TRANSLUCENT))
+        .withVertexFormat(DefaultVertexFormat.POSITION_TEX, VertexFormat.Mode.QUADS)
+        .build();
 
     @Translation(key = "min_near_plane", type = Translation.Type.CONFIGURATION, comments = {
             "Lower values prevent x-ray through blocks when using a small entity scale",
@@ -32,6 +58,7 @@ public class RenderingUtils {
     public static float MIN_NEAR_PLANE = 0.02f;
 
     private static int shaderColor = 0xFFFFFFFF;
+    private static @Nullable DynamicTexture growthCircleParameterTexture;
 
     public static void drawGradientRect(@NotNull final GuiGraphicsExtractor graphics, int left, int top, int right, int bottom, int[] color) {
         if (color == null || color.length < 4) {
@@ -167,51 +194,32 @@ public class RenderingUtils {
     }
 
     public static void drawGrowthCircle(final GuiGraphicsExtractor graphics, float x, float y, float radius, int sides, float lineWidthPercent, float percent, float targetPercent, Color innerColor, Color outlineColor, Color addColor, Color subtractColor) {
-//        Matrix4f matrix4f = GuiGraphicsExtractor.pose().last().pose();
-//
-//        float z = 100;
-//        GlStateBackup state = new GlStateBackup();
-//        RenderSystem.backupGlState(state);
-//        RenderSystem.backupProjectionMatrix();
-//
-//        RenderSystem.enableBlend();
-//        RenderSystem.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
-//        RenderSystem.disableDepthTest();
-//        RenderSystem.disableCull();
-//        RenderSystem.setShaderColor(1F, 1F, 1F, 1.0f);
-//        Tesselator tesselator = Tesselator.getInstance();
-//        BufferBuilder bufferbuilder = tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-//        float trueX = x + radius;
-//        float trueY = y + radius;
-//        bufferbuilder.addVertex(matrix4f, trueX - radius, trueY - radius, z).setUv(0, 1);
-//        bufferbuilder.addVertex(matrix4f, trueX + radius, trueY - radius, z).setUv(1, 1);
-//        bufferbuilder.addVertex(matrix4f, trueX + radius, trueY + radius, z).setUv(1, 0);
-//        bufferbuilder.addVertex(matrix4f, trueX - radius, trueY + radius, z).setUv(0, 0);
-//
-//        growthCircleShader.setSampler("Sampler0", Minecraft.getInstance().getTextureManager().getTexture(DragonSurvival.res("textures/shader/swirl_noise.png")));
-//        growthCircleShader.setSampler("Sampler1", Minecraft.getInstance().getTextureManager().getTexture(DragonSurvival.res("textures/shader/growth_bar_gradient.png")));
-//        growthCircleShader.getUniform("Sides").set(sides);
-//        growthCircleShader.getUniform("LineWidth").set(lineWidthPercent);
-//        float[] colorComponents = new float[4];
-//        innerColor.getColorComponents(colorComponents);
-//        growthCircleShader.getUniform("InnerColor").set(colorComponents[0], colorComponents[1], colorComponents[2], 1.0f);
-//        outlineColor.getColorComponents(colorComponents);
-//        growthCircleShader.getUniform("OutlineColor").set(colorComponents[0], colorComponents[1], colorComponents[2], 1.0f);
-//        addColor.getColorComponents(colorComponents);
-//        growthCircleShader.getUniform("AddColor").set(colorComponents[0], colorComponents[1], colorComponents[2], 1.0f);
-//        subtractColor.getColorComponents(colorComponents);
-//        growthCircleShader.getUniform("SubtractColor").set(colorComponents[0], colorComponents[1], colorComponents[2], 1.0f);
-//        growthCircleShader.getUniform("Percent").set(percent);
-//        growthCircleShader.getUniform("TargetPercent").set(targetPercent);
-//        growthCircleShader.getUniform("ProjMat").set(RenderSystem.getProjectionMatrix());
-//        growthCircleShader.getUniform("ModelViewMat").set(RenderSystem.getModelViewMatrix());
-//        growthCircleShader.getUniform("Time").set((float) Blaze3D.getTime() % 1000.f);
-//        growthCircleShader.apply();
-//        BufferUploader.draw(bufferbuilder.buildOrThrow());
-//        growthCircleShader.clear();
-//
-//        RenderSystem.restoreProjectionMatrix();
-//        RenderSystem.restoreGlState(state);
+        Minecraft minecraft = Minecraft.getInstance();
+        AbstractTexture swirlNoise = minecraft.getTextureManager().getTexture(SWIRL_NOISE_TEXTURE);
+        AbstractTexture growthGradient = minecraft.getTextureManager().getTexture(GROWTH_GRADIENT_TEXTURE);
+        int clampedSides = Math.max(3, sides);
+        float clampedLineWidth = Math.clamp(lineWidthPercent, 0.0F, 0.43F);
+        float clampedPercent = Math.clamp(percent, 0.0F, 1.0F);
+        float clampedTargetPercent = Math.clamp(targetPercent, 0.0F, 1.0F);
+        DynamicTexture parameterTexture = getGrowthCircleParameterTexture();
+        updateGrowthCircleParameterTexture(parameterTexture, clampedSides, clampedLineWidth, clampedPercent, clampedTargetPercent, innerColor, outlineColor, addColor, subtractColor);
+
+        graphics.submitGuiElementRenderState(new GrowthCircleRenderState(
+            new TextureSetup(
+                swirlNoise.getTextureView(),
+                growthGradient.getTextureView(),
+                parameterTexture.getTextureView(),
+                swirlNoise.getSampler(),
+                growthGradient.getSampler(),
+                parameterTexture.getSampler()
+            ),
+            new Matrix3x2f(graphics.pose()),
+            x,
+            y,
+            x + radius * 2.0F,
+            y + radius * 2.0F,
+            graphics.peekScissorStack()
+        ));
     }
 
     public static float getNearPlane(float original) {
@@ -241,5 +249,95 @@ public class RenderingUtils {
         int green = Math.clamp(Math.round(ARGB.green(start) + (ARGB.green(end) - ARGB.green(start)) * delta), 0, 255);
         int blue = Math.clamp(Math.round(ARGB.blue(start) + (ARGB.blue(end) - ARGB.blue(start)) * delta), 0, 255);
         return ARGB.color(alpha, red, green, blue);
+    }
+
+    public static void registerRenderPipelines(final RegisterRenderPipelinesEvent event) {
+        event.registerPipeline(GROWTH_CIRCLE_PIPELINE);
+    }
+
+    private static DynamicTexture getGrowthCircleParameterTexture() {
+        if (growthCircleParameterTexture == null) {
+            growthCircleParameterTexture = new DynamicTexture(() -> "Growth Circle Params", 1, GROWTH_CIRCLE_PARAM_TEXTURE_HEIGHT, true);
+        }
+
+        return growthCircleParameterTexture;
+    }
+
+    // Pack all the uniform data into a texture instead so that we can fit Minecraft's guiElementRenderState expectations
+    private static void updateGrowthCircleParameterTexture(
+        final DynamicTexture parameterTexture,
+        final int sides,
+        final float lineWidthPercent,
+        final float percent,
+        final float targetPercent,
+        final Color innerColor,
+        final Color outlineColor,
+        final Color addColor,
+        final Color subtractColor
+    ) {
+        NativeImage pixels = parameterTexture.getPixels();
+        pixels.setPixel(0, 0, argb(innerColor));
+        pixels.setPixel(0, 1, argb(outlineColor));
+        pixels.setPixel(0, 2, argb(addColor));
+        pixels.setPixel(0, 3, argb(subtractColor));
+        pixels.setPixel(0, 4, ARGB.color(255, ARGB.as8BitChannel(lineWidthPercent), ARGB.as8BitChannel(percent), ARGB.as8BitChannel(targetPercent)));
+        pixels.setPixel(0, 5, ARGB.color(255, Math.min(sides, 255), 0, 0));
+        pixels.setPixel(0, 6, ARGB.colorFromFloat(1.0F, (DragonSurvivalClient.TIMER % 64.0F) / 64.0F, 0.0F, 0.0F));
+        pixels.setPixel(0, 7, shaderColor);
+        parameterTexture.upload();
+    }
+
+    private static int argb(final Color color) {
+        float[] components = color.getRGBComponents(null);
+        return ARGB.colorFromFloat(components[3], components[0], components[1], components[2]);
+    }
+
+    private record GrowthCircleRenderState(
+        TextureSetup textureSetup,
+        Matrix3x2f pose,
+        float x0,
+        float y0,
+        float x1,
+        float y1,
+        @Nullable ScreenRectangle scissorArea,
+        @Nullable ScreenRectangle bounds
+    ) implements GuiElementRenderState {
+        private GrowthCircleRenderState(
+            final TextureSetup textureSetup,
+            final Matrix3x2f pose,
+            final float x0,
+            final float y0,
+            final float x1,
+            final float y1,
+            final @Nullable ScreenRectangle scissorArea
+        ) {
+            this(textureSetup, pose, x0, y0, x1, y1, scissorArea, getBounds(x0, y0, x1, y1, pose, scissorArea));
+        }
+
+        @Override
+        public void buildVertices(final com.mojang.blaze3d.vertex.VertexConsumer vertexConsumer) {
+            vertexConsumer.addVertexWith2DPose(this.pose(), this.x0(), this.y0()).setUv(0.0F, 1.0F);
+            vertexConsumer.addVertexWith2DPose(this.pose(), this.x0(), this.y1()).setUv(0.0F, 0.0F);
+            vertexConsumer.addVertexWith2DPose(this.pose(), this.x1(), this.y1()).setUv(1.0F, 0.0F);
+            vertexConsumer.addVertexWith2DPose(this.pose(), this.x1(), this.y0()).setUv(1.0F, 1.0F);
+        }
+
+        @Override
+        public RenderPipeline pipeline() {
+            return GROWTH_CIRCLE_PIPELINE;
+        }
+
+        private static @Nullable ScreenRectangle getBounds(
+            final float x0,
+            final float y0,
+            final float x1,
+            final float y1,
+            final Matrix3x2fc pose,
+            final @Nullable ScreenRectangle scissorArea
+        ) {
+            ScreenRectangle bounds = new ScreenRectangle((int)Math.floor(x0), (int)Math.floor(y0), Math.max(1, (int)Math.ceil(x1 - x0)), Math.max(1, (int)Math.ceil(y1 - y0)))
+                .transformMaxBounds(pose);
+            return scissorArea != null ? scissorArea.intersection(bounds) : bounds;
+        }
     }
 }
