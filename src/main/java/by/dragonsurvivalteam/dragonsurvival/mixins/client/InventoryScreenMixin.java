@@ -1,9 +1,12 @@
 package by.dragonsurvivalteam.dragonsurvival.mixins.client;
 
+import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.render.ClientDragonRenderer;
 import by.dragonsurvivalteam.dragonsurvival.client.render.entity.dragon.DragonRenderer;
+import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
+import by.dragonsurvivalteam.dragonsurvival.common.handlers.DragonSizeHandler;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.minecraft.client.Minecraft;
@@ -13,7 +16,9 @@ import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.gui.screens.recipebook.RecipeUpdateListener;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.InventoryMenu;
@@ -53,7 +58,7 @@ public abstract class InventoryScreenMixin extends AbstractRecipeBookScreen<Inve
         }
 
         LivingEntity renderEntity = dragon != null ? dragon : entity;
-        float partialTick = Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(false);
+        float partialTick = DragonSurvival.PROXY.getPartialTick();
         LivingEntityRenderState renderState = (LivingEntityRenderState)DragonRenderer.createUIRenderState(
                 renderEntity,
                 partialTick,
@@ -64,8 +69,13 @@ public abstract class InventoryScreenMixin extends AbstractRecipeBookScreen<Inve
         renderState.bodyRot = 180.0F;
         renderState.yRot = 0.0F;
         renderState.xRot = 0.0F;
-        renderState.boundingBoxWidth = renderState.boundingBoxWidth / renderState.scale;
-        renderState.boundingBoxHeight = renderState.boundingBoxHeight / renderState.scale;
+
+        Player playerEntityToRender = (Player)entityToRender;
+        DragonStateHandler handler = DragonStateProvider.getData(playerEntityToRender);
+        float scale = (float) handler.getVisualScale(playerEntityToRender, partialTick);
+        EntityDimensions dimensions = DragonSizeHandler.calculateDimensions(handler, playerEntityToRender, handler.previousPose);
+        renderState.boundingBoxWidth = dimensions.width() / scale;
+        renderState.boundingBoxHeight = dimensions.height() / scale;
         renderState.scale = 1.0F;
 
         Quaternionf rotation = new Quaternionf().rotateZ((float) Math.PI);
