@@ -72,7 +72,7 @@ public abstract class InventoryScreenMixin extends AbstractRecipeBookScreen<Inve
 
         Player playerEntityToRender = (Player)entityToRender;
         DragonStateHandler handler = DragonStateProvider.getData(playerEntityToRender);
-        float scale = (float) handler.getVisualScale(playerEntityToRender, partialTick);
+        float scale = (float) playerEntityToRender.getAttribute(Attributes.SCALE).getValue();
         EntityDimensions dimensions = DragonSizeHandler.calculateDimensions(handler, playerEntityToRender, handler.previousPose);
         renderState.boundingBoxWidth = dimensions.width() / scale;
         renderState.boundingBoxHeight = dimensions.height() / scale;
