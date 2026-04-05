@@ -14,6 +14,7 @@ import com.mojang.blaze3d.buffers.Std140Builder;
 import com.mojang.blaze3d.buffers.Std140SizeCalculator;
 import com.mojang.blaze3d.pipeline.BlendFunction;
 import com.mojang.blaze3d.pipeline.ColorTargetState;
+import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.pipeline.TextureTarget;
 import com.mojang.blaze3d.systems.CommandEncoder;
 import com.mojang.blaze3d.systems.RenderPass;
@@ -35,7 +36,7 @@ import java.util.OptionalInt;
 @EventBusSubscriber(value = Dist.CLIENT)
 public class DragonEditorHandler {
     private static final Identifier SKIN_GENERATION_SHADER = DragonSurvival.res("core/skin_generation");
-    private static final com.mojang.blaze3d.pipeline.RenderPipeline SKIN_GENERATION_PIPELINE = com.mojang.blaze3d.pipeline.RenderPipeline.builder(RenderPipelines.POST_PROCESSING_SNIPPET)
+    private static final RenderPipeline SKIN_GENERATION_PIPELINE = RenderPipeline.builder(RenderPipelines.POST_PROCESSING_SNIPPET)
         .withLocation(DragonSurvival.res("pipeline/skin_generation"))
         .withVertexShader(SKIN_GENERATION_SHADER)
         .withFragmentShader(SKIN_GENERATION_SHADER)
