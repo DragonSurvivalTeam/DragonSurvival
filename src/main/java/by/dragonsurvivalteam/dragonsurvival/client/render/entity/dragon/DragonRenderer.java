@@ -591,6 +591,10 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
     }
 
     public @NotNull Vec3 getRenderOffset(@NotNull final DragonRenderData renderData) {
+        if (renderData.inInventory()) {
+            return Vec3.ZERO;
+        }
+
         return getModelOffset(renderData);
     }
 

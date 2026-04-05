@@ -127,7 +127,7 @@ public class DragonEmoteScreen extends Screen {
 
     @Override
     public void extractRenderState(@NotNull final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
-        if (minecraft == null || minecraft.player == null) {
+        if (minecraft.player == null) {
             return;
         }
 
