@@ -54,6 +54,104 @@ runs {
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
+def renderDocExecutable = providers.gradleProperty('renderdocCmd')
+		.orElse(providers.environmentVariable('RENDERDOCCMD'))
+		.orElse(providers.environmentVariable('RENDERDOC_CMD'))
+		.orElse('C:/Program Files/RenderDoc/renderdoccmd.exe')
+
+def renderDocCaptureFile = providers.gradleProperty('renderdocCaptureFile')
+		.orElse(providers.environmentVariable('RENDERDOC_CAPTURE_FILE'))
+
+def formatPowerShellStringLiteral = { String arg ->
+	if (arg == null) {
+		return "''"
+	}
+
+	return "'" + arg.replace("'", "''") + "'"
+}
+
+tasks.register('runClientRenderDoc', Exec) {
+	group = 'NeoGradle/Runs'
+	description = 'Runs the client run through RenderDoc.'
+
+	dependsOn {
+		def runClientTask = tasks.named('runClient', JavaExec).get()
+		runClientTask.taskDependencies.getDependencies(runClientTask).findAll { it != runClientTask }
+	}
+	standardInput = System.in
+
+	doFirst {
+		def runClientTask = tasks.named('runClient', JavaExec).get()
+		def renderDocCmd = file(renderDocExecutable.get())
+
+		if (!renderDocCmd.exists()) {
+			throw new GradleException("RenderDoc executable not found at ${renderDocCmd}. Set -PrenderdocCmd=... or RENDERDOCCMD/RENDERDOC_CMD.")
+		}
+
+		def clientCommand = []
+		def javaLauncher = runClientTask.javaLauncher.orNull
+		def javaExecutable = javaLauncher != null ? javaLauncher.executablePath.asFile.absolutePath : runClientTask.executable
+
+		if (!javaExecutable) {
+			throw new GradleException('Could not resolve the Java executable for runClient.')
+		}
+
+		clientCommand.addAll(runClientTask.allJvmArgs.findAll { it != null }.collect { it.toString() })
+
+		def mainModule = runClientTask.mainModule.orNull
+		def mainClass = runClientTask.mainClass.orNull
+
+		if (mainModule) {
+			clientCommand.addAll(['--module', mainClass ? "${mainModule}/${mainClass}" : mainModule])
+		} else {
+			def classpath = runClientTask.classpath
+
+			if (classpath != null && !classpath.isEmpty()) {
+				clientCommand.addAll(['-cp', classpath.asPath])
+			}
+
+			if (mainClass) {
+				clientCommand << mainClass
+			}
+		}
+
+		clientCommand.addAll(runClientTask.args.findAll { it != null }.collect { it.toString() })
+		clientCommand.addAll(runClientTask.argumentProviders.collectMany { it.asArguments() }.findAll { it != null }.collect { it.toString() })
+
+		def launcherScript = layout.buildDirectory.file('tmp/renderdoc/runClientRenderDoc-launch.ps1').get().asFile
+		launcherScript.parentFile.mkdirs()
+		def launcherArgs = clientCommand.collect(formatPowerShellStringLiteral).join(",${System.lineSeparator()}    ")
+		launcherScript.setText("""\
+			\$ErrorActionPreference = 'Stop'
+			\$clientArgs = @(
+				${launcherArgs}
+			)
+			& ${formatPowerShellStringLiteral(javaExecutable)} @clientArgs
+			exit \$LASTEXITCODE
+			""".stripIndent(), 'UTF-8')
+
+		def powershellExecutable = new File(System.getenv('WINDIR') ?: 'C:/Windows', 'System32/WindowsPowerShell/v1.0/powershell.exe').absolutePath
+
+		def renderDocCommand = [
+				renderDocCmd.absolutePath,
+				'capture',
+				'--working-dir', runClientTask.workingDir.absolutePath,
+				'--wait-for-exit',
+				'--opt-hook-children'
+		]
+
+		if (renderDocCaptureFile.present) {
+			renderDocCommand.addAll(['--capture-file', file(renderDocCaptureFile.get()).absolutePath])
+		}
+
+		renderDocCommand.addAll([powershellExecutable, '-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', launcherScript.absolutePath])
+
+		workingDir(runClientTask.workingDir)
+		environment(runClientTask.environment)
+		commandLine(renderDocCommand)
+	}
+}
+
 repositories {
 	maven {
 		name = 'GeckoLib'
