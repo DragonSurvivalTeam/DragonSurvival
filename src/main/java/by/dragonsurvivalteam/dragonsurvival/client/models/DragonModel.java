@@ -50,7 +50,7 @@ public class DragonModel extends GeoModel<DragonEntity> {
     @Override
     public @NotNull Identifier getTextureResource(final GeoRenderState renderState) {
         DragonRenderer.DragonRenderData renderData = renderState.getGeckolibData(DragonRenderer.DRAGON_RENDER_DATA);
-        if (overrideTexture != null && RenderingUtils.hasTexture(overrideTexture)) {
+        if (RenderingUtils.hasTexture(overrideTexture)) {
             return overrideTexture;
         }
 
@@ -60,12 +60,11 @@ public class DragonModel extends GeoModel<DragonEntity> {
             return defaultTexture;
         }
 
-        DragonStateHandler handler = renderData != null ? renderData.handler() : null;
+        DragonStateHandler handler = renderData.handler();
 
         if (handler == null) {
             return defaultTexture;
         }
-        DragonStageCustomization customization = handler.getCurrentStageCustomization();
 
         // Don't try to fetch skins if it is a fake client player; the only case where we need custom skins for a fake client player
         // is in the dragon skins screen, and we already have special logic for that outside of this getTextureResource method
@@ -81,10 +80,9 @@ public class DragonModel extends GeoModel<DragonEntity> {
             return DragonSurvival.res("textures/dragon/" + handler.speciesId().getPath() + "/blank_skin.png");
         }
 
-        ResourceKey<DragonStage> stageKey = handler.stageKey();
         Identifier texture = dynamicTexture(player, handler, false);
 
-        if (customization.defaultSkin) {
+        if (handler.getCurrentStageCustomization().defaultSkin) {
             return StageResources.getDefaultSkin(handler.species(), handler.stageKey(), false);
         }
 

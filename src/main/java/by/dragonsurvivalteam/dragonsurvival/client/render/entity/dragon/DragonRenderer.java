@@ -262,15 +262,7 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
 
         withRenderLayer(new DragonGlowLayerRenderer<>(this));
         withRenderLayer(new DragonArmorRenderLayer<>(this));
-
-        /*getRenderLayers().add(new DragonItemRenderLayer(this, (bone, animatable) -> {
-            if (bone.getName().equals(ClientDragonRenderer.renderItemsInMouth ? "RightItem_jaw" : "RightItem")) {
-                return animatable.getMainHandItem();
-            } else if (bone.getName().equals(ClientDragonRenderer.renderItemsInMouth ? "LeftItem_jaw" : "LeftItem")) {
-                return animatable.getOffhandItem();
-            }
-            return null;
-        }, (bone, animatable) -> null));*/
+        withRenderLayer(new DragonItemRenderLayer<>(context, this));
 
         // FIXME :: COMPAT
         /*if (ModCheck.isModLoaded(ModCheck.SOPHISTICATED_BACKPACKS)) {
