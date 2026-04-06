@@ -2,7 +2,6 @@ package by.dragonsurvivalteam.dragonsurvival.client.models;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.render.entity.dragon.DragonRenderer;
-import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.DragonEditorHandler;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.DragonStageCustomization;
 import by.dragonsurvivalteam.dragonsurvival.client.skins.DragonSkins;
 import by.dragonsurvivalteam.dragonsurvival.client.util.FakeClientPlayer;
@@ -83,16 +82,9 @@ public class DragonModel extends GeoModel<DragonEntity> {
         }
 
         ResourceKey<DragonStage> stageKey = handler.stageKey();
-        if (handler.needsSkinRecompilation()) {
-            DragonEditorHandler.generateSkinTextures(player, handler);
-            handler.getSkinData().isCompiled.put(handler.stageKey(), true);
-            handler.getSkinData().recompileSkin.put(handler.stageKey(), false);
-        }
-
         Identifier texture = dynamicTexture(player, handler, false);
 
-        // Show the default skin while we are compiling if we haven't already compiled the skin
-        if (customization.defaultSkin || !handler.getSkinData().isCompiled.getOrDefault(stageKey, false) || !RenderingUtils.hasTexture(texture)) {
+        if (customization.defaultSkin) {
             return StageResources.getDefaultSkin(handler.species(), handler.stageKey(), false);
         }
 

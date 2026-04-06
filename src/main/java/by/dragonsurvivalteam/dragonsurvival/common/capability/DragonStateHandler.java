@@ -771,7 +771,7 @@ public class DragonStateHandler extends EntityStateHandler {
     }
 
     public boolean needsSkinRecompilation() {
-        return isDragon() && getSkinData().recompileSkin.getOrDefault(stageKey(), true);
+        return isDragon() && getSkinData().needsSkinCompilation.getOrDefault(stageKey(), true);
     }
 
     public double getSavedDragonAge(final ResourceKey<DragonSpecies> type) {

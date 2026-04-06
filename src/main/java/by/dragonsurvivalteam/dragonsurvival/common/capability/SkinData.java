@@ -23,8 +23,7 @@ import java.util.Map;
 public class SkinData implements ValueIOSerializable {
     public static final String RENDER_CUSTOM_SKIN = "render_custom_skin";
 
-    public final Map<ResourceKey<DragonStage>, Boolean> recompileSkin = new HashMap<>();
-    public final Map<ResourceKey<DragonStage>, Boolean> isCompiled = new HashMap<>();
+    public final Map<ResourceKey<DragonStage>, Boolean> needsSkinCompilation = new HashMap<>();
     public final Lazy<HashMap<ResourceKey<DragonSpecies>, SkinPreset>> skinPresets = Lazy.of(this::initialize);
 
     public boolean renderCustomSkin;
@@ -49,7 +48,11 @@ public class SkinData implements ValueIOSerializable {
     }
 
     public void compileSkin(final ResourceKey<DragonStage> dragonStage) {
-        recompileSkin.put(dragonStage, true);
+        needsSkinCompilation.put(dragonStage, true);
+    }
+
+    public void markSkinCompiled(final ResourceKey<DragonStage> dragonStage) {
+        needsSkinCompilation.put(dragonStage, false);
     }
 
     public Lazy<DragonStageCustomization> get(final ResourceKey<DragonSpecies> dragonSpecies, final ResourceKey<DragonStage> dragonStage) {

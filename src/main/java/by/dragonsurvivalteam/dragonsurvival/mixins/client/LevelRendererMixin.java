@@ -1,26 +1,18 @@
 package by.dragonsurvivalteam.dragonsurvival.mixins.client;
 
 import by.dragonsurvivalteam.dragonsurvival.client.render.ClientDragonRenderer;
-import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.DragonEditorHandler;
 import by.dragonsurvivalteam.dragonsurvival.client.util.RenderingUtils;
-import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
-import com.mojang.blaze3d.buffers.GpuBufferSlice;
-import com.mojang.blaze3d.resource.GraphicsResourceAllocator;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.chunk.ChunkSectionsToRender;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.state.level.LevelRenderState;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
-import org.joml.Matrix4fc;
-import org.joml.Vector4f;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -56,33 +48,4 @@ public abstract class LevelRendererMixin {
         entityRenderDispatcher.submit(state, levelRenderState.cameraRenderState, state.x - cameraPos.x(), state.y - cameraPos.y(), state.z - cameraPos.z(), poseStack, output);
     }
 
-    @Inject(method = "renderLevel", at = @At("HEAD"))
-    private void dragonSurvival$warmQueuedDragonSkins(
-        final GraphicsResourceAllocator resourceAllocator,
-        final DeltaTracker deltaTracker,
-        final boolean renderOutline,
-        final net.minecraft.client.renderer.state.level.CameraRenderState cameraState,
-        final Matrix4fc modelViewMatrix,
-        final GpuBufferSlice terrainFog,
-        final Vector4f fogColor,
-        final boolean shouldRenderSky,
-        final ChunkSectionsToRender chunkSectionsToRender,
-        final CallbackInfo callback
-    ) {
-        ClientDragonRenderer.process(dragon -> {
-            Player player = dragon.getPlayer();
-
-            if (player == null) {
-                return;
-            }
-
-            DragonStateHandler handler = DragonStateProvider.getData(player);
-
-            if (handler.needsSkinRecompilation()) {
-                DragonEditorHandler.generateSkinTextures(player, handler);
-                handler.getSkinData().isCompiled.put(handler.stageKey(), true);
-                handler.getSkinData().recompileSkin.put(handler.stageKey(), false);
-            }
-        });
-    }
 }

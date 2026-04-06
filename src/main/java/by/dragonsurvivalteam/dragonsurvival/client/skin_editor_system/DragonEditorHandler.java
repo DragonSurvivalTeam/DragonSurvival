@@ -54,6 +54,15 @@ public class DragonEditorHandler {
 
     private static MappableRingBuffer skinGenerationUniformBuffer;
 
+    public static void ensureSkinTexturesGenerated(final Player player, final DragonStateHandler handler) {
+        if (player == null || handler == null || !handler.needsSkinRecompilation()) {
+            return;
+        }
+
+        generateSkinTextures(player, handler);
+        handler.getSkinData().markSkinCompiled(handler.stageKey());
+    }
+
     public static void generateSkinTextures(final Player player, final DragonStateHandler handler) {
         if (player == null || handler.body() == null) {
             return;

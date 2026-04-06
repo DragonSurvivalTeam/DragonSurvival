@@ -1,6 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.client.render.entity.dragon;
 
 import by.dragonsurvivalteam.dragonsurvival.client.render.ClientDragonRenderer;
+import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.DragonEditorHandler;
 import by.dragonsurvivalteam.dragonsurvival.client.util.FakeClientPlayerUtils;
 import by.dragonsurvivalteam.dragonsurvival.client.util.RenderingUtils;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
@@ -504,6 +505,8 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
         };
 
         renderPassInfo.addBoneUpdater(wingBoneHider);
+
+        DragonEditorHandler.ensureSkinTexturesGenerated(renderData.texturePlayer(), renderData.handler());
 
         super.preRenderPass(renderPassInfo, renderTasks);
     }
