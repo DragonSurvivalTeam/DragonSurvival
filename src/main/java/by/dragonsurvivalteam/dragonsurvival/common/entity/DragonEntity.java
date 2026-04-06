@@ -78,18 +78,6 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
     /** Durations of jumps */
     public static final ConcurrentHashMap<Integer, Boolean> DRAGONS_JUMPING = new ConcurrentHashMap<>();
 
-    public final ArrayList<Double> headYawHistory = new ArrayList<>();
-    public double currentHeadYawChange;
-
-    public final ArrayList<Double> bodyYawHistory = new ArrayList<>();
-    public double currentBodyYawChange;
-
-    public final ArrayList<Double> headPitchHistory = new ArrayList<>();
-    public double currentHeadPitchChange;
-
-    public final ArrayList<Double> verticalVelocityHistory = new ArrayList<>();
-    public double currentTailMotionUp;
-
     public AnimationController<DragonEntity> mainAnimationController;
 
     /** This reference must be updated whenever player is remade, for example, when changing dimensions */
