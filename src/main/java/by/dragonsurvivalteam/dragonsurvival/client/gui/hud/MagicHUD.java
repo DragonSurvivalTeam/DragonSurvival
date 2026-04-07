@@ -8,7 +8,6 @@ import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.ManaHandler;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigRange;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
-import by.dragonsurvivalteam.dragonsurvival.mixins.client.GuiGraphicsExtractorAccess;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAttributes;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
@@ -275,10 +274,6 @@ public class MagicHUD {
                             lerpToColor(x, ARGB.color(0xFF, DSColors.WHITE));
                         }
 
-                        // FIXME :: UI GRAPHICS
-                        //Color outlineColor = colors[x].color;
-                        //graphics.setColor(outlineColor.getRedFloat(), outlineColor.getGreenFloat(), outlineColor.getBlueFloat(), outlineColor.getAlphaFloat());
-
                         int uOffset;
                         int uWidth;
                         int xPos;
@@ -297,11 +292,9 @@ public class MagicHUD {
                             xPos = posX + x * 20 + 1;
                         }
 
-                        // FIXME :: UI GRAPHICS
-                        graphics.blit(RenderPipelines.GUI_TEXTURED, VANILLA_WIDGETS, xPos, posY - 2, -50, uOffset, 0, uWidth, 22, 256, 256);
-                        //graphics.setColor(1f, 1f, 1f, 1f);
+                        graphics.blit(RenderPipelines.GUI_TEXTURED, VANILLA_WIDGETS, xPos, posY - 2, uOffset, 0, uWidth, 22, 256, 256, colors[x].color);
 
-                        graphics.blitSprite(RenderPipelines.GUI_TEXTURED, ability.getIcon(), posX + x * sizeX + 3, posY + 1, 0, 16, 16);
+                        graphics.blitSprite(RenderPipelines.GUI_TEXTURED, ability.getIcon(), posX + x * sizeX + 3, posY + 1, 16, 16);
 
                         float skillCooldown = ability.value().activation().getCooldown(ability.level());
                         float currentCooldown = ability.cooldown() - Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(false);
@@ -319,15 +312,19 @@ public class MagicHUD {
                     }
                 }
 
-                if (magic.getSelectedAbility() != null) {
-                    // FIXME :: UI GRAPHICS
-                    //Color outlineColor = colors[magic.getSelectedAbilitySlot()].color;
-                    //graphics.setColor(outlineColor.getRedFloat(), outlineColor.getGreenFloat(), outlineColor.getBlueFloat(), outlineColor.getAlphaFloat());
-                }
-
-                graphics.blit(RenderPipelines.GUI_TEXTURED, VANILLA_WIDGETS, posX + sizeX * magic.getSelectedAbilitySlot() - 1, posY - 3, 2, 0, 22, 24, 24, 256, 256);
-                // FIXME :: UI GRAPHICS
-                //graphics.setColor(1f, 1f, 1f, 1f);
+                graphics.blit(
+                        RenderPipelines.GUI_TEXTURED,
+                        VANILLA_WIDGETS,
+                        posX + sizeX * magic.getSelectedAbilitySlot() - 1,
+                        posY - 3,
+                        0,
+                        22,
+                        24,
+                        24,
+                        256,
+                        256,
+                        colors[magic.getSelectedAbilitySlot()].color
+                );
             }
 
             float reservedMana = ManaHandler.getReservedMana(player);
@@ -423,12 +420,21 @@ public class MagicHUD {
                 DragonStateHandler handler = DragonStateProvider.getData(player);
                 graphics.blit(handler.species().value().miscResources().castBar(), startX, startY, 0, 0, 196, 47, 196, 47);
 
-                //Color color = new Color(DSColors.toARGB(handler.species().value().miscResources().primaryColor()));
-                //graphics.setColor(color.getRedFloat(), color.getGreenFloat(), color.getBlueFloat(), color.getAlphaFloat());
-                graphics.blit(CAST_BAR_FILL, startX + 2, startY + 41, 0, 0, (int) (191 * percentage), 4, 191, 4);
-                //graphics.setColor(1, 1, 1, 1);
+                graphics.blit(
+                        RenderPipelines.GUI_TEXTURED,
+                        CAST_BAR_FILL,
+                        startX + 2,
+                        startY + 41,
+                        0,
+                        0,
+                        (int) (191 * percentage),
+                        4,
+                        191,
+                        4,
+                        DSColors.toARGB(handler.species().value().miscResources().primaryColor())
+                );
 
-                graphics.blitSprite(RenderPipelines.GUI_TEXTURED, ability.getIcon(), startX + 78, startY + 3, 0, 36, 36);
+                graphics.blitSprite(RenderPipelines.GUI_TEXTURED, ability.getIcon(), startX + 78, startY + 3, 36, 36);
 
                 graphics.pose().popMatrix();
             }
@@ -441,7 +447,18 @@ public class MagicHUD {
 
     @SuppressWarnings("SameParameterValue") // ignore
     private static void blit(final GuiGraphicsExtractor graphics, final Identifier resource, int x, int y, int size, float alpha, float red, float green, float blue) {
-        // FIXME
-        //((GuiGraphicsExtractorAccess) graphics).dragonSurvival$innerBlit(resource, x, x + size, y, y + size, 0, 0, 1, 0, 1, red, green, blue, alpha);
+        graphics.blit(
+                RenderPipelines.GUI_TEXTURED,
+                resource,
+                x,
+                y,
+                0,
+                0,
+                size,
+                size,
+                size,
+                size,
+                ARGB.colorFromFloat(alpha, red, green, blue)
+        );
     }
 }

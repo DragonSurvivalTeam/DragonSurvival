@@ -629,13 +629,13 @@ public class MagicData implements ValueIOSerializable {
     public void serialize(@NotNull ValueOutput valueOutput) {
         ValueOutput allAbilities = valueOutput.child(ALL_ABILITIES);
         for (Map.Entry<ResourceKey<DragonSpecies>, Map<ResourceKey<DragonAbility>, DragonAbilityInstance>> entry : abilities.entrySet()) {
-            ValueOutput abilities = allAbilities.child(ABILITIES);
+            ValueOutput abilities = allAbilities.child(entry.getKey().identifier().toString());
             entry.getValue().values().forEach(instance -> abilities.store(instance.key().identifier().toString(), DragonAbilityInstance.CODEC, instance));
         }
 
         ValueOutput allHotbars = valueOutput.child(ALL_HOTBARS);
         for (Map.Entry<ResourceKey<DragonSpecies>, Map<Integer, ResourceKey<DragonAbility>>> entry : hotbar.entrySet()) {
-            ValueOutput hotbar = allHotbars.child(HOTBARS);
+            ValueOutput hotbar = allHotbars.child(entry.getKey().identifier().toString());
             entry.getValue().forEach((slot, key) -> hotbar.putInt(key.identifier().toString(), slot));
         }
 
@@ -722,11 +722,9 @@ public class MagicData implements ValueIOSerializable {
         if (valueInput.keySet().contains(CURRENT_SPECIES)) {
             String currentSpeciesId = valueInput.getStringOr(CURRENT_SPECIES, null);
 
-            if (currentSpeciesId != null) {
-                currentSpecies = ResourceKey.create(DragonSpecies.REGISTRY, Identifier.parse(currentSpeciesId));
-            }
+            currentSpecies = ResourceKey.create(DragonSpecies.REGISTRY, Identifier.parse(currentSpeciesId));
 
-            if (currentSpecies != null && valueInput.lookup().holder(currentSpecies).isEmpty()) {
+            if (valueInput.lookup().holder(currentSpecies).isEmpty()) {
                 DragonSurvival.LOGGER.warn("Failed to load current species for magic data! Did you remove a species from this save? Defaulting to cave dragon");
                 currentSpecies = BuiltInDragonSpecies.CAVE_DRAGON;
             }
