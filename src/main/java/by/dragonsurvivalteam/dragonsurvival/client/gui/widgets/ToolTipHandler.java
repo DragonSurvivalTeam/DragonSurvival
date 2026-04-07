@@ -4,6 +4,7 @@ import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic.HelpButton;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.DragonAbilityHolder;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.DragonFood;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
 import by.dragonsurvivalteam.dragonsurvival.registry.data_components.DSDataComponents;
@@ -21,6 +22,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.FontDescription;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
@@ -164,7 +166,13 @@ public class ToolTipHandler {
 
     /** Returns a tooltip component in the format of '1.0 nutrition_icon / 0.5 saturation_icon' (color and icon depend on the dragon species) */
     public static MutableComponent getFoodTooltipData(final Holder<DragonSpecies> species, final Item item) {
-        FoodProperties properties = DietEntryCache.getDiet(species, item);
+        DragonFood dragonFood = DietEntryCache.getDiet(species, item);
+
+        if (dragonFood == null) {
+            return Component.empty();
+        }
+
+        FoodProperties properties = dragonFood.properties();
 
         if (properties == null) {
             return Component.empty();
@@ -196,10 +204,8 @@ public class ToolTipHandler {
             actualIcon = icon;
         }
 
-        // Use white color to reset the color (i.e. don't color the icons)
-        // FIXME :: UI RENDERING
-        return Component.empty();
-        //return Component.literal(actualIcon).withStyle(Style.EMPTY.withFont(font).withColor(ChatFormatting.WHITE));
+        // Use white to avoid tinting the icon glyph with the surrounding nutrition/saturation text color.
+        return Component.literal(actualIcon).withStyle(Style.EMPTY.withFont(new FontDescription.Resource(font)).withColor(ChatFormatting.WHITE));
     }
 
     @SubscribeEvent // Add certain descriptions to our items which use generic classes

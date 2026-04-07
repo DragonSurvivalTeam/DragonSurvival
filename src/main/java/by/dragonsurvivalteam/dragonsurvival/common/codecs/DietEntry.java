@@ -1,80 +1,64 @@
 package by.dragonsurvivalteam.dragonsurvival.common.codecs;
 
+import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.item.component.Consumable;
+import net.minecraft.world.item.component.UseRemainder;
+import net.minecraft.world.item.consume_effects.ApplyStatusEffectsConsumeEffect;
+import net.minecraft.world.item.consume_effects.ConsumeEffect;
 import net.minecraft.world.level.ItemLike;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-public record DietEntry(String items, Optional<FoodProperties> properties, Optional<Either<Boolean, RetainEffects>> retainEffects) {
+public record DietEntry(
+    String items,
+    Optional<FoodProperties> properties,
+    Optional<Consumable> consumable,
+    Optional<ItemStackTemplate> useRemainder,
+    Optional<Either<Boolean, RetainEffects>> retainEffects
+) {
+    private static final float DEFAULT_EAT_SECONDS = 1.6f;
+
     public static final Codec<DietEntry> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            IdentifierWrapper.validatedCodec().fieldOf("items").forGetter(DietEntry::items),
-            FoodProperties.DIRECT_CODEC.optionalFieldOf("properties").forGetter(DietEntry::properties),
-            Codec.either(Codec.BOOL, RetainEffects.CODEC).optionalFieldOf("retain_effects").forGetter(DietEntry::retainEffects)
+        IdentifierWrapper.validatedCodec().fieldOf("items").forGetter(DietEntry::items),
+        FoodProperties.DIRECT_CODEC.optionalFieldOf("properties").forGetter(DietEntry::properties),
+        Consumable.CODEC.optionalFieldOf("consumable").forGetter(DietEntry::consumable),
+        ItemStackTemplate.CODEC.optionalFieldOf("use_remainder").forGetter(DietEntry::useRemainder),
+        Codec.either(Codec.BOOL, RetainEffects.CODEC).optionalFieldOf("retain_effects").forGetter(DietEntry::retainEffects)
     ).apply(instance, DietEntry::new));
 
-    public static Map<Item, FoodProperties> map(final List<DietEntry> entries) {
-//        Map<Item, FoodProperties> diet = new HashMap<>();
-//
-//        for (DietEntry entry : entries) {
-//            IdentifierWrapper.map(entry.items(), BuiltInRegistries.ITEM).forEach(resource -> {
-//                Item item = BuiltInRegistries.ITEM.get(resource).orElseThrow().value();
-//
-//                if (item != null) {
-//                    FoodProperties properties = entry.properties().orElse(item.getDefaultInstance().get(DataComponents.FOOD));
-//
-//                    if (properties == null) {
-//                        DragonSurvival.LOGGER.warn("Diet entry [{}] has neither original nor custom food properties - item will not be edible", entry);
-//                        return;
-//                    }
-//
-//                    List<FoodProperties.PossibleEffect> effects = new ArrayList<>(properties.effects());
-//
-//                    if (entry.retainEffects().isPresent() && entry.properties().isPresent()) {
-//                        FoodProperties original = item.getDefaultInstance().getFoodProperties(null);
-//
-//                        if (original != null) {
-//                            for (FoodProperties.PossibleEffect effect : original.effects()) {
-//                                if (entry.retainEffects().get().map(Function.identity(), check -> check.retain(effect.effect()))) {
-//                                    effects.add(effect);
-//                                }
-//                            }
-//                        }
-//                    } else if (entry.retainEffects().isPresent()) {
-//                        // Only retain specific effects of the original item
-//                        effects.removeIf(effect -> !entry.retainEffects().get().map(Function.identity(), check -> check.retain(effect.effect())));
-//                    } else if (entry.properties().isEmpty()) {
-//                        // Don't retain effects of the original item
-//                        effects.clear();
-//                    }
-//
-//                    properties = new FoodProperties(
-//                            properties.nutrition(),
-//                            properties.saturation(),
-//                            properties.canAlwaysEat(),
-//                            properties.eatSeconds(),
-//                            properties.usingConvertsTo(),
-//                            effects
-//                    );
-//
-//                    diet.put(item, properties);
-//                }
-//            });
-//        }
-//
-//        return diet;
-        // FIXME Move this to consumables
-        return Map.of();
+    public static Map<Item, DragonFood> map(final List<DietEntry> entries) {
+        Map<Item, DragonFood> diet = new HashMap<>();
+
+        for (DietEntry entry : entries) {
+            IdentifierWrapper.map(entry.items(), BuiltInRegistries.ITEM).forEach(resource -> {
+                BuiltInRegistries.ITEM.get(resource).ifPresent(holder -> {
+                    diet.put(holder.value(), new DragonFood(
+                        holder.value(),
+                        entry.properties(),
+                        entry.consumable(),
+                        entry.useRemainder().map(UseRemainder::new),
+                        entry.retainEffects()
+                    ));
+                });
+            });
+        }
+
+        return diet;
     }
 
     public static Builder create(final String items) {
@@ -111,12 +95,12 @@ public record DietEntry(String items, Optional<FoodProperties> properties, Optio
     public int hashCode() {
         return items.hashCode();
     }
-    
+
     public record RetainEffects(boolean beneficial, boolean neutral, boolean harmful) {
         public static final Codec<RetainEffects> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                Codec.BOOL.optionalFieldOf("beneficial", false).forGetter(RetainEffects::beneficial),
-                Codec.BOOL.optionalFieldOf("neutral", false).forGetter(RetainEffects::neutral),
-                Codec.BOOL.optionalFieldOf("harmful", false).forGetter(RetainEffects::harmful)
+            Codec.BOOL.optionalFieldOf("beneficial", false).forGetter(RetainEffects::beneficial),
+            Codec.BOOL.optionalFieldOf("neutral", false).forGetter(RetainEffects::neutral),
+            Codec.BOOL.optionalFieldOf("harmful", false).forGetter(RetainEffects::harmful)
         ).apply(instance, RetainEffects::new));
 
         public boolean retain(final MobEffectInstance effect) {
@@ -126,29 +110,31 @@ public record DietEntry(String items, Optional<FoodProperties> properties, Optio
                 case NEUTRAL -> neutral;
             };
         }
+
     }
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     public static class Builder {
-        // Copied from FoodProperties.java. Trying to AT this didn't work out well.
-        private static final float DEFAULT_EAT_SECONDS = 1.6f;
-
         private final String items;
+
         private Optional<FoodProperties> properties = Optional.empty();
+        private Optional<Consumable> consumable = Optional.empty();
+        private Optional<ItemStackTemplate> useRemainder = Optional.empty();
+
         private boolean retainEffects = false;
         private boolean retainBeneficial = false;
         private boolean retainNeutral = false;
         private boolean retainHarmful = false;
 
         private boolean customProperties;
-        
+        private boolean customConsumeDuration;
+
         private int nutriton;
         private float saturation;
         private boolean canAlwaysEat;
         private float seconds = DEFAULT_EAT_SECONDS;
 
-    //    private final List<FoodProperties.PossibleEffect> effects = new ArrayList<>();
-        private Optional<ItemStackTemplate> convertsTo = Optional.empty();
+        private final List<ConsumeEffect> consumeEffects = new ArrayList<>();
 
         public Builder(final String items) {
             this.items = items;
@@ -174,30 +160,33 @@ public record DietEntry(String items, Optional<FoodProperties> properties, Optio
 
         public Builder seconds(final float seconds) {
             this.seconds = seconds;
-            this.customProperties = true;
+            this.customConsumeDuration = true;
             return this;
         }
 
         public Builder fast() {
             this.seconds = DEFAULT_EAT_SECONDS / 2;
-            this.customProperties = true;
+            this.customConsumeDuration = true;
             return this;
         }
 
         public Builder effect(final Supplier<MobEffectInstance> effect, final float probability) {
-//            this.effects.add(new FoodProperties.PossibleEffect(effect, probability));
-//            this.customProperties = true;
+            this.consumeEffects.add(new ApplyStatusEffectsConsumeEffect(effect.get(), probability));
             return this;
         }
 
         public Builder convertsTo(final ItemLike item) {
-            this.convertsTo = Optional.of(new ItemStackTemplate(item.asItem()));
-            this.customProperties = true;
+            this.useRemainder = Optional.of(new ItemStackTemplate(item.asItem()));
             return this;
         }
 
         public Builder properties(final FoodProperties properties) {
             this.properties = Optional.ofNullable(properties);
+            return this;
+        }
+
+        public Builder consumable(final Consumable consumable) {
+            this.consumable = Optional.ofNullable(consumable);
             return this;
         }
 
@@ -223,7 +212,18 @@ public record DietEntry(String items, Optional<FoodProperties> properties, Optio
 
         public DietEntry build() {
             if (customProperties && properties.isEmpty()) {
-                //properties = Optional.of(new FoodProperties(nutriton, saturation, canAlwaysEat, seconds, convertsTo));
+                properties = Optional.of(new FoodProperties(nutriton, saturation, canAlwaysEat));
+            }
+
+            if (consumable.isEmpty() && (customConsumeDuration || !consumeEffects.isEmpty())) {
+                Consumable.Builder builder = Consumable.builder();
+
+                if (customConsumeDuration) {
+                    builder.consumeSeconds(seconds);
+                }
+
+                consumeEffects.forEach(builder::onConsume);
+                consumable = Optional.of(builder.build());
             }
 
             Either<Boolean, RetainEffects> retainEffects;
@@ -236,7 +236,7 @@ public record DietEntry(String items, Optional<FoodProperties> properties, Optio
                 retainEffects = null;
             }
 
-            return new DietEntry(items, properties, Optional.ofNullable(retainEffects));
+            return new DietEntry(items, properties, consumable, useRemainder, Optional.ofNullable(retainEffects));
         }
     }
 }

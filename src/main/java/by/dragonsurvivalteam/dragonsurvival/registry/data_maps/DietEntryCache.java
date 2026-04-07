@@ -1,11 +1,11 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.data_maps;
 
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.DietEntry;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.DragonFood;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSDataMaps;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -19,7 +19,7 @@ import java.util.Map;
 @EventBusSubscriber
 public class DietEntryCache {
     // In singleplayer '/reload' while having the species screen did not cause any multithreading issues
-    private static final Map<ResourceKey<DragonSpecies>, Map<Item, FoodProperties>> CACHE = new HashMap<>();
+    private static final Map<ResourceKey<DragonSpecies>, Map<Item, DragonFood>> CACHE = new HashMap<>();
 
     @SubscribeEvent
     public static void buildCache(final DataMapsUpdatedEvent event) {
@@ -32,7 +32,7 @@ public class DietEntryCache {
         return CACHE.computeIfAbsent(species.getKey(), key -> generate(species)).isEmpty();
     }
 
-    public static @Nullable FoodProperties getDiet(final Holder<DragonSpecies> species, final Item item) {
+    public static @Nullable DragonFood getDiet(final Holder<DragonSpecies> species, final Item item) {
         return CACHE.computeIfAbsent(species.getKey(), key -> generate(species)).get(item);
     }
 
@@ -40,7 +40,7 @@ public class DietEntryCache {
         return List.copyOf(CACHE.computeIfAbsent(species.getKey(), key -> generate(species)).keySet());
     }
 
-    private static Map<Item, FoodProperties> generate(final Holder<DragonSpecies> species) {
+    private static Map<Item, DragonFood> generate(final Holder<DragonSpecies> species) {
         List<DietEntry> diet = species.getData(DSDataMaps.DIET_ENTRIES);
         return DietEntry.map(diet == null ? List.of() : diet);
     }
