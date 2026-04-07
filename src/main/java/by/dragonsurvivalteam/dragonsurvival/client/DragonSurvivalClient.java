@@ -18,6 +18,7 @@ import by.dragonsurvivalteam.dragonsurvival.client.models.creatures.HoundModel;
 import by.dragonsurvivalteam.dragonsurvival.client.models.creatures.KnightModel;
 import by.dragonsurvivalteam.dragonsurvival.client.models.creatures.LeaderModel;
 import by.dragonsurvivalteam.dragonsurvival.client.models.creatures.SpearmanModel;
+import by.dragonsurvivalteam.dragonsurvival.client.models.projectiles.GenericBallModel;
 import by.dragonsurvivalteam.dragonsurvival.client.render.blocks.DragonBeaconRenderer;
 import by.dragonsurvivalteam.dragonsurvival.client.render.blocks.DragonSoulRenderer;
 import by.dragonsurvivalteam.dragonsurvival.client.render.blocks.HelmetEntityRenderer;
@@ -29,6 +30,9 @@ import by.dragonsurvivalteam.dragonsurvival.client.render.entity.creatures.Leade
 import by.dragonsurvivalteam.dragonsurvival.client.render.entity.creatures.SpearmanRenderer;
 import by.dragonsurvivalteam.dragonsurvival.client.render.entity.dragon.DragonArmorRenderLayer;
 import by.dragonsurvivalteam.dragonsurvival.client.render.entity.dragon.DragonRenderer;
+import by.dragonsurvivalteam.dragonsurvival.client.render.entity.projectiles.BolasEntityRenderer;
+import by.dragonsurvivalteam.dragonsurvival.client.render.entity.projectiles.GenericArrowRenderer;
+import by.dragonsurvivalteam.dragonsurvival.client.render.entity.projectiles.GenericBallRenderer;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.DragonEditorHandler;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.loader.DefaultPartLoader;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.loader.DragonPartLoader;
@@ -101,25 +105,25 @@ public class DragonSurvivalClient {
 
     private void setup(final FMLClientSetupEvent event) {
         event.enqueueWork(() -> {
-            //EntityRenderers.register(DSEntities.BOLAS_ENTITY.get(), BolasEntityRenderer::new);
-            //EntityRenderers.register(DSEntities.GENERIC_ARROW_ENTITY.get(), GenericArrowRenderer::new);
+            EntityRenderers.register(DSEntities.BOLAS_ENTITY.get(), BolasEntityRenderer::new);
+            EntityRenderers.register(DSEntities.GENERIC_ARROW_ENTITY.get(), GenericArrowRenderer::new);
 
             BlockEntityRenderers.register(DSBlockEntities.HELMET.get(), HelmetEntityRenderer::new);
             BlockEntityRenderers.register(DSBlockEntities.DRAGON_BEACON.get(), DragonBeaconRenderer::new);
             BlockEntityRenderers.register(DSBlockEntities.DRAGON_SOUL.get(), DragonSoulRenderer::new);
 
             // GeckoLib renderers
-            //EntityRenderers.register(DSEntities.GENERIC_BALL_ENTITY.get(), manager -> new GenericBallRenderer(manager, new GenericBallModel()));
+            EntityRenderers.register(DSEntities.GENERIC_BALL_ENTITY.get(), manager -> new GenericBallRenderer<>(manager, new GenericBallModel()));
             EntityRenderers.register(DSEntities.DRAGON.get(), manager -> {
-                DRAGON_RENDERER = new DragonRenderer(manager, DRAGON_MODEL);
+                DRAGON_RENDERER = new DragonRenderer<>(manager, DRAGON_MODEL);
                 return DRAGON_RENDERER;
             });
-            EntityRenderers.register(DSEntities.HUNTER_KNIGHT.get(), manager -> new KnightRenderer(manager, new KnightModel()));
-            EntityRenderers.register(DSEntities.HUNTER_SPEARMAN.get(), manager -> new SpearmanRenderer(manager, new SpearmanModel()));
-            EntityRenderers.register(DSEntities.HUNTER_AMBUSHER.get(), manager -> new AmbusherRenderer(manager, AMBUSHER_MODEL));
-            EntityRenderers.register(DSEntities.HUNTER_HOUND.get(), manager -> new HoundRenderer(manager, new HoundModel()));
-            EntityRenderers.register(DSEntities.HUNTER_GRIFFIN.get(), manager -> new GriffinRenderer(manager, new GriffinModel()));
-            EntityRenderers.register(DSEntities.HUNTER_LEADER.get(), manager -> new LeaderRenderer(manager, new LeaderModel()));
+            EntityRenderers.register(DSEntities.HUNTER_KNIGHT.get(), manager -> new KnightRenderer<>(manager, new KnightModel()));
+            EntityRenderers.register(DSEntities.HUNTER_SPEARMAN.get(), manager -> new SpearmanRenderer<>(manager, new SpearmanModel()));
+            EntityRenderers.register(DSEntities.HUNTER_AMBUSHER.get(), manager -> new AmbusherRenderer<>(manager, AMBUSHER_MODEL));
+            EntityRenderers.register(DSEntities.HUNTER_HOUND.get(), manager -> new HoundRenderer<>(manager, new HoundModel()));
+            EntityRenderers.register(DSEntities.HUNTER_GRIFFIN.get(), manager -> new GriffinRenderer<>(manager, new GriffinModel()));
+            EntityRenderers.register(DSEntities.HUNTER_LEADER.get(), manager -> new LeaderRenderer<>(manager, new LeaderModel()));
         });
     }
 
