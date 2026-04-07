@@ -19,10 +19,11 @@ import net.minecraft.world.entity.Entity;
 public class DragonHelmet<T extends Entity> extends EntityModel<EntityRenderState> {
     // This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
     public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath("dragonsurvival", "dragon_helmet"), "main");
+    public final ModelPart head;
 
     public DragonHelmet(ModelPart root) {
         super(root);
-        root.createPartLookup().apply("head");
+        this.head = root.createPartLookup().apply("head");
     }
 
     public static LayerDefinition createBodyLayer() {

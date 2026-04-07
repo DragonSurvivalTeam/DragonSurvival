@@ -177,17 +177,13 @@ public class PrimordialAnchorBlock extends Block implements EntityBlock {
 
     @Override
     protected @NotNull InteractionResult useItemOn(@NotNull final ItemStack stack, @NotNull final BlockState state, @NotNull final Level level, @NotNull final BlockPos position, @NotNull final Player player, @NotNull final InteractionHand hand, @NotNull final BlockHitResult hitResult) {
-        if (state.getValue(CHARGED)) {
-            return InteractionResult.PASS;
-        }
-
         if (stack.is(DSItemTags.PRIMORDIAL_ANCHOR_FUEL)) {
             charge(player, level, position, state);
             stack.consume(1, player);
             return InteractionResultUtils.sidedSuccess(level.isClientSide());
         }
 
-        return InteractionResult.PASS;
+        return InteractionResult.TRY_WITH_EMPTY_HAND;
     }
 
     @Override

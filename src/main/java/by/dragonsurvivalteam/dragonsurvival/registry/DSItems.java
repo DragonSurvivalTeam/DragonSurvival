@@ -371,28 +371,28 @@ public class DSItems {
     public static final Holder<Item> LIGHT_DRAGON_HELMET = REGISTRY.registerItem(
         "light_dragon_helmet",
         LightDragonArmorItem::new,
-        () -> new Item.Properties().humanoidArmor(DSArmorMaterials.DRAGON_ARMOR_MATERIAL, ArmorType.HELMET).rarity(Rarity.EPIC).fireResistant()
+        () -> new Item.Properties().humanoidArmor(DSArmorMaterials.LIGHT_DRAGON_ARMOR_MATERIAL, ArmorType.HELMET).rarity(Rarity.EPIC).fireResistant()
     );
 
     @Translation(type = Translation.Type.ITEM, comments = "Light Chestplate")
     public static final Holder<Item> LIGHT_DRAGON_CHESTPLATE = REGISTRY.registerItem(
         "light_dragon_chestplate",
         LightDragonArmorItem::new,
-        () -> new Item.Properties().humanoidArmor(DSArmorMaterials.DRAGON_ARMOR_MATERIAL, ArmorType.CHESTPLATE).rarity(Rarity.EPIC).fireResistant()
+        () -> new Item.Properties().humanoidArmor(DSArmorMaterials.LIGHT_DRAGON_ARMOR_MATERIAL, ArmorType.CHESTPLATE).rarity(Rarity.EPIC).fireResistant()
     );
 
     @Translation(type = Translation.Type.ITEM, comments = "Light Leggings")
     public static final Holder<Item> LIGHT_DRAGON_LEGGINGS = REGISTRY.registerItem(
         "light_dragon_leggings",
         LightDragonArmorItem::new,
-        () -> new Item.Properties().humanoidArmor(DSArmorMaterials.DRAGON_ARMOR_MATERIAL, ArmorType.LEGGINGS).rarity(Rarity.EPIC).fireResistant()
+        () -> new Item.Properties().humanoidArmor(DSArmorMaterials.LIGHT_DRAGON_ARMOR_MATERIAL, ArmorType.LEGGINGS).rarity(Rarity.EPIC).fireResistant()
     );
 
     @Translation(type = Translation.Type.ITEM, comments = "Light Boots")
     public static final Holder<Item> LIGHT_DRAGON_BOOTS = REGISTRY.registerItem(
         "light_dragon_boots",
             LightDragonArmorItem::new,
-            () -> new Item.Properties().humanoidArmor(DSArmorMaterials.DRAGON_ARMOR_MATERIAL, ArmorType.BOOTS).rarity(Rarity.EPIC).fireResistant()
+            () -> new Item.Properties().humanoidArmor(DSArmorMaterials.LIGHT_DRAGON_ARMOR_MATERIAL, ArmorType.BOOTS).rarity(Rarity.EPIC).fireResistant()
     );
 
     @Translation(type = Translation.Type.ITEM, comments = "Dark Upgrade")
@@ -406,28 +406,28 @@ public class DSItems {
     public static final Holder<Item> DARK_DRAGON_HELMET = REGISTRY.registerItem(
         "dark_dragon_helmet",
         DarkDragonArmorItem::new,
-        () -> new Item.Properties().humanoidArmor(DSArmorMaterials.DRAGON_ARMOR_MATERIAL, ArmorType.HELMET).rarity(Rarity.EPIC).fireResistant()
+        () -> new Item.Properties().humanoidArmor(DSArmorMaterials.DARK_DRAGON_ARMOR_MATERIAL, ArmorType.HELMET).rarity(Rarity.EPIC).fireResistant()
     );
 
     @Translation(type = Translation.Type.ITEM, comments = "Dark Chestplate")
     public static final Holder<Item> DARK_DRAGON_CHESTPLATE = REGISTRY.registerItem(
         "dark_dragon_chestplate",
         DarkDragonArmorItem::new,
-        () -> new Item.Properties().humanoidArmor(DSArmorMaterials.DRAGON_ARMOR_MATERIAL, ArmorType.CHESTPLATE).rarity(Rarity.EPIC).fireResistant()
+        () -> new Item.Properties().humanoidArmor(DSArmorMaterials.DARK_DRAGON_ARMOR_MATERIAL, ArmorType.CHESTPLATE).rarity(Rarity.EPIC).fireResistant()
     );
 
     @Translation(type = Translation.Type.ITEM, comments = "Dark Leggings")
     public static final Holder<Item> DARK_DRAGON_LEGGINGS = REGISTRY.registerItem(
         "dark_dragon_leggings",
         DarkDragonArmorItem::new,
-        () -> new Item.Properties().humanoidArmor(DSArmorMaterials.DRAGON_ARMOR_MATERIAL, ArmorType.LEGGINGS).rarity(Rarity.EPIC).fireResistant()
+        () -> new Item.Properties().humanoidArmor(DSArmorMaterials.DARK_DRAGON_ARMOR_MATERIAL, ArmorType.LEGGINGS).rarity(Rarity.EPIC).fireResistant()
     );
 
     @Translation(type = Translation.Type.ITEM, comments = "Dark Boots")
     public static final Holder<Item> DARK_DRAGON_BOOTS = REGISTRY.registerItem(
         "dark_dragon_boots",
         DarkDragonArmorItem::new,
-        () -> new Item.Properties().humanoidArmor(DSArmorMaterials.DRAGON_ARMOR_MATERIAL, ArmorType.BOOTS).rarity(Rarity.EPIC).fireResistant()
+        () -> new Item.Properties().humanoidArmor(DSArmorMaterials.DARK_DRAGON_ARMOR_MATERIAL, ArmorType.BOOTS).rarity(Rarity.EPIC).fireResistant()
     );
 
     // --- Weapons --- //

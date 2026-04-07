@@ -41,6 +41,7 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.contents.PlainTextContents;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
+import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.client.gui.widget.ExtendedButton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -242,8 +243,7 @@ public class DragonSpeciesScreen extends Screen {
                     List<Either<FormattedText, TooltipComponent>> components = new ArrayList<>();
                     //noinspection DataFlowIssue -> key is present
                     components.addFirst(Either.left(Component.translatable(Translation.Type.DRAGON_SPECIES_INVENTORY_DESCRIPTION.wrap(species.getKey().identifier()))));
-                    // FIXME :: UI RENDERING
-                    // graphics.renderComponentTooltipFromElements(Minecraft.getInstance().font, components, mouseX, mouseY, ItemStack.EMPTY);
+                    graphics.setComponentTooltipFromElementsForNextFrame(Minecraft.getInstance().font, components, mouseX, mouseY, ItemStack.EMPTY);
                 } else {
                     graphics.blit(RenderPipelines.GUI_TEXTURED, data.species().value().miscResources().altarBanner(), getX(), getY(), 0, 147, 49, 147, 49, 294);
                 }

@@ -12,6 +12,10 @@ import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.ClientTimeCompone
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.DietComponent;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.TimeComponent;
 import by.dragonsurvivalteam.dragonsurvival.client.models.DragonModel;
+import by.dragonsurvivalteam.dragonsurvival.client.models.aligned_armor.DragonBoots;
+import by.dragonsurvivalteam.dragonsurvival.client.models.aligned_armor.DragonChestplate;
+import by.dragonsurvivalteam.dragonsurvival.client.models.aligned_armor.DragonHelmet;
+import by.dragonsurvivalteam.dragonsurvival.client.models.aligned_armor.DragonLeggings;
 import by.dragonsurvivalteam.dragonsurvival.client.models.creatures.AmbusherModel;
 import by.dragonsurvivalteam.dragonsurvival.client.models.creatures.GriffinModel;
 import by.dragonsurvivalteam.dragonsurvival.client.models.creatures.HoundModel;
@@ -44,9 +48,15 @@ import by.dragonsurvivalteam.dragonsurvival.registry.DSEntities;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSItems;
 import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.model.Model;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.resources.model.EquipmentClientInfo;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
@@ -58,16 +68,24 @@ import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.RegisterRenderPipelinesEvent;
 import net.neoforged.neoforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
 import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
+import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
 import net.neoforged.neoforge.common.NeoForge;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.Collections;
+import java.util.Map;
 
 @Mod(value = DragonSurvival.MODID, dist = Dist.CLIENT)
 public class DragonSurvivalClient {
     private static final float TIMER_INCREMENT = 0.01f;
+    private static final Identifier LIGHT_DRAGON_ARMOR_LAYER_1 = DragonSurvival.res("textures/models/armor/light_dragon_layer_1.png");
+    private static final Identifier LIGHT_DRAGON_ARMOR_LAYER_2 = DragonSurvival.res("textures/models/armor/light_dragon_layer_2.png");
+    private static final Identifier DARK_DRAGON_ARMOR_LAYER_1 = DragonSurvival.res("textures/models/armor/dark_dragon_layer_1.png");
+    private static final Identifier DARK_DRAGON_ARMOR_LAYER_2 = DragonSurvival.res("textures/models/armor/dark_dragon_layer_2.png");
 
     public static float TIMER;
     public static DragonRenderer DRAGON_RENDERER; // Needed for access in LevelRendererMixin
@@ -162,32 +180,51 @@ public class DragonSurvivalClient {
 
         // --- Light dragon armor --- //
 
-        // FIXME
-        /*event.registerItem(new IClientItemExtensions() {
+        event.registerItem(new IClientItemExtensions() {
             @Override
-            public @NotNull HumanoidModel<?> getHumanoidArmorModel(@NotNull ItemStack itemStack, EquipmentClientInfo.@NotNull LayerType layerType, @NotNull Model original) {
-                return createModel(entity, defaultModel, true, false, false, false);
+            public @NotNull Model getHumanoidArmorModel(@NotNull final ItemStack itemStack, EquipmentClientInfo.@NotNull LayerType layerType, @NotNull final Model original) {
+                return createModel(layerType, original, true, false, false, false);
+            }
+
+            @Override
+            public Identifier getArmorTexture(@NotNull final ItemStack stack, EquipmentClientInfo.@NotNull LayerType type, @NotNull final EquipmentClientInfo.Layer layer, @NotNull final Identifier fallback) {
+                return getDragonArmorTexture(type, LIGHT_DRAGON_ARMOR_LAYER_1, LIGHT_DRAGON_ARMOR_LAYER_2);
             }
         }, DSItems.LIGHT_DRAGON_HELMET.value());
 
         event.registerItem(new IClientItemExtensions() {
             @Override
-            public @NotNull HumanoidModel<?> getHumanoidArmorModel(@NotNull LivingEntity entity, @NotNull ItemStack stack, @NotNull EquipmentSlot slot, @NotNull HumanoidModel<?> defaultModel) {
-                return createModel(entity, defaultModel, false, true, false, false);
+            public @NotNull Model getHumanoidArmorModel(@NotNull final ItemStack itemStack, EquipmentClientInfo.@NotNull LayerType layerType, @NotNull final Model original) {
+                return createModel(layerType, original, false, true, false, false);
+            }
+
+            @Override
+            public Identifier getArmorTexture(@NotNull final ItemStack stack, EquipmentClientInfo.@NotNull LayerType type, @NotNull final EquipmentClientInfo.Layer layer, @NotNull final Identifier fallback) {
+                return getDragonArmorTexture(type, LIGHT_DRAGON_ARMOR_LAYER_1, LIGHT_DRAGON_ARMOR_LAYER_2);
             }
         }, DSItems.LIGHT_DRAGON_CHESTPLATE.value());
 
         event.registerItem(new IClientItemExtensions() {
             @Override
-            public @NotNull HumanoidModel<?> getHumanoidArmorModel(@NotNull LivingEntity entity, @NotNull ItemStack stack, @NotNull EquipmentSlot slot, @NotNull HumanoidModel<?> defaultModel) {
-                return createModel(entity, defaultModel, false, false, true, false);
+            public @NotNull Model getHumanoidArmorModel(@NotNull final ItemStack itemStack, EquipmentClientInfo.@NotNull LayerType layerType, @NotNull final Model original) {
+                return createModel(layerType, original, false, false, true, false);
+            }
+
+            @Override
+            public Identifier getArmorTexture(@NotNull final ItemStack stack, EquipmentClientInfo.@NotNull LayerType type, @NotNull final EquipmentClientInfo.Layer layer, @NotNull final Identifier fallback) {
+                return getDragonArmorTexture(type, LIGHT_DRAGON_ARMOR_LAYER_1, LIGHT_DRAGON_ARMOR_LAYER_2);
             }
         }, DSItems.LIGHT_DRAGON_LEGGINGS.value());
 
         event.registerItem(new IClientItemExtensions() {
             @Override
-            public @NotNull HumanoidModel<?> getHumanoidArmorModel(@NotNull LivingEntity entity, @NotNull ItemStack stack, @NotNull EquipmentSlot slot, @NotNull HumanoidModel<?> defaultModel) {
-                return createModel(entity, defaultModel, false, false, false, true);
+            public @NotNull Model getHumanoidArmorModel(@NotNull final ItemStack itemStack, EquipmentClientInfo.@NotNull LayerType layerType, @NotNull final Model original) {
+                return createModel(layerType, original, false, false, false, true);
+            }
+
+            @Override
+            public Identifier getArmorTexture(@NotNull final ItemStack stack, EquipmentClientInfo.@NotNull LayerType type, @NotNull final EquipmentClientInfo.Layer layer, @NotNull final Identifier fallback) {
+                return getDragonArmorTexture(type, LIGHT_DRAGON_ARMOR_LAYER_1, LIGHT_DRAGON_ARMOR_LAYER_2);
             }
         }, DSItems.LIGHT_DRAGON_BOOTS.value());
 
@@ -195,49 +232,87 @@ public class DragonSurvivalClient {
 
         event.registerItem(new IClientItemExtensions() {
             @Override
-            public @NotNull HumanoidModel<?> getHumanoidArmorModel(@NotNull LivingEntity entity, @NotNull ItemStack stack, @NotNull EquipmentSlot slot, @NotNull HumanoidModel<?> defaultModel) {
-                return createModel(entity, defaultModel, true, false, false, false);
+            public @NotNull Model getHumanoidArmorModel(@NotNull final ItemStack itemStack, EquipmentClientInfo.@NotNull LayerType layerType, @NotNull final Model original) {
+                return createModel(layerType, original, true, false, false, false);
+            }
+
+            @Override
+            public Identifier getArmorTexture(@NotNull final ItemStack stack, EquipmentClientInfo.@NotNull LayerType type, @NotNull final EquipmentClientInfo.Layer layer, @NotNull final Identifier fallback) {
+                return getDragonArmorTexture(type, DARK_DRAGON_ARMOR_LAYER_1, DARK_DRAGON_ARMOR_LAYER_2);
             }
         }, DSItems.DARK_DRAGON_HELMET.value());
 
         event.registerItem(new IClientItemExtensions() {
             @Override
-            public @NotNull HumanoidModel<?> getHumanoidArmorModel(@NotNull LivingEntity entity, @NotNull ItemStack stack, @NotNull EquipmentSlot slot, @NotNull HumanoidModel<?> defaultModel) {
-                return createModel(entity, defaultModel, false, true, false, false);
+            public @NotNull Model getHumanoidArmorModel(@NotNull final ItemStack itemStack, EquipmentClientInfo.@NotNull LayerType layerType, @NotNull final Model original) {
+                return createModel(layerType, original, false, true, false, false);
+            }
+
+            @Override
+            public Identifier getArmorTexture(@NotNull final ItemStack stack, EquipmentClientInfo.@NotNull LayerType type, @NotNull final EquipmentClientInfo.Layer layer, @NotNull final Identifier fallback) {
+                return getDragonArmorTexture(type, DARK_DRAGON_ARMOR_LAYER_1, DARK_DRAGON_ARMOR_LAYER_2);
             }
         }, DSItems.DARK_DRAGON_CHESTPLATE.value());
 
         event.registerItem(new IClientItemExtensions() {
             @Override
-            public @NotNull HumanoidModel<?> getHumanoidArmorModel(@NotNull LivingEntity entity, @NotNull ItemStack stack, @NotNull EquipmentSlot slot, @NotNull HumanoidModel<?> defaultModel) {
-                return createModel(entity, defaultModel, false, false, true, false);
+            public @NotNull Model getHumanoidArmorModel(@NotNull final ItemStack itemStack, EquipmentClientInfo.@NotNull LayerType layerType, @NotNull final Model original) {
+                return createModel(layerType, original, false, false, true, false);
+            }
+
+            @Override
+            public Identifier getArmorTexture(@NotNull final ItemStack stack, EquipmentClientInfo.@NotNull LayerType type, @NotNull final EquipmentClientInfo.Layer layer, @NotNull final Identifier fallback) {
+                return getDragonArmorTexture(type, DARK_DRAGON_ARMOR_LAYER_1, DARK_DRAGON_ARMOR_LAYER_2);
             }
         }, DSItems.DARK_DRAGON_LEGGINGS.value());
 
         event.registerItem(new IClientItemExtensions() {
             @Override
-            public @NotNull HumanoidModel<?> getHumanoidArmorModel(@NotNull LivingEntity entity, @NotNull ItemStack stack, @NotNull EquipmentSlot slot, @NotNull HumanoidModel<?> defaultModel) {
-                return createModel(entity, defaultModel, false, false, false, true);
+            public @NotNull Model getHumanoidArmorModel(@NotNull final ItemStack itemStack, EquipmentClientInfo.@NotNull LayerType layerType, @NotNull final Model original) {
+                return createModel(layerType, original, false, false, false, true);
             }
-        }, DSItems.DARK_DRAGON_BOOTS.value());*/
+
+            @Override
+            public Identifier getArmorTexture(@NotNull final ItemStack stack, EquipmentClientInfo.@NotNull LayerType type, @NotNull final EquipmentClientInfo.Layer layer, @NotNull final Identifier fallback) {
+                return getDragonArmorTexture(type, DARK_DRAGON_ARMOR_LAYER_1, DARK_DRAGON_ARMOR_LAYER_2);
+            }
+        }, DSItems.DARK_DRAGON_BOOTS.value());
     }
 
-    /*private HumanoidModel<?> createModel(final LivingEntity entity, final HumanoidModel<?> defaultModel, boolean head, boolean body, boolean leggings, boolean boots) {
-        HumanoidModel<?> model = new HumanoidModel<>(new ModelPart(Collections.emptyList(), Map.of(
-                "hat", empty(),
-                "head", head ? head().head : empty(),
+    private Model createModel(
+        final EquipmentClientInfo.LayerType layerType,
+        final Model original,
+        final boolean head,
+        final boolean body,
+        final boolean leggings,
+        final boolean boots
+    ) {
+        if (!(original instanceof HumanoidModel<?>)) {
+            return original;
+        }
+
+        if (layerType == EquipmentClientInfo.LayerType.HUMANOID_LEGGINGS && !leggings) {
+            return original;
+        }
+
+        if (layerType != EquipmentClientInfo.LayerType.HUMANOID
+            && layerType != EquipmentClientInfo.LayerType.HUMANOID_BABY
+            && layerType != EquipmentClientInfo.LayerType.HUMANOID_LEGGINGS) {
+            return original;
+        }
+
+        return new HumanoidModel<>(new ModelPart(Collections.emptyList(), Map.of(
+                "head", headWithHat(head ? head().head : empty()),
                 "body", body ? body().body : empty(),
                 "right_arm", body ? body().right_arm : empty(),
                 "left_arm", body ? body().left_arm : empty(),
                 "right_leg", leggings ? leggings().right_leg : boots ? boots().right_shoe : empty(),
                 "left_leg", leggings ? leggings().left_leg : boots ? boots().left_shoe : empty()
         )));
+    }
 
-        model.crouching = entity.isShiftKeyDown();
-        model.riding = defaultModel.riding;
-        model.young = entity.isBaby();
-
-        return model;
+    private ModelPart headWithHat(final ModelPart headPart) {
+        return new ModelPart(Collections.emptyList(), Map.of("hat", headPart));
     }
 
     private ModelPart empty() {
@@ -258,5 +333,9 @@ public class DragonSurvivalClient {
 
     private DragonBoots<?> boots() {
         return new DragonBoots<>(Minecraft.getInstance().getEntityModels().bakeLayer(DragonBoots.LAYER_LOCATION));
-    }*/
+    }
+
+    private Identifier getDragonArmorTexture(final EquipmentClientInfo.LayerType layerType, final Identifier layer1Texture, final Identifier layer2Texture) {
+        return layerType == EquipmentClientInfo.LayerType.HUMANOID_LEGGINGS ? layer2Texture : layer1Texture;
+    }
 }

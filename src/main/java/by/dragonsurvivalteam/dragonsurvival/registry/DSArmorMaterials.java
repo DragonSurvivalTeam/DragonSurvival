@@ -4,9 +4,12 @@ import by.dragonsurvivalteam.dragonsurvival.client.models.aligned_armor.DragonBo
 import by.dragonsurvivalteam.dragonsurvival.client.models.aligned_armor.DragonChestplate;
 import by.dragonsurvivalteam.dragonsurvival.client.models.aligned_armor.DragonHelmet;
 import by.dragonsurvivalteam.dragonsurvival.client.models.aligned_armor.DragonLeggings;
+import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import net.minecraft.core.Holder;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.world.item.equipment.EquipmentAsset;
 import net.minecraft.world.item.equipment.ArmorMaterial;
 import net.minecraft.world.item.equipment.ArmorMaterials;
 import net.minecraft.world.item.equipment.EquipmentAssets;
@@ -18,16 +21,11 @@ import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 @EventBusSubscriber(Dist.CLIENT)
 public class DSArmorMaterials
 {
-    public static ArmorMaterial DRAGON_ARMOR_MATERIAL = new ArmorMaterial(
-        37,
-        ArmorMaterials.makeDefense(3, 6, 8, 3, 11),
-        15,
-        Holder.direct(SoundEvents.IRON_GOLEM_STEP),
-        3.0F,
-        0.1F,
-        ItemTags.REPAIRS_NETHERITE_ARMOR,
-        EquipmentAssets.IRON
-    );
+    public static final ResourceKey<EquipmentAsset> LIGHT_DRAGON_ARMOR_ASSET = ResourceKey.create(EquipmentAssets.ROOT_ID, DragonSurvival.res("light_dragon"));
+    public static final ResourceKey<EquipmentAsset> DARK_DRAGON_ARMOR_ASSET = ResourceKey.create(EquipmentAssets.ROOT_ID, DragonSurvival.res("dark_dragon"));
+
+    public static final ArmorMaterial LIGHT_DRAGON_ARMOR_MATERIAL = createDragonArmorMaterial(LIGHT_DRAGON_ARMOR_ASSET);
+    public static final ArmorMaterial DARK_DRAGON_ARMOR_MATERIAL = createDragonArmorMaterial(DARK_DRAGON_ARMOR_ASSET);
 
     // TODO :: What is the purpose of this in 1.21.11?
     /*public static final Tier DRAGON_HUNTER = new SimpleTier(
@@ -45,6 +43,19 @@ public class DSArmorMaterials
         event.registerLayerDefinition(DragonLeggings.LAYER_LOCATION, DragonLeggings::createBodyLayer);
         event.registerLayerDefinition(DragonHelmet.LAYER_LOCATION, DragonHelmet::createBodyLayer);
         event.registerLayerDefinition(DragonBoots.LAYER_LOCATION, DragonBoots::createBodyLayer);
+    }
+
+    private static ArmorMaterial createDragonArmorMaterial(final ResourceKey<EquipmentAsset> assetId) {
+        return new ArmorMaterial(
+            37,
+            ArmorMaterials.makeDefense(3, 6, 8, 3, 11),
+            15,
+            Holder.direct(SoundEvents.IRON_GOLEM_STEP),
+            3.0F,
+            0.1F,
+            ItemTags.REPAIRS_NETHERITE_ARMOR,
+            assetId
+        );
     }
 
 }

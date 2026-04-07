@@ -1,0 +1,19 @@
+{
+  "layers": {
+    "humanoid": [
+      {
+        "texture": "dragonsurvival:dark_dragon"
+      }
+    ],
+    "humanoid_baby": [
+      {
+        "texture": "dragonsurvival:dark_dragon"
+      }
+    ],
+    "humanoid_leggings": [
+      {
+        "texture": "dragonsurvival:dark_dragon"
+      }
+    ]
+  }
+}

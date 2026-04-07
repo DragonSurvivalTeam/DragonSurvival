@@ -1,9 +1,9 @@
-// 26.1	2026-04-07T00:00:48.8940131	Dragon Survival Item tags
+// 26.1	2026-04-07T01:20:48.6685231	Dragon Survival Item tags
 c5f3853612da8438b499be5029f1ac0516a99572 data/c/tags/item/hidden_from_recipe_viewers.json
 c1a8f5f7e1b7fdbb87aa67f2d2f6bb806140a6bd data/dragonsurvival/tags/item/activates_dragon_beacon.json
 5a2c329e462175627f7bc5e592fffe4bcc4df94c data/dragonsurvival/tags/item/cave_dragon_food.json
 98e47e9f5e29dfe7526d64d46c38d29fda2da305 data/dragonsurvival/tags/item/charred_food.json
-e6756cdd6fb03cf772eba210ae3f93335e83dcd6 data/dragonsurvival/tags/item/claw_weapons.json
+19112fadb740b1fb49e6176d2c7aabb51d974df9 data/dragonsurvival/tags/item/claw_weapons.json
 66986a9bcc11cfe21e79952af584a1b64fe4ff00 data/dragonsurvival/tags/item/cold_items.json
 2249e0faf0f9e98cc5ca4e007600368951da7a02 data/dragonsurvival/tags/item/dark_armor.json
 a7b74a44670ded912a5ee3127986ece356dcb643 data/dragonsurvival/tags/item/dragon_altars.json

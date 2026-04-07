@@ -9,6 +9,7 @@
     "AttributeMapAccessor",
     "BlockMixin",
     "ConditionContextMixin",
+    "EnderDragonFightAccessor",
     "EndPortalBlockMixin",
     "EntityAccessor",
     "EntityMixin",

@@ -3,6 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.server.tileentity;
 import by.dragonsurvivalteam.dragonsurvival.common.blocks.PrimordialAnchorBlock;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
+import by.dragonsurvivalteam.dragonsurvival.mixins.EnderDragonFightAccessor;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSBlockEntities;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import net.minecraft.core.BlockPos;
@@ -24,7 +25,7 @@ public class PrimordialAnchorBlockEntity extends BlockEntity {
         //noinspection DataFlowIssue -> server is present
         if (ServerLifecycleHooks.getCurrentServer().getLevel(Level.END) != null
                 && ServerLifecycleHooks.getCurrentServer().getLevel(Level.END).getDragonFight() != null
-                && ServerLifecycleHooks.getCurrentServer().getLevel(Level.END).getDragonFight().hasPreviouslyKilledDragon()
+                && ((EnderDragonFightAccessor) ServerLifecycleHooks.getCurrentServer().getLevel(Level.END).getDragonFight()).dragonSurvival$isDragonKilled()
                 && anchorHasBloodyState) {
             level.setBlockAndUpdate(position, state.setValue(PrimordialAnchorBlock.BLOODY, true));
         } else {

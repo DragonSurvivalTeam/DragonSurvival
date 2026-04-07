@@ -19,11 +19,13 @@ import net.minecraft.world.entity.Entity;
 public class DragonBoots<T extends Entity> extends EntityModel<EntityRenderState> {
     // This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
     public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath("dragonsurvival", "dragon_shoe"), "main");
+    public final ModelPart left_shoe;
+    public final ModelPart right_shoe;
 
     public DragonBoots(ModelPart root) {
         super(root);
-        root.createPartLookup().apply("left_shoe");
-        root.createPartLookup().apply("right_shoe");
+        this.left_shoe = root.createPartLookup().apply("left_shoe");
+        this.right_shoe = root.createPartLookup().apply("right_shoe");
     }
 
     public static LayerDefinition createBodyLayer() {

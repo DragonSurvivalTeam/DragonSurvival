@@ -16,6 +16,7 @@ import net.minecraft.client.gui.components.events.AbstractContainerEventHandler;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.input.InputWithModifiers;
 import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -59,8 +60,8 @@ public class DragonEditorConfirmComponent extends AbstractContainerEventHandler 
 
         confirmButton = new ExtendedButton(x + 3, y + 132, 60, 19, CommonComponents.GUI_YES, action -> { /* Nothing to do */ }) {
             @Override
-            public void extractWidgetRenderState(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partial) {
-                GuiGraphicsExtractor.centeredText(Minecraft.getInstance().font, getMessage(), getX() + getWidth() / 2, getY() + (getHeight() - 8) / 2, getFGColor());
+            public void extractWidgetRenderState(@NotNull final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partial) {
+                graphics.centeredText(Minecraft.getInstance().font, getMessage(), getX() + getWidth() / 2, getY() + (getHeight() - 8) / 2, getFGColor());
             }
 
             @Override
@@ -72,8 +73,8 @@ public class DragonEditorConfirmComponent extends AbstractContainerEventHandler 
 
         cancelButton = new ExtendedButton(x + 66, y + 132, 60, 19, CommonComponents.GUI_NO, action -> { /* Nothing to do */ }) {
             @Override
-            public void extractWidgetRenderState(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partial) {
-                GuiGraphicsExtractor.centeredText(Minecraft.getInstance().font, getMessage(), getX() + getWidth() / 2, getY() + (getHeight() - 8) / 2, getFGColor());
+            public void extractWidgetRenderState(@NotNull final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partial) {
+                graphics.centeredText(Minecraft.getInstance().font, getMessage(), getX() + getWidth() / 2, getY() + (getHeight() - 8) / 2, getFGColor());
             }
 
             @Override
@@ -113,11 +114,11 @@ public class DragonEditorConfirmComponent extends AbstractContainerEventHandler 
 
         String text = Component.translatable(key).getString();
         if (confirmButton.isHovered()) {
-            graphics.blit(WARNING_ACCEPT, x, y, 0, 0, xSize, ySize, 256, 256);
+            graphics.blit(RenderPipelines.GUI_TEXTURED, WARNING_ACCEPT, x, y, 0, 0, xSize, ySize, 256, 256);
         } else if (cancelButton.isHovered()) {
-            graphics.blit(WARNING_CANCEL, x, y, 0, 0, xSize, ySize, 256, 256);
+            graphics.blit(RenderPipelines.GUI_TEXTURED, WARNING_CANCEL, x, y, 0, 0, xSize, ySize, 256, 256);
         } else {
-            graphics.blit(WARNING_MAIN, x, y, 0, 0, xSize, ySize, 256, 256);
+            graphics.blit(RenderPipelines.GUI_TEXTURED, WARNING_MAIN, x, y, 0, 0, xSize, ySize, 256, 256);
         }
 
         TextRenderUtil.drawCenteredScaledTextSplit(graphics, x + xSize / 2, y + 42, 1f, text, DyeColor.WHITE.getTextColor(), xSize - 10, 150);

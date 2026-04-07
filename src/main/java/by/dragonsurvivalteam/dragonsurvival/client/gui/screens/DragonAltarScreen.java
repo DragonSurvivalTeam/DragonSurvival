@@ -389,7 +389,7 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
                                     confirmComponent.extractRenderState(graphics, pMouseX, pMouseY, pPartialTick);
                                 }
 
-                                super.extractRenderState(graphics, pMouseX, pMouseY, pPartialTick);
+                                super.extractWidgetRenderState(graphics, pMouseX, pMouseY, pPartialTick);
                             }
                         };
                         ((ScreenAccessor) DragonAltarScreen.this).dragonSurvival$children().add(confirmComponent);

@@ -19,10 +19,15 @@ import net.minecraft.world.entity.Entity;
 public class DragonChestplate<T extends Entity> extends EntityModel<EntityRenderState> {
     // This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
     public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath("dragonsurvival", "dragon_body"), "main");
+    public final ModelPart body;
+    public final ModelPart left_arm;
+    public final ModelPart right_arm;
 
     public DragonChestplate(ModelPart root) {
         super(root);
-        root.createPartLookup().apply("body");
+        this.body = root.createPartLookup().apply("body");
+        this.left_arm = root.createPartLookup().apply("left_arm");
+        this.right_arm = root.createPartLookup().apply("right_arm");
     }
 
     public static LayerDefinition createBodyLayer() {
