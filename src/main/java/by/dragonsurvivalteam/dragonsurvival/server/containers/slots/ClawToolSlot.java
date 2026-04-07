@@ -22,12 +22,7 @@ public class ClawToolSlot extends Slot {
 
     @Override
     public boolean mayPlace(@NotNull final ItemStack itemStack) {
-        return switch (slot) {
-            case SWORD -> ToolUtils.isWeapon(itemStack);
-            case PICKAXE -> ToolUtils.isPickaxe(itemStack);
-            case AXE -> ToolUtils.isAxe(itemStack);
-            case SHOVEL -> ToolUtils.isShovel(itemStack);
-        };
+        return slot.accepts(itemStack);
     }
 
     @Override

@@ -1,9 +1,11 @@
 package by.dragonsurvivalteam.dragonsurvival.util;
 
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSItemTags;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -22,6 +24,10 @@ public class ToolUtils {
 
     public static boolean isHarvestTool(final ItemStack itemStack) {
         return isPickaxe(itemStack) || isAxe(itemStack) || isShovel(itemStack) || isHoe(itemStack) || isShears(itemStack);
+    }
+
+    public static boolean isClawWeapon(final ItemStack itemStack) {
+        return itemStack.is(DSItemTags.CLAW_WEAPONS) || isWeapon(itemStack);
     }
 
     public static boolean isWeapon(final ItemStack itemStack) {
@@ -67,48 +73,18 @@ public class ToolUtils {
     }
 
     public static int toolToHarvestLevel(final ItemStack stack) {
-        Item item = stack.getItem();
-        int level = 0;
+        Tool tool = stack.get(DataComponents.TOOL);
 
-        if (item.components().has(DataComponents.TOOL)) {
-            Tool tool = item.components().get(DataComponents.TOOL);
-            // FIXME :: No idea how to do this, mojang seems hell bent on removing tiers as a concept, so we might need to re-evaluate this system as a whole
-            // There is no way to actually reverse what INCORRECT_FOR_X_TOOL tag was used initially without grabbing the
-            // entire HolderSet for the tag and comparing one by one which is horribly inefficient
-//            level = switch (tool.isCorrectForDrops()) {
-//                case Tiers.WOOD, Tiers.GOLD -> 1;
-//                case Tiers.STONE -> 2;
-//                case Tiers.IRON -> 3;
-//                case Tiers.DIAMOND -> 4;
-//                case Tiers.NETHERITE -> 5;
-//                default -> 0;
-//            };
+        if (tool == null) {
+            return 0;
         }
 
-        if (level == 0) {
-            // Fallback for modded tools
-            Tool tool = stack.get(DataComponents.TOOL);
+        int level = 0;
 
-            if (tool == null) {
-                return level;
-            }
-
-            for (Tool.Rule rule : tool.rules()) {
-                // Basically - if a tool has this tag, it means it can be considered to be of that tier
-                // Because it says "this tool cannot mine these blocks"
-                if (rule.blocks() instanceof HolderSet.Named<Block> set) {
-                    if (set.key() == BlockTags.INCORRECT_FOR_WOODEN_TOOL || set.key() == BlockTags.INCORRECT_FOR_GOLD_TOOL) {
-                        level = 1;
-                    } else if (set.key() == BlockTags.INCORRECT_FOR_STONE_TOOL) {
-                        level = 2;
-                    } else if (set.key() == BlockTags.INCORRECT_FOR_IRON_TOOL) {
-                        level = 3;
-                    } else if (set.key() == BlockTags.INCORRECT_FOR_DIAMOND_TOOL) {
-                        level = 4;
-                    } else if (set.key() == BlockTags.INCORRECT_FOR_NETHERITE_TOOL) {
-                        level = 5;
-                    }
-                }
+        for (Tool.Rule rule : tool.rules()) {
+            // In 26.1 vanilla tool tiers are encoded through the deny-drop rule created from ToolMaterial.incorrectBlocksForDrops.
+            if (rule.blocks() instanceof HolderSet.Named<Block> set) {
+                level = Math.max(level, mapIncorrectToolTagToHarvestLevel(set.key()));
             }
         }
 
@@ -146,14 +122,25 @@ public class ToolUtils {
 
     private static boolean isIncorrectRule(final Tool.Rule rule) {
         if (rule.blocks() instanceof HolderSet.Named<Block> set) {
-            return set.key() == BlockTags.INCORRECT_FOR_WOODEN_TOOL ||
-                    set.key() == BlockTags.INCORRECT_FOR_GOLD_TOOL ||
-                    set.key() == BlockTags.INCORRECT_FOR_STONE_TOOL ||
-                    set.key() == BlockTags.INCORRECT_FOR_IRON_TOOL ||
-                    set.key() == BlockTags.INCORRECT_FOR_DIAMOND_TOOL ||
-                    set.key() == BlockTags.INCORRECT_FOR_NETHERITE_TOOL;
+            return mapIncorrectToolTagToHarvestLevel(set.key()) != 0;
         }
 
         return false;
+    }
+
+    private static int mapIncorrectToolTagToHarvestLevel(final TagKey<Block> key) {
+        if (key == BlockTags.INCORRECT_FOR_WOODEN_TOOL || key == BlockTags.INCORRECT_FOR_GOLD_TOOL) {
+            return 1;
+        } else if (key == BlockTags.INCORRECT_FOR_STONE_TOOL || key == BlockTags.INCORRECT_FOR_COPPER_TOOL) {
+            return 2;
+        } else if (key == BlockTags.INCORRECT_FOR_IRON_TOOL) {
+            return 3;
+        } else if (key == BlockTags.INCORRECT_FOR_DIAMOND_TOOL) {
+            return 4;
+        } else if (key == BlockTags.INCORRECT_FOR_NETHERITE_TOOL) {
+            return 5;
+        }
+
+        return 0;
     }
 }

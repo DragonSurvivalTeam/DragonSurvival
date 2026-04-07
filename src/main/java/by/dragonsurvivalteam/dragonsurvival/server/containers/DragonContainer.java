@@ -33,6 +33,11 @@ import java.util.List;
 import java.util.Optional;
 
 public class DragonContainer extends AbstractContainerMenu {
+    private static final int FIRST_PLAYER_INVENTORY_SLOT = 4;
+    private static final int FIRST_HOTBAR_SLOT = 31;
+    private static final int FIRST_CLAW_SLOT = 40;
+    private static final int FIRST_OFFHAND_SLOT = 44;
+
     public final CraftingContainer craftMatrix = new TransientCraftingContainer(this, 3, 3);
     public final ResultContainer craftResult = new ResultContainer();
     public final Player player;
@@ -148,7 +153,7 @@ public class DragonContainer extends AbstractContainerMenu {
             if (index == craftingResultIndex) { // Index 45
                 // Move item from the crafting slot into the inventory / hotbar
                 // Claw menu slots will be prioritized if it's open / visible
-                if (menuStatus == 1 ? !moveItemStackTo(slotItemStack, 4, 44, true) : !moveItemStackTo(slotItemStack, 4, 40, true)) {
+                if (menuStatus == 1 ? !moveItemStackTo(slotItemStack, FIRST_PLAYER_INVENTORY_SLOT, FIRST_OFFHAND_SLOT, true) : !moveItemStackTo(slotItemStack, FIRST_PLAYER_INVENTORY_SLOT, FIRST_CLAW_SLOT, true)) {
                     return ItemStack.EMPTY;
                 }
 
@@ -162,42 +167,24 @@ public class DragonContainer extends AbstractContainerMenu {
                 }
             } else if (index < 4) {
                 // Move the item from the armor slot into the inventory / hotbar
-                if (!moveItemStackTo(slotItemStack, 4, 40, false)) {
+                if (!moveItemStackTo(slotItemStack, FIRST_PLAYER_INVENTORY_SLOT, FIRST_CLAW_SLOT, false)) {
                     return ItemStack.EMPTY;
                 }
-            } else if (menuStatus == 1 && !slots.get(42).hasItem() && ToolUtils.isAxe(slotItemStack)) {
-                // Claw tool axe (check first to prefer axe slot over weapon slot)
-                if (!moveItemStackTo(slotItemStack, 42, 43, false)) {
-                    return ItemStack.EMPTY;
-                }
-            } else if (menuStatus == 1 && !slots.get(40).hasItem() && ToolUtils.isWeapon(slotItemStack)) {
-                // Claw tool sword
-                if (!moveItemStackTo(slotItemStack, 40, 41, false)) {
-                    return ItemStack.EMPTY;
-                }
-            } else if (menuStatus == 1 && !slots.get(41).hasItem() && ToolUtils.isPickaxe(slotItemStack)) {
-                // Claw tool pickaxe
-                if (!moveItemStackTo(slotItemStack, 41, 42, false)) {
-                    return ItemStack.EMPTY;
-                }
-            } else if (menuStatus == 1 && !slots.get(43).hasItem() && ToolUtils.isShovel(slotItemStack)) {
-                // Claw tool shovel
-                if (!moveItemStackTo(slotItemStack, 43, 44, false)) {
-                    return ItemStack.EMPTY;
-                }
-            } else if (equipmentSlot == EquipmentSlot.OFFHAND && !slots.get(44).hasItem()) {
+            } else if (menuStatus == 1 && moveIntoClawSlot(slotItemStack)) {
+                // moved into the first matching claw slot
+            } else if (equipmentSlot == EquipmentSlot.OFFHAND && !slots.get(FIRST_OFFHAND_SLOT).hasItem()) {
                 // Move the item into the offhand (if the slot is free)
-                if (!moveItemStackTo(slotItemStack, 44, 45, false)) {
+                if (!moveItemStackTo(slotItemStack, FIRST_OFFHAND_SLOT, FIRST_OFFHAND_SLOT + 1, false)) {
                     return ItemStack.EMPTY;
                 }
-            } else if (index < 31) {
+            } else if (index < FIRST_HOTBAR_SLOT) {
                 // Move item from the inventory into the hotbar
-                if (!moveItemStackTo(slotItemStack, 31, 40, false)) {
+                if (!moveItemStackTo(slotItemStack, FIRST_HOTBAR_SLOT, FIRST_CLAW_SLOT, false)) {
                     return ItemStack.EMPTY;
                 }
-            } else if (index < 40) {
+            } else if (index < FIRST_CLAW_SLOT) {
                 // Move item from the hotbar into the inventory
-                if (!moveItemStackTo(slotItemStack, 4, 31, false)) {
+                if (!moveItemStackTo(slotItemStack, FIRST_PLAYER_INVENTORY_SLOT, FIRST_HOTBAR_SLOT, false)) {
                     return ItemStack.EMPTY;
                 }
             } else {
@@ -206,7 +193,7 @@ public class DragonContainer extends AbstractContainerMenu {
                 Offhand slot: 			index 44
                 Crafting slots: 		index 46 to 54
                 */
-                if (!moveItemStackTo(slotItemStack, 4, 31, false)) {
+                if (!moveItemStackTo(slotItemStack, FIRST_PLAYER_INVENTORY_SLOT, FIRST_CLAW_SLOT, false)) {
                     return ItemStack.EMPTY;
                 }
             }
@@ -229,6 +216,20 @@ public class DragonContainer extends AbstractContainerMenu {
         }
 
         return itemStack;
+    }
+
+    private boolean moveIntoClawSlot(final ItemStack stack) {
+        for (ClawInventoryData.Slot clawSlot : new ClawInventoryData.Slot[]{ClawInventoryData.Slot.AXE, ClawInventoryData.Slot.SWORD, ClawInventoryData.Slot.PICKAXE, ClawInventoryData.Slot.SHOVEL}) {
+            int menuSlot = FIRST_CLAW_SLOT + clawSlot.ordinal();
+
+            if (!clawSlot.accepts(stack) || slots.get(menuSlot).hasItem()) {
+                continue;
+            }
+
+            return moveItemStackTo(stack, menuSlot, menuSlot + 1, false);
+        }
+
+        return false;
     }
 
     @Override

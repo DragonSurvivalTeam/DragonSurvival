@@ -116,43 +116,17 @@ public class ClawToolHandler {
     }
 
     public static ItemStack getDragonHarvestTool(final Player player, final BlockState state) {
-        ItemStack mainStack = player.getInventory().getSelectedItem();
-        float newSpeed = 0F;
-
-        if (!ToolUtils.shouldUseDragonTools(mainStack)) {
-            return mainStack;
-        }
-
-        ItemStack harvestTool = mainStack;
-        SimpleContainer clawInventory = ClawInventoryData.getData(player).getContainer();
-        for (int i = 1; i < ClawInventoryData.Slot.size(); i++) {
-            ItemStack breakingItem = clawInventory.getItem(i);
-
-            if (!breakingItem.isEmpty() && breakingItem.isCorrectToolForDrops(state)) {
-                float tempSpeed = breakingItem.getDestroySpeed(state);
-
-                if (breakingItem.getItem().components().has(DataComponents.TOOL)) {
-                    tempSpeed = breakingItem.getItem().components().get(DataComponents.TOOL).getMiningSpeed(state);
-                }
-
-                if (tempSpeed > newSpeed) {
-                    newSpeed = tempSpeed;
-                    harvestTool = breakingItem;
-                }
-            }
-        }
-
-        return harvestTool;
+        return getDragonHarvestToolAndSlot(player, state).getFirst();
     }
 
     public static Pair<ItemStack, Integer> getDragonHarvestToolAndSlot(final Player player, final BlockState state) {
         ItemStack mainStack = player.getInventory().getSelectedItem();
-        float newSpeed = 0F;
 
         if (!ToolUtils.shouldUseDragonTools(mainStack)) {
             return Pair.of(mainStack, -1);
         }
 
+        float bestSpeed = 0F;
         ItemStack harvestTool = mainStack;
         int toolSlot = -1;
 
@@ -160,18 +134,16 @@ public class ClawToolHandler {
         for (int i = 0; i < ClawInventoryData.Slot.size(); i++) {
             ItemStack breakingItem = clawInventory.getItem(i);
 
-            if (!breakingItem.isEmpty() && breakingItem.isCorrectToolForDrops(state)) {
-                float tempSpeed = breakingItem.getDestroySpeed(state);
+            if (breakingItem.isEmpty() || !ToolUtils.isCorrectTool(breakingItem, state) || !HarvestBonuses.canHarvest(player, state, breakingItem)) {
+                continue;
+            }
 
-                if (breakingItem.getItem().components().has(DataComponents.TOOL)) {
-                    tempSpeed = breakingItem.getItem().components().get(DataComponents.TOOL).getMiningSpeed(state);
-                }
+            float miningSpeed = getMiningSpeed(breakingItem, state);
 
-                if (tempSpeed > newSpeed) {
-                    newSpeed = tempSpeed;
-                    harvestTool = breakingItem;
-                    toolSlot = i;
-                }
+            if (miningSpeed > bestSpeed) {
+                bestSpeed = miningSpeed;
+                harvestTool = breakingItem;
+                toolSlot = i;
             }
         }
 
@@ -253,5 +225,15 @@ public class ClawToolHandler {
 
             event.setNewSpeed(event.getNewSpeed() * bonuses.getSpeedMultiplier(event.getState()));
         });
+    }
+
+    private static float getMiningSpeed(final ItemStack stack, final BlockState state) {
+        float miningSpeed = stack.getDestroySpeed(state);
+
+        if (stack.getItem().components().has(DataComponents.TOOL)) {
+            miningSpeed = stack.getItem().components().get(DataComponents.TOOL).getMiningSpeed(state);
+        }
+
+        return miningSpeed;
     }
 }

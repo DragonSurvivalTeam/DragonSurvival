@@ -28,6 +28,7 @@ import net.neoforged.neoforge.common.util.ValueIOSerializable;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Optional;
 
@@ -52,6 +53,15 @@ public class ClawInventoryData implements ValueIOSerializable {
             return emptyTexture;
         }
 
+        public boolean accepts(final ItemStack stack) {
+            return switch (this) {
+                case SWORD -> ToolUtils.isClawWeapon(stack);
+                case PICKAXE -> ToolUtils.isPickaxe(stack);
+                case AXE -> ToolUtils.isAxe(stack);
+                case SHOVEL -> ToolUtils.isShovel(stack);
+            };
+        }
+
         /** Equivalent to the container size */
         public static int size() {
             return values().length;
@@ -70,9 +80,13 @@ public class ClawInventoryData implements ValueIOSerializable {
     public int switchedToolSlot = -1;
 
     private final SimpleContainer clawsInventory = new SimpleContainer(4);
+    private final ArrayList<SwapFrame> swapFrames = new ArrayList<>();
     private boolean isMenuOpen = true;
     /** To track the state if a tool swap is triggered within a tool swap (should only swap back if the last tool swap finishes) */
     private int toolSwapLayer;
+
+    private record SwapFrame(ItemStack previousMainHand, int previousBorrowedSlot, int newBorrowedSlot, boolean changedHand) {
+    }
 
     public void swapStart(final Player player, final BlockState blockState) {
         Pair<ItemStack, Integer> data = ClawToolHandler.getDragonHarvestToolAndSlot(player, blockState);
@@ -95,36 +109,35 @@ public class ClawInventoryData implements ValueIOSerializable {
         }
 
         ItemStack mainHand = player.getItemInHand(InteractionHand.MAIN_HAND);
+        boolean sameBorrowedTool = switchedTool && switchedToolSlot == slot && ItemStack.matches(mainHand, tool);
 
-        if (!switchedTool) {
-            player.setItemInHand(InteractionHand.MAIN_HAND, tool);
-
-            // Copied from collectEquipmentChanges() in LivingEntity.java
-            tool.forEachModifier(EquipmentSlot.MAINHAND, (attribute, modifier) -> {
-                AttributeInstance instance = player.getAttributes().getInstance(attribute);
-
-                if (instance != null) {
-                    instance.removeModifier(modifier.id());
-                    instance.addTransientModifier(modifier);
-                }
-
-                if (player.level() instanceof ServerLevel serverlevel) {
-                    EnchantmentHelper.runLocationChangedEffects(serverlevel, tool, player, EquipmentSlot.MAINHAND);
-                }
-            });
-
-            clawsInventory.setItem(slot, ItemStack.EMPTY);
-            storedMainHandTool = mainHand;
-            switchedTool = true;
-            switchedToolSlot = slot;
+        if (sameBorrowedTool) {
+            swapFrames.add(new SwapFrame(ItemStack.EMPTY, -1, slot, false));
+            toolSwapLayer = swapFrames.size();
+            return;
         }
 
-        toolSwapLayer++;
+        if (!switchedTool) {
+            swapFrames.add(new SwapFrame(mainHand, -1, slot, true));
+            storedMainHandTool = mainHand;
+            switchBorrowedTool(player, tool, slot);
+            switchedTool = true;
+            switchedToolSlot = slot;
+            toolSwapLayer = swapFrames.size();
+            return;
+        }
+
+        swapFrames.add(new SwapFrame(mainHand, switchedToolSlot, slot, true));
+        removeBorrowedToolEffects(player, mainHand);
+        clawsInventory.setItem(switchedToolSlot, mainHand);
+        switchBorrowedTool(player, tool, slot);
+        switchedToolSlot = slot;
+        toolSwapLayer = swapFrames.size();
     }
 
     /** Puts the stored main hand back into the main hand and the claw tool into its slot */
     public void swapFinish(final Player player) {
-        if (!switchedTool) {
+        if (!switchedTool || swapFrames.isEmpty()) {
             toolSwapLayer = 0;
             return;
         }
@@ -134,34 +147,36 @@ public class ClawInventoryData implements ValueIOSerializable {
             return;
         }
 
-        toolSwapLayer--;
+        SwapFrame frame = swapFrames.removeLast();
+        toolSwapLayer = swapFrames.size();
 
         if (toolSwapLayer < 0) {
             DragonSurvival.LOGGER.warn("Tool swap layer was lower than 0 - this should not happen");
             toolSwapLayer = 0;
         }
 
-        if (toolSwapLayer == 0) {
-            ItemStack originalMainHand = storedMainHandTool;
-            ItemStack originalToolSlot = player.getItemInHand(InteractionHand.MAIN_HAND);
+        if (!frame.changedHand()) {
+            return;
+        }
 
-            // Copied from collectEquipmentChanges() in LivingEntity.java
-            originalToolSlot.forEachModifier(EquipmentSlot.MAINHAND, (attributeHolder, attributeModifier) -> {
-                AttributeInstance attributeinstance = player.getAttributes().getInstance(attributeHolder);
-                if (attributeinstance != null) {
-                    attributeinstance.removeModifier(attributeModifier);
-                }
+        ItemStack currentBorrowedTool = player.getItemInHand(InteractionHand.MAIN_HAND);
+        removeBorrowedToolEffects(player, currentBorrowedTool);
+        clawsInventory.setItem(frame.newBorrowedSlot(), currentBorrowedTool);
 
-                EnchantmentHelper.stopLocationBasedEffects(originalToolSlot, player, EquipmentSlot.MAINHAND);
-            });
-
-            player.setItemInHand(InteractionHand.MAIN_HAND, originalMainHand);
-
-            clawsInventory.setItem(switchedToolSlot, originalToolSlot);
+        if (frame.previousBorrowedSlot() == -1) {
+            player.setItemInHand(InteractionHand.MAIN_HAND, frame.previousMainHand());
             storedMainHandTool = ItemStack.EMPTY;
             switchedTool = false;
             switchedToolSlot = -1;
+            return;
         }
+
+        ItemStack previousBorrowedTool = clawsInventory.getItem(frame.previousBorrowedSlot());
+        player.setItemInHand(InteractionHand.MAIN_HAND, previousBorrowedTool);
+        applyBorrowedToolEffects(player, previousBorrowedTool);
+        clawsInventory.setItem(frame.previousBorrowedSlot(), ItemStack.EMPTY);
+        switchedTool = true;
+        switchedToolSlot = frame.previousBorrowedSlot();
     }
 
     public static void reInsertClawTools(final Player player) {
@@ -232,6 +247,40 @@ public class ClawInventoryData implements ValueIOSerializable {
         }
 
         return currentTool;
+    }
+
+    private void switchBorrowedTool(final Player player, final ItemStack tool, final int slot) {
+        player.setItemInHand(InteractionHand.MAIN_HAND, tool);
+        applyBorrowedToolEffects(player, tool);
+        clawsInventory.setItem(slot, ItemStack.EMPTY);
+    }
+
+    private void applyBorrowedToolEffects(final Player player, final ItemStack tool) {
+        // Copied from collectEquipmentChanges() in LivingEntity.java
+        tool.forEachModifier(EquipmentSlot.MAINHAND, (attribute, modifier) -> {
+            AttributeInstance instance = player.getAttributes().getInstance(attribute);
+
+            if (instance != null) {
+                instance.removeModifier(modifier.id());
+                instance.addTransientModifier(modifier);
+            }
+        });
+
+        if (player.level() instanceof ServerLevel serverLevel) {
+            EnchantmentHelper.runLocationChangedEffects(serverLevel, tool, player, EquipmentSlot.MAINHAND);
+        }
+    }
+
+    private void removeBorrowedToolEffects(final Player player, final ItemStack tool) {
+        tool.forEachModifier(EquipmentSlot.MAINHAND, (attributeHolder, attributeModifier) -> {
+            AttributeInstance attributeInstance = player.getAttributes().getInstance(attributeHolder);
+
+            if (attributeInstance != null) {
+                attributeInstance.removeModifier(attributeModifier);
+            }
+        });
+
+        EnchantmentHelper.stopLocationBasedEffects(tool, player, EquipmentSlot.MAINHAND);
     }
 
     public void sync(final Player player) {
