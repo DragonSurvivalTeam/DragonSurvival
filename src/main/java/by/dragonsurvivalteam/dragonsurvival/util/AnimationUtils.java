@@ -9,6 +9,7 @@ import com.geckolib.animation.RawAnimation;
 import com.geckolib.cache.GeckoLibResources;
 import com.geckolib.cache.animation.BakedAnimations;
 import com.geckolib.model.GeoModel;
+import net.minecraft.world.level.Level;
 
 
 public class AnimationUtils {
@@ -45,13 +46,25 @@ public class AnimationUtils {
 
     public static float getDeltaTickFor60FPS() {
         float deltaTick = Minecraft.getInstance().getDeltaTracker().getRealtimeDeltaTicks();
-        //noinspection DataFlowIssue -> level is present
-        return deltaTick / (MS_FOR_60FPS / Minecraft.getInstance().level.tickRateManager().millisecondsPerTick());
+
+        Level level = Minecraft.getInstance().level;
+        if (level != null)
+        {
+            return deltaTick / (MS_FOR_60FPS / level.tickRateManager().millisecondsPerTick());
+        }
+
+        return 0;
     }
 
     public static float getDeltaSeconds() {
         //noinspection DataFlowIssue -> level is present
-        return (Minecraft.getInstance().getDeltaTracker().getRealtimeDeltaTicks() * Minecraft.getInstance().level.tickRateManager().millisecondsPerTick()) / 1000f;
+        Level level = Minecraft.getInstance().level;
+        if (level != null)
+        {
+            return (Minecraft.getInstance().getDeltaTracker().getRealtimeDeltaTicks() * level.tickRateManager().millisecondsPerTick()) / 1000f;
+        }
+
+        return 0;
     }
 
     public static <A extends GeoAnimatable, T extends GeoModel<A>> boolean doesAnimationExist(final T model, final A animatable, final String animation) {

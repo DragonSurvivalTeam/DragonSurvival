@@ -34,8 +34,7 @@ public class ClientDietComponent implements ClientTooltipComponent {
 
     @Override
     public void extractText(@NotNull GuiGraphicsExtractor graphics, Font font, int x, int y) {
-        // Y offset to align the height of the text with the center of the item
-        // FIXME :: UI RENDERING
-        //font.drawInBatch(tooltip, x + ICON_SIZE, y + 4, -1, true, graphics.pose(), bufferSource, Font.DisplayMode.NORMAL, 0, LightTexture.FULL_BRIGHT);
+        // Offset the text slightly so it centers against the 16x16 item icon.
+        graphics.text(font, tooltip, x + ICON_SIZE, y + 4, 0xFFFFFFFF, true);
     }
 }

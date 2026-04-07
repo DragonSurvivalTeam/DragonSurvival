@@ -122,7 +122,7 @@ public class InventoryScreenHandler {
                 }) {
                     @Override
                     public void extractWidgetRenderState(@NotNull GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partialTick) {
-                        GuiGraphicsExtractor.blit(DS_LOGO, getX(), getY(), 0, 0, 32, 32, 32, 32);
+                        GuiGraphicsExtractor.blit(RenderPipelines.GUI_TEXTURED, DS_LOGO, getX(), getY(), 0, 0, 32, 32, 32, 32);
                     }
                 };
                 altarOpenButton.setTooltip(Tooltip.create(Component.translatable(TOGGLE_DRAGON_ALTAR)));
@@ -157,7 +157,7 @@ public class InventoryScreenHandler {
                     public void extractWidgetRenderState(@NotNull GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partialTick) {
                         float u = 21f;
                         float v = isHoveredOrFocused() ? 20f : 0f;
-                        GuiGraphicsExtractor.blit(RenderPipelines.GUI, INVENTORY_TOGGLE_BUTTON, getX(), getY(), u, v, 20, 18, 256, 256);
+                        GuiGraphicsExtractor.blit(RenderPipelines.GUI_TEXTURED, INVENTORY_TOGGLE_BUTTON, getX(), getY(), u, v, 20, 18, 256, 256);
                     }
                 };
                 dragonInventoryButton.setTooltip(Tooltip.create(Component.translatable(TOGGLE_DRAGON_INVENTORY)));
@@ -174,7 +174,7 @@ public class InventoryScreenHandler {
                     public void extractWidgetRenderState(@NotNull GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partialTick) {
                         float u = 21f;
                         float v = isHoveredOrFocused() ? 20f : 0f;
-                        GuiGraphicsExtractor.blit(RenderPipelines.GUI, INVENTORY_TOGGLE_BUTTON, getX(), getY(), u, v, 20, 18, 256, 256);
+                        GuiGraphicsExtractor.blit(RenderPipelines.GUI_TEXTURED, INVENTORY_TOGGLE_BUTTON, getX(), getY(), u, v, 20, 18, 256, 256);
                     }
                 };
                 creativeModeDragonInventoryButton.setTooltip(Tooltip.create(Component.translatable(TOGGLE_DRAGON_INVENTORY)));
