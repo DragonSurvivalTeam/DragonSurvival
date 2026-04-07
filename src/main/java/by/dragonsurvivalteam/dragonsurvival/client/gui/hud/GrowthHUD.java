@@ -97,10 +97,6 @@ public class GrowthHUD {
 
         RenderingUtils.drawGrowthCircle(graphics, circleX, circleY, radius, 6, 0.13f, currentProgress, targetProgress, CENTER_COLOR, OUTLINE_COLOR, addColor, SUBTRACT_COLOR);
 
-        graphics.pose().pushMatrix();
-        // FIXME :: UI GRAPHICS
-        //graphics.pose().translate(0, 0, 300);
         graphics.blit(RenderPipelines.GUI_TEXTURED, StageResources.getGrowthIcon(handler.species(), handler.stageKey()).hoverIcon(), circleX + 7, circleY + 6, 0, 0, 20, 20, 20, 20);
-        graphics.pose().popMatrix();
     }
 }

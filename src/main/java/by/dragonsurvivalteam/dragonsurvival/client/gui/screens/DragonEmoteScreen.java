@@ -135,10 +135,7 @@ public class DragonEmoteScreen extends Screen {
         int startX = guiLeft;
         int startY = guiTop;
 
-        // FIXME :: UI RENDERING
-        //RenderSystem.enableBlend();
         graphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND_MAIN, startX, startY, 0, 0, 256, 256, 256, 256);
-        //RenderSystem.disableBlend();
 
         super.extractRenderState(graphics, mouseX, mouseY, partialTick);
         int totalPages = (int) Math.ceil((double) DragonStateProvider.getData(minecraft.player).body().value().emotes().value().emotes().size() / PER_PAGE);
