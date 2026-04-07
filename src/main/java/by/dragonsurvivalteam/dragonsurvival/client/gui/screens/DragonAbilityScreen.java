@@ -23,6 +23,7 @@ import by.dragonsurvivalteam.dragonsurvival.util.ExperienceUtils;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -36,7 +37,6 @@ import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 
 public class DragonAbilityScreen extends Screen {
     @Translation(comments = {
-            "§f■ §cUSE THE MOUSE WHEEL TO SCROLL THROUGH THE SKILL COLUMNS.",
             "§f■ §6Active skills§r§f are used in combat or to apply buffs.",
             "§f- §9Skill power§r§8 scales off your current experience level.",
             "§f- §9Experience or mana§r§8 points are used to cast spells.",
@@ -48,7 +48,6 @@ public class DragonAbilityScreen extends Screen {
     private static final String HELP_PASSIVE_ACTIVE = Translation.Type.GUI.wrap("help.passive_active_abilities");
 
     @Translation(comments = {
-            "■ §cUSE THE MOUSE WHEEL TO SCROLL THROUGH THE SKILL COLUMNS.",
             "§f■ §dAbility assignment§r§f - drag and drop §6Active skills§r§f from right to the §9left column§r§f.",
             "§f- §9Left Column§r§8 is used to quickly access your active skills via magic hotbar.",
             "§f- §8Check in-game Minecraft §r§9control§r§8 settings!"
@@ -94,16 +93,18 @@ public class DragonAbilityScreen extends Screen {
             return;
         }
 
+        lastHoveredLevelButton = null;
+
         extractBlurredBackground(graphics);
 
         int startX = guiLeft + 8;
         int startY = guiTop - 28;
 
         if (leftWindowOpen && !leftWindowWidgets.isEmpty()) {
-            graphics.blit(BACKGROUND_SIDE, startX - 50, startY, 0, 0, 48, 203, 256, 256);
+            graphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND_SIDE, startX - 50, startY, 0, 0, 48, 203, 256, 256);
         }
 
-        graphics.blit(BACKGROUND_MAIN, startX, startY, 0, 0, 256, 256, 256, 256);
+        graphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND_MAIN, startX, startY, 0, 0, 256, 256, 256, 256);
 
         for (ScrollableComponent component : scrollableComponents) {
             component.update();
@@ -121,13 +122,13 @@ public class DragonAbilityScreen extends Screen {
             int leftBarX = startX + 10;
             int rightBarX = startX + 136;
 
-            graphics.blit(EXP_EMPTY, leftBarX, barYPos, 0, 0, 93, 6, 93, 6);
-            graphics.blit(EXP_EMPTY, rightBarX, barYPos, 0, 0, 93, 6, 93, 6);
-            graphics.blit(EXP_FULL, leftBarX, barYPos, 0, 0, (int) (93 * leftExpBarProgress), 6, 93, 6);
+            graphics.blit(RenderPipelines.GUI_TEXTURED, EXP_EMPTY, leftBarX, barYPos, 0, 0, 93, 6, 93, 6);
+            graphics.blit(RenderPipelines.GUI_TEXTURED, EXP_EMPTY, rightBarX, barYPos, 0, 0, 93, 6, 93, 6);
+            graphics.blit(RenderPipelines.GUI_TEXTURED, EXP_FULL, leftBarX, barYPos, 0, 0, (int) (93 * leftExpBarProgress), 6, 93, 6);
 
             if (progress > 0.5) {
                 float rightExpBarProgress = Math.min(1f, Math.min(0.5f, progress - 0.5f) * 2);
-                graphics.blit(EXP_FULL, rightBarX, barYPos, 0, 0, (int) (93 * rightExpBarProgress), 6, 93, 6);
+                graphics.blit(RenderPipelines.GUI_TEXTURED, EXP_FULL, rightBarX, barYPos, 0, 0, (int) (93 * rightExpBarProgress), 6, 93, 6);
             }
 
             int experienceModification;
@@ -172,10 +173,10 @@ public class DragonAbilityScreen extends Screen {
                 color = experienceModification > 0 ? DSColors.GREEN : DSColors.DARK_RED;
             }
 
-            Component expectedLevel = Component.literal(String.valueOf(newLevel)).withColor(color);
+            Component expectedLevel = Component.literal(String.valueOf(newLevel));
             int expLevelXPos = ((rightBarX + leftBarX) / 2 + 48 - minecraft.font.width(expectedLevel) / 2) - 1;
             int expLevelYPos = barYPos - 1;
-            graphics.text(minecraft.font, expectedLevel, expLevelXPos, expLevelYPos, 0, false);
+            graphics.text(minecraft.font, expectedLevel, expLevelXPos, expLevelYPos, DSColors.withAlpha(color, 1), false);
         }
 
         super.extractRenderState(graphics, mouseX, mouseY, partialTick);
@@ -192,17 +193,26 @@ public class DragonAbilityScreen extends Screen {
         }
     }
 
-    private void drawExperienceBar(final GuiGraphicsExtractor GuiGraphicsExtractor, int y, int initialX, float hoverProgress) {
-        GuiGraphicsExtractor.blit(EXP_FULL, initialX, y, 0, 0, (int) (93 * hoverProgress), 6, 93, 6);
+    private void drawExperienceBar(final GuiGraphicsExtractor graphics, int y, int initialX, float hoverProgress) {
+        graphics.blit(RenderPipelines.GUI_TEXTURED, EXP_FULL, initialX, y, 0, 0, (int) (93 * hoverProgress), 6, 93, 6);
     }
 
     @Override
-    public void extractBackground(@NotNull GuiGraphicsExtractor pGuiGraphicsExtractor, int pMouseX, int pMouseY, float pPartialTick) {
+    public void extractBackground(@NotNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         // Don't render the vanilla background, it darkens the UI in an undesirable way
     }
 
     @Override
     public void init() {
+        if (minecraft.player == null) {
+            return;
+        }
+
+        dragonSpecies = DragonStateProvider.getData(minecraft.player).species();
+        lastHoveredLevelButton = null;
+        leftWindowWidgets.clear();
+        scrollableComponents.clear();
+
         int xSize = 256;
         int ySize = 256;
 

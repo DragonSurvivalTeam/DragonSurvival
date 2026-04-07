@@ -15,6 +15,7 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.ARGB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.client.gui.widget.ExtendedButton;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
@@ -27,7 +28,7 @@ import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 
 public class AbilityButton extends ExtendedButton {
     public static final Identifier ACTIVE_BACKGROUND = Identifier.fromNamespaceAndPath(MODID, "textures/gui/sprites/ability_screen/skill_main");
-    public static final Identifier PASSIVE_BACKGROUND = Identifier.fromNamespaceAndPath(MODID, "textures/gui/sprites/ability_screen/skill_main");
+    public static final Identifier PASSIVE_BACKGROUND = Identifier.fromNamespaceAndPath(MODID, "textures/gui/sprites/ability_screen/skill_other");
     public static final Identifier DISABLED_BACKGROUND = Identifier.fromNamespaceAndPath(MODID, "textures/gui/sprites/ability_screen/skill_disabled");
     public static final Identifier AUTO_UPGRADE_ORNAMENTATION = Identifier.fromNamespaceAndPath(MODID, "textures/gui/sprites/ability_screen/skill_autoupgrade");
 
@@ -241,15 +242,9 @@ public class AbilityButton extends ExtendedButton {
         }
 
         graphics.pose().pushMatrix();
-        // FIXME :: UI GRAPHICS
-        //graphics.pose().translate(0, 0, 50);
 
         if (isDragging) {
-            graphics.pose().pushMatrix();
-            // FIXME :: UI GRAPHICS
-            //graphics.pose().translate(0, 0, 100);
             blit(graphics, ability.getIcon(), mouseX - SIZE / 2, mouseY - SIZE / 2, SIZE);
-            graphics.pose().popMatrix();
         }
 
         if (!isHotbar || !isDragging) {
@@ -296,8 +291,7 @@ public class AbilityButton extends ExtendedButton {
     }
 
     private void blit(final GuiGraphicsExtractor graphics, final Identifier texture, int x, int y, int size) {
-        // FIXME :: UI GRAPHICS (there was an alpha value used here and it is now gone)
-        graphics.blit(RenderPipelines.GUI_TEXTURED, texture, x, y, size, size, 0, 0, size, size);
+        graphics.blit(RenderPipelines.GUI_TEXTURED, texture, x, y, 0, 0, size, size, size, size, ARGB.colorFromFloat(alpha, 1, 1, 1));
     }
 
     /** If the player is dragging any button the buttons shouldn't show their description */

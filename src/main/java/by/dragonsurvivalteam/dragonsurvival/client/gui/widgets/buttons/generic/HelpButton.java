@@ -48,7 +48,7 @@ public class HelpButton extends ExtendedButton {
             resource = main;
         }
 
-        graphics.blit(RenderPipelines.GUI_TEXTURED, resource, getX(), getY(), width, height, 0, 0, UV, UV, TEXTURE_SIZE, TEXTURE_SIZE);
+        graphics.blit(RenderPipelines.GUI_TEXTURED, resource, getX(), getY(), 0, 0, width, height, UV, UV, TEXTURE_SIZE, TEXTURE_SIZE);
     }
 
     @Override
