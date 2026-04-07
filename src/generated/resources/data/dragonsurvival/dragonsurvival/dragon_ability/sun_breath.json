@@ -10,7 +10,13 @@
                 {
                   "item_predicate": {
                     "items": "minecraft:potato"
-                  }
+                  },
+                  "items_to": [
+                    {
+                      "item": "minecraft:poisonous_potato",
+                      "weight": 1
+                    }
+                  ]
                 }
               ],
               "probability": 0.5
@@ -39,6 +45,41 @@
             {
               "conversion_data": [
                 {
+                  "blocks_to": [
+                    {
+                      "state": {
+                        "Name": "minecraft:grass_block",
+                        "Properties": {
+                          "snowy": "false"
+                        }
+                      },
+                      "weight": 25
+                    },
+                    {
+                      "state": {
+                        "Name": "minecraft:podzol",
+                        "Properties": {
+                          "snowy": "false"
+                        }
+                      },
+                      "weight": 5
+                    },
+                    {
+                      "state": {
+                        "Name": "minecraft:mycelium",
+                        "Properties": {
+                          "snowy": "false"
+                        }
+                      },
+                      "weight": 1
+                    },
+                    {
+                      "state": {
+                        "Name": "minecraft:coarse_dirt"
+                      },
+                      "weight": 3
+                    }
+                  ],
                   "from_predicate": {
                     "type": "minecraft:matching_blocks",
                     "blocks": [

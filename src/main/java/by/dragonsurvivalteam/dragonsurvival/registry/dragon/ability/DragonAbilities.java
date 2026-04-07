@@ -3,6 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Glow;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.LevelBasedResource;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.ParticleData;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.SpawnParticles;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.TargetDirection;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.ActionContainer;
@@ -61,6 +62,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.util.random.WeightedList;
 import net.minecraft.util.valueproviders.ConstantFloat;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.EntityType;
@@ -430,19 +432,17 @@ public class DragonAbilities {
                                 List.of(
                                         new ItemConversionEffect(
                                                 List.of(
-                                                        new ItemConversionEffect.ItemConversionData(ItemCondition.is(Items.IRON_INGOT)
-                                                                // FIXME
-                                                                /*WeightedRandomList.create(
-                                                                ItemConversionEffect.ItemTo.of(
+                                                        new ItemConversionEffect.ItemConversionData(
+                                                                ItemCondition.is(Items.IRON_INGOT),
+                                                                WeightedList.of(ItemConversionEffect.ItemTo.of(
                                                                         Items.GOLD_INGOT,
                                                                         12,
-                                                                        1,
                                                                         new ParticleData(
                                                                                 new SpawnParticles(ParticleTypes.SOUL, SpawnParticles.inBoundingBox(), SpawnParticles.inBoundingBox(), SpawnParticles.fixedVelocity(ConstantFloat.of(0.05f)), SpawnParticles.fixedVelocity(ConstantFloat.of(0.05f)), ConstantFloat.of(0.05f)),
                                                                                 LevelBasedValue.constant(20)
                                                                         )
                                                                 )
-                                                        )*/)
+                                                                ))
                                                 ),
                                                 LevelBasedValue.constant(1)
                                         )

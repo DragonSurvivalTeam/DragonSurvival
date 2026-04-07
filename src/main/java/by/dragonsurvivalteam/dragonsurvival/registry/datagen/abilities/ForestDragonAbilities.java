@@ -71,6 +71,7 @@ import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.util.random.WeightedList;
 import net.minecraft.util.valueproviders.ConstantFloat;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffects;
@@ -234,8 +235,10 @@ public class ForestDragonAbilities {
                 List.of(
                         new ActionContainer(new DragonBreathTarget(AbilityTargeting.entity(
                                 List.of(new ItemConversionEffect(
-                                        // FIXME
-                                        List.of(new ItemConversionEffect.ItemConversionData(ItemCondition.is(Items.POTATO)/*, WeightedRandomList.create(ItemConversionEffect.ItemTo.of(Items.POISONOUS_POTATO))*/)),
+                                        List.of(new ItemConversionEffect.ItemConversionData(
+                                                ItemCondition.is(Items.POTATO),
+                                                WeightedList.of(ItemConversionEffect.ItemTo.of(Items.POISONOUS_POTATO))
+                                        )),
                                         LevelBasedValue.constant(0.5f)
                                 )),
                                 TargetingMode.ITEMS
@@ -244,15 +247,14 @@ public class ForestDragonAbilities {
                                 List.of(
                                         new BonemealEffect(LevelBasedValue.constant(2), LevelBasedValue.perLevel(0.5f)),
                                         new BlockConversionEffect(List.of(new BlockConversionEffect.BlockConversionData(
-                                                BlockCondition.blocks(Blocks.DIRT, Blocks.COARSE_DIRT)
-                                                // FIXME
-                                                /*,SimpleWeightedRandomList.create(
-                                                        new BlockConversionEffect.BlockTo(Blocks.GRASS_BLOCK.defaultBlockState(), 25, Optional.empty()),
-                                                        new BlockConversionEffect.BlockTo(Blocks.PODZOL.defaultBlockState(), 5, Optional.empty()),
-                                                        new BlockConversionEffect.BlockTo(Blocks.MYCELIUM.defaultBlockState(), 1, Optional.empty()),
-                                                        new BlockConversionEffect.BlockTo(Blocks.COARSE_DIRT.defaultBlockState(), 3, Optional.empty())
-                                                )*/)
-                                        ), LevelBasedValue.constant(0.2f))
+                                                BlockCondition.blocks(Blocks.DIRT, Blocks.COARSE_DIRT),
+                                                WeightedList.<BlockConversionEffect.BlockTo>builder()
+                                                        .add(new BlockConversionEffect.BlockTo(Blocks.GRASS_BLOCK.defaultBlockState(), Optional.empty()), 25)
+                                                        .add(new BlockConversionEffect.BlockTo(Blocks.PODZOL.defaultBlockState(), Optional.empty()), 5)
+                                                        .add(new BlockConversionEffect.BlockTo(Blocks.MYCELIUM.defaultBlockState(), Optional.empty()), 1)
+                                                        .add(new BlockConversionEffect.BlockTo(Blocks.COARSE_DIRT.defaultBlockState(), Optional.empty()), 3)
+                                                        .build()
+                                        )), LevelBasedValue.constant(0.2f))
                                 )
                         ), LevelBasedValue.constant(1)), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(10)),
                         new ActionContainer(new SelfTarget(AbilityTargeting.entity(
