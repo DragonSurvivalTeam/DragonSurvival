@@ -27,11 +27,11 @@ public class ToolUtils {
     }
 
     public static boolean isClawWeapon(final ItemStack itemStack) {
-        return itemStack.is(DSItemTags.CLAW_WEAPONS) || isWeapon(itemStack);
+        return itemStack.is(DSItemTags.CLAW_WEAPONS);
     }
 
     public static boolean isWeapon(final ItemStack itemStack) {
-        return itemStack.getComponents().has(DataComponents.WEAPON) || itemStack.getComponents().has(DataComponents.KINETIC_WEAPON) || itemStack.getComponents().has(DataComponents.KINETIC_WEAPON);
+        return itemStack.is(DSItemTags.CLAW_WEAPONS) || itemStack.getComponents().has(DataComponents.WEAPON) || itemStack.getComponents().has(DataComponents.KINETIC_WEAPON) || itemStack.getComponents().has(DataComponents.KINETIC_WEAPON);
     }
 
     public static boolean isPickaxe(final ItemStack itemStack) {

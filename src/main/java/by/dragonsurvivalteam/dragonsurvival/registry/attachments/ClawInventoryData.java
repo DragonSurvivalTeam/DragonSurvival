@@ -85,8 +85,7 @@ public class ClawInventoryData implements ValueIOSerializable {
     /** To track the state if a tool swap is triggered within a tool swap (should only swap back if the last tool swap finishes) */
     private int toolSwapLayer;
 
-    private record SwapFrame(ItemStack previousMainHand, int previousBorrowedSlot, int newBorrowedSlot, boolean changedHand) {
-    }
+    private record SwapFrame(ItemStack previousMainHand, int previousBorrowedSlot, int newBorrowedSlot, boolean changedHand) {}
 
     public void swapStart(final Player player, final BlockState blockState) {
         Pair<ItemStack, Integer> data = ClawToolHandler.getDragonHarvestToolAndSlot(player, blockState);
