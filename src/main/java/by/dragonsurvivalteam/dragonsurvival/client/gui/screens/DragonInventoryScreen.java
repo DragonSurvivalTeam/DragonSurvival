@@ -268,11 +268,5 @@ public class DragonInventoryScreen extends AbstractContainerScreen<DragonContain
             Identifier texture = ClientDragonRenderer.renderDragonClaws ? CLAW_DISPLAY_ON : CLAW_DISPLAY_OFF;
             graphics.blit(RenderPipelines.GUI_TEXTURED, texture, leftPos - 30, topPos + 120, 0, 0, 24, 42, 24, 42);
         }
-
-        // Bandaid solution since we are rendering the tooltip twice now
-        // But with this it is guaranteed to be rendered after the slot icons
-        // FIXME :: UI RENDERING
-        // We probably need to access the internal tooltip holder from AbstractWidget to render this here
-        // growthButton.renderTooltip(graphics, mouseX, mouseY);
     }
 }
