@@ -44,6 +44,8 @@
     "client.AbstractContainerScreenAccessor",
     "client.CameraMixin",
     "client.ClientLevelMixin",
+    "client.EffectsInInventoryAccessor",
+    "client.EffectsInInventoryMixin",
     "client.FrustumAccess",
     "client.GameRendererMixin",
     "client.GuiAccessor",

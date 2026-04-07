@@ -16,6 +16,9 @@ public interface ScreenAccessor {
     @Accessor("font")
     Font dragonSurvival$getFont();
 
+    @Accessor("width")
+    int dragonSurvival$getWidth();
+
     @Accessor("children")
     List<GuiEventListener> dragonSurvival$children();
 
