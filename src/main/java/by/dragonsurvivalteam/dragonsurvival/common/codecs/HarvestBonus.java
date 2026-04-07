@@ -85,14 +85,13 @@ public class HarvestBonus extends DurationInstanceBase<HarvestBonuses, HarvestBo
 
         Component baseSpeed = null;
 
-        // FIXME
-//        if (tiers.isPresent()) {
-//            Tiers tier = tiers.get().get(abilityLevel);
-//
-//            if (tier != null) {
-//                baseSpeed = DSLanguageProvider.enumValue(tier);
-//            }
-//        }
+        if (tiers.isPresent()) {
+            LevelBasedTier.HarvestTier tier = tiers.get().get(abilityLevel);
+
+            if (tier != null) {
+                baseSpeed = tier.getDisplayName();
+            }
+        }
 
         if (baseSpeed == null) {
             baseSpeed = Component.translatable(DEFAULT);
@@ -145,12 +144,11 @@ public class HarvestBonus extends DurationInstanceBase<HarvestBonuses, HarvestBo
                 return BASE_SPEED;
             }
 
-            // FIXME
-//            Tiers tier = baseData().tiers().get().get(appliedAbilityLevel());
-//
-//            if (tier != null) {
-//                return tier.getSpeed();
-//            }
+            LevelBasedTier.HarvestTier tier = baseData().tiers().get().get(appliedAbilityLevel());
+
+            if (tier != null) {
+                return tier.getSpeed();
+            }
 
             return BASE_SPEED;
         }

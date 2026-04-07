@@ -5,6 +5,7 @@ import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSItemTags;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.BuiltInDragonSpecies;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.LevelBasedTier;
 import by.dragonsurvivalteam.dragonsurvival.util.ResourceHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Holder;
@@ -117,11 +118,9 @@ public class DSLanguageProvider extends LanguageProvider {
             add(Translation.Type.DAMAGE_TYPE.wrap(damageType.identifier()), capitalize(damageType.identifier().getPath()));
         }
 
-        // FIXME :: Tiers don't exist anymore
-//        // Used by 'HarvestBonuses'
-//        for (Tiers tier : Tiers.values()) {
-//            add(enumValueKey(tier), capitalize(tier.name().toLowerCase(Locale.ENGLISH)));
-//        }
+        for (LevelBasedTier.HarvestTier tier : LevelBasedTier.HarvestTier.values()) {
+            add(tier.translationKey(), tier.englishName());
+        }
 
         // Tags are not available during data generation
         add(Tags.getTagTranslationKey(DamageTypeTags.IS_FIRE), "Fire");

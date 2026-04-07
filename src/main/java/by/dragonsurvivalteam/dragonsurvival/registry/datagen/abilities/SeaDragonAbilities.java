@@ -602,14 +602,13 @@ public class SeaDragonAbilities {
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         HarvestBonusEffect.only(new HarvestBonus(
                                 DurationInstanceBase.create(DragonSurvival.res("sea_claws_and_teeth")).removeAutomatically().customIcon(DragonSurvival.res("textures/ability_effect/sea_claw.png")).build(),
-                                Optional.of(context.lookup(Registries.BLOCK).getOrThrow(BlockTags.MINEABLE_WITH_SHOVEL)),
-                                Optional.of(new LevelBasedTier(List.of(
-                                        // FIXME
-                                        new LevelBasedTier.Entry(/*Tiers.WOOD,*/ 1),
-                                        new LevelBasedTier.Entry(/*Tiers.STONE,*/ 2)
-                                ))),
-                                LevelBasedValue.perLevel(1, 0.5f),
-                                LevelBasedValue.perLevel(0.25f)
+                                 Optional.of(context.lookup(Registries.BLOCK).getOrThrow(BlockTags.MINEABLE_WITH_SHOVEL)),
+                                 Optional.of(new LevelBasedTier(List.of(
+                                        new LevelBasedTier.Entry(LevelBasedTier.HarvestTier.WOOD, 1),
+                                        new LevelBasedTier.Entry(LevelBasedTier.HarvestTier.STONE, 2)
+                                 ))),
+                                 LevelBasedValue.perLevel(1, 0.5f),
+                                 LevelBasedValue.perLevel(0.25f)
                         )),
                         TargetingMode.ALLIES_AND_SELF
                 )), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(1))),
