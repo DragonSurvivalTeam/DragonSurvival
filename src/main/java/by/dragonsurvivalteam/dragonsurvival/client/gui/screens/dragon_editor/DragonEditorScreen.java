@@ -313,7 +313,7 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
         }
     }
 
-    // FIXME :: Known issue: if I switch to a body type that invalidates my preset, my preset data will be lost even if I undo
+    // TODO :: Known issue: if I switch to a body type that invalidates my preset, my preset data will be lost even if I undo
     public final Function<CompoundTag, CompoundTag> setSkinPresetAction = tag -> {
         //noinspection DataFlowIssue -> player is present
         TagValueOutput prevValueOutput = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, Minecraft.getInstance().player.registryAccess());
@@ -950,8 +950,6 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
             public void extractWidgetRenderState(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partialTick) {
                 Identifier texture = preset.get(Objects.requireNonNull(stage.getKey())).get().wings ? ALTERNATIVE_ON : ALTERNATIVE_OFF;
                 GuiGraphicsExtractor.pose().pushMatrix();
-                // FIXME :: UI Rendering
-                //GuiGraphicsExtractor.pose().translate(0, 0, 100);
                 GuiGraphicsExtractor.blit(RenderPipelines.GUI_TEXTURED, texture, getX(), getY(), 0, 0, 20, 20, 20, 20);
                 GuiGraphicsExtractor.pose().popMatrix();
             }
@@ -964,8 +962,6 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
             public void extractWidgetRenderState(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partialTick) {
                 Identifier texture = showUi ? SHOW_UI_ON : SHOW_UI_OFF;
                 GuiGraphicsExtractor.pose().pushMatrix();
-                // FIXME :: UI Rendering
-                //GuiGraphicsExtractor.pose().translate(0, 0, 100);
                 GuiGraphicsExtractor.blit(RenderPipelines.GUI_TEXTURED, texture, getX(), getY(), 0, 0, 20, 20, 20, 20);
                 GuiGraphicsExtractor.pose().popMatrix();
             }

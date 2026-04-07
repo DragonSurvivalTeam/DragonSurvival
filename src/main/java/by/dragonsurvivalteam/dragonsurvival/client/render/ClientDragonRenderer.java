@@ -316,8 +316,6 @@ public class ClientDragonRenderer {
 //            }
 //        }
 
-        // FIXME :: Main render
-        // Same reason as above
         if (player != Minecraft.getInstance().player || !Minecraft.getInstance().options.getCameraType().isFirstPerson() || !ServerFlightHandler.isGliding(player) || renderFirstPersonFlight) {
             ClientDragonRenderer.setDragonMovementData(player, Minecraft.getInstance().getDeltaTracker().getRealtimeDeltaTicks());
 

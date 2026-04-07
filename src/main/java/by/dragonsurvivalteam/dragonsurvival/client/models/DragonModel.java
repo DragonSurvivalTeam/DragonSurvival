@@ -25,7 +25,7 @@ import com.geckolib.renderer.base.GeoRenderState;
 public class DragonModel extends GeoModel<DragonEntity> {
     private static final Identifier DEFAULT_ANIMATION = DragonSurvival.res("dragon_center.animation");
 
-    // FIXME 'dragon_dragon'?
+    // TODO :: 'dragon_dragon'?
     private final Identifier defaultTexture = DragonSurvival.res("textures/dragon_dragon/newborn.png");
 
     private Identifier overrideTexture;

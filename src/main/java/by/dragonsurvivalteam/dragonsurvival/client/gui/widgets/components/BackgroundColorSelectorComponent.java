@@ -60,26 +60,24 @@ public class BackgroundColorSelectorComponent extends AbstractContainerEventHand
     }
 
     @Override
-    public void extractRenderState(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int pMouseX, int pMouseY, float pPartialTicks) {
+    public void extractRenderState(@NotNull final GuiGraphicsExtractor graphics, int pMouseX, int pMouseY, float pPartialTicks) {
         if (visible) {
-            GuiGraphicsExtractor.pose().pushMatrix();
-            // FIXME :: UI GRAPHICS
-            //GuiGraphicsExtractor.pose().translate(0, 0, 100);
-            // GuiGraphicsExtractor.fill(x, y, x + xSize, y + ySize, Color.black.getRGB());
+            graphics.pose().pushMatrix();
+
             // Background for reset button
-            GuiGraphicsExtractor.fill(x + 2, y - 10, x + 32, y + 35, BACKGROUND_COLOR);
-            GuiGraphicsExtractor.outline(x + 2, y - 11, 30, 41, Color.black.getRGB());
-            GuiGraphicsExtractor.outline(x + 3, y - 10, 28, 39, INNER_BORDER_COLOR);
+            graphics.fill(x + 2, y - 10, x + 32, y + 35, BACKGROUND_COLOR);
+            graphics.outline(x + 2, y - 11, 30, 41, Color.black.getRGB());
+            graphics.outline(x + 3, y - 10, 28, 39, INNER_BORDER_COLOR);
             //GuiGraphicsExtractor.pose().translate(0, 0, 100);
 
             // Background for color picker
-            GuiGraphicsExtractor.fill(x, y + 15, x + xSize, y + ySize - 5, BACKGROUND_COLOR);
-            GuiGraphicsExtractor.outline(x, y + 14, xSize, ySize - 18, Color.black.getRGB());
-            GuiGraphicsExtractor.outline(x + 1, y + 15, xSize - 2, ySize - 20, INNER_BORDER_COLOR);
+            graphics.fill(x, y + 15, x + xSize, y + ySize - 5, BACKGROUND_COLOR);
+            graphics.outline(x, y + 14, xSize, ySize - 18, Color.black.getRGB());
+            graphics.outline(x + 1, y + 15, xSize - 2, ySize - 20, INNER_BORDER_COLOR);
 
-            colorPicker.extractRenderState(GuiGraphicsExtractor, pMouseX, pMouseY, pPartialTicks);
-            resetButton.extractRenderState(GuiGraphicsExtractor, pMouseX, pMouseY, pPartialTicks);
-            GuiGraphicsExtractor.pose().popMatrix();
+            colorPicker.extractRenderState(graphics, pMouseX, pMouseY, pPartialTicks);
+            resetButton.extractRenderState(graphics, pMouseX, pMouseY, pPartialTicks);
+            graphics.pose().popMatrix();
         }
     }
 }

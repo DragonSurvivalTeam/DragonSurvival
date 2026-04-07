@@ -86,13 +86,11 @@ public class HueSelectorComponent extends AbstractContainerEventHandler implemen
             screen.actionHistory.add(new DragonEditorScreen.EditorAction<>(setGlowingAction, !settingsSupplier.get().isGlowing));
         }) {
             @Override
-            public void extractWidgetRenderState(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partialTick) {
+            public void extractWidgetRenderState(@NotNull final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
                 Identifier texture = settingsSupplier.get().isGlowing ? GLOW_ON : GLOW_OFF;
-                GuiGraphicsExtractor.pose().pushMatrix();
-                // FIXME :: UI GRAPHICS
-                //GuiGraphicsExtractor.pose().translate(0, 0, 100);
-                GuiGraphicsExtractor.blit(RenderPipelines.GUI_TEXTURED, texture, getX(), getY(), 0, 0, 27, 25, 27, 25);
-                GuiGraphicsExtractor.pose().popMatrix();
+                graphics.pose().pushMatrix();
+                graphics.blit(RenderPipelines.GUI_TEXTURED, texture, getX(), getY(), 0, 0, 27, 25, 27, 25);
+                graphics.pose().popMatrix();
             }
         };
 
