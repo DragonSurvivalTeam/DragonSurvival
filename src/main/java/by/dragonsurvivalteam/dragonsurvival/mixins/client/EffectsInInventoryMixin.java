@@ -104,7 +104,7 @@ public class EffectsInInventoryMixin {
         }
 
         final FormattedCharSequence clippedText = font.width(effectText) > maxTextWidth ? ComponentRenderUtils.clipText(effectText, font, maxTextWidth) : effectText.getVisualOrderText();
-        graphics.text(font, clippedText, textX, textY, DSColors.WHITE);
+        graphics.text(font, clippedText, textX, textY, DSColors.withAlpha(DSColors.WHITE, 1));
         graphics.text(font, duration, textX, textY + 9, -8355712);
     }
 

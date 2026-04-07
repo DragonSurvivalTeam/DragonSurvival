@@ -27,6 +27,7 @@ import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.gui.screens.inventory.EffectsInInventory;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.Holder;
@@ -105,11 +106,13 @@ public class DragonInventoryScreen extends AbstractContainerScreen<DragonContain
     private boolean clawsMenu;
     private final Player player;
     private final List<ExtendedButton> clawMenuButtons = new ArrayList<>();
+    private final EffectsInInventory effects;
 
     public DragonInventoryScreen(DragonContainer screenContainer, Inventory inv, Component titleIn) {
         super(screenContainer, inv, titleIn, 203, 166);
         player = inv.player;
         clawsMenu = ClawInventoryData.getData(player).isMenuOpen();
+        effects = new EffectsInInventory(this);
     }
 
     @Override
@@ -258,6 +261,7 @@ public class DragonInventoryScreen extends AbstractContainerScreen<DragonContain
     @Override
     public void extractRenderState(@NotNull final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         clawMenuButtons.forEach(button -> button.visible = clawsMenu);
+        effects.extractRenderState(graphics, mouseX, mouseY);
         super.extractRenderState(graphics, mouseX, mouseY, partialTick);
 
         if (clawsMenu) {
