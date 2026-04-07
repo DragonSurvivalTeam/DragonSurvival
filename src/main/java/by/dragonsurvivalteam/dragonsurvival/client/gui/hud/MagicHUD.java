@@ -251,9 +251,6 @@ public class MagicHUD {
 
         if (magic.shouldRenderAbilities()) {
             if (!magic.getActiveAbilities().isEmpty()) {
-                // FIXME :: UI GRAPHICS
-                // graphics.setColor(1, 1, 1, 1);
-
                 for (int x = 0; x < MagicData.HOTBAR_SLOTS; x++) {
                     DragonAbilityInstance ability = magic.fromSlot(x);
 
@@ -404,21 +401,16 @@ public class MagicHUD {
             if (targetTime > 0) {
                 graphics.pose().pushMatrix();
 
-                // FIXME :: UI GRAPHICS
-                // Call flush here, otherwise some mods that batch together blit calls will cause this to be rendered in an incorrect order
-                // This does nothing on vanilla code but is required for compatibility with other mods (e.g. immediatelyfast)
-                //graphics.flush();
-
-                //graphics.pose().scale(0.5F, 0.5F, 0);
+                graphics.pose().scale(0.5F, 0.5F);
 
                 int startX = graphics.guiWidth() / 2 - 49 + castbarXOffset;
                 int startY = graphics.guiHeight() - 96 + castbarYOffset;
                 float percentage = Math.clamp(1 - currentTime / (float) targetTime, 0, 1);
 
-                //graphics.pose().translate(startX, startY, 0);
+                graphics.pose().translate(startX, startY);
 
                 DragonStateHandler handler = DragonStateProvider.getData(player);
-                graphics.blit(handler.species().value().miscResources().castBar(), startX, startY, 0, 0, 196, 47, 196, 47);
+                graphics.blit(RenderPipelines.GUI_TEXTURED, handler.species().value().miscResources().castBar(), startX, startY, 0, 0, 196, 47, 196, 47);
 
                 graphics.blit(
                         RenderPipelines.GUI_TEXTURED,

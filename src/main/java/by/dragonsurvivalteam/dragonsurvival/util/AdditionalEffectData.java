@@ -7,7 +7,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.UUID;
 
 public interface AdditionalEffectData {
-    void dragonSurvival$setApplier(final Entity applier);
+    void dragonSurvival$setApplier(@Nullable final Entity applier);
 
     @Nullable Entity dragonSurvival$getApplier(final ServerLevel level);
 
