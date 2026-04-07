@@ -27,10 +27,10 @@ import java.util.Objects;
 import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 
 public class AbilityButton extends ExtendedButton {
-    public static final Identifier ACTIVE_BACKGROUND = Identifier.fromNamespaceAndPath(MODID, "textures/gui/sprites/ability_screen/skill_main");
-    public static final Identifier PASSIVE_BACKGROUND = Identifier.fromNamespaceAndPath(MODID, "textures/gui/sprites/ability_screen/skill_other");
-    public static final Identifier DISABLED_BACKGROUND = Identifier.fromNamespaceAndPath(MODID, "textures/gui/sprites/ability_screen/skill_disabled");
-    public static final Identifier AUTO_UPGRADE_ORNAMENTATION = Identifier.fromNamespaceAndPath(MODID, "textures/gui/sprites/ability_screen/skill_autoupgrade");
+    public static final Identifier ACTIVE_BACKGROUND = Identifier.fromNamespaceAndPath(MODID, "ability_screen/skill_main");
+    public static final Identifier PASSIVE_BACKGROUND = Identifier.fromNamespaceAndPath(MODID, "ability_screen/skill_other");
+    public static final Identifier DISABLED_BACKGROUND = Identifier.fromNamespaceAndPath(MODID, "ability_screen/skill_disabled");
+    public static final Identifier AUTO_UPGRADE_ORNAMENTATION = Identifier.fromNamespaceAndPath(MODID, "ability_screen/skill_autoupgrade");
 
     private static final int UV = 13;
     private static final int SIZE = 34;
@@ -290,8 +290,12 @@ public class AbilityButton extends ExtendedButton {
         return scrollAmount;
     }
 
+    public double getRenderDepth() {
+        return offset.z() + (isDragging ? 1000.0 : 0.0);
+    }
+
     private void blit(final GuiGraphicsExtractor graphics, final Identifier texture, int x, int y, int size) {
-        graphics.blit(RenderPipelines.GUI_TEXTURED, texture, x, y, 0, 0, size, size, size, size, ARGB.colorFromFloat(alpha, 1, 1, 1));
+        graphics.blitSprite(RenderPipelines.GUI_TEXTURED, texture, x, y, size, size, ARGB.colorFromFloat(alpha, 1, 1, 1));
     }
 
     /** If the player is dragging any button the buttons shouldn't show their description */

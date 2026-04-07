@@ -22,11 +22,13 @@ import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
 import by.dragonsurvivalteam.dragonsurvival.util.ExperienceUtils;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.ARGB;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -63,6 +65,8 @@ public class DragonAbilityScreen extends Screen {
     private static final Identifier LEFT_PANEL_ARROW_MAIN = Identifier.fromNamespaceAndPath(MODID, "textures/gui/ability_screen/addition_arrow_left_main.png");
     private static final Identifier INFO_HOVER = Identifier.fromNamespaceAndPath(MODID, "textures/gui/ability_screen/info_hover.png");
     private static final Identifier INFO_MAIN = Identifier.fromNamespaceAndPath(MODID, "textures/gui/ability_screen/info_main.png");
+    private static final int EXPERIENCE_PREVIEW_DOWNGRADE_COLOR = ARGB.colorFromFloat(1.0f, 1.0f, 0.0f, 0.0f);
+    private static final int EXPERIENCE_PREVIEW_UPGRADE_COLOR = ARGB.colorFromFloat(1.0f, 0.6f, 0.2f, 0.85f);
 
     public LevelButton lastHoveredLevelButton;
 
@@ -93,7 +97,7 @@ public class DragonAbilityScreen extends Screen {
             return;
         }
 
-        lastHoveredLevelButton = null;
+        lastHoveredLevelButton = findHoveredLevelButton(mouseX, mouseY);
 
         extractBlurredBackground(graphics);
 
@@ -133,7 +137,7 @@ public class DragonAbilityScreen extends Screen {
 
             int experienceModification;
 
-            if (lastHoveredLevelButton == null || !lastHoveredLevelButton.isHovered() || !lastHoveredLevelButton.canModify()) {
+            if (lastHoveredLevelButton == null || !lastHoveredLevelButton.canModify()) {
                 experienceModification = 0;
             } else {
                 experienceModification = lastHoveredLevelButton.getExperienceModification();
@@ -149,20 +153,12 @@ public class DragonAbilityScreen extends Screen {
                 float leftExpBarHoverProgress = Math.min(0.5f, hoverProgress) * 2;
                 float rightExpBarHoverProgress = Math.min(0.5f, hoverProgress - leftExpBarHoverProgress / 2) * 2;
 
-                // FIXME :: UI GRAPHICS
-                if (experienceModification < 0) {
-                    //graphics.setColor(1, 0, 0, 1);
-                } else {
-                   // graphics.setColor(0.6f, 0.2f, 0.85f, 1);
-                }
-
-                drawExperienceBar(graphics, barYPos, leftBarX, leftExpBarHoverProgress);
+                int previewColor = experienceModification < 0 ? EXPERIENCE_PREVIEW_DOWNGRADE_COLOR : EXPERIENCE_PREVIEW_UPGRADE_COLOR;
+                drawExperienceBar(graphics, barYPos, leftBarX, leftExpBarHoverProgress, previewColor);
 
                 if (rightExpBarHoverProgress > 0) {
-                    drawExperienceBar(graphics, barYPos, rightBarX, rightExpBarHoverProgress);
+                    drawExperienceBar(graphics, barYPos, rightBarX, rightExpBarHoverProgress, previewColor);
                 }
-
-                //graphics.setColor(1, 1, 1, 1);
             }
 
             int color;
@@ -179,8 +175,50 @@ public class DragonAbilityScreen extends Screen {
             graphics.text(minecraft.font, expectedLevel, expLevelXPos, expLevelYPos, DSColors.withAlpha(color, 1), false);
         }
 
-        super.extractRenderState(graphics, mouseX, mouseY, partialTick);
+        renderOrderedWidgets(graphics, mouseX, mouseY, partialTick);
         renderDeferredTooltip(graphics, mouseX, mouseY);
+    }
+
+    private void renderOrderedWidgets(final GuiGraphicsExtractor graphics, final int mouseX, final int mouseY, final float partialTick) {
+        for (Renderable renderable : renderables) {
+            if (renderable instanceof AbilityButton || renderable instanceof LevelButton) {
+                continue;
+            }
+
+            renderable.extractRenderState(graphics, mouseX, mouseY, partialTick);
+        }
+
+        List<AbilityButton> abilityButtons = new ArrayList<>();
+
+        for (Renderable renderable : renderables) {
+            if (renderable instanceof AbilityButton button) {
+                abilityButtons.add(button);
+            }
+        }
+
+        abilityButtons.sort(Comparator.comparingDouble(AbilityButton::getRenderDepth));
+
+        for (AbilityButton button : abilityButtons) {
+            button.extractRenderState(graphics, mouseX, mouseY, partialTick);
+        }
+
+        for (Renderable renderable : renderables) {
+            if (renderable instanceof LevelButton button) {
+                button.extractRenderState(graphics, mouseX, mouseY, partialTick);
+            }
+        }
+    }
+
+    private LevelButton findHoveredLevelButton(final int mouseX, final int mouseY) {
+        for (int i = renderables.size() - 1; i >= 0; i--) {
+            Renderable renderable = renderables.get(i);
+
+            if (renderable instanceof LevelButton button && button.visible && button.canModify() && button.isMouseOver(mouseX, mouseY)) {
+                return button;
+            }
+        }
+
+        return null;
     }
 
     private void renderDeferredTooltip(final GuiGraphicsExtractor graphics, final int mouseX, final int mouseY) {
@@ -193,8 +231,8 @@ public class DragonAbilityScreen extends Screen {
         }
     }
 
-    private void drawExperienceBar(final GuiGraphicsExtractor graphics, int y, int initialX, float hoverProgress) {
-        graphics.blit(RenderPipelines.GUI_TEXTURED, EXP_FULL, initialX, y, 0, 0, (int) (93 * hoverProgress), 6, 93, 6);
+    private void drawExperienceBar(final GuiGraphicsExtractor graphics, int y, int initialX, float hoverProgress, int color) {
+        graphics.blit(RenderPipelines.GUI_TEXTURED, EXP_FULL, initialX, y, 0, 0, (int) (93 * hoverProgress), 6, 93, 6, color);
     }
 
     @Override
