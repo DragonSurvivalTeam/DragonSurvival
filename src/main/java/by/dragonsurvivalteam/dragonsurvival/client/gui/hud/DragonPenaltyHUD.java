@@ -82,14 +82,14 @@ public class DragonPenaltyHUD {
                             uOffset = 18;
                         }
 
-                        graphics.blit(RenderPipelines.GUI_TEXTURED, supplyIcon, left - i * 8 - 9, top + offset, 9, 9, uOffset, 0, 9, 9, 27, 9);
+                        graphics.blit(RenderPipelines.GUI_TEXTURED, supplyIcon, left - i * 8 - 9, top + offset, uOffset, 0, 9, 9, 27, 9);
                     }
                 } else {
                     int full = Mth.ceil((supplyPercentage - vanillaSupplyPercentageOffset) * 10);
                     int partial = Mth.ceil(supplyPercentage * 10) - full;
 
                     for (int i = 0; i < full + partial; ++i) {
-                        graphics.blit(RenderPipelines.GUI_TEXTURED, supplyIcon, left - i * 8 - 9, top, 9, 9, i < full ? 0 : 9, 0, 9, 9, 18, 9);
+                        graphics.blit(RenderPipelines.GUI_TEXTURED, supplyIcon, left - i * 8 - 9, top, i < full ? 0 : 9, 0, 9, 9, 18, 9);
                     }
                 }
             }
