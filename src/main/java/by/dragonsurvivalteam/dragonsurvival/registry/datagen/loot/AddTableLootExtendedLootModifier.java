@@ -15,8 +15,11 @@ import net.neoforged.neoforge.common.loot.IGlobalLootModifier;
 import net.neoforged.neoforge.common.loot.LootModifier;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 /**
  * A loot modifier that adds loot from a table to the current loot table if the current loot table is in a list of tables to apply to.
@@ -38,6 +41,7 @@ public class AddTableLootExtendedLootModifier extends LootModifier {
     private final List<String> tablesToApply;
     private final boolean blacklist;
     private final HashSet<ResourceKey<LootTable>> resolvedTables = new HashSet<>();
+    private final List<TablePattern> resolvedPatterns = new ArrayList<>();
     private boolean hasResolvedTables = false;
 
     public AddTableLootExtendedLootModifier(LootItemCondition[] conditionsIn, ResourceKey<LootTable> table, List<String> lootTables, boolean blacklist) {
@@ -59,49 +63,72 @@ public class AddTableLootExtendedLootModifier extends LootModifier {
         return this.blacklist;
     }
 
+    private void resolveTables() {
+        for (String table : this.tablesToApply) {
+            Identifier parsedTable = Identifier.tryParse(table);
+
+            if (parsedTable != null) {
+                ResourceKey<LootTable> resolvedKey = ResourceKey.create(Registries.LOOT_TABLE, parsedTable);
+
+                if (!resolvedKey.equals(this.table)) {
+                    resolvedTables.add(resolvedKey);
+                }
+
+                continue;
+            }
+
+            String[] splitLocation = table.split(":", 2);
+
+            if (splitLocation.length < 2) {
+                continue;
+            }
+
+            Pattern pattern;
+
+            try {
+                pattern = Pattern.compile(splitLocation[1]);
+            } catch (PatternSyntaxException ignored) {
+                continue;
+            }
+
+            resolvedPatterns.add(new TablePattern(splitLocation[0], pattern));
+        }
+
+        hasResolvedTables = true;
+    }
+
+    @SuppressWarnings("deprecation")
     @Override
     protected @NotNull ObjectArrayList<ItemStack> doApply(@NotNull ObjectArrayList<ItemStack> generatedLoot, @NotNull LootContext context) {
-        // Generate the resolved tables list if we haven't already
         if (!hasResolvedTables) {
-            for (String table : this.tablesToApply) {
-                Identifier parsedTable = Identifier.tryParse(table);
-                if (parsedTable != null) {
-                    resolvedTables.add(ResourceKey.create(Registries.LOOT_TABLE, parsedTable));
-                } else {
-                    // FIXME
-//                    // Try regex if we don't have a valid key
-//                    context.getLevel().getServer().reloadableRegistries().get().lookupOrThrow(Registries.LOOT_TABLE).registryKeySet().forEach(
-//                            key -> {
-//                                String path = key.identifier().toString();
-//                                if (path.matches(table) && !path.equals(this.table.identifier().toString())) {
-//                                    resolvedTables.add(key);
-//                                }
-//                            }
-//                    );
-                }
-            }
-            hasResolvedTables = true;
+            resolveTables();
         }
 
         ResourceKey<LootTable> queriedKey = ResourceKey.create(Registries.LOOT_TABLE, context.getQueriedLootTableId());
-        boolean shouldApply = resolvedTables.contains(queriedKey);
+        Identifier queriedId = queriedKey.identifier();
+        boolean shouldApply = resolvedTables.contains(queriedKey) || resolvedPatterns.stream().anyMatch(pattern -> pattern.matches(queriedId));
 
         if (shouldApply == blacklist) {
             return generatedLoot;
         }
 
-        // FIXME
-//        context.getResolver().get(Registries.LOOT_TABLE, this.table).ifPresent(extraTable -> {
-//            // Don't run loot modifiers for subtables;
-//            // the added loot will be modifiable by downstream loot modifiers modifying the target table,
-//            // so if we modify it here then it could get modified twice.
-//            extraTable.value().getRandomItemsRaw(context, LootTable.createStackSplitter(context.getLevel(), generatedLoot::add));
-//        });
+        context.getResolver().lookupOrThrow(Registries.LOOT_TABLE).get(this.table).ifPresent(extraTable -> {
+            // Don't run loot modifiers for subtables;
+            // the added loot will be modifiable by downstream loot modifiers modifying the target table,
+            // so if we modify it here then it could get modified twice.
+            extraTable.value().getRandomItemsRaw(context, LootTable.createStackSplitter(context.getLevel(), generatedLoot::add));
+        });
         return generatedLoot;
     }
 
     @Override
     public @NotNull MapCodec<? extends IGlobalLootModifier> codec() {
         return CODEC;
+    }
+
+    private record TablePattern(String namespace, Pattern pattern) {
+        private boolean matches(final Identifier identifier) {
+            return identifier.getNamespace().equals(namespace) && pattern.matcher(identifier.getPath()).matches();
+        }
     }
 }
