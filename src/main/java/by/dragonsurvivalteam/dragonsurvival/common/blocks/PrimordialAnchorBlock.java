@@ -2,7 +2,6 @@ package by.dragonsurvivalteam.dragonsurvival.common.blocks;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.util.InteractionResultUtils;
-import by.dragonsurvivalteam.dragonsurvival.client.util.SystemMessageUtils;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
@@ -12,6 +11,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.DSBlockEntities;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSItemTags;
 import by.dragonsurvivalteam.dragonsurvival.server.tileentity.PrimordialAnchorBlockEntity;
+import by.dragonsurvivalteam.dragonsurvival.util.PlayerMessageUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
@@ -162,11 +162,11 @@ public class PrimordialAnchorBlock extends Block implements EntityBlock {
             }
 
             if (flightWasActuallyGranted && spinWasActuallyGranted) {
-                SystemMessageUtils.sendSystemMessage(Component.translatable(PRIMORDIAL_ANCHOR_GRANTED_FLIGHT_SPIN), player);
+                PlayerMessageUtil.sendSystemMessage(player, Component.translatable(PRIMORDIAL_ANCHOR_GRANTED_FLIGHT_SPIN), false);
             } else if (flightWasActuallyGranted) {
-                SystemMessageUtils.sendSystemMessage(Component.translatable(PRIMORDIAL_ANCHOR_GRANTED_FLIGHT), player);
+                PlayerMessageUtil.sendSystemMessage(player, Component.translatable(PRIMORDIAL_ANCHOR_GRANTED_FLIGHT), false);
             } else if (spinWasActuallyGranted) {
-                SystemMessageUtils.sendSystemMessage(Component.translatable(PRIMORDIAL_ANCHOR_GRANTED_SPIN), player);
+                PlayerMessageUtil.sendSystemMessage(player, Component.translatable(PRIMORDIAL_ANCHOR_GRANTED_SPIN), false);
             }
 
             PacketDistributor.sendToPlayer((ServerPlayer) player, new SyncEnderDragonMark(false));

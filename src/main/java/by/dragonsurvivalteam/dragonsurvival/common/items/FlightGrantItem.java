@@ -1,9 +1,9 @@
 package by.dragonsurvivalteam.dragonsurvival.common.items;
 
-import by.dragonsurvivalteam.dragonsurvival.client.util.SystemMessageUtils;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
+import by.dragonsurvivalteam.dragonsurvival.util.PlayerMessageUtil;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -27,7 +27,7 @@ public class FlightGrantItem extends TooltipItem {
 
         if (handler.isDragon() && !handler.flightWasGranted) {
             if (!level.isClientSide()) {
-                SystemMessageUtils.sendSystemMessage(Component.translatable(FLIGHT_GRANT_GAINED), player);
+                PlayerMessageUtil.sendSystemMessage(player, Component.translatable(FLIGHT_GRANT_GAINED), false);
                 handler.flightWasGranted = true;
                 player.getItemInHand(hand).consume(1, player);
                 level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.UI_TOAST_CHALLENGE_COMPLETE, SoundSource.PLAYERS, 1, 0);

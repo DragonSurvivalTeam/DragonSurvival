@@ -1,6 +1,5 @@
 package by.dragonsurvivalteam.dragonsurvival.server.handlers;
 
-import by.dragonsurvivalteam.dragonsurvival.client.util.SystemMessageUtils;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.config.OffsetConfig;
@@ -8,6 +7,7 @@ import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
 import by.dragonsurvivalteam.dragonsurvival.network.player.SyncDragonPassengerID;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
+import by.dragonsurvivalteam.dragonsurvival.util.PlayerMessageUtil;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSetPassengersPacket;
 import net.minecraft.server.level.ServerPlayer;
@@ -121,9 +121,9 @@ public class DragonRidingHandler {
         } else {
             if (result == DragonRideAttemptResult.SELF_TOO_BIG) {
                 float ridingScaleRatio = DragonStateProvider.isDragon(self) ? DRAGON_RIDING_SCALE_RATIO : PLAYER_RIDING_SCALE_RATIO;
-                SystemMessageUtils.sendSystemMessage(Component.translatable(SELF_TOO_BIG, NumberFormat.getPercentInstance().format(ridingScaleRatio), String.format("%.2f", self.getScale()), String.format("%.2f", target.getScale())), self);
+                PlayerMessageUtil.sendSystemMessage(self, Component.translatable(SELF_TOO_BIG, NumberFormat.getPercentInstance().format(ridingScaleRatio), String.format("%.2f", self.getScale()), String.format("%.2f", target.getScale())), false);
             } else if (result == DragonRideAttemptResult.NOT_CROUCHING) {
-                SystemMessageUtils.sendSystemMessage(Component.translatable(NOT_CROUCHING), self);
+                PlayerMessageUtil.sendSystemMessage(self, Component.translatable(NOT_CROUCHING), false);
             }
         }
     }

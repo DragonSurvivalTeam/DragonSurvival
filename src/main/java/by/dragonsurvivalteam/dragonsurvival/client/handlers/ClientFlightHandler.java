@@ -2,7 +2,6 @@ package by.dragonsurvivalteam.dragonsurvival.client.handlers;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.sounds.FastGlideSound;
-import by.dragonsurvivalteam.dragonsurvival.client.util.SystemMessageUtils;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
@@ -17,6 +16,7 @@ import by.dragonsurvivalteam.dragonsurvival.server.handlers.ServerFlightHandler;
 import by.dragonsurvivalteam.dragonsurvival.util.ActionWithTimedCooldown;
 import by.dragonsurvivalteam.dragonsurvival.util.EnchantmentUtils;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
+import by.dragonsurvivalteam.dragonsurvival.util.PlayerMessageUtil;
 import by.dragonsurvivalteam.dragonsurvival.util.TickedCooldown;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.Camera;
@@ -108,7 +108,7 @@ public class ClientFlightHandler {
         if (localPlayer == null) {
             return;
         }
-        SystemMessageUtils.sendSystemMessage(Component.translatable(MESSAGE_NO_HUNGER), localPlayer);
+        PlayerMessageUtil.sendSystemMessage(localPlayer, Component.translatable(MESSAGE_NO_HUNGER), false);
     });
 
     public static int lastSync;
@@ -496,10 +496,10 @@ public class ClientFlightHandler {
 
         if (activation == ToggleFlight.Activation.MANUAL) {
             switch (result) {
-                case NO_WINGS -> SystemMessageUtils.sendSystemMessage(Component.translatable(NO_FLIGHT_EFFECT), player);
-                case DISABLED -> SystemMessageUtils.sendSystemMessage(Component.translatable(FLIGHT_EFFECT_DISABLED), player);
-                case WINGS_BLOCKED -> SystemMessageUtils.sendSystemMessage(Component.translatable(WINGS_BLOCKED), player);
-                case NO_HUNGER -> SystemMessageUtils.sendSystemMessage(Component.translatable(MESSAGE_NO_HUNGER), player);
+                case NO_WINGS -> PlayerMessageUtil.sendSystemMessage(player, Component.translatable(NO_FLIGHT_EFFECT), false);
+                case DISABLED -> PlayerMessageUtil.sendSystemMessage(player, Component.translatable(FLIGHT_EFFECT_DISABLED), false);
+                case WINGS_BLOCKED -> PlayerMessageUtil.sendSystemMessage(player, Component.translatable(WINGS_BLOCKED), false);
+                case NO_HUNGER -> PlayerMessageUtil.sendSystemMessage(player, Component.translatable(MESSAGE_NO_HUNGER), false);
             }
         } else if (result == ToggleFlight.Result.NO_HUNGER) {
             HUNGER_MESSAGE_WITH_COOLDOWN.tryRun();

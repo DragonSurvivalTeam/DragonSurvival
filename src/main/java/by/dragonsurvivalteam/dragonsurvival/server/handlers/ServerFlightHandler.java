@@ -1,7 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.server.handlers;
 
 import by.dragonsurvivalteam.dragonsurvival.client.handlers.ClientFlightHandler;
-import by.dragonsurvivalteam.dragonsurvival.client.util.SystemMessageUtils;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
@@ -19,6 +18,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import by.dragonsurvivalteam.dragonsurvival.util.FluidTypeUtil;
+import by.dragonsurvivalteam.dragonsurvival.util.PlayerMessageUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
@@ -319,7 +319,7 @@ public class ServerFlightHandler {
                     if (isFlying(player)) {
                         if (!player.level().isClientSide()) {
                             if (player.getFoodData().getFoodLevel() <= foldWingsThreshold && !player.isCreative()) {
-                                SystemMessageUtils.sendSystemMessage(Component.translatable(LangKey.MESSAGE_NO_HUNGER), player);
+                                PlayerMessageUtil.sendSystemMessage(player, Component.translatable(LangKey.MESSAGE_NO_HUNGER), false);
                                 FlightData.getData(player).areWingsSpread = false;
                                 PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new SyncWingsSpread(player.getId(), false));
                                 return;
