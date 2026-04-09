@@ -1,0 +1,12 @@
+{
+  "gives": {
+    "id": "dragonsurvival:hunter_partisan"
+  },
+  "max_uses": 1.0,
+  "reputation_discount": 1.0,
+  "wants": {
+    "count": 12.0,
+    "id": "minecraft:emerald"
+  },
+  "xp": 5.0
+}

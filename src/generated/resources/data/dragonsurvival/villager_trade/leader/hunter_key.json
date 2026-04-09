@@ -1,0 +1,12 @@
+{
+  "gives": {
+    "id": "dragonsurvival:hunter_key"
+  },
+  "max_uses": 16.0,
+  "reputation_discount": 1.0,
+  "wants": {
+    "count": 32.0,
+    "id": "minecraft:emerald"
+  },
+  "xp": 35.0
+}

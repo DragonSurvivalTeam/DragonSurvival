@@ -1,0 +1,8 @@
+{
+  "amount": 2.0,
+  "random_sequence": "dragonsurvival:trade_set/leader/level_5",
+  "trades": [
+    "dragonsurvival:leader/dragonsbane",
+    "dragonsurvival:leader/bolas"
+  ]
+}

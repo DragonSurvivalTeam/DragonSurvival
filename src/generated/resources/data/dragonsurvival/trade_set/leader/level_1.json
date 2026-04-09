@@ -1,0 +1,8 @@
+{
+  "amount": 2.0,
+  "random_sequence": "dragonsurvival:trade_set/leader/level_1",
+  "trades": [
+    "dragonsurvival:leader/dragon_heart_shard",
+    "dragonsurvival:leader/partisan"
+  ]
+}
