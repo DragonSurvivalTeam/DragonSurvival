@@ -5,9 +5,8 @@ import by.dragonsurvivalteam.dragonsurvival.config.entity.LeaderEntityConfig;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSTrades;
 import by.dragonsurvivalteam.dragonsurvival.util.AnimationUtils;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
-import com.mojang.serialization.Dynamic;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -21,13 +20,11 @@ import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.SpawnGroupData;
-import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.npc.villager.Villager;
-import net.minecraft.world.entity.npc.villager.VillagerData;
 import net.minecraft.world.entity.npc.villager.VillagerProfession;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.trading.MerchantOffers;
+import net.minecraft.world.item.trading.TradeSet;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.storage.ValueInput;
@@ -273,22 +270,14 @@ public class LeaderEntity extends Villager implements GeoEntity, ConfigurableAtt
             new RandomAnimationPicker.WeightedAnimation(RawAnimation.begin().thenLoop("idle4"), 1)
     );
 
-    // FIXME
-//    // Copied from Villager.java, but with the trades changed to the ones in DSTrades
-//    @Override
-//    protected void updateTrades(@NotNull ServerLevel level) {
-//        VillagerData villagerdata = this.getVillagerData();
-//        Int2ObjectMap<VillagerTrades.ItemListing[]> int2objectmap;
-//        int2objectmap = DSTrades.LEADER_TRADES;
-//
-//        if (!int2objectmap.isEmpty()) {
-//            VillagerTrades.ItemListing[] avillagertrades$itemlisting = int2objectmap.get(villagerdata.level());
-//            if (avillagertrades$itemlisting != null) {
-//                MerchantOffers merchantoffers = this.getOffers();
-//                this.addOffersFromItemListings(level, merchantoffers, avillagertrades$itemlisting, 2);
-//            }
-//        }
-//    }
+    @Override
+    protected void updateTrades(@NotNull final ServerLevel level) {
+        ResourceKey<TradeSet> tradeSet = DSTrades.getLeaderTradeSet(getVillagerData().level());
+
+        if (tradeSet != null) {
+            addOffersFromTradeSet(level, getOffers(), tradeSet);
+        }
+    }
 
     // This prevents the trade window from closing due to this Villager not having a proper profession
     @Override

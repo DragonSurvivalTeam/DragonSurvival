@@ -39,6 +39,7 @@
     "SleepStatusMixin",
     "SwellGoalMixin",
     "VaultBlockEntityServerMixin",
+    "VillagerMixin",
     "VillagerHostilesSensorMixin",
     "client.FluidRendererMixin",
     "tool_swap.ServerPlayerGameModeEndMixin",

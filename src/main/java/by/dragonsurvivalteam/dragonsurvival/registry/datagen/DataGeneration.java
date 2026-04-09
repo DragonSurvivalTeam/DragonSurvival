@@ -4,6 +4,7 @@ import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.compat.ModCheck;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSDamageTypes;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEnchantments;
+import by.dragonsurvivalteam.dragonsurvival.registry.DSTrades;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.abilities.CaveDragonAbilities;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.abilities.ForestDragonAbilities;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.abilities.SeaDragonAbilities;
@@ -33,6 +34,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSEntityTypeTa
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSItemTags;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSPoiTypeTags;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSProfessionTags;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSVillagerTradeTags;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.BuiltInDragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilities;
@@ -156,6 +158,8 @@ public class DataGeneration {
         RegistrySetBuilder builder = new RegistrySetBuilder();
         builder.add(Registries.DAMAGE_TYPE, DSDamageTypes::registerDamageTypes);
         builder.add(Registries.ENCHANTMENT, DSEnchantments::registerEnchantments);
+        builder.add(Registries.VILLAGER_TRADE, DSTrades::registerVillagerTrades);
+        builder.add(Registries.TRADE_SET, DSTrades::registerTradeSets);
         builder.add(DragonEmoteSet.REGISTRY, DragonEmoteSets::registerEmoteSets);
         builder.add(DragonBody.REGISTRY, DragonBodies::registerBodies);
         builder.add(DragonStage.REGISTRY, DragonStages::registerStages);
@@ -184,6 +188,7 @@ public class DataGeneration {
         generator.addProvider(true /*Server*/, new DSEffectTags(output, lookup));
         generator.addProvider(true /*Server*/, new DSPoiTypeTags(output, lookup));
         generator.addProvider(true /*Server*/, new DSProfessionTags(output, BuiltInRegistries.VILLAGER_PROFESSION.key(), lookup));
+        generator.addProvider(true /*Server*/, new DSVillagerTradeTags(output, lookup));
         generator.addProvider(true /*Server*/, new DSEnchantmentTags(output, lookup));
         generator.addProvider(true /*Server*/, new DSDragonBodyTags(output, lookup));
         generator.addProvider(true /*Server*/, new DSDragonAbilityTags(output, lookup));

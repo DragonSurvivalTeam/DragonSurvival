@@ -69,9 +69,8 @@ public class DragonSurvival {
         DSBlockEntities.REGISTRY.register(bus);
         DSEntities.REGISTRY.register(bus);
         DSMapDecorationTypes.REGISTRY.register(bus);
-        // FIXME: DSTrades villager/POI registration still needs a proper 26.1 port.
-        // DSTrades.POI_REGISTRY.register(bus);
-        // DSTrades.PROFESSION_REGISTRY.register(bus);
+        DSTrades.POI_REGISTRY.register(bus);
+        DSTrades.PROFESSION_REGISTRY.register(bus);
         DSStructurePlacementTypes.REGISTRY.register(bus);
         DSSubPredicates.REGISTRY.register(bus);
         DSAdvancementTriggers.REGISTRY.register(bus);

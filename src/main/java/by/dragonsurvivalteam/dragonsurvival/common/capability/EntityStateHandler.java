@@ -7,9 +7,6 @@ import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachmen
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSProfessionTags;
 import net.minecraft.core.Holder;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.Identifier;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.entity.Entity;
@@ -49,9 +46,7 @@ public class EntityStateHandler implements ValueIOSerializable {
 
     public static boolean cannotPillageProfession(final Villager villager) {
         Holder<VillagerProfession> profession = villager.getVillagerData().profession();
-        Identifier key = profession.getKey().identifier();
-        Holder.Reference<VillagerProfession> holder = BuiltInRegistries.VILLAGER_PROFESSION.getOrThrow(ResourceKey.create(BuiltInRegistries.VILLAGER_PROFESSION.key(), key));
-        return BuiltInRegistries.VILLAGER_PROFESSION.get(DSProfessionTags.PILLAGE_BLACKLIST).orElseThrow().contains(holder);
+        return profession.is(DSProfessionTags.PILLAGE_BLACKLIST);
     }
 
     public static boolean canPillage(final Entity target, final Player player) {

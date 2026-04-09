@@ -96,7 +96,7 @@ public class HunterOmenHandler {
         }
 
         // Have the cartographer drop a hunter's castle map if the player kills them (but not from stealing)
-        if (level instanceof ServerLevel serverLevel && villager.getVillagerData().profession() == VillagerProfession.CARTOGRAPHER) {
+        if (level instanceof ServerLevel serverLevel && villager.getVillagerData().profession().is(VillagerProfession.CARTOGRAPHER)) {
             for (ItemStack stack : loot) {
                 if (stack.getItem() != Items.MAP) {
                     continue;
@@ -109,7 +109,7 @@ public class HunterOmenHandler {
                 }
 
                 for (MapDecorations.Entry entry : decorations.decorations().values()) {
-                    if (entry.type() == DSMapDecorationTypes.DRAGON_HUNTER) {
+                    if (entry.type().equals(DSMapDecorationTypes.DRAGON_HUNTER)) {
                         // Map is already part of the loot
                         return loot;
                     }
