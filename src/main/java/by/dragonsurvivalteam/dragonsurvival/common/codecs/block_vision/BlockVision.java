@@ -247,7 +247,6 @@ public class BlockVision extends DurationInstanceBase<BlockVisionData, BlockVisi
     public enum DisplayType implements StringRepresentable {
         OUTLINE("outline"),
         PARTICLES("particles"),
-        SIMPLE_SHADER("simple_shader"),
         NONE("none");
 
         public static final Codec<DisplayType> CODEC = StringRepresentable.fromEnum(DisplayType::values);

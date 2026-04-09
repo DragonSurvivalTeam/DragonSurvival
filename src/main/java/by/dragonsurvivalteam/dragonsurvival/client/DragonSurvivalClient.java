@@ -23,6 +23,7 @@ import by.dragonsurvivalteam.dragonsurvival.client.models.creatures.KnightModel;
 import by.dragonsurvivalteam.dragonsurvival.client.models.creatures.LeaderModel;
 import by.dragonsurvivalteam.dragonsurvival.client.models.creatures.SpearmanModel;
 import by.dragonsurvivalteam.dragonsurvival.client.models.projectiles.GenericBallModel;
+import by.dragonsurvivalteam.dragonsurvival.client.render.block_vision.BlockVisionOutline;
 import by.dragonsurvivalteam.dragonsurvival.client.render.blocks.DragonBeaconRenderer;
 import by.dragonsurvivalteam.dragonsurvival.client.render.blocks.DragonSoulRenderer;
 import by.dragonsurvivalteam.dragonsurvival.client.render.blocks.HelmetEntityRenderer;
@@ -103,8 +104,8 @@ public class DragonSurvivalClient {
         bus.addListener(this::registerItemExtensions);
         bus.addListener(RenderingUtils::registerRenderPipelines);
         bus.addListener(DragonEditorHandler::registerRenderPipelines);
+        bus.addListener(BlockVisionOutline::registerRenderPipelines);
         bus.addListener((RegisterRenderPipelinesEvent event) -> DragonArmorRenderLayer.registerRenderPipelines(event));
-
         NeoForge.EVENT_BUS.addListener(this::incrementTimer);
         NeoForge.EVENT_BUS.addListener(this::preventThirdPersonWhenSuffocating);
 

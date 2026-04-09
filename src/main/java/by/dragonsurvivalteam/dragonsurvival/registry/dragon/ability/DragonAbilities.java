@@ -84,72 +84,27 @@ public class DragonAbilities {
         ForestDragonAbilities.registerAbilities(context);
         SeaDragonAbilities.registerAbilities(context);
 
-        // --- Ore Vision (Simple Shader) --- //
+        // --- Ore Vision (Outline) --- //
 
         //noinspection deprecation -> ignore
-        context.register(ResourceKey.create(DragonAbility.REGISTRY, DragonSurvival.res(TEST_PREFIX + "ore_vision_simple_shader")), new DragonAbility(
+        context.register(ResourceKey.create(DragonAbility.REGISTRY, DragonSurvival.res(TEST_PREFIX + "ore_vision_outline")), new DragonAbility(
                 PassiveActivation.DEFAULT,
                 Optional.empty(),
                 Optional.empty(),
                 List.of(
                         new ActionContainer(new SelfTarget(AbilityTargeting.entity(List.of(
                                 BlockVisionEffect.single(BlockVision.create(
-                                                        DurationInstanceBase.create(DragonSurvival.res("plant_simple_shader"))
-                                                                .hidden().build()
-                                                )
-                                                .blocks(HolderSet.direct(
-                                                        Blocks.TALL_GRASS.builtInRegistryHolder(),
-                                                        Blocks.FERN.builtInRegistryHolder(),
-                                                        Blocks.LILY_PAD.builtInRegistryHolder(),
-                                                        Blocks.KELP_PLANT.builtInRegistryHolder(),
-                                                        Blocks.KELP.builtInRegistryHolder(),
-                                                        Blocks.SEAGRASS.builtInRegistryHolder()
-                                                ))
-                                                .range(LevelBasedValue.constant(36))
-                                                .displayType(BlockVision.DisplayType.SIMPLE_SHADER)
-                                                .colorEntries(List.of(
-                                                        BlockVision.color(TextColor.fromLegacyFormat(ChatFormatting.DARK_BLUE), 0.2f),
-                                                        BlockVision.color(TextColor.fromLegacyFormat(ChatFormatting.BLUE), 0.2f),
-                                                        BlockVision.color(TextColor.fromLegacyFormat(ChatFormatting.DARK_AQUA), 0.2f),
-                                                        BlockVision.color(TextColor.fromLegacyFormat(ChatFormatting.AQUA), 0.2f),
-                                                        BlockVision.color(TextColor.fromLegacyFormat(ChatFormatting.GREEN), 0.2f),
-                                                        BlockVision.color(TextColor.fromLegacyFormat(ChatFormatting.DARK_GREEN), 0.2f)
-                                                ))
-                                                .colorShiftRate(0.7)
-                                                .build()
-                                ),
-                                BlockVisionEffect.single(BlockVision.create(
-                                                        DurationInstanceBase.create(DragonSurvival.res("diamond_vision_simple_shader"))
+                                                        DurationInstanceBase.create(DragonSurvival.res("diamond_vision_outline"))
                                                                 .hidden().build()
                                                 )
                                                 .blocks(context.lookup(Registries.BLOCK).getOrThrow(Tags.Blocks.ORES_DIAMOND))
-                                                .range(LevelBasedValue.constant(36))
-                                                .displayType(BlockVision.DisplayType.SIMPLE_SHADER)
+                                                .range(LevelBasedValue.constant(24))
+                                                .displayType(BlockVision.DisplayType.OUTLINE)
                                                 .colorEntries(List.of(
-                                                        BlockVision.color(TextColor.fromLegacyFormat(ChatFormatting.GOLD), 0.2f),
-                                                        BlockVision.color(TextColor.fromLegacyFormat(ChatFormatting.DARK_PURPLE), 0.2f),
-                                                        BlockVision.color(TextColor.fromLegacyFormat(ChatFormatting.GREEN), 0.2f),
-                                                        BlockVision.color(TextColor.fromLegacyFormat(ChatFormatting.RED), 0.2f),
-                                                        BlockVision.color(TextColor.fromLegacyFormat(ChatFormatting.BLUE), 0.2f)
+                                                        BlockVision.color(TextColor.fromLegacyFormat(ChatFormatting.AQUA), 0.9f),
+                                                        BlockVision.color(TextColor.fromLegacyFormat(ChatFormatting.WHITE), 0.9f)
                                                 ))
-                                                .colorShiftRate(0.3)
-                                                .build()
-                                ),
-                                BlockVisionEffect.single(BlockVision.create(
-                                                        DurationInstanceBase.create(DragonSurvival.res("stair_vision_simple_shader"))
-                                                                .hidden().build()
-                                                )
-                                                .blocks(context.lookup(Registries.BLOCK).getOrThrow(BlockTags.STAIRS))
-                                                .range(LevelBasedValue.constant(36))
-                                                .displayType(BlockVision.DisplayType.SIMPLE_SHADER)
-                                                .colorEntries(List.of(
-                                                        BlockVision.color(TextColor.parseColor("#0040FF").getOrThrow(), 0.7f),
-                                                        BlockVision.color(TextColor.parseColor("#4030E0").getOrThrow(), 0.3f),
-                                                        BlockVision.color(TextColor.parseColor("#8020C0").getOrThrow(), 0.7f),
-                                                        BlockVision.color(TextColor.parseColor("#C010A0").getOrThrow(), 0.3f),
-                                                        BlockVision.color(TextColor.parseColor("#FF0080").getOrThrow(), 0.7f)
-                                                ))
-                                                .colorShiftRate(0.3)
+                                                .colorShiftRate(0.35)
                                                 .build()
                                 )
                         ), TargetingMode.ALLIES_AND_SELF)), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(1))

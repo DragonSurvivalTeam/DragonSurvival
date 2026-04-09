@@ -8,7 +8,7 @@
     "dragonsurvival:test_glow",
     "dragonsurvival:test_heal",
     "dragonsurvival:test_on_key_pressed",
-    "dragonsurvival:test_ore_vision_simple_shader",
+    "dragonsurvival:test_ore_vision_outline",
     "dragonsurvival:test_smelt",
     "dragonsurvival:test_summon",
     "dragonsurvival:test_teleport",

@@ -1,62 +1,58 @@
 package by.dragonsurvivalteam.dragonsurvival.client.render.block_vision;
 
+import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.client.render.BlockVisionHandler;
+import com.mojang.blaze3d.pipeline.DepthStencilState;
+import com.mojang.blaze3d.pipeline.RenderPipeline;
+import com.mojang.blaze3d.platform.CompareOp;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.ShapeRenderer;
+import net.minecraft.client.renderer.rendertype.LayeringTransform;
+import net.minecraft.client.renderer.rendertype.OutputTarget;
+import net.minecraft.client.renderer.rendertype.RenderSetup;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.util.ARGB;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.neoforged.neoforge.client.event.RegisterRenderPipelinesEvent;
 
-public class BlockVisionOutline {
-    // FIXME
-//    private static BufferBuilder buffer;
-//    private static GlStateBackup backup;
+public final class BlockVisionOutline {
+    private static final float OUTLINE_WIDTH = 2.0f;
+    private static final float SHADOW_WIDTH = 4.0f;
+    private static final RenderPipeline BLOCK_VISION_OUTLINE_PIPELINE = RenderPipeline.builder(RenderPipelines.LINES_SNIPPET)
+            .withLocation(DragonSurvival.res("pipeline/block_vision_outline"))
+            .withDepthStencilState(new DepthStencilState(CompareOp.ALWAYS_PASS, false))
+            .build();
+    private static final RenderType BLOCK_VISION_OUTLINE_TYPE = RenderType.create(
+            "block_vision_outline",
+            RenderSetup.builder(BLOCK_VISION_OUTLINE_PIPELINE)
+                    .setLayeringTransform(LayeringTransform.VIEW_OFFSET_Z_LAYERING)
+                    .setOutputTarget(OutputTarget.ITEM_ENTITY_TARGET)
+                    .createRenderSetup()
+    );
 
-    public static void render(final PoseStack pose, final int colorARGB) {
-//        prepare();
-//        drawLines(buffer, pose.last(), 0, 0, 0, 1, 1, 1, colorARGB);
+    private BlockVisionOutline() {}
+
+    public static void registerRenderPipelines(final RegisterRenderPipelinesEvent event) {
+        event.registerPipeline(BLOCK_VISION_OUTLINE_PIPELINE);
     }
 
-//    private static void drawLines(final VertexConsumer buffer, final PoseStack.Pose pose, final float minX, final float minY, final float minZ, final float maxX, final float maxY, final float maxZ, final int color) {
-//        drawLine(buffer, pose, minX, minY, minZ, maxX, minY, minZ, 1, 0, 0, color);
-//        drawLine(buffer, pose, minX, minY, minZ, minX, maxY, minZ, 0, 1, 0, color);
-//        drawLine(buffer, pose, minX, minY, minZ, minX, minY, maxZ, 0, 0, 1, color);
-//        drawLine(buffer, pose, maxX, minY, minZ, maxX, maxY, minZ, 0, 1, 0, color);
-//        drawLine(buffer, pose, maxX, maxY, minZ, minX, maxY, minZ, -1, 0, 0, color);
-//        drawLine(buffer, pose, minX, maxY, minZ, minX, maxY, maxZ, 0, 0, 1, color);
-//        drawLine(buffer, pose, minX, maxY, maxZ, minX, minY, maxZ, 0, -1, 0, color);
-//        drawLine(buffer, pose, minX, minY, maxZ, maxX, minY, maxZ, 1, 0, 0, color);
-//        drawLine(buffer, pose, maxX, minY, maxZ, maxX, minY, minZ, 0, 0, -1, color);
-//        drawLine(buffer, pose, minX, maxY, maxZ, maxX, maxY, maxZ, 1, 0, 0, color);
-//        drawLine(buffer, pose, maxX, minY, maxZ, maxX, maxY, maxZ, 0, 1, 0, color);
-//        drawLine(buffer, pose, maxX, maxY, minZ, maxX, maxY, maxZ, 0, 0, 1, color);
-//    }
-//
-//    private static void drawLine(final VertexConsumer buffer, final PoseStack.Pose pose, float fromX, float fromY, float fromZ, float toX, float toY, float toZ, int normalX, int normalY, int normalZ, final int color) {
-//        buffer.addVertex(pose, fromX, fromY, fromZ).setColor(color).setNormal(pose, normalX, normalY, normalZ);
-//        buffer.addVertex(pose, toX, toY, toZ).setColor(color).setNormal(pose, normalX, normalY, normalZ);
-//    }
-
-    public static void beginBatch() {
-//        backup = new GlStateBackup();
-//        RenderSystem.backupGlState(backup);
-//        buffer = Tesselator.getInstance().begin(VertexFormat.Mode.DEBUG_LINES, DefaultVertexFormat.POSITION_COLOR);
+    public static RenderType renderType() {
+        return BLOCK_VISION_OUTLINE_TYPE;
     }
 
-    public static void endBatch() {
-//        prepare();
-//
-//        if (buffer != null) {
-//            MeshData meshData = buffer.build();
-//
-//            if (meshData != null) {
-//                BufferUploader.drawWithShader(meshData);
-//            }
-//        }
-//
-//        RenderSystem.restoreGlState(backup);
-//
-//        backup = null;
-//        buffer = null;
-    }
+    public static void render(final BlockVisionHandler.Data data, final PoseStack pose, final VertexConsumer buffer, final int colorARGB) {
+        pose.pushPose();
+        pose.translate(data.x(), data.y(), data.z());
 
-    private static void prepare() {
-//        RenderSystem.setShader(GameRenderer::getPositionColorShader);
-//        RenderSystem.disableDepthTest();
+        int alpha = Math.max(ARGB.alpha(colorARGB), 192);
+        int visibleColor = ARGB.color(alpha, ARGB.red(colorARGB), ARGB.green(colorARGB), ARGB.blue(colorARGB));
+        int shadowColor = ARGB.color(Math.max(alpha / 2, 96), 0, 0, 0);
+
+        ShapeRenderer.renderShape(pose, buffer, Shapes.create(new AABB(0, 0, 0, 1, 1, 1)), 0, 0, 0, shadowColor, SHADOW_WIDTH);
+        ShapeRenderer.renderShape(pose, buffer, Shapes.create(new AABB(0, 0, 0, 1, 1, 1)), 0, 0, 0, visibleColor, OUTLINE_WIDTH);
+        pose.popPose();
     }
 }
