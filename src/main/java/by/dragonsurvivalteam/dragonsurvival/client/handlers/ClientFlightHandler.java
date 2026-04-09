@@ -23,7 +23,6 @@ import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.ClientInput;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
@@ -160,8 +159,6 @@ public class ClientFlightHandler {
         Camera info = setup.getCamera();
 
         if (currentPlayer != null && currentPlayer.isAddedToLevel() && DragonStateProvider.isDragon(currentPlayer)) {
-            GameRenderer gameRenderer = minecraft.gameRenderer;
-
             if (ServerFlightHandler.isGliding(currentPlayer)) {
                 if (setup.getCamera().isDetached()) {
                     if (flightCameraMovement) {
@@ -179,8 +176,6 @@ public class ClientFlightHandler {
                             Vec3 lookVec = currentPlayer.getLookAngle();
                             float f = Math.min(Math.max(0.5F, 1F - (float) (lookVec.y * 5 / 2.5 * 0.5)), 3F);
                             float newZoom = Mth.lerp(0.25f, lastZoom, f);
-                            // FIXME :: zoom is gone
-                            // gameRenderer.zoom = newZoom;
                             lastZoom = newZoom;
                         }
                     }
@@ -196,12 +191,35 @@ public class ClientFlightHandler {
                 if (lastZoom != 1) {
                     if (flightZoomEffect) {
                         lastZoom = Mth.lerp(0.25f, lastZoom, 1f);
-                        // FIXME :: zoom is gone
-                        // gameRenderer.zoom = lastZoom;
                     }
                 }
             }
         }
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOW)
+    public static void flightZoom(ViewportEvent.ComputeFov event) {
+        if (!flightZoomEffect || lastZoom == 1f) {
+            return;
+        }
+
+        if (DragonSurvival.PROXY.dragonRenderingWasCancelled(DragonSurvival.PROXY.getLocalPlayer())) {
+            return;
+        }
+
+        Minecraft minecraft = Minecraft.getInstance();
+        LocalPlayer currentPlayer = minecraft.player;
+
+        if (currentPlayer == null || !currentPlayer.isAddedToLevel() || !DragonStateProvider.isDragon(currentPlayer) || minecraft.options.getCameraType().isFirstPerson()) {
+            return;
+        }
+
+        double zoom = Math.max(lastZoom, 0.01f);
+
+        // Match the old projection-scale zoom by converting it to the equivalent FOV.
+        double halfFovRadians = Math.toRadians(event.getFOV()) / 2.0D;
+        double zoomedFov = 2.0D * Math.atan(Math.tan(halfFovRadians) / zoom);
+        event.setFOV((float) Math.toDegrees(zoomedFov));
     }
 
     @SubscribeEvent

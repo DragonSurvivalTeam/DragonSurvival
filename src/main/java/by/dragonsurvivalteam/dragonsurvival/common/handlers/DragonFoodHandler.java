@@ -51,11 +51,6 @@ public class DragonFoodHandler {
         return disableDragonFoodHandling || ModCheck.isModLoaded(ModCheck.TFC);
     }
 
-    public static @Nullable FoodProperties getDragonFoodProperties(final Holder<DragonSpecies> species, final ItemStack stack, @Nullable final FoodProperties original) {
-        DragonFood dragonFood = getDragonFood(species, stack, original, stack.get(DataComponents.CONSUMABLE), stack.get(DataComponents.USE_REMAINDER));
-        return dragonFood != null ? dragonFood.properties() : null;
-    }
-
     public static @Nullable FoodProperties getFoodProperties(final @Nullable LivingEntity entity, final ItemStack stack, final @Nullable FoodProperties original) {
         DragonFood dragonFood = getDragonFood(entity, stack, original, stack.get(DataComponents.CONSUMABLE), stack.get(DataComponents.USE_REMAINDER));
         return dragonFood != null ? dragonFood.properties() : original;
