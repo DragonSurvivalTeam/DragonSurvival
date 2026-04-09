@@ -125,7 +125,7 @@ public interface AbilityTargeting {
             return List.of();
         }
 
-        // FIXME :: need to adjust this so they can be grouped into the respective action container trigger points
+        // TODO :: need to adjust this so they can be grouped into the respective action container trigger points
 
         List<MutableComponent> descriptions = new ArrayList<>();
         MutableComponent targetDescription = getDescription(dragon, ability);
@@ -160,7 +160,7 @@ public interface AbilityTargeting {
         return format(description).append(Component.literal("\n\n")).append(targetDescription);
     }
 
-    // FIXME :: may not be needed anymore
+    // TODO :: may not be needed anymore
     default void remove(final ServerPlayer dragon, final DragonAbilityInstance ability) { /* Nothing to do */ }
 
     MutableComponent getDescription(final Player dragon, final DragonAbilityInstance ability);

@@ -592,7 +592,7 @@ public class DSAdvancements implements AdvancementSubProvider {
                 .build(saver);
         buildSleepOnTreasureChildren(sleepOnTreasure);
 
-        TagKey<Structure> dragonBones = TagKey.create(Registries.STRUCTURE, DragonSurvival.res("dragon_skeletons")); // FIXME :: use tag from data generation
+        TagKey<Structure> dragonBones = TagKey.create(Registries.STRUCTURE, DragonSurvival.res("dragon_skeletons")); // TODO :: use tag from data generation
         AdvancementHolder findBones = create(LangKey.FIND_BONES)
                 .parent(parent)
                 .displayItem(DSItems.STAR_BONE.value())
@@ -619,7 +619,7 @@ public class DSAdvancements implements AdvancementSubProvider {
 
     private void buildFindBonesChildren(final AdvancementHolder parent) {
         // --- Parent: find_bones --- //
-        TagKey<Structure> lightTreasure = TagKey.create(Registries.STRUCTURE, DragonSurvival.res("light_treasure")); // FIXME :: use tag from data generation
+        TagKey<Structure> lightTreasure = TagKey.create(Registries.STRUCTURE, DragonSurvival.res("light_treasure")); // TODO :: use tag from data generation
         AdvancementHolder findOverworldStructure = create(LangKey.FIND_OVERWORLD_STRUCTURES)
                 .parent(parent)
                 .displayItem(Blocks.GRASS_BLOCK)
@@ -629,7 +629,7 @@ public class DSAdvancements implements AdvancementSubProvider {
                 .experienceReward(24)
                 .build(saver);
 
-        TagKey<Structure> darkTreasure = TagKey.create(Registries.STRUCTURE, DragonSurvival.res("dark_treasure")); // FIXME :: use tag from data generation
+        TagKey<Structure> darkTreasure = TagKey.create(Registries.STRUCTURE, DragonSurvival.res("dark_treasure")); // TODO :: use tag from data generation
         AdvancementHolder findNetherStructure = create(LangKey.FIND_NETHER_STRUCTURES)
                 .parent(findOverworldStructure)
                 .displayItem(Blocks.NETHERRACK)
@@ -648,7 +648,7 @@ public class DSAdvancements implements AdvancementSubProvider {
                 .experienceReward(32)
                 .build(saver);
 
-        TagKey<Structure> endTreasure = TagKey.create(Registries.STRUCTURE, DragonSurvival.res("treasure_end")); // FIXME :: use tag from data generation
+        TagKey<Structure> endTreasure = TagKey.create(Registries.STRUCTURE, DragonSurvival.res("treasure_end")); // TODO :: use tag from data generation
         create(LangKey.FIND_END_STRUCTURES)
                 .parent(findEndPlatform)
                 .displayItem(DSItems.SPIN_GRANT_ITEM.value())

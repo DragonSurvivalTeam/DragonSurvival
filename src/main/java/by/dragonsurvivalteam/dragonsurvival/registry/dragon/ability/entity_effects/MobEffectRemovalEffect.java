@@ -96,7 +96,7 @@ public record MobEffectRemovalEffect(
         }
 
         if (validEffects.isPresent()) {
-            // FIXME :: use Functions#translateHolderSet
+            // TODO :: use Functions#translateHolderSet
             description.getFirst().append(Component.translatable(LIMITED_TO));
             for (Holder<MobEffect> effect : validEffects.get()) {
                 description.getFirst().append(DSColors.withColor(Component.translatable(" " + effect.value().getDisplayName()), DSColors.GREEN));

@@ -15,7 +15,7 @@ import net.minecraft.util.ExtraCodecs;
 public record DamageModificationPenalty(DamageModification modification, int duration) implements PenaltyEffect {
     public static final MapCodec<DamageModificationPenalty> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             DamageModification.CODEC.fieldOf("modification").forGetter(DamageModificationPenalty::modification),
-            // FIXME 1.22 :: this should not be needed, since modification (due to its parent) already has a duration field?
+            // TODO 1.22 :: this should not be needed, since modification (due to its parent) already has a duration field?
             ExtraCodecs.intRange(DurationInstance.INFINITE_DURATION, Integer.MAX_VALUE).fieldOf("duration").forGetter(DamageModificationPenalty::duration)
     ).apply(instance, DamageModificationPenalty::new));
 

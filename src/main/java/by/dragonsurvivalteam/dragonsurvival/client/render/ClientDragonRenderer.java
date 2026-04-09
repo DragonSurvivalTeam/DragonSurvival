@@ -81,7 +81,7 @@ import java.util.function.Consumer;
 public class ClientDragonRenderer {
     private static final Set<String> DRAGON_RENDER_FAILURES = ConcurrentHashMap.newKeySet();
 
-    // FIXME :: figure out at what point it can be called from other threads - that shouldn't happen but it does?
+    // TODO :: figure out at what point it can be called from other threads - that shouldn't happen but it does?
     //  See: https://github.com/DragonSurvivalTeam/DragonSurvival/issues/763
     //  (revert back to normal map once this is properly fixed)
     /** Instances used for rendering third-person dragon models */

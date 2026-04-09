@@ -47,7 +47,7 @@ public class DragonSoulBlockEntity extends BlockEntity {
     }
 
     public static void serverTick(Level level, BlockPos blockPos, BlockState blockState, DragonSoulBlockEntity dragonSoulBlockEntity) {
-        // FIXME :: anything needed here?
+        // TODO :: anything needed here?
     }
 
     public @Nullable DragonStateHandler getHandler() {

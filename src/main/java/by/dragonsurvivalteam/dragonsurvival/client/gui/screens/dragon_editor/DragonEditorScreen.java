@@ -575,10 +575,7 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
             }
             if (tickWhenSlotDisplayMessageSet + 100 - tick > 0) {
                 float alpha = (float) Math.min(1.0f - (tick - tickWhenSlotDisplayMessageSet - 50.f) / 50.f, 1.0f);
-                // FIXME :: UI RENDERING
-                //graphics.setColor(1, 1, 1, alpha);
-                TextRenderUtil.drawCenteredScaledText(graphics, width / 2, height / 2 + 20, 0.5f, loadSlotDisplayMessage(slotDisplayMessage).getString(), color);
-                //graphics.setColor(1, 1, 1, 1);
+                TextRenderUtil.drawCenteredScaledText(graphics, width / 2, height / 2 + 20, 0.5f, loadSlotDisplayMessage(slotDisplayMessage).getString(), DSColors.withAlpha(color, alpha));
             } else {
                 slotDisplayMessage = SlotDisplayMessage.NONE;
             }
@@ -617,8 +614,6 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
 
     @Override
     public void extractBackground(GuiGraphicsExtractor pGuiGraphicsExtractor, int pMouseX, int pMouseY, float pPartialTick) {
-        // FIXME :: UI RENDERING
-        // no Z value, used to be -350
         pGuiGraphicsExtractor.fill(0, 0, width, height, backgroundColor);
     }
 

@@ -36,7 +36,7 @@ public record DragonGrowthEffect(GrowthType growth_type, ActionType action_type,
     public static final String ADJUST_ADD_FLAT = Translation.Type.GUI.wrap("growth_effect.adjust_add.flat");
 
     public static final MapCodec<DragonGrowthEffect> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            // FIXME 1.22 :: change these field names to match ManaRecoveryEffect
+            // TODO 1.22 :: change these field names to match ManaRecoveryEffect
             GrowthType.CODEC.fieldOf("growth_type").forGetter(DragonGrowthEffect::growth_type),
             ActionType.CODEC.fieldOf("action_type").forGetter(DragonGrowthEffect::action_type),
             LevelBasedValue.CODEC.fieldOf("amount").forGetter(DragonGrowthEffect::amount),
