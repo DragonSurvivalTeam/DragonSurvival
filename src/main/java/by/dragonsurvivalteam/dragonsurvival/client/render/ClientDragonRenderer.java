@@ -12,7 +12,6 @@ import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
 import by.dragonsurvivalteam.dragonsurvival.input.Keybind;
 import by.dragonsurvivalteam.dragonsurvival.mixins.client.EntityRendererAccessor;
-import by.dragonsurvivalteam.dragonsurvival.mixins.client.LivingRendererAccessor;
 import by.dragonsurvivalteam.dragonsurvival.network.flight.SyncDeltaMovement;
 import by.dragonsurvivalteam.dragonsurvival.network.player.SyncDragonMovement;
 import by.dragonsurvivalteam.dragonsurvival.network.player.SyncPitchAndYaw;
@@ -68,7 +67,6 @@ import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 import net.neoforged.neoforge.client.event.RenderNameTagEvent;
 import net.neoforged.neoforge.client.event.RenderPlayerEvent;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
-import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.EntityLeaveLevelEvent;
 import net.neoforged.neoforge.event.level.LevelEvent;
 import org.jetbrains.annotations.Nullable;
@@ -302,19 +300,7 @@ public class ClientDragonRenderer {
         }
 
         partialTick = event.getPartialTick();
-
-        // FIXME :: Nametags
-        // We need to get access to the cameraRenderState, which is not actually passed through the RenderPlayerEvent (even though it probably should)
-        // It is a local variable at the moment the RenderPlayerEvent is triggered by Neo, just not passed by Neo.
-//        if (dragonNameTags && player != Minecraft.getInstance().player) {
-//            //noinspection UnstableApiUsage -> intentional
-//            RenderNameTagEvent renderNameplateEvent = new RenderNameTagEvent.DoRender(event.getRenderState(), event.getRenderState().nameTag, event.getRenderer(), event.getPoseStack(), event.getSubmitNodeCollector(), , partialTick);
-//            NeoForge.EVENT_BUS.post(renderNameplateEvent);
-//
-//            if (renderNameplateEvent.canRender().isTrue() || renderNameplateEvent.canRender().isDefault() && ((LivingRendererAccessor) event.getRenderer()).dragonSurvival$callShouldShowName(player)) {
-//                ((EntityRendererAccessor) event.getRenderer()).dragonSurvival$renderNameTag(player, renderNameplateEvent.getContent(), event.getPoseStack(), event.getMultiBufferSource(), event.getPackedLight(), partialTick);
-//            }
-//        }
+        var cameraRenderState = Minecraft.getInstance().gameRenderer.getGameRenderState().levelRenderState.cameraRenderState;
 
         if (player != Minecraft.getInstance().player || !Minecraft.getInstance().options.getCameraType().isFirstPerson() || !ServerFlightHandler.isGliding(player) || renderFirstPersonFlight) {
             ClientDragonRenderer.setDragonMovementData(player, Minecraft.getInstance().getDeltaTracker().getRealtimeDeltaTicks());
@@ -326,7 +312,6 @@ public class ClientDragonRenderer {
             var dispatcher = Minecraft.getInstance().getEntityRenderDispatcher();
             try {
                 var dragonRenderState = dispatcher.extractEntity(dragon, partialTick);
-                var cameraRenderState = Minecraft.getInstance().gameRenderer.getGameRenderState().levelRenderState.cameraRenderState;
                 dispatcher.submit(
                     dragonRenderState,
                     cameraRenderState,
@@ -336,6 +321,16 @@ public class ClientDragonRenderer {
                     event.getPoseStack(),
                     event.getSubmitNodeCollector()
                 );
+
+                if (dragonNameTags && player != Minecraft.getInstance().player && (playerRenderState.scoreText != null || playerRenderState.nameTag != null)) {
+                    ((EntityRendererAccessor) event.getRenderer()).dragonSurvival$submitNameDisplay(
+                        playerRenderState,
+                        event.getPoseStack(),
+                        event.getSubmitNodeCollector(),
+                        cameraRenderState,
+                        0
+                    );
+                }
             } catch (RuntimeException exception) {
                 String playerName = player.getName().getString();
 

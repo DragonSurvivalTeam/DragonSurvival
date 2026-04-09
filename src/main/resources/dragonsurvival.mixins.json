@@ -51,6 +51,7 @@
     "client.ClientLevelMixin",
     "client.EffectsInInventoryAccessor",
     "client.EffectsInInventoryMixin",
+    "client.EntityRendererAccessor",
     "client.FrustumAccess",
     "client.GameRendererMixin",
     "client.GuiAccessor",
