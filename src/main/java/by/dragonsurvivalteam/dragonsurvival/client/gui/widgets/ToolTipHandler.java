@@ -3,6 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.client.gui.widgets;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic.HelpButton;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
+import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.DragonAbilityHolder;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.DragonFood;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
@@ -10,10 +11,12 @@ import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
 import by.dragonsurvivalteam.dragonsurvival.registry.data_components.DSDataComponents;
 import by.dragonsurvivalteam.dragonsurvival.registry.data_maps.DietEntryCache;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.BuiltInDragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.renderer.RenderPipelines;
@@ -71,9 +74,14 @@ public class ToolTipHandler {
 
     private static final Identifier TOOLTIP_BLINKING = Identifier.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/magic_tips_1.png");
     private static final Identifier TOOLTIP = Identifier.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/magic_tips_0.png");
+    private static final Identifier HELP_TOOLTIP_STYLE = DragonSurvival.res("help");
+    private static final Identifier CAVE_FOOD_TOOLTIP_STYLE = DragonSurvival.res("cave_food");
+    private static final Identifier FOREST_FOOD_TOOLTIP_STYLE = DragonSurvival.res("forest_food");
+    private static final Identifier SEA_FOOD_TOOLTIP_STYLE = DragonSurvival.res("sea_food");
 
     private static boolean isBlinking;
     private static int tick;
+    private static boolean isRenderingCustomTooltip;
 
     public enum TooltipStyle {NONE, DEFAULT, ONLY_CURRENT, ALL_SHIFT}
 
@@ -325,32 +333,62 @@ public class ToolTipHandler {
         return false;
     }
 
-    // FIXME :: UI RENDERING
-    // This event doesn't exist anymore
-    /*@SubscribeEvent
-    public static void renderTooltipBorderInDragonColor(final RenderTooltipEvent.Color event) {
-        if (!TOOLTIP_CHANGES) {
+    @SubscribeEvent
+    public static void renderTooltip(final RenderTooltipEvent.Pre event) {
+        if (isRenderingCustomTooltip) {
             return;
+        }
+
+        Identifier itemStyle = event.getItemStack().get(DataComponents.TOOLTIP_STYLE);
+        Identifier style = getTooltipStyle(event.getItemStack(), itemStyle);
+
+        if (style == null || style.equals(itemStyle)) {
+            return;
+        }
+
+        event.setCanceled(true);
+        isRenderingCustomTooltip = true;
+
+        try {
+            event.getGraphics().tooltip(event.getFont(), event.getComponents(), event.getX(), event.getY(), event.getTooltipPositioner(), style, event.getItemStack());
+        } finally {
+            isRenderingCustomTooltip = false;
+        }
+    }
+
+    public static @Nullable Identifier getTooltipStyle(final ItemStack itemStack, final @Nullable Identifier currentStyle) {
+        if (!TOOLTIP_CHANGES) {
+            return currentStyle;
+        }
+
+        if (isHelpText()) {
+            return HELP_TOOLTIP_STYLE;
+        }
+
+        if (currentStyle != null || itemStack.isEmpty()) {
+            return currentStyle;
         }
 
         LocalPlayer player = Minecraft.getInstance().player;
 
         if (player == null) {
-            return;
+            return currentStyle;
         }
 
         DragonStateHandler data = DragonStateProvider.getData(player);
 
-        if (!data.isDragon()) {
-            return;
+        if (!data.isDragon() || DietEntryCache.getDiet(data.species(), itemStack.getItem()) == null) {
+            return currentStyle;
         }
 
-        if (isHelpText()) {
-            event.setBorderStart(DSColors.withAlpha(DSColors.LIGHT_PURPLE, 1));
-            event.setBorderEnd(DSColors.withAlpha(DSColors.DARK_PURPLE, 1));
-        } else if (DietEntryCache.getDiet(data.species(), event.getItemStack().getItem()) != null) {
-            event.setBorderStart(DSColors.toARGB(data.species().value().miscResources().primaryColor()));
-            event.setBorderEnd(DSColors.toARGB(data.species().value().miscResources().secondaryColor()));
+        if (data.species().is(BuiltInDragonSpecies.CAVE_DRAGON)) {
+            return CAVE_FOOD_TOOLTIP_STYLE;
+        } else if (data.species().is(BuiltInDragonSpecies.FOREST_DRAGON)) {
+            return FOREST_FOOD_TOOLTIP_STYLE;
+        } else if (data.species().is(BuiltInDragonSpecies.SEA_DRAGON)) {
+            return SEA_FOOD_TOOLTIP_STYLE;
         }
-    }*/
+
+        return currentStyle;
+    }
 }
