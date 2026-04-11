@@ -467,7 +467,9 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
 
         final RenderPassInfo.BoneUpdater<R> neckVisibilitySetter = (renderPassInfoForBones, snapshots) -> {
             snapshots.get("Neck").map(bone -> {
-                bone.skipRender(!(renderData.inInventory() || Compat.displayNeck()) || RenderingUtils.isFirstPerson(player));
+                boolean hideNeckAndHead = !(renderData.inInventory() || Compat.displayNeck()) && RenderingUtils.isFirstPerson(player);
+                bone.skipRender(hideNeckAndHead);
+                bone.skipChildrenRender(hideNeckAndHead);
                 return null;
             });
         };
