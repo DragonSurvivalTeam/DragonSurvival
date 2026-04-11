@@ -20,10 +20,14 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.level.BlockEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
 /** See {@link by.dragonsurvivalteam.dragonsurvival.client.handlers.DragonDestructionHandler} for client-specific handling */
 @EventBusSubscriber
 public class DragonDestructionHandler {
-    private static int crushTickCounter;
+    private static final Map<UUID, Integer> crushTickCounters = new HashMap<>();
     private static boolean isBreakingMultipleBlocks;
 
     private static void checkAndDestroyCollidingBlocks(final DragonStateHandler data, final PlayerTickEvent event, final AABB boundingBox) {
@@ -120,7 +124,7 @@ public class DragonDestructionHandler {
             return;
         }
 
-        if (--crushTickCounter > 0) {
+        if (isOnCrushingCooldown(player)) {
             return;
         }
 
@@ -135,8 +139,26 @@ public class DragonDestructionHandler {
 
             if (destructionData.entityPredicate().matches(player, entity)) {
                 entity.hurt(new DamageSource(DSDamageTypes.get(player.level(), DSDamageTypes.CRUSHED), player), (float) (data.getGrowth() * destructionData.crushingDamageScalar()));
-                crushTickCounter = ServerConfig.crushingTickDelay;
+                crushTickCounters.put(player.getUUID(), ServerConfig.crushingTickDelay);
             }
         }
+    }
+
+    private static boolean isOnCrushingCooldown(final ServerPlayer player) {
+        UUID playerId = player.getUUID();
+        Integer remainingTicks = crushTickCounters.get(playerId);
+
+        if (remainingTicks == null || remainingTicks <= 0) {
+            crushTickCounters.remove(playerId);
+            return false;
+        }
+
+        if (remainingTicks == 1) {
+            crushTickCounters.remove(playerId);
+        } else {
+            crushTickCounters.put(playerId, remainingTicks - 1);
+        }
+
+        return true;
     }
 }

@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.mixins.client;
 
+import by.dragonsurvivalteam.dragonsurvival.client.handlers.DragonDestructionHandler;
 import by.dragonsurvivalteam.dragonsurvival.client.render.ClientDragonRenderer;
 import by.dragonsurvivalteam.dragonsurvival.client.util.RenderingUtils;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
@@ -48,4 +49,8 @@ public abstract class LevelRendererMixin {
         entityRenderDispatcher.submit(state, levelRenderState.cameraRenderState, state.x - cameraPos.x(), state.y - cameraPos.y(), state.z - cameraPos.z(), poseStack, output);
     }
 
+    @Inject(method = "submitBlockDestroyAnimation", at = @At("TAIL"))
+    private void dragonSurvival$submitAdditionalBreakProgress(final PoseStack poseStack, final SubmitNodeCollector submitNodeCollector, final LevelRenderState levelRenderState, final CallbackInfo callback) {
+        DragonDestructionHandler.submitAdditionalBreakProgress(poseStack, submitNodeCollector, levelRenderState, (LevelRendererAccess) this);
+    }
 }
