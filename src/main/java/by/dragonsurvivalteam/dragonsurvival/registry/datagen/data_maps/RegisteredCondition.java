@@ -9,7 +9,6 @@ import net.neoforged.neoforge.common.CommonHooks;
 import net.neoforged.neoforge.common.conditions.ICondition;
 import org.jetbrains.annotations.NotNull;
 
-// TODO :: Remove in 1.21.4
 public record RegisteredCondition<T>(ResourceKey<T> registryKey) implements ICondition {
     public static final MapCodec<RegisteredCondition<?>> CODEC = RecordCodecBuilder.mapCodec(instance -> instance
             .group(Identifier.CODEC.fieldOf("registry").forGetter(condition -> condition.registryKey().registry()),
@@ -24,8 +23,8 @@ public record RegisteredCondition<T>(ResourceKey<T> registryKey) implements ICon
     public boolean test(@NotNull final IContext context) {
         HolderLookup.RegistryLookup<T> lookup = null;
 
-        if (context instanceof ContextExtension extension && extension.dragonSurvival$getRegistryAccess() != null) {
-            lookup = extension.dragonSurvival$getRegistryAccess().lookupOrThrow(registryKey.registryKey());
+        if (context.registryAccess() != null && context.registryAccess() != net.minecraft.core.RegistryAccess.EMPTY) {
+            lookup = context.registryAccess().lookup(registryKey.registryKey()).orElse(null);
         }
 
         if (lookup == null) {
