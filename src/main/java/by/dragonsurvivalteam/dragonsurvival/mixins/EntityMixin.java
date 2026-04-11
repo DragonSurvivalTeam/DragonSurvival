@@ -59,7 +59,7 @@ public abstract class EntityMixin {
             original = original.add(offset).yRot(-(float) Math.toRadians(movement.bodyYawLastFrame));
             return original;
         } else if (DragonStateProvider.isDragon(passenger) && !DragonStateProvider.isDragon(mount)) {
-            // FIXME :: I did this is both places since different entities seem to possibly use either path... not sure how to reconcile this
+            // TODO :: I did this is both places since different entities seem to possibly use either path... not sure how to reconcile this
             // Handle dragon riding normal mounts (e.g. boats)
             // The vanilla player hitbox actually clips through most mounts, but the dragon player does not.
             // So we need to push it up such that it meets the point at which the vanilla player's actual model starts
@@ -75,7 +75,7 @@ public abstract class EntityMixin {
         Entity mount = (Entity) (Object) this;
 
         if (entity instanceof Player passenger && hasPassenger(passenger) && DragonStateProvider.isDragon(passenger) && !DragonStateProvider.isDragon(mount)) {
-            // FIXME :: I did this is both places since different entities seem to possibly use either path... not sure how to reconcile this
+            // TODO :: I did this is both places since different entities seem to possibly use either path... not sure how to reconcile this
             // Handle dragon riding normal mounts (e.g. boats)
             // The vanilla player hitbox actually clips through most mounts, but the dragon player does not.
             // So we need to push it up such that it meets the point at which the vanilla player's actual model starts

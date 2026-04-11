@@ -265,7 +265,7 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
         withRenderLayer(new DragonArmorRenderLayer<>(this));
         withRenderLayer(new DragonItemRenderLayer<>(context, this));
 
-        // FIXME :: COMPAT
+        // FIXME :: SOPHISTICATED BACKPACKS
         /*if (ModCheck.isModLoaded(ModCheck.SOPHISTICATED_BACKPACKS)) {
             getRenderLayers().add(new DragonBackpackRenderLayer(this));
         }*/

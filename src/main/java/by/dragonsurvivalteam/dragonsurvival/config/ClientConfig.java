@@ -19,32 +19,32 @@ public class ClientConfig {
     @ConfigOption(side = ConfigSide.CLIENT, category = "misc", key = "stable_night_vision")
     public static Boolean stableNightVision = true;
 
-    @ConfigRange(min = 0.0, max = 1.0) // FIXME :: rework comment (unclear what this exactly does / what changing animation speed results in)
+    @ConfigRange(min = 0.0, max = 1.0) // TODO :: rework comment (unclear what this exactly does / what changing animation speed results in)
     @Translation(key = "small_size_animation_speed_factor", type = Translation.Type.CONFIGURATION, comments = "The factor by which the additional animation speed from being smaller is multiplied. 1.0 represents the speed accurately reflecting the size of the dragon.")
     @ConfigOption(side = ConfigSide.CLIENT, category = "animation", key = "small_size_animation_speed_factor")
     public static Double smallSizeAnimationSpeedFactor = 0.3;
 
-    @ConfigRange(min = 0.0, max = 1.0) // FIXME :: rework comment (unclear what this exactly does / what changing animation speed results in)
+    @ConfigRange(min = 0.0, max = 1.0) // TODO :: rework comment (unclear what this exactly does / what changing animation speed results in)
     @Translation(key = "large_size_animation_speed_factor", type = Translation.Type.CONFIGURATION, comments = "The factor by which the reduced additional animation speed from being bigger is multiplied. 1.0 represents the speed accurately reflecting the size of the dragon.")
     @ConfigOption(side = ConfigSide.CLIENT, category = "animation", key = "large_size_animation_speed_factor")
     public static Double largeSizeAnimationSpeedFactor = 1.0;
 
-    @ConfigRange(min = 0.0, max = 1.0) // FIXME :: rework comment (unclear what this exactly does / what changing animation speed results in)
+    @ConfigRange(min = 0.0, max = 1.0) // TODO :: rework comment (unclear what this exactly does / what changing animation speed results in)
     @Translation(key = "movement_animation_speed_factor", type = Translation.Type.CONFIGURATION, comments = "The amount by which the movement animation speed factor is multiplied. 1.0 represents the animation speed accurately reflecting the speed of your movement.")
     @ConfigOption(side = ConfigSide.CLIENT, category = "animation", key = "movement_animation_speed_factor")
     public static Double movementAnimationSpeedFactor = 1.0;
 
-    @ConfigRange(min = 0.0, max = 10.0) // FIXME :: rework comment (unclear what this exactly does / what changing animation speed results in)
+    @ConfigRange(min = 0.0, max = 10.0) // TODO :: rework comment (unclear what this exactly does / what changing animation speed results in)
     @Translation(key = "max_animation_speed_factor", type = Translation.Type.CONFIGURATION, comments = "The maximum value that the speed factor can add to the base animation speed.")
     @ConfigOption(side = ConfigSide.CLIENT, category = "animation", key = "max_animation_speed_factor")
     public static Double maxAnimationSpeedFactor = 3.0;
 
-    @ConfigRange(min = 1.0, max = 5.0) // FIXME :: rework comment (unclear what this exactly does / what changing animation speed results in)
+    @ConfigRange(min = 1.0, max = 5.0) // TODO :: rework comment (unclear what this exactly does / what changing animation speed results in)
     @Translation(key = "max_animation_speed", type = Translation.Type.CONFIGURATION, comments = "The maximum animation speed allowed for dragons.")
     @ConfigOption(side = ConfigSide.CLIENT, category = "animation", key = "max_animation_speed")
     public static Double maxAnimationSpeed = 1.5;
 
-    @ConfigRange(min = 0.05, max = 1.0) // FIXME :: rework comment (unclear what this exactly does / what changing animation speed results in)
+    @ConfigRange(min = 0.05, max = 1.0) // TODO :: rework comment (unclear what this exactly does / what changing animation speed results in)
     @Translation(key = "min_animation_speed", type = Translation.Type.CONFIGURATION, comments = "The minimum animation speed allowed for dragons.")
     @ConfigOption(side = ConfigSide.CLIENT, category = "animation", key = "min_animation_speed")
     public static Double minAnimationSpeed = 0.2;

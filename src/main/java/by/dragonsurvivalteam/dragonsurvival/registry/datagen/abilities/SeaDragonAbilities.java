@@ -675,7 +675,7 @@ public class SeaDragonAbilities {
                                 )),
                                 TargetingMode.ALL
                         )), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(1)),
-                        // FIXME :: Put in a separate ability? Put in a different ability from this one? Just needed to move it since we deleted built in modifiers for dragon species
+                        // TODO :: Put in a separate ability? Put in a different ability from this one? Just needed to move it since we deleted built in modifiers for dragon species
                         //  unlock the first level of the resistance abilities? (i.e. set it to exp 0)
                         //  would also need auto leveling logic? only for 0 experience though
                         //  meaning you could only de-level up to the first non-0 experience level of the ability

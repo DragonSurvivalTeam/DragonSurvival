@@ -580,7 +580,6 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
             // Set the lock state once here so it is correct for all the emotes
             neckLocked = checkAllEmotes(DragonEmote::locksHead);
             tailLocked = checkAllEmotes(DragonEmote::locksTail);
-            // FIXME :: Before this was state.controller().stop(). I think reset is correct here?
             state.controller().reset();
             return PlayState.STOP;
         }
@@ -716,7 +715,6 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
             baseSpeed = DEFAULT_CLIMB_SPEED;
             transitionTicks = 2;
         } else if (DRAGONS_JUMPING.getOrDefault(this.playerId, false)) {
-            // FIXME :: Was state.resetCurrentAnimation -> state.controller.reset(). Not sure if this works.
             state.controller().reset();
             animationToChangeTo = DragonAnimations.JUMP.getAnimation();
             transitionTicks = 2;

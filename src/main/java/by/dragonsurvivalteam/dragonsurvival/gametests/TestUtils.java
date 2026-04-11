@@ -79,7 +79,7 @@ public class TestUtils {
     }
 
     public static Player createPlayer(final GameTestHelper helper) {
-        // FIXME :: 'helper.makeMockServerPlayerInLevel()' crashes instantly due to 'NetworkRegistry#checkPacket'
+        // TODO :: 'helper.makeMockServerPlayerInLevel()' crashes instantly due to 'NetworkRegistry#checkPacket'
         //  'helper.makeMockPlayer()' doesn't create a 'ServerPlayer' but rather a mix of client and server elements
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
         resetPlayer(helper, player);

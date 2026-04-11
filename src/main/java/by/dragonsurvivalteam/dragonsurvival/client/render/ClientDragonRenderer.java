@@ -506,7 +506,7 @@ public class ClientDragonRenderer {
         ClientInput input = player.input;
         MovementData movement = MovementData.getData(player);
         movement.setFirstPerson(Minecraft.getInstance().options.getCameraType().isFirstPerson());
-        movement.setFreeLook(Keybind.FREE_LOOK.consumeClick()); // FIXME :: handle this properly
+        movement.setFreeLook(Keybind.FREE_LOOK.consumeClick());
         float vertical = input.keyPresses.jump() && input.keyPresses.shift() ? 0 : input.keyPresses.jump() ? 1 : input.keyPresses.shift() ? -1 : 0;
         movement.setDesiredMoveVec(new Vec3(input.getMoveVector().x, vertical, input.getMoveVector().y));
 

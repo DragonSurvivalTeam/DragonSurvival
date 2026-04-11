@@ -20,8 +20,6 @@ public class RotatingKeyRenderer extends GeoItemRenderer<RotatingKeyItem> {
         super(new RotatingKeyModel());
     }
 
-    // FIXME :: In the old prerender, there was a check to see if the player holding the object was null or not; is this still needed?
-
     @Override
     public void setMolangQueryValues(RotatingKeyItem animatable, GeoItemRenderer.RenderData relatedObject, GeoRenderState renderState, float partialTick) {
         super.setMolangQueryValues(animatable, relatedObject, renderState, partialTick);

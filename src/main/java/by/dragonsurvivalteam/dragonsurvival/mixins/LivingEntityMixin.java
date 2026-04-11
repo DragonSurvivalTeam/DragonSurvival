@@ -86,42 +86,6 @@ public abstract class LivingEntityMixin extends Entity {
         }
     }
 
-    // FIXME
-//    @Unique private int dragonSurvival$getHumanOrDragonUseDuration(int original) {
-//        if (!DragonFoodHandler.dragonFoodHandlingIsDisabled() && (Object) this instanceof Player player) {
-//            DragonStateHandler handler = DragonStateProvider.getData(player);
-//
-//            if (handler != null && handler.isDragon()) {
-//                return DragonFoodHandler.getUseDuration(useItem, player, original);
-//            }
-//        }
-//
-//        return original;
-//    }
-//
-//    @ModifyExpressionValue(method = "shouldTriggerItemUseEffects", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;getUseDuration(Lnet/minecraft/world/entity/LivingEntity;)I"))
-//    private int replaceUseDurationInShouldTriggerItemUseEffects(int original) {
-//        return dragonSurvival$getHumanOrDragonUseDuration(original);
-//    }
-//
-//    @ModifyExpressionValue(method = "onSyncedDataUpdated", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;getUseDuration(Lnet/minecraft/world/entity/LivingEntity;)I"))
-//    private int replaceUseDurationInSyncedDataUpdated(int original) {
-//        return dragonSurvival$getHumanOrDragonUseDuration(original);
-//    }
-//
-//    @ModifyExpressionValue(method = "triggerItemUseEffects", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;getUseAnimation()Lnet/minecraft/world/item/UseAnim;"))
-//    private UseAnim dragonSurvival$replaceEatAndDrinkAnimation(UseAnim original, ItemStack stack, int amount) {
-//        if (!DragonFoodHandler.dragonFoodHandlingIsDisabled() && (Object) this instanceof Player player) {
-//            DragonStateHandler handler = DragonStateProvider.getData(player);
-//
-//            if (handler.isDragon()) {
-//                return (DragonFoodHandler.isEdible(player, stack) && original != UseAnim.DRINK) ? UseAnim.EAT : original;
-//            }
-//        }
-//
-//        return original;
-//    }
-
     /** There is no event to actually modify the effect when it's being applied */
     @ModifyVariable(method = "addEffect(Lnet/minecraft/world/effect/MobEffectInstance;Lnet/minecraft/world/entity/Entity;)Z", at = @At("HEAD"), argsOnly = true)
     private MobEffectInstance dragonSurvival$modifyEffect(final MobEffectInstance instance, final @Local(argsOnly = true) Entity applier) {
@@ -330,31 +294,10 @@ public abstract class LivingEntityMixin extends Entity {
 //    }
 
     @Shadow
-    public abstract ItemStack getItemBySlot(EquipmentSlot pSlot);
-
-    @Shadow
     public abstract double getAttributeValue(Holder<Attribute> attribute);
 
     @Shadow
     public abstract boolean hasEffect(final Holder<MobEffect> effect);
-
-    @Shadow
-    protected abstract float getWaterSlowDown();
-
-    @Shadow
-    public abstract boolean onClimbable();
-
-    @Shadow
-    protected abstract Vec3 handleOnClimbable(Vec3 deltaMovement);
-
-    @Shadow
-    protected abstract float getFrictionInfluencedSpeed(float friction);
-
-    @Shadow
-    public abstract void calculateEntityAnimation(boolean includeHeight);
-
-    @Shadow
-    public abstract boolean shouldDiscardFriction();
 
     @Shadow
     public abstract @Nullable MobEffectInstance getEffect(Holder<MobEffect> effect);
