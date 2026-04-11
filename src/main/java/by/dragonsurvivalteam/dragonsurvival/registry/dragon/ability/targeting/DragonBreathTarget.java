@@ -33,20 +33,27 @@ public record DragonBreathTarget(Either<BlockTargeting, EntityTargeting> target,
 
     @Override
     public void apply(final ServerPlayer dragon, final DragonAbilityInstance ability) {
+        Vec3 startPosition = getBreathStart(dragon);
+        Vec3 endPosition = getBreathEnd(dragon, ability);
+        double radius = getBreathRadius(dragon);
+        AABB breathArea = calculateBreathArea(startPosition, endPosition, radius);
+
         target().ifLeft(blockTarget -> {
             // Used by 'BlockGetter#clip' to determine the direction
             // 'Entity#pick' -> from: 'getEyePosition' / to: 'getEyePosition + getViewVector'
             Vec3 eyePos = dragon.getEyePosition();
             Direction direction = Direction.getNearest((int)eyePos.x, (int)eyePos.y, (int)eyePos.z, null);
 
-            BlockPos.betweenClosedStream(calculateBreathArea(dragon, ability)).forEach(position -> {
-                if (blockTarget.matches(dragon, position)) {
+            BlockPos.betweenClosedStream(breathArea).forEach(position -> {
+                if (intersectsBreath(new AABB(position), startPosition, endPosition, radius) && blockTarget.matches(dragon, position)) {
                     blockTarget.effects().forEach(target -> target.apply(dragon, ability, position, direction));
                 }
             });
         }).ifRight(entityTarget -> {
-            dragon.level().getEntities(EntityTypeTest.forClass(Entity.class), calculateBreathArea(dragon, ability),
-                    entity -> entityTarget.targetingMode().isEntityRelevant(dragon, entity) && entityTarget.matches(dragon, entity, entity.position())
+            dragon.level().getEntities(EntityTypeTest.forClass(Entity.class), breathArea,
+                    entity -> entityTarget.targetingMode().isEntityRelevant(dragon, entity)
+                        && intersectsBreath(entity.getBoundingBox(), startPosition, endPosition, radius)
+                        && entityTarget.matches(dragon, entity, entity.position())
             ).forEach(entity -> entityTarget.effects().forEach(target -> target.apply(dragon, ability, entity)));
         });
     }
@@ -64,27 +71,19 @@ public record DragonBreathTarget(Either<BlockTargeting, EntityTargeting> target,
     }
 
     public AABB calculateBreathArea(final Player dragon, final DragonAbilityInstance ability) {
-        Vec3 viewVector = dragon.getLookAngle().scale(rangeMultiplier.calculate(ability.level()) * dragon.getAttributeValue(DSAttributes.DRAGON_BREATH_RANGE));
-        double defaultRadius = dragon.getScale();
+        return calculateBreathArea(getBreathStart(dragon), getBreathEnd(dragon, ability), getBreathRadius(dragon));
+    }
 
-        // Set the radius (value will be at least the default radius)
-        double xOffset = getOffset(viewVector.x(), defaultRadius);
-        double yOffset = Math.abs(viewVector.y());
-        double zOffset = getOffset(viewVector.z(), defaultRadius);
+    public Vec3 getBreathDebugStart(final Player dragon) {
+        return getBreathStart(dragon);
+    }
 
-        // Check for look angle to avoid extending the range in the direction the player is not facing / looking
-        double xMin = (dragon.getLookAngle().x() < 0 ? xOffset : defaultRadius);
-        double yMin = (dragon.getLookAngle().y() < 0 ? yOffset : 0);
-        double zMin = (dragon.getLookAngle().z() < 0 ? zOffset : defaultRadius);
-        Vec3 min = new Vec3(Math.abs(xMin), Math.abs(yMin), Math.abs(zMin));
+    public Vec3 getBreathDebugEnd(final Player dragon, final DragonAbilityInstance ability) {
+        return getBreathEnd(dragon, ability);
+    }
 
-        double xMax = (dragon.getLookAngle().x() > 0 ? xOffset : defaultRadius);
-        double yMax = (dragon.getLookAngle().y() > 0 ? yOffset + dragon.getEyeHeight() : dragon.getEyeHeight());
-        double zMax = (dragon.getLookAngle().z() > 0 ? zOffset : defaultRadius);
-        Vec3 max = new Vec3(Math.abs(xMax), Math.abs(yMax), Math.abs(zMax));
-
-        Vec3 startPosition = dragon.getEyePosition().subtract(0, (dragon.getEyeHeight() / 2), 0);
-        return new AABB(startPosition.subtract(min), startPosition.add(max));
+    public double getBreathDebugRadius(final Player dragon) {
+        return getBreathRadius(dragon);
     }
 
     @Override
@@ -92,12 +91,38 @@ public record DragonBreathTarget(Either<BlockTargeting, EntityTargeting> target,
         return (float) (rangeMultiplier.calculate(instance.level()) * dragon.getAttributeValue(DSAttributes.DRAGON_BREATH_RANGE));
     }
 
-    private static double getOffset(double value, double defaultValue) {
-        if (value < 0) {
-            return Math.min(value, -defaultValue);
-        }
+    private Vec3 getBreathEnd(final Player dragon, final DragonAbilityInstance ability) {
+        double breathRange = rangeMultiplier.calculate(ability.level()) * dragon.getAttributeValue(DSAttributes.DRAGON_BREATH_RANGE);
+        Vec3 breathOrigin = getBreathOrigin(dragon);
+        double forwardOffset = getBreathForwardOffset(dragon);
 
-        return Math.max(value, defaultValue);
+        return breathOrigin.add(dragon.getLookAngle().scale(Math.max(breathRange, forwardOffset)));
+    }
+
+    private static Vec3 getBreathStart(final Player dragon) {
+        Vec3 breathOrigin = getBreathOrigin(dragon);
+        return breathOrigin.add(dragon.getLookAngle().scale(getBreathForwardOffset(dragon)));
+    }
+
+    private static double getBreathRadius(final Player dragon) {
+        return dragon.getScale();
+    }
+
+    private static Vec3 getBreathOrigin(final Player dragon) {
+        return dragon.getEyePosition().subtract(0, dragon.getEyeHeight() / 2, 0);
+    }
+
+    private static double getBreathForwardOffset(final Player dragon) {
+        return getBreathRadius(dragon);
+    }
+
+    private static AABB calculateBreathArea(final Vec3 startPosition, final Vec3 endPosition, final double radius) {
+        return new AABB(startPosition, endPosition).inflate(radius);
+    }
+
+    private static boolean intersectsBreath(final AABB boundingBox, final Vec3 startPosition, final Vec3 endPosition, final double radius) {
+        AABB expandedBounds = boundingBox.inflate(radius);
+        return expandedBounds.contains(startPosition) || expandedBounds.clip(startPosition, endPosition).isPresent();
     }
 
     @Override

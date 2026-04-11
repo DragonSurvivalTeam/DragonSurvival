@@ -226,7 +226,7 @@ public class ClientDragonRenderer {
             AbilityTargeting targeting = action.effect();
 
             if (targeting instanceof DragonBreathTarget breathTarget) {
-                ShapeRenderer.renderShape(pose, buffer, Shapes.create(breathTarget.calculateBreathArea(player, ability)), 0, 0, 0, ARGB.color(255, 255, 0, 0), 1.0f);
+                ShapeRenderer.renderShape(pose, buffer, Shapes.create(breathTarget.calculateBreathArea(player, ability)), 0, 0, 0, ARGB.color(255, 255, 0, 0), 1.0F);
             } else if (targeting instanceof LookingAtTarget lookingAtTarget) {
                 HitResult result;
 
