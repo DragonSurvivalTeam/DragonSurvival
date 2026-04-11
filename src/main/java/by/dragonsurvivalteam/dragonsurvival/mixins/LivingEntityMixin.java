@@ -9,10 +9,12 @@ import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachmen
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.EffectModifications;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.HunterData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SummonedEntities;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SwimData;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.trigger.OnTargetKilled;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.sugar.Local;
+import net.minecraft.util.Mth;
 import net.minecraft.core.Holder;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffect;
@@ -22,11 +24,13 @@ import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.common.NeoForgeMod;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -56,6 +60,77 @@ public abstract class LivingEntityMixin extends Entity {
     @ModifyArg(method = "travelInLava", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;moveRelative(FLnet/minecraft/world/phys/Vec3;)V"))
     private float dragonSurvival$modifyLavaSwimSpeed(float original) {
         return (float) (original * getAttributeValue(DSAttributes.LAVA_SWIM_SPEED));
+    }
+
+    @Inject(method = "travelInLava", at = @At("HEAD"), cancellable = true)
+    private void dragonSurvival$handleLavaSwimming(final Vec3 travelVector, final double baseGravity, final boolean isFalling, final double oldY, final CallbackInfo callback) {
+        if (!((Object) this instanceof Player player)) {
+            return;
+        }
+
+        if (!player.isAffectedByFluids() || !SwimData.getData(player).canSwimIn(NeoForgeMod.LAVA_TYPE.value())) {
+            return;
+        }
+
+        dragonSurvival$applyVerticalFluidSwimMovement(player, travelVector);
+
+        float slowDown = isSprinting() ? 0.9F : getWaterSlowDown();
+        float swimSpeed = 0.05F;
+        float swimSpeedModifier = onGround() ? 1.0F : 0.5F;
+
+        if (swimSpeedModifier > 0.0F) {
+            slowDown += (0.54600006F - slowDown) * swimSpeedModifier;
+            swimSpeed += (player.getSpeed() - swimSpeed) * swimSpeedModifier;
+        }
+
+        swimSpeed *= (float) getAttributeValue(DSAttributes.LAVA_SWIM_SPEED);
+        moveRelative(swimSpeed, travelVector);
+        move(MoverType.SELF, getDeltaMovement());
+
+        Vec3 adjustedMovement = getDeltaMovement();
+        if (horizontalCollision && player.onClimbable()) {
+            adjustedMovement = new Vec3(adjustedMovement.x, 0.2, adjustedMovement.z);
+        }
+
+        adjustedMovement = adjustedMovement.multiply(slowDown, 0.8F, slowDown);
+        adjustedMovement = player.getFluidFallingAdjustedMovement(baseGravity, isFalling, adjustedMovement);
+        setDeltaMovement(adjustedMovement);
+
+        if (horizontalCollision && isFree(adjustedMovement.x, adjustedMovement.y + 0.6 - getY() + oldY, adjustedMovement.z)) {
+            setDeltaMovement(adjustedMovement.x, 0.3, adjustedMovement.z);
+        }
+
+        player.calculateEntityAnimation(false);
+        callback.cancel();
+    }
+
+    private void dragonSurvival$applyVerticalFluidSwimMovement(final Player player, final Vec3 travelVector) {
+        boolean isCrouching = player.isCrouching();
+
+        if (!jumping && !isCrouching && travelVector.horizontalDistance() <= 0.05D) {
+            return;
+        }
+
+        double lookY = player.getLookAngle().y;
+        if (!jumping && !isCrouching && Math.abs(lookY) <= 0.1D) {
+            return;
+        }
+
+        float minSpeed = 0.04F;
+        float maxSpeed = 0.12F;
+        float verticalSpeed = Mth.lerp((float) Math.abs(Mth.clamp(lookY, -1.0D, 1.0D)), minSpeed, maxSpeed);
+
+        if (isSprinting()) {
+            verticalSpeed *= 1.2F;
+        }
+
+        if ((jumping && lookY < 0.0D) || (isCrouching && lookY > 0.0D)) {
+            lookY *= -1.0D;
+            verticalSpeed = minSpeed;
+        }
+
+        Vec3 deltaMovement = getDeltaMovement();
+        setDeltaMovement(deltaMovement.add(0.0D, (lookY - deltaMovement.y) * Math.abs(verticalSpeed), 0.0D));
     }
 
     @ModifyExpressionValue(method = "travelInAir", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;getEffect(Lnet/minecraft/core/Holder;)Lnet/minecraft/world/effect/MobEffectInstance;"))
@@ -114,185 +189,6 @@ public abstract class LivingEntityMixin extends Entity {
         return !SummonedEntities.hasSummonRelationship(this, target);
     }
 
-    // FIXME :: Currently this seems to handle gravity differently (lower jump height / falling in creative mode)
-    //          Unsure why - the difference here seems to be that the content of 'LivingEntity#handleRelativeFrictionAndCalculateMovement' happens after applying gravity instead of before (vanilla)
-    /** Fixes a bug with vanilla where effects that modify the player's y-velocity were called too late, causing some problems with things like slime blocks.
-     * The issue isn't noticeable in vanilla, since vanilla doesn't rely on isOnGround() or not for logic that modifies the player's animations and hitbox.
-     * <p>
-     * For some more context, the bug would be the following:
-     * - The player is on a slime block and crouches
-     * - The change in hitbox causes a collision with the slime block, which causes the player to be pushed up
-     * - The next tick, the player uses their new upward velocity in the move() function (before gravity is applied), which causes isOnGround() to get set to false since the collision detection uses the upward velocity
-     * - The tick after that, the player now has gravity applied, so they fall down, but since we marked isOnGround() to false, we now trigger the slime block again
-     * - This causes the player to be pushed up again, which causes the player to be stuck in a loop of being pushed up and down
-     * <p>
-     * This also potentially fixes issues involving the dragon clipping through ceilings or floors with the levitation effect, as that effect was also applied post move() call in vanilla
-     * <p>
-     * This is a pretty disruptive mixin, but I'm not sure about the best way here to fix the order of operations here without messing up the vanilla logic
-     * */
-//    @Inject(method = "travel", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;getBlockPosBelowThatAffectsMyMovement()Lnet/minecraft/core/BlockPos;"), cancellable = true)
-//    private void dragonSurvival$fixGravityBeingAppliedTooLateAndClampPosToWorldBorder(final Vec3 travelVector, final CallbackInfo callback, @Local double gravity)
-//    {
-//        //noinspection ConstantValue -> it's not always true
-//        if (!((Object) this instanceof Player player)) {
-//            return;
-//        }
-//
-//        DragonStateHandler data = DragonStateProvider.getData(player);
-//
-//        if (!data.isDragon()) {
-//            return;
-//        }
-//
-//        callback.cancel();
-//
-//        BlockPos blockpos = this.getBlockPosBelowThatAffectsMyMovement();
-//        float blockFriction = this.level().getBlockState(this.getBlockPosBelowThatAffectsMyMovement()).getFriction(level(), this.getBlockPosBelowThatAffectsMyMovement(), this);
-//        float velocityDecay = this.onGround() ? blockFriction * 0.91F : 0.91F;
-//
-//        // This is where we deviate from vanilla logic. What we are doing here is essentially calling handleRelativeFrictionAndCalculateMovement()
-//        // but after handling the relative movement and the climbing logic, we apply the gravity to the y-velocity, then call move()
-//        //
-//        // Vanilla here would instead apply the gravity to the y-velocity after the move() call, which causes issues with the isOnGround() logic
-//        this.moveRelative(this.getFrictionInfluencedSpeed(blockFriction), travelVector);
-//        this.setDeltaMovement(this.handleOnClimbable(this.getDeltaMovement()));
-//        double yVel = getDeltaMovement().y;
-//        if (this.hasEffect(MobEffects.LEVITATION)) {
-//            yVel += (0.05 * (double)(this.getEffect(MobEffects.LEVITATION).getAmplifier() + 1) - yVel) * 0.2;
-//        } else if (!this.level().isClientSide || this.level().hasChunkAt(blockpos)) {
-//            yVel -= gravity;
-//        } else if (this.getY() > (double)this.level().getMinBuildHeight()) {
-//            yVel = -0.1;
-//        } else {
-//            yVel = 0.0;
-//        }
-//
-//        Vec3 postYModifierMovement = new Vec3(this.getDeltaMovement().x, yVel, this.getDeltaMovement().z);
-//        this.setDeltaMovement(postYModifierMovement);
-//
-//        this.move(MoverType.SELF, this.getDeltaMovement());
-//        Vec3 postMoveCallDeltaMovement = this.getDeltaMovement();
-//        if ((this.horizontalCollision || this.jumping)
-//            && (this.onClimbable() || this.getInBlockState().is(Blocks.POWDER_SNOW) && PowderSnowBlock.canEntityWalkOnPowderSnow(this))) {
-//            postMoveCallDeltaMovement = new Vec3(postMoveCallDeltaMovement.x, 0.2, postMoveCallDeltaMovement.z);
-//        }
-//
-//        if (this.shouldDiscardFriction()) {
-//            this.setDeltaMovement(postYModifierMovement);
-//        } else {
-//            this.setDeltaMovement(
-//                postMoveCallDeltaMovement.x * (double)velocityDecay,
-//                this instanceof FlyingAnimal ? postMoveCallDeltaMovement.y * (double)velocityDecay : postMoveCallDeltaMovement.y * 0.98F,
-//                postMoveCallDeltaMovement.z * (double)velocityDecay);
-//        }
-//
-//        // Clamp position to within world border
-//        // This is because the player will just clip through the world border due to growth because of how
-//        // fudgePositionAfterSizeChange works, so we need to clamp the position here
-//        if (!this.level().getWorldBorder().isWithinBounds(this.getBoundingBox()))
-//        {
-//            double clampedX = Mth.clamp(this.getX(), this.level().getWorldBorder().getMinX(), this.level().getWorldBorder().getMaxX());
-//            double clampedZ = Mth.clamp(this.getZ(), this.level().getWorldBorder().getMinZ(), this.level().getWorldBorder().getMaxZ());
-//            this.setPos(clampedX, this.getY(), clampedZ);
-//        }
-//
-//        this.calculateEntityAnimation(this instanceof FlyingAnimal);
-//    }
-
-    // FIXME
-//    /** Enable cave dragons to properly swim in lava and also enables properly swimming up or down (for water and lava) */
-//    @Inject(method = "travel", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;getFluidState(Lnet/minecraft/core/BlockPos;)Lnet/minecraft/world/level/material/FluidState;", shift = At.Shift.BY, by = 2), cancellable = true)
-//    private void dragonSurvival$handleDragonSwimming(final Vec3 travelVector, final CallbackInfo callback, @Local double gravity, @Local final FluidState fluidState) {
-//        //noinspection ConstantValue -> it's not always true
-//        if (!((Object) this instanceof Player player)) {
-//            return;
-//        }
-//
-//        DragonStateHandler data = DragonStateProvider.getData(player);
-//
-//        if (!data.isDragon()) {
-//            return;
-//        }
-//
-//        SwimData swimData = SwimData.getData(player);
-//        boolean isLavaSwimming = swimData.canSwimIn(NeoForgeMod.LAVA_TYPE.getKey()) && isInLava();
-//
-//        if (!isLavaSwimming && !isInWater() || !player.isAffectedByFluids() || player.canStandOnFluid(fluidState)) {
-//            return;
-//        }
-//
-//        boolean isCrouching = player.isCrouching();
-//        boolean isFalling = getDeltaMovement().y <= 0;
-//
-//        // Don't move the player up or down if they're not currently moving
-//        if (jumping || isCrouching || travelVector.horizontalDistance() > 0.05) {
-//            float lookY = (float) getLookAngle().y;
-//
-//            float minSpeed = 0.04f;
-//            float maxSpeed = 0.12f;
-//
-//            // Speed increase depending on how much the player looks up or down
-//            float yModifier = minSpeed + (maxSpeed - minSpeed) * Mth.abs(Math.clamp(lookY, -1, 1));
-//
-//            if (isSprinting()) {
-//                yModifier *= 1.2f;
-//            }
-//
-//            if (jumping || isCrouching || Math.abs(lookY) > 0.1) {
-//                // Jumping should always result in going up and crouching should always result in going down
-//                if (jumping && lookY < 0 || isCrouching && lookY > 0) {
-//                    lookY *= -1; // Reverse direction of movement
-//                    yModifier = minSpeed; // Since we are moving in the opposite direction we're looking, use the minimum speed bonus
-//                }
-//
-//                // Move the player up or down, depending on where they look
-//                Vec3 deltaMovement = getDeltaMovement();
-//                setDeltaMovement(deltaMovement.add(0, (lookY - deltaMovement.y) * Mth.abs(yModifier), 0));
-//            }
-//        }
-//
-//        if (isLavaSwimming) {
-//            double oldY = getY();
-//            float speedModifier = isSprinting() ? 0.9f : getWaterSlowDown();
-//            float swimSpeed = 0.05f; // Vanilla swim speed for water is 0.02
-//            float swimSpeedModifier = 1; // Max. value of 'WATER_MOVEMENT_EFFICIENCY' attribute
-//
-//            // The rest is mostly a copy of 'LivingEntity#travel' water swim logic
-//            if (!onGround()) {
-//                swimSpeedModifier *= 0.5f;
-//            }
-//
-//            if (swimSpeedModifier > 0) {
-//                speedModifier += (0.54600006f - speedModifier) * swimSpeedModifier;
-//                swimSpeed += (player.getSpeed() - swimSpeed) * swimSpeedModifier;
-//            }
-//
-//            if (player.hasEffect(MobEffects.DOLPHINS_GRACE)) {
-//                speedModifier = 0.96f;
-//            }
-//
-//            swimSpeed *= (float) player.getAttributeValue(DSAttributes.LAVA_SWIM_SPEED);
-//            moveRelative(swimSpeed, travelVector);
-//            move(MoverType.SELF, getDeltaMovement());
-//            Vec3 newMovement = getDeltaMovement();
-//
-//            if (horizontalCollision && player.onClimbable()) {
-//                newMovement = new Vec3(newMovement.x, 0.2, newMovement.z);
-//            }
-//
-//            setDeltaMovement(newMovement.multiply(speedModifier, 0.8, speedModifier));
-//            Vec3 adjustedMovement = player.getFluidFallingAdjustedMovement(gravity, isFalling, getDeltaMovement());
-//            setDeltaMovement(adjustedMovement);
-//
-//            if (horizontalCollision && isFree(adjustedMovement.x, adjustedMovement.y + 0.6 - getY() + oldY, adjustedMovement.z)) {
-//                setDeltaMovement(adjustedMovement.x, 0.3, adjustedMovement.z);
-//            }
-//
-//            player.calculateEntityAnimation(false);
-//            callback.cancel();
-//        }
-//    }
-
     @Shadow
     public abstract double getAttributeValue(Holder<Attribute> attribute);
 
@@ -301,4 +197,7 @@ public abstract class LivingEntityMixin extends Entity {
 
     @Shadow
     public abstract @Nullable MobEffectInstance getEffect(Holder<MobEffect> effect);
+
+    @Shadow
+    protected abstract float getWaterSlowDown();
 }
