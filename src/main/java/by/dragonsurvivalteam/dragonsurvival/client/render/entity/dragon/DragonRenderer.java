@@ -40,6 +40,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RenderFrameEvent;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Vector4f;
 import org.jspecify.annotations.Nullable;
 import com.geckolib.constant.DataTickets;
 import com.geckolib.constant.dataticket.DataTicket;
@@ -478,7 +479,7 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
 
         Function<String, RenderPassInfo.BonePositionListener> bonePositionListenerCreator = boneName -> (worldPos, modelPos, localPos) -> {
             if (worldPos == null) return;
-            Vec3 position = new Vec3(worldPos.x(), worldPos.y(), worldPos.z()).subtract(getModelOffset(renderData));
+            Vec3 position = transformBonePosition(renderData, new Vec3(worldPos.x(), worldPos.y(), worldPos.z()));
             BONE_POSITIONS.computeIfAbsent(renderData.dragonId(), key -> new HashMap<>()).put(boneName, position);
         };
 
@@ -593,6 +594,21 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
         }
 
         return getModelOffset(renderData);
+    }
+
+    private Vec3 transformBonePosition(final DragonRenderData renderData, final Vec3 position) {
+        Player player = renderData.player();
+
+        if (player == null) {
+            return position;
+        }
+
+        Vec3 relativePosition = position.subtract(player.position());
+        PoseStack poseStack = new PoseStack();
+        setupRender(renderData, poseStack);
+        Vector4f transformedPosition = poseStack.last().pose().transform(new Vector4f((float) relativePosition.x(), (float) relativePosition.y(), (float) relativePosition.z(), 1.0F));
+
+        return new Vec3(transformedPosition.x(), transformedPosition.y(), transformedPosition.z()).add(player.position());
     }
 
     private void setupRender(final DragonRenderData renderData, final PoseStack pose) {
