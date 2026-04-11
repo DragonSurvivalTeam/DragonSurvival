@@ -74,18 +74,6 @@ public record DragonBreathTarget(Either<BlockTargeting, EntityTargeting> target,
         return calculateBreathArea(getBreathStart(dragon), getBreathEnd(dragon, ability), getBreathRadius(dragon));
     }
 
-    public Vec3 getBreathDebugStart(final Player dragon) {
-        return getBreathStart(dragon);
-    }
-
-    public Vec3 getBreathDebugEnd(final Player dragon, final DragonAbilityInstance ability) {
-        return getBreathEnd(dragon, ability);
-    }
-
-    public double getBreathDebugRadius(final Player dragon) {
-        return getBreathRadius(dragon);
-    }
-
     @Override
     public float getDistance(final Player dragon, final DragonAbilityInstance instance) {
         return (float) (rangeMultiplier.calculate(instance.level()) * dragon.getAttributeValue(DSAttributes.DRAGON_BREATH_RANGE));
