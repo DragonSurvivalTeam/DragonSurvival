@@ -12,8 +12,11 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.advancements.criterion.ItemPredicate;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -56,10 +59,11 @@ public record SmeltItemEffect(Optional<ItemPredicate> itemPredicate, Optional<Le
             return;
         }
 
-        RecipeHolder<SmeltingRecipe> recipe = dragon.level().recipeAccess().getRecipeFor(RecipeType.SMELTING, new SingleRecipeInput(stack), dragon.level()).orElse(null);
+        SingleRecipeInput input = new SingleRecipeInput(stack);
+        RecipeHolder<SmeltingRecipe> recipe = dragon.level().recipeAccess().getRecipeFor(RecipeType.SMELTING, input, dragon.level()).orElse(null);
+        ItemStack result = recipe != null ? recipe.value().assemble(input) : ItemStack.EMPTY;
 
-        // FIXME
-        if (recipe == null /*|| recipe.value().getResultItem(dragon.registryAccess()).isEmpty()*/) {
+        if (recipe == null || result.isEmpty()) {
             return;
         }
 
@@ -80,19 +84,23 @@ public record SmeltItemEffect(Optional<ItemPredicate> itemPredicate, Optional<Le
             data.smeltingProgress = 0;
         }
 
-        // FIXME
-        /*ItemStack result = recipe.value().getResultItem(dragon.registryAccess());
         itemEntity.setItem(result.copyWithCount(result.getCount() * stack.getCount()));
 
         if (!dropsExperience) {
             return;
         }
 
-        float experience = recipe.value().getExperience() * stack.getCount();
+        float experience = recipe.value().experience() * stack.getCount();
+        int experienceToDrop = Mth.floor(experience);
+        float remainder = Mth.frac(experience);
 
-        if (experience > 0) {
-            dragon.giveExperiencePoints((int) experience);
-        }*/
+        if (remainder != 0.0F && dragon.getRandom().nextFloat() < remainder) {
+            experienceToDrop++;
+        }
+
+        if (experienceToDrop > 0 && dragon.level() instanceof ServerLevel serverLevel) {
+            ExperienceOrb.award(serverLevel, itemEntity.position(), experienceToDrop);
+        }
     }
 
     @Override
