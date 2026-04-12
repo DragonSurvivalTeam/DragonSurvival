@@ -12,6 +12,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -36,14 +37,18 @@ public class DragonSoulBar {
     public static void render(@NotNull final GuiGraphicsExtractor graphics, @NotNull final DeltaTracker tracker) {
         Player player =  Minecraft.getInstance().player;
 
-        if (player == null || player.isSpectator()) {
+        if (player == null || player.isSpectator() || Minecraft.getInstance().options.hideGui) {
             return;
         }
 
-        ItemStack stack = player.getMainHandItem();
+        ItemStack stack = player.getUseItem();
 
         if (player.isUsingItem() && stack.is(DSItems.DRAGON_SOUL)) {
             int duration = stack.getUseDuration(player);
+
+            if (duration <= 0) {
+                return;
+            }
 
             float progress = ((float) duration - (float) player.getUseItemRemainingTicks()) / (float) duration;
 
@@ -54,8 +59,8 @@ public class DragonSoulBar {
             x += xOffset;
             y += yOffset;
 
-            int width = (int) (progress * WIDTH);
-            graphics.blit(DRAGON_SOUL_BAR, x, y, 0, 0, WIDTH, HEIGHT / 2, WIDTH, HEIGHT);
+            int width = Mth.clamp((int) (progress * WIDTH), 0, WIDTH);
+            graphics.blit(RenderPipelines.GUI_TEXTURED, DRAGON_SOUL_BAR, x, y, 0, 0, WIDTH, HEIGHT / 2, WIDTH, HEIGHT);
             graphics.blit(RenderPipelines.GUI_TEXTURED, DRAGON_SOUL_BAR, x, y, 0, (float) HEIGHT / 2, width, HEIGHT / 2, WIDTH, HEIGHT);
         }
     }

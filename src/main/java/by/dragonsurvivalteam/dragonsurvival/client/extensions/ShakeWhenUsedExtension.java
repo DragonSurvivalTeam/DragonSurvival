@@ -4,32 +4,35 @@ import com.mojang.blaze3d.Blaze3D;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import org.jetbrains.annotations.NotNull;
 
+// FIXME :: This doesn't work currently, I think forge's old hook is broken (it seems to only hook into crossbow animation)
 public class ShakeWhenUsedExtension implements IClientItemExtensions {
-    private double startTime = 0.0F;
+    private static final double SHAKE_SPEED = 10.0;
+    private static final float SHAKE_DISTANCE = 0.1F;
 
     @Override
     public boolean applyForgeHandTransform(@NotNull PoseStack poseStack, @NotNull LocalPlayer player, @NotNull HumanoidArm arm, @NotNull ItemStack itemInHand, float partialTick, float equipProcess, float swingProcess) {
-        if (player.getUseItemRemainingTicks() > 0) {
-            if (startTime == 0.0F) {
-                startTime = Blaze3D.getTime();
-            }
+        InteractionHand hand = player.getMainArm() == arm ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
+        return applyUseShakeTransform(poseStack, player, hand, arm, itemInHand, equipProcess);
+    }
 
-            Minecraft.getInstance().getEntityRenderDispatcher().getItemInHandRenderer().applyItemArmTransform(poseStack, arm, equipProcess);
-
-            double time = (Blaze3D.getTime() - startTime) * 10.0;
-            float shakeX = (float) Math.sin(time) * 0.1F;
-            float shakeZ = (float) Math.cos(time) * 0.1F;
-            poseStack.translate(shakeX, 0, shakeZ);
-            return true;
+    public static boolean applyUseShakeTransform(@NotNull final PoseStack poseStack, @NotNull final LocalPlayer player, @NotNull final InteractionHand hand, @NotNull final HumanoidArm arm, @NotNull final ItemStack itemInHand, final float equipProcess) {
+        if (!player.isUsingItem() || player.getUseItemRemainingTicks() <= 0 || player.getUsedItemHand() != hand || !ItemStack.isSameItemSameComponents(player.getUseItem(), itemInHand)) {
+            return false;
         }
 
-        startTime = 0.0F;
+        Minecraft.getInstance().getEntityRenderDispatcher().getItemInHandRenderer().applyItemArmTransform(poseStack, arm, equipProcess);
 
-        return false;
+        double time = Blaze3D.getTime() * SHAKE_SPEED;
+        float shakeX = (float)Math.sin(time) * SHAKE_DISTANCE;
+        float shakeZ = (float)Math.cos(time) * SHAKE_DISTANCE;
+        poseStack.translate(shakeX, 0.0F, shakeZ);
+
+        return true;
     }
 }

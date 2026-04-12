@@ -92,12 +92,8 @@ public class DragonSoulItem extends BlockItem {
     public @NotNull InteractionResult use(@NotNull final Level level, @NotNull final Player player, @NotNull final InteractionHand hand) {
         if (!player.hasEffect(DSEffects.EXHAUSTED_SOUL) && (DragonStateProvider.isDragon(player) || player.getItemInHand(hand).has(DSDataComponents.DRAGON_SOUL))) {
             player.startUsingItem(hand);
-            // FIXME
-            //return InteractionResultHolder.success(player.getItemInHand(hand));
-            return InteractionResult.SUCCESS;
+            return InteractionResult.CONSUME;
         } else {
-            // FIXME
-            // return InteractionResultHolder.fail(player.getItemInHand(hand));
             return InteractionResult.FAIL;
         }
     }
