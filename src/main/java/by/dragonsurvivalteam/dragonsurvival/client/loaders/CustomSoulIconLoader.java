@@ -3,26 +3,31 @@ package by.dragonsurvivalteam.dragonsurvival.client.loaders;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
-import com.google.gson.JsonElement;
-import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.client.Minecraft;
+import net.minecraft.resources.FileToIdConverter;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
+import net.minecraft.util.profiling.ProfilerFiller;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ModelEvent;
 import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 
 @EventBusSubscriber(Dist.CLIENT)
 public class CustomSoulIconLoader {
+    private static final FileToIdConverter SOUL_ICON_FILES = FileToIdConverter.json("custom_soul_icons");
     private static final Map<ResourceKey<DragonSpecies>, Map<ResourceKey<DragonStage>, Identifier>> ICONS = new HashMap<>();
 
     record CustomSoulIcon(ResourceKey<DragonSpecies> species, Optional<ResourceKey<DragonStage>> stage, Identifier model) {
@@ -33,20 +38,22 @@ public class CustomSoulIconLoader {
         ).apply(instance, CustomSoulIcon::new));
     }
 
-    // Not using a normal reload listener since it would run async and therefore potentially complete after the registration has happened
     public static void reload(final ResourceManager manager) {
+        Map<Identifier, CustomSoulIcon> resources = new HashMap<>();
+        SimpleJsonResourceReloadListener.scanDirectory(manager, SOUL_ICON_FILES, com.mojang.serialization.JsonOps.INSTANCE, CustomSoulIcon.CODEC, resources);
+        apply(resources);
+    }
+
+    public static void reloadFromGameResources() {
+        reload(Minecraft.getInstance().getResourceManager());
+    }
+
+    private static void apply(final Map<Identifier, CustomSoulIcon> resources) {
         ICONS.clear();
-
-        Map<Identifier, JsonElement> resources = new HashMap<>();
-        // FIXME
-        // SimpleJsonResourceReloadListener.scanDirectory(manager, "custom_soul_icons", new Gson(), resources);
-
-        resources.forEach((location, element) -> CustomSoulIcon.CODEC.decode(JsonOps.INSTANCE, element)
-                .ifError(error -> DragonSurvival.LOGGER.error(error.message())).map(Pair::getFirst)
-                .ifSuccess(result -> {
-                    ResourceKey<DragonStage> stage = result.stage().orElse(null);
-                    ICONS.computeIfAbsent(result.species(), key -> new HashMap<>()).put(stage, result.model());
-                }));
+        resources.values().forEach(result -> {
+            ResourceKey<DragonStage> stage = result.stage().orElse(null);
+            ICONS.computeIfAbsent(result.species(), key -> new HashMap<>()).put(stage, result.model());
+        });
     }
 
     public static @Nullable Identifier getIcon(final ResourceKey<DragonSpecies> species, @Nullable final ResourceKey<DragonStage> stage) {
@@ -66,9 +73,25 @@ public class CustomSoulIconLoader {
         return resource;
     }
 
+    public static Collection<Identifier> getModels() {
+        Collection<Identifier> models = new HashSet<>();
+        ICONS.values().forEach(entries -> models.addAll(entries.values()));
+        return models;
+    }
+
     @SubscribeEvent
     public static void registerIcons(final ModelEvent.RegisterStandalone event) {
-        // FIXME
-        // ICONS.values().forEach(maps -> maps.values().forEach(resource -> event.register(ModelIdentifier.standalone(resource))));
+        reloadFromGameResources();
+    }
+
+    public static class ReloadListener extends SimpleJsonResourceReloadListener<CustomSoulIcon> {
+        public ReloadListener() {
+            super(CustomSoulIcon.CODEC, SOUL_ICON_FILES);
+        }
+
+        @Override
+        protected void apply(final Map<Identifier, CustomSoulIcon> entries, @NonNull final ResourceManager manager, @NonNull final ProfilerFiller profiler) {
+            CustomSoulIconLoader.apply(entries);
+        }
     }
 }

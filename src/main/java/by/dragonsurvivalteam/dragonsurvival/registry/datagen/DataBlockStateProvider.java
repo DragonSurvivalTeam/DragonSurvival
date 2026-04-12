@@ -341,13 +341,14 @@ public class DataBlockStateProvider extends ModelProvider {
 
     private void createDragonSoul(final BlockModelGenerators blockModels, final DragonSoulBlock block) {
         Identifier model = blockModel("dragon_soul");
+        Identifier emptySoulModel = DragonSurvival.res("item/dragon_soul");
         blockModels.blockStateOutput.accept(
                 MultiVariantGenerator.dispatch(block).with(
                         PropertyDispatch.initial(BlockStateProperties.HORIZONTAL_FACING)
                                 .generate((facing) -> rotatedVariant(model, (int) facing.toYRot()))
                 )
         );
-        blockModels.itemModelOutput.accept(block.asItem(), new DragonSoulItemModel.Unbaked(Optional.of(ItemModelUtils.plainModel(model))));
+        blockModels.itemModelOutput.accept(block.asItem(), new DragonSoulItemModel.Unbaked(Optional.of(ItemModelUtils.plainModel(emptySoulModel))));
     }
 
     private Identifier createDoorModel(final BlockModelGenerators blockModels, final String name, final Material texture, final ModelTemplate template) {
