@@ -7,6 +7,8 @@ import by.dragonsurvivalteam.dragonsurvival.client.gui.hud.DragonSoulBar;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.hud.GrowthHUD;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.hud.MagicHUD;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.hud.SpinHUD;
+import by.dragonsurvivalteam.dragonsurvival.client.loaders.CustomSoulIconLoader;
+import by.dragonsurvivalteam.dragonsurvival.client.model.item.DragonSoulItemModel;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.ClientDietComponent;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.ClientTimeComponent;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.DietComponent;
@@ -66,6 +68,7 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.AddClientReloadListenersEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
+import net.neoforged.neoforge.client.event.RegisterItemModelsEvent;
 import net.neoforged.neoforge.client.event.RegisterRenderPipelinesEvent;
 import net.neoforged.neoforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
 import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
@@ -74,6 +77,7 @@ import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsE
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
+import net.neoforged.neoforge.client.resources.VanillaClientListeners;
 import net.neoforged.neoforge.common.NeoForge;
 import org.jetbrains.annotations.NotNull;
 
@@ -101,7 +105,9 @@ public class DragonSurvivalClient {
         bus.addListener(this::addReloadListeners);
         bus.addListener(this::registerGuiLayers);
         bus.addListener(this::registerTooltips);
+        bus.addListener(this::registerItemModelTypes);
         bus.addListener(this::registerItemExtensions);
+        bus.addListener(CustomSoulIconLoader::registerIcons);
         bus.addListener(RenderingUtils::registerRenderPipelines);
         bus.addListener(DragonEditorHandler::registerRenderPipelines);
         bus.addListener(BlockVisionOutline::registerRenderPipelines);
@@ -149,6 +155,8 @@ public class DragonSurvivalClient {
     private void addReloadListeners(final AddClientReloadListenersEvent event) {
         event.addListener(DragonSurvival.res("dragon_part_loader"), new DragonPartLoader());
         event.addListener(DragonSurvival.res("default_part_loader"), new DefaultPartLoader());
+        event.addListener(DragonSurvival.res("custom_soul_icons"), new CustomSoulIconLoader.ReloadListener());
+        event.addDependency(DragonSurvival.res("custom_soul_icons"), VanillaClientListeners.MODELS);
     }
 
     private void registerGuiLayers(final RegisterGuiLayersEvent event) {
@@ -162,6 +170,10 @@ public class DragonSurvivalClient {
     private void registerTooltips(final RegisterClientTooltipComponentFactoriesEvent event) {
         event.register(DietComponent.class, ClientDietComponent::new);
         event.register(TimeComponent.class, ClientTimeComponent::new);
+    }
+
+    private void registerItemModelTypes(final RegisterItemModelsEvent event) {
+        event.register(DragonSoulItemModel.ID, DragonSoulItemModel.Unbaked.MAP_CODEC);
     }
 
     private void preventThirdPersonWhenSuffocating(final ClientTickEvent.Post event) {

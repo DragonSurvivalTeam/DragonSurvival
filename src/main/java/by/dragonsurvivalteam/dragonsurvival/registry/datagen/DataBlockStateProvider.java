@@ -1,6 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.datagen;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.client.model.item.DragonSoulItemModel;
 import by.dragonsurvivalteam.dragonsurvival.common.blocks.DragonAltarBlock;
 import by.dragonsurvivalteam.dragonsurvival.common.blocks.DragonBeacon;
 import by.dragonsurvivalteam.dragonsurvival.common.blocks.DragonDoor;
@@ -20,6 +21,7 @@ import net.minecraft.client.data.models.MultiVariant;
 import net.minecraft.client.data.models.ModelProvider;
 import net.minecraft.client.data.models.blockstates.MultiVariantGenerator;
 import net.minecraft.client.data.models.blockstates.PropertyDispatch;
+import net.minecraft.client.data.models.model.ItemModelUtils;
 import net.minecraft.client.data.models.model.ModelTemplate;
 import net.minecraft.client.data.models.model.ModelTemplates;
 import net.minecraft.client.data.models.model.TextureMapping;
@@ -345,6 +347,7 @@ public class DataBlockStateProvider extends ModelProvider {
                                 .generate((facing) -> rotatedVariant(model, (int) facing.toYRot()))
                 )
         );
+        blockModels.itemModelOutput.accept(block.asItem(), new DragonSoulItemModel.Unbaked(Optional.of(ItemModelUtils.plainModel(model))));
     }
 
     private Identifier createDoorModel(final BlockModelGenerators blockModels, final String name, final Material texture, final ModelTemplate template) {
