@@ -43,6 +43,8 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.level.storage.loot.LootParams;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -156,9 +158,7 @@ public class DragonSoulBlock extends Block implements SimpleWaterloggedBlock, En
     public @NotNull BlockState playerWillDestroy(@NotNull final Level level, @NotNull final BlockPos position, @NotNull final BlockState state, @NotNull final Player player) {
         if (!level.isClientSide() && player.isCreative()) {
             level.getBlockEntity(position, DSBlockEntities.DRAGON_SOUL.get()).ifPresent(soul -> {
-                ItemStack stack = DSItems.DRAGON_SOUL.value().getDefaultInstance();
-                soul.applyComponentsFromItemStack(stack);
-
+                ItemStack stack = createSoulItemStack(soul);
                 ItemEntity item = new ItemEntity(level, position.getX(), position.getY(), position.getZ(), stack);
                 item.setDefaultPickUpDelay();
                 level.addFreshEntity(item);
@@ -180,8 +180,19 @@ public class DragonSoulBlock extends Block implements SimpleWaterloggedBlock, En
     @Override
     public @NotNull ItemStack getCloneItemStack(@NotNull LevelReader level, @NotNull BlockPos position, @NotNull BlockState state, boolean includeData, @NotNull Player player) {
         ItemStack stack = super.getCloneItemStack(level, position, state, includeData, player);
-        level.getBlockEntity(position, DSBlockEntities.DRAGON_SOUL.get()).ifPresent(soul -> soul.applyComponentsFromItemStack(stack));
+        level.getBlockEntity(position, DSBlockEntities.DRAGON_SOUL.get()).ifPresent(soul -> stack.applyComponents(soul.collectComponents()));
         return stack;
+    }
+
+    @Override
+    protected @NotNull java.util.List<ItemStack> getDrops(@NotNull final BlockState state, @NotNull final LootParams.Builder params) {
+        BlockEntity blockEntity = params.getOptionalParameter(LootContextParams.BLOCK_ENTITY);
+
+        if (blockEntity instanceof DragonSoulBlockEntity soul) {
+            return java.util.List.of(createSoulItemStack(soul));
+        }
+
+        return super.getDrops(state, params);
     }
 
     @Override
@@ -241,5 +252,11 @@ public class DragonSoulBlock extends Block implements SimpleWaterloggedBlock, En
     @Override
     public <T extends BlockEntity> @Nullable BlockEntityTicker<T> getTicker(final Level level, @NotNull final BlockState state, @NotNull final BlockEntityType<T> type) {
         return level.isClientSide() ? null : BaseEntityBlock.createTickerHelper(type, DSBlockEntities.DRAGON_SOUL.get(), DragonSoulBlockEntity::serverTick);
+    }
+
+    private static ItemStack createSoulItemStack(final DragonSoulBlockEntity soul) {
+        ItemStack stack = DSItems.DRAGON_SOUL.value().getDefaultInstance();
+        stack.applyComponents(soul.collectComponents());
+        return stack;
     }
 }
