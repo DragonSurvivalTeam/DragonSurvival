@@ -116,6 +116,7 @@ public class DragonStateHandler extends EntityStateHandler {
     public int lastSync;
 
     private final Map<ResourceKey<DragonSpecies>, Double> savedGrowth = new HashMap<>();
+    private final Map<ResourceKey<DragonSpecies>, Double> savedDesiredGrowth = new HashMap<>();
     private SkinData skinData = new SkinData();
 
     private Holder<DragonSpecies> dragonSpecies;
@@ -405,6 +406,7 @@ public class DragonStateHandler extends EntityStateHandler {
     public void setSpecies(@Nullable final Player player, @Nullable final Holder<DragonSpecies> species, boolean savedForSoul) {
         Holder<DragonSpecies> oldSpecies = dragonSpecies;
         double oldGrowth = growth;
+        double oldDesiredGrowth = desiredGrowth;
         dragonSpecies = species;
 
         boolean hasChanged = species != null && !DragonUtils.isSpecies(oldSpecies, species);
@@ -420,6 +422,7 @@ public class DragonStateHandler extends EntityStateHandler {
 
             // Also make sure we clamp our growth to a valid stage
             updateGrowthAndStage(player != null ? player.registryAccess() : null, getSavedDragonAge(speciesKey()));
+            desiredGrowth = getSavedDragonDesiredAge(player != null ? player.registryAccess() : null, speciesKey());
 
             // The server doesn't need to check for skin preset refreshes; the client handles this
             if (FMLLoader.getCurrent().getDist().isClient()) {
@@ -433,9 +436,11 @@ public class DragonStateHandler extends EntityStateHandler {
         if (oldSpecies != null && !savedForSoul) {
             // Save the growth for the previous species if we have changed and it isn't due to a soul save
             savedGrowth.put(oldSpecies.getKey(), oldGrowth);
+            savedDesiredGrowth.put(oldSpecies.getKey(), oldDesiredGrowth);
         } else if (oldSpecies != null) {
             // Clear out saved growth data if we are saving for soul, to prevent the player from getting their growth back and repeatedly saving to a soul
             savedGrowth.remove(oldSpecies.getKey());
+            savedDesiredGrowth.remove(oldSpecies.getKey());
         }
 
         if (player == null) {
@@ -613,6 +618,7 @@ public class DragonStateHandler extends EntityStateHandler {
             valueOutput.putString(DRAGON_BODY, bodyId().toString());
             valueOutput.putString(DRAGON_STAGE, stageId().toString());
             valueOutput.putDouble(GROWTH, growth);
+            valueOutput.putDouble(DESIRED_GROWTH, desiredGrowth);
             valueOutput.putBoolean(IS_GROWTH_STOPPED, isGrowthStopped);
             valueOutput.putBoolean(IS_GROWING, isGrowing);
             valueOutput.putBoolean(DESTRUCTION_ENABLED, destructionEnabled);
@@ -629,9 +635,10 @@ public class DragonStateHandler extends EntityStateHandler {
 
         if (isDragonSoul && dragonSpecies != null) {
             // Only store the growth of the dragon the player is currently in if we are saving for the soul
-            storeSavedAge(speciesKey(), valueOutput);
+            storeSavedAge(speciesKey(), growth, desiredGrowth, valueOutput);
             // Also, clear the saved growth for the current species in this case to prevent keeping growth data post-soul save
             savedGrowth.remove(speciesKey());
+            savedDesiredGrowth.remove(speciesKey());
         } else if (!isDragonSoul) {
             for (ResourceKey<DragonSpecies> type : ResourceHelper.keys(null, DragonSpecies.REGISTRY)) {
                 boolean hasSavedGrowth = savedGrowth.containsKey(type);
@@ -656,6 +663,8 @@ public class DragonStateHandler extends EntityStateHandler {
         dragonSpecies = null;
         dragonBody = null;
         dragonStage = null;
+        savedGrowth.clear();
+        savedDesiredGrowth.clear();
 
         String speciesId = valueInput.getStringOr(DRAGON_SPECIES, null);
         if (speciesId != null) {
@@ -687,7 +696,7 @@ public class DragonStateHandler extends EntityStateHandler {
 
             // Makes sure that the set growth matches the previously set stage
             setGrowth(null, valueInput.getDoubleOr(GROWTH, 0));
-            desiredGrowth = growth;
+            desiredGrowth = clampGrowth(valueInput.lookup(), valueInput.getDoubleOr(DESIRED_GROWTH, growth));
             destructionEnabled = valueInput.getBooleanOr(DESTRUCTION_ENABLED, false);
             isGrowing = !valueInput.getBooleanOr(IS_GROWING, false) || valueInput.getBooleanOr(IS_GROWING, false);
             isGrowthStopped = valueInput.getBooleanOr(IS_GROWTH_STOPPED, false);
@@ -696,17 +705,17 @@ public class DragonStateHandler extends EntityStateHandler {
             spinWasGranted = valueInput.getBooleanOr(SPIN_WAS_GRANTED, false);
         }
 
-        if (dragonSpecies != null) {
-            if (isDragonSoul) {
-                // Load the growth from the saved growth in the tag when loading from a soul, rather than referencing the saved stage status
-                savedGrowth.put(speciesKey(), growth);
-            } else {
-                for (ResourceKey<DragonSpecies> type : ResourceHelper.keys(valueInput.lookup(), DragonSpecies.REGISTRY)) {
-                    Optional<ValueInput> valueInputChild = valueInput.child(type.identifier() + SAVED_GROWTH_SUFFIX);
-
-                    if (!valueInputChild.isEmpty()) {
-                        savedGrowth.put(type, loadSavedStage(type, valueInput));
-                    }
+        if (isDragonSoul) {
+            if (dragonSpecies != null) {
+                ResourceKey<DragonSpecies> currentSpeciesKey = speciesKey();
+                savedGrowth.put(currentSpeciesKey, loadSavedStage(currentSpeciesKey, valueInput, growth));
+                savedDesiredGrowth.put(currentSpeciesKey, getSavedDragonDesiredAge(valueInput.lookup(), currentSpeciesKey, valueInput, desiredGrowth));
+            }
+        } else {
+            for (ResourceKey<DragonSpecies> type : ResourceHelper.keys(valueInput.lookup(), DragonSpecies.REGISTRY)) {
+                if (valueInput.child(type.identifier() + SAVED_GROWTH_SUFFIX).isPresent()) {
+                    savedGrowth.put(type, loadSavedStage(type, valueInput));
+                    savedDesiredGrowth.put(type, getSavedDragonDesiredAge(valueInput.lookup(), type, valueInput));
                 }
             }
         }
@@ -724,27 +733,57 @@ public class DragonStateHandler extends EntityStateHandler {
     }
 
     private double loadSavedStage(final ResourceKey<DragonSpecies> dragonSpecies, final ValueInput valueInput) {
+        return loadSavedStage(dragonSpecies, valueInput, getStartingGrowthForSpecies(dragonSpecies, valueInput));
+    }
+
+    private double loadSavedStage(final ResourceKey<DragonSpecies> dragonSpecies, final ValueInput valueInput, final double fallbackGrowth) {
         Optional<ValueInput> valueInputChild = valueInput.child(dragonSpecies.identifier() + SAVED_GROWTH_SUFFIX);
 
         if (valueInputChild.isEmpty()) {
-            Optional<Holder.Reference<DragonSpecies>> optional = ResourceHelper.get(valueInput.lookup(), dragonSpecies);
-
-            if (optional.isPresent()) {
-                return optional.get().value().getStartingGrowth(valueInput.lookup());
-            } else {
-                DragonSurvival.LOGGER.warn("Cannot load saved growth for dragon species [{}] while deserializing NBT of [{}] due to the dragon type not existing. Falling back to the smallest growth.", dragonSpecies, valueInput);
-                return DragonStage.getBounds().min();
-            }
+            return fallbackGrowth;
         }
 
         return valueInputChild.orElseThrow().getDoubleOr(GROWTH, 0);
     }
 
+    private double getSavedDragonDesiredAge(@Nullable final HolderLookup.Provider provider, final ResourceKey<DragonSpecies> dragonSpecies) {
+        return clampGrowth(provider, savedDesiredGrowth.getOrDefault(dragonSpecies, getSavedDragonAge(dragonSpecies)));
+    }
+
+    private double getSavedDragonDesiredAge(@Nullable final HolderLookup.Provider provider, final ResourceKey<DragonSpecies> dragonSpecies, final ValueInput valueInput) {
+        return getSavedDragonDesiredAge(provider, dragonSpecies, valueInput, getSavedDragonAge(dragonSpecies));
+    }
+
+    private double getSavedDragonDesiredAge(@Nullable final HolderLookup.Provider provider, final ResourceKey<DragonSpecies> dragonSpecies, final ValueInput valueInput, final double fallbackDesiredGrowth) {
+        Optional<ValueInput> valueInputChild = valueInput.child(dragonSpecies.identifier() + SAVED_GROWTH_SUFFIX);
+
+        if (valueInputChild.isEmpty()) {
+            return clampGrowth(provider, fallbackDesiredGrowth);
+        }
+
+        double savedGrowth = valueInputChild.orElseThrow().getDoubleOr(GROWTH, fallbackDesiredGrowth);
+        return clampGrowth(provider, valueInputChild.orElseThrow().getDoubleOr(DESIRED_GROWTH, savedGrowth));
+    }
+
     private void storeSavedAge(final ResourceKey<DragonSpecies> speciesKey, final ValueOutput valueOutput) {
-        // FIXME
-        /*CompoundTag savedGrowthTag = new CompoundTag();
-        savedGrowthTag.putDouble(GROWTH, getSavedDragonAge(speciesKey));
-        valueOutput.putChild(speciesKey.identifier() + SAVED_GROWTH_SUFFIX, savedGrowthTag);*/
+        storeSavedAge(speciesKey, getSavedDragonAge(speciesKey), getSavedDragonDesiredAge(null, speciesKey), valueOutput);
+    }
+
+    private void storeSavedAge(final ResourceKey<DragonSpecies> speciesKey, final double savedGrowth, final double savedDesiredGrowth, final ValueOutput valueOutput) {
+        ValueOutput savedGrowthOutput = valueOutput.child(speciesKey.identifier() + SAVED_GROWTH_SUFFIX);
+        savedGrowthOutput.putDouble(GROWTH, savedGrowth);
+        savedGrowthOutput.putDouble(DESIRED_GROWTH, savedDesiredGrowth);
+    }
+
+    private double getStartingGrowthForSpecies(final ResourceKey<DragonSpecies> dragonSpecies, final ValueInput valueInput) {
+        Optional<Holder.Reference<DragonSpecies>> optional = ResourceHelper.get(valueInput.lookup(), dragonSpecies);
+
+        if (optional.isPresent()) {
+            return optional.get().value().getStartingGrowth(valueInput.lookup());
+        } else {
+            DragonSurvival.LOGGER.warn("Cannot load saved growth for dragon species [{}] while deserializing NBT of [{}] due to the dragon type not existing. Falling back to the smallest growth.", dragonSpecies, valueInput);
+            return DragonStage.getBounds().min();
+        }
     }
 
     @Override
@@ -834,6 +873,7 @@ public class DragonStateHandler extends EntityStateHandler {
     public static final String DRAGON_SPECIES = "dragon_species";
     public static final String DRAGON_STAGE = "dragon_stage";
     public static final String GROWTH = "growth";
+    public static final String DESIRED_GROWTH = "desired_growth";
 
     private static final String DRAGON_BODY = "dragon_body";
 
