@@ -4,7 +4,11 @@
 		"idle": {
 			"loop": true,
 			"animation_length": 6,
-			"bones": {}
+			"bones": {
+				"root": {
+					"rotation": ["query.x_rotation", "query.y_rotation", "query.z_rotation"]
+				}
+			}
 		},
 		"no_target": {
 			"loop": true,

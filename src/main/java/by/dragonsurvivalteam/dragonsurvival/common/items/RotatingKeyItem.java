@@ -72,9 +72,11 @@ public class RotatingKeyItem extends TooltipItem implements GeoItem {
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>( "rotating_key_controller", 10, state -> PlayState.CONTINUE)
-                .triggerableAnim("idle", IDLE)
-                .triggerableAnim("no_target", NO_TARGET));
+        controllers.add(new AnimationController<>("rotating_key_controller", 10, state -> {
+            boolean hasTarget = state.getDataOrDefault(RotatingKeyRenderer.HAS_TARGET, false);
+
+            return state.setAndContinue(hasTarget ? IDLE : NO_TARGET);
+        }));
     }
 
     @Override
@@ -96,13 +98,9 @@ public class RotatingKeyItem extends TooltipItem implements GeoItem {
 
             if (targetPosition.isPresent()) {
                 stack.set(DSDataComponents.TARGET_POSITION, targetPosition.get());
-                return;
+            } else {
+                stack.set(DSDataComponents.TARGET_POSITION, new Vector3f());
             }
-
-            stack.set(DSDataComponents.TARGET_POSITION, new Vector3f());
-        } else {
-            String animation = hasTarget(stack.get(DSDataComponents.TARGET_POSITION)) ? "idle" : "no_target";
-            triggerAnim(entity, GeoItem.getOrAssignId(stack, serverLevel), "rotating_key_controller", animation);
         }
     }
 
