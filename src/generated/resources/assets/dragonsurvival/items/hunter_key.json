@@ -1,6 +1,9 @@
 {
   "model": {
-    "type": "minecraft:model",
-    "model": "dragonsurvival:item/hunter_key"
+    "type": "minecraft:special",
+    "base": "dragonsurvival:item/hunter_key",
+    "model": {
+      "type": "geckolib:geckolib"
+    }
   }
 }

@@ -19,6 +19,6 @@ public class RotatingKeyModel extends GeoModel<RotatingKeyItem> {
 
     @Override
     public Identifier getAnimationResource(RotatingKeyItem object) {
-        return DragonSurvival.res("animations/key.animation.json");
+        return DragonSurvival.res("key");
     }
 }

@@ -1,11 +1,20 @@
 package by.dragonsurvivalteam.dragonsurvival.common.items;
 
+import by.dragonsurvivalteam.dragonsurvival.client.render.item.RotatingKeyRenderer;
 import by.dragonsurvivalteam.dragonsurvival.registry.data_components.DSDataComponents;
 import com.mojang.datafixers.util.Pair;
+import com.geckolib.animatable.GeoItem;
+import com.geckolib.animatable.client.GeoRenderProvider;
+import com.geckolib.animatable.instance.AnimatableInstanceCache;
+import com.geckolib.animatable.manager.AnimatableManager;
+import com.geckolib.animation.AnimationController;
+import com.geckolib.animation.RawAnimation;
+import com.geckolib.animation.object.PlayState;
+import com.geckolib.renderer.GeoItemRenderer;
+import com.geckolib.util.GeckoLibUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
-import net.minecraft.core.SectionPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
@@ -14,35 +23,23 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.chunk.status.ChunkStatus;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureStart;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
 import org.jspecify.annotations.Nullable;
-import com.geckolib.animatable.GeoItem;
-import com.geckolib.animatable.client.GeoRenderProvider;
-import com.geckolib.animatable.instance.AnimatableInstanceCache;
-import com.geckolib.animatable.manager.AnimatableManager;
-import com.geckolib.animation.AnimationController;
-import com.geckolib.animation.RawAnimation;
-import com.geckolib.animation.object.PlayState;
-import com.geckolib.util.GeckoLibUtil;
 
 import java.util.Optional;
 import java.util.function.Consumer;
 
 public class RotatingKeyItem extends TooltipItem implements GeoItem {
+    private static final float NO_TARGET_THRESHOLD = 0.01f;
+
     public final Identifier texture, model;
     private final TagKey<Structure> target;
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
     public final RawAnimation IDLE = RawAnimation.begin().thenPlay("idle");
     public final RawAnimation NO_TARGET = RawAnimation.begin().thenPlay("no_target");
-
-    // Client data used for rendering
-    public final Vector3fc fake_target = new Vector3f();
-    public Vector3fc currentTarget = new Vector3f();
-    public Player playerHoldingItem;
 
     public RotatingKeyItem(Properties properties, Identifier model, Identifier texture, Identifier target) {
         super(properties, null);
@@ -53,7 +50,18 @@ public class RotatingKeyItem extends TooltipItem implements GeoItem {
 
     @Override
     public void createGeoRenderer(Consumer<GeoRenderProvider> consumer) {
-        consumer.accept(GeoRenderProvider.of(this));
+        consumer.accept(new GeoRenderProvider() {
+            private RotatingKeyRenderer renderer;
+
+            @Override
+            public @Nullable GeoItemRenderer<?> getGeoItemRenderer() {
+                if (renderer == null) {
+                    renderer = new RotatingKeyRenderer();
+                }
+
+                return renderer;
+            }
+        });
     }
 
     // FIXME :: Not supported by geckolib anymore, is this needed?
@@ -82,44 +90,60 @@ public class RotatingKeyItem extends TooltipItem implements GeoItem {
             return;
         }
 
-        // FIXME :: How to send this client data over correctly? This is now server side only
-        /*if (!(level instanceof ServerLevel serverLevel)) {
-            playerHoldingItem = player;
-            currentTarget = stack.get(DSDataComponents.TARGET_POSITION);
-            return;
-        }*/
-
         // TODO :: as long as the player is within a certain distance of the current target don't re-check
         if (serverLevel.getGameTime() % 20 == 0) {
-            Optional<HolderSet.Named<Structure>> structure = serverLevel.registryAccess().lookupOrThrow(Registries.STRUCTURE).get(this.target);
+            Optional<Vector3f> targetPosition = findTargetPosition(serverLevel, player.blockPosition());
 
-            if (structure.isPresent()) {
-                Pair<BlockPos, Holder<Structure>> nearest = serverLevel.getChunkSource().getGenerator().findNearestMapStructure(serverLevel, structure.get(), entity.blockPosition(), 25, false);
-
-                if (nearest != null) {
-                    SectionPos section = SectionPos.of(nearest.getFirst());
-                    StructureStart start = serverLevel.structureManager().getStartForStructure(section, nearest.getSecond().value(), serverLevel.getChunk(section.x(), section.z(), ChunkStatus.STRUCTURE_STARTS));
-
-                    if (start != null) {
-                        stack.set(DSDataComponents.TARGET_POSITION, start.getBoundingBox().getCenter().getCenter().toVector3f());
-                        return;
-                    }
-                }
+            if (targetPosition.isPresent()) {
+                stack.set(DSDataComponents.TARGET_POSITION, targetPosition.get());
+                return;
             }
 
-            stack.set(DSDataComponents.TARGET_POSITION, fake_target);
+            stack.set(DSDataComponents.TARGET_POSITION, new Vector3f());
         } else {
-            playerHoldingItem = player;
-            currentTarget = stack.get(DSDataComponents.TARGET_POSITION);
-            String animation;
-
-            if (currentTarget == fake_target || currentTarget == null || currentTarget.length() < 0.1) {
-                animation = "no_target";
-            } else {
-                animation = "idle";
-            }
-
+            String animation = hasTarget(stack.get(DSDataComponents.TARGET_POSITION)) ? "idle" : "no_target";
             triggerAnim(entity, GeoItem.getOrAssignId(stack, serverLevel), "rotating_key_controller", animation);
         }
+    }
+
+    private Optional<Vector3f> findTargetPosition(final ServerLevel serverLevel, final BlockPos searchOrigin) {
+        Optional<HolderSet.Named<Structure>> structures = serverLevel.registryAccess().lookupOrThrow(Registries.STRUCTURE).get(this.target);
+
+        if (structures.isEmpty()) {
+            return Optional.empty();
+        }
+
+        HolderSet.Named<Structure> targetStructures = structures.get();
+        StructureStart currentStructure = serverLevel.structureManager().getStructureWithPieceAt(searchOrigin, targetStructures);
+
+        if (isValidTarget(currentStructure)) {
+            return Optional.of(currentStructure.getBoundingBox().getCenter().getCenter().toVector3f());
+        }
+
+        Pair<BlockPos, Holder<Structure>> nearest = serverLevel.getChunkSource().getGenerator().findNearestMapStructure(serverLevel, targetStructures, searchOrigin, 25, false);
+
+        if (nearest == null) {
+            return Optional.empty();
+        }
+
+        StructureStart nearestStructure = serverLevel.structureManager().getStructureWithPieceAt(nearest.getFirst(), nearest.getSecond().value());
+
+        if (!isValidTarget(nearestStructure)) {
+            return Optional.empty();
+        }
+
+        return Optional.of(nearestStructure.getBoundingBox().getCenter().getCenter().toVector3f());
+    }
+
+    private static boolean isValidTarget(@Nullable final StructureStart structureStart) {
+        return structureStart != null && structureStart.isValid();
+    }
+
+    public static boolean hasTarget(@Nullable final Vector3fc target) {
+        if (target == null) {
+            return false;
+        }
+
+        return target.x() * target.x() + target.y() * target.y() + target.z() * target.z() >= NO_TARGET_THRESHOLD;
     }
 }
