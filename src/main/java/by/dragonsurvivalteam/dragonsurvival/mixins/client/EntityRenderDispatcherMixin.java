@@ -1,31 +1,61 @@
 package by.dragonsurvivalteam.dragonsurvival.mixins.client;
 
+import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
+import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.HunterHandler;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
+import net.minecraft.client.renderer.entity.state.AvatarRenderState;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-// FIXME
-//@Mixin(EntityRenderDispatcher.class)
+@Mixin(EntityRenderDispatcher.class)
 public abstract class EntityRenderDispatcherMixin {
-//@Unique private static boolean dragonSurvival$modifiedPoseStack;
+    @Inject(method = "submit", at = @At("HEAD"))
+    private <S extends EntityRenderState> void dragonSurvival$hideHunterShadows(
+        final S renderState,
+        final CameraRenderState camera,
+        final double x,
+        final double y,
+        final double z,
+        final PoseStack poseStack,
+        final SubmitNodeCollector submitNodeCollector,
+        final CallbackInfo callback
+    ) {
+        if (!(renderState instanceof AvatarRenderState avatarRenderState)) {
+            return;
+        }
 
-//    @Inject(method = "renderShadow", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/vertex/PoseStack;last()Lcom/mojang/blaze3d/vertex/PoseStack$Pose;"))
-//    private static void dragonSurvival$modifyShadow(PoseStack poseStack, MultiBufferSource buffer, Entity entity, float weight, float partialTicks, LevelReader level, float size, CallbackInfo callback) {
-//        if (entity instanceof Player player && DragonStateProvider.isDragon(player) && !DragonSurvival.PROXY.dragonRenderingWasCancelled(player)) {
-//            Vector3f offset = ClientDragonRenderer.getModelShadowOffset(player, partialTicks).negate();
-//            poseStack.pushMatrix();
-//            poseStack.translate(offset.x(), offset.y(), offset.z());
-//            dragonSurvival$modifiedPoseStack = true;
-//        }
-//    }
-//
-//    // FIXME :: If an 'Inject' cancels after we pushed to the pose stack this will not be called (depending on where that 'Inject' is)
-//    //  Alternative would be to do the pose stack modifications before the render call, unsure about the performance impact of that though
-//    @Inject(method = "renderShadow", at = @At(value = "RETURN"))
-//    private static void dragonSurvival$clearPoseStack(PoseStack poseStack, MultiBufferSource buffer, Entity entity, float weight, float partialTicks, LevelReader level, float size, CallbackInfo callback) {
-//        if (dragonSurvival$modifiedPoseStack) {
-//            poseStack.popMatrix();
-//            dragonSurvival$modifiedPoseStack = false;
-//        }
-//    }
+        Minecraft minecraft = Minecraft.getInstance();
 
-    // TODO: Dragon shadows disappear if you are too big (since you are too far from the ground)
-    //  To fix this we would need to mixin to the weight calculation in renderShadow.
+        if (minecraft.level == null) {
+            return;
+        }
+
+        Entity entity = minecraft.level.getEntity(avatarRenderState.id);
+
+        if (!(entity instanceof Player player)) {
+            return;
+        }
+
+        if (DragonStateProvider.isDragon(player)) {
+            renderState.shadowPieces.clear();
+            renderState.shadowRadius = 0;
+            return;
+        }
+
+        float alpha = HunterHandler.calculateAlphaAsFloat(player);
+
+        if (alpha != HunterHandler.UNMODIFIED && alpha != HunterHandler.NON_TRANSPARENT) {
+            renderState.shadowPieces.clear();
+            renderState.shadowRadius = 0;
+        }
+    }
 }

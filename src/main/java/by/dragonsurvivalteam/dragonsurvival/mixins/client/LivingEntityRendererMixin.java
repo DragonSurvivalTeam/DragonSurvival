@@ -1,42 +1,65 @@
-//package by.dragonsurvivalteam.dragonsurvival.mixins.client;
-//
-//import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.HunterHandler;
-//import by.dragonsurvivalteam.dragonsurvival.registry.attachments.HunterData;
-//import com.llamalad7.mixinextras.sugar.Local;
-//import net.minecraft.client.model.EntityModel;
-//import net.minecraft.client.renderer.entity.EntityRenderer;
-//import net.minecraft.client.renderer.entity.EntityRendererProvider;
-//import net.minecraft.client.renderer.entity.LivingEntityRenderer;
-//import net.minecraft.client.renderer.entity.RenderLayerParent;
-//import net.minecraft.world.entity.LivingEntity;
-//import org.spongepowered.asm.mixin.Mixin;
-//import org.spongepowered.asm.mixin.injection.At;
-//import org.spongepowered.asm.mixin.injection.ModifyArg;
-//
-///** Render the human player translucent if they have hunter stacks */
-//@Mixin(LivingEntityRenderer.class) // In < 1.21 this was doable by adding a layer which does a translucent render - maybe it still is but has to be done in a different way?
-//public abstract class LivingEntityRendererMixin<T extends LivingEntity, M extends EntityModel<T>> extends EntityRenderer<T> implements RenderLayerParent<T, M> {
-//    protected LivingEntityRendererMixin(final EntityRendererProvider.Context context) {
-//        super(context);
-//    }
-//
-//    @ModifyArg(method = "render(Lnet/minecraft/world/entity/LivingEntity;FFLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/entity/LivingEntityRenderer;getRenderType(Lnet/minecraft/world/entity/LivingEntity;ZZZ)Lnet/minecraft/client/renderer/RenderType;"), index = 2)
-//    private boolean dragonSurvival$getTranslucentRenderType(boolean isTranslucent, @Local(argsOnly = true) final T entity) {
-//        if (!isTranslucent) {
-//            return HunterData.hasTransparency(entity);
-//        }
-//
-//        return true;
-//    }
-//
-//    @ModifyArg(method = "render(Lnet/minecraft/world/entity/LivingEntity;FFLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/model/EntityModel;renderToBuffer(Lcom/mojang/blaze3d/vertex/PoseStack;Lcom/mojang/blaze3d/vertex/VertexConsumer;III)V"), index = 4)
-//    private int dragonSurvival$modifyAlpha(int color, @Local(argsOnly = true) final T entity) {
-//        if (/* Don't make invisible players slightly visible */ !entity.isInvisible()) {
-//            return HunterHandler.modifyAlpha(entity, color);
-//        }
-//
-//        return color;
-//    }
-//}
+package by.dragonsurvivalteam.dragonsurvival.mixins.client;
 
-// FIXME
+import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.HunterHandler;
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.renderer.entity.LivingEntityRenderer;
+import net.minecraft.client.renderer.entity.state.AvatarRenderState;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import org.jspecify.annotations.Nullable;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+
+@Mixin(LivingEntityRenderer.class)
+public abstract class LivingEntityRendererMixin<T extends LivingEntity, S extends LivingEntityRenderState, M extends EntityModel<? super S>> {
+    @Shadow
+    public abstract Identifier getTextureLocation(S state);
+
+    @ModifyReturnValue(method = "getRenderType", at = @At("RETURN"))
+    private @Nullable RenderType dragonSurvival$useHunterTranslucentRenderType(final @Nullable RenderType original, final S state) {
+        Player player = dragonSurvival$getHunterPlayer(state);
+
+        if (player != null && dragonSurvival$hasHunterTransparency(player) && !state.isInvisible) {
+            return RenderTypes.entityTranslucentCullItemTarget(getTextureLocation(state));
+        }
+
+        return original;
+    }
+
+    @ModifyReturnValue(method = "getModelTint", at = @At("RETURN"))
+    private int dragonSurvival$modifyHunterAlpha(final int original, final S state) {
+        Player player = dragonSurvival$getHunterPlayer(state);
+
+        if (player != null && dragonSurvival$hasHunterTransparency(player)) {
+            return HunterHandler.modifyAlpha(player, original);
+        }
+
+        return original;
+    }
+
+    private static @Nullable Player dragonSurvival$getHunterPlayer(final LivingEntityRenderState state) {
+        if (!(state instanceof AvatarRenderState avatarRenderState)) {
+            return null;
+        }
+
+        Minecraft minecraft = Minecraft.getInstance();
+
+        if (minecraft.level == null) {
+            return null;
+        }
+
+        return minecraft.level.getEntity(avatarRenderState.id) instanceof Player player ? player : null;
+    }
+
+    private static boolean dragonSurvival$hasHunterTransparency(final Player player) {
+        float alpha = HunterHandler.calculateAlphaAsFloat(player);
+        return alpha != HunterHandler.UNMODIFIED && alpha < 1.0F;
+    }
+}

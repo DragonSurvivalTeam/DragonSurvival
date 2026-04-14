@@ -31,7 +31,7 @@ import org.jetbrains.annotations.Nullable;
  * There is no check whether the player is a dragon to make this effect re-usable for other scenarios
  */
 @EventBusSubscriber
-public class HunterHandler { // FIXME :: disable shadows in EntityRenderDispatcher#render
+public class HunterHandler {
     @Translation(key = "hunter_max_level", type = Translation.Type.CONFIGURATION, comments = "The current level compared to the maximum level determines how quickly stacks are gained or lost")
     @ConfigOption(side = ConfigSide.SERVER, category = {"effects", "hunter"}, key = "hunter_max_level")
     public static int MAX_LEVEL = 4;

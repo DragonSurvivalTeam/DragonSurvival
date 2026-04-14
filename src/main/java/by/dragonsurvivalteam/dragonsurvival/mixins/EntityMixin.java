@@ -4,12 +4,10 @@ import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.DragonSizeHandler;
-import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.HunterHandler;
 import by.dragonsurvivalteam.dragonsurvival.compat.Compat;
 import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DamageModifications;
-import by.dragonsurvivalteam.dragonsurvival.registry.attachments.HunterData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MovementData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SummonedEntities;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SwimData;
@@ -149,22 +147,6 @@ public abstract class EntityMixin {
         }
 
         return canRide;
-    }
-
-    /** To just skip rendering entirely instead of rendering with a 0 alpha value */
-    @ModifyReturnValue(method = "isInvisible", at = @At("RETURN"))
-    private boolean dragonSurvival$enableHunterStacksInvisibility(boolean isInvisible) {
-        if (isInvisible) {
-            return true;
-        }
-
-        //noinspection ConstantValue -> check is valid
-        if ((Object) this instanceof LivingEntity entity && HunterData.hasMaxHunterStacks(entity)) {
-            // With max. stacks the visibility value is set to 0 anyway so this shouldn't affect actual gameplay features
-            return HunterHandler.calculateAlpha(entity) == 0;
-        }
-
-        return false;
     }
 
     @ModifyReturnValue(method = "fireImmune", at = @At("RETURN"))

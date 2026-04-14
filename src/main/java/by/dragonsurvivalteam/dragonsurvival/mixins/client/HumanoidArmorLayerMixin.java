@@ -1,77 +1,132 @@
 package by.dragonsurvivalteam.dragonsurvival.mixins.client;
 
+import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.HunterHandler;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.Model;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.entity.layers.EquipmentLayerRenderer;
+import net.minecraft.client.renderer.entity.state.AvatarRenderState;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.resources.model.EquipmentAssetManager;
+import net.minecraft.client.resources.model.EquipmentClientInfo;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.equipment.EquipmentAsset;
+import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
+import org.jetbrains.annotations.Nullable;
+import org.spongepowered.asm.mixin.Final;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.util.List;
 
-/** Apply hunter stack alpha change to armor pieces (for human players) */
-//Mixin(HumanoidArmorLayer.class)
+@Mixin(EquipmentLayerRenderer.class)
 public abstract class HumanoidArmorLayerMixin {
-    // FIXME
-//    @Unique private static final Function<Identifier, RenderType> dragonSurvival$TRANSLUCENT_ARMOR_CUTOUT_NO_CULL = Util.memoize(texture -> dragonSurvival$createTranslucentArmorCutoutNoCull("translucent_armor_cutout_no_cull", texture, false));
-//
-//    @Unique private static final Function<Identifier, RenderType> dragonSurvival$TRANSLUCENT_ARMOR_DECAL_CUTOUT_NO_CULL = Util.memoize(texture -> dragonSurvival$createTranslucentArmorCutoutNoCull("translucent_armor_decal_cutout_no_cull", texture, true));
-//
-//    /** Needed because there is no entity context at certain points - not an issue since the game is not multithreaded */
-//    @Unique private static int dragonSurvival$alpha = HunterHandler.UNMODIFIED;
-//
-//    @ModifyArg(method = "renderArmorPiece(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/world/entity/EquipmentSlot;ILnet/minecraft/client/model/HumanoidModel;FFFFFF)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/entity/layers/HumanoidArmorLayer;renderModel(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;ILnet/minecraft/client/model/Model;ILnet/minecraft/resources/Identifier;)V"), index = 4)
-//    private int dragonSurvival$modifyAlpha(int color, @Local(argsOnly = true) final LivingEntity entity) {
-//        if (HunterData.hasTransparency(entity)) {
-//            dragonSurvival$alpha = HunterHandler.calculateAlpha(entity);
-//            return HunterHandler.applyAlpha(dragonSurvival$alpha, color);
-//        }
-//
-//        dragonSurvival$alpha = HunterHandler.UNMODIFIED;
-//        return color;
-//    }
-//
-//    @ModifyArg(method = "renderModel(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;ILnet/minecraft/client/model/Model;ILnet/minecraft/resources/Identifier;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/MultiBufferSource;getBuffer(Lnet/minecraft/client/renderer/RenderType;)Lcom/mojang/blaze3d/vertex/VertexConsumer;"))
-//    private RenderType dragonSurvival$getTranslucentRenderType(final RenderType renderType, @Local(argsOnly = true) final Identifier texture) {
-//        if (dragonSurvival$alpha != HunterHandler.UNMODIFIED && dragonSurvival$alpha != 1) {
-//            return dragonSurvival$TRANSLUCENT_ARMOR_CUTOUT_NO_CULL.apply(texture);
-//        }
-//
-//        return renderType;
-//    }
-//
-//    @ModifyArg(method = "renderTrim(Lnet/minecraft/core/Holder;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;ILnet/minecraft/world/item/armortrim/ArmorTrim;Lnet/minecraft/client/model/Model;Z)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/MultiBufferSource;getBuffer(Lnet/minecraft/client/renderer/RenderType;)Lcom/mojang/blaze3d/vertex/VertexConsumer;"))
-//    private RenderType dragonSurvival$getTranslucentRenderType(final RenderType renderType, @Local(argsOnly = true) final ArmorTrim trim) {
-//        if (dragonSurvival$alpha != HunterHandler.UNMODIFIED && dragonSurvival$alpha != 1) {
-//            boolean decal = trim.pattern().value().decal();
-//
-//            if (decal) {
-//                return dragonSurvival$TRANSLUCENT_ARMOR_DECAL_CUTOUT_NO_CULL.apply(Sheets.ARMOR_TRIMS_SHEET);
-//            } else {
-//                return dragonSurvival$TRANSLUCENT_ARMOR_CUTOUT_NO_CULL.apply(Sheets.ARMOR_TRIMS_SHEET);
-//            }
-//        }
-//
-//        return renderType;
-//    }
-//
-//    @WrapOperation(method = "renderTrim(Lnet/minecraft/core/Holder;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;ILnet/minecraft/world/item/armortrim/ArmorTrim;Lnet/minecraft/client/model/Model;Z)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/model/Model;renderToBuffer(Lcom/mojang/blaze3d/vertex/PoseStack;Lcom/mojang/blaze3d/vertex/VertexConsumer;II)V"))
-//    private void dragonSurvival$renderWithModifiedAlpha(final Model instance, final PoseStack poseStack, final VertexConsumer vertexConsumer, int packedLight, int packedOverlay, final Operation<Void> original) {
-//        if (dragonSurvival$alpha != HunterHandler.UNMODIFIED && dragonSurvival$alpha != 1) {
-//            instance.renderToBuffer(poseStack, vertexConsumer, packedLight, packedOverlay, HunterHandler.applyAlpha(dragonSurvival$alpha, HunterHandler.UNMODIFIED));
-//        } else {
-//            original.call(instance, poseStack, vertexConsumer, packedLight, packedOverlay);
-//        }
-//
-//        original.call(instance, poseStack, vertexConsumer, packedLight, packedOverlay);
-//    }
-//
-//    @Unique private static RenderType.CompositeRenderType dragonSurvival$createTranslucentArmorCutoutNoCull(final String name, final Identifier texture, boolean equalDepthTest) {
-//        RenderType.CompositeState state = RenderType.CompositeState.builder()
-//                .setShaderState(RenderStateShard.RENDERTYPE_ARMOR_CUTOUT_NO_CULL_SHADER)
-//                .setTextureState(new RenderStateShard.TextureStateShard(texture, false, false))
-//                .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY) // Enable translucency
-//                .setOutputState(RenderStateShard.ITEM_ENTITY_TARGET) // Required to see other entities / water through the translucent parts
-//                .setCullState(RenderStateShard.NO_CULL)
-//                .setLightmapState(RenderStateShard.LIGHTMAP)
-//                .setOverlayState(RenderStateShard.OVERLAY)
-//                .setLayeringState(RenderStateShard.VIEW_OFFSET_Z_LAYERING)
-//                .setDepthTestState(equalDepthTest ? RenderStateShard.EQUAL_DEPTH_TEST : RenderStateShard.LEQUAL_DEPTH_TEST)
-//                .createCompositeState(true);
-//
-//        return new RenderType.CompositeRenderType(name, DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 1536, true, false, state);
-//    }
+    @Shadow @Final private EquipmentAssetManager equipmentAssets;
+
+    @Inject(
+        method = "renderLayers(Lnet/minecraft/client/resources/model/EquipmentClientInfo$LayerType;Lnet/minecraft/resources/ResourceKey;Lnet/minecraft/client/model/Model;Ljava/lang/Object;Lnet/minecraft/world/item/ItemStack;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;ILnet/minecraft/resources/Identifier;II)V",
+        at = @At("HEAD"),
+        cancellable = true
+    )
+    private <S> void dragonSurvival$renderTransparentArmor(
+        final EquipmentClientInfo.LayerType layerType,
+        final ResourceKey<EquipmentAsset> equipmentAssetId,
+        Model<? super S> model,
+        final S state,
+        final ItemStack itemStack,
+        final PoseStack poseStack,
+        final SubmitNodeCollector submitNodeCollector,
+        final int lightCoords,
+        final @Nullable Identifier playerTextureOverride,
+        final int outlineColor,
+        final int order,
+        final CallbackInfo callback
+    ) {
+        Player player = dragonSurvival$getHunterPlayer(state);
+        if (player == null || !dragonSurvival$hasHunterTransparency(player)) {
+            return;
+        }
+
+        IClientItemExtensions extensions = IClientItemExtensions.of(itemStack);
+        model = extensions.getGenericArmorModel(itemStack, layerType, model);
+
+        List<EquipmentClientInfo.Layer> layers = this.equipmentAssets.get(equipmentAssetId).getLayers(layerType);
+        if (layers.isEmpty()) {
+            callback.cancel();
+            return;
+        }
+
+        int dyeColor = extensions.getDefaultDyeColor(itemStack);
+        boolean renderFoil = itemStack.hasFoil();
+        int nextOrder = order;
+
+        for (int idx = 0; idx < layers.size(); idx++) {
+            EquipmentClientInfo.Layer layer = layers.get(idx);
+            int color = extensions.getArmorLayerTintColor(itemStack, layer, idx, dyeColor);
+
+            if (color == 0) {
+                continue;
+            }
+
+            Identifier layerTexture = layer.usePlayerTexture() && playerTextureOverride != null
+                ? playerTextureOverride
+                : layer.getTextureLocation(layerType);
+            layerTexture = net.neoforged.neoforge.client.ClientHooks.getArmorTexture(itemStack, layerType, layer, layerTexture);
+
+            int tintedColor = HunterHandler.modifyAlpha(player, color);
+            RenderType renderType = RenderTypes.armorTranslucent(layerTexture);
+            submitNodeCollector.order(nextOrder++)
+                .submitModel(model, state, poseStack, renderType, lightCoords, OverlayTexture.NO_OVERLAY, tintedColor, null, outlineColor, null);
+
+            if (renderFoil) {
+                submitNodeCollector.order(nextOrder++)
+                    .submitModel(
+                        model,
+                        state,
+                        poseStack,
+                        RenderTypes.armorEntityGlint(),
+                        lightCoords,
+                        OverlayTexture.NO_OVERLAY,
+                        tintedColor,
+                        null,
+                        outlineColor,
+                        null
+                    );
+            }
+
+            renderFoil = false;
+        }
+
+        // Armor trims use a sprite-atlas path that changed under the hood; skipping the vanilla path here
+        // keeps the armor itself in sync with hunter translucency instead of rendering fully opaque.
+        callback.cancel();
+    }
+
+    private static @Nullable Player dragonSurvival$getHunterPlayer(final Object state) {
+        if (!(state instanceof AvatarRenderState avatarRenderState)) {
+            return null;
+        }
+
+        Minecraft minecraft = Minecraft.getInstance();
+        if (minecraft.level == null) {
+            return null;
+        }
+
+        return minecraft.level.getEntity(avatarRenderState.id) instanceof Player player ? player : null;
+    }
+
+    private static boolean dragonSurvival$hasHunterTransparency(final Player player) {
+        float alpha = HunterHandler.calculateAlphaAsFloat(player);
+        return alpha != HunterHandler.UNMODIFIED && alpha < 1.0F;
+    }
 }
