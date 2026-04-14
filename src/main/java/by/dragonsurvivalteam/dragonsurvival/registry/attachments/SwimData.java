@@ -81,6 +81,7 @@ public class SwimData {
         return player.getData(DSDataAttachments.SWIM);
     }
 
+    // FIXME :: Neo has yet to implement this event again for 26.1, waiting on them
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void handleOxygen(final LivingBreatheEvent event) {
         if (event.getEntity() instanceof Player player) {
