@@ -8,11 +8,13 @@ import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SwimData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.TreasureRestData;
+import by.dragonsurvivalteam.dragonsurvival.util.FluidTypeUtil;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -30,23 +32,22 @@ public abstract class PlayerMixin extends LivingEntity {
         super(type, level);
     }
 
-    // FIXME
-//    @Inject(method = "isInvulnerableTo", at = @At("HEAD"), cancellable = true)
-//    public void dragonSurvival$disableSuffocationDamage(DamageSource source, CallbackInfoReturnable<Boolean> callback) {
-//        if (ServerConfig.disableDragonSuffocation && source == damageSources().inWall() && DragonStateProvider.isDragon(this)) {
-//            callback.setReturnValue(true);
-//        }
-//    }
-//
-//    /** Disables the mining speed penalty for not being on the ground (if the dragon can swim in the fluid) */
-//    @WrapOperation(method = "getDigSpeed", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;onGround()Z"))
-//    private boolean dragonSurvival$disablePenalty(final Player instance, final Operation<Boolean> original) {
-//        if (SwimData.getData(instance).canSwimIn(instance.getMaxHeightFluidType())) {
-//            return true;
-//        }
-//
-//        return original.call(instance);
-//    }
+    @Inject(method = "isInvulnerableTo(Lnet/minecraft/world/damagesource/DamageSource;)Z", at = @At("HEAD"), cancellable = true)
+    private void dragonSurvival$disableSuffocationDamage(final DamageSource source, final CallbackInfoReturnable<Boolean> callback) {
+        if (ServerConfig.disableDragonSuffocation && source.is(DamageTypes.IN_WALL) && DragonStateProvider.isDragon(this)) {
+            callback.setReturnValue(true);
+        }
+    }
+
+    /** Disables the mining speed penalty for not being on the ground (if the dragon can swim in the current fluid) */
+    @WrapOperation(method = "getDigSpeed", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;onGround()Z"))
+    private boolean dragonSurvival$disablePenalty(final Player instance, final Operation<Boolean> original) {
+        if (SwimData.getData(instance).canSwimIn(FluidTypeUtil.getEyeFluidType(instance))) {
+            return true;
+        }
+
+        return original.call(instance);
+    }
 
     /** Prevent the player from moving when casting certain abilities or using emotes */
     @Inject(method = "isImmobile", at = @At("HEAD"), cancellable = true)
@@ -83,14 +84,13 @@ public abstract class PlayerMixin extends LivingEntity {
         }
     }
 
-    // FIXME
-//    @ModifyExpressionValue(method = "aiStep", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;isSwimming()Z"))
-//    private boolean dragonSurvival$consideredSwimmingEvenWhenGroundedInWater(boolean isSwimming) {
-//        if (isSwimming) {
-//            return true;
-//        }
-//
-//        Player self = (Player) (Object) this;
-//        return DragonStateProvider.isDragon(self) && DragonEntity.isConsideredSwimmingForAnimation(self);
-//    }
+    @ModifyExpressionValue(method = "aiStep", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;isSwimming()Z"))
+    private boolean dragonSurvival$consideredSwimmingEvenWhenGroundedInWater(final boolean isSwimming) {
+        if (isSwimming) {
+            return true;
+        }
+
+        Player self = (Player) (Object) this;
+        return DragonStateProvider.isDragon(self) && DragonEntity.isConsideredSwimmingForAnimation(self);
+    }
 }
