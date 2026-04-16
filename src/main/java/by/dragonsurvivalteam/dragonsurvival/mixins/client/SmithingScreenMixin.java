@@ -28,6 +28,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.SmithingMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.equipment.Equippable;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
@@ -79,6 +80,7 @@ public abstract class SmithingScreenMixin extends ItemCombinerScreen<SmithingMen
         fakePlayer.animationSupplier = DragonAnimations.SIT::getAnimationName;
         dragonSurvival$copyEquipment(player, fakePlayer);
         dragonSurvival$applyPreviewItem(fakePlayer, this.menu.getSlot(3).getItem());
+        dragonSurvival$preparePreviewEntity(player, fakePlayer, dragonSurvival$dragon);
 
         LivingEntityRenderState dragonRenderState = (LivingEntityRenderState)DragonRenderer.createUIRenderState(
             dragonSurvival$dragon,
@@ -125,5 +127,26 @@ public abstract class SmithingScreenMixin extends ItemCombinerScreen<SmithingMen
         } else {
             fakePlayer.setItemSlot(EquipmentSlot.OFFHAND, copied);
         }
+    }
+
+    @Unique
+    private void dragonSurvival$preparePreviewEntity(final Player source, final FakeClientPlayer fakePlayer, final DragonEntity dragon) {
+        Vec3 position = source.position();
+        int tickCount = source.tickCount;
+
+        dragon.setPos(position);
+        dragon.xOld = position.x();
+        dragon.yOld = position.y();
+        dragon.zOld = position.z();
+        dragon.xo = position.x();
+        dragon.yo = position.y();
+        dragon.zo = position.z();
+        dragon.tickCount = tickCount;
+        dragon.setYRot(0.0F);
+        dragon.setYBodyRot(0.0F);
+        dragon.yRotO = 0.0F;
+        dragon.yBodyRotO = 0.0F;
+
+        fakePlayer.tickCount = tickCount;
     }
 }
