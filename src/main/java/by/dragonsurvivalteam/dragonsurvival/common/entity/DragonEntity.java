@@ -88,11 +88,6 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
     public float prevZRot;
     public float prevXRot;
 
-    // In certain circumstances, we need to override the UUID with the local player's UUID when gathering textures for the dragon entity
-    // At the moment, this only happens on the smithing screen, as the player in the inventory panels is actually referring the real player and therefore has the correct UUID for textures
-    // The dragon displayed in the editor doesn't want to mirror the local player's UUID, so this isn't used there either
-    public boolean overrideUUIDWithLocalPlayerForTextureFetch;
-
     public boolean clearVerticalVelocity;
 
     private final DragonEmote[] currentlyPlayingEmotes = new DragonEmote[MAX_EMOTES];

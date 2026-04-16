@@ -96,7 +96,6 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
 
         private boolean neckLocked;
         private boolean tailLocked;
-        private boolean overrideUUIDWithLocalPlayerForTextureFetch;
         private boolean spectator;
         private boolean invisible;
         private boolean invisibleToLocalPlayer;
@@ -130,7 +129,6 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
             renderData.inUI = false;
             renderData.neckLocked = dragon.neckLocked;
             renderData.tailLocked = dragon.tailLocked;
-            renderData.overrideUUIDWithLocalPlayerForTextureFetch = dragon.overrideUUIDWithLocalPlayerForTextureFetch;
             renderData.prevXRot = dragon.prevXRot;
             renderData.prevZRot = dragon.prevZRot;
             return renderData;
@@ -171,9 +169,10 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
             return renderData;
         }
 
-        public DragonRenderData forUIRender(final double bodyYaw, final double headYaw, final double headPitch) {
+        public DragonRenderData forUIRender(final double bodyYaw, final double headYaw, final double headPitch, final @Nullable Player texturePlayer) {
             DragonRenderData renderData = copy();
             renderData.inUI = true;
+            renderData.texturePlayer = texturePlayer != null ? texturePlayer : renderData.texturePlayer;
             renderData.hunterTransparent = false;
             renderData.bodyYaw = bodyYaw;
             renderData.headYaw = headYaw;
@@ -194,7 +193,6 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
             renderData.inUI = this.inUI;
             renderData.neckLocked = this.neckLocked;
             renderData.tailLocked = this.tailLocked;
-            renderData.overrideUUIDWithLocalPlayerForTextureFetch = this.overrideUUIDWithLocalPlayerForTextureFetch;
             renderData.spectator = this.spectator;
             renderData.invisible = this.invisible;
             renderData.invisibleToLocalPlayer = this.invisibleToLocalPlayer;
@@ -224,7 +222,6 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
         public boolean inInventory() { return inUI; }
         public boolean neckLocked() { return neckLocked; }
         public boolean tailLocked() { return tailLocked; }
-        public boolean overrideUUIDWithLocalPlayerForTextureFetch() { return overrideUUIDWithLocalPlayerForTextureFetch; }
         public boolean spectator() { return spectator; }
         public boolean invisible() { return invisible; }
         public boolean invisibleToLocalPlayer() { return invisibleToLocalPlayer; }
@@ -294,7 +291,7 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
         DragonRenderData renderData = DragonRenderData.live(
             dragon,
             player,
-            dragon.overrideUUIDWithLocalPlayerForTextureFetch ? Minecraft.getInstance().player : player,
+            player,
             handler,
             modelResource,
             hasWings,
@@ -389,6 +386,10 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
     }
 
     public static EntityRenderState createUIRenderState(final LivingEntity entity, final float partialTick, final double bodyYaw, final double headYaw, final double headPitch) {
+        return createUIRenderState(entity, partialTick, bodyYaw, headYaw, headPitch, null);
+    }
+
+    public static EntityRenderState createUIRenderState(final LivingEntity entity, final float partialTick, final double bodyYaw, final double headYaw, final double headPitch, final @Nullable Player texturePlayer) {
         EntityRenderDispatcher entityRenderDispatcher = Minecraft.getInstance().getEntityRenderDispatcher();
         EntityRenderer<? super LivingEntity, ?> renderer = entityRenderDispatcher.getRenderer(entity);
         EntityRenderState renderState = renderer.createRenderState(entity, partialTick);
@@ -399,7 +400,7 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
         DragonRenderData dragonRenderData = geoRenderState.getGeckolibData(DRAGON_RENDER_DATA);
 
         if (dragonRenderData != null) {
-            geoRenderState.addGeckolibData(DRAGON_RENDER_DATA, dragonRenderData.forUIRender(bodyYaw, headYaw, headPitch));
+            geoRenderState.addGeckolibData(DRAGON_RENDER_DATA, dragonRenderData.forUIRender(bodyYaw, headYaw, headPitch, texturePlayer));
 
             // GeckoLib compiles controller state during render-state creation, so refresh the query providers
             // after swapping in UI-specific dragon data.
