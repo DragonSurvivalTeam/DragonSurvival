@@ -55,6 +55,7 @@
       "client.EntityRendererAccessor",
       "client.FrustumAccess",
       "client.GameRendererMixin",
+      "client.GuiMixin",
       "client.HumanoidArmorLayerMixin",
       "client.InventoryScreenMixin",
       "client.ItemBlockRenderTypesMixin",
