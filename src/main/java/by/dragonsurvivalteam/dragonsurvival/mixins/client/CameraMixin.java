@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.mixins.client;
 
+import by.dragonsurvivalteam.dragonsurvival.client.util.RenderingUtils;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
@@ -17,8 +18,10 @@ import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Constant;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArgs;
+import org.spongepowered.asm.mixin.injection.ModifyConstant;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
@@ -89,5 +92,19 @@ public abstract class CameraMixin {
         args.set(0, (double) args.get(0) * scale);
         args.set(1, (double) args.get(1) * scale);
         args.set(2, (double) args.get(2) * scale);
+    }
+
+    /**
+     * Small scale values have camera / x-ray issues if the near plane is too far away.
+     * Keep the main camera projection and culling projection in sync.
+     */
+    @ModifyConstant(method = "update", constant = @Constant(floatValue = 0.05F))
+    private float dragonSurvival$adjustNearPlane(float original) {
+        return RenderingUtils.getNearPlane(original);
+    }
+
+    @ModifyConstant(method = "createProjectionMatrixForCulling", constant = @Constant(floatValue = 0.05F))
+    private float dragonSurvival$adjustCullingNearPlane(float original) {
+        return RenderingUtils.getNearPlane(original);
     }
 }
