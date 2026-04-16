@@ -64,12 +64,6 @@ public class RotatingKeyItem extends TooltipItem implements GeoItem {
         });
     }
 
-    // FIXME :: Not supported by geckolib anymore, is this needed?
-    /*@Override
-    public double getTick(Object itemStack) {
-        return GeoItem.super.getTick(itemStack);
-    }*/
-
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
         controllers.add(new AnimationController<>("rotating_key_controller", 10, state -> {

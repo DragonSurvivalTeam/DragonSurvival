@@ -12,14 +12,6 @@ import java.util.List;
 
 @Mixin(LivingEntityRenderer.class)
 public interface LivingRendererAccessor {
-    @Accessor("layers")
-    @SuppressWarnings("rawtypes")
-    List<RenderLayer> dragonSurvival$getRenderLayers();
-
     @Accessor("model")
     EntityModel<?> dragonSurvival$getModel();
-
-    // FIXME
-//    @Invoker("shouldShowName")
-//    boolean dragonSurvival$callShouldShowName(LivingEntity entity);
 }
