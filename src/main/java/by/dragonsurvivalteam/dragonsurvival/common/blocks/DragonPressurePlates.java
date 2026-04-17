@@ -27,6 +27,7 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.neoforged.fml.ModList;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -94,7 +95,10 @@ public class DragonPressurePlates extends PressurePlateBlock implements SimpleWa
     protected void createBlockStateDefinition(@NotNull final Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
         builder.add(FACING);
-        builder.add(WATERLOGGED);
+        // Bedrockoid adds WATERLOGGED to PressurePlateBlock via mixin - skip to avoid duplicate property crash
+        if (!ModList.get().isLoaded("bedrockoid")) {
+            builder.add(WATERLOGGED);
+        }
     }
 
     @Override
