@@ -7,14 +7,17 @@ import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncHunterStacksRemova
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.HunterData;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.PlayerData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSBlockTags;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.FastColor;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -51,6 +54,13 @@ public class HunterHandler { // FIXME :: disable shadows in EntityRenderDispatch
     @Translation(key = "hunter_translucent_items_in_first_person", type = Translation.Type.CONFIGURATION, comments = "If enabled items held in first person will also appear translucent")
     @ConfigOption(side = ConfigSide.CLIENT, category = {"effects", "hunter"}, key = "hunter_translucent_items_in_first_person")
     public static boolean TRANSLUCENT_ITEMS_IN_FIRST_PERSON = true;
+
+    @Translation(key = "hunter_send_info_message", type = Translation.Type.CONFIGURATION, comments = "Whether to inform the user about potential transparency issue (once per world)")
+    @ConfigOption(side = ConfigSide.CLIENT, category = {"effects", "hunter"}, key = "hunter_send_info_message")
+    public static boolean SEND_INFO_MESSAGE = true;
+
+    @Translation(comments = "If you encounter transparency issues when affected by the hunter effect, consider enabling §6Fabulous!§r mode or installing the §6Iris§r shader mod")
+    public static String INFO_MESSAGE = Translation.Type.GUI.wrap("message.hunter_info_message");
 
     public static final int UNMODIFIED = -1;
     public static final int NON_TRANSPARENT = 1;
@@ -113,6 +123,23 @@ public class HunterHandler { // FIXME :: disable shadows in EntityRenderDispatch
                 event.modifyVisibility(1 - (double) data.getHunterStacks() / getMaxStacks());
             }
         });
+    }
+
+    public static void informUser(final LivingEntity entity) {
+        if (!SEND_INFO_MESSAGE) {
+            return;
+        }
+
+        if (entity instanceof Player) {
+            PlayerData data = entity.getData(DSDataAttachments.PLAYER_DATA);
+
+            if (data.sentHunterInfoMessage) {
+                return;
+            }
+
+            entity.sendSystemMessage(Component.translatable(INFO_MESSAGE));
+            data.sentHunterInfoMessage = true;
+        }
     }
 
     @SubscribeEvent

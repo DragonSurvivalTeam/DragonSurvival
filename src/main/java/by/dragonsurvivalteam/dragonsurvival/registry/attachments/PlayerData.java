@@ -10,6 +10,7 @@ import java.util.Set;
 
 public class PlayerData implements INBTSerializable<CompoundTag> {
     public boolean enabledDragonSoulPlacement = true;
+    public boolean sentHunterInfoMessage;
 
     /** Tracks which keys are currently held down */
     private final Set<String> keys = new HashSet<>();
@@ -33,6 +34,7 @@ public class PlayerData implements INBTSerializable<CompoundTag> {
     public CompoundTag serializeNBT(@NotNull final HolderLookup.Provider provider) {
         CompoundTag nbt = new CompoundTag();
         nbt.putBoolean(ENABLED_DRAGON_SOUL_PLACEMENT, enabledDragonSoulPlacement);
+        nbt.putBoolean(SENT_HUNTER_INFO_MESSAGE, sentHunterInfoMessage);
 
         CompoundTag keys = new CompoundTag();
         this.keys.forEach(key -> keys.putBoolean(String.valueOf(key), true));
@@ -50,10 +52,13 @@ public class PlayerData implements INBTSerializable<CompoundTag> {
             enabledDragonSoulPlacement = nbt.getBoolean(ENABLED_DRAGON_SOUL_PLACEMENT);
         }
 
+        sentHunterInfoMessage = nbt.getBoolean(SENT_HUNTER_INFO_MESSAGE);
+
         CompoundTag keys = nbt.getCompound(KEYS);
         this.keys.addAll(keys.getAllKeys());
     }
 
     private final String ENABLED_DRAGON_SOUL_PLACEMENT = "enabled_dragon_soul_placement";
+    private final String SENT_HUNTER_INFO_MESSAGE = "sent_hunter_info_message";
     private final String KEYS = "keys";
 }
