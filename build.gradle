@@ -118,7 +118,7 @@ dependencies {
 	compileOnly "curse.maven:irisshaders-455508:6661598" // 1.8.12
 
 	// Create: Aeronautics
-	runtimeOnly "maven.modrinth:sable:1.0.6+mc1.21.1"
+//	implementation "maven.modrinth:sable:1.0.6+mc1.21.1"
 	//runtimeOnly "maven.modrinth:create-aeronautics:1.0.3+mc1.21.1"
 
 //	implementation "curse.maven:embeddium-908741:6118392" // 1.0.15

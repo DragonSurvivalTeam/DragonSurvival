@@ -52,10 +52,6 @@ public class HunterHandler { // FIXME :: disable shadows in EntityRenderDispatch
     @ConfigOption(side = ConfigSide.CLIENT, category = {"effects", "hunter"}, key = "hunter_translucent_items_in_first_person")
     public static boolean TRANSLUCENT_ITEMS_IN_FIRST_PERSON = true;
 
-    @Translation(key = "hunter_fix_translucency", type = Translation.Type.CONFIGURATION, comments = "This enables the shader features of fabulous mode which are needed for translucency to work correctly")
-    @ConfigOption(side = ConfigSide.CLIENT, category = {"effects", "hunter"}, key = "hunter_fix_translucency", /* Otherwise the game might crash */ gameRestart = true)
-    public static boolean FIX_TRANSLUCENCY = true;
-
     public static final int UNMODIFIED = -1;
     public static final int NON_TRANSPARENT = 1;
 
