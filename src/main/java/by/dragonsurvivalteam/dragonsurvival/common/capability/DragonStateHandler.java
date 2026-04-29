@@ -453,12 +453,13 @@ public class DragonStateHandler extends EntityStateHandler {
         if (this.dragonBody != null && !isSameBody) {
             refreshBody = true;
 
-            if (oldBody != null && this.dragonBody.value().model() != oldBody.value().model()) {
-                // If the model has changed, just override the skin preset with the default one as a failsafe
-                refreshSkinPresetForSpecies(dragonSpecies, this.dragonBody);
-
-                recompileCurrentSkin();
-            }
+// Temporary disabled for skill with change bodies
+//            if (oldBody != null && this.dragonBody.value().model() != oldBody.value().model()) {
+//                // If the model has changed, just override the skin preset with the default one as a failsafe
+//                refreshSkinPresetForSpecies(dragonSpecies, this.dragonBody);
+//
+//                recompileCurrentSkin();
+//            }
         }
 
         if (player == null) {
