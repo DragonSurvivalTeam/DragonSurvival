@@ -132,9 +132,9 @@ dependencies {
 	compileOnly "curse.maven:free-cam-557076:5572364" // 1.3.0
 
 	// Vista
-	implementation "curse.maven:vista-1368607:8071509" // 4.3.0
-	implementation "curse.maven:selene-499980:8065893" // 3.0.7
-	implementation "curse.maven:watermedia-869524:7281929" // 2.1.37
+	compileOnly "curse.maven:vista-1368607:8071509" // 4.3.0
+	compileOnly "curse.maven:selene-499980:8065893" // 3.0.7
+	compileOnly "curse.maven:watermedia-869524:7281929" // 2.1.37
 
 	// EMI
 	compileOnly "curse.maven:emi-580555:6420931" // 1.1.22
