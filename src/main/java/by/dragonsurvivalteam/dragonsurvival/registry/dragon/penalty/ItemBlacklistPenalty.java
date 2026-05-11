@@ -2,7 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty;
 
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ResourceLocationWrapper;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.DataReloadHandler;
-import by.dragonsurvivalteam.dragonsurvival.compat.ModCheck;
+import by.dragonsurvivalteam.dragonsurvival.compat.ModID;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ClawInventoryData;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -85,7 +85,7 @@ public class ItemBlacklistPenalty implements PenaltyEffect {
     }
 
     private void dropCurios(final Player player) {
-        if (!ModCheck.isModLoaded(ModCheck.CURIOS)) {
+        if (!ModID.CURIOS.isLoaded()) {
             return;
         }
 

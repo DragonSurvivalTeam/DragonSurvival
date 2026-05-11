@@ -14,6 +14,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.blocks.SmallDragonDoor;
 import by.dragonsurvivalteam.dragonsurvival.common.blocks.SourceOfMagicBlock;
 import by.dragonsurvivalteam.dragonsurvival.common.blocks.TreasureBlock;
 import by.dragonsurvivalteam.dragonsurvival.compat.ModCheck;
+import by.dragonsurvivalteam.dragonsurvival.compat.ModID;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSDragonSpeciesTags;
 import by.dragonsurvivalteam.dragonsurvival.util.CompoundTagBuilder;
@@ -757,9 +758,9 @@ public class DSBlocks {
                             .noOcclusion()
                             .sound(SoundType.PACKED_MUD)
                             .strength(0.5F),
-                    ModCheck.CREATE
+                    ModID.CREATE.value()
             ),
-            ModCheck.CREATE
+            ModID.CREATE.value()
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Bee Honey Treasure")
@@ -772,9 +773,9 @@ public class DSBlocks {
                             .noOcclusion()
                             .sound(SoundType.HONEY_BLOCK)
                             .strength(0.5F),
-                    ModCheck.BEE_ADDON
+                    ModID.BEE_ADDON.value()
             ),
-            ModCheck.BEE_ADDON
+            ModID.BEE_ADDON.value()
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Ruby Dragon Treasure")
@@ -787,9 +788,9 @@ public class DSBlocks {
                             .noOcclusion()
                             .sound(DSSounds.TREASURE_GEM)
                             .strength(0.5F),
-                    ModCheck.SILENTGEMS
+                    ModID.SILENTGEMS.value()
             ),
-            ModCheck.SILENTGEMS
+            ModID.SILENTGEMS.value()
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Carnelian Dragon Treasure")
@@ -802,9 +803,9 @@ public class DSBlocks {
                             .noOcclusion()
                             .sound(DSSounds.TREASURE_GEM)
                             .strength(0.5F),
-                    ModCheck.SILENTGEMS
+                    ModID.SILENTGEMS.value()
             ),
-            ModCheck.SILENTGEMS
+            ModID.SILENTGEMS.value()
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Topaz Dragon Treasure")
@@ -817,9 +818,9 @@ public class DSBlocks {
                             .noOcclusion()
                             .sound(DSSounds.TREASURE_GEM)
                             .strength(0.5F),
-                    ModCheck.SILENTGEMS
+                    ModID.SILENTGEMS.value()
             ),
-            ModCheck.SILENTGEMS
+            ModID.SILENTGEMS.value()
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Citrine Dragon Treasure")
@@ -832,9 +833,9 @@ public class DSBlocks {
                             .noOcclusion()
                             .sound(DSSounds.TREASURE_GEM)
                             .strength(0.5F),
-                    ModCheck.SILENTGEMS
+                    ModID.SILENTGEMS.value()
             ),
-            ModCheck.SILENTGEMS
+            ModID.SILENTGEMS.value()
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Heliodor Dragon Treasure")
@@ -847,9 +848,9 @@ public class DSBlocks {
                             .noOcclusion()
                             .sound(DSSounds.TREASURE_GEM)
                             .strength(0.5F),
-                    ModCheck.SILENTGEMS
+                    ModID.SILENTGEMS.value()
             ),
-            ModCheck.SILENTGEMS
+            ModID.SILENTGEMS.value()
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Moldavite Dragon Treasure")
@@ -862,9 +863,9 @@ public class DSBlocks {
                             .noOcclusion()
                             .sound(DSSounds.TREASURE_GEM)
                             .strength(0.5F),
-                    ModCheck.SILENTGEMS
+                    ModID.SILENTGEMS.value()
             ),
-            ModCheck.SILENTGEMS
+            ModID.SILENTGEMS.value()
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Peridot Dragon Treasure")
@@ -877,9 +878,9 @@ public class DSBlocks {
                             .noOcclusion()
                             .sound(DSSounds.TREASURE_GEM)
                             .strength(0.5F),
-                    ModCheck.SILENTGEMS
+                    ModID.SILENTGEMS.value()
                     ),
-            ModCheck.SILENTGEMS
+            ModID.SILENTGEMS.value()
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Turquoise Dragon Treasure")
@@ -892,9 +893,9 @@ public class DSBlocks {
                             .noOcclusion()
                             .sound(DSSounds.TREASURE_GEM)
                             .strength(0.5F),
-                    ModCheck.SILENTGEMS
+                    ModID.SILENTGEMS.value()
                     ),
-            ModCheck.SILENTGEMS
+            ModID.SILENTGEMS.value()
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Kyanite Dragon Treasure")
@@ -907,9 +908,9 @@ public class DSBlocks {
                             .noOcclusion()
                             .sound(DSSounds.TREASURE_GEM)
                             .strength(0.5F),
-                    ModCheck.SILENTGEMS
+                    ModID.SILENTGEMS.value()
             ),
-            ModCheck.SILENTGEMS
+            ModID.SILENTGEMS.value()
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Sapphire Dragon Treasure")
@@ -922,9 +923,9 @@ public class DSBlocks {
                             .noOcclusion()
                             .sound(DSSounds.TREASURE_GEM)
                             .strength(0.5F),
-                    ModCheck.SILENTGEMS
+                    ModID.SILENTGEMS.value()
                     ),
-            ModCheck.SILENTGEMS
+            ModID.SILENTGEMS.value()
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Iolite Dragon Treasure")
@@ -937,9 +938,9 @@ public class DSBlocks {
                             .noOcclusion()
                             .sound(DSSounds.TREASURE_GEM)
                             .strength(0.5F),
-                    ModCheck.SILENTGEMS
+                    ModID.SILENTGEMS.value()
                     ),
-            ModCheck.SILENTGEMS
+            ModID.SILENTGEMS.value()
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Alexandrite Dragon Treasure")
@@ -952,9 +953,9 @@ public class DSBlocks {
                             .noOcclusion()
                             .sound(DSSounds.TREASURE_GEM)
                             .strength(0.5F),
-                    ModCheck.SILENTGEMS
+                    ModID.SILENTGEMS.value()
                     ),
-            ModCheck.SILENTGEMS
+            ModID.SILENTGEMS.value()
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Ammolite Dragon Treasure")
@@ -967,9 +968,9 @@ public class DSBlocks {
                             .noOcclusion()
                             .sound(DSSounds.TREASURE_GEM)
                             .strength(0.5F),
-                    ModCheck.SILENTGEMS
+                    ModID.SILENTGEMS.value()
             ),
-            ModCheck.SILENTGEMS
+            ModID.SILENTGEMS.value()
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Rose Quartz Dragon Treasure")
@@ -982,9 +983,9 @@ public class DSBlocks {
                             .noOcclusion()
                             .sound(DSSounds.TREASURE_GEM)
                             .strength(0.5F),
-                    ModCheck.SILENTGEMS
+                    ModID.SILENTGEMS.value()
             ),
-            ModCheck.SILENTGEMS
+            ModID.SILENTGEMS.value()
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Black Diamond Dragon Treasure")
@@ -997,9 +998,9 @@ public class DSBlocks {
                             .noOcclusion()
                             .sound(DSSounds.TREASURE_GEM)
                             .strength(0.5F),
-                    ModCheck.SILENTGEMS
+                    ModID.SILENTGEMS.value()
             ),
-            ModCheck.SILENTGEMS
+            ModID.SILENTGEMS.value()
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "White Diamond Dragon Treasure")
@@ -1012,9 +1013,9 @@ public class DSBlocks {
                             .noOcclusion()
                             .sound(DSSounds.TREASURE_GEM)
                             .strength(0.5F),
-                    ModCheck.SILENTGEMS
+                    ModID.SILENTGEMS.value()
                     ),
-            ModCheck.SILENTGEMS
+            ModID.SILENTGEMS.value()
     );
 
     // --- Dragon Treasure Plates --- //

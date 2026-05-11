@@ -1,7 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.datagen;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
-import by.dragonsurvivalteam.dragonsurvival.compat.ModCheck;
+import by.dragonsurvivalteam.dragonsurvival.compat.ModID;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSDamageTypes;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEnchantments;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.abilities.CaveDragonAbilities;
@@ -104,12 +104,12 @@ public class DataGeneration {
 
     // --- Compatibility --- //
 
-    private static final String SILENT_GEMS_DATAPACK = ModCheck.SILENTGEMS;
+    private static final String SILENT_GEMS_DATAPACK = ModID.SILENTGEMS.value();
 
     @Translation(comments = "Adds loot tables to the Silent Gems treasures")
     private static final String SILENT_GEMS_DATAPACK_DESCRIPTION = Translation.Type.GUI.wrap("datapack." + SILENT_GEMS_DATAPACK);
 
-    private static final String CREATE_DATAPACK = ModCheck.CREATE;
+    private static final String CREATE_DATAPACK = ModID.CREATE.value();
 
     @Translation(comments = "Adds loot tables to the Create treasures")
     private static final String CREATE_DATAPACK_DESCRIPTION = Translation.Type.GUI.wrap("datapack." + CREATE_DATAPACK);
@@ -196,11 +196,11 @@ public class DataGeneration {
             registerDataPack(event, Component.literal("DS - Ancient Dragons"), ANCIENT_STAGE_DATAPACK, PackSource.DEFAULT, false);
             registerDataPack(event, Component.literal("DS - Unlock Wings"), UNLOCK_WINGS_DATAPACK, PackSource.DEFAULT, false);
 
-            if (ModCheck.isModLoaded(ModCheck.SILENTGEMS)) {
+            if (ModID.SILENTGEMS.isLoaded()) {
                 registerDataPack(event, Component.literal("DS - Silent Gems"), SILENT_GEMS_DATAPACK, PackSource.BUILT_IN, true);
             }
 
-            if (ModCheck.isModLoaded(ModCheck.CREATE)) {
+            if (ModID.CREATE.isLoaded()) {
                 registerDataPack(event, Component.literal("DS - Create"), CREATE_DATAPACK, PackSource.BUILT_IN, true);
             }
 

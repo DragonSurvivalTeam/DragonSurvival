@@ -1,6 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.compat.curios;
 
-import by.dragonsurvivalteam.dragonsurvival.compat.ModCheck;
+import by.dragonsurvivalteam.dragonsurvival.compat.ModID;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -14,7 +14,7 @@ import java.util.Optional;
 
 public class CurioAPIHelper {
     public static ArrayList<ItemStack> getVisibleCurioItems(Player player) {
-        if (ModCheck.isModLoaded(ModCheck.CURIOS)) {
+        if (ModID.CURIOS.isLoaded()) {
             Optional<ICuriosItemHandler> items = CuriosApi.getCuriosInventory(player);
             if (items.isPresent()) {
                 Map<String, ICurioStacksHandler> handler = items.get().getCurios();

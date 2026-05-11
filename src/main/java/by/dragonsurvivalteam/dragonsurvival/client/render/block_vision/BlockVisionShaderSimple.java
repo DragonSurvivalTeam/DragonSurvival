@@ -2,7 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.client.render.block_vision;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.render.BlockVisionHandler;
-import by.dragonsurvivalteam.dragonsurvival.compat.ModCheck;
+import by.dragonsurvivalteam.dragonsurvival.compat.ModID;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.BufferUploader;
@@ -108,7 +108,7 @@ public class BlockVisionShaderSimple {
         backup = new GlStateBackup();
         RenderSystem.backupGlState(backup);
 
-        if (ModCheck.isModLoaded(ModCheck.IRIS)) {
+        if (ModID.IRIS.isLoaded()) {
             irisBuffer = RenderSystem.renderThreadTesselator().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.BLOCK);
         }
     }

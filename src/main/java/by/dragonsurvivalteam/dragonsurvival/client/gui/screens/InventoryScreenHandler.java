@@ -2,7 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.client.gui.screens;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
-import by.dragonsurvivalteam.dragonsurvival.compat.ModCheck;
+import by.dragonsurvivalteam.dragonsurvival.compat.ModID;
 import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
@@ -141,7 +141,7 @@ public class InventoryScreenHandler {
         if (sc instanceof InventoryScreen screen) {
             width = screen.getGuiLeft();
             height = screen.height;
-        } else if (ModCheck.isModLoaded(ModCheck.CURIOS) && sc instanceof CuriosScreen screen) {
+        } else if (ModID.CURIOS.isLoaded() && sc instanceof CuriosScreen screen) {
             width = screen.getGuiLeft();
             height = screen.height;
         }

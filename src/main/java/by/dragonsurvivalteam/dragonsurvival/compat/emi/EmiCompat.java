@@ -1,6 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.compat.emi;
 
-import by.dragonsurvivalteam.dragonsurvival.compat.ModCheck;
+import by.dragonsurvivalteam.dragonsurvival.compat.ModID;
 import dev.emi.emi.config.EffectLocation;
 import dev.emi.emi.config.EmiConfig;
 
@@ -11,7 +11,7 @@ public class EmiCompat {
      * See <a href="https://github.com/DragonSurvivalTeam/DragonSurvival/issues/839">this</a> issue
      */
     public static boolean hideEffects() {
-        if (!ModCheck.isModLoaded(ModCheck.EMI)) {
+        if (!ModID.EMI.isLoaded()) {
             return false;
         }
 

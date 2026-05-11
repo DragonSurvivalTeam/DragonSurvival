@@ -2,7 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.common.handlers;
 
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
-import by.dragonsurvivalteam.dragonsurvival.compat.ModCheck;
+import by.dragonsurvivalteam.dragonsurvival.compat.ModID;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigRange;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
@@ -36,7 +36,7 @@ public class DragonFoodHandler {
     public static Float badFoodPoisonChance = 0.5F;
 
     public static boolean dragonFoodHandlingIsDisabled() {
-        return disableDragonFoodHandling || ModCheck.isModLoaded(ModCheck.TFC);
+        return disableDragonFoodHandling || ModID.TFC.isLoaded();
     }
 
     public static @Nullable FoodProperties getDragonFoodProperties(final Holder<DragonSpecies> species, final ItemStack stack, @Nullable final FoodProperties original) {

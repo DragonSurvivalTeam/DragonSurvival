@@ -1,7 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.datagen;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
-import by.dragonsurvivalteam.dragonsurvival.compat.ModCheck;
+import by.dragonsurvivalteam.dragonsurvival.compat.ModID;
 import by.dragonsurvivalteam.dragonsurvival.mixins.Holder$ReferenceAccess;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSBlocks;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSItems;
@@ -158,167 +158,167 @@ public class DSRecipes extends RecipeProvider {
                 .unlockedBy(getHasName(DSItems.ELDER_DRAGON_DUST.value()), has(DSItems.ELDER_DRAGON_DUST.value()))
                 .save(output);
 
-        ProxyItem barOfChocolate = new ProxyItem(ModCheck.CREATE, "bar_of_chocolate");
+        ProxyItem barOfChocolate = new ProxyItem(ModID.CREATE.value(), "bar_of_chocolate");
 
         ShapelessRecipeBuilder
                 .shapeless(RecipeCategory.DECORATIONS, DSBlocks.CHOCOLATE_DRAGON_TREASURE.value())
                 .requires(barOfChocolate)
                 .requires(DSItems.ELDER_DRAGON_DUST.value())
                 .unlockedBy(getHasName(DSItems.ELDER_DRAGON_DUST.value()), has(DSItems.ELDER_DRAGON_DUST.value()))
-                .save(output.withConditions(new ModLoadedCondition(ModCheck.CREATE)));
+                .save(output.withConditions(new ModLoadedCondition(ModID.CREATE.value())));
 
-        ProxyItem caramelized_nectar = new ProxyItem(ModCheck.BEE_ADDON, "caramelized_nectar");
+        ProxyItem caramelized_nectar = new ProxyItem(ModID.BEE_ADDON.value(), "caramelized_nectar");
 
         ShapelessRecipeBuilder
                 .shapeless(RecipeCategory.DECORATIONS, DSBlocks.BEE_HONEY_TREASURE.value())
                 .requires(caramelized_nectar)
                 .requires(DSItems.ELDER_DRAGON_DUST.value())
                 .unlockedBy(getHasName(DSItems.ELDER_DRAGON_DUST.value()), has(DSItems.ELDER_DRAGON_DUST.value()))
-                .save(output.withConditions(new ModLoadedCondition(ModCheck.BEE_ADDON)));
+                .save(output.withConditions(new ModLoadedCondition(ModID.BEE_ADDON.value())));
 
-        ProxyItem ruby = new ProxyItem(ModCheck.SILENTGEMS, "ruby");
+        ProxyItem ruby = new ProxyItem(ModID.SILENTGEMS.value(), "ruby");
 
         ShapelessRecipeBuilder
                 .shapeless(RecipeCategory.DECORATIONS, DSBlocks.RUBY_DRAGON_TREASURE.value())
                 .requires(ruby)
                 .requires(DSItems.ELDER_DRAGON_DUST.value())
                 .unlockedBy(getHasName(DSItems.ELDER_DRAGON_DUST.value()), has(DSItems.ELDER_DRAGON_DUST.value()))
-                .save(output.withConditions(new ModLoadedCondition(ModCheck.SILENTGEMS)));
+                .save(output.withConditions(new ModLoadedCondition(ModID.SILENTGEMS.value())));
 
-        ProxyItem carnelian = new ProxyItem(ModCheck.SILENTGEMS, "carnelian");
+        ProxyItem carnelian = new ProxyItem(ModID.SILENTGEMS.value(), "carnelian");
 
         ShapelessRecipeBuilder
                 .shapeless(RecipeCategory.DECORATIONS, DSBlocks.CARNELIAN_DRAGON_TREASURE.value())
                 .requires(carnelian)
                 .requires(DSItems.ELDER_DRAGON_DUST.value())
                 .unlockedBy(getHasName(DSItems.ELDER_DRAGON_DUST.value()), has(DSItems.ELDER_DRAGON_DUST.value()))
-                .save(output.withConditions(new ModLoadedCondition(ModCheck.SILENTGEMS)));
+                .save(output.withConditions(new ModLoadedCondition(ModID.SILENTGEMS.value())));
 
-        ProxyItem topaz = new ProxyItem(ModCheck.SILENTGEMS, "topaz");
+        ProxyItem topaz = new ProxyItem(ModID.SILENTGEMS.value(), "topaz");
 
         ShapelessRecipeBuilder
                 .shapeless(RecipeCategory.DECORATIONS, DSBlocks.TOPAZ_DRAGON_TREASURE.value())
                 .requires(topaz)
                 .requires(DSItems.ELDER_DRAGON_DUST.value())
                 .unlockedBy(getHasName(DSItems.ELDER_DRAGON_DUST.value()), has(DSItems.ELDER_DRAGON_DUST.value()))
-                .save(output.withConditions(new ModLoadedCondition(ModCheck.SILENTGEMS)));
+                .save(output.withConditions(new ModLoadedCondition(ModID.SILENTGEMS.value())));
 
-        ProxyItem citrine = new ProxyItem(ModCheck.SILENTGEMS, "citrine");
+        ProxyItem citrine = new ProxyItem(ModID.SILENTGEMS.value(), "citrine");
 
         ShapelessRecipeBuilder
                 .shapeless(RecipeCategory.DECORATIONS, DSBlocks.CITRINE_DRAGON_TREASURE.value())
                 .requires(citrine)
                 .requires(DSItems.ELDER_DRAGON_DUST.value())
                 .unlockedBy(getHasName(DSItems.ELDER_DRAGON_DUST.value()), has(DSItems.ELDER_DRAGON_DUST.value()))
-                .save(output.withConditions(new ModLoadedCondition(ModCheck.SILENTGEMS)));
+                .save(output.withConditions(new ModLoadedCondition(ModID.SILENTGEMS.value())));
 
-        ProxyItem heliodor = new ProxyItem(ModCheck.SILENTGEMS, "heliodor");
+        ProxyItem heliodor = new ProxyItem(ModID.SILENTGEMS.value(), "heliodor");
 
         ShapelessRecipeBuilder
                 .shapeless(RecipeCategory.DECORATIONS, DSBlocks.HELIODOR_DRAGON_TREASURE.value())
                 .requires(heliodor)
                 .requires(DSItems.ELDER_DRAGON_DUST.value())
                 .unlockedBy(getHasName(DSItems.ELDER_DRAGON_DUST.value()), has(DSItems.ELDER_DRAGON_DUST.value()))
-                .save(output.withConditions(new ModLoadedCondition(ModCheck.SILENTGEMS)));
+                .save(output.withConditions(new ModLoadedCondition(ModID.SILENTGEMS.value())));
 
-        ProxyItem moldavite = new ProxyItem(ModCheck.SILENTGEMS, "moldavite");
+        ProxyItem moldavite = new ProxyItem(ModID.SILENTGEMS.value(), "moldavite");
 
         ShapelessRecipeBuilder
                 .shapeless(RecipeCategory.DECORATIONS, DSBlocks.MOLDAVITE_DRAGON_TREASURE.value())
                 .requires(moldavite)
                 .requires(DSItems.ELDER_DRAGON_DUST.value())
                 .unlockedBy(getHasName(DSItems.ELDER_DRAGON_DUST.value()), has(DSItems.ELDER_DRAGON_DUST.value()))
-                .save(output.withConditions(new ModLoadedCondition(ModCheck.SILENTGEMS)));
+                .save(output.withConditions(new ModLoadedCondition(ModID.SILENTGEMS.value())));
 
-        ProxyItem peridot = new ProxyItem(ModCheck.SILENTGEMS, "peridot");
+        ProxyItem peridot = new ProxyItem(ModID.SILENTGEMS.value(), "peridot");
 
         ShapelessRecipeBuilder
                 .shapeless(RecipeCategory.DECORATIONS, DSBlocks.PERIDOT_DRAGON_TREASURE.value())
                 .requires(peridot)
                 .requires(DSItems.ELDER_DRAGON_DUST.value())
                 .unlockedBy(getHasName(DSItems.ELDER_DRAGON_DUST.value()), has(DSItems.ELDER_DRAGON_DUST.value()))
-                .save(output.withConditions(new ModLoadedCondition(ModCheck.SILENTGEMS)));
+                .save(output.withConditions(new ModLoadedCondition(ModID.SILENTGEMS.value())));
 
-        ProxyItem turquoise = new ProxyItem(ModCheck.SILENTGEMS, "turquoise");
+        ProxyItem turquoise = new ProxyItem(ModID.SILENTGEMS.value(), "turquoise");
 
         ShapelessRecipeBuilder
                 .shapeless(RecipeCategory.DECORATIONS, DSBlocks.TURQUOISE_DRAGON_TREASURE.value())
                 .requires(turquoise)
                 .requires(DSItems.ELDER_DRAGON_DUST.value())
                 .unlockedBy(getHasName(DSItems.ELDER_DRAGON_DUST.value()), has(DSItems.ELDER_DRAGON_DUST.value()))
-                .save(output.withConditions(new ModLoadedCondition(ModCheck.SILENTGEMS)));
+                .save(output.withConditions(new ModLoadedCondition(ModID.SILENTGEMS.value())));
 
-        ProxyItem kyanite = new ProxyItem(ModCheck.SILENTGEMS, "kyanite");
+        ProxyItem kyanite = new ProxyItem(ModID.SILENTGEMS.value(), "kyanite");
 
         ShapelessRecipeBuilder
                 .shapeless(RecipeCategory.DECORATIONS, DSBlocks.KYANITE_DRAGON_TREASURE.value())
                 .requires(kyanite)
                 .requires(DSItems.ELDER_DRAGON_DUST.value())
                 .unlockedBy(getHasName(DSItems.ELDER_DRAGON_DUST.value()), has(DSItems.ELDER_DRAGON_DUST.value()))
-                .save(output.withConditions(new ModLoadedCondition(ModCheck.SILENTGEMS)));
+                .save(output.withConditions(new ModLoadedCondition(ModID.SILENTGEMS.value())));
 
-        ProxyItem sapphire = new ProxyItem(ModCheck.SILENTGEMS, "sapphire");
+        ProxyItem sapphire = new ProxyItem(ModID.SILENTGEMS.value(), "sapphire");
 
         ShapelessRecipeBuilder
                 .shapeless(RecipeCategory.DECORATIONS, DSBlocks.SAPPHIRE_DRAGON_TREASURE.value())
                 .requires(sapphire)
                 .requires(DSItems.ELDER_DRAGON_DUST.value())
                 .unlockedBy(getHasName(DSItems.ELDER_DRAGON_DUST.value()), has(DSItems.ELDER_DRAGON_DUST.value()))
-                .save(output.withConditions(new ModLoadedCondition(ModCheck.SILENTGEMS)));
+                .save(output.withConditions(new ModLoadedCondition(ModID.SILENTGEMS.value())));
 
-        ProxyItem iolite = new ProxyItem(ModCheck.SILENTGEMS, "iolite");
+        ProxyItem iolite = new ProxyItem(ModID.SILENTGEMS.value(), "iolite");
 
         ShapelessRecipeBuilder
                 .shapeless(RecipeCategory.DECORATIONS, DSBlocks.IOLITE_DRAGON_TREASURE.value())
                 .requires(iolite)
                 .requires(DSItems.ELDER_DRAGON_DUST.value())
                 .unlockedBy(getHasName(DSItems.ELDER_DRAGON_DUST.value()), has(DSItems.ELDER_DRAGON_DUST.value()))
-                .save(output.withConditions(new ModLoadedCondition(ModCheck.SILENTGEMS)));
+                .save(output.withConditions(new ModLoadedCondition(ModID.SILENTGEMS.value())));
 
-        ProxyItem alexandrite = new ProxyItem(ModCheck.SILENTGEMS, "alexandrite");
+        ProxyItem alexandrite = new ProxyItem(ModID.SILENTGEMS.value(), "alexandrite");
 
         ShapelessRecipeBuilder
                 .shapeless(RecipeCategory.DECORATIONS, DSBlocks.ALEXANDRITE_DRAGON_TREASURE.value())
                 .requires(alexandrite)
                 .requires(DSItems.ELDER_DRAGON_DUST.value())
                 .unlockedBy(getHasName(DSItems.ELDER_DRAGON_DUST.value()), has(DSItems.ELDER_DRAGON_DUST.value()))
-                .save(output.withConditions(new ModLoadedCondition(ModCheck.SILENTGEMS)));
+                .save(output.withConditions(new ModLoadedCondition(ModID.SILENTGEMS.value())));
 
-        ProxyItem ammolite = new ProxyItem(ModCheck.SILENTGEMS, "ammolite");
+        ProxyItem ammolite = new ProxyItem(ModID.SILENTGEMS.value(), "ammolite");
 
         ShapelessRecipeBuilder
                 .shapeless(RecipeCategory.DECORATIONS, DSBlocks.AMMOLITE_DRAGON_TREASURE.value())
                 .requires(ammolite)
                 .requires(DSItems.ELDER_DRAGON_DUST.value())
                 .unlockedBy(getHasName(DSItems.ELDER_DRAGON_DUST.value()), has(DSItems.ELDER_DRAGON_DUST.value()))
-                .save(output.withConditions(new ModLoadedCondition(ModCheck.SILENTGEMS)));
+                .save(output.withConditions(new ModLoadedCondition(ModID.SILENTGEMS.value())));
 
-        ProxyItem rose_quartz = new ProxyItem(ModCheck.SILENTGEMS, "rose_quartz");
+        ProxyItem rose_quartz = new ProxyItem(ModID.SILENTGEMS.value(), "rose_quartz");
 
         ShapelessRecipeBuilder
                 .shapeless(RecipeCategory.DECORATIONS, DSBlocks.ROSE_QUARTZ_DRAGON_TREASURE.value())
                 .requires(rose_quartz)
                 .requires(DSItems.ELDER_DRAGON_DUST.value())
                 .unlockedBy(getHasName(DSItems.ELDER_DRAGON_DUST.value()), has(DSItems.ELDER_DRAGON_DUST.value()))
-                .save(output.withConditions(new ModLoadedCondition(ModCheck.SILENTGEMS)));
+                .save(output.withConditions(new ModLoadedCondition(ModID.SILENTGEMS.value())));
 
-        ProxyItem black_diamond = new ProxyItem(ModCheck.SILENTGEMS, "black_diamond");
+        ProxyItem black_diamond = new ProxyItem(ModID.SILENTGEMS.value(), "black_diamond");
 
         ShapelessRecipeBuilder
                 .shapeless(RecipeCategory.DECORATIONS, DSBlocks.BLACK_DIAMOND_DRAGON_TREASURE.value())
                 .requires(black_diamond)
                 .requires(DSItems.ELDER_DRAGON_DUST.value())
                 .unlockedBy(getHasName(DSItems.ELDER_DRAGON_DUST.value()), has(DSItems.ELDER_DRAGON_DUST.value()))
-                .save(output.withConditions(new ModLoadedCondition(ModCheck.SILENTGEMS)));
+                .save(output.withConditions(new ModLoadedCondition(ModID.SILENTGEMS.value())));
 
-        ProxyItem white_diamond = new ProxyItem(ModCheck.SILENTGEMS, "white_diamond");
+        ProxyItem white_diamond = new ProxyItem(ModID.SILENTGEMS.value(), "white_diamond");
 
         ShapelessRecipeBuilder
                 .shapeless(RecipeCategory.DECORATIONS, DSBlocks.WHITE_DIAMOND_DRAGON_TREASURE.value())
                 .requires(white_diamond)
                 .requires(DSItems.ELDER_DRAGON_DUST.value())
                 .unlockedBy(getHasName(DSItems.ELDER_DRAGON_DUST.value()), has(DSItems.ELDER_DRAGON_DUST.value()))
-                .save(output.withConditions(new ModLoadedCondition(ModCheck.SILENTGEMS)));
+                .save(output.withConditions(new ModLoadedCondition(ModID.SILENTGEMS.value())));
 
         ShapelessRecipeBuilder
                 .shapeless(RecipeCategory.MISC, DSItems.ELDER_DRAGON_DUST.value())

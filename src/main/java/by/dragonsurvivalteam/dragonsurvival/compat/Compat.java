@@ -2,6 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.compat;
 
 import com.simibubi.create.content.equipment.armor.CardboardArmorHandler;
 import net.irisshaders.iris.api.v0.IrisApi;
+import net.mehvahdjukaar.vista.client.renderer.VistaLevelRenderer;
 import net.minecraft.world.entity.player.Player;
 import net.xolt.freecam.Freecam;
 
@@ -11,7 +12,7 @@ public class Compat {
      * (Which have the ability to swap the player's model)
      */
     public static boolean hasModelSwap(final Player player) {
-        if (ModCheck.isModLoaded(ModCheck.CREATE)) {
+        if (ModID.CREATE.isLoaded()) {
             return CardboardArmorHandler.testForStealth(player);
         } else {
             return false;
@@ -21,11 +22,15 @@ public class Compat {
     /** In case a mod needs the neck + head displayed in first person */
     @SuppressWarnings("RedundantIfStatement") // ignore for clarity
     public static boolean displayNeck() {
-        if (ModCheck.isModLoaded(ModCheck.IRIS) && IrisApi.getInstance().isRenderingShadowPass()) {
+        if (ModID.IRIS.isLoaded() && IrisApi.getInstance().isRenderingShadowPass()) {
             return true;
         }
 
-        if (ModCheck.isModLoaded(ModCheck.FREECAM) && Freecam.isEnabled()) {
+        if (ModID.FREECAM.isLoaded() && Freecam.isEnabled()) {
+            return true;
+        }
+
+        if (ModID.VISTA.isLoaded() && VistaLevelRenderer.isRenderingLiveFeed()) {
             return true;
         }
 
@@ -34,7 +39,7 @@ public class Compat {
 
     @SuppressWarnings("RedundantIfStatement") // ignore for clarity
     public static boolean isShaderActive() {
-        if (ModCheck.isModLoaded(ModCheck.IRIS) && IrisApi.getInstance().isShaderPackInUse()) {
+        if (ModID.IRIS.isLoaded() && IrisApi.getInstance().isShaderPackInUse()) {
             return true;
         }
 
@@ -43,7 +48,7 @@ public class Compat {
 
     @SuppressWarnings("RedundantIfStatement") // ignore for clarity
     public static boolean isRenderingShadows() {
-        if (ModCheck.isModLoaded(ModCheck.IRIS) && IrisApi.getInstance().isRenderingShadowPass()) {
+        if (ModID.IRIS.isLoaded() && IrisApi.getInstance().isRenderingShadowPass()) {
             return true;
         }
 
