@@ -40,6 +40,8 @@ import org.spongepowered.asm.mixin.injection.At;
 public abstract class SmithingScreenMixin extends ItemCombinerScreen<SmithingMenu> {
     @Unique private static final Identifier dragonSurvival$smithingTexture = Identifier.withDefaultNamespace("textures/gui/container/smithing.png");
     @Unique private static final int dragonSurvival$smithingFakePlayerIndex = 1;
+    @Unique private static final float dragonSurvival$smithingBodyRotation = 210.0F;
+    @Unique private static final float dragonSurvival$smithingPitch = 25.0F;
     @Unique private @Nullable DragonEntity dragonSurvival$dragon;
 
     public SmithingScreenMixin(final SmithingMenu menu, final Inventory inventory, final Component title) {
@@ -85,9 +87,9 @@ public abstract class SmithingScreenMixin extends ItemCombinerScreen<SmithingMen
         LivingEntityRenderState dragonRenderState = (LivingEntityRenderState)DragonRenderer.createUIRenderState(
             dragonSurvival$dragon,
             DragonSurvival.PROXY.getPartialTick(),
-            210.0F,
             0.0F,
-            -25.0F,
+            0.0F,
+            0.0F,
             player
         );
 
@@ -96,9 +98,9 @@ public abstract class SmithingScreenMixin extends ItemCombinerScreen<SmithingMen
         dragonRenderState.boundingBoxWidth = dimensions.width() / scale;
         dragonRenderState.boundingBoxHeight = dimensions.height() / scale;
         dragonRenderState.scale = 1.0F;
-        dragonRenderState.bodyRot = 210.0F;
+        dragonRenderState.bodyRot = dragonSurvival$smithingBodyRotation;
         dragonRenderState.yRot = 0.0F;
-        dragonRenderState.xRot = 0.0F;
+        dragonRenderState.xRot = dragonSurvival$smithingPitch;
         graphics.entity(dragonRenderState, size, translation, rotation, orientation, x0, y0, x1, y1);
     }
 
@@ -144,8 +146,12 @@ public abstract class SmithingScreenMixin extends ItemCombinerScreen<SmithingMen
         dragon.tickCount = tickCount;
         dragon.setYRot(0.0F);
         dragon.setYBodyRot(0.0F);
+        dragon.setXRot(0.0F);
         dragon.yRotO = 0.0F;
         dragon.yBodyRotO = 0.0F;
+        dragon.xRotO = 0.0F;
+        dragon.prevXRot = 0.0F;
+        dragon.prevZRot = 0.0F;
 
         fakePlayer.tickCount = tickCount;
     }
