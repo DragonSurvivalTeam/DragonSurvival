@@ -714,7 +714,6 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
             baseSpeed = DEFAULT_CLIMB_SPEED;
             transitionTicks = 2;
         } else if (DRAGONS_JUMPING.getOrDefault(this.playerId, false)) {
-            state.controller().reset();
             animationToChangeTo = DragonAnimations.JUMP.getAnimation();
             transitionTicks = 2;
             animationTickTimer.putAnimation(DRAGON_MODEL, this, DragonAnimations.JUMP.getAnimation());

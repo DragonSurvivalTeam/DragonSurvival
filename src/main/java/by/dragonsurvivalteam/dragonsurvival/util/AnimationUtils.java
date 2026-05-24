@@ -15,6 +15,7 @@ import net.minecraft.world.level.Level;
 public class AnimationUtils {
     /** Time in MS of 1 frame for 60 FPS */
     private static final float MS_FOR_60FPS = 1.f / 60.f * 1000.f;
+    private static final double TICKS_PER_SECOND = 20;
 
     public static <E extends GeoAnimatable> void setAnimationSpeed(double speed, double currentAnimationTick, AnimationController<E> controller) {
 
@@ -88,6 +89,6 @@ public class AnimationUtils {
             return 0;
         }
 
-        return GeckoLibResources.getBakedAnimations().cache().get(model.getAnimationResource(animatable)).getAnimation(animation).length();
+        return GeckoLibResources.getBakedAnimations().cache().get(model.getAnimationResource(animatable)).getAnimation(animation).length() * TICKS_PER_SECOND;
     }
 }
