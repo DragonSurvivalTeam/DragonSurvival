@@ -13,6 +13,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.handlers.DragonFoodHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.DragonSizeHandler;
 import by.dragonsurvivalteam.dragonsurvival.compat.create.SkyhookRendererHelper;
 import by.dragonsurvivalteam.dragonsurvival.config.ClientConfig;
+import by.dragonsurvivalteam.dragonsurvival.mixins.client.AnimationControllerAccessor;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SwimData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MovementData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.TreasureRestData;
@@ -89,6 +90,9 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
     public float prevXRot;
 
     public boolean clearVerticalVelocity;
+    public boolean interruptedAnimationTransition;
+    public double interruptedAnimationTransitionStartAge;
+    public int interruptedAnimationTransitionTicks;
 
     private final DragonEmote[] currentlyPlayingEmotes = new DragonEmote[MAX_EMOTES];
     private final boolean[] soundForEmoteHasAlreadyPlayedThisTick = new boolean[MAX_EMOTES];
@@ -762,8 +766,16 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
         }
 
         if (animationToChangeTo != null) {
+            boolean animationChanged = !AnimationUtils.isAnimationPlaying(animationController, animationToChangeTo);
             animationController.setTransitionTicks(transitionTicks);
             state.setAnimation(animationToChangeTo);
+
+            // Hack to setup interrupted animation transitions since GeckoLib 5 doesn't handle this behavior correctly anymore
+            if (animationChanged) {
+                interruptedAnimationTransition = true;
+                interruptedAnimationTransitionStartAge = state.renderState().getAnimatableAge();
+                interruptedAnimationTransitionTicks = transitionTicks;
+            }
         }
 
         double finalAnimationSpeed = animationSpeed;

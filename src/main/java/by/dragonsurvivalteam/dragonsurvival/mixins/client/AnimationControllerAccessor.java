@@ -4,15 +4,19 @@ import org.spongepowered.asm.mixin.Dynamic;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 import com.geckolib.animation.AnimationController;
+import com.geckolib.animation.state.AnimationPoint;
 
-// FIXME
-//@Mixin(AnimationController.class)
+@Mixin(AnimationController.class)
 public interface AnimationControllerAccessor {
-//    @Dynamic
-//    @Accessor("tickOffset")
-//    void dragonSurvival$setTickOffset(double tickOffset);
-//
-//    @Dynamic
-//    @Accessor("tickOffset")
-//    double dragonSurvival$getTickOffset();
+    @Dynamic
+    @Accessor("timelineTime")
+    double dragonSurvival$getTimelineTime();
+
+    @Dynamic
+    @Accessor("transitionFromPoint")
+    AnimationPoint dragonSurvival$getTransitionFromPoint();
+
+    @Dynamic
+    @Accessor("animationPoint")
+    AnimationPoint dragonSurvival$getAnimationPoint();
 }

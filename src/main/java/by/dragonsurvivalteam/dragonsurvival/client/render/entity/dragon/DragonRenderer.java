@@ -42,11 +42,13 @@ import net.neoforged.neoforge.client.event.RenderFrameEvent;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector4f;
 import org.jspecify.annotations.Nullable;
+import com.geckolib.animation.state.BoneSnapshot;
 import com.geckolib.constant.DataTickets;
 import com.geckolib.constant.dataticket.DataTicket;
 import com.geckolib.loading.math.MathParser;
 import com.geckolib.model.GeoModel;
 import com.geckolib.renderer.GeoEntityRenderer;
+import com.geckolib.renderer.base.BoneSnapshots;
 import com.geckolib.renderer.base.GeoRenderState;
 import com.geckolib.renderer.base.RenderPassInfo;
 
@@ -62,6 +64,8 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
     public static final Map<Integer, Map<String, Vec3>> BONE_POSITIONS = new HashMap<>();
     private static final List<String> BONES = List.of("BreathSource");
     private static final Map<Integer, DragonAnimationState> ANIMATION_STATES = new HashMap<>();
+    private static final Map<Integer, Map<String, BonePose>> LAST_RENDERED_BONE_POSES = new HashMap<>();
+    private static final Map<Integer, InterruptedTransitionBlend> INTERRUPTED_TRANSITION_BLENDS = new HashMap<>();
 
     private static final int RENDER_COLOR = ARGB.color(255, 255, 255);
     private static final int TRANSPARENT_RENDER_COLOR = ARGB.colorFromFloat(HunterHandler.MIN_ALPHA, 1, 1, 1);
@@ -81,6 +85,7 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
 
     public static final class DragonRenderData {
         private final int dragonId;
+        private final DragonEntity dragon;
         private @Nullable Player player;
         private @Nullable Player texturePlayer;
         private @Nullable DragonStateHandler handler;
@@ -115,8 +120,9 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
         private double visualScale;
         private float bodyScaleMultiplier;
 
-        private DragonRenderData(final int dragonId) {
-            this.dragonId = dragonId;
+        private DragonRenderData(final DragonEntity dragon) {
+            this.dragon = dragon;
+            this.dragonId = dragon.getId();
             this.modelResource = DragonBody.DEFAULT_MODEL;
             this.bonesToHideForToggle = List.of();
             this.hasWings = true;
@@ -125,7 +131,7 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
         }
 
         public static DragonRenderData fallback(final DragonEntity dragon) {
-            DragonRenderData renderData = new DragonRenderData(dragon.getId());
+            DragonRenderData renderData = new DragonRenderData(dragon);
             renderData.inUI = false;
             renderData.neckLocked = dragon.neckLocked;
             renderData.tailLocked = dragon.tailLocked;
@@ -185,7 +191,7 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
         }
 
         public DragonRenderData copy() {
-            DragonRenderData renderData = new DragonRenderData(this.dragonId);
+            DragonRenderData renderData = new DragonRenderData(this.dragon);
             renderData.player = this.player;
             renderData.texturePlayer = this.texturePlayer;
             renderData.handler = this.handler;
@@ -215,6 +221,7 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
         }
 
         public int dragonId() { return dragonId; }
+        public DragonEntity dragon() { return dragon; }
         public @Nullable Player player() { return player; }
         public @Nullable Player texturePlayer() { return texturePlayer; }
         public @Nullable DragonStateHandler handler() { return handler; }
@@ -254,6 +261,62 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
     }
 
     private record InventoryRenderOverrides(double bodyYaw, double headYaw, double headPitch) { }
+
+    private record InterruptedTransitionBlend(double startAge, int transitionTicks, Map<String, BonePose> startPoses) { }
+
+    private record BonePose(
+        float scaleX,
+        float scaleY,
+        float scaleZ,
+        float translateX,
+        float translateY,
+        float translateZ,
+        float rotX,
+        float rotY,
+        float rotZ,
+        boolean hidden,
+        boolean childrenHidden
+    ) {
+        private static BonePose from(final BoneSnapshot snapshot) {
+            return new BonePose(
+                snapshot.getScaleX(),
+                snapshot.getScaleY(),
+                snapshot.getScaleZ(),
+                snapshot.getTranslateX(),
+                snapshot.getTranslateY(),
+                snapshot.getTranslateZ(),
+                snapshot.getRotX(),
+                snapshot.getRotY(),
+                snapshot.getRotZ(),
+                snapshot.isHidden(),
+                snapshot.areChildrenHidden()
+            );
+        }
+
+        private BonePose lerp(final BonePose target, final float amount) {
+            return new BonePose(
+                Mth.lerp(amount, scaleX, target.scaleX),
+                Mth.lerp(amount, scaleY, target.scaleY),
+                Mth.lerp(amount, scaleZ, target.scaleZ),
+                Mth.lerp(amount, translateX, target.translateX),
+                Mth.lerp(amount, translateY, target.translateY),
+                Mth.lerp(amount, translateZ, target.translateZ),
+                Mth.lerp(amount, rotX, target.rotX),
+                Mth.lerp(amount, rotY, target.rotY),
+                Mth.lerp(amount, rotZ, target.rotZ),
+                target.hidden,
+                target.childrenHidden
+            );
+        }
+
+        private void applyTo(final BoneSnapshot snapshot) {
+            snapshot.setScale(scaleX, scaleY, scaleZ);
+            snapshot.setTranslation(translateX, translateY, translateZ);
+            snapshot.setRotation(rotX, rotY, rotZ);
+            snapshot.skipRender(hidden);
+            snapshot.skipChildrenRender(childrenHidden);
+        }
+    }
 
     public DragonRenderer(final EntityRendererProvider.Context context, final GeoModel<DragonEntity> model) {
         super(context, model);
@@ -501,10 +564,65 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
         };
 
         renderPassInfo.addBoneUpdater(wingBoneHider);
+        renderPassInfo.addBoneUpdater((renderPassInfoForBones, snapshots) -> smoothInterruptedAnimationTransition(renderData, renderPassInfoForBones, snapshots));
 
         DragonEditorHandler.ensureSkinTexturesGenerated(renderData.texturePlayer(), renderData.handler());
 
         super.preRenderPass(renderPassInfo, renderTasks);
+    }
+
+    private static void smoothInterruptedAnimationTransition(final DragonRenderData renderData, final RenderPassInfo<?> renderPassInfo, final BoneSnapshots snapshots) {
+        int dragonId = renderData.dragonId();
+        DragonEntity dragon = renderData.dragon();
+
+        if (dragon.interruptedAnimationTransition) {
+            Map<String, BonePose> startPoses = LAST_RENDERED_BONE_POSES.get(dragonId);
+
+            if (startPoses != null && !startPoses.isEmpty()) {
+                INTERRUPTED_TRANSITION_BLENDS.put(dragonId, new InterruptedTransitionBlend(
+                    dragon.interruptedAnimationTransitionStartAge,
+                    dragon.interruptedAnimationTransitionTicks,
+                    new HashMap<>(startPoses)
+                ));
+            }
+
+            dragon.interruptedAnimationTransition = false;
+        }
+
+        InterruptedTransitionBlend blend = INTERRUPTED_TRANSITION_BLENDS.get(dragonId);
+        float blendAmount = 1;
+
+        if (blend != null) {
+            if (blend.transitionTicks() <= 0) {
+                INTERRUPTED_TRANSITION_BLENDS.remove(dragonId);
+                blend = null;
+            } else {
+                blendAmount = (float) Math.max(0, Math.min(1, (renderPassInfo.renderState().getAnimatableAge() - blend.startAge()) / blend.transitionTicks()));
+
+                if (blendAmount >= 1) {
+                    INTERRUPTED_TRANSITION_BLENDS.remove(dragonId);
+                }
+            }
+        }
+
+        Map<String, BonePose> renderedPoses = LAST_RENDERED_BONE_POSES.computeIfAbsent(dragonId, key -> new HashMap<>());
+        InterruptedTransitionBlend activeBlend = blend;
+        float activeBlendAmount = blendAmount;
+
+        renderPassInfo.model().boneLookup().get().forEach((boneName, bone) -> snapshots.get(boneName).ifPresent(snapshot -> {
+            BonePose currentPose = BonePose.from(snapshot);
+
+            if (activeBlend != null) {
+                BonePose startPose = activeBlend.startPoses().get(boneName);
+
+                if (startPose != null) {
+                    currentPose = startPose.lerp(currentPose, activeBlendAmount);
+                    currentPose.applyTo(snapshot);
+                }
+            }
+
+            renderedPoses.put(boneName, currentPose);
+        }));
     }
 
     @Override
@@ -534,6 +652,13 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
     @Override
     public void addRenderData(DragonEntity animatable, @Nullable Void relatedObject, R renderState, float partialTick) {
         DragonRenderData renderData = captureRenderData(animatable, partialTick);
+        Player player = animatable.getPlayer();
+
+        if (player != null) {
+            // The rendered dragon is a proxy entity, so drive GeckoLib's clock from the real player.
+            renderState.addGeckolibData(DataTickets.TICK, (double)player.tickCount + partialTick + 200);
+        }
+
         renderState.addGeckolibData(DRAGON_RENDER_DATA, renderData);
         renderState.addGeckolibData(DataTickets.RENDER_COLOR, getRenderColor(renderData));
     }

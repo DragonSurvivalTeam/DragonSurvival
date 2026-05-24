@@ -47,6 +47,7 @@
   ],
     "client": [
       "client.AbstractContainerScreenAccessor",
+      "client.AnimationControllerAccessor",
       "client.CameraMixin",
       "client.ClientLevelMixin",
       "client.EffectsInInventoryAccessor",
