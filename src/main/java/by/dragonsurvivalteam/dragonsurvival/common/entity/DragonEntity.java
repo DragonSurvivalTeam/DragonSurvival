@@ -787,7 +787,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
             // We need a minimum speed here to prevent the animation from ever being truly at 0 speed (otherwise the animation state machine implodes)
             finalAnimationSpeed = Math.min(ClientConfig.maxAnimationSpeed, Math.max(ClientConfig.minAnimationSpeed, (animationSpeed + speedComponent) * sizeComponent));
         }
-        AnimationUtils.setAnimationSpeed(finalAnimationSpeed, state.renderState().getAnimatableAge(), animationController);
+        animationController.setAnimationSpeed(finalAnimationSpeed);
 
         if (isPlayingAnyEmote()) {
             // This means we are playing a blend emote; so we want to pass on the head/tail locked state

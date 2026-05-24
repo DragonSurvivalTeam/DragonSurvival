@@ -17,20 +17,6 @@ public class AnimationUtils {
     private static final float MS_FOR_60FPS = 1.f / 60.f * 1000.f;
     private static final double TICKS_PER_SECOND = 20;
 
-    public static <E extends GeoAnimatable> void setAnimationSpeed(double speed, double currentAnimationTick, AnimationController<E> controller) {
-
-        if (speed == controller.getAnimationSpeed()) {
-            return;
-        }
-
-        // FIXME
-//        if (controller.getCurrentRawAnimation() != null) {
-//            double distance = currentAnimationTick - ((AnimationControllerAccessor) controller).dragonSurvival$getTickOffset();
-//            ((AnimationControllerAccessor) controller).dragonSurvival$setTickOffset(currentAnimationTick - distance * (controller.getAnimationSpeed() / speed));
-//            controller.setAnimationSpeed(speed);
-//        }
-    }
-
     // TODO: This is a hack since GeckoLib's state.isCurrentAnimation() doesn't work. If they ever fix that, we can remove this.
     public static boolean isAnimationPlaying(AnimationController<?> controller, RawAnimation animation) {
         String animationName = animation.getAnimationStages().getFirst().animationName();
