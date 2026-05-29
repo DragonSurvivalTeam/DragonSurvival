@@ -180,10 +180,59 @@ public class DSTrades {
         }
     }
 
+    /** Copied from {@link net.minecraft.world.entity.npc.VillagerTrades.EnchantBookForEmeralds} */
+    public static class EnchantBooksForEmeralds implements ItemListing {
+        private final int villagerXp;
+        private final TagKey<Enchantment> tradeableEnchantments;
+        private final int minLevel;
+        private final int maxLevel;
+
+        public EnchantBooksForEmeralds(int villagerXp, TagKey<Enchantment> tradeableEnchantments) {
+            this(villagerXp, 0, Integer.MAX_VALUE, tradeableEnchantments);
+        }
+
+        public EnchantBooksForEmeralds(int villagerXp, int minLevel, int maxLevel, TagKey<Enchantment> tradeableEnchantments) {
+            this.minLevel = minLevel;
+            this.maxLevel = maxLevel;
+            this.villagerXp = villagerXp;
+            this.tradeableEnchantments = tradeableEnchantments;
+        }
+
+        public MerchantOffer getOffer(Entity trader, @NotNull RandomSource random) {
+            Optional<Holder<Enchantment>> optional = trader.level().registryAccess().registryOrThrow(Registries.ENCHANTMENT).getTag(tradeableEnchantments).flatMap((e) -> e.getRandomElement(random));
+            int i;
+            ItemStack itemstack;
+            if (optional.isPresent()) {
+                Holder<Enchantment> holder = optional.get();
+                Enchantment enchantment = holder.value();
+                int j = Math.max(enchantment.getMinLevel(), this.minLevel);
+                int k = Math.min(enchantment.getMaxLevel(), this.maxLevel);
+                int l = Mth.nextInt(random, j, k);
+                itemstack = EnchantedBookItem.createForEnchantment(new EnchantmentInstance(holder, l));
+                i = 2 + random.nextInt(5 + l * 10) + 3 * l;
+                if (holder.is(EnchantmentTags.DOUBLE_TRADE_PRICE)) {
+                    i *= 2;
+                }
+
+                if (i > 64) {
+                    i = 64;
+                }
+            } else {
+                i = 1;
+                itemstack = new ItemStack(Items.BOOK);
+            }
+
+            return new MerchantOffer(new ItemCost(Items.EMERALD, i), Optional.of(new ItemCost(Items.BOOK)), itemstack, 12, this.villagerXp, 0.2F);
+        }
+    }
+
     public static final Int2ObjectMap<VillagerTrades.ItemListing[]> LEADER_TRADES = new Int2ObjectOpenHashMap<>();
 
     // Required for map trades
     public static final TagKey<Structure> ON_DRAGON_HUNTERS_CASTLE_MAPS = TagKey.create(Registries.STRUCTURE, DragonSurvival.res("on_dragon_hunter_maps"));
+
+    // Tag for custom book trades
+    public static final TagKey<Enchantment> LEADER_BOOKS = TagKey.create(Registries.ENCHANTMENT, DragonSurvival.res("leader_books"));
 
     @SubscribeEvent
     public static void addCustomTrades(final VillagerTradesEvent event) {
@@ -215,8 +264,7 @@ public class DSTrades {
             );
 
             final List<ItemListing> LEADER_TRADES_LEVEL_5 = Lists.newArrayList(
-                    new EnchantBookForEmeralds(DSEnchantments.DRAGONSBANE, 15),
-                    new EnchantBookForEmeralds(DSEnchantments.BOLAS, 15)
+                    new EnchantBooksForEmeralds(15, LEADER_BOOKS)
             );
 
             LEADER_TRADES.put(1, LEADER_TRADES_LEVEL_1.toArray(new VillagerTrades.ItemListing[0]));
