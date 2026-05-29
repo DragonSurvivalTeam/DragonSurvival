@@ -78,6 +78,25 @@ public class ClientFlightHandler {
     @ConfigOption(side = ConfigSide.CLIENT, category = "flight", key = "flight_camera_movement")
     public static Boolean flightCameraMovement = true;
 
+    @Translation(key = "spin_camera_effect", type = Translation.Type.CONFIGURATION, comments = "Enable / Disable camera punch and FOV changes while using spin as a dragon")
+    @ConfigOption(side = ConfigSide.CLIENT, category = "flight", key = "spin_camera_effect")
+    public static Boolean spinCameraEffect = true;
+
+    @ConfigRange(min = 0.0f, max = 0.5f)
+    @Translation(key = "spin_camera_entry_zoom_strength", type = Translation.Type.CONFIGURATION, comments = "How much the camera briefly tightens at the start of a spin")
+    @ConfigOption(side = ConfigSide.CLIENT, category = "flight", key = "spin_camera_entry_zoom_strength")
+    public static Float spinCameraEntryZoomStrength = 0.08f;
+
+    @ConfigRange(min = 0.0f, max = 0.5f)
+    @Translation(key = "spin_camera_travel_zoom_strength", type = Translation.Type.CONFIGURATION, comments = "How much the camera widens during the main travel phase of a spin")
+    @ConfigOption(side = ConfigSide.CLIENT, category = "flight", key = "spin_camera_travel_zoom_strength")
+    public static Float spinCameraTravelZoomStrength = 0.16f;
+
+    @ConfigRange(min = 0.0f, max = 0.5f)
+    @Translation(key = "spin_camera_fov_strength", type = Translation.Type.CONFIGURATION, comments = "How much the FOV expands during a spin")
+    @ConfigOption(side = ConfigSide.CLIENT, category = "flight", key = "spin_camera_fov_strength")
+    public static Float spinCameraFovStrength = 0.08f;
+
     @ConfigRange(min = 0.0f, max = 32.0f)
     @Translation(key = "base_dragon_camera_offset", type = Translation.Type.CONFIGURATION, comments = "Base offset for the dragon's third person camera (is multiplied and scaled by the other factors)")
     @ConfigOption(side = ConfigSide.CLIENT, category = {"rendering"}, key = "base_dragon_camera_offset")
@@ -142,6 +161,10 @@ public class ClientFlightHandler {
                 } else {
                     event.setDistance((event.getDistance() + baseDragonCameraOffset) / event.getEntityScalingFactor() * Math.max(visualScale, dragonCameraMinimumScale) * dragonCameraScaleFactor + flatDragonCameraOffset);
                 }
+
+                if (spinCameraEffect && event.getCamera().isDetached()) {
+                    event.setDistance(event.getDistance() + SpinFlightPresentation.getDetachedCameraOffset());
+                }
             }
         });
     }
@@ -159,6 +182,10 @@ public class ClientFlightHandler {
 
         if (currentPlayer != null && currentPlayer.isAddedToLevel() && DragonStateProvider.isDragon(currentPlayer)) {
             GameRenderer gameRenderer = minecraft.gameRenderer;
+            boolean shouldApplyZoom = false;
+            float targetZoom = 1.0F;
+            float zoomLerpFactor = 0.25F;
+            float partialTick = (float) setup.getPartialTick();
 
             if (ServerFlightHandler.isGliding(currentPlayer)) {
                 if (setup.getCamera().isDetached()) {
@@ -175,10 +202,8 @@ public class ClientFlightHandler {
                     if (flightZoomEffect) {
                         if (!minecraft.options.getCameraType().isFirstPerson()) {
                             Vec3 lookVec = currentPlayer.getLookAngle();
-                            float f = Math.min(Math.max(0.5F, 1F - (float) (lookVec.y * 5 / 2.5 * 0.5)), 3F);
-                            float newZoom = Mth.lerp(0.25f, lastZoom, f);
-                            gameRenderer.zoom = newZoom;
-                            lastZoom = newZoom;
+                            targetZoom = Math.min(Math.max(0.5F, 1F - (float) (lookVec.y * 5 / 2.5 * 0.5)), 3F);
+                            shouldApplyZoom = true;
                         }
                     }
                 }
@@ -190,12 +215,36 @@ public class ClientFlightHandler {
                     }
                 }
 
-                if (lastZoom != 1) {
-                    if (flightZoomEffect) {
-                        lastZoom = Mth.lerp(0.25f, lastZoom, 1f);
-                        gameRenderer.zoom = lastZoom;
+            }
+
+            if (spinCameraEffect) {
+                float spinZoom = SpinFlightPresentation.getZoomMultiplier(spinCameraEntryZoomStrength, spinCameraTravelZoomStrength);
+
+                if (!minecraft.options.getCameraType().isFirstPerson() && spinZoom != 1.0F) {
+                    targetZoom *= spinZoom;
+                    shouldApplyZoom = true;
+                }
+
+                zoomLerpFactor = Math.max(zoomLerpFactor, SpinFlightPresentation.getZoomLerpFactor());
+                setup.setPitch(setup.getPitch() + SpinFlightPresentation.getPitchOffset(currentPlayer, partialTick));
+                setup.setRoll(setup.getRoll() + SpinFlightPresentation.getRollOffset(currentPlayer, partialTick));
+
+                if (setup.getCamera().isDetached() && flightCameraMovement) {
+                    float spinCameraOffset = SpinFlightPresentation.getCameraLift() + SpinFlightPresentation.getCameraBobOffset(currentPlayer, partialTick);
+
+                    if (spinCameraOffset != 0.0F) {
+                        info.move(0.0F, spinCameraOffset, 0.0F);
                     }
                 }
+            }
+
+            if (shouldApplyZoom) {
+                float newZoom = Mth.lerp(zoomLerpFactor, lastZoom, targetZoom);
+                gameRenderer.zoom = newZoom;
+                lastZoom = newZoom;
+            } else if (lastZoom != 1.0F) {
+                lastZoom = Mth.lerp(zoomLerpFactor, lastZoom, 1.0F);
+                gameRenderer.zoom = lastZoom;
             }
         }
     }
@@ -513,15 +562,18 @@ public class ClientFlightHandler {
         LocalPlayer player = Minecraft.getInstance().player;
 
         if (player == null) {
+            SpinFlightPresentation.tick(null);
             return;
         }
 
         DragonStateHandler handler = DragonStateProvider.getData(player);
 
         if (!handler.isDragon()) {
+            SpinFlightPresentation.tick(null);
             return;
         }
 
+        SpinFlightPresentation.tick(player);
         jumpFlyCooldown.tick();
         boolean isJumping = Minecraft.getInstance().options.keyJump.isDown();
 
