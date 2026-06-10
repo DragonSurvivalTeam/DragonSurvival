@@ -80,7 +80,7 @@ public class ClientFlightHandler {
 
     @Translation(key = "spin_camera_effect", type = Translation.Type.CONFIGURATION, comments = "Enable / Disable camera punch and FOV changes while using spin as a dragon")
     @ConfigOption(side = ConfigSide.CLIENT, category = "flight", key = "spin_camera_effect")
-    public static Boolean spinCameraEffect = true;
+    public static Boolean spinCameraEffect = false;
 
     @ConfigRange(min = 0.0f, max = 0.5f)
     @Translation(key = "spin_camera_entry_zoom_strength", type = Translation.Type.CONFIGURATION, comments = "How much the camera briefly tightens at the start of a spin")

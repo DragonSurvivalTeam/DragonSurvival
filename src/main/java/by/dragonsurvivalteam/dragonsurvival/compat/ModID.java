@@ -9,6 +9,7 @@ public enum ModID {
     CURIOS("curios"),
     CREATE("create"),
     BEE_ADDON("bee_queen_ds"),
+    DESERT_ADDON("desert_monster_ds"),
     FREECAM("freecam"),
     SILENTGEMS("silentgems"),
     EMI("emi"),

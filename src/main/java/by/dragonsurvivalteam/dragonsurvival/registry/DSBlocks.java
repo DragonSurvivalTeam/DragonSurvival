@@ -778,6 +778,21 @@ public class DSBlocks {
             ModID.BEE_ADDON.value()
     );
 
+    @Translation(type = Translation.Type.BLOCK, comments = "Bottle Caps Treasure")
+    public static final @Nullable DeferredHolder<Block, TreasureBlock> BOTTLE_CAPS_TREASURE = registerModCheck(
+            "bottle_caps_treasure",
+            () -> new TreasureBlock(
+                    FastColor.ARGB32.color(255, 211, 211, 211),
+                    BlockBehaviour.Properties.of()
+                            .mapColor(MapColor.METAL)
+                            .noOcclusion()
+                            .sound(DSSounds.TREASURE_METAL)
+                            .strength(0.5F),
+                    ModID.DESERT_ADDON.value()
+            ),
+            ModID.DESERT_ADDON.value()
+    );
+
     @Translation(type = Translation.Type.BLOCK, comments = "Ruby Dragon Treasure")
     public static final @Nullable DeferredHolder<Block, TreasureBlock> RUBY_DRAGON_TREASURE = registerModCheck(
             "ruby_dragon_treasure",

@@ -15,6 +15,10 @@
       "required": false
     },
     {
+      "id": "dragonsurvival:bottle_caps_treasure",
+      "required": false
+    },
+    {
       "id": "dragonsurvival:ruby_dragon_treasure",
       "required": false
     },
