@@ -218,7 +218,7 @@ public class DSTrades {
             );
 
             final List<ItemListing> LEADER_TRADES_LEVEL_5 = Lists.newArrayList(
-                    new net.minecraft.world.entity.npc.VillagerTrades.EnchantBookForEmeralds(15, LEADER_BOOKS)
+                    new VillagerTrades.EnchantBookForEmeralds(15, LEADER_BOOKS)
             );
 
             LEADER_TRADES.put(1, LEADER_TRADES_LEVEL_1.toArray(new VillagerTrades.ItemListing[0]));
