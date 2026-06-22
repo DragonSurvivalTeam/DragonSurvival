@@ -24,6 +24,7 @@ public class LevelButton extends ClickHoverButton {
     public static final ResourceLocation UPGRADE_CLICK = DragonSurvival.res("textures/gui/ability_screen/arrow_right_upgrade_click.png");
     private static final ResourceLocation UPGRADE_HOVER = DragonSurvival.res("textures/gui/ability_screen/arrow_right_upgrade_hover.png");
     private static final ResourceLocation UPGRADE_MAIN = DragonSurvival.res("textures/gui/ability_screen/arrow_right_upgrade_main.png");
+    private static final ResourceLocation UPGRADE_BLOCKED = DragonSurvival.res("textures/gui/ability_screen/arrow_right_upgrade_blocked.png");//TODO Add the use of this texture when a skill can be upgraded but the player does not have enough experience.
 
     private static final int WIDTH = 16;
     private static final int HEIGHT = 16;
@@ -100,6 +101,7 @@ public class LevelButton extends ClickHoverButton {
         if (!canModify()) {
             return;
         }
+//TODO Skill upgrade button is visible even when the player has no experience to upgrade. The button should disappear when the player reaches the maximum skill level.
 
         super.renderWidget(graphics, mouseX, mouseY, partialTick);
 
