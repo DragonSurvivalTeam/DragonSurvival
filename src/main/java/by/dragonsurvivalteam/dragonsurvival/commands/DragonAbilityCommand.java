@@ -55,21 +55,13 @@ public class DragonAbilityCommand {
                         )
                 )
                 .then(Commands.literal("refresh")
+                        .executes(source -> refresh(source, source.getSource().getPlayerOrException(), false))
+                        .then(Commands.argument("clear_storages", BoolArgumentType.bool())
+                                .executes(source -> refresh(source, source.getSource().getPlayerOrException(), source.getArgument("clear_storages", Boolean.class))))
                         .then(Commands.argument(DSCommands.TARGETS, EntityArgument.players())
                                 .then(Commands.argument("clear_storages", BoolArgumentType.bool())
-                                        .executes(source -> handleCommand(source, EntityArgument.getPlayers(source, DSCommands.TARGETS), (player, data) -> {
-                                            data.refresh(player, DragonStateProvider.getData(player).species());
-
-                                            if (source.getArgument("clear_storages", Boolean.class)) {
-                                                // In some cases if the ability is no longer present, its related storage cannot be properly removed (outside from death)
-                                                DSDataAttachments.getStorages(player).forEach(storage -> storage.clear(player));
-                                            }
-                                            return true;
-                                        })))
-                                .executes(source -> handleCommand(source, EntityArgument.getPlayers(source, DSCommands.TARGETS), (player, data) -> {
-                                    data.refresh(player, DragonStateProvider.getData(player).species());
-                                    return true;
-                                })))
+                                        .executes(source -> refresh(source, EntityArgument.getPlayers(source, DSCommands.TARGETS), source.getArgument("clear_storages", Boolean.class))))
+                                .executes(source -> refresh(source, EntityArgument.getPlayers(source, DSCommands.TARGETS), false)))
                 )
                 .then(Commands.literal("query")
                         .then(Commands.argument(DSCommands.TARGET, EntityArgument.player())
@@ -102,6 +94,22 @@ public class DragonAbilityCommand {
                         )
                 )
         );
+    }
+
+    private static int refresh(final CommandContext<CommandSourceStack> source, final Player target, final boolean clearStorages) {
+        return refresh(source, java.util.List.of(target), clearStorages);
+    }
+
+    private static int refresh(final CommandContext<CommandSourceStack> source, final Collection<? extends Player> targets, final boolean clearStorages) {
+        return handleCommand(source, targets, (player, data) -> {
+            data.refresh(player, DragonStateProvider.getData(player).species());
+
+            if (clearStorages) {
+                // In some cases if the ability is no longer present, its related storage cannot be properly removed (outside from death)
+                DSDataAttachments.getStorages(player).forEach(storage -> storage.clear(player));
+            }
+            return true;
+        });
     }
 
     private static int handleCommand(final CommandContext<CommandSourceStack> source, final Collection<? extends Player> targets, final BiPredicate<ServerPlayer, MagicData> logic) {
