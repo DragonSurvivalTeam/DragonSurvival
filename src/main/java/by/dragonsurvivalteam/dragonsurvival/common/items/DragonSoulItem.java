@@ -50,6 +50,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Optional;
 
 public class DragonSoulItem extends BlockItem {
     @ConfigRange(min = 0)
@@ -266,7 +267,20 @@ public class DragonSoulItem extends BlockItem {
             }
 
             double growth = handlerData.getDouble(DragonStateHandler.GROWTH);
-            Holder<DragonStage> stage = DragonStage.get(provider, growth);
+
+            // Prioritize the exact stage key stored in NBT to avoid cross-addon stage name mismatch
+            ResourceKey<DragonStage> stageKey = ResourceHelper.decodeKey(provider, DragonStage.REGISTRY, handlerData, DragonStateHandler.DRAGON_STAGE);
+            Holder<DragonStage> stage;
+            if (stageKey != null) {
+                Optional<Holder.Reference<DragonStage>> storedStage = ResourceHelper.get(provider, stageKey);
+                if (storedStage.isPresent()) {
+                    stage = storedStage.get();
+                } else {
+                    stage = DragonStage.get(provider, growth);
+                }
+            } else {
+                stage = DragonStage.get(provider, growth);
+            }
 
             //noinspection DataFlowIssue -> key is present
             tooltips.add(Component.translatable(INFO, name, DragonStage.translatableName(stage.getKey()), String.format("%.0f", growth)));

@@ -4,6 +4,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.config.OffsetConfig;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
+import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigRange;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
 import by.dragonsurvivalteam.dragonsurvival.network.player.SyncDragonPassengerID;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
@@ -39,6 +40,15 @@ public class DragonRidingHandler {
             // To avoid touching the water
             OffsetConfig.create(Tags.EntityTypes.BOATS, new Vec3(0, 0.9, 0))
     );
+    @ConfigRange(min = -1000, max = 1000)
+    @Translation(key = "player_riding_scale", type = Translation.Type.CONFIGURATION, comments = "Maximum human-rider size compared to mount dragon. Default: 0.7 (70%).")
+    @ConfigOption(side = ConfigSide.SERVER, category = "riding", key = "player_riding_scale")
+    public static Float playerRidingScale = 0.7F;
+
+    @ConfigRange(min = -1000, max = 1000)
+    @Translation(key = "dragon_riding_scale", type = Translation.Type.CONFIGURATION, comments = "Maximum dragon-rider size compared to mount dragon. Default: 0.8 (80%).")
+    @ConfigOption(side = ConfigSide.SERVER, category = "riding", key = "dragon_riding_scale")
+    public static Float dragonRidingScale = 0.8F;
 
     @Translation(comments = "You are too big to mount on this creature. You must be at most %s the scale of the creature you are trying to ride or smaller, but you are scale %s and the creature is scale %s.")
     private static final String SELF_TOO_BIG = Translation.Type.GUI.wrap("message.self_too_big");
@@ -49,8 +59,8 @@ public class DragonRidingHandler {
     public static final int NO_PASSENGER = -1;
 
     public static final Vec3 BASE_MOUNTING_OFFSET = new Vec3(0, 0.63, 0);
-    public static final float PLAYER_RIDING_SCALE_RATIO = 0.8F;
-    public static final float DRAGON_RIDING_SCALE_RATIO = 0.5F;
+    public static final float PLAYER_RIDING_SCALE_RATIO = playerRidingScale;
+    public static final float DRAGON_RIDING_SCALE_RATIO = dragonRidingScale;
 
     private enum DragonRideAttemptResult {
         SELF_TOO_BIG,

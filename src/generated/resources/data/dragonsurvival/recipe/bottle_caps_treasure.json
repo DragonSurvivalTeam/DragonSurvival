@@ -1,0 +1,55 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "desert_monster_ds"
+    }
+  ],
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "dragonsurvival:elder_dragon_dust"
+    },
+    {
+      "item": "minecraft:iron_nugget"
+    },
+    {
+      "item": "minecraft:iron_nugget"
+    },
+    {
+      "item": "minecraft:iron_nugget"
+    },
+    {
+      "item": "minecraft:blue_dye"
+    },
+    {
+      "item": "minecraft:blue_dye"
+    },
+    {
+      "item": "minecraft:blue_dye"
+    },
+    {
+      "item": "minecraft:green_dye"
+    },
+    {
+      "item": "minecraft:green_dye"
+    },
+    {
+      "item": "minecraft:green_dye"
+    },
+    {
+      "item": "minecraft:red_dye"
+    },
+    {
+      "item": "minecraft:red_dye"
+    },
+    {
+      "item": "minecraft:red_dye"
+    }
+  ],
+  "result": {
+    "count": 3,
+    "id": "dragonsurvival:bottle_caps_treasure"
+  }
+}
