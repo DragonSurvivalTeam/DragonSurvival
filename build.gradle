@@ -92,8 +92,10 @@ dependencies {
 	implementation "top.theillusivec4.curios:curios-neoforge:${curios_version}"
 
 	// Sophisticated Backpacks
-	compileOnly "curse.maven:sophisticated-backpacks-422301:7725975" // 3.25.31.1560
-	compileOnly "curse.maven:sophisticated-core-618298:7731311" // 1.4.7.1515
+	// https://www.curseforge.com/minecraft/mc-mods/sophisticated-backpacks/files/all?page=1&pageSize=20&version=1.21.1&gameVersionTypeId=6&showAlphaFiles=hide
+	compileOnly "curse.maven:sophisticated-backpacks-422301:8319596" // 3.25.64.1933
+	// https://www.curseforge.com/minecraft/mc-mods/sophisticated-core/files/all?page=1&pageSize=20&version=1.21.1&gameVersionTypeId=6&showAlphaFiles=hide
+	compileOnly "curse.maven:sophisticated-core-618298:8337387" // 1.4.62.207
 
 	// Cosmetic Armor Reworked
 	compileOnly "curse.maven:cosmetic-armor-reworked-237307:5610814" // v1
