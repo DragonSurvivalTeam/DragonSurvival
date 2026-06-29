@@ -3,9 +3,12 @@ package by.dragonsurvivalteam.dragonsurvival.client.render.entity.dragon;
 import by.dragonsurvivalteam.dragonsurvival.client.render.ClientDragonRenderer;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
 import by.dragonsurvivalteam.dragonsurvival.compat.bettercombat.BetterCombat;
-import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.OutlineBufferSource;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.util.FastColor;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
@@ -14,6 +17,7 @@ import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.renderer.GeoRenderer;
 import software.bernie.geckolib.renderer.layer.BlockAndItemGeoLayer;
 
+import java.util.Optional;
 import java.util.function.BiFunction;
 
 public class DragonItemRenderLayer extends BlockAndItemGeoLayer<DragonEntity> {
@@ -57,7 +61,50 @@ public class DragonItemRenderLayer extends BlockAndItemGeoLayer<DragonEntity> {
                 poseStack.scale(0.75F, 0.75F, 0.75F);
             }
 
-            super.renderStackForBone(poseStack, bone, stack, animatable, bufferSource, partialTick, packedLight, packedOverlay);
+            // Isolate the outline buffer for item rendering to prevent the glow
+            // pass from interfering with the dragon body visibility
+            MultiBufferSource.BufferSource[] itemOutlineBufHolder = new MultiBufferSource.BufferSource[1];
+            MultiBufferSource effectiveSource = bufferSource;
+
+            if (bufferSource instanceof OutlineBufferSource outline) {
+                MultiBufferSource.BufferSource normalBuf = outline.bufferSource;
+                int color = FastColor.ARGB32.color(outline.teamA, outline.teamR, outline.teamG, outline.teamB);
+                MultiBufferSource.BufferSource itemOutlineBuf = MultiBufferSource.immediate(new ByteBufferBuilder(1536));
+                itemOutlineBufHolder[0] = itemOutlineBuf;
+
+                effectiveSource = new MultiBufferSource() {
+                    @Override
+                    public VertexConsumer getBuffer(RenderType rt) {
+                        if (rt.isOutline()) {
+                            return itemOutlineBuf.getBuffer(rt);
+                        }
+                        VertexConsumer normal = normalBuf.getBuffer(rt);
+                        Optional<RenderType> outlineVariant = rt.outline();
+                        if (outlineVariant.isPresent()) {
+                            VertexConsumer outConsumer = itemOutlineBuf.getBuffer(outlineVariant.get());
+                            return VertexMultiConsumer.create(new VertexConsumer() {
+                                public VertexConsumer addVertex(float x, float y, float z) {
+                                    outConsumer.addVertex(x, y, z).setColor(color);
+                                    return this;
+                                }
+                                public VertexConsumer setColor(int r, int g, int b, int a) { return this; }
+                                public VertexConsumer setUv(float u, float v) { outConsumer.setUv(u, v); return this; }
+                                public VertexConsumer setUv1(int u, int v) { return this; }
+                                public VertexConsumer setUv2(int u, int v) { return this; }
+                                public VertexConsumer setNormal(float x, float y, float z) { return this; }
+                            }, normal);
+                        }
+                        return normal;
+                    }
+                };
+            }
+
+            super.renderStackForBone(poseStack, bone, stack, animatable, effectiveSource, partialTick, packedLight, packedOverlay);
+
+            if (itemOutlineBufHolder[0] != null) {
+                itemOutlineBufHolder[0].endBatch();
+            }
+
             poseStack.popPose();
         }
     }

@@ -25,6 +25,7 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3d;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
+import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.model.GeoModel;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
 import software.bernie.geckolib.util.Color;
@@ -89,6 +90,13 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
     @Override
     public void preRender(final PoseStack poseStack, final DragonEntity animatable, final BakedGeoModel model, final MultiBufferSource bufferSource, final VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, int color) {
         Minecraft.getInstance().getProfiler().push("player_dragon");
+
+        // Reset all bone visibility before each render pass to prevent
+        // the glow outline pass from affecting the main render pass
+        for (GeoBone bone : model.topLevelBones()) {
+            resetBoneVisibility(bone);
+        }
+
         Player player = animatable.getPlayer();
 
         resetNeckVisibility = model.getBone("Neck").map(bone -> {
@@ -191,6 +199,13 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
         float scale = (float) handler.getVisualScale(player, partialTicks) * (float) handler.body().value().scalingProportions().scaleMultiplier();
 
         return new Vec3(x * scale, 0, z * scale);
+    }
+
+    private static void resetBoneVisibility(GeoBone bone) {
+        bone.setHidden(false);
+        for (GeoBone child : bone.getChildBones()) {
+            resetBoneVisibility(child);
+        }
     }
 
     @Override // Also used by the layers
