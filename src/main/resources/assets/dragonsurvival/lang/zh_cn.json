@@ -976,7 +976,7 @@
   "dragonsurvival.description.dragon_soul.empty": "■§7一个空的龙魂容器。可用于存储你的所有龙族特性（包括成长）。使用后，你将变回人类。",
   "dragonsurvival.description.dragon_soul.info": "§6■种族：§r%s\n§6■成长期：§r%s\n§6■体型成长：§r%s\n",
   "dragonsurvival.description.dragon_soul.invalid_type": "无效的龙类型",
-  "dragonsurvival.description.dragon_soul.soul": " 灵魂",
+  "dragonsurvival.description.dragon_soul.soul": "%s 灵魂",
   "dragonsurvival.description.elder_dragon_bone": "§6■远古巨龙的残存。§r\n\n■§7远古时期小型古龙的遗骸，可用于诸多与远古龙相关的合成。传说中，一位为拯救世界而献身的太古生灵，凭其血肉之躯创造了他们的生命。",
   "dragonsurvival.description.elder_dragon_dust": "§6■远古巨龙的残存。§r\n\n■§7太古生灵遗留的尘埃，可用于诸多与远古龙相关的合成。可在矿物和宝藏中找到。",
   "dragonsurvival.description.elder_dragon_heart": "§6■远古巨龙的残存。§r\n\n■§7散发辉光与能量的心脏。若细听，仿佛能从深处听见古老的低语。是成年巨龙成长的理想素材。也可罕见地从较高血量生物的战利品里找到。",

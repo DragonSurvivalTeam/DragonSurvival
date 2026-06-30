@@ -65,7 +65,7 @@ public class DragonSoulItem extends BlockItem {
     @Translation(comments = "Empty Dragon Soul")
     private static final String EMPTY_DRAGON_SOUL = Translation.Type.ITEM.wrap("empty_dragon_soul");
 
-    @Translation(comments = " Soul")
+    @Translation(comments = "%s Soul")
     private static final String SOUL = Translation.Type.DESCRIPTION.wrap("dragon_soul.soul");
 
     @Translation(comments = {
@@ -308,7 +308,7 @@ public class DragonSoulItem extends BlockItem {
             return Component.translatable(EMPTY_DRAGON_SOUL);
         }
 
-        return Component.translatable(Translation.Type.DRAGON_SPECIES.wrap(species.location())).append(Component.translatable(SOUL));
+        return Component.translatable(SOUL, Component.translatable(Translation.Type.DRAGON_SPECIES.wrap(species.location())));
     }
 
     public CompoundTag getHandlerData(final ItemStack stack) {
