@@ -1220,7 +1220,7 @@
   "dragonsurvival.gui.primordial_anchor.flight_spin_grant_gained": "Ender Dragon dał ci błogosławieństwo lotu i umiejętności korkociągu",
   "dragonsurvival.gui.primordial_anchor.spin_grant_gained": "Ender Dragon dał ci błogosławieństwo lotu.",
   "dragonsurvival.gui.projectile.count": "§6■ Liczba pocisków:§r %s",
-  "dragonsurvival.gui.projectile.damage_effect": "§6■ %s §6Obrażenia od pocisków:§r %s",
+  "dragonsurvival.gui.projectile.damage_effect": "§6■ Obrażenia:§r %2$s",
   "dragonsurvival.gui.projectile.speed": "§6■ Szybkość pocisków:§r %s",
   "dragonsurvival.gui.projectile.spread": "§6■ Rozrzut pocisków:§r %s",
   "dragonsurvival.gui.projectile_push_effect.away": "Odpycha cele od pocisku z siłą %s.",
