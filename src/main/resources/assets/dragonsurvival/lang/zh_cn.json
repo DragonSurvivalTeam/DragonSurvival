@@ -2270,7 +2270,7 @@
   "trigger_type.dragonsurvival.on_death": "死亡时",
   "trigger_type.dragonsurvival.on_key_pressed": "按下按键：%s时",
   "trigger_type.dragonsurvival.on_key_released": "松开按键：%s时",
-  "trigger_type.dragonsurvival.on_self_hit": "受到自身伤害时",
+  "trigger_type.dragonsurvival.on_self_hit": "受到伤害时",
   "trigger_type.dragonsurvival.on_target_hit": "命中目标时",
   "trigger_type.dragonsurvival.on_target_killed": "击杀目标时"
 }
