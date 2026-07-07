@@ -197,7 +197,7 @@ public class SpearmanEntity extends Hunter {
     public PlayState fullPredicate(final AnimationTest<SpearmanEntity> state) {
         if (isNotIdle()) {
             isIdleAnimSet = false;
-            return PlayState.STOP;
+            return state.setAndContinue(EMPTY_LAYER_ANIMATION);
         }
 
         return state.setAndContinue(getIdleAnim());
@@ -216,7 +216,7 @@ public class SpearmanEntity extends Hunter {
             return state.setAndContinue(WALK_ARMS_BLEND);
         }
 
-        return PlayState.STOP;
+        return state.setAndContinue(EMPTY_LAYER_ANIMATION);
     }
 
     public PlayState legsPredicate(final AnimationTest<SpearmanEntity> state) {
@@ -230,7 +230,7 @@ public class SpearmanEntity extends Hunter {
             return state.setAndContinue(IDLE_BLEND);
         }
 
-        return PlayState.STOP;
+        return state.setAndContinue(EMPTY_LAYER_ANIMATION);
     }
 
     public RawAnimation getIdleAnim() {
@@ -246,6 +246,8 @@ public class SpearmanEntity extends Hunter {
             new RandomAnimationPicker.WeightedAnimation(RawAnimation.begin().thenLoop("idle2"), 9),
             new RandomAnimationPicker.WeightedAnimation(RawAnimation.begin().thenLoop("idle3"), 1)
     );
+
+    private static final RawAnimation EMPTY_LAYER_ANIMATION = RawAnimation.begin().thenWait(1_000_000);
 
     private static final RawAnimation WALK_BLEND = RawAnimation.begin().thenLoop("blend_walk");
 

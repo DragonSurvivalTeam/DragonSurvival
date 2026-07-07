@@ -40,7 +40,7 @@ public class KnightRenderer<R extends LivingEntityRenderState & GeoRenderState> 
 
         float entityPitch = renderState.getGeckolibData(DataTickets.ENTITY_PITCH);
         float entityYaw = renderState.getGeckolibData(DataTickets.ENTITY_YAW);
-        MathParser.setVariable("query.look_angle_x", controllerState -> entityPitch * Mth.DEG_TO_RAD);
-        MathParser.setVariable("query.look_angle_y", controllerState -> entityYaw * Mth.DEG_TO_RAD);
+        MathParser.setVariable("query.look_angle_x", controllerState -> -entityPitch * Mth.DEG_TO_RAD);
+        MathParser.setVariable("query.look_angle_y", controllerState -> -entityYaw * Mth.DEG_TO_RAD);
     }
 }
