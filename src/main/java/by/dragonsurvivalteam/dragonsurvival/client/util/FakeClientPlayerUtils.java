@@ -87,12 +87,13 @@ public class FakeClientPlayerUtils {
         FAKE_PLAYERS.forEach((index, player) -> {
             if (System.currentTimeMillis() - player.lastAccessed >= TimeUnit.MILLISECONDS.convert(10, TimeUnit.MINUTES)) {
                 player.remove(RemovalReason.DISCARDED);
+                DragonRenderer.clearUIRenderDragon(player.getId());
                 DragonEntity dragon = FAKE_DRAGONS.get(index);
 
                 if (dragon != null) {
                     dragon.remove(RemovalReason.DISCARDED);
                     FAKE_DRAGONS.remove(index);
-                    DragonRenderer.clearAnimationState(dragon.getId());
+                    DragonRenderer.clearRenderState(dragon.getId());
                 }
 
                 FAKE_PLAYERS.remove(index);

@@ -149,10 +149,10 @@ public class ClientDragonRenderer {
     public static void removeEntry(final EntityLeaveLevelEvent event) {
         if (event.getEntity() instanceof Player player) {
             DragonEntity dragon = PLAYER_DRAGON_MAP.remove(player.getId());
+            DragonRenderer.clearUIRenderDragon(player.getId());
 
             if (dragon != null) {
-                DragonRenderer.BONE_POSITIONS.remove(dragon.getId());
-                DragonRenderer.clearAnimationState(dragon.getId());
+                DragonRenderer.clearRenderState(dragon.getId());
             }
         }
     }
@@ -160,8 +160,7 @@ public class ClientDragonRenderer {
     @SubscribeEvent
     public static void clearEntries(final LevelEvent.Unload event) {
         PLAYER_DRAGON_MAP.clear();
-        DragonRenderer.BONE_POSITIONS.clear();
-        DragonRenderer.clearAnimationStates();
+        DragonRenderer.clearRenderStates();
     }
 
     @SubscribeEvent
