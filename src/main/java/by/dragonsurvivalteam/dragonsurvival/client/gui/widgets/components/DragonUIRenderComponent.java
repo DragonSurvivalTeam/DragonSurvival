@@ -52,11 +52,9 @@ public class DragonUIRenderComponent extends AbstractContainerEventHandler imple
 
         EntityRenderState renderState = DragonRenderer.createUIRenderState(getter.get(), pPartialTicks, 0.0F, 0.0F, 0.0F);
 
-        // The new GUI entity renderer anchors the pose to the center of the target rectangle,
-        // so keep the old widget framing by converting the legacy absolute center/baseline into
-        // offsets relative to this component's bounds.
-        // Vector3f translation = new Vector3f(xOffset, (float) height / 2 - 30 + yOffset, 0.0F);
-        graphics.entity(renderState, scale, new Vector3f(), rotation, null, x, y, x + width, y + height);
+        // Not sure what changed about the scale of UI elements that forces me to divide by 50 here for translation, but it is good enough for now
+        Vector3f translation = new Vector3f(xOffset / 50.f, yOffset /  50.f, 0.0F);
+        graphics.entity(renderState, scale, translation, rotation, null, x, y, x + width, y + height);
     }
 
     @Override

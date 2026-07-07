@@ -1156,7 +1156,7 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
 
     @Override
     public boolean mouseDragged(@NotNull MouseButtonEvent event, double mouseX, double mouseY) {
-        if (dragonRender != null && dragonRender.isMouseOver(mouseX, mouseY) && (backgroundColorButton == null || !backgroundColorButton.toggled)) {
+        if (dragonRender != null && dragonRender.isMouseOver(event.x(), event.y()) && (backgroundColorButton == null || !backgroundColorButton.toggled)) {
             return dragonRender.mouseDragged(event, mouseX, mouseY);
         }
 
