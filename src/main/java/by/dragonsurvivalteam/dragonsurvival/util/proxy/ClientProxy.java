@@ -13,6 +13,8 @@ import by.dragonsurvivalteam.dragonsurvival.network.dragon_soul_block.SyncDragon
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.emotes.DragonEmote;
 import by.dragonsurvivalteam.dragonsurvival.server.tileentity.DragonSoulBlockEntity;
 import by.dragonsurvivalteam.dragonsurvival.util.AnimationUtils;
+import com.geckolib.cache.GeckoLibResources;
+import com.geckolib.cache.animation.BakedAnimations;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.datafixers.util.Pair;
@@ -33,8 +35,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import org.jetbrains.annotations.Nullable;
-import com.geckolib.cache.GeckoLibResources;
-import com.geckolib.cache.animation.BakedAnimations;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -1,11 +1,11 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.LevelBasedTier;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSItemTags;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.BuiltInDragonSpecies;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.LevelBasedTier;
 import by.dragonsurvivalteam.dragonsurvival.util.ResourceHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Holder;

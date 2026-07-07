@@ -1,7 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.common.items;
 
-import net.minecraft.resources.Identifier;
 import com.geckolib.animatable.SingletonGeoAnimatable;
+import net.minecraft.resources.Identifier;
 
 public class DarkKeyItem extends RotatingKeyItem {
     public DarkKeyItem(Properties properties, Identifier model, Identifier texture, Identifier target) {

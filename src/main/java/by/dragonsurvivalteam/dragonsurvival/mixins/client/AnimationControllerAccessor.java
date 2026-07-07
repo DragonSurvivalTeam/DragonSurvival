@@ -1,10 +1,10 @@
 package by.dragonsurvivalteam.dragonsurvival.mixins.client;
 
+import com.geckolib.animation.AnimationController;
+import com.geckolib.animation.state.AnimationPoint;
 import org.spongepowered.asm.mixin.Dynamic;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
-import com.geckolib.animation.AnimationController;
-import com.geckolib.animation.state.AnimationPoint;
 
 @Mixin(AnimationController.class)
 public interface AnimationControllerAccessor {

@@ -23,6 +23,12 @@ import net.minecraft.world.entity.ai.village.poi.PoiType;
 import net.minecraft.world.entity.npc.villager.VillagerProfession;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.trading.TradeCost;
+import net.minecraft.world.item.trading.TradeSet;
+import net.minecraft.world.item.trading.VillagerTrade;
+import net.minecraft.world.item.trading.VillagerTrades;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.saveddata.maps.MapDecorationType;
 import net.minecraft.world.level.storage.loot.functions.DiscardItem;
@@ -30,12 +36,6 @@ import net.minecraft.world.level.storage.loot.functions.ExplorationMapFunction;
 import net.minecraft.world.level.storage.loot.functions.FilteredFunction;
 import net.minecraft.world.level.storage.loot.functions.SetNameFunction;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.item.trading.TradeCost;
-import net.minecraft.world.item.trading.TradeSet;
-import net.minecraft.world.item.trading.VillagerTrade;
-import net.minecraft.world.item.trading.VillagerTrades;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import org.jetbrains.annotations.Nullable;
 
@@ -150,8 +150,7 @@ public class DSTrades {
         registerTradeSet(context, LEADER_LEVEL_5, LEADER_DRAGONSBANE, LEADER_BOLAS);
     }
 
-    @Nullable
-    public static ResourceKey<TradeSet> getLeaderTradeSet(final int level) {
+    @Nullable public static ResourceKey<TradeSet> getLeaderTradeSet(final int level) {
         return LEADER_TRADE_SETS.get(level);
     }
 

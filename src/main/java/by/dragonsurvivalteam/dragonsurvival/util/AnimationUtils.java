@@ -1,14 +1,13 @@
 package by.dragonsurvivalteam.dragonsurvival.util;
 
-import by.dragonsurvivalteam.dragonsurvival.mixins.client.AnimationControllerAccessor;
-import net.minecraft.client.Minecraft;
-import net.minecraft.world.entity.LivingEntity;
 import com.geckolib.animatable.GeoAnimatable;
 import com.geckolib.animation.AnimationController;
 import com.geckolib.animation.RawAnimation;
 import com.geckolib.cache.GeckoLibResources;
 import com.geckolib.cache.animation.BakedAnimations;
 import com.geckolib.model.GeoModel;
+import net.minecraft.client.Minecraft;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 
 

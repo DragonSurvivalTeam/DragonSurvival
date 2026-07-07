@@ -104,8 +104,7 @@ public abstract class GuiMixin {
         }
     }
 
-    @Unique
-    private static @Nullable Identifier dragonSurvival$getSpriteForAirBubble(final boolean burst) {
+    @Unique private static @Nullable Identifier dragonSurvival$getSpriteForAirBubble(final boolean burst) {
         final Player player = Minecraft.getInstance().player;
 
         if (player == null) {

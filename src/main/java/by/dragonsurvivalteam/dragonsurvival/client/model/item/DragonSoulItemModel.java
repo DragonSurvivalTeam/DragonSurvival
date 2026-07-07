@@ -3,6 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.client.model.item;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.loaders.CustomSoulIconLoader;
 import by.dragonsurvivalteam.dragonsurvival.common.items.DragonSoulItem;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -19,15 +20,13 @@ import net.minecraft.world.entity.ItemOwner;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import org.joml.Matrix4fc;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix4fc;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 
 public class DragonSoulItemModel implements ItemModel {
     public static final Identifier ID = DragonSurvival.res("dragon_soul");

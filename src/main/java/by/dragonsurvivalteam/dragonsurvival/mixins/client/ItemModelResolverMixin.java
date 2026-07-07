@@ -6,9 +6,9 @@ import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.HunterHandler;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.HunterData;
 import net.minecraft.client.renderer.item.ItemModelResolver;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
+import net.minecraft.world.entity.ItemOwner;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.ItemOwner;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -48,18 +48,15 @@ public class ItemModelResolverMixin {
         ((HunterItemRenderStateAccess) output).dragonSurvival$setHunterItemAlpha(alpha);
     }
 
-    @Unique
-    private static boolean dragonSurvival$isThirdPerson(final ItemDisplayContext context) {
+    @Unique private static boolean dragonSurvival$isThirdPerson(final ItemDisplayContext context) {
         return context == ItemDisplayContext.THIRD_PERSON_LEFT_HAND || context == ItemDisplayContext.THIRD_PERSON_RIGHT_HAND;
     }
 
-    @Unique
-    private static boolean dragonSurvival$isFirstPerson(final ItemDisplayContext context) {
+    @Unique private static boolean dragonSurvival$isFirstPerson(final ItemDisplayContext context) {
         return context == ItemDisplayContext.FIRST_PERSON_LEFT_HAND || context == ItemDisplayContext.FIRST_PERSON_RIGHT_HAND;
     }
 
-    @Unique
-    private static @Nullable LivingEntity dragonSurvival$getRelevantEntity(final LivingEntity entity) {
+    @Unique private static @Nullable LivingEntity dragonSurvival$getRelevantEntity(final LivingEntity entity) {
         if (entity instanceof DragonEntity dragon) {
             Player player = dragon.getPlayer();
 

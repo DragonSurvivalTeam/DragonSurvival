@@ -2,15 +2,15 @@ package by.dragonsurvivalteam.dragonsurvival.mixins.client;
 
 import by.dragonsurvivalteam.dragonsurvival.client.render.item.HunterItemLayerAccess;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.HunterHandler;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlas;
-import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.world.item.ItemDisplayContext;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -78,8 +78,7 @@ public class ItemStackRenderStateLayerRenderStateMixin implements HunterItemLaye
         submitNodeCollector.submitItem(poseStack, displayContext, lightCoords, overlayCoords, outlineColor, translucentTints, translucentQuads, foilType);
     }
 
-    @Unique
-    private static BakedQuad dragonSurvival$copyQuad(
+    @Unique private static BakedQuad dragonSurvival$copyQuad(
         final BakedQuad quad,
         final BakedQuad.MaterialInfo materialInfo,
         final RenderType renderType,
@@ -109,13 +108,11 @@ public class ItemStackRenderStateLayerRenderStateMixin implements HunterItemLaye
         );
     }
 
-    @Unique
-    private static ChunkSectionLayer dragonSurvival$getLayer(final RenderType renderType, final ChunkSectionLayer currentLayer) {
+    @Unique private static ChunkSectionLayer dragonSurvival$getLayer(final RenderType renderType, final ChunkSectionLayer currentLayer) {
         return renderType.hasBlending() ? ChunkSectionLayer.TRANSLUCENT : currentLayer;
     }
 
-    @Unique
-    private static RenderType dragonSurvival$getTranslucentRenderType(final BakedQuad.MaterialInfo materialInfo) {
+    @Unique private static RenderType dragonSurvival$getTranslucentRenderType(final BakedQuad.MaterialInfo materialInfo) {
         RenderType renderType = materialInfo.itemRenderType();
 
         if (renderType.hasBlending()) {

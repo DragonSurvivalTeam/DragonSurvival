@@ -28,7 +28,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.SmithingMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.equipment.Equippable;
-import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
@@ -100,11 +99,11 @@ public abstract class SmithingScreenMixin extends ItemCombinerScreen<SmithingMen
         dragonRenderState.bodyRot = dragonSurvival$smithingBodyRotation;
         dragonRenderState.yRot = 0.0F;
         dragonRenderState.xRot = dragonSurvival$smithingPitch;
-        graphics.entity(dragonRenderState, size, translation, rotation, orientation, x0, y0, x1, y1);
+        // Add padding to scissor bounds for this render (+/- 50) so that the dragon doesn't clip
+        graphics.entity(dragonRenderState, size, translation, rotation, orientation, x0 - 50, y0 - 50, x1 + 50, y1 + 50);
     }
 
-    @Unique
-    private void dragonSurvival$copyEquipment(final Player source, final FakeClientPlayer target) {
+    @Unique private void dragonSurvival$copyEquipment(final Player source, final FakeClientPlayer target) {
         target.setItemSlot(EquipmentSlot.HEAD, source.getItemBySlot(EquipmentSlot.HEAD).copy());
         target.setItemSlot(EquipmentSlot.CHEST, source.getItemBySlot(EquipmentSlot.CHEST).copy());
         target.setItemSlot(EquipmentSlot.LEGS, source.getItemBySlot(EquipmentSlot.LEGS).copy());
@@ -113,8 +112,7 @@ public abstract class SmithingScreenMixin extends ItemCombinerScreen<SmithingMen
         target.setItemSlot(EquipmentSlot.OFFHAND, source.getItemBySlot(EquipmentSlot.OFFHAND).copy());
     }
 
-    @Unique
-    private void dragonSurvival$applyPreviewItem(final FakeClientPlayer fakePlayer, final ItemStack stack) {
+    @Unique private void dragonSurvival$applyPreviewItem(final FakeClientPlayer fakePlayer, final ItemStack stack) {
         if (stack.isEmpty()) {
             return;
         }

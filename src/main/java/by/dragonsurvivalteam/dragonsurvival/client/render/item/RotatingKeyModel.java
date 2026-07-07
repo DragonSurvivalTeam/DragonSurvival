@@ -2,9 +2,9 @@ package by.dragonsurvivalteam.dragonsurvival.client.render.item;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.items.RotatingKeyItem;
-import net.minecraft.resources.Identifier;
 import com.geckolib.model.GeoModel;
 import com.geckolib.renderer.base.GeoRenderState;
+import net.minecraft.resources.Identifier;
 
 public class RotatingKeyModel extends GeoModel<RotatingKeyItem> {
     @Override

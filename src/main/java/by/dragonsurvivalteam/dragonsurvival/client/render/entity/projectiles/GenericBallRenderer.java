@@ -1,16 +1,16 @@
 package by.dragonsurvivalteam.dragonsurvival.client.render.entity.projectiles;
 
 import by.dragonsurvivalteam.dragonsurvival.common.entity.projectiles.GenericBallEntity;
+import com.geckolib.constant.dataticket.DataTicket;
+import com.geckolib.model.GeoModel;
+import com.geckolib.renderer.GeoEntityRenderer;
+import com.geckolib.renderer.base.GeoRenderState;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.Nullable;
-import com.geckolib.constant.dataticket.DataTicket;
-import com.geckolib.model.GeoModel;
-import com.geckolib.renderer.GeoEntityRenderer;
-import com.geckolib.renderer.base.GeoRenderState;
 
 public class GenericBallRenderer<R extends EntityRenderState & GeoRenderState> extends GeoEntityRenderer<GenericBallEntity, R> {
 

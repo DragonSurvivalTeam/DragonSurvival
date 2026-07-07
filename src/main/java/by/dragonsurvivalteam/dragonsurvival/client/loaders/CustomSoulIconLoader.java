@@ -1,6 +1,5 @@
 package by.dragonsurvivalteam.dragonsurvival.client.loaders;
 
-import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import com.mojang.serialization.Codec;

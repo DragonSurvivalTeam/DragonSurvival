@@ -3,7 +3,6 @@ package by.dragonsurvivalteam.dragonsurvival.server.containers;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSContainers;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ClawInventoryData;
 import by.dragonsurvivalteam.dragonsurvival.server.containers.slots.ClawToolSlot;
-import by.dragonsurvivalteam.dragonsurvival.util.ToolUtils;
 import net.minecraft.network.protocol.game.ClientboundContainerSetSlotPacket;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;

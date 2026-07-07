@@ -4,8 +4,8 @@ import by.dragonsurvivalteam.dragonsurvival.client.render.entity.dragon.FlatCube
 import com.geckolib.cache.model.GeoQuad;
 import com.geckolib.cache.model.GeoVertex;
 import com.geckolib.cache.model.cuboid.GeoCube;
-import com.geckolib.loading.definition.geometry.GeometryCube;
 import com.geckolib.loading.definition.geometry.GeometryBone;
+import com.geckolib.loading.definition.geometry.GeometryCube;
 import com.geckolib.loading.definition.geometry.GeometryDescription;
 import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.Mixin;

@@ -2,10 +2,10 @@ package by.dragonsurvivalteam.dragonsurvival.client.models.projectiles;
 
 import by.dragonsurvivalteam.dragonsurvival.client.render.entity.projectiles.GenericBallRenderer;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.projectiles.GenericBallEntity;
-import net.minecraft.resources.Identifier;
-import org.jetbrains.annotations.NotNull;
 import com.geckolib.model.GeoModel;
 import com.geckolib.renderer.base.GeoRenderState;
+import net.minecraft.resources.Identifier;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 

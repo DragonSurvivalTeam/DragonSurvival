@@ -1,12 +1,8 @@
 package by.dragonsurvivalteam.dragonsurvival.compat.car;
 
-import by.dragonsurvivalteam.dragonsurvival.compat.ModCheck;
-//import lain.mods.cos.api.CosArmorAPI;
-//import lain.mods.cos.impl.inventory.InventoryCosArmor;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 
 public class CosmeticArmorReworkedHelper {
     public static ItemStack getItemVisibleInSlot(Player player, EquipmentSlot slot) {

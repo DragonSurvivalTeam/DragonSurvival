@@ -1,13 +1,13 @@
 package by.dragonsurvivalteam.dragonsurvival.client.render.util;
 
 import by.dragonsurvivalteam.dragonsurvival.util.AnimationUtils;
+import com.geckolib.animatable.GeoAnimatable;
+import com.geckolib.animation.RawAnimation;
+import com.geckolib.model.GeoModel;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RenderFrameEvent;
-import com.geckolib.animatable.GeoAnimatable;
-import com.geckolib.animation.RawAnimation;
-import com.geckolib.model.GeoModel;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;

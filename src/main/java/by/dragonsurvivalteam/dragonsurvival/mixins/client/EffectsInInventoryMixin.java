@@ -19,7 +19,6 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
 import net.minecraft.util.StringUtil;
@@ -35,7 +34,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
@@ -84,8 +82,7 @@ public class EffectsInInventoryMixin {
         storedEvent.set(event);
     }
 
-    @Unique
-    private int dragonSurvival$renderAbilityBackground(final GuiGraphicsExtractor graphics, final Font font, final Component effectName, final Component duration, final int x0, final int y0, final int maxTextureWidth) {
+    @Unique private int dragonSurvival$renderAbilityBackground(final GuiGraphicsExtractor graphics, final Font font, final Component effectName, final Component duration, final int x0, final int y0, final int maxTextureWidth) {
         final int nameWidth = 32 + font.width(effectName) + 7;
         final int durationWidth = 32 + font.width(duration) + 7;
         final int textureWidth = Math.min(maxTextureWidth, Math.max(nameWidth, durationWidth));
@@ -93,8 +90,7 @@ public class EffectsInInventoryMixin {
         return textureWidth;
     }
 
-    @Unique
-    private void dragonSurvival$renderAbilityLabel(final GuiGraphicsExtractor graphics, final Font font, final Component effectText, final Component duration, final int x0, final int y0, final int textureWidth) {
+    @Unique private void dragonSurvival$renderAbilityLabel(final GuiGraphicsExtractor graphics, final Font font, final Component effectText, final Component duration, final int x0, final int y0, final int textureWidth) {
         final int textX = x0 + 32;
         final int textY = y0 + 7;
         final int maxTextWidth = textureWidth - 39;
@@ -108,8 +104,7 @@ public class EffectsInInventoryMixin {
         graphics.text(font, duration, textX, textY + 9, -8355712);
     }
 
-    @Unique
-    private static Component dragonSurvival$formatDuration(final ClientEffectProvider effect, final float ticksPerSecond) {
+    @Unique private static Component dragonSurvival$formatDuration(final ClientEffectProvider effect, final float ticksPerSecond) {
         if (effect.isInfiniteDuration()) {
             return Component.translatable(LangKey.DURATION, DSColors.dynamicValue(Component.translatable("effect.duration.infinite")));
         }
@@ -118,13 +113,11 @@ public class EffectsInInventoryMixin {
         return Component.translatable(LangKey.DURATION, DSColors.dynamicValue(StringUtil.formatTickDuration(duration, ticksPerSecond)));
     }
 
-    @Unique
-    private void dragonSurvival$appendTooltipLine(final List<FormattedCharSequence> tooltip, final Font font, final Component line) {
+    @Unique private void dragonSurvival$appendTooltipLine(final List<FormattedCharSequence> tooltip, final Font font, final Component line) {
         tooltip.addAll(font.split(line, 170));
     }
 
-    @Unique
-    private List<FormattedCharSequence> dragonSurvival$createTooltip(final ClientEffectProvider hovered, final Font font) {
+    @Unique private List<FormattedCharSequence> dragonSurvival$createTooltip(final ClientEffectProvider hovered, final Font font) {
         final List<FormattedCharSequence> tooltip = new ArrayList<>();
         dragonSurvival$appendTooltipLine(tooltip, font, hovered.clientData().name());
 

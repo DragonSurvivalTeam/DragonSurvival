@@ -27,10 +27,10 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.client.event.RegisterRenderPipelinesEvent;
-import org.joml.Matrix3x2f;
-import org.joml.Matrix3x2fc;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix3x2f;
+import org.joml.Matrix3x2fc;
 
 import java.awt.Color;
 

@@ -5,8 +5,8 @@ import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
 import by.dragonsurvivalteam.dragonsurvival.util.AdditionalEffectData;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.Holder;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -122,8 +122,7 @@ public abstract class MobEffectInstanceMixin implements AdditionalEffectData {
         }
     }
 
-    @Unique
-    private static MobEffectInstance dragonSurvival$create(
+    @Unique private static MobEffectInstance dragonSurvival$create(
             final Holder<MobEffect> effect,
             final int amplifier,
             final int duration,
@@ -138,8 +137,7 @@ public abstract class MobEffectInstanceMixin implements AdditionalEffectData {
         return instance;
     }
 
-    @Unique
-    private static StreamCodec<RegistryFriendlyByteBuf, MobEffectInstance> dragonSurvival$createStreamCodec() {
+    @Unique private static StreamCodec<RegistryFriendlyByteBuf, MobEffectInstance> dragonSurvival$createStreamCodec() {
         return new StreamCodec<>() {
             @Override
             public MobEffectInstance decode(final RegistryFriendlyByteBuf buffer) {

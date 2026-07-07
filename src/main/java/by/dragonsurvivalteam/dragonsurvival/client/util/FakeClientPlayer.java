@@ -2,6 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.client.util;
 
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
+import com.geckolib.animation.AnimationController;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
@@ -14,7 +15,6 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
-import com.geckolib.animation.AnimationController;
 
 import java.util.UUID;
 import java.util.function.Supplier;
