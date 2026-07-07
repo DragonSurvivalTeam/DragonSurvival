@@ -314,7 +314,7 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
         @Override
         public void registerControllers(final AnimatableManager.ControllerRegistrar controllers) {
             mainAnimationController = new AnimationController<>("ui_main", 0, state -> {
-                state.controller().setTransitionTicks(0);
+                state.controller().setTransitionTicks(cachedAnimation == null ? 0 : 2);
                 return state.setAndContinue(getUIAnimation());
             });
             controllers.add(mainAnimationController);

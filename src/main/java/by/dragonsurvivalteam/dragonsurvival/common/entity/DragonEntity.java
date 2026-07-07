@@ -761,7 +761,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
         // GeckoLib still needs a non-zero transition here so the first valid pose can blend in.
         // This usually happens when changing dimensions, or new clientside dragons are initialized in the UI
         if(animationWasNullBeforePredicate) {
-            transitionTicks = 10;
+            transitionTicks = 0;
         }
 
         if (animationToChangeTo != null) {

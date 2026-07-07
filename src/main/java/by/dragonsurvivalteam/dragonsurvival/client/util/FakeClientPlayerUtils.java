@@ -31,18 +31,21 @@ public class FakeClientPlayerUtils {
             @Override
             public void registerControllers(final AnimatableManager.ControllerRegistrar controllers) {
                 AnimationController<DragonEntity> controller = new AnimationController<>("fake_player_controller", 2, state -> {
+                    boolean wasReset = false;
                     if (fakePlayer.handler.refreshBody) {
                         fakePlayer.animationController.reset();
+                        wasReset = true;
                     }
 
                     if (fakePlayer.animationSupplier != null) {
                         if (state.controller().getCurrentRawAnimation() == null) {
                             // Sometimes it happens that this turns to null and the set animation below will do nothing
                             // Because the controller still has the same raw animation stored (no change = no update)
-                            // FIXME :: Is this the same as state.resetCurrentAnimation() ?
                             state.controller().reset();
+                            wasReset = true;
                         }
 
+                        state.controller().setTransitionTicks(wasReset ? 0 : 2);
                         return state.setAndContinue(RawAnimation.begin().thenLoop(fakePlayer.animationSupplier.get()));
                     }
 
