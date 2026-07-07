@@ -260,8 +260,6 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
         private double currentTailMotionUp;
     }
 
-    private record InventoryRenderOverrides(double bodyYaw, double headYaw, double headPitch) { }
-
     private record InterruptedTransitionBlend(double startAge, int transitionTicks, Map<String, BonePose> startPoses) { }
 
     private record BonePose(
@@ -571,6 +569,10 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
         super.preRenderPass(renderPassInfo, renderTasks);
     }
 
+    /**
+     * GeckoLib 4 had this behavior before, but for some reason it is gone now. So I had to re-implement it myself.
+     * Without this, the transitions between animations for the dragon will be snappy/stuttery
+     */
     private static void smoothInterruptedAnimationTransition(final DragonRenderData renderData, final RenderPassInfo<?> renderPassInfo, final BoneSnapshots snapshots) {
         int dragonId = renderData.dragonId();
         DragonEntity dragon = renderData.dragon();
