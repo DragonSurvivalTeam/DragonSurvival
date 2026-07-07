@@ -48,6 +48,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
@@ -59,6 +60,9 @@ import static by.dragonsurvivalteam.dragonsurvival.client.DragonSurvivalClient.D
 public class DragonEntity extends LivingEntity implements GeoEntity {
     private static final int MAX_EMOTES = 4;
     private static final int CONTINUOUS_ANIMATION_SLOTS = 4;
+    private static final double TICKS_PER_SECOND = 20;
+    private static final String DRAINING_LAYER = "draining_";
+    private static final RawAnimation EMPTY_LAYER_ANIMATION = RawAnimation.begin().thenWait(1_000_000);
 
     // Default player values
     private static final double DEFAULT_WALK_SPEED = 0.1; // Abilities#walkingSpeed
@@ -91,6 +95,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
 
     private final DragonEmote[] currentlyPlayingEmotes = new DragonEmote[MAX_EMOTES];
     private final boolean[] soundForEmoteHasAlreadyPlayedThisTick = new boolean[MAX_EMOTES];
+    private final EnumSet<AnimationLayer> drainingAnimationLayers = EnumSet.noneOf(AnimationLayer.class);
     private final AnimationTickTimer animationTickTimer = new AnimationTickTimer();
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
@@ -275,29 +280,75 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
         return begunPlayingAbilityAnimation && currentLayer == layer;
     }
 
+    private void clearLayerDrain(final AnimationLayer layer) {
+        drainingAnimationLayers.remove(layer);
+        animationTickTimer.stopAnimation(getLayerDrainKey(layer));
+    }
+
+    // Bite/use overlays should finish their current cycle, then clear the GeckoLib controller state.
+    private PlayState stopLayerAfterCurrentCycle(final AnimationTest<DragonEntity> state, final AnimationLayer layer) {
+        String drainKey = getLayerDrainKey(layer);
+
+        if (drainingAnimationLayers.contains(layer)) {
+            if (animationTickTimer.isPresent(drainKey)) {
+                return PlayState.CONTINUE;
+            }
+
+            drainingAnimationLayers.remove(layer);
+            state.controller().reset();
+            return PlayState.STOP;
+        }
+
+        AnimationController<DragonEntity> controller = state.controller();
+        if (controller.getCurrentRawAnimation() == null || controller.getCurrentAnimationPoint() == null) {
+            controller.reset();
+            return PlayState.STOP;
+        }
+
+        double remainingTicks = (controller.getCurrentAnimationPoint().animation().length() - controller.getCurrentAnimationTime()) * TICKS_PER_SECOND;
+        if (remainingTicks > 0) {
+            drainingAnimationLayers.add(layer);
+            animationTickTimer.putAnimation(drainKey, remainingTicks);
+            return PlayState.CONTINUE;
+        }
+
+        controller.reset();
+        return PlayState.STOP;
+    }
+
+    private static String getLayerDrainKey(final AnimationLayer layer) {
+        return DRAINING_LAYER + layer.name();
+    }
+
     // For the breath weapon only, we want it to play on a separate controller,
     // so it can play at the same time as other animations
     private PlayState breathPredicate(final AnimationTest<DragonEntity> state) {
         Player player = getPlayer();
 
         if (player == null) {
+            state.controller().reset();
+            clearLayerDrain(AnimationLayer.BREATH);
             return PlayState.STOP;
         }
 
         DragonStateHandler handler = DragonStateProvider.getData(player);
         if (handler.refreshBody) {
             state.controller().reset();
+            clearLayerDrain(AnimationLayer.BREATH);
         }
 
         if (checkAndPlayAbilityAnimation(state, AnimationLayer.BREATH)) {
+            clearLayerDrain(AnimationLayer.BREATH);
             return PlayState.CONTINUE;
         }
 
-        return PlayState.STOP;
+        clearLayerDrain(AnimationLayer.BREATH);
+        return state.setAndContinue(EMPTY_LAYER_ANIMATION);
     }
 
     private PlayState playOrContinueAnimation(RawAnimation animation, AnimationTest<DragonEntity> state, MovementData movement) {
         movement.bite = false;
+        clearLayerDrain(AnimationLayer.BITE);
 
         if (animationTickTimer.getDuration(animation) <= 0) {
             animationTickTimer.putAnimation(DRAGON_MODEL, this, animation);
@@ -310,15 +361,19 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
         Player player = getPlayer();
 
         if (player == null) {
+            state.controller().reset();
+            clearLayerDrain(AnimationLayer.BITE);
             return PlayState.STOP;
         }
 
         DragonStateHandler handler = DragonStateProvider.getData(player);
         if (handler.refreshBody) {
             state.controller().reset();
+            clearLayerDrain(AnimationLayer.BITE);
         }
 
         if (checkAndPlayAbilityAnimation(state, AnimationLayer.BITE)) {
+            clearLayerDrain(AnimationLayer.BITE);
             return PlayState.CONTINUE;
         }
 
@@ -354,7 +409,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
             return playOrContinueAnimation(DragonAnimations.BITE.getAnimation(), state, movement);
         }
         
-        return PlayState.STOP;
+        return stopLayerAfterCurrentCycle(state, AnimationLayer.BITE);
     }
 
     private PlayState continousPredicate(final AnimationTest<GeoAnimatable> state, int slot) {
