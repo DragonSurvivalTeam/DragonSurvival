@@ -300,14 +300,14 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
         int topY = bottomY - Math.max(70, scale * 3);
         int leftX = centerX - halfWidth;
         int rightX = centerX + halfWidth;
-        float lookX = leftSide ? centerX - 40.0F : centerX + 40.0F;
-        float lookY = bottomY - 30.0F;
+        float lookX = (float) (leftSide ? Math.toRadians(-80) : Math.toRadians(100));
+        float lookY = 0;
 
         try {
-            InventoryScreen.extractEntityInInventoryFollowsMouse(graphics, leftX, topY, rightX, bottomY, scale, 0, lookX, lookY, entity);
+            InventoryScreen.renderEntityInInventoryFollowsAngle(graphics, leftX - 50, topY - 50, rightX + 50, bottomY + 50, scale, 0, lookX, lookY, entity);
         } catch (final IllegalArgumentException exception) {
             if (entity instanceof DragonEntity dragon && dragon.getPlayer() instanceof LivingEntity fallbackEntity) {
-                InventoryScreen.extractEntityInInventoryFollowsMouse(graphics, leftX, topY, rightX, bottomY, scale, 0, lookX, lookY, fallbackEntity);
+                InventoryScreen.renderEntityInInventoryFollowsAngle(graphics, leftX - 50, topY - 50, rightX + 50, bottomY + 50, scale, 0, lookX, lookY, fallbackEntity);
             }
         }
     }

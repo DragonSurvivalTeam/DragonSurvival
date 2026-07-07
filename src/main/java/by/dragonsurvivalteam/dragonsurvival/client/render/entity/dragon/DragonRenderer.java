@@ -314,7 +314,13 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
         @Override
         public void registerControllers(final AnimatableManager.ControllerRegistrar controllers) {
             mainAnimationController = new AnimationController<>("ui_main", 0, state -> {
-                state.controller().setTransitionTicks(cachedAnimation == null ? 0 : 2);
+                boolean hasReset = false;
+                if (player instanceof FakeClientPlayer fakeClientPlayer && fakeClientPlayer.handler.refreshBody) {
+                    state.controller().reset();
+                    fakeClientPlayer.handler.refreshBody = false;
+                    hasReset = true;
+                }
+                state.controller().setTransitionTicks(cachedAnimation == null || hasReset ? 0 : 2);
                 return state.setAndContinue(getUIAnimation());
             });
             controllers.add(mainAnimationController);
@@ -891,7 +897,7 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
     }
 
     private static double getRenderTick(final DragonRenderData renderData, final Player player, final float partialTick) {
-        if (!renderData.inInventory()) {
+        if (!renderData.inInventory() && !(player instanceof FakeClientPlayer)) {
             return player.tickCount + partialTick + 200;
         }
 
