@@ -38,11 +38,6 @@ public abstract class MobEffectInstanceMixin implements AdditionalEffectData {
     @Mutable @Shadow @Final public static StreamCodec<RegistryFriendlyByteBuf, MobEffectInstance> STREAM_CODEC;
 
     @Shadow @Final private Holder<MobEffect> effect;
-    @Shadow private int duration;
-    @Shadow private int amplifier;
-    @Shadow private boolean ambient;
-    @Shadow private boolean visible;
-    @Shadow private boolean showIcon;
     @Shadow @Nullable private MobEffectInstance hiddenEffect;
 
     @Unique @Nullable private Entity dragonSurvival$applier;
