@@ -85,7 +85,6 @@ public class CustomizationFileHandler {
 
         @Override
         public void serialize(@NotNull ValueOutput output) {
-            customization.serialize(output);
             output.putChild(CUSTOMIZATION, customization);
             output.putString(DRAGON_SPECIES, dragonSpecies.identifier().toString());
             output.putString(DRAGON_MODEL, dragonModel.toString());
@@ -96,8 +95,8 @@ public class CustomizationFileHandler {
             this.customization = new DragonStageCustomization();
 
             input.child(CUSTOMIZATION).ifPresent(customization -> this.customization.deserialize(customization));
-            input.child(DRAGON_SPECIES).ifPresent(dragonSpecies -> this.dragonSpecies = ResourceKey.create(DragonSpecies.REGISTRY, Identifier.parse(dragonSpecies.getString(DRAGON_SPECIES).orElseThrow())));
-            input.child(DRAGON_MODEL).ifPresent(dragonModel -> this.dragonModel = Identifier.parse(dragonModel.getString(DRAGON_MODEL).orElseThrow()));
+            input.getString(DRAGON_SPECIES).ifPresent(dragonSpecies -> this.dragonSpecies = ResourceKey.create(DragonSpecies.REGISTRY, Identifier.parse(dragonSpecies)));
+            input.getString(DRAGON_MODEL).ifPresent(dragonModel -> this.dragonModel = Identifier.parse(dragonModel));
         }
     }
 
@@ -149,7 +148,7 @@ public class CustomizationFileHandler {
                     continue;
                 }
 
-                savedCustomizations.put(slot, SavedCustomization.fromNBT(provider, nbt));
+                savedCustomizations.put(slot, savedCustomization);
             } catch (IOException exception) {
                 DragonSurvival.LOGGER.warn("An error occurred while processing the file [{}]", savedFile, exception);
             }
@@ -183,10 +182,9 @@ public class CustomizationFileHandler {
 
         SavedCustomization customization = savedCustomizations.get(slot);
 
-        // FIXME
-//        if (customization != null) {
-//            return customization.copy(provider);
-//        }
+        if (customization != null) {
+            return customization.copy(provider);
+        }
 
         return null;
     }
