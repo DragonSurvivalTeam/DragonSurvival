@@ -238,6 +238,7 @@ public class DragonInventoryScreen extends AbstractContainerScreen<DragonContain
 
     @Override
     public void extractBackground(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partialTick) {
+        super.extractBackground(GuiGraphicsExtractor, mouseX, mouseY, partialTick);
         GuiGraphicsExtractor.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND, leftPos, topPos, 0, 0, imageWidth, imageHeight, 256, 256);
 
         int scissorY1 = topPos + 77;
