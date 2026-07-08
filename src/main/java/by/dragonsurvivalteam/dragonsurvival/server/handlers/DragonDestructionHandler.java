@@ -18,6 +18,7 @@ import net.minecraft.world.phys.Vec2;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.level.BlockEvent;
+import net.neoforged.neoforge.event.level.block.BreakBlockEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
 import java.util.HashMap;
@@ -51,7 +52,7 @@ public class DragonDestructionHandler {
     }
 
     @SubscribeEvent
-    public static void destroyBlocksInRadius(final BlockEvent.BreakEvent event) {
+    public static void destroyBlocksInRadius(final BreakBlockEvent event) {
         if (isBreakingMultipleBlocks) {
             return;
         }

@@ -13,6 +13,7 @@ import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.event.level.BlockEvent;
+import net.neoforged.neoforge.event.level.block.BreakBlockEvent;
 
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -25,7 +26,7 @@ public record OnBlockBreak(Optional<LootItemCondition> condition) implements Act
             LootItemCondition.DIRECT_CODEC.optionalFieldOf("condition").forGetter(OnBlockBreak::condition)
     ).apply(instance, OnBlockBreak::new));
     
-    public static void trigger(final BlockEvent.BreakEvent event) {
+    public static void trigger(final BreakBlockEvent event) {
         if (event.getPlayer() instanceof ServerPlayer player) {
             DragonStateHandler handler = DragonStateProvider.getData(player);
 

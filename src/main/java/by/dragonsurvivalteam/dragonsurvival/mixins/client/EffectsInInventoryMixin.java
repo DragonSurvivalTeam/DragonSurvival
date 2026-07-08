@@ -146,7 +146,7 @@ public class EffectsInInventoryMixin {
             return;
         }
 
-        int renderX = screen.getGuiLeft() + screen.getXSize() + 2;
+        int renderX = screen.getLeftPos() + screen.getImageWidth() + 2;
         final int availableSpace = ((ScreenAccessor) screen).dragonSurvival$getWidth() - renderX;
 
         if (availableSpace < 32) {
@@ -167,7 +167,7 @@ public class EffectsInInventoryMixin {
         final List<MobEffectInstance> renderedMobEffects = player.getActiveEffects().stream().filter(ClientHooks::shouldRenderEffect).sorted().toList();
         final int totalElementsToRender = renderedMobEffects.size() + dragonSurvival$providers.size();
         final int yOffset = totalElementsToRender > 5 ? 132 / (totalElementsToRender - 1) : 33;
-        int topPos = screen.getGuiTop() + yOffset * renderedMobEffects.size();
+        int topPos = screen.getTopPos() + yOffset * renderedMobEffects.size();
         final boolean renderLabels = !event.isCompact();
         final int maxWidth = renderLabels ? availableSpace - 7 : 32;
         final Font font = screen.getFont();

@@ -44,7 +44,7 @@ public class ConfoundedEffect extends ModifiableMobEffect {
                     effectApplier = ((AdditionalEffectData) livingSource.getEffect(DSEffects.CONFOUNDED)).dragonSurvival$getApplier(serverLevel);
                 }
 
-                livingSource.hurt(new DamageSource(DSDamageTypes.get(victim.level(), DSDamageTypes.MIRROR_CURSE), effectApplier), damageEvent.getNewDamage());
+                livingSource.hurt(new DamageSource(DSDamageTypes.get(victim.level(), DSDamageTypes.MIRROR_CURSE), effectApplier), damageEvent.getInflictedDamage());
             }
         }
     }

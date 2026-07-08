@@ -8,11 +8,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.items.SlotItemHandler;
-import net.neoforged.neoforge.items.wrapper.InvWrapper;
 import org.jetbrains.annotations.NotNull;
-
-import javax.annotation.Nonnull;
 
 public class SourceOfMagicContainer extends AbstractContainerMenu {
     public final SourceOfMagicBlockEntity blockEntity;
@@ -32,9 +28,9 @@ public class SourceOfMagicContainer extends AbstractContainerMenu {
             }
         }
 
-        addSlot(new SlotItemHandler(new InvWrapper(blockEntity), 0, 80, 62) {
+        addSlot(new Slot(blockEntity, 0, 80, 62) {
             @Override
-            public boolean mayPlace(@Nonnull final ItemStack stack) {
+            public boolean mayPlace(final ItemStack stack) {
                 return blockEntity.getDuration(stack.getItem()) > 0;
             }
         });

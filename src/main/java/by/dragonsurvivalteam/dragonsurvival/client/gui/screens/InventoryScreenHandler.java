@@ -103,10 +103,10 @@ public class InventoryScreenHandler {
     public static void moveButtonsIfCraftingTabIsOpened(ScreenEvent.Render.Pre renderEvent) {
         if (renderEvent.getScreen() instanceof InventoryScreen screen) {
             if (altarOpenButton != null) {
-                altarOpenButton.setPosition(screen.getGuiLeft() + 130, screen.height / 2 - 32);
+                altarOpenButton.setPosition(screen.getLeftPos() + 130, screen.height / 2 - 32);
             }
             if (dragonInventoryButton != null) {
-                dragonInventoryButton.setPosition(screen.getGuiLeft() + 128, screen.height / 2 - 22);
+                dragonInventoryButton.setPosition(screen.getLeftPos() + 128, screen.height / 2 - 22);
             }
         }
     }
@@ -117,7 +117,7 @@ public class InventoryScreenHandler {
 
         if (sc instanceof InventoryScreen screen) {
             if (ServerConfig.allowDragonChoiceFromInventory) {
-                altarOpenButton = new ExtendedButton(screen.getGuiLeft() + 138, screen.height / 2 - 32, 32, 32, Component.empty(), button -> {
+                altarOpenButton = new ExtendedButton(screen.getLeftPos() + 138, screen.height / 2 - 32, 32, 32, Component.empty(), button -> {
                     ClientProxy.openDragonAltar();
                 }) {
                     @Override
@@ -138,7 +138,7 @@ public class InventoryScreenHandler {
         Integer height = null;
 
         if (sc instanceof InventoryScreen screen) {
-            width = screen.getGuiLeft();
+            width = screen.getLeftPos();
             height = screen.height;
         }
         // FIXME :: CURIOS INTEGRATION
@@ -167,7 +167,7 @@ public class InventoryScreenHandler {
 
         if (sc instanceof CreativeModeInventoryScreen screen) {
             if (inventoryToggle) {
-                creativeModeDragonInventoryButton = new ExtendedButton(screen.getGuiLeft() + 128 + 20, screen.height / 2 - 50, 20, 18, Component.empty(), p_onPress_1_ -> {
+                creativeModeDragonInventoryButton = new ExtendedButton(screen.getLeftPos() + 128 + 20, screen.height / 2 - 50, 20, 18, Component.empty(), p_onPress_1_ -> {
                     openDragonInventory();
                 }) {
                     @Override

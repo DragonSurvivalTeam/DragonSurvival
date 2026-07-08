@@ -56,8 +56,8 @@ public class DragonOreLootModifier extends LootModifier {
 
     public static final Supplier<MapCodec<DragonOreLootModifier>> CODEC = Suppliers.memoize(() -> RecordCodecBuilder.mapCodec(inst -> codecStart(inst).apply(inst, DragonOreLootModifier::new)));
 
-    public DragonOreLootModifier(final LootItemCondition[] conditions) {
-        super(conditions);
+    public DragonOreLootModifier(final LootItemCondition[] conditions, final int priority) {
+        super(conditions, priority);
     }
 
     @Override

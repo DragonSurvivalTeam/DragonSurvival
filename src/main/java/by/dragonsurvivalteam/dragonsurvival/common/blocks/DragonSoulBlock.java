@@ -49,6 +49,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.level.BlockEvent;
+import net.neoforged.neoforge.event.level.block.BreakBlockEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -87,7 +88,7 @@ public class DragonSoulBlock extends Block implements SimpleWaterloggedBlock, En
     }
 
     @SubscribeEvent
-    public static void preventBreaking(final BlockEvent.BreakEvent event) {
+    public static void preventBreaking(final BreakBlockEvent event) {
         if (!event.getState().is(DSBlocks.DRAGON_SOUL)) {
             return;
         }

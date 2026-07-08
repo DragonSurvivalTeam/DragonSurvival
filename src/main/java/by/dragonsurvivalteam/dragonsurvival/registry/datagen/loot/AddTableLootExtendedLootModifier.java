@@ -45,7 +45,7 @@ public class AddTableLootExtendedLootModifier extends LootModifier {
     private boolean hasResolvedTables = false;
 
     public AddTableLootExtendedLootModifier(LootItemCondition[] conditionsIn, ResourceKey<LootTable> table, List<String> lootTables, boolean blacklist) {
-        super(conditionsIn);
+        super(conditionsIn, 0);
         this.table = table;
         this.tablesToApply = lootTables;
         this.blacklist = blacklist;

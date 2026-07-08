@@ -58,8 +58,8 @@ public class DragonHeartLootModifier extends LootModifier {
 
     public static final Supplier<MapCodec<DragonHeartLootModifier>> CODEC = Suppliers.memoize(() -> RecordCodecBuilder.mapCodec(inst -> codecStart(inst).apply(inst, DragonHeartLootModifier::new)));
 
-    public DragonHeartLootModifier(final LootItemCondition[] conditions) {
-        super(conditions);
+    public DragonHeartLootModifier(final LootItemCondition[] conditions, final int priority) {
+        super(conditions, priority);
     }
 
     private static boolean canDropHeart(float health, float min, float max, final TagKey<EntityType<?>> tag, final Entity entity, boolean isWhiteList) {

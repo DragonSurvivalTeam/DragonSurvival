@@ -36,14 +36,14 @@ public class EnderDragonMarkHandler {
         if (event.getEntity() instanceof EnderDragon enderDragon) {
             if (event.getSource().getEntity() instanceof Player player) {
                 EnderDragonDamageHistory data = EnderDragonDamageHistory.getData(enderDragon);
-                data.addDamage(player.getUUID(), event.getNewDamage());
+                data.addDamage(player.getUUID(), event.getInflictedDamage());
             }
 
             // If the dragon is healed, reverse progress for all the players
-            if (event.getNewDamage() < 0) {
+            if (event.getInflictedDamage() < 0) {
                 // TODO :: shouldn't the dealt damage be reduced by a % of their contribution?
                 EnderDragonDamageHistory data = EnderDragonDamageHistory.getData(enderDragon);
-                data.addDamageAll(event.getNewDamage());
+                data.addDamageAll(event.getInflictedDamage());
             }
         }
     }

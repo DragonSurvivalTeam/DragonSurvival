@@ -110,7 +110,7 @@ public class HunterHandler {
     public static void removeHunterEffect(final LivingDamageEvent.Post event) {
         MobEffectInstance hunterEffect = event.getEntity().getEffect(DSEffects.HUNTER);
 
-        if (hunterEffect != null && event.getNewDamage() > hunterEffect.getAmplifier()) {
+        if (hunterEffect != null && event.getInflictedDamage() > hunterEffect.getAmplifier()) {
             event.getEntity().removeEffect(DSEffects.HUNTER);
         }
     }
