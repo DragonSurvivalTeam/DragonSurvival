@@ -487,7 +487,7 @@ public class DSItems {
     public static final Holder<Item> CAVE_SOURCE_OF_MAGIC = REGISTRY.registerItem(
         "cave_source_of_magic",
         properties -> new SourceOfMagicItem(DSBlocks.CAVE_SOURCE_OF_MAGIC.get(), properties),
-        () -> new Item.Properties().rarity(Rarity.EPIC)
+        () -> new Item.Properties().useBlockDescriptionPrefix().rarity(Rarity.EPIC)
                     .component(DSDataComponents.SOURCE_OF_MAGIC, new SourceOfMagicData(
                             List.of(
                                     new SourceOfMagicData.Consumable(DSItems.ELDER_DRAGON_DUST.value(), Functions.secondsToTicks(10)),
@@ -503,7 +503,7 @@ public class DSItems {
     public static final Holder<Item> FOREST_SOURCE_OF_MAGIC = REGISTRY.registerItem(
         "forest_source_of_magic",
         properties -> new SourceOfMagicItem(DSBlocks.FOREST_SOURCE_OF_MAGIC.get(), properties),
-        () -> new Item.Properties().rarity(Rarity.EPIC)
+        () -> new Item.Properties().useBlockDescriptionPrefix().rarity(Rarity.EPIC)
             .component(DSDataComponents.SOURCE_OF_MAGIC, new SourceOfMagicData(
                 List.of(
                     new SourceOfMagicData.Consumable(DSItems.ELDER_DRAGON_DUST.value(), Functions.secondsToTicks(10)),
@@ -519,7 +519,7 @@ public class DSItems {
     public static final Holder<Item> SEA_SOURCE_OF_MAGIC = REGISTRY.registerItem(
         "sea_source_of_magic",
         properties -> new SourceOfMagicItem(DSBlocks.SEA_SOURCE_OF_MAGIC.get(), properties),
-        () -> new Item.Properties().rarity(Rarity.EPIC)
+        () -> new Item.Properties().useBlockDescriptionPrefix().rarity(Rarity.EPIC)
             .component(DSDataComponents.SOURCE_OF_MAGIC, new SourceOfMagicData(
                 List.of(
                     new SourceOfMagicData.Consumable(DSItems.ELDER_DRAGON_DUST.value(), Functions.secondsToTicks(10)),
