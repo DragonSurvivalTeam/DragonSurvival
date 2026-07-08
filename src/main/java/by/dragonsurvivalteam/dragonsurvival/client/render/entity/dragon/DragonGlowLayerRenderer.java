@@ -37,10 +37,6 @@ public class DragonGlowLayerRenderer extends GeoRenderLayer<DragonEntity> {
             return;
         }
 
-        if (!dragonRenderer.shouldRenderLayers) {
-            return;
-        }
-
         Player player;
 
         if (animatable.overrideUUIDWithLocalPlayerForTextureFetch) {
@@ -75,8 +71,6 @@ public class DragonGlowLayerRenderer extends GeoRenderLayer<DragonEntity> {
             }
         }
 
-        dragonRenderer.isRenderingLayer = true;
-
         if (glowTexture == null && customization.layerSettings.values().stream().anyMatch(layerSettings -> layerSettings.get().isGlowing)) {
             glowTexture = DragonModel.dynamicTexture(player, handler, true);
         }
@@ -85,7 +79,5 @@ public class DragonGlowLayerRenderer extends GeoRenderLayer<DragonEntity> {
             RenderType type = RenderType.EYES.apply(glowTexture, RenderType.LIGHTNING_TRANSPARENCY);
             dragonRenderer.actuallyRender(poseStack, animatable, bakedModel, type, bufferSource, bufferSource.getBuffer(type), true, partialTick, packedLight, OverlayTexture.NO_OVERLAY, renderer.getRenderColor(animatable, partialTick, packedLight).getColor());
         }
-
-        dragonRenderer.isRenderingLayer = false;
     }
 }

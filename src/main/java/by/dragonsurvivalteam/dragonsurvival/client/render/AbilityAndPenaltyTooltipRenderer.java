@@ -28,6 +28,7 @@ import org.jetbrains.annotations.NotNull;
 import org.joml.Vector2ic;
 import software.bernie.geckolib.util.Color;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class AbilityAndPenaltyTooltipRenderer {
@@ -71,13 +72,25 @@ public class AbilityAndPenaltyTooltipRenderer {
         maxScrollAmount = lines.size();
         scrollAmount = Math.clamp(scrollAmount, 0, maxScroll());
 
+        // Need to format the text for the bottom info at this point to adjust the height of the background
+        List<FormattedCharSequence> bottomInfoLines;
+
+        if (!shiftInfo.isEmpty()) {
+            bottomInfoLines = Minecraft.getInstance().font.split(Component.translatable(INFO_SHIFT).withStyle(ChatFormatting.DARK_GRAY), maxLineWidth - 10);
+        } else {
+            bottomInfoLines = new ArrayList<>();
+        }
+
+        // The effect header is meant to separate multiple effects from each other
+        // Currently we append this header at a point in time where we don't know the actual order of the effects
+        // That's why we use this check to skip the first header line
         boolean skipFirstLine = !lines.isEmpty() && isEffectHeader(lines.getFirst());
 
         // '65' is roughly the amount of space needed for the other components so that the name and level can be centered without overlap
         int backgroundWidth = Math.max(150, Minecraft.getInstance().font.width(name) + 65);
         List<FormattedCharSequence> description = Minecraft.getInstance().font.split(rawDescription, backgroundWidth - 7);
 
-        int backgroundHeight = 35 + 24 + description.size() * 9;
+        int backgroundHeight = /* Size of the horizontal colored bar */ 20 + /* Line breaks between bar, title and bottom info */ 27 + (description.size() + bottomInfoLines.size()) * 9;
         int sideWidth = Screen.hasShiftDown() ? maxLineWidth : 15;
         int sideHeight = Screen.hasShiftDown() ? 36 + Math.min(skipFirstLine ? lines.size() - 1 : lines.size(), MAX_SHOWN_LINES) * 9 : backgroundHeight - 10;
 
@@ -88,9 +101,9 @@ public class AbilityAndPenaltyTooltipRenderer {
         int trueY = position.y();
 
         if (!shiftInfo.isEmpty()) {
-            // Backing for info tab
+            // Backing for expandable side info
             graphics.blitWithBorder(BARS, trueX - (Screen.hasShiftDown() ? maxLineWidth : 10), trueY + 3, 40, 20, sideWidth, sideHeight, 20, 20, 3);
-            // Top bar for info tab
+            // Top bar for expandable side info
             graphics.blitWithBorder(BARS, trueX - (Screen.hasShiftDown() ? maxLineWidth : 10) + 3, trueY + 9, colorXPos, colorYPos, Screen.hasShiftDown() ? maxLineWidth : 15, 20, 20, 20, 3);
 
             if (Screen.hasShiftDown()) {
@@ -144,8 +157,11 @@ public class AbilityAndPenaltyTooltipRenderer {
             graphics.drawString(Minecraft.getInstance().font, description.get(line), trueX + 5, trueY + 47 + line * 9, -5592406);
         }
 
-        if (!shiftInfo.isEmpty()) {
-            graphics.drawCenteredString(Minecraft.getInstance().font, Component.translatable(INFO_SHIFT).withStyle(ChatFormatting.DARK_GRAY), trueX + backgroundWidth / 2, trueY + 47 + (description.size() - 1) * 9, 0);
+        if (!bottomInfoLines.isEmpty()) {
+            for (int i = 0; i < bottomInfoLines.size(); i++) {
+                FormattedCharSequence line = bottomInfoLines.get(i);
+                graphics.drawCenteredString(Minecraft.getInstance().font, line, trueX + backgroundWidth / 2, trueY + 47 + (description.size() - 1 + i) * 9, 0);
+            }
         }
 
         graphics.blitSprite(icon, trueX + 5, trueY + 5, 16, 16);

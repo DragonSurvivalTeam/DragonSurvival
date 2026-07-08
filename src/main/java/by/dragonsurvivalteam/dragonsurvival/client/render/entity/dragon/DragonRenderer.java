@@ -41,8 +41,6 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
     private static final Color TRANSPARENT_RENDER_COLOR = Color.ofRGBA(1, 1, 1, HunterHandler.MIN_ALPHA);
 
     public ResourceLocation glowTexture;
-    public boolean isRenderingLayer;
-    public boolean shouldRenderLayers = true;
 
     private boolean resetNeckVisibility;
 

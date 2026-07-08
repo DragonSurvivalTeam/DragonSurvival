@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.compat.sophisticatedBackpacks;
 
+import by.dragonsurvivalteam.dragonsurvival.client.render.entity.dragon.RenderInfo;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
@@ -21,7 +22,10 @@ import net.minecraft.world.phys.Vec3;
 import net.p3pp3rf1y.sophisticatedbackpacks.backpack.BackpackItem;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Math;
+import org.joml.Matrix3f;
+import org.joml.Matrix4f;
 import org.joml.Quaternionf;
+import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
 import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
@@ -43,10 +47,10 @@ public class DragonBackpackRenderLayer extends GeoRenderLayer<DragonEntity> {
     private static final String BONE = "BackpackBone";
 
     private final boolean isCurioLoaded;
+    private RenderInfo renderInfo;
 
     public DragonBackpackRenderLayer(GeoEntityRenderer<DragonEntity> renderer) {
         super(renderer);
-
         isCurioLoaded = ModID.CURIOS.isLoaded();
     }
 
@@ -98,10 +102,21 @@ public class DragonBackpackRenderLayer extends GeoRenderLayer<DragonEntity> {
 
         poseStack.pushPose();
         transformModel(poseStack, posOffset, rotOffset, scale);
-
-        Minecraft.getInstance().getItemRenderer().renderStatic(backpack, WORN, packedLight, packedOverlay, poseStack, bufferSource, player.level(), 0);
-        // TODO :: add call to render upgrades
+        renderInfo = new RenderInfo(backpack, WORN, new Matrix4f(poseStack.last().pose()), new Matrix3f(poseStack.last().normal()));
         poseStack.popPose();
+    }
+
+    @Override
+    public void render(final PoseStack poseStack, final DragonEntity animatable, final BakedGeoModel bakedModel, final RenderType renderType, final MultiBufferSource bufferSource, final VertexConsumer buffer, final float partialTick, final int packedLight, final int packedOverlay) {
+        if (renderInfo != null) {
+            poseStack.pushPose();
+            poseStack.last().pose().set(renderInfo.poseMatrix());
+            poseStack.last().normal().set(renderInfo.normalMatrix());
+            Minecraft.getInstance().getItemRenderer().renderStatic(animatable.getPlayer(), renderInfo.stack(), renderInfo.displayContext(), false, poseStack, bufferSource, animatable.level(), packedLight, packedOverlay, (int) renderer.getInstanceId(animatable));
+            poseStack.popPose();
+
+            renderInfo = null;
+        }
     }
 
     private void transformModel(final PoseStack poseStack, final Vec3 posOffset, final Vec3 rotOffset, final Vec3 scale) {

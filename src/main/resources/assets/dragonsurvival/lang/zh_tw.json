@@ -932,7 +932,7 @@
   "dragonsurvival.description.dragon_soul.empty": "■§7一顆空的龍之靈魂。可用於儲存你龍族的所有特性。使用後，你將變回人類。",
   "dragonsurvival.description.dragon_soul.info": "§6■種類:§r %s\n§6■成長階段:§r %s\n§6■成長值:§r %s\n",
   "dragonsurvival.description.dragon_soul.invalid_type": "無效的龍族類型",
-  "dragonsurvival.description.dragon_soul.soul": "靈魂",
+  "dragonsurvival.description.dragon_soul.soul": "%s 靈魂",
   "dragonsurvival.description.elder_dragon_bone": "§6■古龍的一部分。§r\n■§7小型龍族的遺骸。可用於多種龍族配方。這些龍族由某位為拯救世界而自我犧牲的古老生物所創造。",
   "dragonsurvival.description.elder_dragon_dust": "§6■古龍的一部分。§r\n■§7一種來自遠古生物的粉塵，可用於多種龍族配方。可在礦脈與寶藏中找到。",
   "dragonsurvival.description.elder_dragon_heart": "§6■古龍的一部分。§r\n■§7一顆散發著光輝且充滿能量的心臟。若仔細傾聽，彷彿能聽見某位古老存在從深淵傳來的呼喚。適合作為成年龍的成長養分。一些怪物被擊殺時，會稀有掉落此物。",

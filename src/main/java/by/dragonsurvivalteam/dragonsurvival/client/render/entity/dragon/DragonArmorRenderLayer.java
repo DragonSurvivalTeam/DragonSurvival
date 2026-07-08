@@ -101,13 +101,7 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
         }
 
         if (hasAnyArmorEquipped(player) || ClawInventoryData.getData(player).shouldRenderClaws) {
-            Optional<ResourceLocation> armorTexture = constructTrimmedDragonArmorTexture(player);
-
-            if (armorTexture.isPresent()) {
-                ((DragonRenderer) renderer).isRenderingLayer = true;
-                renderArmor(poseStack, animatable, bakedModel, bufferSource, partialTick, packedLight, armorTexture.get());
-                ((DragonRenderer) renderer).isRenderingLayer = false;
-            }
+            constructTrimmedDragonArmorTexture(player).ifPresent(resourceLocation -> renderArmor(poseStack, animatable, bakedModel, bufferSource, partialTick, packedLight, resourceLocation));
         }
     }
 
