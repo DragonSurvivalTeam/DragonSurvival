@@ -6,6 +6,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.blocks.SkeletonPieceBlock;
 import by.dragonsurvivalteam.dragonsurvival.common.blocks.TreasureBlock;
 import by.dragonsurvivalteam.dragonsurvival.common.items.armor.DragonHunterWeapon;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSItems;
+import com.geckolib.renderer.internal.GeckolibItemSpecialRenderer;
 import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
 import net.minecraft.client.data.models.ModelProvider;
@@ -14,11 +15,14 @@ import net.minecraft.client.data.models.model.ModelTemplate;
 import net.minecraft.client.data.models.model.ModelTemplates;
 import net.minecraft.client.data.models.model.TextureMapping;
 import net.minecraft.client.data.models.model.TextureSlot;
+import net.minecraft.client.renderer.item.ItemModel;
+import net.minecraft.client.renderer.item.properties.select.DisplayContext;
 import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.VaultBlock;
 import org.jetbrains.annotations.NotNull;
@@ -47,13 +51,16 @@ public class DataItemModelProvider extends ModelProvider {
             "hunter_partisan",
             "hunter_partisan_diamond",
             "hunter_partisan_netherite",
-            "hunter_key",
             "knight_spawn_egg",
             "leader_spawn_egg",
-            "dark_key",
-            "light_key",
             "spearman_spawn_egg",
             "dragon_soul"
+    );
+
+    private static final Set<String> GUI_ICON_KEYS = Set.of(
+            "dark_key",
+            "hunter_key",
+            "light_key"
     );
 
     // See createDragonSoul in DataBlockStateProvider
@@ -79,6 +86,11 @@ public class DataItemModelProvider extends ModelProvider {
                 return;
             }
 
+            if (GUI_ICON_KEYS.contains(name)) {
+                registerKeyItemDefinition(itemModels, item, name);
+                return;
+            }
+
             if (MANUALLY_AUTHORED.contains(name)) {
                 itemModels.declareCustomModelItem(item);
                 return;
@@ -96,6 +108,20 @@ public class DataItemModelProvider extends ModelProvider {
 
             itemModels.generateFlatItem(item, ModelTemplates.FLAT_ITEM);
         });
+    }
+
+    private static void registerKeyItemDefinition(@NotNull final ItemModelGenerators itemModels, final Item item, final String name) {
+        ItemModel.Unbaked baseModel = ItemModelUtils.specialModel(itemModel(name), new GeckolibItemSpecialRenderer.Unbaked<>());
+        ItemModel.Unbaked guiModel = ItemModelUtils.plainModel(itemModel(name + "_icon"));
+
+        itemModels.itemModelOutput.accept(
+                item,
+                ItemModelUtils.select(
+                        new DisplayContext(),
+                        baseModel,
+                        ItemModelUtils.when(ItemDisplayContext.GUI, guiModel)
+                )
+        );
     }
 
     private static void registerBlockItemModel(@NotNull final BlockModelGenerators blockModels, @NotNull final ItemModelGenerators itemModels, final BlockItem item, final String name) {
