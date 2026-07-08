@@ -54,7 +54,9 @@ public class DragonUIRenderComponent extends AbstractContainerEventHandler imple
 
         // Not sure what changed about the scale of UI elements that forces me to divide by 50 here for translation, but it is good enough for now
         Vector3f translation = new Vector3f(xOffset / 50.f, yOffset /  50.f, 0.0F);
-        graphics.entity(renderState, scale, translation, rotation, null, x, y, x + width, y + height);
+
+        // Add some arbitrary padding on the scissor (+/- 50)
+        graphics.entity(renderState, scale, translation, rotation, null, x - 50, y - 50, x + width + 50, y + height + 50);
     }
 
     @Override
@@ -70,10 +72,10 @@ public class DragonUIRenderComponent extends AbstractContainerEventHandler imple
     @Override
     public boolean mouseDragged(@NotNull MouseButtonEvent event, double mouseX, double mouseY) {
         if (isMouseOver(event.x(), event.y())) {
-            if (event.button() == InputConstants.MOUSE_BUTTON_RIGHT) {
+            if (event.button() == InputConstants.MOUSE_BUTTON_LEFT) {
                 xRot -= (float) (mouseX / 5.0);
                 yRot -= (float) (mouseY / 5.0);
-            } else if (event.button() == InputConstants.MOUSE_BUTTON_LEFT) {
+            } else if (event.button() == InputConstants.MOUSE_BUTTON_RIGHT) {
                 xOffset += (float) (mouseX);
                 yOffset += (float) (mouseY);
 
