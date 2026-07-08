@@ -46,6 +46,7 @@
     "tool_swap.ServerPlayerGameModeStartMixin"
   ],
   "client": [
+    "bettercombat.AbstractClientPlayerMixin",
     "client.AbstractContainerScreenAccessor",
     "client.AnimationControllerAccessor",
     "client.CameraMixin",

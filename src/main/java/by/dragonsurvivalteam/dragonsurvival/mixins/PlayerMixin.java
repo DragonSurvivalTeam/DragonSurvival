@@ -1,7 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.mixins;
 
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
-import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.DragonSizeHandler;
 import by.dragonsurvivalteam.dragonsurvival.compat.Compat;
 import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
@@ -9,11 +8,11 @@ import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SwimData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.TreasureRestData;
 import by.dragonsurvivalteam.dragonsurvival.util.FluidTypeUtil;
-import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.EntityType;
@@ -32,15 +31,15 @@ public abstract class PlayerMixin extends LivingEntity {
         super(type, level);
     }
 
-    @Inject(method = "isInvulnerableTo(Lnet/minecraft/world/damagesource/DamageSource;)Z", at = @At("HEAD"), cancellable = true)
-    private void dragonSurvival$disableSuffocationDamage(final DamageSource source, final CallbackInfoReturnable<Boolean> callback) {
+    @Inject(method = "isInvulnerableTo", at = @At("HEAD"), cancellable = true)
+    private void dragonSurvival$disableSuffocationDamage(ServerLevel level, DamageSource source, CallbackInfoReturnable<Boolean> cir) {
         if (ServerConfig.disableDragonSuffocation && source.is(DamageTypes.IN_WALL) && DragonStateProvider.isDragon(this)) {
-            callback.setReturnValue(true);
+            cir.setReturnValue(true);
         }
     }
 
     /** Disables the mining speed penalty for not being on the ground (if the dragon can swim in the current fluid) */
-    @WrapOperation(method = "getDigSpeed", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;onGround()Z"))
+    @WrapOperation(method = "getDestroySpeed(Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/core/BlockPos;)F", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;onGround()Z"))
     private boolean dragonSurvival$disablePenalty(final Player instance, final Operation<Boolean> original) {
         if (SwimData.getData(instance).canSwimIn(FluidTypeUtil.getEyeFluidType(instance))) {
             return true;
@@ -82,15 +81,5 @@ public abstract class PlayerMixin extends LivingEntity {
         } else {
             return returnValue;
         }
-    }
-
-    @ModifyExpressionValue(method = "aiStep", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;isSwimming()Z"))
-    private boolean dragonSurvival$consideredSwimmingEvenWhenGroundedInWater(final boolean isSwimming) {
-        if (isSwimming) {
-            return true;
-        }
-
-        Player self = (Player) (Object) this;
-        return DragonStateProvider.isDragon(self) && DragonEntity.isConsideredSwimmingForAnimation(self);
     }
 }
