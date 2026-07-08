@@ -1,21 +1,20 @@
 package by.dragonsurvivalteam.dragonsurvival.client.gui.screens;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
-import by.dragonsurvivalteam.dragonsurvival.client.DragonSurvivalClient;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.dragon_editor.DragonEditorScreen;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.dragon_editor.buttons.DragonBodyButton;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.TabButton;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic.HoverButton;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components.BarComponent;
+import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components.DragonUIRenderComponent;
 import by.dragonsurvivalteam.dragonsurvival.client.render.ClientDragonRenderer;
-import by.dragonsurvivalteam.dragonsurvival.client.render.entity.dragon.DragonRenderer;
 import by.dragonsurvivalteam.dragonsurvival.client.skins.DragonSkins;
 import by.dragonsurvivalteam.dragonsurvival.client.skins.SkinObject;
 import by.dragonsurvivalteam.dragonsurvival.client.util.FakeClientPlayerUtils;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
-import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
 import by.dragonsurvivalteam.dragonsurvival.config.ConfigHandler;
+import by.dragonsurvivalteam.dragonsurvival.mixins.client.ScreenAccessor;
 import by.dragonsurvivalteam.dragonsurvival.network.client.ClientProxy;
 import by.dragonsurvivalteam.dragonsurvival.network.dragon_editor.SyncDragonSkinSettings;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
@@ -38,18 +37,14 @@ import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.ConfirmLinkScreen;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.core.Holder;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.util.Mth;
-import net.minecraft.world.entity.LivingEntity;
 import net.neoforged.neoforge.client.gui.widget.ExtendedButton;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import org.jetbrains.annotations.NotNull;
@@ -165,12 +160,11 @@ public class DragonSkinsScreen extends Screen {
 
     private HoverButton playerNameDisplay;
     private HoverButton playerStageDisplay;
+    private DragonUIRenderComponent dragonRender;
+    private Holder<DragonStage> lastZoomStage;
 
     private int guiLeft;
     private int guiTop;
-    private float yRot = -3;
-    private float xRot = -5;
-    private float zoom;
 
     public DragonSkinsScreen() {
         super(Component.empty());
@@ -194,7 +188,6 @@ public class DragonSkinsScreen extends Screen {
 
         setTextures();
 
-        DragonEntity dragon = FakeClientPlayerUtils.getFakeDragon(0, handler);
         FakeClientPlayerUtils.getFakePlayer(0, handler).animationSupplier = () -> "fly_animation_magic";
 
         //noinspection DataFlowIssue -> key is present
@@ -208,7 +201,7 @@ public class DragonSkinsScreen extends Screen {
                     DragonSkinsScreen.dragonStage = handler.stage();
                 }
 
-                renderPreviewEntity(GuiGraphicsExtractor, dragon, startX, startY, mouseX, mouseY);
+                renderPreviewEntity(GuiGraphicsExtractor, startX, startY, mouseX, mouseY, partialTick);
             } else {
                 drawNonShadowString(GuiGraphicsExtractor, minecraft.font, Component.translatable(NO_SKIN).withStyle(ChatFormatting.RED), startX + 21, startY + 40, -1);
             }
@@ -235,37 +228,19 @@ public class DragonSkinsScreen extends Screen {
         GuiGraphicsExtractor.text(font, Language.getInstance().getVisualOrder(component), x - font.width(component) / 2, y, color, false);
     }
 
-    private void renderPreviewEntity(final GuiGraphicsExtractor GuiGraphicsExtractor, final DragonEntity dragon, final int startX, final int startY, final int mouseX, final int mouseY) {
-        EntityRenderer<? super DragonEntity, ?> entityRenderer = Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(dragon);
-
-        if (!(entityRenderer instanceof DragonRenderer<?> dragonRenderer)) {
+    private void renderPreviewEntity(final GuiGraphicsExtractor GuiGraphicsExtractor, final int startX, final int startY, final int mouseX, final int mouseY, final float partialTick) {
+        if (dragonRender == null) {
             return;
         }
 
         Identifier overrideTexture = noSkin && Objects.equals(playerName, minecraft.player.getGameProfile().name()) ? null : skinTexture;
         Identifier overrideGlow = noSkin && Objects.equals(playerName, minecraft.player.getGameProfile().name()) ? null : glowTexture;
-        LivingEntity fallbackEntity = dragon.getPlayer();
-
-        int scale = (int) zoom;
-        int centerX = startX + 60;
-        int bottomY = startY + 122;
-        int halfWidth = Math.max(26, scale);
-        int topY = bottomY - Math.max(96, scale * 3);
-        int leftX = centerX - halfWidth;
-        int rightX = centerX + halfWidth;
-
-        try {
-            DragonSurvivalClient.DRAGON_MODEL.setOverrideTexture(overrideTexture);
-            dragonRenderer.glowTexture = overrideGlow;
-            InventoryScreen.extractEntityInInventoryFollowsMouse(GuiGraphicsExtractor, leftX, topY, rightX, bottomY, scale, 0, mouseX, mouseY, dragon);
-        } catch (final IllegalArgumentException exception) {
-            if (fallbackEntity != null) {
-                InventoryScreen.extractEntityInInventoryFollowsMouse(GuiGraphicsExtractor, leftX, topY, rightX, bottomY, scale, 0, mouseX, mouseY, fallbackEntity);
-            }
-        } finally {
-            DragonSurvivalClient.DRAGON_MODEL.setOverrideTexture(null);
-            dragonRenderer.glowTexture = null;
-        }
+        dragonRender.x = startX - 10;
+        dragonRender.y = startY;
+        dragonRender.width = 140;
+        dragonRender.height = 125;
+        dragonRender.setTextureOverrides(overrideTexture, overrideGlow);
+        dragonRender.extractRenderState(GuiGraphicsExtractor, mouseX, mouseY, partialTick);
     }
 
     private void updateHandlerToUseCorrectSkinData() {
@@ -322,6 +297,8 @@ public class DragonSkinsScreen extends Screen {
         handler.setStage(null, dragonStage);
         updateHandlerToUseCorrectSkinData();
         handler.getCurrentSkinPreset().setAllStagesToUseDefaultSkin(playerHandler.getCurrentSkinPreset().isAnyStageUsingDefaultSkin());
+
+        initDragonRender();
 
         TabButton.addTabButtonsToScreen(this, startX + 138, startY - 26, TabButton.TabButtonType.SKINS_TAB);
 
@@ -519,6 +496,27 @@ public class DragonSkinsScreen extends Screen {
         return new DragonBodyButton(this, x, y, 35, 35, dragonBody, DragonBodyButton.LockedReason.NONE, button -> handler.setBody(null, dragonBody), true, true);
     }
 
+    private void initDragonRender() {
+        children().removeIf(DragonUIRenderComponent.class::isInstance);
+
+        float yRot = -3, xRot = -5, yOffset = 0, xOffset = -40;
+
+        if (dragonRender != null) {
+            yRot = dragonRender.yRot;
+            xRot = dragonRender.xRot;
+            dragonRender.setZoom(dragonStage);
+            yOffset = dragonRender.yOffset;
+        }
+
+        dragonRender = new DragonUIRenderComponent(this, guiLeft - 10, guiTop, 140, 125, () -> FakeClientPlayerUtils.getFakeDragon(0, handler));
+        dragonRender.yRot = yRot;
+        dragonRender.xRot = xRot;
+        dragonRender.xOffset = xOffset;
+        dragonRender.yOffset = yOffset;
+
+        ((ScreenAccessor) this).dragonSurvival$children().addFirst(dragonRender);
+    }
+
     private void setTextures() {
         Identifier skinTexture = DragonSkins.getPlayerSkin(playerName, Objects.requireNonNull(dragonStage.getKey()));
         Identifier glowTexture = null;
@@ -536,11 +534,12 @@ public class DragonSkinsScreen extends Screen {
         DragonSkinsScreen.glowTexture = glowTexture;
         DragonSkinsScreen.skinTexture = skinTexture;
 
-        if (Objects.equals(lastPlayerName, playerName) || lastPlayerName == null) {
-            zoom = DragonEditorScreen.setZoom(dragonStage);
+        if (dragonRender != null && (!Objects.equals(lastPlayerName, playerName) || !Objects.equals(lastZoomStage, dragonStage) || lastPlayerName == null)) {
+            dragonRender.setZoom(dragonStage);
         }
 
         noSkin = defaultSkin;
+        lastZoomStage = dragonStage;
         lastPlayerName = playerName;
     }
 
@@ -551,17 +550,10 @@ public class DragonSkinsScreen extends Screen {
 
     @Override
     public boolean mouseDragged(@NotNull MouseButtonEvent event, double mouseX, double mouseY) {
-        xRot -= (float) (mouseX / 5);
-        yRot -= (float) (mouseY / 5);
+        if (dragonRender != null && dragonRender.isMouseOver(event.x(), event.y())) {
+            return dragonRender.mouseDragged(event, mouseX, mouseY);
+        }
 
         return super.mouseDragged(event, mouseX, mouseY);
-    }
-
-    @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
-        zoom += (float) scrollY;
-        zoom = Mth.clamp(zoom, 10, 80);
-
-        return true;
     }
 }

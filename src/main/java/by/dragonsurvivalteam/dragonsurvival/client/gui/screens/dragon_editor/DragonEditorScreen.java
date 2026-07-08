@@ -286,14 +286,10 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
         }
     }
 
-    public static float setZoom(final Holder<DragonStage> dragonStage) {
-        return (float) (0.4 * dragonStage.value().growthRange().min() + 20);
-    }
-
     public final Function<Holder<DragonStage>, Holder<DragonStage>> selectStageAction = newStage -> {
         Holder<DragonStage> previousLevel = stage;
         stage = newStage;
-        dragonRender.zoom = setZoom(stage);
+        dragonRender.setZoom(stage);
         HANDLER.setStage(null, stage);
         HANDLER.recompileCurrentSkin();
         update();
@@ -663,7 +659,7 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
 
         this.preset = HANDLER.getCurrentSkinPreset();
 
-        dragonRender.zoom = setZoom(stage);
+        dragonRender.setZoom(stage);
     }
 
     @Override

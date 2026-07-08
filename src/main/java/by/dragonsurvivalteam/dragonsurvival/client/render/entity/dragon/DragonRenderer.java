@@ -87,8 +87,6 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
     /** Factor to multiply the delta movement by, needed for scaling for the animations */
     private static final double DELTA_MOVEMENT_FACTOR = 10;
 
-    public Identifier glowTexture;
-
     // Data tickets
     public static final DataTicket<DragonRenderData> DRAGON_RENDER_DATA = DataTicket.create("dragonRenderData", DragonRenderData.class);
 
@@ -100,6 +98,8 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
         private @Nullable Player texturePlayer;
         private @Nullable DragonStateHandler handler;
         private Identifier modelResource;
+        private @Nullable Identifier textureOverride;
+        private @Nullable Identifier glowTextureOverride;
 
         /**
          * Used for inventory / smithing screen rendering - when set to true changed movement data will not be tracked <br>
@@ -186,11 +186,20 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
             return renderData;
         }
 
-        public DragonRenderData forUIRender(final double bodyYaw, final double headYaw, final double headPitch, final @Nullable Player texturePlayer) {
+        public DragonRenderData forUIRender(
+            final double bodyYaw,
+            final double headYaw,
+            final double headPitch,
+            final @Nullable Player texturePlayer,
+            final @Nullable Identifier textureOverride,
+            final @Nullable Identifier glowTextureOverride
+        ) {
             DragonRenderData renderData = copy();
             renderData.renderCacheId = uiRenderCacheId(renderData.dragonId);
             renderData.inUI = true;
             renderData.texturePlayer = texturePlayer != null ? texturePlayer : renderData.texturePlayer;
+            renderData.textureOverride = textureOverride;
+            renderData.glowTextureOverride = glowTextureOverride;
             renderData.neckLocked = false;
             renderData.tailLocked = false;
             renderData.hunterTransparent = false;
@@ -213,6 +222,8 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
             renderData.texturePlayer = this.texturePlayer;
             renderData.handler = this.handler;
             renderData.modelResource = this.modelResource;
+            renderData.textureOverride = this.textureOverride;
+            renderData.glowTextureOverride = this.glowTextureOverride;
             renderData.inUI = this.inUI;
             renderData.neckLocked = this.neckLocked;
             renderData.tailLocked = this.tailLocked;
@@ -244,6 +255,8 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
         public @Nullable Player texturePlayer() { return texturePlayer; }
         public @Nullable DragonStateHandler handler() { return handler; }
         public Identifier modelResource() { return modelResource; }
+        public @Nullable Identifier textureOverride() { return textureOverride; }
+        public @Nullable Identifier glowTextureOverride() { return glowTextureOverride; }
         public boolean inInventory() { return inUI; }
         public boolean neckLocked() { return neckLocked; }
         public boolean tailLocked() { return tailLocked; }
@@ -280,7 +293,14 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
 
     private record InterruptedTransitionBlend(double startAge, int transitionTicks, Map<String, BonePose> startPoses) { }
 
-    private record UIRenderContext(double bodyYaw, double headYaw, double headPitch, @Nullable Player texturePlayer) { }
+    private record UIRenderContext(
+        double bodyYaw,
+        double headYaw,
+        double headPitch,
+        @Nullable Player texturePlayer,
+        @Nullable Identifier textureOverride,
+        @Nullable Identifier glowTextureOverride
+    ) { }
 
     private static final class UIRenderDragonEntity extends DragonEntity {
         private @Nullable Player player;
@@ -434,7 +454,9 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
             uiRenderContext.bodyYaw(),
             uiRenderContext.headYaw(),
             uiRenderContext.headPitch(),
-            uiRenderContext.texturePlayer()
+            uiRenderContext.texturePlayer(),
+            uiRenderContext.textureOverride(),
+            uiRenderContext.glowTextureOverride()
         );
     }
 
@@ -656,9 +678,22 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
     }
 
     public static EntityRenderState createUIRenderState(final LivingEntity entity, final float partialTick, final double bodyYaw, final double headYaw, final double headPitch, final @Nullable Player texturePlayer) {
+        return createUIRenderState(entity, partialTick, bodyYaw, headYaw, headPitch, texturePlayer, null, null);
+    }
+
+    public static EntityRenderState createUIRenderState(
+        final LivingEntity entity,
+        final float partialTick,
+        final double bodyYaw,
+        final double headYaw,
+        final double headPitch,
+        final @Nullable Player texturePlayer,
+        final @Nullable Identifier textureOverride,
+        final @Nullable Identifier glowTextureOverride
+    ) {
         EntityRenderDispatcher entityRenderDispatcher = Minecraft.getInstance().getEntityRenderDispatcher();
         UIRenderContext previousContext = UI_RENDER_CONTEXT.get();
-        UI_RENDER_CONTEXT.set(new UIRenderContext(bodyYaw, headYaw, headPitch, texturePlayer));
+        UI_RENDER_CONTEXT.set(new UIRenderContext(bodyYaw, headYaw, headPitch, texturePlayer, textureOverride, glowTextureOverride));
 
         try {
             LivingEntity renderEntity = getEntityForUIRender(entity);
@@ -672,7 +707,7 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
 
                 if (dragonRenderData != null) {
                     if (!dragonRenderData.inInventory()) {
-                        dragonRenderData = dragonRenderData.forUIRender(bodyYaw, headYaw, headPitch, texturePlayer);
+                        dragonRenderData = dragonRenderData.forUIRender(bodyYaw, headYaw, headPitch, texturePlayer, textureOverride, glowTextureOverride);
                         geoRenderState.addGeckolibData(DRAGON_RENDER_DATA, dragonRenderData);
                     }
 

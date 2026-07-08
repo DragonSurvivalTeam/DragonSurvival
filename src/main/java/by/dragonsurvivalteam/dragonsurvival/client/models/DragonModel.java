@@ -24,8 +24,6 @@ public class DragonModel extends GeoModel<DragonEntity> {
     // TODO :: 'dragon_dragon'?
     private final Identifier defaultTexture = DragonSurvival.res("textures/dragon_dragon/newborn.png");
 
-    private Identifier overrideTexture;
-
     @Override
     public @NotNull Identifier getModelResource(@NotNull GeoRenderState renderState) {
         DragonRenderer.DragonRenderData renderData = renderState.getGeckolibData(DragonRenderer.DRAGON_RENDER_DATA);
@@ -46,8 +44,10 @@ public class DragonModel extends GeoModel<DragonEntity> {
     @Override
     public @NotNull Identifier getTextureResource(final GeoRenderState renderState) {
         DragonRenderer.DragonRenderData renderData = renderState.getGeckolibData(DragonRenderer.DRAGON_RENDER_DATA);
-        if (RenderingUtils.hasTexture(overrideTexture)) {
-            return overrideTexture;
+        Identifier textureOverride = renderData == null ? null : renderData.textureOverride();
+
+        if (RenderingUtils.hasTexture(textureOverride)) {
+            return textureOverride;
         }
 
         Player player = renderData == null ? null : renderData.texturePlayer();
@@ -93,10 +93,6 @@ public class DragonModel extends GeoModel<DragonEntity> {
     @Override
     public @NotNull Identifier getAnimationResource(final DragonEntity dragon) {
         return getAnimationResource(dragon.getPlayer());
-    }
-
-    public void setOverrideTexture(final Identifier overrideTexture) {
-        this.overrideTexture = overrideTexture;
     }
 
     public static Identifier getAnimationResource(final Player player) {

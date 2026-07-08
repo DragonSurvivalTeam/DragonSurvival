@@ -44,8 +44,10 @@ public class DragonGlowLayerRenderer<R extends LivingEntityRenderState & GeoRend
             glowTexture = DragonSkins.getGlowTexture(player, handler.stageKey());
         }
 
-        if (dragonRenderer.glowTexture != null && (glowTexture == null || glowTexture.getPath().contains("/" + handler.speciesId().getPath() + "_"))) {
-            glowTexture = dragonRenderer.glowTexture;
+        Identifier glowTextureOverride = renderData.glowTextureOverride();
+
+        if (glowTextureOverride != null && (glowTexture == null || glowTexture.getPath().contains("/" + handler.speciesId().getPath() + "_"))) {
+            glowTexture = glowTextureOverride;
         }
 
         if (glowTexture == null && customization.defaultSkin) {

@@ -2,6 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components;
 
 import by.dragonsurvivalteam.dragonsurvival.client.render.entity.dragon.DragonRenderer;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.math.Axis;
@@ -12,8 +13,11 @@ import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.core.Holder;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.Nullable;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
@@ -27,6 +31,8 @@ public class DragonUIRenderComponent extends AbstractContainerEventHandler imple
     public float xOffset, yOffset;
     public float zoom;
     public int x, y, width, height;
+    private @Nullable Identifier textureOverride;
+    private @Nullable Identifier glowTextureOverride;
 
     public DragonUIRenderComponent(Screen screen, int x, int y, int xSize, int ySize, Supplier<DragonEntity> dragonGetter) {
         this.screen = screen;
@@ -35,6 +41,15 @@ public class DragonUIRenderComponent extends AbstractContainerEventHandler imple
         width = xSize;
         height = ySize;
         getter = dragonGetter;
+    }
+
+    public void setTextureOverrides(final @Nullable Identifier textureOverride, final @Nullable Identifier glowTextureOverride) {
+        this.textureOverride = textureOverride;
+        this.glowTextureOverride = glowTextureOverride;
+    }
+
+    public void setZoom(final Holder<DragonStage> dragonStage) {
+        zoom = (float) (0.4 * dragonStage.value().growthRange().min() + 20);
     }
 
     @Override
@@ -50,13 +65,13 @@ public class DragonUIRenderComponent extends AbstractContainerEventHandler imple
         rotation.mul(Axis.XP.rotationDegrees(yRot * 10));
         rotation.rotateY((float) Math.toRadians(180 - xRot * 10));
 
-        EntityRenderState renderState = DragonRenderer.createUIRenderState(getter.get(), pPartialTicks, 0.0F, 0.0F, 0.0F);
+        EntityRenderState renderState = DragonRenderer.createUIRenderState(getter.get(), pPartialTicks, 0.0F, 0.0F, 0.0F, null, textureOverride, glowTextureOverride);
 
         // Not sure what changed about the scale of UI elements that forces me to divide by 50 here for translation, but it is good enough for now
         Vector3f translation = new Vector3f(xOffset / 50.f, yOffset /  50.f, 0.0F);
 
-        // Add some arbitrary padding on the scissor (+/- 50)
-        graphics.entity(renderState, scale, translation, rotation, null, x - 50, y - 50, x + width + 50, y + height + 50);
+        // Add some arbitrary padding on the scissor (+/- 100)
+        graphics.entity(renderState, scale, translation, rotation, null, x - 100, y - 100, x + width + 100, y + height + 100);
     }
 
     @Override
