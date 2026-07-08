@@ -14,6 +14,7 @@ import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
+import net.minecraft.core.SectionPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
@@ -22,6 +23,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.chunk.status.ChunkStatus;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureStart;
 import org.joml.Vector3f;
@@ -117,7 +119,8 @@ public class RotatingKeyItem extends TooltipItem implements GeoItem {
             return Optional.empty();
         }
 
-        StructureStart nearestStructure = serverLevel.structureManager().getStructureWithPieceAt(nearest.getFirst(), nearest.getSecond().value());
+        SectionPos section = SectionPos.of(nearest.getFirst());
+        StructureStart nearestStructure = serverLevel.structureManager().getStartForStructure(section, nearest.getSecond().value(), serverLevel.getChunk(section.x(), section.z(), ChunkStatus.STRUCTURE_STARTS));
 
         if (!isValidTarget(nearestStructure)) {
             return Optional.empty();
