@@ -78,7 +78,7 @@ public class DSItems {
     @Translation(type = Translation.Type.ITEM, comments = "Star Heart")
     public static final Holder<Item> STAR_HEART = REGISTRY.registerItem(
         "star_heart",
-        Item::new,
+        properties -> new TooltipItem(properties, "star_heart"),
         Properties::new
     );
 

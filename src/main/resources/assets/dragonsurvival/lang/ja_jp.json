@@ -955,7 +955,7 @@
   "dragonsurvival.description.dragon_soul.empty": "■§7 空のドラゴンの魂。すべての能力を保存し、人間に戻ることができる。",
   "dragonsurvival.description.dragon_soul.info": "§6■ 種族:§r %s\n§6■ 成長段階:§r %s\n§6■ 成長率:§r %s\n",
   "dragonsurvival.description.dragon_soul.invalid_type": "無効なドラゴンの種族です",
-  "dragonsurvival.description.dragon_soul.soul": "の魂",
+  "dragonsurvival.description.dragon_soul.soul": "%s の魂",
   "dragonsurvival.description.elder_dragon_bone": "§6■ エルダードラゴンの一部§r\n■§7 小型ドラゴンの遺骸。多くのドラゴン素材の基礎。かつて世界を救うために犠牲となった古き存在の一部。",
   "dragonsurvival.description.elder_dragon_dust": "§6■ エルダードラゴンの一部§r\n■§7 古代の存在の残り香。多くのレシピに使われる。鉱石や宝から見つかることも。",
   "dragonsurvival.description.elder_dragon_heart": "§6■ エルダードラゴンの一部§r\n■§7 輝きに満ちた心臓。耳を澄ますと深淵から声が聞こえる。成体ドラゴンの成長に最適。体力の高いモンスターがまれにドロップ。",

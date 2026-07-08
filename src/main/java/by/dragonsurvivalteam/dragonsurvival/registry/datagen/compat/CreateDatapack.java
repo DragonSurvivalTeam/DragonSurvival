@@ -1,7 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.datagen.compat;
 
 import by.dragonsurvivalteam.dragonsurvival.common.blocks.ModCompat;
-import by.dragonsurvivalteam.dragonsurvival.compat.ModCheck;
+import by.dragonsurvivalteam.dragonsurvival.compat.ModID;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSBlocks;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.BlockLootTableSubProvider;
 import net.minecraft.core.HolderLookup;
@@ -30,7 +30,7 @@ public class CreateDatapack extends BlockLootSubProvider {
     @Override
     protected void generate() {
         DSBlocks.REGISTRY.getEntries().forEach((key) -> {
-            if (key.get() instanceof ModCompat compat && ModCheck.CREATE.equals(compat.getCompatId())) {
+            if (key.get() instanceof ModCompat compat && ModID.CREATE.value().equals(compat.getCompatId())) {
                 add(key.get(), BlockLootTableSubProvider.createTreasureBlockLoot(key.get()));
             }
         });
@@ -39,7 +39,7 @@ public class CreateDatapack extends BlockLootSubProvider {
     @Override
     protected @NotNull Iterable<Block> getKnownBlocks() {
         return DSBlocks.REGISTRY.getEntries().stream().map(DeferredHolder::get)
-                .filter(block -> block instanceof ModCompat compat && ModCheck.CREATE.equals(compat.getCompatId()))
+                .filter(block -> block instanceof ModCompat compat && ModID.CREATE.value().equals(compat.getCompatId()))
                 .collect(Collectors.toList());
     }
 

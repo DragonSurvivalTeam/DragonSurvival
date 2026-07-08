@@ -1,0 +1,26 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "desert_monster_ds"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": "minecraft:blue_dye",
+    "D": "dragonsurvival:elder_dragon_dust",
+    "G": "minecraft:green_dye",
+    "I": "minecraft:iron_nugget",
+    "R": "minecraft:red_dye"
+  },
+  "pattern": [
+    "RGB",
+    "IDI",
+    "BGR"
+  ],
+  "result": {
+    "count": 3,
+    "id": "dragonsurvival:bottle_caps_treasure"
+  }
+}

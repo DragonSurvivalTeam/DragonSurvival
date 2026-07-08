@@ -13,7 +13,7 @@
                   },
                   "items_to": [
                     {
-                      "conversion_rate": 12,
+                      "conversion_rate": 12.0,
                       "item": "minecraft:gold_ingot",
                       "particles": {
                         "particle_count": 20.0,

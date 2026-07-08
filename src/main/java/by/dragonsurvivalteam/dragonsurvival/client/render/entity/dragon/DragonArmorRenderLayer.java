@@ -92,7 +92,7 @@ public class DragonArmorRenderLayer<R extends LivingEntityRenderState & GeoRende
 
     @Override
     public void submitRenderTask(final RenderPassInfo<R> renderPassInfo, final SubmitNodeCollector renderTasks) {
-        if (!renderPassInfo.willRender() || !(renderer instanceof DragonRenderer<R> dragonRenderer) || !dragonRenderer.shouldRenderLayers) {
+        if (!renderPassInfo.willRender() || !(renderer instanceof DragonRenderer<R> dragonRenderer)) {
             return;
         }
 
@@ -114,13 +114,7 @@ public class DragonArmorRenderLayer<R extends LivingEntityRenderState & GeoRende
             return;
         }
 
-        dragonRenderer.isRenderingLayer = true;
-
-        try {
-            dragonRenderer.submitRenderTasks(renderPassInfo, renderTasks.order(1), RenderTypes.armorTranslucent(armorTexture.get()));
-        } finally {
-            dragonRenderer.isRenderingLayer = false;
-        }
+        dragonRenderer.submitRenderTasks(renderPassInfo, renderTasks.order(1), RenderTypes.armorTranslucent(armorTexture.get()));
     }
 
     private static Optional<Identifier> constructTrimmedDragonArmorTexture(final Player player) {

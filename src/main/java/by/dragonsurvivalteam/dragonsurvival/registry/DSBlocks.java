@@ -14,6 +14,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.blocks.SmallDragonDoor;
 import by.dragonsurvivalteam.dragonsurvival.common.blocks.SourceOfMagicBlock;
 import by.dragonsurvivalteam.dragonsurvival.common.blocks.TreasureBlock;
 import by.dragonsurvivalteam.dragonsurvival.compat.ModCheck;
+import by.dragonsurvivalteam.dragonsurvival.compat.ModID;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSDragonSpeciesTags;
 import by.dragonsurvivalteam.dragonsurvival.util.CompoundTagBuilder;
@@ -824,217 +825,229 @@ public class DSBlocks {
     @Translation(type = Translation.Type.BLOCK, comments = "Chocolate Dragon Treasure")
     public static final @Nullable DeferredHolder<Block, TreasureBlock> CHOCOLATE_DRAGON_TREASURE = registerWithItemModCheck(
             "chocolate_dragon_treasure",
-            properties -> new TreasureBlock(ARGB.color(0, 0, 0, 0), properties, ModCheck.SILENTGEMS),
+            properties -> new TreasureBlock(ARGB.color(0, 0, 0, 0), properties, ModID.CREATE.value()),
             () -> BlockBehaviour.Properties.of()
                     .mapColor(MapColor.DIRT)
                     .noOcclusion()
                     .sound(SoundType.PACKED_MUD)
                     .strength(0.5F),
-            ModCheck.CREATE
+            ModID.CREATE.value()
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Bee Honey Treasure")
     public static final @Nullable DeferredHolder<Block, TreasureBlock> BEE_HONEY_TREASURE = registerWithItemModCheck(
             "bee_honey_treasure",
-            properties -> new TreasureBlock(ARGB.color(255, 250, 201, 48), properties, ModCheck.SILENTGEMS),
+            properties -> new TreasureBlock(ARGB.color(255, 250, 201, 48), properties, ModID.BEE_ADDON.value()),
             () -> BlockBehaviour.Properties.of()
                     .mapColor(MapColor.GOLD)
                     .noOcclusion()
                     .sound(SoundType.HONEY_BLOCK)
                     .strength(0.5F),
-            ModCheck.BEE_ADDON
+            ModID.BEE_ADDON.value()
+    );
+
+    @Translation(type = Translation.Type.BLOCK, comments = "Bottle Caps Treasure")
+    public static final @Nullable DeferredHolder<Block, TreasureBlock> BOTTLE_CAPS_TREASURE = registerWithItemModCheck(
+            "bottle_caps_treasure",
+            properties -> new TreasureBlock(ARGB.color(255, 211, 211, 211), properties, ModID.DESERT_ADDON.value()),
+            () -> BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.METAL)
+                    .noOcclusion()
+                    .sound(DSSounds.TREASURE_METAL)
+                    .strength(0.5F),
+            ModID.DESERT_ADDON.value()
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Ruby Dragon Treasure")
     public static final @Nullable DeferredHolder<Block, TreasureBlock> RUBY_DRAGON_TREASURE = registerWithItemModCheck(
             "ruby_dragon_treasure",
-            properties -> new TreasureBlock(ARGB.color(255, 230, 29, 29), properties, ModCheck.SILENTGEMS),
+            properties -> new TreasureBlock(ARGB.color(255, 230, 29, 29), properties, ModID.SILENTGEMS.value()),
             () -> BlockBehaviour.Properties.of()
                     .mapColor(MapColor.FIRE)
                     .noOcclusion()
                     .sound(DSSounds.TREASURE_GEM)
                     .strength(0.5F),
-            ModCheck.SILENTGEMS
+            ModID.SILENTGEMS.value()
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Carnelian Dragon Treasure")
     public static final @Nullable DeferredHolder<Block, TreasureBlock> CARNELIAN_DRAGON_TREASURE = registerWithItemModCheck(
             "carnelian_dragon_treasure",
-            properties -> new TreasureBlock(ARGB.color(255, 224, 71, 29), properties, ModCheck.SILENTGEMS),
+            properties -> new TreasureBlock(ARGB.color(255, 224, 71, 29), properties, ModID.SILENTGEMS.value()),
             () -> BlockBehaviour.Properties.of()
                     .mapColor(MapColor.NETHER)
                     .noOcclusion()
                     .sound(DSSounds.TREASURE_GEM)
                     .strength(0.5F),
-            ModCheck.SILENTGEMS
+            ModID.SILENTGEMS.value()
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Topaz Dragon Treasure")
     public static final @Nullable DeferredHolder<Block, TreasureBlock> TOPAZ_DRAGON_TREASURE = registerWithItemModCheck(
             "topaz_dragon_treasure",
-            properties -> new TreasureBlock(ARGB.color(255, 230, 113, 29), properties, ModCheck.SILENTGEMS),
+            properties -> new TreasureBlock(ARGB.color(255, 230, 113, 29), properties, ModID.SILENTGEMS.value()),
             () -> BlockBehaviour.Properties.of()
                     .mapColor(MapColor.COLOR_YELLOW)
                     .noOcclusion()
                     .sound(DSSounds.TREASURE_GEM)
                     .strength(0.5F),
-            ModCheck.SILENTGEMS
+            ModID.SILENTGEMS.value()
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Citrine Dragon Treasure")
     public static final @Nullable DeferredHolder<Block, TreasureBlock> CITRINE_DRAGON_TREASURE = registerWithItemModCheck(
             "citrine_dragon_treasure",
-            properties -> new TreasureBlock(ARGB.color(255, 199, 139, 3), properties, ModCheck.SILENTGEMS),
+            properties -> new TreasureBlock(ARGB.color(255, 199, 139, 3), properties, ModID.SILENTGEMS.value()),
             () -> BlockBehaviour.Properties.of()
                     .mapColor(MapColor.GOLD)
                     .noOcclusion()
                     .sound(DSSounds.TREASURE_GEM)
                     .strength(0.5F),
-            ModCheck.SILENTGEMS
+            ModID.SILENTGEMS.value()
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Heliodor Dragon Treasure")
     public static final @Nullable DeferredHolder<Block, TreasureBlock> HELIODOR_DRAGON_TREASURE = registerWithItemModCheck(
             "heliodor_dragon_treasure",
-            properties -> new TreasureBlock(ARGB.color(255, 230, 197, 29), properties, ModCheck.SILENTGEMS),
+            properties -> new TreasureBlock(ARGB.color(255, 230, 197, 29), properties, ModID.SILENTGEMS.value()),
             () -> BlockBehaviour.Properties.of()
                     .mapColor(MapColor.COLOR_YELLOW)
                     .noOcclusion()
                     .sound(DSSounds.TREASURE_GEM)
                     .strength(0.5F),
-            ModCheck.SILENTGEMS
+            ModID.SILENTGEMS.value()
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Moldavite Dragon Treasure")
     public static final @Nullable DeferredHolder<Block, TreasureBlock> MOLDAVITE_DRAGON_TREASURE = registerWithItemModCheck(
             "moldavite_dragon_treasure",
-            properties -> new TreasureBlock(ARGB.color(255, 41, 219, 24), properties, ModCheck.SILENTGEMS),
+            properties -> new TreasureBlock(ARGB.color(255, 166, 217, 35), properties, ModID.SILENTGEMS.value()),
             () -> BlockBehaviour.Properties.of()
                     .mapColor(MapColor.COLOR_LIGHT_GREEN)
                     .noOcclusion()
                     .sound(DSSounds.TREASURE_GEM)
                     .strength(0.5F),
-            ModCheck.SILENTGEMS
+            ModID.SILENTGEMS.value()
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Peridot Dragon Treasure")
     public static final @Nullable DeferredHolder<Block, TreasureBlock> PERIDOT_DRAGON_TREASURE = registerWithItemModCheck(
             "peridot_dragon_treasure",
-            properties -> new TreasureBlock(ARGB.color(255, 41, 219, 24), properties, ModCheck.SILENTGEMS),
+            properties -> new TreasureBlock(ARGB.color(255, 41, 219, 24), properties, ModID.SILENTGEMS.value()),
             () -> BlockBehaviour.Properties.of()
                     .mapColor(MapColor.GRASS)
                     .noOcclusion()
                     .sound(DSSounds.TREASURE_GEM)
                     .strength(0.5F),
-            ModCheck.SILENTGEMS
+            ModID.SILENTGEMS.value()
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Turquoise Dragon Treasure")
     public static final @Nullable DeferredHolder<Block, TreasureBlock> TURQUOISE_DRAGON_TREASURE = registerWithItemModCheck(
             "turquoise_dragon_treasure",
-            properties -> new TreasureBlock(ARGB.color(255, 61, 244, 189), properties, ModCheck.SILENTGEMS),
+            properties -> new TreasureBlock(ARGB.color(255, 61, 244, 189), properties, ModID.SILENTGEMS.value()),
             () -> BlockBehaviour.Properties.of()
                     .mapColor(MapColor.WARPED_WART_BLOCK)
                     .noOcclusion()
                     .sound(DSSounds.TREASURE_GEM)
                     .strength(0.5F),
-            ModCheck.SILENTGEMS
+            ModID.SILENTGEMS.value()
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Kyanite Dragon Treasure")
     public static final @Nullable DeferredHolder<Block, TreasureBlock> KYANITE_DRAGON_TREASURE = registerWithItemModCheck(
             "kyanite_dragon_treasure",
-            properties -> new TreasureBlock(ARGB.color(255, 65, 196, 243), properties, ModCheck.SILENTGEMS),
+            properties -> new TreasureBlock(ARGB.color(255, 65, 196, 243), properties, ModID.SILENTGEMS.value()),
             () -> BlockBehaviour.Properties.of()
                     .mapColor(MapColor.WARPED_NYLIUM)
                     .noOcclusion()
                     .sound(DSSounds.TREASURE_GEM)
                     .strength(0.5F),
-            ModCheck.SILENTGEMS
+            ModID.SILENTGEMS.value()
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Sapphire Dragon Treasure")
     public static final @Nullable DeferredHolder<Block, TreasureBlock> SAPPHIRE_DRAGON_TREASURE = registerWithItemModCheck(
             "sapphire_dragon_treasure",
-            properties -> new TreasureBlock(ARGB.color(255, 29, 105, 229), properties, ModCheck.SILENTGEMS),
+            properties -> new TreasureBlock(ARGB.color(255, 29, 105, 229), properties, ModID.SILENTGEMS.value()),
             () -> BlockBehaviour.Properties.of()
                     .mapColor(MapColor.COLOR_BLUE)
                     .noOcclusion()
                     .sound(DSSounds.TREASURE_GEM)
                     .strength(0.5F),
-            ModCheck.SILENTGEMS
+            ModID.SILENTGEMS.value()
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Iolite Dragon Treasure")
     public static final @Nullable DeferredHolder<Block, TreasureBlock> IOLITE_DRAGON_TREASURE = registerWithItemModCheck(
             "iolite_dragon_treasure",
-            properties -> new TreasureBlock(ARGB.color(255, 117, 67, 245), properties, ModCheck.SILENTGEMS),
+            properties -> new TreasureBlock(ARGB.color(255, 117, 67, 245), properties, ModID.SILENTGEMS.value()),
             () -> BlockBehaviour.Properties.of()
                     .mapColor(MapColor.TERRACOTTA_BLUE)
                     .noOcclusion()
                     .sound(DSSounds.TREASURE_GEM)
                     .strength(0.5F),
-            ModCheck.SILENTGEMS
+            ModID.SILENTGEMS.value()
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Alexandrite Dragon Treasure")
     public static final @Nullable DeferredHolder<Block, TreasureBlock> ALEXANDRITE_DRAGON_TREASURE = registerWithItemModCheck(
             "alexandrite_dragon_treasure",
-            properties -> new TreasureBlock(ARGB.color(255, 171, 55, 229), properties, ModCheck.SILENTGEMS),
+            properties -> new TreasureBlock(ARGB.color(255, 171, 55, 229), properties, ModID.SILENTGEMS.value()),
             () -> BlockBehaviour.Properties.of()
                     .mapColor(MapColor.TERRACOTTA_PURPLE)
                     .noOcclusion()
                     .sound(DSSounds.TREASURE_GEM)
                     .strength(0.5F),
-            ModCheck.SILENTGEMS
+            ModID.SILENTGEMS.value()
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Ammolite Dragon Treasure")
     public static final @Nullable DeferredHolder<Block, TreasureBlock> AMMOLITE_DRAGON_TREASURE = registerWithItemModCheck(
             "ammolite_dragon_treasure",
-            properties -> new TreasureBlock(ARGB.color(255, 219, 43, 255), properties, ModCheck.SILENTGEMS),
+            properties -> new TreasureBlock(ARGB.color(255, 219, 43, 255), properties, ModID.SILENTGEMS.value()),
             () -> BlockBehaviour.Properties.of()
                     .mapColor(MapColor.WARPED_HYPHAE)
                     .noOcclusion()
                     .sound(DSSounds.TREASURE_GEM)
                     .strength(0.5F),
-            ModCheck.SILENTGEMS
+            ModID.SILENTGEMS.value()
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Rose Quartz Dragon Treasure")
     public static final @Nullable DeferredHolder<Block, TreasureBlock> ROSE_QUARTZ_DRAGON_TREASURE = registerWithItemModCheck(
             "rose_quartz_dragon_treasure",
-            properties -> new TreasureBlock(ARGB.color(255, 255, 78, 171), properties, ModCheck.SILENTGEMS),
+            properties -> new TreasureBlock(ARGB.color(255, 255, 78, 171), properties, ModID.SILENTGEMS.value()),
             () -> BlockBehaviour.Properties.of()
                     .mapColor(MapColor.TERRACOTTA_WHITE)
                     .noOcclusion()
                     .sound(DSSounds.TREASURE_GEM)
                     .strength(0.5F),
-            ModCheck.SILENTGEMS
+            ModID.SILENTGEMS.value()
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Black Diamond Dragon Treasure")
     public static final @Nullable DeferredHolder<Block, TreasureBlock> BLACK_DIAMOND_DRAGON_TREASURE = registerWithItemModCheck(
             "black_diamond_dragon_treasure",
-            properties -> new TreasureBlock(ARGB.color(255, 95, 82, 76), properties, ModCheck.SILENTGEMS),
+            properties -> new TreasureBlock(ARGB.color(255, 95, 82, 76), properties, ModID.SILENTGEMS.value()),
             () -> BlockBehaviour.Properties.of()
                     .mapColor(MapColor.COLOR_GRAY)
                     .noOcclusion()
                     .sound(DSSounds.TREASURE_GEM)
                     .strength(0.5F),
-            ModCheck.SILENTGEMS
+            ModID.SILENTGEMS.value()
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "White Diamond Dragon Treasure")
     public static final @Nullable DeferredHolder<Block, TreasureBlock> WHITE_DIAMOND_DRAGON_TREASURE = registerWithItemModCheck(
             "white_diamond_dragon_treasure",
-            properties -> new TreasureBlock(ARGB.color(255, 213, 193, 210), properties, ModCheck.SILENTGEMS),
+            properties -> new TreasureBlock(ARGB.color(255, 213, 193, 210), properties, ModID.SILENTGEMS.value()),
             () -> BlockBehaviour.Properties.of()
                     .mapColor(MapColor.WOOL)
                     .noOcclusion()
                     .sound(DSSounds.TREASURE_GEM)
                     .strength(0.5F),
-            ModCheck.SILENTGEMS
+            ModID.SILENTGEMS.value()
     );
 
     // --- Dragon Treasure Plates --- //

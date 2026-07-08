@@ -26,6 +26,7 @@ import net.minecraft.util.FormattedCharSequence;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector2ic;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class AbilityAndPenaltyTooltipRenderer {
@@ -71,13 +72,25 @@ public class AbilityAndPenaltyTooltipRenderer {
         maxScrollAmount = lines.size();
         scrollAmount = Math.clamp(scrollAmount, 0, maxScroll());
 
+        // Need to format the text for the bottom info at this point to adjust the height of the background
+        List<FormattedCharSequence> bottomInfoLines;
+
+        if (!shiftInfo.isEmpty()) {
+            bottomInfoLines = Minecraft.getInstance().font.split(Component.translatable(INFO_SHIFT).withStyle(ChatFormatting.DARK_GRAY), maxLineWidth - 10);
+        } else {
+            bottomInfoLines = new ArrayList<>();
+        }
+
+        // The effect header is meant to separate multiple effects from each other
+        // Currently we append this header at a point in time where we don't know the actual order of the effects
+        // That's why we use this check to skip the first header line
         boolean skipFirstLine = !lines.isEmpty() && isEffectHeader(lines.getFirst());
 
         // '65' is roughly the amount of space needed for the other components so that the name and level can be centered without overlap
         int backgroundWidth = Math.max(150, Minecraft.getInstance().font.width(name) + 65);
         List<FormattedCharSequence> description = Minecraft.getInstance().font.split(rawDescription, backgroundWidth - 7);
 
-        int backgroundHeight = 35 + 24 + description.size() * 9;
+        int backgroundHeight = 20 + 27 + (description.size() + bottomInfoLines.size()) * 9;
         boolean hasShiftDown = Minecraft.getInstance().hasShiftDown();
         int sideWidth = hasShiftDown ? maxLineWidth : 15;
         int sideHeight = hasShiftDown ? 36 + Math.min(skipFirstLine ? lines.size() - 1 : lines.size(), MAX_SHOWN_LINES) * 9 : backgroundHeight - 10;
@@ -138,8 +151,13 @@ public class AbilityAndPenaltyTooltipRenderer {
             graphics.text(Minecraft.getInstance().font, description.get(line), trueX + 5, trueY + 47 + line * 9, -5592406);
         }
 
-        if (!shiftInfo.isEmpty()) {
-            graphics.centeredText(Minecraft.getInstance().font, Component.translatable(INFO_SHIFT).withStyle(ChatFormatting.DARK_GRAY), trueX + backgroundWidth / 2, trueY + 47 + (description.size() - 1) * 9, DSColors.withAlpha(DSColors.DARK_GRAY, 1));
+        if (!bottomInfoLines.isEmpty()) {
+            var font = Minecraft.getInstance().font;
+
+            for (int i = 0; i < bottomInfoLines.size(); i++) {
+                FormattedCharSequence line = bottomInfoLines.get(i);
+                graphics.text(font, line, trueX + backgroundWidth / 2 - font.width(line) / 2, trueY + 47 + (description.size() + i) * 9, DSColors.withAlpha(DSColors.DARK_GRAY, 1));
+            }
         }
 
         graphics.blitSprite(RenderPipelines.GUI_TEXTURED, icon, trueX + 5, trueY + 5, 16, 16);

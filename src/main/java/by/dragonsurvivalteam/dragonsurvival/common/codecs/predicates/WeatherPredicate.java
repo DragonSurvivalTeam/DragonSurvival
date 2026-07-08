@@ -5,6 +5,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.Optional;
@@ -60,6 +61,10 @@ public record WeatherPredicate(Optional<Boolean> isRaining, Optional<Boolean> is
 
         if (!level.canSeeSky(position)) {
             // This also checked for 'Level#isRainingAt'
+            return false;
+        }
+
+        if(level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING, position).getY() > position.getY()) {
             return false;
         }
 

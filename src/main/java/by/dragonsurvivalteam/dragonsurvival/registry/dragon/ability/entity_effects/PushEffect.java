@@ -2,6 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effe
 
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.TargetDirection;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.DSLanguageProvider;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
 import com.mojang.serialization.MapCodec;
@@ -48,7 +49,7 @@ public record PushEffect(TargetDirection targetDirection, LevelBasedValue pushFo
 
     public List<MutableComponent> getDescription(final Player dragon, final DragonAbilityInstance ability) {
         if (targetDirection.direction().left().orElse(null) == TargetDirection.Type.LOOKING_AT) {
-            return List.of(Component.translatable(FACING, targetDirection, DSColors.dynamicValue(pushForce.calculate(ability.level()))));
+            return List.of(Component.translatable(FACING, DSColors.dynamicValue(pushForce.calculate(ability.level()))));
         } else if (targetDirection.direction().left().orElse(null) == TargetDirection.Type.TOWARDS_ENTITY) {
             if (pushForce.calculate(ability.level()) > 0) {
                 return List.of(Component.translatable(TOWARDS, DSColors.dynamicValue(pushForce.calculate(ability.level()))));
@@ -56,7 +57,7 @@ public record PushEffect(TargetDirection targetDirection, LevelBasedValue pushFo
                 return List.of(Component.translatable(AWAY, DSColors.dynamicValue(pushForce.calculate(ability.level()))));
             }
         } else if (targetDirection.direction().right().isPresent()) {
-            return List.of(Component.translatable(DIRECTIONAL, DSColors.dynamicValue(pushForce.calculate(ability.level()))));
+            return List.of(Component.translatable(DIRECTIONAL, DSColors.dynamicValue(DSLanguageProvider.enumValue(targetDirection.direction().right().get())), DSColors.dynamicValue(pushForce.calculate(ability.level()))));
         }
 
         return List.of();

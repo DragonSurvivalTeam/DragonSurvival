@@ -33,7 +33,7 @@ public class DietEntryProvider extends DataMapProvider {
         return List.of(
                 DietEntry.create(ItemTags.COALS).nutrition(1).saturation(1).fast().build(),
                 DietEntry.create(DSItems.CHARGED_COAL.value()).nutrition(6).saturation(1).build(),
-                DietEntry.create(DSItems.CHARRED_MEAT.value()).nutrition(8).saturation(10).build(),
+                DietEntry.create(DSItems.CHARRED_MEAT.value()).nutrition(6).saturation(3).build(),
                 DietEntry.create(DSItems.CAVE_DRAGON_TREAT.value()).nutrition(4).saturation(8).canAlwaysEat().build(),
                 DietEntry.create(DSItems.CHARRED_SEAFOOD.value()).nutrition(7).saturation(11).build(),
                 DietEntry.create(DSItems.CHARRED_VEGETABLE.value()).nutrition(8).saturation(9).build(),

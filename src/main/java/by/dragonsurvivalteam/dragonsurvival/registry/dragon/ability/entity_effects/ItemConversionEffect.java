@@ -10,7 +10,6 @@ import net.minecraft.advancements.criterion.ItemPredicate;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.random.WeightedList;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -35,22 +34,22 @@ public record ItemConversionEffect(List<ItemConversionData> itemConversions, Lev
         ).apply(instance, ItemConversionData::new));
     }
 
-    public record ItemTo(Holder<Item> item, int conversionRate, Optional<ParticleData> particles) {
+    public record ItemTo(Holder<Item> item, double conversionRate, Optional<ParticleData> particles) {
         public static final MapCodec<ItemTo> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
                 BuiltInRegistries.ITEM.holderByNameCodec().fieldOf("item").forGetter(ItemTo::item),
-                ExtraCodecs.intRange(1, 64).optionalFieldOf("conversion_rate", 1).forGetter(ItemTo::conversionRate),
+                Codec.DOUBLE.optionalFieldOf("conversion_rate", 1.0).forGetter(ItemTo::conversionRate),
                 ParticleData.CODEC.optionalFieldOf("particles").forGetter(ItemTo::particles)
         ).apply(instance, ItemTo::new));
 
         public static ItemTo of(final Item item) {
-            return of(item, 1, null);
+            return of(item, 1.0, null);
         }
 
-        public static ItemTo of(final Item item, int conversionRate) {
+        public static ItemTo of(final Item item, final double conversionRate) {
             return of(item, conversionRate, null);
         }
 
-        public static ItemTo of(final Item item, int conversionRate, final ParticleData particles) {
+        public static ItemTo of(final Item item, final double conversionRate, final ParticleData particles) {
             //noinspection deprecation -> ignore
             return new ItemTo(item.builtInRegistryHolder(), conversionRate, Optional.ofNullable(particles));
         }
@@ -78,7 +77,7 @@ public record ItemConversionEffect(List<ItemConversionData> itemConversions, Lev
                     DSAdvancementTriggers.CONVERT_ITEM_FROM_ABILITY.get().trigger(dragon, itemEntity.getItem().getItem().builtInRegistryHolder(), conversion.item());
                     conversion.particles().ifPresent(particles -> particles.spawn(dragon.level(), itemEntity, ability.level()));
 
-                    int newAmount = itemEntity.getItem().getCount() * conversion.conversionRate();
+                    int newAmount = (int)(itemEntity.getItem().getCount() * conversion.conversionRate());
                     int maxStackSize = conversion.item().value().getDefaultMaxStackSize();
 
                     if (newAmount > maxStackSize) {

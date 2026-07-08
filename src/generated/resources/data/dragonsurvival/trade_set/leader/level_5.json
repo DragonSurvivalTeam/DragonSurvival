@@ -1,8 +1,5 @@
 {
-  "amount": 2.0,
+  "amount": 1.0,
   "random_sequence": "dragonsurvival:trade_set/leader/level_5",
-  "trades": [
-    "dragonsurvival:leader/dragonsbane",
-    "dragonsurvival:leader/bolas"
-  ]
+  "trades": "dragonsurvival:leader/enchanted_book"
 }

@@ -88,8 +88,6 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
     private static final double DELTA_MOVEMENT_FACTOR = 10;
 
     public Identifier glowTexture;
-    public boolean isRenderingLayer;
-    public boolean shouldRenderLayers = true;
 
     // Data tickets
     public static final DataTicket<DragonRenderData> DRAGON_RENDER_DATA = DataTicket.create("dragonRenderData", DragonRenderData.class);

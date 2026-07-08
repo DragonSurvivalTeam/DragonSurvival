@@ -45,6 +45,7 @@ import java.util.Optional;
 
 public class DSTrades {
     public static final TagKey<Structure> ON_DRAGON_HUNTERS_CASTLE_MAPS = TagKey.create(Registries.STRUCTURE, DragonSurvival.res("on_dragon_hunter_maps"));
+    public static final TagKey<Enchantment> LEADER_BOOKS = TagKey.create(Registries.ENCHANTMENT, DragonSurvival.res("leader_books"));
     private static final ResourceKey<PoiType> DRAGON_RIDER_POI_KEY = ResourceKey.create(Registries.POINT_OF_INTEREST_TYPE, DragonSurvival.res("dragon_rider_poi"));
 
     public static final DeferredRegister<PoiType> POI_REGISTRY = DeferredRegister.create(BuiltInRegistries.POINT_OF_INTEREST_TYPE, DragonSurvival.MODID);
@@ -78,8 +79,7 @@ public class DSTrades {
     private static final ResourceKey<VillagerTrade> LEADER_WEAK_DRAGON_HEART = villagerTradeKey("leader/weak_dragon_heart");
     private static final ResourceKey<VillagerTrade> LEADER_HUNTER_KEY = villagerTradeKey("leader/hunter_key");
     private static final ResourceKey<VillagerTrade> LEADER_ELDER_DRAGON_HEART = villagerTradeKey("leader/elder_dragon_heart");
-    private static final ResourceKey<VillagerTrade> LEADER_DRAGONSBANE = villagerTradeKey("leader/dragonsbane");
-    private static final ResourceKey<VillagerTrade> LEADER_BOLAS = villagerTradeKey("leader/bolas");
+    private static final ResourceKey<VillagerTrade> LEADER_ENCHANTED_BOOK = villagerTradeKey("leader/enchanted_book");
 
     public static final ResourceKey<VillagerTrade> CARTOGRAPHER_DRAGON_HUNTER_MAP = villagerTradeKey("cartographer/dragon_hunter_map");
 
@@ -130,8 +130,7 @@ public class DSTrades {
         registerTrade(context, LEADER_WEAK_DRAGON_HEART, DSItems.WEAK_DRAGON_HEART.value(), 1, Items.EMERALD, 1, 16, 10, 1.0F);
         registerTrade(context, LEADER_HUNTER_KEY, Items.EMERALD, 32, DSItems.HUNTER_KEY, 1, 16, 35, 1.0F);
         registerTrade(context, LEADER_ELDER_DRAGON_HEART, DSItems.ELDER_DRAGON_HEART.value(), 1, Items.EMERALD, 12, 12, 25, 1.0F);
-        registerEnchantedBookTrade(context, items, enchantments, LEADER_DRAGONSBANE, DSEnchantments.DRAGONSBANE, 15, doubleTradePrice);
-        registerEnchantedBookTrade(context, items, enchantments, LEADER_BOLAS, DSEnchantments.BOLAS, 15, doubleTradePrice);
+        registerEnchantedBookTrade(context, items, LEADER_ENCHANTED_BOOK, getLeaderBooks(enchantments), 15, doubleTradePrice);
 
         registerExplorerMapTrade(context, items, CARTOGRAPHER_DRAGON_HUNTER_MAP, ON_DRAGON_HUNTERS_CASTLE_MAPS, DSMapDecorationTypes.DRAGON_HUNTER);
     }
@@ -147,11 +146,20 @@ public class DSTrades {
         registerTradeSet(context, LEADER_LEVEL_2, LEADER_WEAK_DRAGON_HEART);
         registerTradeSet(context, LEADER_LEVEL_3, LEADER_HUNTER_KEY);
         registerTradeSet(context, LEADER_LEVEL_4, LEADER_ELDER_DRAGON_HEART);
-        registerTradeSet(context, LEADER_LEVEL_5, LEADER_DRAGONSBANE, LEADER_BOLAS);
+        registerTradeSet(context, LEADER_LEVEL_5, LEADER_ENCHANTED_BOOK);
     }
 
     @Nullable public static ResourceKey<TradeSet> getLeaderTradeSet(final int level) {
         return LEADER_TRADE_SETS.get(level);
+    }
+
+    private static HolderSet<Enchantment> getLeaderBooks(final HolderGetter<Enchantment> enchantments) {
+        return enchantments.get(LEADER_BOOKS)
+            .map(named -> (HolderSet<Enchantment>)named)
+            .orElseGet(() -> HolderSet.direct(
+                enchantments.getOrThrow(DSEnchantments.DRAGONSBANE),
+                enchantments.getOrThrow(DSEnchantments.BOLAS)
+            ));
     }
 
     private static void registerEnchantedBookTrade(
@@ -160,6 +168,17 @@ public class DSTrades {
         final HolderGetter<Enchantment> enchantments,
         final ResourceKey<VillagerTrade> key,
         final ResourceKey<Enchantment> enchantment,
+        final int villagerXp,
+        final Optional<HolderSet<Enchantment>> doubleTradePrice
+    ) {
+        registerEnchantedBookTrade(context, items, key, HolderSet.direct(enchantments.getOrThrow(enchantment)), villagerXp, doubleTradePrice);
+    }
+
+    private static void registerEnchantedBookTrade(
+        final BootstrapContext<VillagerTrade> context,
+        final HolderGetter<Item> items,
+        final ResourceKey<VillagerTrade> key,
+        final HolderSet<Enchantment> enchantments,
         final int villagerXp,
         final Optional<HolderSet<Enchantment>> doubleTradePrice
     ) {
@@ -173,7 +192,7 @@ public class DSTrades {
                 villagerXp,
                 0.2F,
                 Optional.empty(),
-                VillagerTrades.enchantedBook(items, Optional.of(HolderSet.direct(enchantments.getOrThrow(enchantment)))),
+                VillagerTrades.enchantedBook(items, Optional.of(enchantments)),
                 doubleTradePrice
             )
         );

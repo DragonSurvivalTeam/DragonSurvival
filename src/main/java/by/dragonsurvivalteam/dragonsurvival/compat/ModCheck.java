@@ -9,20 +9,8 @@ import java.util.Map;
 
 /** Separate class to make sure we're not loading any unnecessary classes when mixins are being initialized */
 public class ModCheck {
-    public static final String JEI = "jei";
-    public static final String IRIS = "iris";
-    public static final String COSMETIC_ARMOR_REWORKED = "cosmeticarmorreworked";
-    public static final String SOPHISTICATED_BACKPACKS = "sophisticatedbackpacks";
-    public static final String CURIOS = "curios";
-    public static final String CREATE = "create";
-    public static final String BEE_ADDON = "bee_queen_ds";
-    public static final String FREECAM = "freecam";
-    public static final String SILENTGEMS = "silentgems";
-    public static final String EMI = "emi";
-    public static final String TFC = "tfc";
-
     private static final Map<String, List<String>> ALIAS = Map.of(
-            IRIS, List.of("oculus"),
+            ModID.IRIS.value(), List.of("oculus"),
             "sodium", List.of("embeddium")
     );
 
@@ -53,4 +41,6 @@ public class ModCheck {
 
         return FMLLoader.getCurrent().getLoadingModList().getModFileById(modid) != null;
     }
+
+
 }

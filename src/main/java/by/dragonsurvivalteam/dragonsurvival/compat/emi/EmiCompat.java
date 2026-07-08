@@ -1,13 +1,13 @@
 package by.dragonsurvivalteam.dragonsurvival.compat.emi;
 
-import by.dragonsurvivalteam.dragonsurvival.compat.ModCheck;
+import by.dragonsurvivalteam.dragonsurvival.compat.ModID;
 
 public class EmiCompat {
     /**
      * Mirrors EMI's own inventory effect visibility logic without taking a direct compile-time dependency on EMI.
      */
     public static boolean hideEffects() {
-        if (!ModCheck.isModLoaded(ModCheck.EMI)) {
+        if (!ModID.EMI.isLoaded()) {
             return false;
         }
 

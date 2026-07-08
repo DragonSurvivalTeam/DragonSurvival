@@ -51,6 +51,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 public class DragonSoulItem extends BlockItem {
@@ -66,7 +67,7 @@ public class DragonSoulItem extends BlockItem {
     @Translation(comments = "Empty Dragon Soul")
     private static final String EMPTY_DRAGON_SOUL = Translation.Type.ITEM.wrap("empty_dragon_soul");
 
-    @Translation(comments = " Soul")
+    @Translation(comments = "%s Soul")
     private static final String SOUL = Translation.Type.DESCRIPTION.wrap("dragon_soul.soul");
 
     @Translation(comments = {
@@ -265,7 +266,22 @@ public class DragonSoulItem extends BlockItem {
             }
 
             double growth = handlerData.getDouble(DragonStateHandler.GROWTH).orElseThrow();
-            Holder<DragonStage> stage = DragonStage.get(provider, growth);
+
+            // Prioritize the exact stage key stored in NBT to avoid cross-addon stage name mismatch
+            ResourceKey<DragonStage> stageKey = ResourceHelper.decodeKey(provider, DragonStage.REGISTRY, handlerData, DragonStateHandler.DRAGON_STAGE);
+            Holder<DragonStage> stage;
+
+            if (stageKey != null) {
+                Optional<Holder.Reference<DragonStage>> storedStage = ResourceHelper.get(provider, stageKey);
+
+                if (storedStage.isPresent()) {
+                    stage = storedStage.get();
+                } else {
+                    stage = DragonStage.get(provider, growth);
+                }
+            } else {
+                stage = DragonStage.get(provider, growth);
+            }
 
             //noinspection DataFlowIssue -> key is present
             tooltipAdder.accept(Component.translatable(INFO, name, DragonStage.translatableName(stage.getKey()), String.format("%.0f", growth)));
@@ -293,7 +309,7 @@ public class DragonSoulItem extends BlockItem {
             return Component.translatable(EMPTY_DRAGON_SOUL);
         }
 
-        return Component.translatable(Translation.Type.DRAGON_SPECIES.wrap(species.identifier())).append(Component.translatable(SOUL));
+        return Component.translatable(SOUL, Component.translatable(Translation.Type.DRAGON_SPECIES.wrap(species.identifier())));
     }
 
     public CompoundTag getHandlerData(final ItemStack stack) {

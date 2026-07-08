@@ -10,6 +10,7 @@ import java.util.Set;
 
 public class PlayerData implements ValueIOSerializable {
     public boolean enabledDragonSoulPlacement = true;
+    public boolean sentHunterInfoMessage;
 
     /** Tracks which keys are currently held down */
     private final Set<String> keys = new HashSet<>();
@@ -32,6 +33,7 @@ public class PlayerData implements ValueIOSerializable {
     @Override
     public void serialize(@NotNull final ValueOutput valueOutput) {
         valueOutput.putBoolean(ENABLED_DRAGON_SOUL_PLACEMENT, enabledDragonSoulPlacement);
+        valueOutput.putBoolean(SENT_HUNTER_INFO_MESSAGE, sentHunterInfoMessage);
         ValueOutput keys = valueOutput.child(KEYS);
         this.keys.forEach(key -> keys.putBoolean(String.valueOf(key), true));
     }
@@ -40,6 +42,7 @@ public class PlayerData implements ValueIOSerializable {
     public void deserialize(@NotNull final ValueInput valueInput) {
         this.keys.clear();
         enabledDragonSoulPlacement = valueInput.getBooleanOr(ENABLED_DRAGON_SOUL_PLACEMENT, false);
+        sentHunterInfoMessage = valueInput.getBooleanOr(SENT_HUNTER_INFO_MESSAGE, false);
 
         try {
             valueInput.child(KEYS).ifPresent(keys -> this.keys.addAll(keys.keySet()));
@@ -49,5 +52,6 @@ public class PlayerData implements ValueIOSerializable {
     }
 
     private final String ENABLED_DRAGON_SOUL_PLACEMENT = "enabled_dragon_soul_placement";
+    private final String SENT_HUNTER_INFO_MESSAGE = "sent_hunter_info_message";
     private final String KEYS = "keys";
 }

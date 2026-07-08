@@ -1,6 +1,8 @@
 package by.dragonsurvivalteam.dragonsurvival.network.magic;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.HunterHandler;
+import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -26,6 +28,11 @@ public record SyncVisualEffectAdded(int entityId, MobEffectInstance effect) impl
 
                 if (current == null || current.getDuration() != packet.effect().getDuration() || current.getAmplifier() != packet.effect().getAmplifier()) {
                     entity.addEffect(packet.effect());
+
+                    // Client does not trigger the "effect added" event
+                    if (packet.effect().getEffect().is(DSEffects.HUNTER)) {
+                        HunterHandler.informUser(entity);
+                    }
                 }
             }
         });

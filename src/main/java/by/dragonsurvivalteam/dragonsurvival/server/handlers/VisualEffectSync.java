@@ -47,7 +47,8 @@ public class VisualEffectSync {
             return;
         }
 
-        PacketDistributor.sendToPlayersTrackingEntity(entity, new SyncVisualEffectAdded(entity.getId(), instance));
+        // 'Self' is mainly done to trigger the information message for hunter effect
+        PacketDistributor.sendToPlayersTrackingEntityAndSelf(entity, new SyncVisualEffectAdded(entity.getId(), instance));
     }
 
     @SubscribeEvent

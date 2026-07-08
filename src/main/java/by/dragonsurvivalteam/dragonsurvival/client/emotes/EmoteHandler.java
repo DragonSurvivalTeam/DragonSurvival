@@ -38,7 +38,7 @@ public class EmoteHandler {
         dragon.clearSoundsPlayedThisTick();
 
         boolean isForLocalPlayer = player == Minecraft.getInstance().player;
-        if ((player.isCrouching() || player.swinging) && isForLocalPlayer) {
+        if ((player.swinging) && isForLocalPlayer) {
             dragon.stopAllEmotes();
             ClientPacketDistributor.sendToServer(new StopAllEmotes(player.getId()));
             return;

@@ -8,7 +8,7 @@
       "function": "minecraft:enchant_randomly",
       "include_additional_cost_component": true,
       "only_compatible": false,
-      "options": "dragonsurvival:bolas"
+      "options": "#dragonsurvival:leader_books"
     },
     {
       "function": "minecraft:filtered",
