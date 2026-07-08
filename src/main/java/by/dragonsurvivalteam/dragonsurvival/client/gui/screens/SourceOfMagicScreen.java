@@ -7,16 +7,22 @@ import by.dragonsurvivalteam.dragonsurvival.registry.DSBlocks;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.server.containers.SourceOfMagicContainer;
 import by.dragonsurvivalteam.dragonsurvival.server.tileentity.SourceOfMagicBlockEntity;
+import com.mojang.datafixers.util.Either;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.FormattedText;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
@@ -51,7 +57,8 @@ public class SourceOfMagicScreen extends AbstractContainerScreen<SourceOfMagicCo
     @Override
     protected void init() {
         super.init();
-        helpButton = new HelpButton(leftPos + 12, topPos + 12, 12, 12, getTooltip());
+        helpButton = new HelpButton(leftPos + 12, topPos + 12, 12, 12, Tooltip.create(Component.empty()));
+        helpButton.setTooltip(null);
         addRenderableWidget(helpButton);
     }
 
@@ -66,7 +73,6 @@ public class SourceOfMagicScreen extends AbstractContainerScreen<SourceOfMagicCo
             scrollAmount = Math.clamp(scrollAmount + (int) -scrollY, 0, maxScroll());
 
             if (oldScroll != scrollAmount) {
-                helpButton.setTooltip(getTooltip());
                 return true;
             }
         }
@@ -77,11 +83,16 @@ public class SourceOfMagicScreen extends AbstractContainerScreen<SourceOfMagicCo
     @Override
     public void extractRenderState(@NotNull final GuiGraphicsExtractor graphics, final int mouseX, final int mouseY, final float partialTick) {
         super.extractRenderState(graphics, mouseX, mouseY, partialTick);
+
+        if (helpButton.isHovered()) {
+            graphics.setComponentTooltipFromElementsForNextFrame(Minecraft.getInstance().font, getTooltipElements(), mouseX, mouseY, ItemStack.EMPTY);
+        }
     }
 
     @Override
-    public void extractBackground(@NotNull final GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partialTick) {
-        GuiGraphicsExtractor.blit(BACKGROUND, leftPos, topPos, 0, 0, imageWidth, imageHeight, 256, 256);
+    public void extractBackground(@NotNull final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
+        super.extractBackground(graphics, mouseX, mouseY, partialTick);
+        graphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND, leftPos, topPos, 0, 0, imageWidth, imageHeight, 256, 256);
 
         boolean hasItem = blockEntity.getCurrentDuration() > 0;
         Block block = blockEntity.getBlockState().getBlock();
@@ -97,13 +108,12 @@ public class SourceOfMagicScreen extends AbstractContainerScreen<SourceOfMagicCo
         }
 
         if (resource != null) {
-            GuiGraphicsExtractor.blit(resource, leftPos + 8, topPos + 8, 0, 0, 160, 49, 160, 49);
+            graphics.blit(RenderPipelines.GUI_TEXTURED, resource, leftPos + 8, topPos + 8, 0, 0, 160, 49, 160, 49);
         }
     }
 
-
-    private Tooltip getTooltip() {
-        MutableComponent tooltip = Component.empty();
+    private List<Either<FormattedText, TooltipComponent>> getTooltipElements() {
+        List<Either<FormattedText, TooltipComponent>> tooltip = new ArrayList<>();
         List<SourceOfMagicData.Consumable> consumables = blockEntity.getConsumables();
 
         // Show the highest duration at the top
@@ -116,13 +126,12 @@ public class SourceOfMagicScreen extends AbstractContainerScreen<SourceOfMagicCo
             }
 
             SourceOfMagicData.Consumable consumable = consumables.get(i);
-            TimeComponent timeComponent = new TimeComponent(consumable.item(), consumable.duration(), TimeComponent.DEFAULT);
-            tooltip.append(timeComponent.description().apply(timeComponent.item(), timeComponent.ticks()));
+            tooltip.add(Either.right(new TimeComponent(consumable.item(), consumable.duration(), TimeComponent.DEFAULT)));
             numElements++;
         }
 
-        tooltip.append(Component.translatable(HELP));
-        return Tooltip.create(tooltip);
+        tooltip.addFirst(Either.left(Component.translatable(HELP)));
+        return tooltip;
     }
 
     private int maxScroll() {
