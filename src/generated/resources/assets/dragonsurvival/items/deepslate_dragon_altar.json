@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "dragonsurvival:block/deepslate_dragon_altar"
+    "model": "dragonsurvival:item/deepslate_dragon_altar"
   }
 }

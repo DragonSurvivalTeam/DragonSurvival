@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "dragonsurvival:block/prismarine_dragon_altar"
+    "model": "dragonsurvival:item/prismarine_dragon_altar"
   }
 }

@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "dragonsurvival:item/small_crimson_dragon_door"
+  }
+}

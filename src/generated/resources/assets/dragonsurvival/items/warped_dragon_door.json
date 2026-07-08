@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "dragonsurvival:block/warped_dragon_door_middle"
+    "model": "dragonsurvival:item/warped_dragon_door"
   }
 }

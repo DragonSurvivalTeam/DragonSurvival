@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "dragonsurvival:block/skeleton_dragon_chest_skin2"
+    "model": "dragonsurvival:item/skeleton_dragon_chest_skin2"
   }
 }

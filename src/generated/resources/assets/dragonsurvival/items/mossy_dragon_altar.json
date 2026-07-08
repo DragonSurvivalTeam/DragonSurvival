@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "dragonsurvival:block/mossy_dragon_altar"
+    "model": "dragonsurvival:item/mossy_dragon_altar"
   }
 }

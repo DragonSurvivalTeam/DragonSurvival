@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "dragonsurvival:block/alexandrite_dragon_treasure2"
+    "model": "dragonsurvival:item/alexandrite_dragon_treasure"
   }
 }

@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "dragonsurvival:block/cave_source_of_magic"
+    "model": "dragonsurvival:item/cave_source_of_magic"
   }
 }

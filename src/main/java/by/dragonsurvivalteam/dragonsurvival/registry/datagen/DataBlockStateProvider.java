@@ -85,13 +85,10 @@ public class DataBlockStateProvider extends ModelProvider {
 
             if (block instanceof DragonDoor dragonDoor) {
                 createDragonDoor(blockModels, dragonDoor, name);
-                blockModels.registerSimpleItemModel(dragonDoor, blockModel(name + "_middle"));
             } else if (block instanceof SmallDragonDoor smallDragonDoor) {
                 createSmallDragonDoor(blockModels, smallDragonDoor, name);
-                blockModels.registerSimpleItemModel(smallDragonDoor, blockModel(name));
             } else if (block instanceof HelmetBlock helmetBlock) {
                 createHelmet(blockModels, helmetBlock, name);
-                blockModels.registerSimpleFlatItemModel(helmetBlock);
             } else if (block instanceof DragonPressurePlates pressurePlate) {
                 createPressurePlate(blockModels, pressurePlate, name);
             } else if (block instanceof DragonAltarBlock altarBlock) {
@@ -104,12 +101,10 @@ public class DataBlockStateProvider extends ModelProvider {
                 createWorkbench(blockModels, workbenchBlock, name);
             } else if (block instanceof SourceOfMagicBlock sourceOfMagicBlock) {
                 createSourceOfMagic(blockModels, sourceOfMagicBlock, name);
-                blockModels.registerSimpleItemModel(sourceOfMagicBlock, blockModel(name));
             } else if (block instanceof RotatedPillarBlock rotatedPillarBlock) {
                 createDragonMemory(blockModels, rotatedPillarBlock, name);
             } else if (block instanceof DragonBeacon dragonBeacon) {
                 createDragonBeacon(blockModels, dragonBeacon);
-                blockModels.registerSimpleItemModel(dragonBeacon, blockModel("empty"));
             } else if (block instanceof SkeletonPieceBlock skeletonPieceBlock) {
                 createSkeletonPiece(blockModels, skeletonPieceBlock, name);
             } else if (block instanceof PrimordialAnchorBlock primordialAnchorBlock) {
@@ -119,7 +114,7 @@ public class DataBlockStateProvider extends ModelProvider {
             }
         });
 
-        DataItemModelProvider.registerItemModels(itemModels);
+        DataItemModelProvider.registerItemModels(blockModels, itemModels);
     }
 
     private void createDragonDoor(final BlockModelGenerators blockModels, final DragonDoor block, final String name) {
@@ -237,7 +232,6 @@ public class DataBlockStateProvider extends ModelProvider {
                                 .generate((layers) -> BlockModelGenerators.plainVariant(layers == 8 ? fullModel : blockModel(name + layers * 2)))
                 )
         );
-        blockModels.registerSimpleItemModel(block, blockModel(name + "2"));
     }
 
     private void createVault(final BlockModelGenerators blockModels, final VaultBlock block, final String name) {
@@ -260,7 +254,6 @@ public class DataBlockStateProvider extends ModelProvider {
                                 })
                 )
         );
-        blockModels.registerSimpleItemModel(block, inactive);
     }
 
     private void createWorkbench(final BlockModelGenerators blockModels, final DragonRiderWorkbenchBlock block, final String name) {

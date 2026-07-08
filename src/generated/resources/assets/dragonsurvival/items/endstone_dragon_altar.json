@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "dragonsurvival:block/endstone_dragon_altar"
+    "model": "dragonsurvival:item/endstone_dragon_altar"
   }
 }

@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "dragonsurvival:block/ice_dragon_altar"
+    "model": "dragonsurvival:item/ice_dragon_altar"
   }
 }

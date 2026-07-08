@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "dragonsurvival:block/primordial_anchor"
+    "model": "dragonsurvival:item/primordial_anchor"
   }
 }

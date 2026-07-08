@@ -1,9 +1,6 @@
 {
   "model": {
-    "type": "minecraft:special",
-    "base": "dragonsurvival:item/dark_key",
-    "model": {
-      "type": "geckolib:geckolib"
-    }
+    "type": "minecraft:model",
+    "model": "dragonsurvival:item/dark_key"
   }
 }

@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "dragonsurvival:block/acacia_dragon_altar"
+    "model": "dragonsurvival:item/acacia_dragon_altar"
   }
 }

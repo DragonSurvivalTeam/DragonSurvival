@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "dragonsurvival:block/quartz_dragon_altar"
+    "model": "dragonsurvival:item/quartz_dragon_altar"
   }
 }

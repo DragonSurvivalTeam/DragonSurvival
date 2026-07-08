@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "dragonsurvival:block/bee_honey_treasure2"
+    "model": "dragonsurvival:item/bee_honey_treasure"
   }
 }

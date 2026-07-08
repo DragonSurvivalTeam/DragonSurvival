@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "dragonsurvival:block/peridot_dragon_treasure2"
+    "model": "dragonsurvival:item/peridot_dragon_treasure"
   }
 }

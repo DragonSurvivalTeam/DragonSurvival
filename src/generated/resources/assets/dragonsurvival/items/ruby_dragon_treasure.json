@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "dragonsurvival:block/ruby_dragon_treasure2"
+    "model": "dragonsurvival:item/ruby_dragon_treasure"
   }
 }

@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "dragonsurvival:block/dragon_pressure_plate"
+    "model": "dragonsurvival:item/dragon_pressure_plate"
   }
 }

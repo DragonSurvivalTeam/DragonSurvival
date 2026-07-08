@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "dragonsurvival:block/crimson_dragon_door_middle"
+    "model": "dragonsurvival:item/crimson_dragon_door"
   }
 }

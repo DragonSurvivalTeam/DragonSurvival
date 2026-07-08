@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "dragonsurvival:block/dragon_memory_block"
+    "model": "dragonsurvival:item/dragon_memory_block"
   }
 }

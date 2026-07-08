@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "dragonsurvival:block/oak_dragon_altar"
+    "model": "dragonsurvival:item/oak_dragon_altar"
   }
 }

@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "dragonsurvival:block/netherrack_dragon_altar"
+    "model": "dragonsurvival:item/netherrack_dragon_altar"
   }
 }

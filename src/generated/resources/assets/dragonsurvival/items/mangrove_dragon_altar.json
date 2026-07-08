@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "dragonsurvival:block/mangrove_dragon_altar"
+    "model": "dragonsurvival:item/mangrove_dragon_altar"
   }
 }

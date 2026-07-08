@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "dragonsurvival:block/light_vault_inactive"
+    "model": "dragonsurvival:item/light_vault"
   }
 }

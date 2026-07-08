@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "dragonsurvival:block/small_stone_dragon_door"
+    "model": "dragonsurvival:item/small_stone_dragon_door"
   }
 }

@@ -1,4 +1,4 @@
-// 26.1	2026-03-26T00:19:47.4999644	Tags for minecraft:entity_type mod id dragonsurvival
+// 26.1.2	2026-07-08T11:20:55.0104367	Tags for minecraft:entity_type mod id dragonsurvival
 4088d5559f6f745e8078744534c97abefd2eaec7 data/dragonsurvival/tags/entity_type/animal_avoid_blacklist.json
 a4f6e3d52d68769113e22077030c2597ae94f2a3 data/dragonsurvival/tags/entity_type/can_fly.json
 d0750bca4634a34a46faa49d7014a5ef90d1d25d data/dragonsurvival/tags/entity_type/charged_spread_blacklist.json

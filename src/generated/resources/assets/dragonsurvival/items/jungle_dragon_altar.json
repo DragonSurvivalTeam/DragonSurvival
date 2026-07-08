@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "dragonsurvival:block/jungle_dragon_altar"
+    "model": "dragonsurvival:item/jungle_dragon_altar"
   }
 }

@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "dragonsurvival:block/cave_dragon_door_middle"
+    "model": "dragonsurvival:item/cave_dragon_door"
   }
 }

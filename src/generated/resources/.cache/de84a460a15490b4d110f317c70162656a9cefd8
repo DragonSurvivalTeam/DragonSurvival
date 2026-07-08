@@ -1,10 +1,8 @@
-// 26.1	2026-03-26T00:19:47.5034836	dragonsurvival_silentgems/Compatibility Loot Tables: Silent Gems
+// 26.1.2	2026-07-08T11:20:55.0166211	dragonsurvival_silentgems/Compatibility Loot Tables: Silent Gems
 b4f16a1ee46b63f7d4b1a2028d44b2973aee52fb data/dragonsurvival/datapacks/silentgems/data/dragonsurvival/loot_table/blocks/alexandrite_dragon_treasure.json
 11c7b6c3b0563ea40f0d938c9445b85034d7814e data/dragonsurvival/datapacks/silentgems/data/dragonsurvival/loot_table/blocks/ammolite_dragon_treasure.json
-ca672882168ea3e4505c5d0d7e4cad2c9d640109 data/dragonsurvival/datapacks/silentgems/data/dragonsurvival/loot_table/blocks/bee_honey_treasure.json
 c55221735626c26de039e2d7798511b0ef8aeca8 data/dragonsurvival/datapacks/silentgems/data/dragonsurvival/loot_table/blocks/black_diamond_dragon_treasure.json
 3726f9351790a340e2ac5f378e9ea27f122b930f data/dragonsurvival/datapacks/silentgems/data/dragonsurvival/loot_table/blocks/carnelian_dragon_treasure.json
-2e6e840adb3ec0160a7d869fd8bdeb5605362fbf data/dragonsurvival/datapacks/silentgems/data/dragonsurvival/loot_table/blocks/chocolate_dragon_treasure.json
 2f6955efd59c1d871ddb7c058e142972c0fc8f99 data/dragonsurvival/datapacks/silentgems/data/dragonsurvival/loot_table/blocks/citrine_dragon_treasure.json
 ca299abff08a4d2f13cf697dca2835c96f0d7632 data/dragonsurvival/datapacks/silentgems/data/dragonsurvival/loot_table/blocks/heliodor_dragon_treasure.json
 81c9c5253ca9ff8068312d6126a6e45a35839386 data/dragonsurvival/datapacks/silentgems/data/dragonsurvival/loot_table/blocks/iolite_dragon_treasure.json

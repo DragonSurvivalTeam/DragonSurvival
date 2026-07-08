@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "dragonsurvival:block/heliodor_dragon_treasure2"
+    "model": "dragonsurvival:item/heliodor_dragon_treasure"
   }
 }
