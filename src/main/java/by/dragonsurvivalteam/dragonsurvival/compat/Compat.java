@@ -3,7 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.compat;
 //import com.simibubi.create.content.equipment.armor.CardboardArmorHandler;
 import net.irisshaders.iris.api.v0.IrisApi;
 import net.minecraft.world.entity.player.Player;
-//import net.xolt.freecam.Freecam;
+import net.xolt.freecam.Freecam;
 
 public class Compat {
     /**
@@ -25,9 +25,9 @@ public class Compat {
             return true;
         }
 
-//        if (ModCheck.isModLoaded(ModCheck.FREECAM) && Freecam.isEnabled()) {
-//            return true;
-//        }
+        if (ModID.FREECAM.isLoaded() && Freecam.isEnabled()) {
+            return true;
+        }
 
         return false;
     }

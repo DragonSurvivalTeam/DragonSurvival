@@ -228,7 +228,7 @@ dependencies {
 //	implementation "curse.maven:magnesium-extras-558905:6394141" // 1.0.8
 
 	// Free Cam
-//	compileOnly "curse.maven:free-cam-557076:5572364" // 1.3.0
+	compileOnly "curse.maven:free-cam-557076:8326163" // 1.4.1-beta.1+mc26.1.2
 
 	// Vista
 //	compileOnly "curse.maven:vista-1368607:8071509" // 4.3.0
