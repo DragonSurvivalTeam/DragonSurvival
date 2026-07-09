@@ -213,8 +213,8 @@ dependencies {
 //	runtimeOnly "curse.maven:silentlib-242998:6285150" // 10.4.0
 
 	// Sodium & Iris
-	implementation "curse.maven:sodium-394468:8111040" // 0.8.12+mc26.1.2
-	implementation "curse.maven:irisshaders-455508:7867946" // 1.10.9+mc26.1.1
+	compileOnly "curse.maven:sodium-394468:8111040" // 0.8.12+mc26.1.2
+	compileOnly "curse.maven:irisshaders-455508:7867946" // 1.10.9+mc26.1.1
 
 	// Create: Aeronautics
 //	implementation "maven.modrinth:sable:1.0.6+mc1.21.1"
