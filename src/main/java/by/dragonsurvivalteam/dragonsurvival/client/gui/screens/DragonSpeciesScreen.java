@@ -14,6 +14,8 @@ import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscResources;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.StageResources;
+import by.dragonsurvivalteam.dragonsurvival.compat.ModID;
+import by.dragonsurvivalteam.dragonsurvival.compat.jei.JEIPlugin;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.FlightData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.data_maps.DietEntryCache;
@@ -23,6 +25,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effec
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty.DragonPenalty;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import by.dragonsurvivalteam.dragonsurvival.server.handlers.DragonRidingHandler;
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.datafixers.util.Either;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.Minecraft;
@@ -131,10 +134,9 @@ public class DragonSpeciesScreen extends Screen {
 
     @Override
     public boolean keyPressed(@NotNull KeyEvent keyEvent) {
-        // FIXME :: JEI INTEGRATION
-        /*if (dietMenu != null && dietMenu.getHovered() != null && ModCheck.isModLoaded(ModCheck.JEI)) {
+        if (dietMenu != null && dietMenu.getHovered() != null && ModID.JEI.isLoaded()) {
             return JEIPlugin.handleKeyPress(InputConstants.getKey(keyEvent), dietMenu.getHovered());
-        }*/
+        }
 
         return super.keyPressed(keyEvent);
     }

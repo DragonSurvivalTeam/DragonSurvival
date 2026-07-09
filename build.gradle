@@ -182,8 +182,8 @@ dependencies {
 	// --- Compatibility --- //
 
 	// JEI
-//	compileOnly "mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}"
-//	runtimeOnly "mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}"
+	compileOnly "mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}"
+    runtimeOnly "mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}"
 
 	// Curios
 //	compileOnly "top.theillusivec4.curios:curios-neoforge:${curios_version}:api"

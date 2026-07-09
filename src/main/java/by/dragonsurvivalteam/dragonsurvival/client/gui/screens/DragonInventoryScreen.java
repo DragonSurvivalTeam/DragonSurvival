@@ -115,6 +115,10 @@ public class DragonInventoryScreen extends AbstractContainerScreen<DragonContain
         effects = new EffectsInInventory(this);
     }
 
+    public EffectsInInventory dragonSurvival$getEffectsInInventoryForJEI() {
+        return effects;
+    }
+
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
         if (growthButton.isHovered()) {
