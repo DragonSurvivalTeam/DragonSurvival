@@ -36,9 +36,13 @@ public class DSDataMaps {
     public static final AdvancedDataMapType<DragonSpecies, Map<ResourceKey<DragonStage>, StageResources.StageResource>, StageResourceRemover> STAGE_RESOURCES = AdvancedDataMapType.builder(DragonSurvival.res("stage_resources"), DragonSpecies.REGISTRY, StageResources.CODEC)
             .merger(DataMapValueMerger.mapMerger()).remover(StageResourceRemover.CODEC).synced(StageResources.CODEC, true).build();
 
-    public static final DataMapType<DragonSpecies, EndPlatform> END_PLATFORMS = DataMapType.builder(DragonSurvival.res("end_platforms"), DragonSpecies.REGISTRY, EndPlatform.CODEC).build();
+    // TODO :: This data maps are synced, but it shouldn't need to be, this is due to some change in NeoForge that makes it so that in order for these data maps to appear on the server, they must be synced
+    public static final DataMapType<DragonSpecies, EndPlatform> END_PLATFORMS = DataMapType.builder(DragonSurvival.res("end_platforms"), DragonSpecies.REGISTRY, EndPlatform.CODEC)
+            .synced(EndPlatform.CODEC, true).build();
 
-    public static final DataMapType<DragonSpecies, DragonBeaconData> DRAGON_BEACON_DATA = DataMapType.builder(DragonSurvival.res("dragon_beacon_data"), DragonSpecies.REGISTRY, DragonBeaconData.CODEC).build();
+    // TODO :: This data maps is synced, but it shouldn't need to be, this is due to some change in NeoForge that makes it so that in order for these data maps to appear on the server, they must be synced
+    public static final DataMapType<DragonSpecies, DragonBeaconData> DRAGON_BEACON_DATA = DataMapType.builder(DragonSurvival.res("dragon_beacon_data"), DragonSpecies.REGISTRY, DragonBeaconData.CODEC)
+            .synced(DragonBeaconData.CODEC, true).build();
 
     // --- Dragon Body --- //
 
