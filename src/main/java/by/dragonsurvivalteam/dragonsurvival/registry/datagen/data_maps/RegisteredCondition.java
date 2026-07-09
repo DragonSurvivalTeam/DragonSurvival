@@ -6,13 +6,14 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.MapLike;
 import com.mojang.serialization.RecordBuilder;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import java.util.stream.Stream;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceKey;
 import net.neoforged.neoforge.common.conditions.ICondition;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.stream.Stream;
 
 public record RegisteredCondition<T>(ResourceKey<T> registryKey, HolderLookup.RegistryLookup<T> registryLookup) implements ICondition {
     private static final MapCodec<RegisteredCondition<?>> BASE_CODEC = RecordCodecBuilder.mapCodec(instance -> instance

@@ -15,6 +15,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.resources.Identifier;
@@ -62,16 +63,16 @@ public class EmoteComponent {
             }
         }) {
             @Override
-            public void extractWidgetRenderState(@NotNull GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partialTick) {
+            public void extractWidgetRenderState(@NotNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
                 // Copied from ExtendedButton#extractRenderState, we only want to render the text for this one
                 final FormattedText buttonText = Minecraft.getInstance().font.ellipsize(this.getMessage(), this.width + 26); // Remove 6 pixels so that the text is always contained within the button's borders
                 int color;
                 if (this.isHovered()) {
-                    color = 0xFFFFA0;
+                    color = 0xFFFFA0FF;
                 } else {
                     color = getFGColor();
                 }
-                TextRenderUtil.drawScaledText(GuiGraphicsExtractor, this.getX(), this.getY() + (float) (this.height - 8) / 2, 0.8f, buttonText.getString(), color);
+                TextRenderUtil.drawScaledText(graphics, this.getX(), this.getY() + (float) (this.height - 8) / 2, 0.8f, buttonText.getString(), color);
             }
         };
         emoteButton.setMessage(emote.name());
@@ -92,18 +93,18 @@ public class EmoteComponent {
             }
         }) {
             @Override
-            public void extractWidgetRenderState(@NotNull GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partialTick) {
+            public void extractWidgetRenderState(@NotNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
                 Identifier texture = DragonSurvival.PROXY.isPlayingEmote(Minecraft.getInstance().player, emote) ? PLAY_ON : PLAY_OFF;
-                GuiGraphicsExtractor.blit(texture, getX(), getY(), 0, 0, 6, 6, 14, 14);
+                graphics.blit(RenderPipelines.GUI_TEXTURED, texture, getX(), getY(), 0, 0, 6, 6, 14, 14);
             }
         };
         keybindingButton = new ExtendedButton(xPos + 126, yPos - 1, 6, 6, Component.empty(), button -> {
             screen.currentlyKeybinding = emote.key();
         }) {
             @Override
-            public void extractWidgetRenderState(@NotNull GuiGraphicsExtractor GuiGraphicsExtractor, int mouseX, int mouseY, float partialTick) {
+            public void extractWidgetRenderState(@NotNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
                 Identifier texture = emote.key().equals(screen.currentlyKeybinding) ? KEYBIND_ON : KEYBIND_OFF;
-                GuiGraphicsExtractor.blit(texture, getX(), getY(), 0, 0, 6, 6, 14, 14);
+                graphics.blit(RenderPipelines.GUI_TEXTURED, texture, getX(), getY(), 0, 0, 6, 6, 14, 14);
             }
         };
         refreshKeybinding();

@@ -2,6 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty;
 
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.IdentifierWrapper;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.DataReloadHandler;
+import by.dragonsurvivalteam.dragonsurvival.compat.ModID;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ClawInventoryData;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -16,6 +17,9 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import top.theillusivec4.curios.api.CuriosApi;
+import top.theillusivec4.curios.api.type.inventory.ICurioStacksHandler;
+import top.theillusivec4.curios.api.type.inventory.IDynamicStackHandler;
 
 import java.util.HashSet;
 import java.util.List;
@@ -47,7 +51,7 @@ public class ItemBlacklistPenalty implements PenaltyEffect {
     public void apply(final ServerPlayer player, final Holder<DragonPenalty> penalty) {
         dropAllItemsInList(player, getArmorItems(player.getInventory()));
         dropAllItemsInList(player, NonNullList.of(player.getInventory().getItem(Inventory.SLOT_OFFHAND)));
-        //dropCurios(player);
+        dropCurios(player);
 
         ClawInventoryData clawData = ClawInventoryData.getData(player);
         SimpleContainer clawContainer = clawData.getContainer();
@@ -92,26 +96,29 @@ public class ItemBlacklistPenalty implements PenaltyEffect {
         });
     }
 
-    // FIXME :: Curios
-    /*private void dropCurios(final Player player) {
-        if (!ModCheck.isModLoaded(ModCheck.CURIOS)) {
+    private void dropCurios(final Player player) {
+        if (!ModID.CURIOS.isLoaded()) {
             return;
         }
 
-        CuriosApi.getCuriosInventory(player).ifPresent(inventory -> {
-            IItemHandlerModifiable equipped = inventory.getEquippedCurios();
+        CuriosApi.getCuriosInventory(player).ifPresent(inventory -> inventory.getCurios().values().forEach(stacksHandler -> dropCurios(player, stacksHandler)));
+    }
 
-            for (int slot = 0; slot < equipped.getSlots(); slot++) {
-                if (isBlacklisted(equipped.getStackInSlot(slot).getItem())) {
-                    ItemStack removed = equipped.extractItem(slot, 64, false);
+    private void dropCurios(final Player player, final ICurioStacksHandler stacksHandler) {
+        IDynamicStackHandler stacks = stacksHandler.getStacks();
 
-                    if (!removed.isEmpty()) {
-                        player.drop(removed, false);
-                    }
-                }
+        for (int slot = 0; slot < stacks.getSlots(); slot++) {
+            ItemStack stack = stacks.getStackInSlot(slot);
+
+            if (stack.isEmpty() || !isBlacklisted(stack.getItem())) {
+                continue;
             }
-        });
-    }*/
+
+            ItemStack removed = stack.copy();
+            stacks.setStackInSlot(slot, ItemStack.EMPTY);
+            player.drop(removed, false);
+        }
+    }
 
     private Set<ResourceKey<Item>> map(final List<String> entries) {
         Set<ResourceKey<Item>> blacklisted = new HashSet<>();

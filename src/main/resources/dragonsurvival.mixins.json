@@ -42,6 +42,8 @@
     "VaultBlockEntityServerMixin",
     "VillagerHostilesSensorMixin",
     "VillagerMixin",
+    "appleskin.FoodHelperMixin",
+    "appleskin.HUDOverlayHandlerMixin",
     "tool_swap.ServerPlayerGameModeEndMixin",
     "tool_swap.ServerPlayerGameModeStartMixin"
   ],
@@ -49,6 +51,7 @@
     "bettercombat.AbstractClientPlayerMixin",
     "client.CameraMixin",
     "client.ClientLevelMixin",
+    "client.CreativeModeInventoryScreenAccessor",
     "client.EffectsInInventoryAccessor",
     "client.EffectsInInventoryMixin",
     "client.EntityRenderDispatcherMixin",
@@ -58,6 +61,7 @@
     "client.GeometryMixin",
     "client.GuiMixin",
     "client.HumanoidArmorLayerMixin",
+    "client.InventoryScreenAccessor",
     "client.InventoryScreenMixin",
     "client.ItemBlockRenderTypesMixin",
     "client.ItemInHandRendererMixin",
@@ -78,6 +82,7 @@
     "client.SmithingScreenMixin",
     "client.TextureManagerAccessor",
     "iris.GameRendererMixin",
+    "sodium.DefaultFluidRendererMixin",
     "tool_swap.MultiPlayerGameModeEndMixin",
     "tool_swap.MultiPlayerGameModeStartMixin"
   ],

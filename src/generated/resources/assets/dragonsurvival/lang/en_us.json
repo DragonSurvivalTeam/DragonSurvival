@@ -1142,6 +1142,7 @@
   "dragonsurvival.gui.general.attribute_modifiers": "§6■ Attribute modifiers:§r",
   "dragonsurvival.gui.general.cancel": "Cancel",
   "dragonsurvival.gui.general.confirm": "Confirm",
+  "dragonsurvival.gui.general.disabled_by_effects": "§4Disabled by effects§r",
   "dragonsurvival.gui.general.discord": "■ Join our §6discord server§r!§7 Read the Rules, FAQ and Wiki before you ask anything.",
   "dragonsurvival.gui.general.dragon_editor": "DRAGON EDITOR",
   "dragonsurvival.gui.general.duration": "Duration: %s",

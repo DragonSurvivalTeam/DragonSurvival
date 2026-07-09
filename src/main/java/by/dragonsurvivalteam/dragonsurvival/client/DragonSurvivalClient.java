@@ -45,6 +45,8 @@ import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.loader.Def
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.loader.DragonPartLoader;
 import by.dragonsurvivalteam.dragonsurvival.client.util.RenderingUtils;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
+import by.dragonsurvivalteam.dragonsurvival.compat.ModID;
+import by.dragonsurvivalteam.dragonsurvival.compat.curios.CuriosButtonHandler;
 import by.dragonsurvivalteam.dragonsurvival.mixins.client.LocalPlayerAccessor;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSBlockEntities;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEntities;
@@ -115,9 +117,9 @@ public class DragonSurvivalClient {
         NeoForge.EVENT_BUS.addListener(this::incrementTimer);
         NeoForge.EVENT_BUS.addListener(this::preventThirdPersonWhenSuffocating);
 
-        /*if (ModCheck.isModLoaded(ModCheck.CURIOS)) {
+        if (ModID.CURIOS.isLoaded()) {
             NeoForge.EVENT_BUS.addListener(CuriosButtonHandler::handleCurios);
-        }*/
+        }
     }
 
     private void incrementTimer(final ClientTickEvent.Post event) {

@@ -3,6 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.compat;
 public enum ModID {
     VISTA("vista"),
     IRIS("iris"),
+    SODIUM("sodium"),
     JEI("jei"),
     COSMETIC_ARMOR_REWORKED("cosmeticarmorreworked"),
     SOPHISTICATED_BACKPACKS("sophisticatedbackpacks"),
