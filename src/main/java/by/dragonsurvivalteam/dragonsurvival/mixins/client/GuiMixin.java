@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.mixins.client;
 
+import by.dragonsurvivalteam.dragonsurvival.client.util.RenderingUtils;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SwimData;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.ClientEffectProvider;
 import by.dragonsurvivalteam.dragonsurvival.util.FluidTypeUtil;
@@ -127,11 +128,12 @@ public abstract class GuiMixin {
 
         final Identifier replacementSprite = burst ? SwimData.getAirBurstSprite(relevantFluid) : SwimData.getAirSprite(relevantFluid);
 
-        if (replacementSprite == null) {
+        // If we haven't authored a special air texture for this situation, then don't throw invalid textures at the UI
+        if (RenderingUtils.hasTexture(replacementSprite)) {
+            return replacementSprite;
+        } else {
             return null;
         }
-
-        return replacementSprite;
     }
 
     @ModifyArg(
