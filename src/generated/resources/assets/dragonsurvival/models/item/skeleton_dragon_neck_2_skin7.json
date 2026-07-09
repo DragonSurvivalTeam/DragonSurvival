@@ -1,6 +1,7 @@
 {
   "parent": "dragonsurvival:block/skeleton_dragon_neck_2",
   "textures": {
+    "particle": "dragonsurvival:block/skeleton_dragon_7",
     "skeleton_texture": "dragonsurvival:block/skeleton_dragon_7"
   }
 }

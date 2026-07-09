@@ -1299,7 +1299,7 @@ public class DSBlocks {
 
                 DeferredHolder<Item, BlockItem> item = DSItems.REGISTRY.registerItem(type.getSerializedName() + "_skin" + i,
                         properties -> new BlockItem(block.value(), properties),
-                        () -> new Item.Properties().useBlockDescriptionPrefix());
+                        () -> new Item.Properties().overrideDescription(SkeletonPieceBlock.DRAGON_BONES));
 
                 SKELETON_PIECES.put(type.getSerializedName(), new Pair<>(block, item));
             }

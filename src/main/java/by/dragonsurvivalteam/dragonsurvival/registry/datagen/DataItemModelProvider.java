@@ -145,8 +145,11 @@ public class DataItemModelProvider extends ModelProvider {
     private static void registerSkeletonItemModel(@NotNull final ItemModelGenerators itemModels, final Item item, final String name) {
         String[] split = name.split("_skin");
         String skin = split[1].substring(split[1].length() - 1);
-        Identifier model = new ModelTemplate(Optional.of(blockModel(split[0])), Optional.empty(), SKELETON_TEXTURE_SLOT)
-                .create(itemModel(name), TextureMapping.singleSlot(SKELETON_TEXTURE_SLOT, blockMaterial("skeleton_dragon_" + skin)), itemModels.modelOutput);
+        Material skeletonTexture = blockMaterial("skeleton_dragon_" + skin);
+        Identifier model = new ModelTemplate(Optional.of(blockModel(split[0])), Optional.empty(), SKELETON_TEXTURE_SLOT, TextureSlot.PARTICLE)
+                .create(itemModel(name), new TextureMapping()
+                        .put(SKELETON_TEXTURE_SLOT, skeletonTexture)
+                        .put(TextureSlot.PARTICLE, skeletonTexture), itemModels.modelOutput);
 
         itemModels.itemModelOutput.accept(item, ItemModelUtils.plainModel(model));
     }
