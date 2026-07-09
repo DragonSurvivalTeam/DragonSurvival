@@ -183,11 +183,12 @@ dependencies {
 
 	// JEI
 	compileOnly "mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}"
-    runtimeOnly "mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}"
+	runtimeOnly "mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}"
 
 	// Curios
-//	compileOnly "top.theillusivec4.curios:curios-neoforge:${curios_version}:api"
-//	implementation "top.theillusivec4.curios:curios-neoforge:${curios_version}"
+	compileOnly "top.theillusivec4.curios:curios-neoforge:${curios_version}:api"
+	compileOnly "top.theillusivec4.curios:curios-neoforge:${curios_version}"
+	runtimeOnly "top.theillusivec4.curios:curios-neoforge:${curios_version}"
 
 	// Sophisticated Backpacks
 //	compileOnly "curse.maven:sophisticated-backpacks-422301:6246606" // 3.2.4.1.1209

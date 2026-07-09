@@ -2,6 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.client.gui.screens;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
+import by.dragonsurvivalteam.dragonsurvival.compat.ModID;
 import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
@@ -32,6 +33,7 @@ import net.neoforged.neoforge.client.event.ScreenEvent;
 import net.neoforged.neoforge.client.gui.widget.ExtendedButton;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import org.jetbrains.annotations.NotNull;
+import top.theillusivec4.curios.client.screen.CuriosScreen;
 
 import java.util.Objects;
 
@@ -141,11 +143,10 @@ public class InventoryScreenHandler {
             width = screen.getLeftPos();
             height = screen.height;
         }
-        // FIXME :: CURIOS INTEGRATION
-        /*else if (ModCheck.isModLoaded(ModCheck.CURIOS) && sc instanceof CuriosScreen screen) {
-            width = screen.getGuiLeft();
+        else if (ModID.CURIOS.isLoaded() && sc instanceof CuriosScreen screen) {
+            width = screen.getLeftPos();
             height = screen.height;
-        }*/
+        }
 
         // Dragon only UI
         if (width != null) {
