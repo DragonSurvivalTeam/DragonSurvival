@@ -42,6 +42,8 @@
     "VaultBlockEntityServerMixin",
     "VillagerHostilesSensorMixin",
     "VillagerMixin",
+    "appleskin.FoodHelperMixin",
+    "appleskin.HUDOverlayHandlerMixin",
     "tool_swap.ServerPlayerGameModeEndMixin",
     "tool_swap.ServerPlayerGameModeStartMixin"
   ],
@@ -59,8 +61,8 @@
     "client.GeometryMixin",
     "client.GuiMixin",
     "client.HumanoidArmorLayerMixin",
-    "client.InventoryScreenMixin",
     "client.InventoryScreenAccessor",
+    "client.InventoryScreenMixin",
     "client.ItemBlockRenderTypesMixin",
     "client.ItemInHandRendererMixin",
     "client.ItemModelResolverMixin",
