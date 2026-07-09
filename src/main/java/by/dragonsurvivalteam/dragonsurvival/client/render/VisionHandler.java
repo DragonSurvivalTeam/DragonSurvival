@@ -29,18 +29,6 @@ public final class VisionHandler {
         return player != null && player.hasEffect(DSEffects.WATER_VISION);
     }
 
-    public static boolean hasVision(final VisionType type) {
-        return switch (type) {
-            case WATER -> hasWaterVision();
-            case LAVA -> hasLavaVision();
-        };
-    }
-
-    public enum VisionType {
-        WATER,
-        LAVA
-    }
-
     @SubscribeEvent
     public static void onRenderFog(final ViewportEvent.RenderFog event) {
         if (hasLavaVision() && event.getType() == FogType.LAVA) {
