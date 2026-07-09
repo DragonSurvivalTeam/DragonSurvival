@@ -191,8 +191,8 @@ dependencies {
 	runtimeOnly "top.theillusivec4.curios:curios-neoforge:${curios_version}"
 
 	// Sophisticated Backpacks
-//	compileOnly "curse.maven:sophisticated-backpacks-422301:6246606" // 3.2.4.1.1209
-//	compileOnly "curse.maven:sophisticated-core-618298:6266804" // 1.3.2.900
+	compileOnly "curse.maven:sophisticated-backpacks-422301:8377448" // 26.1.2-3.25.78.1969
+	compileOnly "curse.maven:sophisticated-core-618298:8398761" // 26.1.2-1.4.82.2134
 
 	// Cosmetic Armor Reworked
 //	compileOnly "curse.maven:cosmetic-armor-reworked-237307:5610814" // v1

@@ -48,4 +48,12 @@ public class ClientConfig {
     @Translation(key = "min_animation_speed", type = Translation.Type.CONFIGURATION, comments = "The minimum animation speed allowed for dragons.")
     @ConfigOption(side = ConfigSide.CLIENT, category = "animation", key = "min_animation_speed")
     public static Double minAnimationSpeed = 0.2;
+
+    @Translation(key = "render_backpack", type = Translation.Type.CONFIGURATION, comments = "Enable / disable Sophisticated Backpacks rendering on dragons.")
+    @ConfigOption(side = ConfigSide.CLIENT, category = "rendering", key = "render_backpack")
+    public static Boolean renderBackpack = true;
+
+    @Translation(key = "backpack_slot", type = Translation.Type.CONFIGURATION, comments = "The Curios slot that can contain the rendered backpack when Curios is installed.")
+    @ConfigOption(side = ConfigSide.CLIENT, category = "rendering", key = "backpack_slot")
+    public static String backpackSlot = "back";
 }

@@ -10,6 +10,8 @@ import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvide
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.HunterHandler;
 import by.dragonsurvivalteam.dragonsurvival.compat.Compat;
+import by.dragonsurvivalteam.dragonsurvival.compat.ModID;
+import by.dragonsurvivalteam.dragonsurvival.compat.sophisticatedBackpacks.DragonBackpackRenderLayer;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEntities;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.HunterData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MovementData;
@@ -429,10 +431,9 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
         withRenderLayer(new DragonArmorRenderLayer<>(this));
         withRenderLayer(new DragonItemRenderLayer<>(context, this));
 
-        // FIXME :: SOPHISTICATED BACKPACKS
-        /*if (ModCheck.isModLoaded(ModCheck.SOPHISTICATED_BACKPACKS)) {
-            getRenderLayers().add(new DragonBackpackRenderLayer(this));
-        }*/
+        if (ModID.SOPHISTICATED_BACKPACKS.isLoaded()) {
+            withRenderLayer(new DragonBackpackRenderLayer<>(this));
+        }
     }
 
     private static long uiRenderCacheId(final int dragonId) {
