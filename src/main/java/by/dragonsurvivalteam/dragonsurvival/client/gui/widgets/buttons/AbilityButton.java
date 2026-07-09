@@ -145,7 +145,7 @@ public class AbilityButton extends ExtendedButton {
     @Override
     public void onClick(@NotNull MouseButtonEvent event, boolean isDoubleClick) {
         if (!isHotbar && ability != null && ability.value().canBeManuallyDisabled() && event.hasControlDown()) {
-            boolean isDisabled = !ability.isDisabled(true);
+            boolean isDisabled = !ability.isDisabled(true, Minecraft.getInstance().player);
             ability.setDisabled(Minecraft.getInstance().player, isDisabled, true);
             ClientPacketDistributor.sendToServer(new SyncDisableAbility(ability.key(), isDisabled, true));
             return;
@@ -227,7 +227,7 @@ public class AbilityButton extends ExtendedButton {
             return;
         }
 
-        if (!ability.isEnabled()) {
+        if (!ability.isEnabled(Minecraft.getInstance().player)) {
             blit(graphics, DISABLED_BACKGROUND, getX() - 2, getY() - 2, ORNAMENTATION_SIZE);
         } else {
             if (ability.isPassive()) {

@@ -26,6 +26,7 @@ import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.Collection;
+import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 
@@ -88,7 +89,7 @@ public class DragonAbilityCommand {
                                                 .executes(source -> query(source, EntityArgument.getPlayer(source, DSCommands.TARGET), DragonAbilityArgument.get(source), instance -> instance.isApplyingEffects() ? 1 : 0))
                                         )
                                         .then(Commands.literal("is_enabled")
-                                                .executes(source -> query(source, EntityArgument.getPlayer(source, DSCommands.TARGET), DragonAbilityArgument.get(source), instance -> instance.isEnabled() ? 1 : 0))
+                                                .executes(source -> query(source, EntityArgument.getPlayer(source, DSCommands.TARGET), DragonAbilityArgument.get(source), (target, instance) -> instance.isEnabled(target) ? 1 : 0))
                                         )
                                 )
                         )
@@ -140,6 +141,10 @@ public class DragonAbilityCommand {
     }
 
     private static int query(final CommandContext<CommandSourceStack> source, final Player player, final Holder<DragonAbility> ability, final Function<DragonAbilityInstance, Integer> query) throws CommandSyntaxException {
+        return query(source, player, ability, (ignoredPlayer, instance) -> query.apply(instance));
+    }
+
+    private static int query(final CommandContext<CommandSourceStack> source, final Player player, final Holder<DragonAbility> ability, final BiFunction<Player, DragonAbilityInstance, Integer> query) throws CommandSyntaxException {
         if (!DragonStateProvider.isDragon(player)) {
             // There is some weird 'a' parameter that is unused - the arguments (array) are specified after that
             throw UNKNOWN_ABILITY_EXCEPTION.create(null, player.getDisplayName(), ability.getRegisteredName());
@@ -152,7 +157,7 @@ public class DragonAbilityCommand {
             throw UNKNOWN_ABILITY_EXCEPTION.create(null, player.getDisplayName(), ability.getRegisteredName());
         }
 
-        Integer result = query.apply(instance);
+        Integer result = query.apply(player, instance);
 
         source.getSource().sendSuccess(() -> Component.translatable(
                 QUERY_RESULT,

@@ -94,7 +94,7 @@ public abstract class DurationInstance<B extends DurationInstanceBase<?, ?>> imp
                 MagicData magic = MagicData.getData(source);
                 DragonAbilityInstance instance = magic.getAbility(commonData.ability().get());
 
-                if (instance == null || !isAbilityActive(instance)) {
+                if (instance == null || !isAbilityActive(source, instance)) {
                     return true;
                 }
 
@@ -123,14 +123,14 @@ public abstract class DurationInstance<B extends DurationInstanceBase<?, ?>> imp
         return storageHolder.level() instanceof ServerLevel serverLevel && earlyRemovalCondition().map(condition -> condition.test(Condition.entityContext(serverLevel, storageHolder))).orElse(false);
     }
 
-    private boolean isAbilityActive(final DragonAbilityInstance instance) {
+    private boolean isAbilityActive(Player player, final DragonAbilityInstance instance) {
         if (instance.isPassive()) {
             return instance.isApplyingEffects();
         }
 
         // Otherwise active ability effects would always be instantly removed
         // And channeling ones would only stay while they are being channeled
-        return instance.isEnabled();
+        return instance.isEnabled(player);
     }
 
     public B baseData() {

@@ -33,6 +33,9 @@ public class AbilityAndPenaltyTooltipRenderer {
     @Translation(comments = "Hold 'Shift' for info")
     private static final String INFO_SHIFT = Translation.Type.GUI.wrap("general.info_shift");
 
+    @Translation(comments = "§4Disabled by effects§r")
+    private static final String DISABLED_BY_EFFECTS = Translation.Type.GUI.wrap("general.disabled_by_effects");
+
     @Translation(comments = "§4Manually disabled§r")
     private static final String MANUALLY_DISABLED = Translation.Type.GUI.wrap("general.manually_disabled");
 
@@ -258,8 +261,14 @@ public class AbilityAndPenaltyTooltipRenderer {
         Component abilityDescription = Component.translatable(Translation.Type.ABILITY_DESCRIPTION.wrap(ability.identifier()));
         FormattedText rawDescription;
 
-        if (!ability.isEnabled() && ability.isDisabled(true)) {
-            rawDescription = Component.translatable(MANUALLY_DISABLED).append("\n\n").append(abilityDescription);
+        var player = Minecraft.getInstance().player;
+
+        if (!ability.isEnabled(player) && ability.isDisabled(true, player)) {
+            if (DragonAbilityInstance.hasAbilityDisablingEffect(player)) {
+                rawDescription = Component.translatable(DISABLED_BY_EFFECTS).append("\n\n").append(abilityDescription);
+            } else {
+                rawDescription = Component.translatable(MANUALLY_DISABLED).append("\n\n").append(abilityDescription);
+            }
         } else {
             rawDescription = abilityDescription;
         }

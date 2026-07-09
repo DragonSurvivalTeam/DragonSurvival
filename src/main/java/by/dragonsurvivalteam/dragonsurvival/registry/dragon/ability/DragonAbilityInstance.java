@@ -7,6 +7,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.ManaCost;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.ManaHandler;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncDisableAbility;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncStopCast;
+import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.Activation;
@@ -358,15 +359,23 @@ public class DragonAbilityInstance {
             this.isAutomaticallyDisabled = isDisabled;
         }
 
-        if (isActive && !isEnabled()) {
+        if (isActive && !isEnabled(player)) {
             setActive(player, false);
-        } else if (!isActive && isEnabled() && isPassive()) {
+        } else if (!isActive && isEnabled(player) && isPassive()) {
             // Passive abilities need to be re-activated automatically
             setActive(player, true);
         }
     }
 
-    public boolean isDisabled(boolean isManual) {
+    public static boolean hasAbilityDisablingEffect(Player player) {
+        return player != null && player.hasEffect(DSEffects.MAGIC_DISABLED);
+    }
+
+    public boolean isDisabled(boolean isManual, Player player) {
+        if (hasAbilityDisablingEffect(player)) {
+            return true;
+        }
+
         if (isManual) {
             return isManuallyDisabled;
         } else {
@@ -374,7 +383,19 @@ public class DragonAbilityInstance {
         }
     }
 
-    public boolean isEnabled() {
+    public boolean isDisabled(boolean isManual) {
+        return isDisabled(isManual, null);
+    }
+
+    public boolean isEnabled(Player player) {
+        if (hasAbilityDisablingEffect(player)) {
+            return false;
+        }
+
         return !isManuallyDisabled && !isAutomaticallyDisabled;
+    }
+
+    public boolean isEnabled() {
+        return isEnabled(null);
     }
 }

@@ -386,7 +386,7 @@ public class MagicData implements ValueIOSerializable {
 
     /** Also sends the error message (if present) when the ability is automatically blocked or the player doesn't have enough mana */
     private boolean checkCast(final Player dragon, final DragonAbilityInstance instance) {
-        if (instance.isDisabled(false)) {
+        if (instance.isDisabled(false, dragon)) {
             if (dragon.level().isClientSide()) {
                 MagicData magic = MagicData.getData(dragon);
                 magic.setErrorMessageSent(true);
