@@ -82,6 +82,7 @@
     "client.SmithingScreenMixin",
     "client.TextureManagerAccessor",
     "iris.GameRendererMixin",
+    "sodium.DefaultFluidRendererMixin",
     "tool_swap.MultiPlayerGameModeEndMixin",
     "tool_swap.MultiPlayerGameModeStartMixin"
   ],
