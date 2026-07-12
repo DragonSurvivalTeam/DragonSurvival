@@ -1,6 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.client.emotes;
 
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.DragonEmoteScreen;
+import by.dragonsurvivalteam.dragonsurvival.registry.DSEmoteKeybindings;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
@@ -17,6 +18,9 @@ public class EmoteKeybinds {
         // Remove the previous keybind if it exists
         emoteKeybinds.entrySet().removeIf(entry -> entry.getValue().equals(emote));
         emoteKeybinds.put(keyCode, emote);
+
+        // Make sure to save after each binding
+        DSEmoteKeybindings.save();
     }
 
     public void remove(final String emote) {
