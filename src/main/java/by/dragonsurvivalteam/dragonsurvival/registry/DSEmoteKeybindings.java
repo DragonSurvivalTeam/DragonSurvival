@@ -87,9 +87,9 @@ public class DSEmoteKeybindings {
 
             File savedFile = new File(directory, FILE_NAME + ".json");
             Gson gson = GsonFactory.newBuilder().setPrettyPrinting().create();
-            FileWriter writer = new FileWriter(savedFile);
-            gson.toJson(savedFile, writer);
-            writer.close();
+            try (FileWriter writer = new FileWriter(savedFile)) {
+                gson.toJson(EMOTE_KEYBINDS, writer);
+            }
         } catch (IOException exception) {
             DragonSurvival.LOGGER.error("An error occurred while trying to save emote keybinds", exception);
         }
