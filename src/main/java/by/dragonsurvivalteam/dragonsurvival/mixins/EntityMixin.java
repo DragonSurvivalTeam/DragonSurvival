@@ -229,7 +229,7 @@ public abstract class EntityMixin {
         if ((Object) this instanceof Player player) {
             DragonStateHandler handler = DragonStateProvider.getData(player);
 
-            if (!handler.isDragon() || Compat.hasModelSwap(player)) {
+            if (!handler.isDragon() || Compat.hasModelSwapOrDoesNotUseModel(player)) {
                 return;
             }
 

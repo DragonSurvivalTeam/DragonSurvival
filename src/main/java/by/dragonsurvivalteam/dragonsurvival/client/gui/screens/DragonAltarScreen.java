@@ -264,7 +264,7 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
                     LivingEntity entity1;
                     int entity1Scale = Math.clamp((int) handler1.getGrowth(), 20, 50);
 
-                    if (handler1.isDragon()) {
+                    if (handler1.isDragon() && !handler1.body().value().noDragonModelRendering()) {
                         entity1 = FakeClientPlayerUtils.getFakeDragon(0, handler1);
                         DragonEntity dragon = (DragonEntity) entity1;
                         dragon.neckLocked = true;
@@ -277,7 +277,7 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
                     LivingEntity entity2;
                     int entity2Scale = Math.clamp((int) handler2.getGrowth(), 20, 50);
 
-                    if (handler2.isDragon()) {
+                    if (handler2.isDragon() && !handler1.body().value().noDragonModelRendering()) {
                         entity2 = FakeClientPlayerUtils.getFakeDragon(1, handler2);
                         DragonEntity dragon = (DragonEntity) entity2;
                         dragon.neckLocked = true;

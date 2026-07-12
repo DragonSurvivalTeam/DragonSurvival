@@ -220,6 +220,7 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
 
     private final List<ScrollableComponent> scrollableComponents = new ArrayList<>();
     private final Map<SkinLayer, EditorPartComponent> partComponents = new HashMap<>();
+    private final List<AbstractWidget> modelCustomizationWidgets = new ArrayList<>();
 
     private double tick;
     private int curAnimation;
@@ -579,13 +580,15 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
 
             if (renderable instanceof AbstractWidget widget && widget != uiButton) {
                 if (widget == wingsButton) {
-                    if (body != null && body.value().canHideWings() && widget == wingsButton) {
+                    if (body != null && !body.value().noDragonModelRendering() && body.value().canHideWings()) {
                         wingsButton.visible = showUi;
                         wingsButton.setTooltip(Tooltip.create(Component.translatable(DragonBody.getWingButtonDescription(body))));
                         wingsButton.setMessage(Component.translatable(DragonBody.getWingButtonName(body)));
                     } else {
                         wingsButton.visible = false;
                     }
+                } else if (modelCustomizationWidgets.contains(widget)) {
+                    widget.visible = showUi && body != null && !body.value().noDragonModelRendering();
                 } else {
                     if (dragonBodyBar.isHidden(widget)) {
                         widget.visible = false;
@@ -679,6 +682,9 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
     @Override
     public void init() {
         super.init();
+        modelCustomizationWidgets.clear();
+        scrollableComponents.clear();
+        partComponents.clear();
 
         guiLeft = (width - 256) / 2;
         guiTop = (height - 120) / 2;
@@ -726,6 +732,8 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
                 dragonBodyWidgets, 5,
                 -15, 92, 4, 10, 16,
                 SMALL_LEFT_ARROW_HOVER, SMALL_LEFT_ARROW_MAIN, SMALL_RIGHT_ARROW_HOVER, SMALL_RIGHT_ARROW_MAIN);
+
+        int firstModelCustomizationWidget = children().size();
 
         int maxWidth = -1;
 
@@ -974,6 +982,7 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
         // Save slots
         HoverButton slotBackground = new HoverButton(width / 2 + 85, height - 28, 121, 18, 121, 18, SAVE_SLOT_BACKGROUND, SAVE_SLOT_BACKGROUND, button -> { /* Nothing to do */ });
         addRenderableOnly(slotBackground);
+        modelCustomizationWidgets.add(slotBackground);
 
         HoverButton slotInfoButton = new HoverButton(width / 2 + 74, height - 28, 17, 18, 20, 20, SLOT_INFO_MAIN, SLOT_INFO_HOVER, button -> { /* Nothing to do */ });
         slotInfoButton.setTooltip(createSlotInfoTooltip());
@@ -1018,6 +1027,12 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
         });
         saveSlotButton.setTooltip(Tooltip.create(Component.translatable(SAVE)));
         addRenderableWidget(saveSlotButton);
+
+        children().subList(firstModelCustomizationWidget, children().size()).stream()
+                .filter(AbstractWidget.class::isInstance)
+                .map(AbstractWidget.class::cast)
+                .filter(widget -> widget != saveButton && widget != discardButton && widget != uiButton)
+                .forEach(modelCustomizationWidgets::add);
 
     }
 
@@ -1084,6 +1099,10 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
         }
 
         dragonRender = new DragonUIRenderComponent(this, width / 2 - 70, guiTop, 140, 125, () -> {
+            if (body.value().noDragonModelRendering()) {
+                return FakeClientPlayerUtils.getFakePlayer(0, HANDLER);
+            }
+
             DragonEntity dragon = FakeClientPlayerUtils.getFakeDragon(0, HANDLER);
             dragon.tailLocked = true;
             dragon.neckLocked = true;
