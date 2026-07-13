@@ -63,6 +63,8 @@ public class DragonBodies {
     @Translation(type = Translation.Type.BODY_WINGS_DESCRIPTION, comments = "Show wings")
     public static final ResourceKey<DragonBody> WEST = key("west");
 
+    public static final ResourceKey<DragonBody> NO_MODEL = key("no_model");
+
     private static final DragonBody.MountingOffsets DEFAULT_MOUNTING_OFFSETS = DragonBody.MountingOffsets.of(new Vec3(0, -0.15, -0.5), new Vec3(0, 0.05, -0.5), new Vec3(0, -0.25, -0.5));
 
     public static void registerBodies(final BootstrapContext<DragonBody> context) {
@@ -173,6 +175,13 @@ public class DragonBodies {
                 Optional.of(DEFAULT_MOUNTING_OFFSETS),
                 Optional.of(DragonBody.BackpackOffsets.of(new Vec3(0, 0, 0.1), new Vec3(180, 0, 180), new Vec3(0.9, 0.9, 0.9))),
                 -3
+        ));
+
+        context.register(NO_MODEL, DragonBody.withoutDragonModel(
+                false,
+                Optional.empty(),
+                List.of(),
+                Optional.empty()
         ));
     }
 

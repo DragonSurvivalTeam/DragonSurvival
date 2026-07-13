@@ -6,6 +6,7 @@ import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic.H
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components.BarComponent;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components.DragonEditorConfirmComponent;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components.ScrollableComponent;
+import by.dragonsurvivalteam.dragonsurvival.client.render.entity.dragon.DragonRenderer;
 import by.dragonsurvivalteam.dragonsurvival.client.util.FakeClientPlayerUtils;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
@@ -34,15 +35,19 @@ import net.minecraft.client.input.InputWithModifiers;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Pose;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.neoforged.neoforge.client.gui.widget.ExtendedButton;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -190,7 +195,7 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
 
         tick++;
 
-        if (tick % (200 * 20) == 0) {
+        if (tick % (20 * 20) == 0) {
             animation1++;
             animation2++;
 
@@ -243,7 +248,7 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
                 LivingEntity entity1;
                 int entity1Scale = Math.clamp((int) handler1.getGrowth(), 20, 50);
 
-                if (handler1.isDragon()) {
+                if (handler1.isDragon() && !handler1.body().value().noDragonModelRendering()) {
                     entity1 = FakeClientPlayerUtils.getFakeDragon(0, handler1);
                     DragonEntity dragon = (DragonEntity) entity1;
                     dragon.neckLocked = true;
@@ -256,7 +261,7 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
                 LivingEntity entity2;
                 int entity2Scale = Math.clamp((int) handler2.getGrowth(), 20, 50);
 
-                if (handler2.isDragon()) {
+                if (handler2.isDragon() && !handler2.body().value().noDragonModelRendering()) {
                     entity2 = FakeClientPlayerUtils.getFakeDragon(1, handler2);
                     DragonEntity dragon = (DragonEntity) entity2;
                     dragon.neckLocked = true;
@@ -304,8 +309,31 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
         float lookY = 0;
 
         try {
-            InventoryScreen.renderEntityInInventoryFollowsAngle(graphics, leftX - 50, topY - 50, rightX + 50, bottomY + 50, scale, 0, lookX, lookY, entity);
-        } catch (final IllegalArgumentException exception) {
+            if (entity instanceof DragonEntity) {
+                LivingEntityRenderState renderState = (LivingEntityRenderState)DragonRenderer.createUIRenderState(
+                    entity,
+                    Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(false),
+                    0.0F,
+                    0.0F,
+                    0.0F
+                );
+                renderState.bodyRot = 180.0F + lookX * 20.0F;
+                renderState.yRot = lookX * 20.0F;
+                renderState.xRot = 0.0F;
+
+                renderState.boundingBoxWidth /= renderState.scale;
+                renderState.boundingBoxHeight /= renderState.scale;
+                renderState.scale = 1.0F;
+
+                Quaternionf rotation = new Quaternionf().rotateZ((float)Math.PI);
+                Quaternionf xRotation = new Quaternionf().rotateX(lookY * 20.0F * (float)(Math.PI / 180.0));
+                rotation.mul(xRotation);
+                Vector3f translation = new Vector3f(0.0F, renderState.boundingBoxHeight / 2.0F, 0.0F);
+                graphics.entity(renderState, scale, translation, rotation, xRotation, leftX - 50, topY - 50, rightX + 50, bottomY + 50);
+            } else {
+                InventoryScreen.renderEntityInInventoryFollowsAngle(graphics, leftX - 50, topY - 50, rightX + 50, bottomY + 50, scale, 0, lookX, lookY, entity);
+            }
+        } catch (final Exception exception) {
             if (entity instanceof DragonEntity dragon && dragon.getPlayer() instanceof LivingEntity fallbackEntity) {
                 InventoryScreen.renderEntityInInventoryFollowsAngle(graphics, leftX - 50, topY - 50, rightX + 50, bottomY + 50, scale, 0, lookX, lookY, fallbackEntity);
             }

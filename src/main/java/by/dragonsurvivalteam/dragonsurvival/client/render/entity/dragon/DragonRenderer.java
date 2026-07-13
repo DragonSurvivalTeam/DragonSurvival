@@ -259,7 +259,7 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
         public Identifier modelResource() { return modelResource; }
         public @Nullable Identifier textureOverride() { return textureOverride; }
         public @Nullable Identifier glowTextureOverride() { return glowTextureOverride; }
-        public boolean inInventory() { return inUI; }
+        public boolean inUI() { return inUI; }
         public boolean neckLocked() { return neckLocked; }
         public boolean tailLocked() { return tailLocked; }
         public boolean spectator() { return spectator; }
@@ -707,7 +707,7 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
                 DragonRenderData dragonRenderData = geoRenderState.getGeckolibData(DRAGON_RENDER_DATA);
 
                 if (dragonRenderData != null) {
-                    if (!dragonRenderData.inInventory()) {
+                    if (!dragonRenderData.inUI()) {
                         dragonRenderData = dragonRenderData.forUIRender(bodyYaw, headYaw, headPitch, texturePlayer, textureOverride, glowTextureOverride);
                         geoRenderState.addGeckolibData(DRAGON_RENDER_DATA, dragonRenderData);
                     }
@@ -745,7 +745,7 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
 
     public static boolean isUIRenderState(final GeoRenderState renderState) {
         DragonRenderData renderData = renderState.getGeckolibData(DRAGON_RENDER_DATA);
-        return renderData != null && renderData.inInventory();
+        return renderData != null && renderData.inUI();
     }
 
     private static @Nullable DragonRenderData getDragonRenderDataForQuery(final GeoRenderState renderState) {
@@ -792,7 +792,7 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
 
         final RenderPassInfo.BoneUpdater<R> neckVisibilitySetter = (renderPassInfoForBones, snapshots) -> {
             snapshots.get("Neck").map(bone -> {
-                boolean hideNeckAndHead = !(renderData.inInventory() || Compat.displayNeck()) && RenderingUtils.isFirstPerson(player);
+                boolean hideNeckAndHead = !(renderData.inUI() || Compat.displayNeck()) && RenderingUtils.isFirstPerson(player);
                 bone.skipRender(hideNeckAndHead);
                 bone.skipChildrenRender(hideNeckAndHead);
                 return null;
@@ -803,7 +803,7 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
 
         Function<String, RenderPassInfo.BonePositionListener> bonePositionListenerCreator = boneName -> (worldPos, modelPos, localPos) -> {
             if (worldPos == null) return;
-            if (renderData.inInventory()) return;
+            if (renderData.inUI()) return;
             Vec3 position = transformBonePosition(renderData, new Vec3(worldPos.x(), worldPos.y(), worldPos.z()));
             BONE_POSITIONS.computeIfAbsent(renderData.dragonId(), key -> new HashMap<>()).put(boneName, position);
         };
@@ -826,7 +826,7 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
 
         renderPassInfo.addBoneUpdater(wingBoneHider);
 
-        if (!renderData.inInventory()) {
+        if (!renderData.inUI()) {
             renderPassInfo.addBoneUpdater((renderPassInfoForBones, snapshots) -> smoothInterruptedAnimationTransition(renderData, renderPassInfoForBones, snapshots));
         }
 
@@ -931,7 +931,7 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
     }
 
     private static double getRenderTick(final DragonRenderData renderData, final Player player, final float partialTick) {
-        if (!renderData.inInventory() && !(player instanceof FakeClientPlayer)) {
+        if (!renderData.inUI() && !(player instanceof FakeClientPlayer)) {
             return player.tickCount + partialTick + 200;
         }
 
@@ -971,7 +971,7 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
             return;
         }
 
-        if (!renderData.inInventory()) {
+        if (!renderData.inUI()) {
             // If a body refresh was requested, all the animations will have been reset once we are post-render
             renderData.handler().refreshBody = false;
         }
@@ -994,7 +994,7 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
     }
 
     public @NotNull Vec3 getRenderOffset(@NotNull final DragonRenderData renderData) {
-        if (renderData.inInventory()) {
+        if (renderData.inUI()) {
             return Vec3.ZERO;
         }
 
