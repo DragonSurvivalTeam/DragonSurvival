@@ -93,7 +93,7 @@ public class AbilityAndPenaltyTooltipRenderer {
         int backgroundWidth = Math.max(150, Minecraft.getInstance().font.width(name) + 65);
         List<FormattedCharSequence> description = Minecraft.getInstance().font.split(rawDescription, backgroundWidth - 7);
 
-        int backgroundHeight = /* Size of the horizontal colored bar */ 20 + /* Line breaks between bar, title and bottom info */ 27 + (description.size() + bottomInfoLines.size()) * 9;
+        int backgroundHeight = /* Size of the horizontal colored bar */ 20 + /* Line breaks between bar, title and bottom info */ 27 + /* Extra padding to account for word wrap */ 8 + (description.size() + bottomInfoLines.size()) * 9;
         int sideWidth = Screen.hasShiftDown() ? maxLineWidth : 15;
         int sideHeight = Screen.hasShiftDown() ? 36 + Math.min(skipFirstLine ? lines.size() - 1 : lines.size(), MAX_SHOWN_LINES) * 9 : backgroundHeight - 10;
 
