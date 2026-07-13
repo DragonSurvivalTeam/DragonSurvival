@@ -252,7 +252,7 @@ public class CaveDragonAbilities {
                 Optional.of(Condition.thisEntity(EntityCondition.isEyeInFluid(NeoForgeMod.WATER_TYPE)).or(Condition.thisEntity(EntityCondition.isInRainOrSnow())).build()),
                 List.of(
                         new ActionContainer(new DragonBreathTarget(AbilityTargeting.entity(List.of(
-                                new SmeltItemEffect(Optional.empty(), Optional.of(LevelBasedValue.perLevel(1.0f)), true)
+                                new SmeltItemEffect(Optional.empty(), Optional.of(LevelBasedValue.perLevel(4.0f)), true)
                         ), TargetingMode.ITEMS), LevelBasedValue.constant(1)), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(1)),
                         new ActionContainer(new DragonBreathTarget(AbilityTargeting.entity(
                                 Condition.thisEntity(EntityCondition.isLiving()).build(),

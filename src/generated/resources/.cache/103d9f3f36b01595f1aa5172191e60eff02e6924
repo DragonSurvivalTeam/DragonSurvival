@@ -1,4 +1,4 @@
-// 1.21.1	2026-07-12T18:35:38.2136529	Registries
+// 1.21.1	2026-07-13T08:33:20.4374542	Registries
 011b2ee382ec961722c100bbf059b4aa460f44b0 data/dragonsurvival/damage_type/anti_dragon.json
 d8c3135ecd1879e98a21e83ec1bcfd68c5fc3296 data/dragonsurvival/damage_type/ball_lightning.json
 3bca57c58e2307adb52a4b6e18ea88aae7e2d8d7 data/dragonsurvival/damage_type/blast_dust.json
@@ -37,7 +37,7 @@ b42d5df8467a477cd71abd83d73023af7317a3a0 data/dragonsurvival/dragonsurvival/drag
 18126f20711d99dc747156e6103bfaf94ebf6dc7 data/dragonsurvival/dragonsurvival/dragon_ability/forest_spin.json
 09520c54857a2851d366880413b51a4be3189473 data/dragonsurvival/dragonsurvival/dragon_ability/forest_wings.json
 4df895276eac4c67c2af4e7c95075175dbcc4e48 data/dragonsurvival/dragonsurvival/dragon_ability/friendly_fire.json
-b0c2660464870ee4770b573722abda0dc7c5dc21 data/dragonsurvival/dragonsurvival/dragon_ability/furnace_heat.json
+b7fa4cb9806936d80ade8cf4ca716e29d0df6ebf data/dragonsurvival/dragonsurvival/dragon_ability/furnace_heat.json
 0e35e9d4acdf2e1acea4c3b233d67dbf0edd694d data/dragonsurvival/dragonsurvival/dragon_ability/hunter.json
 9cadb4ec33c7adabc75f7f66d1348449ba631053 data/dragonsurvival/dragonsurvival/dragon_ability/hydration.json
 470e5817460f0d2b0665ec02262361ea4cbc00c8 data/dragonsurvival/dragonsurvival/dragon_ability/inspiration.json
