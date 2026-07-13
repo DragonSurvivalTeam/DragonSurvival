@@ -269,6 +269,14 @@ public class ClientDragonRenderer {
         }
 
         DragonEntity dragon = getOrCreateDragon(player);
+
+        if (handler.body().value().noDragonModelRendering()) {
+            // Need to pass this down in this case, since the event isn't cancelled
+            // but we still don't want to render the player dragon
+            dragon.renderingWasCancelled = true;
+            return;
+        }
+
         dragon.renderingWasCancelled = event.isCanceled();
 
         if (event.isCanceled()) {

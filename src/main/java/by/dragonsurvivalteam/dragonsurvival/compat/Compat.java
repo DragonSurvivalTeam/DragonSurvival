@@ -1,5 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.compat;
 
+import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
+import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import com.simibubi.create.content.equipment.armor.CardboardArmorHandler;
 import net.irisshaders.iris.api.v0.IrisApi;
 import net.mehvahdjukaar.vista.client.renderer.VistaLevelRenderer;
@@ -11,12 +13,18 @@ public class Compat {
      * Generic in case compatibility for other mods will be added <br>
      * (Which have the ability to swap the player's model)
      */
-    public static boolean hasModelSwap(final Player player) {
-        if (ModID.CREATE.isLoaded()) {
-            return CardboardArmorHandler.testForStealth(player);
-        } else {
-            return false;
+    public static boolean hasModelSwapOrDoesNotUseModel(final Player player) {
+        DragonStateHandler handler = DragonStateProvider.getData(player);
+        if (handler.isDragon()) {
+            boolean doesNotUseModel = handler.body().value().noDragonModelRendering();
+            if (ModID.CREATE.isLoaded()) {
+                doesNotUseModel |= CardboardArmorHandler.testForStealth(player);
+            }
+
+            return doesNotUseModel;
         }
+
+        return false;
     }
 
     /** In case a mod needs the neck + head displayed in first person */

@@ -1,6 +1,5 @@
 package by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components;
 
-import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
 import com.google.common.collect.ImmutableList;
 import com.mojang.math.Axis;
 import net.minecraft.client.gui.GuiGraphics;
@@ -10,6 +9,7 @@ import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.LivingEntity;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
@@ -19,19 +19,19 @@ import java.util.function.Supplier;
 
 public class DragonUIRenderComponent extends AbstractContainerEventHandler implements Renderable {
     private final Screen screen;
-    private final Supplier<DragonEntity> getter;
+    private final Supplier<? extends LivingEntity> getter;
     public float yRot, xRot;
     public float xOffset, yOffset;
     public float zoom;
     public int x, y, width, height;
 
-    public DragonUIRenderComponent(Screen screen, int x, int y, int xSize, int ySize, Supplier<DragonEntity> dragonGetter) {
+    public DragonUIRenderComponent(Screen screen, int x, int y, int xSize, int ySize, Supplier<? extends LivingEntity> entityGetter) {
         this.screen = screen;
         this.x = x;
         this.y = y;
         width = xSize;
         height = ySize;
-        getter = dragonGetter;
+        getter = entityGetter;
     }
 
     @Override

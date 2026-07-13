@@ -256,7 +256,7 @@ public class MagicHUD {
                     DragonAbilityInstance ability = magic.fromSlot(x);
 
                     if (ability != null) {
-                        if (!ability.isEnabled()) {
+                        if (!ability.isEnabled(player)) {
                             // TODO :: what color is this and what is this check for?
                             if (colors[x].pastDelay && colors[x].color.equals(Color.ofOpaque(-2314))) {
                                 colors[x].delay = disabledColorDelay;

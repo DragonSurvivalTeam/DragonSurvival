@@ -12,6 +12,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.AttributeModifierSup
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.emotes.DragonEmoteSet;
 import by.dragonsurvivalteam.dragonsurvival.util.ResourceHelper;
+import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
@@ -52,18 +53,24 @@ public record DragonBody(
         double crouchHeightRatio,
         Optional<MountingOffsets> mountingOffsets,
         Optional<BackpackOffsets> backpackOffsets,
-        double betterCombatWeaponOffset
+        double betterCombatWeaponOffset,
+        boolean noDragonModelRendering
 ) implements AttributeModifierSupplier {
     public static final ResourceKey<Registry<DragonBody>> REGISTRY = ResourceKey.createRegistryKey(DragonSurvival.res("dragon_body"));
     public static final ResourceLocation DEFAULT_MODEL = DragonSurvival.res("dragon_model");
+    public static final ResourceLocation DEFAULT_ANIMATION = DragonSurvival.res("dragon_center");
 
-    public static final Codec<DragonBody> DIRECT_CODEC = RecordCodecBuilder.create(instance -> instance.group(
+    private static final TextureSize DEFAULT_TEXTURE_SIZE = new TextureSize(512, 512);
+    private static final ScalingProportions NO_MODEL_SCALING = ScalingProportions.of(0.6, 1.8, 1.62, 1.0, 1.0);
+    private static final Holder<DragonEmoteSet> NO_EMOTES = Holder.direct(new DragonEmoteSet(List.of()));
+
+    private static final Codec<DragonBody> MODEL_CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.BOOL.optionalFieldOf("is_default", false).forGetter(DragonBody::isDefault),
             UnlockableBehavior.CODEC.optionalFieldOf("unlockable_behavior").forGetter(DragonBody::unlockableBehavior),
             Modifier.CODEC.listOf().fieldOf("modifiers").forGetter(DragonBody::modifiers),
             Codec.BOOL.optionalFieldOf("can_hide_wings", true).forGetter(DragonBody::canHideWings),
             ResourceLocation.CODEC.optionalFieldOf("model", DEFAULT_MODEL).forGetter(DragonBody::model),
-            TextureSize.CODEC.optionalFieldOf("texture_size", new TextureSize(512, 512)).forGetter(DragonBody::textureSize),
+            TextureSize.CODEC.optionalFieldOf("texture_size", DEFAULT_TEXTURE_SIZE).forGetter(DragonBody::textureSize),
             ResourceLocation.CODEC.fieldOf("animation").forGetter(DragonBody::animation),
             ResourceLocation.CODEC.optionalFieldOf("default_icon").forGetter(DragonBody::defaultIcon),
             Codec.STRING.listOf().optionalFieldOf("bones_to_hide_for_toggle", List.of("WingLeft", "WingRight", "SmallWingLeft", "SmallWingRight")).forGetter(DragonBody::bonesToHideForToggle),
@@ -75,10 +82,51 @@ public record DragonBody(
             Codec.DOUBLE.optionalFieldOf("bettercombat_weapon_offset", 0d).forGetter(DragonBody::betterCombatWeaponOffset)
     ).apply(instance, instance.stable(DragonBody::new)));
 
+    private static final Codec<DragonBody> NO_MODEL_CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            Codec.BOOL.optionalFieldOf("is_default", false).forGetter(DragonBody::isDefault),
+            UnlockableBehavior.CODEC.optionalFieldOf("unlockable_behavior").forGetter(DragonBody::unlockableBehavior),
+            Modifier.CODEC.listOf().fieldOf("modifiers").forGetter(DragonBody::modifiers),
+            ResourceLocation.CODEC.optionalFieldOf("default_icon").forGetter(DragonBody::defaultIcon)
+    ).apply(instance, DragonBody::withoutDragonModel));
+
+    public static final Codec<DragonBody> DIRECT_CODEC = Codec.either(MODEL_CODEC, NO_MODEL_CODEC).xmap(
+            either -> either.map(body -> body, body -> body),
+            body -> body.noDragonModelRendering() ? Either.right(body) : Either.left(body)
+    );
+
     public static final Codec<Holder<DragonBody>> CODEC = RegistryFixedCodec.create(REGISTRY);
     public static final StreamCodec<RegistryFriendlyByteBuf, Holder<DragonBody>> STREAM_CODEC = ByteBufCodecs.holderRegistry(REGISTRY);
 
     private static final RandomSource RANDOM = RandomSource.create();
+
+    public DragonBody(
+            final boolean isDefault,
+            final Optional<UnlockableBehavior> unlockableBehavior,
+            final List<Modifier> modifiers,
+            final boolean canHideWings,
+            final ResourceLocation model,
+            final TextureSize textureSize,
+            final ResourceLocation animation,
+            final Optional<ResourceLocation> defaultIcon,
+            final List<String> bonesToHideForToggle,
+            final Holder<DragonEmoteSet> emotes,
+            final ScalingProportions scalingProportions,
+            final double crouchHeightRatio,
+            final Optional<MountingOffsets> mountingOffsets,
+            final Optional<BackpackOffsets> backpackOffsets,
+            final double betterCombatWeaponOffset
+    ) {
+        this(isDefault, unlockableBehavior, modifiers, canHideWings, model, textureSize, animation, defaultIcon, bonesToHideForToggle, emotes, scalingProportions, crouchHeightRatio, mountingOffsets, backpackOffsets, betterCombatWeaponOffset, false);
+    }
+
+    public static DragonBody withoutDragonModel(
+            final boolean isDefault,
+            final Optional<UnlockableBehavior> unlockableBehavior,
+            final List<Modifier> modifiers,
+            final Optional<ResourceLocation> defaultIcon
+    ) {
+        return new DragonBody(isDefault, unlockableBehavior, modifiers, false, DEFAULT_MODEL, DEFAULT_TEXTURE_SIZE, DEFAULT_ANIMATION, defaultIcon, List.of(), NO_EMOTES, NO_MODEL_SCALING, 0.83333333, Optional.empty(), Optional.empty(), 0, true);
+    }
 
     public record TextureSize(int width, int height) {
         public static final Codec<TextureSize> CODEC = RecordCodecBuilder.create(instance -> instance.group(
