@@ -900,7 +900,7 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
             return RenderTypes.itemTranslucent(texture);
         }
 
-        return RenderTypes.entityCutout(texture);
+        return RenderTypes.entityCutoutCull(texture);
     }
 
     // Also used by the layers
