@@ -49,6 +49,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.GlStateBackup;
 import net.neoforged.neoforge.client.event.RegisterShadersEvent;
+import net.neoforged.neoforge.client.event.RenderFrameEvent;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
 import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
@@ -66,6 +67,7 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
     private final GeoEntityRenderer<DragonEntity> renderer;
     private static ShaderInstance armorGenerationShader;
     private static final Set<ResourceLocation> generatedArmorTextures = new HashSet<>();
+    private static final Set<ResourceLocation> usedArmorTextures = new HashSet<>();
 
     public DragonArmorRenderLayer(final GeoEntityRenderer<DragonEntity> renderer) {
         super(renderer);
@@ -116,7 +118,21 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
             generatedArmorTextures.add(imageResource);
         }
 
+        usedArmorTextures.add(imageResource);
         return Optional.of(imageResource);
+    }
+
+    @SubscribeEvent
+    public static void purgeUnusedArmorTextures(final RenderFrameEvent.Pre event) {
+        generatedArmorTextures.removeIf(texture -> {
+            if (usedArmorTextures.contains(texture)) {
+                return false;
+            }
+
+            Minecraft.getInstance().getTextureManager().release(texture);
+            return true;
+        });
+        usedArmorTextures.clear();
     }
 
     private static void generateArmorTexture(final Player player, final ResourceLocation imageResource) {
