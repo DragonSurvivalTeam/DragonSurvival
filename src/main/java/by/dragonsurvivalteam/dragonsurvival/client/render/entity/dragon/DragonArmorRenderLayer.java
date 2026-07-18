@@ -460,6 +460,14 @@ public class DragonArmorRenderLayer<R extends LivingEntityRenderState & GeoRende
         return UUID.nameUUIDFromBytes(armorTotal.toString().getBytes()).toString();
     }
 
+    /**
+     * Appends the following elements together to create an id <br>
+     * - {@link DragonBody#model} (e.g. dragonsurvival.dragon_model <br>
+     * - {@link Identifier#toLanguageKey()} of each equipped armor item <br>
+     * - {@link DataComponents#TRIM} of each equipped armor slot <br>
+     * - {@link DataComponents#DYED_COLOR} of each equipped armor slot <br> <br>
+     * - What is currently being used in the claw slot and teeth slot (i.e. tools/weapons)
+     */
     private static Identifier generateArmorTextureIdentifier(final Player player, final EquipmentSlot slot) {
         DragonStateHandler handler = DragonStateProvider.getData(player);
         ItemStack stack = CosmeticArmorReworkedHelper.getItemVisibleInSlot(player, slot);
@@ -502,6 +510,7 @@ public class DragonArmorRenderLayer<R extends LivingEntityRenderState & GeoRende
             return Identifier.fromNamespaceAndPath(handler.getModel().getNamespace(), "textures/armor/" + handler.getModel().getPath() + "/" + prefix + "_" + slot.getName() + ".png");
         }
 
+        // Since this is just an empty image it should be applicable to all models
         return DragonSurvival.res("textures/armor/empty_armor.png");
     }
 
