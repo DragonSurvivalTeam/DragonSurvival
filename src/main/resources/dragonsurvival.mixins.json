@@ -57,8 +57,6 @@
     "client.EntityRenderDispatcherMixin",
     "client.EntityRendererAccessor",
     "client.GameRendererMixin",
-    "client.GeometryCubeMixin",
-    "client.GeometryMixin",
     "client.GuiMixin",
     "client.HumanoidArmorLayerMixin",
     "client.InventoryScreenAccessor",
