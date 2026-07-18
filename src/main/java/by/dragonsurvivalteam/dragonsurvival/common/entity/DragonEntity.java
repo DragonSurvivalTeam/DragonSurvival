@@ -148,7 +148,13 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
     }
 
     public void stopAllEmotes() {
-        Arrays.fill(currentlyPlayingEmotes, null);
+        for (int i = 0; i < MAX_EMOTES; i++)
+        {
+            if (currentlyPlayingEmotes[i] != null) {
+                animationTickTimer.stopAnimation(EMOTE + i);
+                currentlyPlayingEmotes[i] = null;
+            }
+        }
     }
 
     public int getTicksForEmote(int slot) {
