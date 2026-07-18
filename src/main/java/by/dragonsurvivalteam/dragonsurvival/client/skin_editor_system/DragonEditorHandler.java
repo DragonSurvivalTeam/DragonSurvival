@@ -23,18 +23,24 @@ import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.client.renderer.texture.AbstractTexture;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.GlStateBackup;
 import net.neoforged.neoforge.client.event.RegisterShadersEvent;
+import net.neoforged.neoforge.client.event.RenderFrameEvent;
 
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 
 @EventBusSubscriber(value = Dist.CLIENT)
 public class DragonEditorHandler {
     private static ShaderInstance skinGenerationShader;
+    private static final Set<ResourceLocation> generatedSkinTextures = new HashSet<>();
+    private static final Set<ResourceLocation> usedSkinTextures = new HashSet<>();
 
     public static void generateSkinTextures(final DragonEntity dragon) {
         Player player = dragon.getPlayer();
@@ -133,14 +139,46 @@ public class DragonEditorHandler {
             }
         }
 
-        RenderingUtils.copyTextureFromRenderTarget(normalTarget, DragonModel.dynamicTexture(player, handler, false));
-        RenderingUtils.copyTextureFromRenderTarget(glowTarget, DragonModel.dynamicTexture(player, handler, true));
+        ResourceLocation normalTexture = DragonModel.dynamicTexture(player, handler, false);
+        ResourceLocation glowTexture = DragonModel.dynamicTexture(player, handler, true);
+        RenderingUtils.copyTextureFromRenderTarget(normalTarget, normalTexture);
+        RenderingUtils.copyTextureFromRenderTarget(glowTarget, glowTexture);
+        generatedSkinTextures.add(normalTexture);
+        generatedSkinTextures.add(glowTexture);
         glowTarget.destroyBuffers();
         normalTarget.destroyBuffers();
         RenderSystem.restoreGlState(state);
         RenderSystem.restoreProjectionMatrix();
         GlStateManager._glBindFramebuffer(GlConst.GL_FRAMEBUFFER, currentFrameBuffer);
         GlStateManager._viewport(currentViewportX, currentViewportY, currentViewportWidth, currentViewportHeight);
+    }
+
+    public static void markSkinTextureUsed(final ResourceLocation texture) {
+        if (generatedSkinTextures.contains(texture)) {
+            usedSkinTextures.add(texture);
+        }
+    }
+
+    public static boolean hasGeneratedSkinTexture(final ResourceLocation texture) {
+        return generatedSkinTextures.contains(texture);
+    }
+
+    public static boolean isDynamicSkinTexture(final ResourceLocation texture) {
+        String path = texture.getPath();
+        return path.startsWith("dynamic_normal_") || path.startsWith("dynamic_glow_");
+    }
+
+    @SubscribeEvent
+    public static void purgeUnusedSkinTextures(final RenderFrameEvent.Pre event) {
+        generatedSkinTextures.removeIf(texture -> {
+            if (usedSkinTextures.contains(texture)) {
+                return false;
+            }
+
+            Minecraft.getInstance().getTextureManager().release(texture);
+            return true;
+        });
+        usedSkinTextures.clear();
     }
 
     @SubscribeEvent

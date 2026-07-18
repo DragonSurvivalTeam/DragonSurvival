@@ -236,10 +236,15 @@ public class DragonModel extends GeoModel<DragonEntity> {
         ResourceLocation texture = dynamicTexture(player, handler, false);
 
         // Show the default skin while we are compiling if we haven't already compiled the skin
-        if (customization.defaultSkin || !handler.getSkinData().isCompiled.getOrDefault(stageKey, false) || !RenderingUtils.hasTexture(texture)) {
+        if (customization.defaultSkin || !handler.getSkinData().isCompiled.getOrDefault(stageKey, false)) {
             return StageResources.getDefaultSkin(handler.species(), handler.stageKey(), false);
         }
 
+        if (!DragonEditorHandler.hasGeneratedSkinTexture(texture)) {
+            DragonEditorHandler.generateSkinTextures(dragon);
+        }
+
+        DragonEditorHandler.markSkinTextureUsed(texture);
         return texture;
     }
 

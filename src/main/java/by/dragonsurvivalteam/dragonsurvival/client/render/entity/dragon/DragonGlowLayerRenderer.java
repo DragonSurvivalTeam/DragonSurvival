@@ -1,6 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.client.render.entity.dragon;
 
 import by.dragonsurvivalteam.dragonsurvival.client.models.DragonModel;
+import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.DragonEditorHandler;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.DragonStageCustomization;
 import by.dragonsurvivalteam.dragonsurvival.client.skins.DragonSkins;
 import by.dragonsurvivalteam.dragonsurvival.client.util.RenderingUtils;
@@ -75,7 +76,10 @@ public class DragonGlowLayerRenderer extends GeoRenderLayer<DragonEntity> {
             glowTexture = DragonModel.dynamicTexture(player, handler, true);
         }
 
-        if (glowTexture != null && RenderingUtils.hasTexture(glowTexture)) {
+        boolean hasGlowTexture = glowTexture != null && (DragonEditorHandler.hasGeneratedSkinTexture(glowTexture) || (!DragonEditorHandler.isDynamicSkinTexture(glowTexture) && RenderingUtils.hasTexture(glowTexture)));
+
+        if (hasGlowTexture) {
+            DragonEditorHandler.markSkinTextureUsed(glowTexture);
             RenderType type = RenderType.EYES.apply(glowTexture, RenderType.LIGHTNING_TRANSPARENCY);
             dragonRenderer.actuallyRender(poseStack, animatable, bakedModel, type, bufferSource, bufferSource.getBuffer(type), true, partialTick, packedLight, OverlayTexture.NO_OVERLAY, renderer.getRenderColor(animatable, partialTick, packedLight).getColor());
         }
