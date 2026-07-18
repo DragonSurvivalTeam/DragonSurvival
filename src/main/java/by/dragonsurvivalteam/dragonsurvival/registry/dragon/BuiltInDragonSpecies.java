@@ -91,7 +91,8 @@ public class BuiltInDragonSpecies {
                         new MiscResources.FoodTooltip(MiscResources.FoodTooltip.DEFAULT_FOOD_TOOLTIP_FONT, "\\uEA02", "\\uEA05", Optional.empty()),
                         TextColor.fromRgb(0xE84141),
                         TextColor.fromRgb(0x730B0B),
-                        ClawInventoryData.Slot.PICKAXE
+                        ClawInventoryData.Slot.PICKAXE,
+                        Optional.empty()
                 )
         ));
 
@@ -128,7 +129,8 @@ public class BuiltInDragonSpecies {
                         new MiscResources.FoodTooltip(MiscResources.FoodTooltip.DEFAULT_FOOD_TOOLTIP_FONT, "\\uEA03", "\\uEA06", Optional.empty()),
                         TextColor.fromRgb(0x2DA5E0),
                         TextColor.fromRgb(0x1D7099),
-                        ClawInventoryData.Slot.SHOVEL
+                        ClawInventoryData.Slot.SHOVEL,
+                        Optional.empty()
                 )
         ));
 
@@ -165,7 +167,8 @@ public class BuiltInDragonSpecies {
                         new MiscResources.FoodTooltip(MiscResources.FoodTooltip.DEFAULT_FOOD_TOOLTIP_FONT, "\\uEA01", "\\uEA04", Optional.empty()),
                         TextColor.fromRgb(0x41CC48),
                         TextColor.fromRgb(0x117816),
-                        ClawInventoryData.Slot.AXE
+                        ClawInventoryData.Slot.AXE,
+                        Optional.empty()
                 )
         ));
     }

@@ -20,7 +20,8 @@ public record MiscResources(
         FoodTooltip foodTooltip,
         TextColor primaryColor,
         TextColor secondaryColor,
-        ClawInventoryData.Slot clawTextureSlot
+        ClawInventoryData.Slot clawTextureSlot,
+        Optional<ResourceLocation> customGrowthInfo
 ) {
     public static final Codec<MiscResources> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             ResourceLocation.CODEC.optionalFieldOf("food_sprites").forGetter(MiscResources::foodSprites),
@@ -33,7 +34,8 @@ public record MiscResources(
             FoodTooltip.CODEC.fieldOf("food_tooltip").forGetter(MiscResources::foodTooltip),
             TextColor.CODEC.fieldOf("primary_color").forGetter(MiscResources::primaryColor),
             TextColor.CODEC.fieldOf("secondary_color").forGetter(MiscResources::secondaryColor),
-            ClawInventoryData.Slot.CODEC.optionalFieldOf("claw_texture_slot", ClawInventoryData.Slot.PICKAXE).forGetter(MiscResources::clawTextureSlot)
+            ClawInventoryData.Slot.CODEC.optionalFieldOf("claw_texture_slot", ClawInventoryData.Slot.PICKAXE).forGetter(MiscResources::clawTextureSlot),
+            ResourceLocation.CODEC.optionalFieldOf("custom_growth_info").forGetter(MiscResources::customGrowthInfo)
     ).apply(instance, MiscResources::new));
 
     public record HoverIcon(ResourceLocation hoverIcon, ResourceLocation icon) {

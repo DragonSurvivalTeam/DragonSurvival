@@ -830,7 +830,10 @@ public class DragonStateHandler extends EntityStateHandler {
         components.add(Either.left(Component.translatable(LangKey.GROWTH_STAGE).append(DragonStage.translatableName(stageKey()))));
         components.add(Either.left(Component.translatable(LangKey.GROWTH_AGE, ageInformation)));
         components.add(Either.left(Component.translatable(LangKey.GROWTH_AMOUNT, (int) getGrowth())));
-        components.add(Either.left(Component.translatable(LangKey.GROWTH_INFO).append(Component.literal(" [" + Math.min(growthItems.size(), scroll + MAX_SHOWN) + " / " + growthItems.size() + "]").withStyle(ChatFormatting.DARK_GRAY))));
+        String growthInfoTranslation = species().value().miscResources().customGrowthInfo()
+                .map(Translation.Type.GUI::wrap)
+                .orElse(LangKey.GROWTH_INFO);
+        components.add(Either.left(Component.translatable(growthInfoTranslation).append(Component.literal(" [" + Math.min(growthItems.size(), scroll + MAX_SHOWN) + " / " + growthItems.size() + "]").withStyle(ChatFormatting.DARK_GRAY))));
 
         for (int i = scroll; i < max; i++) {
             components.add(Either.right(growthItems.get(i)));
