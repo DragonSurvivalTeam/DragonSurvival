@@ -18,6 +18,7 @@ import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
 
 public class DragonGlowLayerRenderer<R extends LivingEntityRenderState & GeoRenderState> extends AutoGlowingGeoLayer<DragonEntity, Void, R> {
     public DragonGlowLayerRenderer(final DragonRenderer<R> renderer) {
@@ -25,7 +26,7 @@ public class DragonGlowLayerRenderer<R extends LivingEntityRenderState & GeoRend
     }
 
     @Override
-    public void submitRenderTask(final RenderPassInfo<R> renderPassInfo, final SubmitNodeCollector renderTasks) {
+    public void submitRenderTask(final RenderPassInfo<R> renderPassInfo, final @NonNull SubmitNodeCollector renderTasks) {
         if (!renderPassInfo.willRender() || getGlowTexture(renderPassInfo.renderState()) == null) {
             return;
         }
@@ -34,9 +35,14 @@ public class DragonGlowLayerRenderer<R extends LivingEntityRenderState & GeoRend
     }
 
     @Override
-    protected Identifier getTextureResource(final R renderState) {
+    protected @NonNull Identifier getTextureResource(final @NonNull R renderState) {
         Identifier glowTexture = getGlowTexture(renderState);
-        return getGlowTexture(renderState);
+
+        if (glowTexture == null) {
+            throw new IllegalStateException("Tried to render a dragon glow layer without a glow texture");
+        }
+
+        return glowTexture;
     }
 
     private @Nullable Identifier getGlowTexture(final R renderState) {
