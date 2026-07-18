@@ -49,15 +49,24 @@ import net.minecraft.world.item.component.DyedItemColor;
 import net.minecraft.world.item.equipment.EquipmentAsset;
 import net.minecraft.world.item.equipment.Equippable;
 import net.minecraft.world.item.equipment.trim.ArmorTrim;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RegisterRenderPipelinesEvent;
+import net.neoforged.neoforge.client.event.RenderFrameEvent;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
+@EventBusSubscriber(Dist.CLIENT)
 public class DragonArmorRenderLayer<R extends LivingEntityRenderState & GeoRenderState> extends GeoRenderLayer<DragonEntity, Void, R> {
+    private static final Set<Identifier> generatedArmorTextures = new HashSet<>();
+    private static final Set<Identifier> usedArmorTextures = new HashSet<>();
     private static final Identifier ARMOR_GENERATION_SHADER = DragonSurvival.res("core/armor_generation");
     private static final RenderPipeline ARMOR_GENERATION_PIPELINE = RenderPipeline.builder(RenderPipelines.POST_PROCESSING_SNIPPET)
         .withLocation(DragonSurvival.res("pipeline/armor_generation"))
@@ -126,7 +135,25 @@ public class DragonArmorRenderLayer<R extends LivingEntityRenderState & GeoRende
             generateArmorTexture(player, imageResource);
         }
 
-        return RenderingUtils.hasTexture(imageResource) ? Optional.of(imageResource) : Optional.empty();
+        if (!RenderingUtils.hasTexture(imageResource)) {
+            return Optional.empty();
+        }
+
+        usedArmorTextures.add(imageResource);
+        return Optional.of(imageResource);
+    }
+
+    @SubscribeEvent
+    public static void purgeUnusedArmorTextures(final RenderFrameEvent.Pre event) {
+        generatedArmorTextures.removeIf(texture -> {
+            if (usedArmorTextures.contains(texture)) {
+                return false;
+            }
+
+            Minecraft.getInstance().getTextureManager().release(texture);
+            return true;
+        });
+        usedArmorTextures.clear();
     }
 
     private static void generateArmorTexture(final Player player, final Identifier imageResource) {
@@ -157,6 +184,7 @@ public class DragonArmorRenderLayer<R extends LivingEntityRenderState & GeoRende
             }
 
             RenderingUtils.copyTextureFromRenderTarget(target, imageResource);
+            generatedArmorTextures.add(imageResource);
         } finally {
             target.destroyBuffers();
         }
