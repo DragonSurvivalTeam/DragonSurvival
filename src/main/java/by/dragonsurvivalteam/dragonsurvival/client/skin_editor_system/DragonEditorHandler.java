@@ -28,13 +28,19 @@ import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RegisterRenderPipelinesEvent;
+import net.neoforged.neoforge.client.event.RenderFrameEvent;
 
+import java.util.HashSet;
 import java.util.OptionalInt;
+import java.util.Set;
 
 @EventBusSubscriber(value = Dist.CLIENT)
 public class DragonEditorHandler {
+    private static final Set<Identifier> generatedSkinTextures = new HashSet<>();
+    private static final Set<Identifier> usedSkinTextures = new HashSet<>();
     private static final Identifier SKIN_GENERATION_SHADER = DragonSurvival.res("core/skin_generation");
     private static final RenderPipeline SKIN_GENERATION_PIPELINE = RenderPipeline.builder(RenderPipelines.POST_PROCESSING_SNIPPET)
         .withLocation(DragonSurvival.res("pipeline/skin_generation"))
@@ -109,6 +115,8 @@ public class DragonEditorHandler {
             Identifier glowTexture = DragonModel.dynamicTexture(player, handler, true);
             RenderingUtils.copyTextureFromRenderTarget(normalTarget, normalTexture);
             RenderingUtils.copyTextureFromRenderTarget(glowTarget, glowTexture);
+            generatedSkinTextures.add(normalTexture);
+            generatedSkinTextures.add(glowTexture);
         } finally {
             glowTarget.destroyBuffers();
             normalTarget.destroyBuffers();
@@ -117,6 +125,34 @@ public class DragonEditorHandler {
 
     public static void registerRenderPipelines(final RegisterRenderPipelinesEvent event) {
         event.registerPipeline(SKIN_GENERATION_PIPELINE);
+    }
+
+    public static void markSkinTextureUsed(final Identifier texture) {
+        if (generatedSkinTextures.contains(texture)) {
+            usedSkinTextures.add(texture);
+        }
+    }
+
+    public static boolean hasGeneratedSkinTexture(final Identifier texture) {
+        return generatedSkinTextures.contains(texture);
+    }
+
+    public static boolean isDynamicSkinTexture(final Identifier texture) {
+        String path = texture.getPath();
+        return path.startsWith("dynamic_normal_") || path.startsWith("dynamic_glow_");
+    }
+
+    @SubscribeEvent
+    public static void purgeUnusedSkinTextures(final RenderFrameEvent.Pre event) {
+        generatedSkinTextures.removeIf(texture -> {
+            if (usedSkinTextures.contains(texture)) {
+                return false;
+            }
+
+            Minecraft.getInstance().getTextureManager().release(texture);
+            return true;
+        });
+        usedSkinTextures.clear();
     }
 
     private static void renderPartToTarget(
