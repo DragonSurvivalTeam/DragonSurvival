@@ -40,6 +40,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -830,10 +831,14 @@ public class DragonStateHandler extends EntityStateHandler {
         components.add(Either.left(Component.translatable(LangKey.GROWTH_STAGE).append(DragonStage.translatableName(stageKey()))));
         components.add(Either.left(Component.translatable(LangKey.GROWTH_AGE, ageInformation)));
         components.add(Either.left(Component.translatable(LangKey.GROWTH_AMOUNT, (int) getGrowth())));
-        String growthInfoTranslation = species().value().miscResources().customGrowthInfo()
-                .map(Translation.Type.GUI::wrap)
-                .orElse(LangKey.GROWTH_INFO);
-        components.add(Either.left(Component.translatable(growthInfoTranslation).append(Component.literal(" [" + Math.min(growthItems.size(), scroll + MAX_SHOWN) + " / " + growthItems.size() + "]").withStyle(ChatFormatting.DARK_GRAY))));
+
+        MutableComponent growthInfo = species().value().miscResources().customGrowthInfo().orElse(Component.translatable(LangKey.GROWTH_INFO)).copy();
+
+        if (!growthItems.isEmpty()) {
+            growthInfo.append(Component.literal(" [" + Math.min(growthItems.size(), scroll + MAX_SHOWN) + " / " + growthItems.size() + "]").withStyle(ChatFormatting.DARK_GRAY));
+        }
+
+        components.add(Either.left(growthInfo));
 
         for (int i = scroll; i < max; i++) {
             components.add(Either.right(growthItems.get(i)));
