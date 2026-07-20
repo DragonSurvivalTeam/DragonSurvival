@@ -107,24 +107,25 @@ public class ToolUtils {
             };
 
             if (level == 0) {
-                // Basically - if a tool has this tag, it means it can be considered to be of that tier
-                // Because it says "this tool cannot mine these blocks"
-                TagKey<Block> tag = tier.getIncorrectBlocksForDrops();
+                level = tagToLevel(tier.getIncorrectBlocksForDrops());
+            }
+        }
 
-                if (tag == BlockTags.INCORRECT_FOR_WOODEN_TOOL ||tag == BlockTags.INCORRECT_FOR_GOLD_TOOL) {
-                    level = 1;
-                } else if (tag == BlockTags.INCORRECT_FOR_STONE_TOOL) {
-                    level = 2;
-                } else if (tag == Overgeared.INCORRECT_FOR_COPPER_TOOL) {
-                    level = 2.5;
-                } else if (tag == BlockTags.INCORRECT_FOR_IRON_TOOL) {
-                    level = 3;
-                } else if (tag == Overgeared.INCORRECT_FOR_STEEL_TOOL) {
-                    level = 3.5;
-                } else if (tag == BlockTags.INCORRECT_FOR_DIAMOND_TOOL) {
-                    level = 4;
-                } else if (tag == BlockTags.INCORRECT_FOR_NETHERITE_TOOL) {
-                    level = 5;
+        if (level == 0) {
+            // In case it is some custom item / multi-tool
+            Tool tool = stack.get(DataComponents.TOOL);
+
+            if (tool == null) {
+                return level;
+            }
+
+            for (Tool.Rule rule : tool.rules()) {
+                if (rule.blocks() instanceof HolderSet.Named<Block> set) {
+                    level = tagToLevel(set.key());
+
+                    if (level > 0) {
+                        return level;
+                    }
                 }
             }
         }
@@ -159,6 +160,30 @@ public class ToolUtils {
         }
 
         return false;
+    }
+
+    private static double tagToLevel(final TagKey<Block> tag) {
+        double level = 0;
+
+        // Basically - if a tool has this tag, it means it can be considered to be of that tier
+        // Because it says "this tool cannot mine these blocks"
+        if (tag == BlockTags.INCORRECT_FOR_WOODEN_TOOL ||tag == BlockTags.INCORRECT_FOR_GOLD_TOOL) {
+            level = 1;
+        } else if (tag == BlockTags.INCORRECT_FOR_STONE_TOOL) {
+            level = 2;
+        } else if (tag == Overgeared.INCORRECT_FOR_COPPER_TOOL) {
+            level = 2.5;
+        } else if (tag == BlockTags.INCORRECT_FOR_IRON_TOOL) {
+            level = 3;
+        } else if (tag == Overgeared.INCORRECT_FOR_STEEL_TOOL) {
+            level = 3.5;
+        } else if (tag == BlockTags.INCORRECT_FOR_DIAMOND_TOOL) {
+            level = 4;
+        } else if (tag == BlockTags.INCORRECT_FOR_NETHERITE_TOOL) {
+            level = 5;
+        }
+
+        return level;
     }
 
     private static boolean isIncorrectRule(final Tool.Rule rule) {
