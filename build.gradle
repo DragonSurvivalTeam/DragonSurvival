@@ -165,6 +165,9 @@ dependencies {
 //    runtimeOnly "curse.maven:terrafirmacraft-302973:7150812" // 4.0.9
 //    runtimeOnly "curse.maven:patchouli-306770:6842247" // 92
 
+	// https://www.curseforge.com/minecraft/mc-mods/overgeared/files/all?page=1&pageSize=20&version=1.21.1&gameVersionTypeId=6&showAlphaFiles=hide
+//	implementation "curse.maven:overgeared-1277786:8298434" // 1.16.16
+
 	testImplementation 'org.junit.jupiter:junit-jupiter:5.7.1'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
