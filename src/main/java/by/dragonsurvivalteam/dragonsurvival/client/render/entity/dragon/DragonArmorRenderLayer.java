@@ -50,6 +50,8 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.GlStateBackup;
 import net.neoforged.neoforge.client.event.RegisterShadersEvent;
 import net.neoforged.neoforge.client.event.RenderFrameEvent;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL20;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
 import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
@@ -138,7 +140,6 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
     private static void generateArmorTexture(final Player player, final ResourceLocation imageResource) {
         DragonStateHandler handler = DragonStateProvider.getData(player);
         DragonBody.TextureSize textureSize = handler.body().value().textureSize();
-        RenderTarget target = new TextureTarget(textureSize.width(), textureSize.height(), false, Minecraft.ON_OSX);
         GlStateBackup state = new GlStateBackup();
         RenderSystem.backupGlState(state);
         RenderSystem.backupProjectionMatrix();
@@ -148,8 +149,22 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
         int viewportY = GlStateManager.Viewport.y();
         int viewportWidth = GlStateManager.Viewport.width();
         int viewportHeight = GlStateManager.Viewport.height();
+        int activeTexture = GlStateManager._getActiveTexture();
+        int activeTextureBinding = GL11.glGetInteger(GL11.GL_TEXTURE_BINDING_2D);
+        int shaderProgram = GL11.glGetInteger(GL20.GL_CURRENT_PROGRAM);
+        int[] boundTextures = new int[3];
+
+        for (int i = 0; i < boundTextures.length; i++) {
+            RenderSystem.activeTexture(GlConst.GL_TEXTURE0 + i);
+            boundTextures[i] = GL11.glGetInteger(GL11.GL_TEXTURE_BINDING_2D);
+        }
+
+        RenderSystem.activeTexture(activeTexture);
+        RenderSystem.bindTexture(activeTextureBinding);
+        RenderTarget target = null;
 
         try {
+            target = new TextureTarget(textureSize.width(), textureSize.height(), false, Minecraft.ON_OSX);
             target.setClearColor(0.0F, 0.0F, 0.0F, 0.0F);
             target.clear(true);
 
@@ -173,11 +188,23 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
 
             RenderingUtils.copyTextureFromRenderTarget(target, imageResource);
         } finally {
-            target.destroyBuffers();
+            if (target != null) {
+                target.destroyBuffers();
+            }
+
             RenderSystem.restoreGlState(state);
             RenderSystem.restoreProjectionMatrix();
             GlStateManager._glBindFramebuffer(GlConst.GL_FRAMEBUFFER, framebuffer);
             GlStateManager._viewport(viewportX, viewportY, viewportWidth, viewportHeight);
+
+            for (int i = 0; i < boundTextures.length; i++) {
+                RenderSystem.activeTexture(GlConst.GL_TEXTURE0 + i);
+                RenderSystem.bindTexture(boundTextures[i]);
+            }
+
+            RenderSystem.activeTexture(activeTexture);
+            RenderSystem.bindTexture(activeTextureBinding);
+            GL20.glUseProgram(shaderProgram);
         }
     }
 

@@ -82,19 +82,6 @@ public abstract class LevelRendererMixin {
         manager.setRenderHitBoxes(renderHitboxes);
     }
 
-    @Inject(method = "renderLevel", at = @At(value = "HEAD"))
-    public void renderLevel(DeltaTracker deltaTracker, boolean renderBlockOutline, Camera camera, GameRenderer renderer, LightTexture light, Matrix4f frustum, Matrix4f projection, CallbackInfo callback) {
-        // Attempt to generate skins for all players right at the start of level rendering, to prevent any sort of issues from injecting into the renderer in the middle of its work
-        // TODO :: when flagging a skin for recompilation set some sort of global flag so that we don't need to iterate through this map every tick to check
-        ClientDragonRenderer.process(dragon -> {
-            Player player = dragon.getPlayer();
-
-            if (player != null && DragonStateProvider.getData(player).needsSkinRecompilation()) {
-                DragonSurvivalClient.DRAGON_RENDERER.getTextureLocation(dragon);
-            }
-        });
-    }
-
     @Shadow
     protected abstract void renderEntity(Entity pEntity, double pCamX, double pCamY, double pCamZ, float pPartialTick, PoseStack pPoseStack, MultiBufferSource pBufferSource);
 }
