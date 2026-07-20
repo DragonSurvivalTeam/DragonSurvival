@@ -77,10 +77,13 @@ public class DragonEditorHandler {
         RenderSystem.assertOnRenderThread();
 
         var textureSize = handler.body().value().textureSize();
-        TextureTarget normalTarget = new TextureTarget("Dragon Skin Normal", textureSize.width(), textureSize.height(), false);
-        TextureTarget glowTarget = new TextureTarget("Dragon Skin Glow", textureSize.width(), textureSize.height(), false);
+        RenderingUtils.RenderStateSnapshot state = RenderingUtils.captureRenderState(1);
+        TextureTarget normalTarget = null;
+        TextureTarget glowTarget = null;
 
         try {
+            normalTarget = new TextureTarget("Dragon Skin Normal", textureSize.width(), textureSize.height(), false);
+            glowTarget = new TextureTarget("Dragon Skin Glow", textureSize.width(), textureSize.height(), false);
             clearTarget(normalTarget);
             clearTarget(glowTarget);
 
@@ -118,8 +121,15 @@ public class DragonEditorHandler {
             generatedSkinTextures.add(normalTexture);
             generatedSkinTextures.add(glowTexture);
         } finally {
-            glowTarget.destroyBuffers();
-            normalTarget.destroyBuffers();
+            if (glowTarget != null) {
+                glowTarget.destroyBuffers();
+            }
+
+            if (normalTarget != null) {
+                normalTarget.destroyBuffers();
+            }
+
+            RenderingUtils.restoreRenderState(state);
         }
     }
 

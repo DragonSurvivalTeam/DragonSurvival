@@ -10,6 +10,7 @@ import com.mojang.blaze3d.pipeline.BlendFunction;
 import com.mojang.blaze3d.pipeline.ColorTargetState;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.pipeline.RenderTarget;
+import com.mojang.blaze3d.opengl.GlStateManager;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.textures.GpuTexture;
@@ -31,6 +32,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix3x2f;
 import org.joml.Matrix3x2fc;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL13;
+import org.lwjgl.opengl.GL14;
+import org.lwjgl.opengl.GL20;
+import org.lwjgl.opengl.GL30;
 
 import java.awt.Color;
 
@@ -216,6 +222,17 @@ public class RenderingUtils {
         return texture instanceof DynamicTexture;
     }
 
+    public static RenderStateSnapshot captureRenderState(final int textureUnitCount) {
+        RenderSystem.assertOnRenderThread();
+        RenderSystem.backupProjectionMatrix();
+        return new RenderStateSnapshot(textureUnitCount);
+    }
+
+    public static void restoreRenderState(final RenderStateSnapshot state) {
+        state.restore();
+        RenderSystem.restoreProjectionMatrix();
+    }
+
     public static void setShaderColor(int color) {
         shaderColor = color;
     }
@@ -365,6 +382,149 @@ public class RenderingUtils {
             ScreenRectangle bounds = new ScreenRectangle((int)Math.floor(x0), (int)Math.floor(y0), Math.max(1, (int)Math.ceil(x1 - x0)), Math.max(1, (int)Math.ceil(y1 - y0)))
                 .transformMaxBounds(pose);
             return scissorArea != null ? scissorArea.intersection(bounds) : bounds;
+        }
+    }
+
+    public static final class RenderStateSnapshot {
+        private final boolean blendEnabled = GL11.glIsEnabled(GL11.GL_BLEND);
+        private final int blendSrcRgb = GL11.glGetInteger(GL14.GL_BLEND_SRC_RGB);
+        private final int blendDestRgb = GL11.glGetInteger(GL14.GL_BLEND_DST_RGB);
+        private final int blendSrcAlpha = GL11.glGetInteger(GL14.GL_BLEND_SRC_ALPHA);
+        private final int blendDestAlpha = GL11.glGetInteger(GL14.GL_BLEND_DST_ALPHA);
+        private final boolean depthEnabled = GL11.glIsEnabled(GL11.GL_DEPTH_TEST);
+        private final boolean depthMask = GL11.glGetBoolean(GL11.GL_DEPTH_WRITEMASK);
+        private final int depthFunc = GL11.glGetInteger(GL11.GL_DEPTH_FUNC);
+        private final boolean cullEnabled = GL11.glIsEnabled(GL11.GL_CULL_FACE);
+        private final boolean polygonOffsetEnabled = GL11.glIsEnabled(GL11.GL_POLYGON_OFFSET_FILL);
+        private final float polygonOffsetFactor = GL11.glGetFloat(GL11.GL_POLYGON_OFFSET_FACTOR);
+        private final float polygonOffsetUnits = GL11.glGetFloat(GL11.GL_POLYGON_OFFSET_UNITS);
+        private final int[] polygonMode = getIntegerArray(GL11.GL_POLYGON_MODE, 2);
+        private final boolean colorLogicEnabled = GL11.glIsEnabled(GL11.GL_COLOR_LOGIC_OP);
+        private final int colorLogicOp = GL11.glGetInteger(GL11.GL_LOGIC_OP_MODE);
+        private final boolean stencilEnabled = GL11.glIsEnabled(GL11.GL_STENCIL_TEST);
+        private final int[] stencilFront = getStencilState(false);
+        private final int[] stencilBack = getStencilState(true);
+        private final boolean scissorEnabled = GL11.glIsEnabled(GL11.GL_SCISSOR_TEST);
+        private final int[] scissorBox = getIntegerArray(GL11.GL_SCISSOR_BOX, 4);
+        private final int colorWriteMask = getColorWriteMask();
+        private final int drawFramebuffer = GL11.glGetInteger(GL30.GL_DRAW_FRAMEBUFFER_BINDING);
+        private final int readFramebuffer = GL11.glGetInteger(GL30.GL_READ_FRAMEBUFFER_BINDING);
+        private final int[] viewport = getIntegerArray(GL11.GL_VIEWPORT, 4);
+        private final int activeTexture = GL11.glGetInteger(GL13.GL_ACTIVE_TEXTURE);
+        private final int activeTextureBinding = GL11.glGetInteger(GL11.GL_TEXTURE_BINDING_2D);
+        private final int shaderProgram = GL11.glGetInteger(GL20.GL_CURRENT_PROGRAM);
+        private final int[] boundTextures;
+
+        private RenderStateSnapshot(final int textureUnitCount) {
+            boundTextures = new int[textureUnitCount];
+
+            for (int i = 0; i < boundTextures.length; i++) {
+                GlStateManager._activeTexture(GL13.GL_TEXTURE0 + i);
+                boundTextures[i] = GL11.glGetInteger(GL11.GL_TEXTURE_BINDING_2D);
+            }
+
+            GlStateManager._activeTexture(activeTexture);
+            GlStateManager._bindTexture(activeTextureBinding);
+        }
+
+        private void restore() {
+            GlStateManager._blendFuncSeparate(blendSrcRgb, blendDestRgb, blendSrcAlpha, blendDestAlpha);
+
+            if (blendEnabled) {
+                GlStateManager._enableBlend();
+            } else {
+                GlStateManager._disableBlend();
+            }
+
+            GlStateManager._depthFunc(depthFunc);
+            GlStateManager._depthMask(depthMask);
+
+            if (depthEnabled) {
+                GlStateManager._enableDepthTest();
+            } else {
+                GlStateManager._disableDepthTest();
+            }
+
+            if (cullEnabled) {
+                GlStateManager._enableCull();
+            } else {
+                GlStateManager._disableCull();
+            }
+
+            GlStateManager._polygonMode(GL11.GL_FRONT, polygonMode[0]);
+            GlStateManager._polygonMode(GL11.GL_BACK, polygonMode[1]);
+            GlStateManager._polygonOffset(polygonOffsetFactor, polygonOffsetUnits);
+
+            if (polygonOffsetEnabled) {
+                GlStateManager._enablePolygonOffset();
+            } else {
+                GlStateManager._disablePolygonOffset();
+            }
+
+            GlStateManager._logicOp(colorLogicOp);
+
+            if (colorLogicEnabled) {
+                GlStateManager._enableColorLogicOp();
+            } else {
+                GlStateManager._disableColorLogicOp();
+            }
+
+            GlStateManager._stencilFuncFront(stencilFront[0], stencilFront[1], stencilFront[2]);
+            GlStateManager._stencilFuncBack(stencilBack[0], stencilBack[1], stencilBack[2]);
+            GlStateManager._stencilMask(stencilFront[3]);
+            GlStateManager._stencilOpFront(stencilFront[4], stencilFront[5], stencilFront[6]);
+            GlStateManager._stencilOpBack(stencilBack[4], stencilBack[5], stencilBack[6]);
+
+            if (stencilEnabled) {
+                GlStateManager._enableStencilTest();
+            } else {
+                GlStateManager._disableStencilTest();
+            }
+
+            GlStateManager._scissorBox(scissorBox[0], scissorBox[1], scissorBox[2], scissorBox[3]);
+
+            if (scissorEnabled) {
+                GlStateManager._enableScissorTest();
+            } else {
+                GlStateManager._disableScissorTest();
+            }
+
+            GlStateManager._colorMask(colorWriteMask);
+            GlStateManager._glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, drawFramebuffer);
+            GlStateManager._glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, readFramebuffer);
+            GlStateManager._viewport(viewport[0], viewport[1], viewport[2], viewport[3]);
+
+            for (int i = 0; i < boundTextures.length; i++) {
+                GlStateManager._activeTexture(GL13.GL_TEXTURE0 + i);
+                GlStateManager._bindTexture(boundTextures[i]);
+            }
+
+            GlStateManager._activeTexture(activeTexture);
+            GlStateManager._bindTexture(activeTextureBinding);
+            GlStateManager._glUseProgram(shaderProgram);
+        }
+
+        private static int[] getStencilState(final boolean back) {
+            return new int[] {
+                GL11.glGetInteger(back ? GL20.GL_STENCIL_BACK_FUNC : GL11.GL_STENCIL_FUNC),
+                GL11.glGetInteger(back ? GL20.GL_STENCIL_BACK_REF : GL11.GL_STENCIL_REF),
+                GL11.glGetInteger(back ? GL20.GL_STENCIL_BACK_VALUE_MASK : GL11.GL_STENCIL_VALUE_MASK),
+                GL11.glGetInteger(back ? GL20.GL_STENCIL_BACK_WRITEMASK : GL11.GL_STENCIL_WRITEMASK),
+                GL11.glGetInteger(back ? GL20.GL_STENCIL_BACK_FAIL : GL11.GL_STENCIL_FAIL),
+                GL11.glGetInteger(back ? GL20.GL_STENCIL_BACK_PASS_DEPTH_FAIL : GL11.GL_STENCIL_PASS_DEPTH_FAIL),
+                GL11.glGetInteger(back ? GL20.GL_STENCIL_BACK_PASS_DEPTH_PASS : GL11.GL_STENCIL_PASS_DEPTH_PASS)
+            };
+        }
+
+        private static int[] getIntegerArray(final int property, final int size) {
+            int[] values = new int[size];
+            GL11.glGetIntegerv(property, values);
+            return values;
+        }
+
+        private static int getColorWriteMask() {
+            int[] values = getIntegerArray(GL11.GL_COLOR_WRITEMASK, 4);
+            return (values[0] != 0 ? 1 : 0) | (values[1] != 0 ? 2 : 0) | (values[2] != 0 ? 4 : 0) | (values[3] != 0 ? 8 : 0);
         }
     }
 }

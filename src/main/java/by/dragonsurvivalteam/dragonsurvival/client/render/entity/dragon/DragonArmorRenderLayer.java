@@ -159,9 +159,11 @@ public class DragonArmorRenderLayer<R extends LivingEntityRenderState & GeoRende
     private static void generateArmorTexture(final Player player, final Identifier imageResource) {
         DragonStateHandler handler = DragonStateProvider.getData(player);
         DragonBody.TextureSize textureSize = handler.body().value().textureSize();
-        TextureTarget target = new TextureTarget("Dragon Armor", textureSize.width(), textureSize.height(), false);
+        RenderingUtils.RenderStateSnapshot state = RenderingUtils.captureRenderState(3);
+        TextureTarget target = null;
 
         try {
+            target = new TextureTarget("Dragon Armor", textureSize.width(), textureSize.height(), false);
             clearTarget(target);
 
             for (EquipmentSlot slot : EquipmentSlot.values()) {
@@ -186,7 +188,11 @@ public class DragonArmorRenderLayer<R extends LivingEntityRenderState & GeoRende
             RenderingUtils.copyTextureFromRenderTarget(target, imageResource);
             generatedArmorTextures.add(imageResource);
         } finally {
-            target.destroyBuffers();
+            if (target != null) {
+                target.destroyBuffers();
+            }
+
+            RenderingUtils.restoreRenderState(state);
         }
     }
 
