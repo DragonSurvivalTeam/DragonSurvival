@@ -101,7 +101,7 @@ public class DragonSizeHandler {
             return overridePose;
         }
 
-        if (Compat.hasModelSwap(player)) {
+        if (Compat.hasModelSwapOrDoesNotUseModel(player)) {
             player.setForcedPose(null);
             return overridePose;
         }

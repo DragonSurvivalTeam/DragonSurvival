@@ -5,6 +5,7 @@ import by.dragonsurvivalteam.dragonsurvival.util.json.GsonFactory;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import net.neoforged.neoforge.common.util.Lazy;
 
@@ -76,7 +77,7 @@ public class GiteeSkinLoader implements NetSkinLoader {
                     return directoryInfo.sha;
                 }
             }
-        } catch (IOException exception) {
+        } catch (IOException | JsonSyntaxException exception) {
             return "";
         }
 

@@ -1,6 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.client.render.entity.dragon;
 
 import by.dragonsurvivalteam.dragonsurvival.client.models.DragonModel;
+import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.DragonEditorHandler;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.DragonStageCustomization;
 import by.dragonsurvivalteam.dragonsurvival.client.skins.DragonSkins;
 import by.dragonsurvivalteam.dragonsurvival.client.util.RenderingUtils;
@@ -10,29 +11,45 @@ import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import com.geckolib.renderer.base.GeoRenderState;
 import com.geckolib.renderer.base.RenderPassInfo;
-import com.geckolib.renderer.layer.GeoRenderLayer;
+import com.geckolib.renderer.layer.builtin.AutoGlowingGeoLayer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
+import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
 
-public class DragonGlowLayerRenderer<R extends LivingEntityRenderState & GeoRenderState> extends GeoRenderLayer<DragonEntity, Void, R> {
+public class DragonGlowLayerRenderer<R extends LivingEntityRenderState & GeoRenderState> extends AutoGlowingGeoLayer<DragonEntity, Void, R> {
     public DragonGlowLayerRenderer(final DragonRenderer<R> renderer) {
         super(renderer);
     }
 
     @Override
-    public void submitRenderTask(final RenderPassInfo<R> renderPassInfo, final SubmitNodeCollector renderTasks) {
-        if (!renderPassInfo.willRender() || !(renderer instanceof DragonRenderer<R> dragonRenderer)) {
+    public void submitRenderTask(final RenderPassInfo<R> renderPassInfo, final @NonNull SubmitNodeCollector renderTasks) {
+        if (!renderPassInfo.willRender() || getGlowTexture(renderPassInfo.renderState()) == null) {
             return;
         }
 
-        DragonRenderer.DragonRenderData renderData = renderPassInfo.renderState().getGeckolibData(DragonRenderer.DRAGON_RENDER_DATA);
+        super.submitRenderTask(renderPassInfo, renderTasks);
+    }
+
+    @Override
+    protected @NonNull Identifier getTextureResource(final @NonNull R renderState) {
+        Identifier glowTexture = getGlowTexture(renderState);
+
+        if (glowTexture == null) {
+            throw new IllegalStateException("Tried to render a dragon glow layer without a glow texture");
+        }
+
+        return glowTexture;
+    }
+
+    private @Nullable Identifier getGlowTexture(final R renderState) {
+        DragonRenderer.DragonRenderData renderData = renderState.getGeckolibData(DragonRenderer.DRAGON_RENDER_DATA);
 
         if (renderData == null || renderData.handler() == null || renderData.player() == null) {
-            return;
+            return null;
         }
 
         Player player = renderData.texturePlayer() != null ? renderData.texturePlayer() : renderData.player();
@@ -62,10 +79,15 @@ public class DragonGlowLayerRenderer<R extends LivingEntityRenderState & GeoRend
             glowTexture = DragonModel.dynamicTexture(player, handler, true);
         }
 
-        if (glowTexture == null || !RenderingUtils.hasTexture(glowTexture)) {
-            return;
+        boolean hasGlowTexture = glowTexture != null
+            && (DragonEditorHandler.hasGeneratedSkinTexture(glowTexture)
+                || (!DragonEditorHandler.isDynamicSkinTexture(glowTexture) && RenderingUtils.hasTexture(glowTexture)));
+
+        if (!hasGlowTexture) {
+            return null;
         }
 
-        dragonRenderer.submitRenderTasks(renderPassInfo, renderTasks.order(1), RenderTypes.entityTranslucentEmissive(glowTexture, false));
+        DragonEditorHandler.markSkinTextureUsed(glowTexture);
+        return glowTexture;
     }
 }

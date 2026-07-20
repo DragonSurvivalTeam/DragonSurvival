@@ -1,21 +1,27 @@
 package by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components;
 
 import by.dragonsurvivalteam.dragonsurvival.client.render.entity.dragon.DragonRenderer;
+import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.math.Axis;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.AbstractContainerEventHandler;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
+import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
@@ -26,7 +32,7 @@ import java.util.function.Supplier;
 
 public class DragonUIRenderComponent extends AbstractContainerEventHandler implements Renderable {
     private final Screen screen;
-    private final Supplier<DragonEntity> getter;
+    private final Supplier<? extends LivingEntity> getter;
     public float yRot, xRot;
     public float xOffset, yOffset;
     public float zoom;
@@ -34,13 +40,13 @@ public class DragonUIRenderComponent extends AbstractContainerEventHandler imple
     private @Nullable Identifier textureOverride;
     private @Nullable Identifier glowTextureOverride;
 
-    public DragonUIRenderComponent(Screen screen, int x, int y, int xSize, int ySize, Supplier<DragonEntity> dragonGetter) {
+    public DragonUIRenderComponent(Screen screen, int x, int y, int xSize, int ySize, Supplier<? extends LivingEntity> entityGetter) {
         this.screen = screen;
         this.x = x;
         this.y = y;
         width = xSize;
         height = ySize;
-        getter = dragonGetter;
+        getter = entityGetter;
     }
 
     public void setTextureOverrides(final @Nullable Identifier textureOverride, final @Nullable Identifier glowTextureOverride) {
@@ -65,7 +71,17 @@ public class DragonUIRenderComponent extends AbstractContainerEventHandler imple
         rotation.mul(Axis.XP.rotationDegrees(yRot * 10));
         rotation.rotateY((float) Math.toRadians(180 - xRot * 10));
 
-        EntityRenderState renderState = DragonRenderer.createUIRenderState(getter.get(), pPartialTicks, 0.0F, 0.0F, 0.0F, null, textureOverride, glowTextureOverride);
+        EntityRenderState renderState;
+        if (getter.get() instanceof Player player && DragonStateProvider.getData(player).body().value().noDragonModelRendering()) {
+            EntityRenderDispatcher entityRenderDispatcher = Minecraft.getInstance().getEntityRenderDispatcher();
+            EntityRenderer<? super LivingEntity, ?> renderer = entityRenderDispatcher.getRenderer(player);
+            renderState = renderer.createRenderState(player, pPartialTicks);
+            renderState.shadowPieces.clear();
+            renderState.outlineColor = 0;
+        }
+        else {
+            renderState = DragonRenderer.createUIRenderState(getter.get(), pPartialTicks, 0.0F, 0.0F, 0.0F, null, textureOverride, glowTextureOverride);
+        }
 
         // Not sure what changed about the scale of UI elements that forces me to divide by 50 here for translation, but it is good enough for now
         Vector3f translation = new Vector3f(xOffset / 50.f, yOffset /  50.f, 0.0F);

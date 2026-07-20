@@ -1,8 +1,17 @@
 package by.dragonsurvivalteam.dragonsurvival.common.handlers;
 
+import by.dragonsurvivalteam.dragonsurvival.server.containers.DragonContainer;
 import by.dragonsurvivalteam.dragonsurvival.util.PotionUtils;
+import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.ArrowItem;
@@ -21,8 +30,13 @@ import net.minecraft.world.item.TridentItem;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
+import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.item.component.Tool;
+import net.minecraft.world.item.component.Weapon;
+import net.minecraft.world.item.equipment.Equippable;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.neoforged.neoforge.items.IItemHandler;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,11 +44,9 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.function.Predicate;
 
-
-// FIXME :: Copy from quark again when the time is right?
-
 /**
  * Copied from Quark <br>
+ * Updated to 26.1 by DS team
  * <a href="https://github.com/VazkiiMods/Quark/blob/1.21.0/dev/src/main/java/org/violetmoon/quark/base/handler/SortingHandler.java">Source</a> <br>
  * <a href="https://github.com/VazkiiMods/Quark/blob/master/LICENSE.md">License</a> <br>
  */
@@ -81,78 +93,56 @@ public final class SortingHandler {
     );
 
     public static void sortInventory(final Player player) {
-//        if (player.containerMenu instanceof DragonContainer) {
-//            InvWrapper wrapper = new InvWrapper(player.getInventory());
-//            sortInventory(wrapper, 9, 36);
-//        }
+        if (player.containerMenu instanceof DragonContainer container) {
+            sortInventory(player, container.inventorySlots);
+            container.broadcastChanges();
+        }
     }
 
-    public static void sortInventory(final IItemHandler handler, final int start, final int end) {
-//        List<ItemStack> stacks = new ArrayList<>();
-//        List<ItemStack> restore = new ArrayList<>();
-//
-//        for (int slot = start; slot < end; slot++) {
-//            ItemStack stackAt = handler.getStackInSlot(slot);
-//
-//            restore.add(stackAt.copy());
-//
-//            if (!stackAt.isEmpty()) {
-//                stacks.add(stackAt.copy());
-//            }
-//        }
-//
-//        mergeStacks(stacks);
-//        sortStackList(stacks);
-//
-//        if (setInventory(handler, stacks, start, end) == InteractionResult.FAIL) {
-//            setInventory(handler, restore, start, end);
-//        }
+    private static void sortInventory(final Player player, final List<Slot> slots) {
+        List<ItemStack> stacks = new ArrayList<>();
+        List<ItemStack> restore = new ArrayList<>();
+
+        for (Slot slot : slots) {
+            ItemStack stackAt = slot.getItem();
+
+            restore.add(stackAt.copy());
+
+            if (!stackAt.isEmpty()) {
+                stacks.add(stackAt.copy());
+            }
+        }
+
+        mergeStacks(stacks);
+        sortStackList(stacks);
+
+        if (setInventory(player, slots, stacks) == InteractionResult.FAIL) {
+            setInventory(player, slots, restore);
+        }
     }
 
-    private static InteractionResult setInventory(final IItemHandler inventory, final List<ItemStack> stacks, final int start, final int end) {
-//        for (int slot = start; slot < end; slot++) {
-//            int index = slot - start;
-//
-//            ItemStack stack = index >= stacks.size() ? ItemStack.EMPTY : stacks.get(index);
-//            ItemStack stackInSlot = inventory.getStackInSlot(slot);
-//
-//            if (!stackInSlot.isEmpty()) {
-//                ItemStack extractTest = inventory.extractItem(slot, inventory.getSlotLimit(slot), true);
-//
-//                if (extractTest.isEmpty() || extractTest.getCount() != stackInSlot.getCount()) {
-//                    return InteractionResult.PASS;
-//                }
-//            }
-//
-//            if (!stack.isEmpty() && !inventory.isItemValid(slot, stack)) {
-//                return InteractionResult.PASS;
-//            }
-//        }
-//
-//        for (int slot = start; slot < end; slot++) {
-//            // Remove all currently existing items
-//            inventory.extractItem(slot, inventory.getSlotLimit(slot), false);
-//        }
-//
-//        for (int slot = start; slot < end; slot++) {
-//            int index = slot - start;
-//
-//            if (index >= stacks.size()) {
-//                // Since we already extracted all items
-//                // We don't need to re-fill the slots with empty stacks
-//                break;
-//            }
-//
-//            ItemStack stack = stacks.get(index);
-//
-//            if (stack.isEmpty()) {
-//                continue;
-//            }
-//
-//            if (!inventory.insertItem(slot, stack, false).isEmpty()) {
-//                return InteractionResult.FAIL;
-//            }
-//        }
+    private static InteractionResult setInventory(final Player player, final List<Slot> slots, final List<ItemStack> stacks) {
+        for (int slotIndex = 0; slotIndex < slots.size(); slotIndex++) {
+            Slot slot = slots.get(slotIndex);
+            ItemStack currentStack = slot.getItem();
+            ItemStack newStack = slotIndex >= stacks.size() ? ItemStack.EMPTY : stacks.get(slotIndex);
+
+            if (!currentStack.isEmpty() && !slot.mayPickup(player)) {
+                return InteractionResult.PASS;
+            }
+
+            if (!newStack.isEmpty() && (!slot.mayPlace(newStack) || newStack.getCount() > slot.getMaxStackSize(newStack))) {
+                return InteractionResult.PASS;
+            }
+        }
+
+        for (int slotIndex = 0; slotIndex < slots.size(); slotIndex++) {
+            Slot slot = slots.get(slotIndex);
+            ItemStack previous = slot.getItem().copy();
+            ItemStack stack = slotIndex >= stacks.size() ? ItemStack.EMPTY : stacks.get(slotIndex).copy();
+
+            slot.setByPlayer(stack, previous);
+        }
 
         return InteractionResult.SUCCESS;
     }
@@ -317,21 +307,15 @@ public final class SortingHandler {
     private static List<Item> list(final Object... items) {
         List<Item> list = new ArrayList<>();
 
-//        for (Object object : items) {
-//            switch (object) {
-//                case Item item -> list.add(item);
-//                case Block block -> list.add(block.asItem());
-//                case ItemStack stack -> list.add(stack.getItem());
-//                case String string -> {
-//                    Item item = BuiltInRegistries.ITEM.get(Identifier.parse(string));
-//
-//                    if (item != Items.AIR) {
-//                        list.add(item);
-//                    }
-//                }
-//                default -> { /* Nothing to do */ }
-//            }
-//        }
+        for (Object object : items) {
+            switch (object) {
+                case Item item -> list.add(item);
+                case Block block -> list.add(block.asItem());
+                case ItemStack stack -> list.add(stack.getItem());
+                case String string -> BuiltInRegistries.ITEM.getOptional(Identifier.parse(string)).ifPresent(list::add);
+                default -> { /* Nothing to do */ }
+            }
+        }
 
         return list;
     }
@@ -345,8 +329,7 @@ public final class SortingHandler {
     }
 
     private static int foodNutritionCompare(final ItemStack first, final ItemStack second) {
-//        return nutrition(second.getFoodProperties(null)) - nutrition(first.getFoodProperties(null));
-        return 0;
+        return nutrition(second.get(DataComponents.FOOD)) - nutrition(first.get(DataComponents.FOOD));
     }
 
     private static float saturation(final FoodProperties properties) {
@@ -358,15 +341,7 @@ public final class SortingHandler {
     }
 
     private static int foodSaturationCompare(final ItemStack first, final ItemStack second) {
-//        float result = saturation(second.getFoodProperties(null)) - saturation(first.getFoodProperties(null));
-//
-//        if (result < 0) {
-//            return 1;
-//        } else if (result > 0) {
-//            return -1;
-//        }
-
-        return 0;
+        return Float.compare(saturation(second.get(DataComponents.FOOD)), saturation(first.get(DataComponents.FOOD)));
     }
 
     private static int enchantmentCompare(final ItemStack first, final ItemStack second) {
@@ -392,98 +367,86 @@ public final class SortingHandler {
     }
 
     private static int toolPowerCompare(final ItemStack first, final ItemStack second) {
-//        Tier firstTier = ((DiggerItem) first.getItem()).getTier();
-//        Tier secondTier = ((DiggerItem) second.getItem()).getTier();
-//        return (int) (secondTier.getSpeed() * 100 - firstTier.getSpeed() * 100);
-        return 0;
+        return Float.compare(toolPower(second), toolPower(first));
     }
 
     private static int swordPowerCompare(final ItemStack first, final ItemStack second) {
-//        Tier firstTier = ((SwordItem) first.getItem()).getTier();
-//        Tier secondTier = ((SwordItem) second.getItem()).getTier();
-//        return (int) (secondTier.getAttackDamageBonus() * 100 - firstTier.getAttackDamageBonus() * 100);
-        return 0;
+        return Double.compare(attributeValue(second, Attributes.ATTACK_DAMAGE, EquipmentSlot.MAINHAND), attributeValue(first, Attributes.ATTACK_DAMAGE, EquipmentSlot.MAINHAND));
     }
 
     private static int armorSlotAndToughnessCompare(final ItemStack first, final ItemStack second) {
-//        ArmorItem firstArmor = (ArmorItem) first.getItem();
-//        ArmorItem secondArmor = (ArmorItem) second.getItem();
-//
-//        EquipmentSlot firstSlot = firstArmor.getEquipmentSlot();
-//        EquipmentSlot secondSlot = secondArmor.getEquipmentSlot();
-//
-//        if (firstSlot == secondSlot) {
-//            double firstDefense = firstArmor.getMaterial().value().getDefense(firstArmor.getType()) * (1 + firstArmor.getToughness());
-//            double secondDefense = secondArmor.getMaterial().value().getDefense(secondArmor.getType()) * (1 + secondArmor.getToughness());
-//
-//            // To make sure that a difference of 0.3 gets sorted properly
-//            double result = secondDefense - firstDefense;
-//
-//            if (result < 0) {
-//                return 1;
-//            } else if (result > 0) {
-//                return -1;
-//            } else {
-//                return 0;
-//            }
-//        }
-//
-//        return secondSlot.getIndex() - firstSlot.getIndex();
-        return 0;
+        EquipmentSlot firstSlot = equipmentSlot(first);
+        EquipmentSlot secondSlot = equipmentSlot(second);
+
+        if (firstSlot == secondSlot) {
+            double firstDefense = attributeValue(first, Attributes.ARMOR, firstSlot) * (1.0D + attributeValue(first, Attributes.ARMOR_TOUGHNESS, firstSlot));
+            double secondDefense = attributeValue(second, Attributes.ARMOR, secondSlot) * (1.0D + attributeValue(second, Attributes.ARMOR_TOUGHNESS, secondSlot));
+
+            return Double.compare(secondDefense, firstDefense);
+        }
+
+        return secondSlot.getIndex() - firstSlot.getIndex();
+    }
+
+    private static float toolPower(final ItemStack stack) {
+        Tool tool = stack.get(DataComponents.TOOL);
+        return tool == null ? 0.0F : tool.defaultMiningSpeed();
+    }
+
+    private static double attributeValue(final ItemStack stack, final Holder<Attribute> attribute, final EquipmentSlot slot) {
+        return stack.getAttributeModifiers().compute(attribute, 0.0D, slot);
+    }
+
+    private static EquipmentSlot equipmentSlot(final ItemStack stack) {
+        Equippable equippable = stack.get(DataComponents.EQUIPPABLE);
+        return equippable == null ? EquipmentSlot.MAINHAND : equippable.slot();
+    }
+
+    private static boolean isSwordLike(final ItemStack stack) {
+        Weapon weapon = stack.get(DataComponents.WEAPON);
+        return weapon != null && weapon.itemDamagePerAttack() == 1 && stack.has(DataComponents.TOOL) && !(stack.getItem() instanceof TridentItem);
     }
 
     public static int damageCompare(ItemStack stack1, ItemStack stack2) {
         return stack1.getDamageValue() - stack2.getDamageValue();
     }
 
-    @SuppressWarnings("deprecation") // tag is not modified
     public static int fallbackNBTCompare(final ItemStack first, final ItemStack second) {
-//        if (ItemStack.isSameItemSameComponents(first, second)) {
-//            return 0;
-//        }
-//
-//        CustomData firstData = first.get(DataComponents.CUSTOM_DATA);
-//        CustomData secondData = second.get(DataComponents.CUSTOM_DATA);
-//
-//        if (firstData != null && secondData == null) {
-//            return 1;
-//        } else if (firstData == null && secondData != null) {
-//            return -1;
-//        } else if (firstData == null) {
-//            // Both have no custom data
-//            return 0;
-//        }
-//
-//        CompoundTag firstTag = firstData.getUnsafe();
-//        CompoundTag secondTag = secondData.getUnsafe();
-//
-//        if (NbtUtils.compareNbt(firstTag, secondTag, true)) {
-//            return 0;
-//        }
-//
-//        return Comparator.comparingInt(CompoundTag::size).compare(firstTag, secondTag);
-        return 0;
+        if (ItemStack.isSameItemSameComponents(first, second)) {
+            return 0;
+        }
+
+        CustomData firstData = first.get(DataComponents.CUSTOM_DATA);
+        CustomData secondData = second.get(DataComponents.CUSTOM_DATA);
+
+        if (firstData != null && secondData == null) {
+            return 1;
+        } else if (firstData == null && secondData != null) {
+            return -1;
+        } else if (firstData == null) {
+            return 0;
+        }
+
+        CompoundTag firstTag = firstData.copyTag();
+        CompoundTag secondTag = secondData.copyTag();
+
+        if (NbtUtils.compareNbt(firstTag, secondTag, true)) {
+            return 0;
+        }
+
+        int sizeCompare = Comparator.comparingInt(CompoundTag::size).compare(firstTag, secondTag);
+        return sizeCompare != 0 ? sizeCompare : firstTag.toString().compareTo(secondTag.toString());
     }
 
     public static int potionComplexityCompare(final ItemStack first, final ItemStack second) {
-//        List<MobEffectInstance> firstEffects = PotionUtils.getPotion(first).map(Potion::getEffects).orElse(Collections.emptyList());
-//        List<MobEffectInstance> secondEffects = PotionUtils.getPotion(second).map(Potion::getEffects).orElse(Collections.emptyList());
-//
-//        // TODO :: higher total amplifier should maybe win in general
-//        //  and if they're the same then duration can be considered?
-//        int firstTotal = 0;
-//        int secondTotal = 0;
-//
-//        for (MobEffectInstance inst : firstEffects) {
-//            firstTotal += inst.getAmplifier() * inst.getDuration();
-//        }
-//
-//        for (MobEffectInstance inst : secondEffects) {
-//            secondTotal += inst.getAmplifier() * inst.getDuration();
-//        }
-//
-//        return secondTotal - firstTotal;
-        return 0;
+        return Integer.compare(potionPower(second), potionPower(first));
+    }
+
+    private static int potionPower(final ItemStack stack) {
+        return PotionUtils.getPotion(stack)
+                .map(Potion::getEffects)
+                .map(effects -> effects.stream().mapToInt(effect -> (effect.getAmplifier() + 1) * Math.max(1, effect.getDuration())).sum())
+                .orElse(0);
     }
 
     public static int potionTypeCompare(final ItemStack first, final ItemStack second) {
@@ -502,17 +465,16 @@ public final class SortingHandler {
     }
 
     private enum ItemType {
-       // FOOD(stack -> stack.getFoodProperties(null) != null, FOOD_COMPARATOR),
+        FOOD(stack -> stack.has(DataComponents.FOOD), FOOD_COMPARATOR),
         TORCH(list(Blocks.TORCH)),
-        //TOOL_PICKAXE(classPredicate(PickaxeItem.class), TOOL_COMPARATOR),
         TOOL_SHOVEL(classPredicate(ShovelItem.class), TOOL_COMPARATOR),
         TOOL_AXE(classPredicate(AxeItem.class), TOOL_COMPARATOR),
-       // TOOL_SWORD(classPredicate(SwordItem.class), SWORD_COMPARATOR),
-       // TOOL_GENERIC(classPredicate(DiggerItem.class), TOOL_COMPARATOR),
-        //ARMOR(classPredicate(ArmorItem.class), ARMOR_COMPARATOR),
+        TOOL_SWORD(SortingHandler::isSwordLike, SWORD_COMPARATOR),
+        ARMOR(stack -> equipmentSlot(stack).getType() == EquipmentSlot.Type.HUMANOID_ARMOR, ARMOR_COMPARATOR),
         BOW(classPredicate(BowItem.class), BOW_COMPARATOR),
         CROSSBOW(classPredicate(CrossbowItem.class), BOW_COMPARATOR),
         TRIDENT(classPredicate(TridentItem.class), BOW_COMPARATOR),
+        TOOL_GENERIC(stack -> stack.has(DataComponents.TOOL), TOOL_COMPARATOR),
         ARROWS(classPredicate(ArrowItem.class)),
         POTION(classPredicate(PotionItem.class), POTION_COMPARATOR),
         TIPPED_ARROW(classPredicate(TippedArrowItem.class), POTION_COMPARATOR),

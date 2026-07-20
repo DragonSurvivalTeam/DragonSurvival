@@ -2,6 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.client.models;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.render.entity.dragon.DragonRenderer;
+import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.DragonEditorHandler;
 import by.dragonsurvivalteam.dragonsurvival.client.skins.DragonSkins;
 import by.dragonsurvivalteam.dragonsurvival.client.util.FakeClientPlayer;
 import by.dragonsurvivalteam.dragonsurvival.client.util.RenderingUtils;
@@ -82,6 +83,11 @@ public class DragonModel extends GeoModel<DragonEntity> {
             return StageResources.getDefaultSkin(handler.species(), handler.stageKey(), false);
         }
 
+        if (!DragonEditorHandler.hasGeneratedSkinTexture(texture)) {
+            DragonEditorHandler.generateSkinTextures(player, handler);
+        }
+
+        DragonEditorHandler.markSkinTextureUsed(texture);
         return texture;
     }
 

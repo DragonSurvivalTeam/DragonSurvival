@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.mixins.client;
 
+import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.handlers.DragonDestructionHandler;
 import by.dragonsurvivalteam.dragonsurvival.client.render.ClientDragonRenderer;
 import by.dragonsurvivalteam.dragonsurvival.client.util.RenderingUtils;
@@ -34,7 +35,7 @@ public abstract class LevelRendererMixin {
             return;
         }
 
-        if (minecraft.gameRenderer.getMainCamera().isDetached() || !ClientDragonRenderer.renderInFirstPerson || !DragonStateProvider.isDragon(player) || !RenderingUtils.isFirstPerson(player)) {
+        if (minecraft.gameRenderer.getMainCamera().isDetached() || !ClientDragonRenderer.renderInFirstPerson || !DragonStateProvider.isDragon(player) || !RenderingUtils.isFirstPerson(player) || DragonSurvival.PROXY.dragonRenderingWasCancelled(player)) {
             return;
         }
 

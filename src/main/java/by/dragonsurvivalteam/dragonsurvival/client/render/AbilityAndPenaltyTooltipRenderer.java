@@ -93,7 +93,7 @@ public class AbilityAndPenaltyTooltipRenderer {
         int backgroundWidth = Math.max(150, Minecraft.getInstance().font.width(name) + 65);
         List<FormattedCharSequence> description = Minecraft.getInstance().font.split(rawDescription, backgroundWidth - 7);
 
-        int backgroundHeight = 55 + (description.size() + bottomInfoLines.size()) * 9;
+        int backgroundHeight = /* Size of the horizontal colored bar */ 20 + /* Line breaks between bar, title and bottom info */ 27 + /* Extra padding to account for word wrap */ 8  + (description.size() + bottomInfoLines.size()) * 9;
         boolean hasShiftDown = Minecraft.getInstance().hasShiftDown();
         int sideWidth = hasShiftDown ? maxLineWidth : 15;
         int sideHeight = hasShiftDown ? 36 + Math.min(skipFirstLine ? lines.size() - 1 : lines.size(), MAX_SHOWN_LINES) * 9 : backgroundHeight - 10;
@@ -105,7 +105,9 @@ public class AbilityAndPenaltyTooltipRenderer {
         int trueY = position.y();
 
         if (!shiftInfo.isEmpty()) {
+            // Backing for expandable side info
             blitWithBorder(graphics, BARS, trueX - (hasShiftDown ? maxLineWidth : 10), trueY + 3, 40, 20, sideWidth, sideHeight, 20, 20, 3);
+            // Top bar for expandable side info
             blitWithBorder(graphics, BARS, trueX - (hasShiftDown ? maxLineWidth : 10) + 3, trueY + 9, colorXPos, colorYPos, hasShiftDown ? maxLineWidth : 15, 20, 20, 20, 3);
 
             if (hasShiftDown) {
@@ -137,8 +139,11 @@ public class AbilityAndPenaltyTooltipRenderer {
             }
         }
 
+        // Background of the main description
         blitWithBorder(graphics, BARS, trueX - 2, trueY - 4, 40, 20, backgroundWidth + 5, backgroundHeight, 20, 20, 3, 3, 3, 3);
+        // Top bar of the main description
         blitWithBorder(graphics, BARS, trueX, trueY + 3, colorXPos, colorYPos, backgroundWidth, 20, 20, 20, 3);
+        // Backing square for ability icon
         blitWithBorder(graphics, BARS, trueX, trueY, 0, 100, 26, 26, 24, 24, 3);
 
         graphics.centeredText(Minecraft.getInstance().font, Component.translatable(headerTranslationKey), trueX + backgroundWidth / 2, trueY + 30, tooltipBackgroundColor);

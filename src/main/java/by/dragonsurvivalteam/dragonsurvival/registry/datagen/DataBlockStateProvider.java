@@ -305,11 +305,12 @@ public class DataBlockStateProvider extends ModelProvider {
     private void createSkeletonPiece(final BlockModelGenerators blockModels, final SkeletonPieceBlock block, final String name) {
         String[] split = name.split("_skin");
         String skin = split[1].substring(split[1].length() - 1);
+        Material skeletonTexture = blockMaterial("skeleton_dragon_" + skin);
 
         Identifier model = new ModelTemplate(Optional.of(blockModel(split[0])), Optional.empty(), SKELETON_TEXTURE_SLOT, TextureSlot.PARTICLE)
                 .create(blockModel(name), new TextureMapping()
-                        .put(SKELETON_TEXTURE_SLOT, blockMaterial("skeleton_dragon_" + skin))
-                        .put(TextureSlot.PARTICLE, blockMaterial("placeholder_" + skin)), blockModels.modelOutput);
+                        .put(SKELETON_TEXTURE_SLOT, skeletonTexture)
+                        .put(TextureSlot.PARTICLE, skeletonTexture), blockModels.modelOutput);
 
         blockModels.blockStateOutput.accept(
                 MultiVariantGenerator.dispatch(block).with(

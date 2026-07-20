@@ -51,7 +51,8 @@ public abstract class InventoryScreenMixin extends AbstractRecipeBookScreen<Inve
             dragon = ClientDragonRenderer.getDragon(player);
         }
 
-        if (!DragonStateProvider.isDragon(entityToRender)) {
+        if (!DragonStateProvider.isDragon(entityToRender) ||
+                (entityToRender instanceof Player player && DragonStateProvider.getData(player).body().value().noDragonModelRendering())) {
             original.call(graphics, x0, y0, x1, y1, size, offsetY, xAngle, yAngle, entity);
             return;
         }
