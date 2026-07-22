@@ -26,11 +26,7 @@ public interface ILivingEntityExtensionMixin {
     @ModifyReturnValue(method = "canDrownInFluidType", at = @At("RETURN"))
     private boolean dragonSurvival$handleUnlimitedOxygen(boolean canDrownIn, @Local(argsOnly = true) final FluidType fluid) {
         if (self() instanceof Player player) {
-            SwimData data = SwimData.getData(player);
-
-            if (data.canSwimIn(fluid)) {
-                return data.getMaxOxygen(player, fluid) != SwimData.UNLIMITED_OXYGEN;
-            }
+            return SwimData.getData(player).getMaxOxygen(player, fluid) != SwimData.UNLIMITED_OXYGEN;
         }
 
         return canDrownIn;
