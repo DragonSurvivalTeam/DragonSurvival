@@ -217,11 +217,11 @@ public class ClawInventoryData implements INBTSerializable<CompoundTag> {
     /** Returns the tool with the highest harvest level for said block */
     public ItemStack getTool(final BlockState state) {
         ItemStack currentTool = ItemStack.EMPTY;
-        int currentLevel = 0;
+        double currentLevel = 0;
 
         for (int slot = 0; slot < Slot.size(); slot++) {
             ItemStack tool = getContainer().getItem(slot);
-            int level = ToolUtils.toolToHarvestLevel(tool);
+            double level = ToolUtils.toolToHarvestLevel(tool);
 
             if (level > currentLevel && ToolUtils.isCorrectTool(tool, state)) {
                 currentTool = tool;

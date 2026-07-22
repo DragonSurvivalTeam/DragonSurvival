@@ -31,6 +31,8 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.GlStateBackup;
 import net.neoforged.neoforge.client.event.RegisterShadersEvent;
 import net.neoforged.neoforge.client.event.RenderFrameEvent;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL20;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -61,96 +63,121 @@ public class DragonEditorHandler {
         int currentViewportY = GlStateManager.Viewport.y();
         int currentViewportWidth = GlStateManager.Viewport.width();
         int currentViewportHeight = GlStateManager.Viewport.height();
+        int activeTexture = GlStateManager._getActiveTexture();
+        int activeTextureBinding = GL11.glGetInteger(GL11.GL_TEXTURE_BINDING_2D);
+        int shaderProgram = GL11.glGetInteger(GL20.GL_CURRENT_PROGRAM);
 
-        RenderTarget normalTarget = new TextureTarget(textureSize.width(), textureSize.height(), false, Minecraft.ON_OSX);
-        RenderTarget glowTarget = new TextureTarget(textureSize.width(), textureSize.height(), false, Minecraft.ON_OSX);
-        normalTarget.setClearColor(0.0F, 0.0F, 0.0F, 0.0F);
-        glowTarget.setClearColor(0.0F, 0.0F, 0.0F, 0.0F);
-        normalTarget.clear(true);
-        glowTarget.clear(true);
+        RenderSystem.activeTexture(GlConst.GL_TEXTURE0);
+        int texture0 = GL11.glGetInteger(GL11.GL_TEXTURE_BINDING_2D);
+        RenderSystem.activeTexture(activeTexture);
+        RenderSystem.bindTexture(activeTextureBinding);
 
-        DragonStageCustomization customization = handler.getCurrentStageCustomization();
+        RenderTarget normalTarget = null;
+        RenderTarget glowTarget = null;
 
-        for (SkinLayer layer : SkinLayer.values()) {
-            LayerSettings settings = customization.layerSettings.get(layer).get();
-            String partKey = settings.partKey;
+        try {
+            normalTarget = new TextureTarget(textureSize.width(), textureSize.height(), false, Minecraft.ON_OSX);
+            glowTarget = new TextureTarget(textureSize.width(), textureSize.height(), false, Minecraft.ON_OSX);
+            normalTarget.setClearColor(0.0F, 0.0F, 0.0F, 0.0F);
+            glowTarget.setClearColor(0.0F, 0.0F, 0.0F, 0.0F);
+            normalTarget.clear(true);
+            glowTarget.clear(true);
 
-            if (partKey != null) {
-                DragonPart skinTexture = DragonPartLoader.getDragonPart(layer, handler.speciesKey(), handler.body(), partKey);
+            DragonStageCustomization customization = handler.getCurrentStageCustomization();
 
-                if (skinTexture != null) {
-                    float hueVal = settings.hue - skinTexture.averageHue();
-                    float satVal = settings.saturation;
-                    float brightVal = settings.brightness;
+            for (SkinLayer layer : SkinLayer.values()) {
+                LayerSettings settings = customization.layerSettings.get(layer).get();
+                String partKey = settings.partKey;
 
-                    DragonPart part = DragonPartLoader.getDragonPart(layer, handler.speciesKey(), handler.body(), partKey);
+                if (partKey != null) {
+                    DragonPart skinTexture = DragonPartLoader.getDragonPart(layer, handler.speciesKey(), handler.body(), partKey);
 
-                    if (part == null) {
-                        continue;
-                    }
+                    if (skinTexture != null) {
+                        float hueVal = settings.hue - skinTexture.averageHue();
+                        float satVal = settings.saturation;
+                        float brightVal = settings.brightness;
 
-                    AbstractTexture texture = Minecraft.getInstance().getTextureManager().getTexture(part.texture());
+                        DragonPart part = DragonPartLoader.getDragonPart(layer, handler.speciesKey(), handler.body(), partKey);
 
-                    if (settings.isGlowing) {
-                        glowTarget.bindWrite(true);
-                    } else {
-                        normalTarget.bindWrite(true);
-                    }
+                        if (part == null) {
+                            continue;
+                        }
 
-                    RenderSystem.enableBlend();
-                    RenderSystem.colorMask(true, true, true, true);
-                    RenderSystem.blendEquation(GlConst.GL_FUNC_ADD);
-                    RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE);
-                    RenderSystem.disableDepthTest();
-                    RenderSystem.depthMask(false);
-                    skinGenerationShader.setSampler("SkinTexture", texture);
-                    skinGenerationShader.getUniform("HueVal").set(hueVal);
-                    skinGenerationShader.getUniform("SatVal").set(satVal);
-                    skinGenerationShader.getUniform("BrightVal").set(brightVal);
-                    skinGenerationShader.getUniform("Colorable").set(skinTexture.isColorable() ? 1.0f : 0.0f);
-                    skinGenerationShader.getUniform("Glowing").set(settings.isGlowing ? 1.0f : 0.0f);
-                    skinGenerationShader.apply();
+                        AbstractTexture texture = Minecraft.getInstance().getTextureManager().getTexture(part.texture());
 
-                    BufferBuilder bufferbuilder = RenderSystem.renderThreadTesselator().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.BLIT_SCREEN);
-                    bufferbuilder.addVertex(0.0F, 0.0F, 0.0F);
-                    bufferbuilder.addVertex(1.0F, 0.0F, 0.0F);
-                    bufferbuilder.addVertex(1.0F, 1.0F, 0.0F);
-                    bufferbuilder.addVertex(0.0F, 1.0F, 0.0F);
-                    BufferUploader.draw(bufferbuilder.buildOrThrow());
+                        if (settings.isGlowing) {
+                            glowTarget.bindWrite(true);
+                        } else {
+                            normalTarget.bindWrite(true);
+                        }
 
-                    if (settings.isGlowing && layer == SkinLayer.BASE) {
-                        normalTarget.bindWrite(true);
-                        bufferbuilder = RenderSystem.renderThreadTesselator().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.BLIT_SCREEN);
+                        RenderSystem.enableBlend();
+                        RenderSystem.colorMask(true, true, true, true);
+                        RenderSystem.blendEquation(GlConst.GL_FUNC_ADD);
+                        RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE);
+                        RenderSystem.disableDepthTest();
+                        RenderSystem.depthMask(false);
+                        skinGenerationShader.setSampler("SkinTexture", texture);
+                        skinGenerationShader.getUniform("HueVal").set(hueVal);
+                        skinGenerationShader.getUniform("SatVal").set(satVal);
+                        skinGenerationShader.getUniform("BrightVal").set(brightVal);
+                        skinGenerationShader.getUniform("Colorable").set(skinTexture.isColorable() ? 1.0f : 0.0f);
+                        skinGenerationShader.getUniform("Glowing").set(settings.isGlowing ? 1.0f : 0.0f);
+                        skinGenerationShader.apply();
+
+                        BufferBuilder bufferbuilder = RenderSystem.renderThreadTesselator().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.BLIT_SCREEN);
                         bufferbuilder.addVertex(0.0F, 0.0F, 0.0F);
                         bufferbuilder.addVertex(1.0F, 0.0F, 0.0F);
                         bufferbuilder.addVertex(1.0F, 1.0F, 0.0F);
                         bufferbuilder.addVertex(0.0F, 1.0F, 0.0F);
                         BufferUploader.draw(bufferbuilder.buildOrThrow());
-                        normalTarget.unbindWrite();
-                    }
 
-                    skinGenerationShader.clear();
-                    if (settings.isGlowing) {
-                        glowTarget.unbindWrite();
-                    } else {
-                        normalTarget.unbindWrite();
+                        if (settings.isGlowing && layer == SkinLayer.BASE) {
+                            normalTarget.bindWrite(true);
+                            bufferbuilder = RenderSystem.renderThreadTesselator().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.BLIT_SCREEN);
+                            bufferbuilder.addVertex(0.0F, 0.0F, 0.0F);
+                            bufferbuilder.addVertex(1.0F, 0.0F, 0.0F);
+                            bufferbuilder.addVertex(1.0F, 1.0F, 0.0F);
+                            bufferbuilder.addVertex(0.0F, 1.0F, 0.0F);
+                            BufferUploader.draw(bufferbuilder.buildOrThrow());
+                            normalTarget.unbindWrite();
+                        }
+
+                        skinGenerationShader.clear();
+                        if (settings.isGlowing) {
+                            glowTarget.unbindWrite();
+                        } else {
+                            normalTarget.unbindWrite();
+                        }
                     }
                 }
             }
-        }
 
-        ResourceLocation normalTexture = DragonModel.dynamicTexture(player, handler, false);
-        ResourceLocation glowTexture = DragonModel.dynamicTexture(player, handler, true);
-        RenderingUtils.copyTextureFromRenderTarget(normalTarget, normalTexture);
-        RenderingUtils.copyTextureFromRenderTarget(glowTarget, glowTexture);
-        generatedSkinTextures.add(normalTexture);
-        generatedSkinTextures.add(glowTexture);
-        glowTarget.destroyBuffers();
-        normalTarget.destroyBuffers();
-        RenderSystem.restoreGlState(state);
-        RenderSystem.restoreProjectionMatrix();
-        GlStateManager._glBindFramebuffer(GlConst.GL_FRAMEBUFFER, currentFrameBuffer);
-        GlStateManager._viewport(currentViewportX, currentViewportY, currentViewportWidth, currentViewportHeight);
+            ResourceLocation normalTexture = DragonModel.dynamicTexture(player, handler, false);
+            ResourceLocation glowTexture = DragonModel.dynamicTexture(player, handler, true);
+            RenderingUtils.copyTextureFromRenderTarget(normalTarget, normalTexture);
+            RenderingUtils.copyTextureFromRenderTarget(glowTarget, glowTexture);
+            generatedSkinTextures.add(normalTexture);
+            generatedSkinTextures.add(glowTexture);
+        } finally {
+            if (glowTarget != null) {
+                glowTarget.destroyBuffers();
+            }
+
+            if (normalTarget != null) {
+                normalTarget.destroyBuffers();
+            }
+
+            RenderSystem.restoreGlState(state);
+            RenderSystem.restoreProjectionMatrix();
+            GlStateManager._glBindFramebuffer(GlConst.GL_FRAMEBUFFER, currentFrameBuffer);
+            GlStateManager._viewport(currentViewportX, currentViewportY, currentViewportWidth, currentViewportHeight);
+            RenderSystem.activeTexture(GlConst.GL_TEXTURE0);
+            RenderSystem.bindTexture(texture0);
+            RenderSystem.activeTexture(activeTexture);
+            RenderSystem.bindTexture(activeTextureBinding);
+            GL20.glUseProgram(shaderProgram);
+        }
     }
 
     public static void markSkinTextureUsed(final ResourceLocation texture) {
