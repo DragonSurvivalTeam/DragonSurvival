@@ -1,0 +1,12 @@
+{
+  "_comment": "This global loot modifier is used to apply the dragon survival loot table to a bunch of vanilla loot tables.",
+  "_comment2": "This is done by filtering for vanilla chests using the tables_to_apply field, which supports regex.",
+  "_comment3": "The table field is the loot table that will be added on top of the applied loot tables.",
+  "_comment4": "This loot modifier can also be run in blacklist mode. To do this, add a blacklist field with a value of true.",
+  "type": "dragonsurvival:add_table_loot_extended",
+  "conditions": [],
+  "table": "dragonsurvival:chests/dragon_chest_loot",
+  "tables_to_apply": [
+    "minecraft:chests/.*"
+  ]
+}

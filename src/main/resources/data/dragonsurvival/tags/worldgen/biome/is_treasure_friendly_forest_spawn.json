@@ -1,0 +1,113 @@
+{
+	"replace": false,
+	"values": [
+        {
+            "id": "#minecraft:is_jungle",
+            "required": false
+        },
+        {
+            "id": "minecraft:jungle",
+            "required": false
+        },
+        {
+            "id": "minecraft:sparse_jungle",
+            "required": false
+        },
+        {
+            "id": "minecraft:bamboo_jungle",
+            "required": false
+        },
+        {
+            "id": "#forge:is_jungle",
+            "required": false
+        },
+        {
+            "id": "#neoforge:is_jungle",
+            "required": false
+        },
+        {
+            "id": "#byg:is_jungle",
+            "required": false
+        },
+		{
+            "id": "#minecraft:is_taiga",
+            "required": false
+        },
+        {
+            "id": "minecraft:taiga",
+            "required": false
+        },
+        {
+            "id": "minecraft:old_growth_pine_taiga",
+            "required": false
+        },
+        {
+            "id": "minecraft:old_growth_spruce_taiga",
+            "required": false
+        },
+        {
+            "id": "minecraft:dark_forest",
+            "required": false
+        },
+        {
+            "id": "#forge:is_spooky",
+            "required": false
+        },
+        {
+            "id": "#forge:is_taiga",
+            "required": false
+        },
+        {
+            "id": "#neoforge:is_spooky",
+            "required": false
+        },
+        {
+            "id": "#neoforge:is_taiga",
+            "required": false
+        },
+        {
+            "id": "#c:is_spooky",
+            "required": false
+        },
+        {
+            "id": "#c:is_taiga",
+            "required": false
+        },
+        {
+            "id": "#byg:is_spooky",
+            "required": false
+        },
+		{
+            "id": "#byg:is_taiga",
+            "required": false
+        },
+		{
+            "id": "#minecraft:is_hill",
+            "required": false
+        },
+        {
+            "id": "minecraft:windswept_forest",
+            "required": false
+        },
+        {
+            "id": "minecraft:windswept_hills",
+            "required": false
+        },
+        {
+            "id": "#forge:is_hill",
+            "required": false
+        },
+        {
+            "id": "#neoforge:is_hill",
+            "required": false
+        },
+        {
+            "id": "#byg:is_hill",
+            "required": false
+        },
+        {
+            "id": "#dragonsurvival:compat_is_wythers",
+            "required": false
+        }
+	]
+}

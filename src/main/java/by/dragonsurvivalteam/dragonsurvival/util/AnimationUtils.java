@@ -1,46 +1,35 @@
 package by.dragonsurvivalteam.dragonsurvival.util;
 
-import by.dragonsurvivalteam.dragonsurvival.mixins.AccessorAnimationController;
+import by.dragonsurvivalteam.dragonsurvival.mixins.client.AnimationControllerAccessor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.LivingEntity;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import software.bernie.geckolib.core.animatable.GeoAnimatable;
-import software.bernie.geckolib.core.animation.AnimationController;
-import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.animatable.GeoAnimatable;
+import software.bernie.geckolib.animation.AnimationController;
+import software.bernie.geckolib.animation.RawAnimation;
+import software.bernie.geckolib.cache.GeckoLibCache;
+import software.bernie.geckolib.loading.object.BakedAnimations;
+import software.bernie.geckolib.model.GeoModel;
 
 public class AnimationUtils {
+    /** Time in MS of 1 frame for 60 FPS */
     private static final float MS_FOR_60FPS = 1.f / 60.f * 1000.f;
-    private static final float MS_PER_TICK = 1000f / 20f;
-
-    public static RawAnimation createAnimation(@Nullable final RawAnimation builder, @NotNull final RawAnimation staticAnimation) {
-        if (builder == null) {
-            return staticAnimation;
-        }
-
-        assert staticAnimation.getAnimationStages().size() == 1;
-        RawAnimation.Stage stage = staticAnimation.getAnimationStages().get(0);
-        builder.then(stage.animationName(), stage.loopType());
-
-        return builder;
-    }
 
     public static <E extends GeoAnimatable> void setAnimationSpeed(double speed, double currentAnimationTick, AnimationController<E> controller) {
 
-        if(speed == controller.getAnimationSpeed()) {
+        if (speed == controller.getAnimationSpeed()) {
             return;
         }
 
-        if(controller.getCurrentAnimation() != null) {
-            double distance = currentAnimationTick - ((AccessorAnimationController)controller).dragonSurvival$getTickOffset();
-            ((AccessorAnimationController) controller).dragonSurvival$setTickOffset(currentAnimationTick - distance * (controller.getAnimationSpeed() / speed));
+        if (controller.getCurrentAnimation() != null) {
+            double distance = currentAnimationTick - ((AnimationControllerAccessor) controller).dragonSurvival$getTickOffset();
+            ((AnimationControllerAccessor) controller).dragonSurvival$setTickOffset(currentAnimationTick - distance * (controller.getAnimationSpeed() / speed));
             controller.setAnimationSpeed(speed);
         }
     }
 
     // TODO: This is a hack since GeckoLib's state.isCurrentAnimation() doesn't work. If they ever fix that, we can remove this.
     public static boolean isAnimationPlaying(AnimationController<?> controller, RawAnimation animation) {
-        String animationName = animation.getAnimationStages().get(0).animationName();
+        String animationName = animation.getAnimationStages().getFirst().animationName();
         return controller.getCurrentAnimation() != null && controller.getCurrentAnimation().animation().name().equals(animationName);
     }
 
@@ -49,11 +38,37 @@ public class AnimationUtils {
     }
 
     public static float getDeltaTickFor60FPS() {
-        float deltaTick = Minecraft.getInstance().getDeltaFrameTime();
-        return deltaTick / (MS_FOR_60FPS / MS_PER_TICK);
+        float deltaTick = Minecraft.getInstance().getTimer().getRealtimeDeltaTicks();
+        //noinspection DataFlowIssue -> level is present
+        return deltaTick / (MS_FOR_60FPS / Minecraft.getInstance().level.tickRateManager().millisecondsPerTick());
     }
 
-    public static float getRealtimeDeltaTicks() {
-        return Minecraft.getInstance().getDeltaFrameTime();
+    public static float getDeltaSeconds() {
+        //noinspection DataFlowIssue -> level is present
+        return (Minecraft.getInstance().getTimer().getRealtimeDeltaTicks() * Minecraft.getInstance().level.tickRateManager().millisecondsPerTick()) / 1000f;
+    }
+
+    public static <A extends GeoAnimatable, T extends GeoModel<A>> boolean doesAnimationExist(final T model, final A animatable, final String animation) {
+        BakedAnimations bakedAnimations = GeckoLibCache.getBakedAnimations().get(model.getAnimationResource(animatable));
+
+        if (bakedAnimations == null) {
+            return false;
+        }
+
+        return bakedAnimations.getAnimation(animation) != null;
+    }
+
+    public static <A extends GeoAnimatable, T extends GeoModel<A>> boolean doesAnimationExist(final T model, final A animatable, final RawAnimation animation) {
+        assert (animation.getAnimationStages().size() == 1);
+
+        return doesAnimationExist(model, animatable, animation.getAnimationStages().getFirst().animationName());
+    }
+
+    public static <A extends GeoAnimatable, T extends GeoModel<A>> double animationDuration(final T model, final A animatable, final String animation) {
+        if (!doesAnimationExist(model, animatable, animation)) {
+            return 0;
+        }
+
+        return GeckoLibCache.getBakedAnimations().get(model.getAnimationResource(animatable)).getAnimation(animation).length();
     }
 }

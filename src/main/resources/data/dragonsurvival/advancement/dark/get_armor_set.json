@@ -1,0 +1,72 @@
+{
+  "parent": "dragonsurvival:dark/get_armor_item",
+  "criteria": {
+    "collect_dark_armor_boots": {
+      "conditions": {
+        "items": [
+          {
+            "items": "dragonsurvival:dark_dragon_boots"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "collect_dark_armor_chestplate": {
+      "conditions": {
+        "items": [
+          {
+            "items": "dragonsurvival:dark_dragon_chestplate"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "collect_dark_armor_helmet": {
+      "conditions": {
+        "items": [
+          {
+            "items": "dragonsurvival:dark_dragon_helmet"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "collect_dark_armor_leggings": {
+      "conditions": {
+        "items": [
+          {
+            "items": "dragonsurvival:dark_dragon_leggings"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "dragonsurvival.advancement.dark/get_armor_set.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "dragonsurvival:dark_dragon_helmet"
+    },
+    "title": {
+      "translate": "dragonsurvival.advancement.dark/get_armor_set"
+    }
+  },
+  "requirements": [
+    [
+      "collect_dark_armor_helmet"
+    ],
+    [
+      "collect_dark_armor_chestplate"
+    ],
+    [
+      "collect_dark_armor_leggings"
+    ],
+    [
+      "collect_dark_armor_boots"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

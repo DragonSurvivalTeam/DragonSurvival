@@ -1,154 +1,162 @@
 package by.dragonsurvivalteam.dragonsurvival.registry;
 
-import by.dragonsurvivalteam.dragonsurvival.DragonSurvivalMod;
+import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
-import by.dragonsurvivalteam.dragonsurvival.common.entity.creatures.*;
-import by.dragonsurvivalteam.dragonsurvival.common.entity.projectiles.BallLightningEntity;
+import by.dragonsurvivalteam.dragonsurvival.common.entity.creatures.AmbusherEntity;
+import by.dragonsurvivalteam.dragonsurvival.common.entity.creatures.GriffinEntity;
+import by.dragonsurvivalteam.dragonsurvival.common.entity.creatures.HoundEntity;
+import by.dragonsurvivalteam.dragonsurvival.common.entity.creatures.KnightEntity;
+import by.dragonsurvivalteam.dragonsurvival.common.entity.creatures.LeaderEntity;
+import by.dragonsurvivalteam.dragonsurvival.common.entity.creatures.SpearmanEntity;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.projectiles.Bolas;
-import by.dragonsurvivalteam.dragonsurvival.common.entity.projectiles.DragonSpikeEntity;
-import by.dragonsurvivalteam.dragonsurvival.common.entity.projectiles.FireBallEntity;
-import by.dragonsurvivalteam.dragonsurvival.common.handlers.VillagerRelationsHandler;
-import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
+import by.dragonsurvivalteam.dragonsurvival.common.entity.projectiles.GenericArrowEntity;
+import by.dragonsurvivalteam.dragonsurvival.common.entity.projectiles.GenericBallEntity;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import com.google.common.collect.ImmutableSet;
-import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.BlockTags;
-import net.minecraft.world.entity.*;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.entity.SpawnPlacementTypes;
+import net.minecraft.world.entity.SpawnPlacements;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.village.poi.PoiType;
-import net.minecraft.world.entity.animal.Wolf;
-import net.minecraft.world.entity.monster.Pillager;
-import net.minecraft.world.entity.monster.Vindicator;
-import net.minecraft.world.entity.npc.Villager;
-import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.flag.FeatureFlags;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.level.levelgen.Heightmap;
-import net.minecraftforge.common.ForgeSpawnEggItem;
-import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
-import net.minecraftforge.event.entity.SpawnPlacementRegisterEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegisterEvent;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
+import net.neoforged.neoforge.event.entity.RegisterSpawnPlacementsEvent;
+import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.registries.DeferredRegister;
 
-import java.util.ArrayList;
-import java.util.List;
-
-@SuppressWarnings( "rawtypes,unchecked" )
-@Mod.EventBusSubscriber( modid = DragonSurvivalMod.MODID, bus = Mod.EventBusSubscriber.Bus.MOD )
+@EventBusSubscriber
 public class DSEntities {
-	public static final DeferredRegister<EntityType<?>> ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, DragonSurvivalMod.MODID);
+    public static final DeferredRegister<EntityType<?>> REGISTRY = DeferredRegister.create(BuiltInRegistries.ENTITY_TYPE, DragonSurvival.MODID);
 
-	// Player related
-	public static RegistryObject<EntityType<DragonEntity>> DRAGON = ENTITY_TYPES.register("dummy_dragon", () -> new EntityType<>(DragonEntity::new, MobCategory.MISC, true, false, false, false, ImmutableSet.of(), EntityDimensions.fixed(0.9f, 1.9f), 0, 0, FeatureFlagSet.of(FeatureFlags.VANILLA)));
-	public static RegistryObject<EntityType<DragonEntity>> DRAGON_ARMOR = ENTITY_TYPES.register("dragon_armor", () -> new EntityType<>(DragonEntity::new, MobCategory.MISC, true, false, false, false, ImmutableSet.of(), EntityDimensions.fixed(0.9f, 1.9f), 0, 0, FeatureFlagSet.of(FeatureFlags.VANILLA)));
+    // --- Player --- //
 
-	// Fake entities
-	public static RegistryObject<EntityType<Bolas>> BOLAS_ENTITY = ENTITY_TYPES.register("bolas", () -> EntityType.Builder.<Bolas>of((entity, level) -> new Bolas(level), MobCategory.MISC).sized(0.25F, 0.25F).clientTrackingRange(4).updateInterval(10).build("bolas"));
-	public static RegistryObject<EntityType<DragonSpikeEntity>> DRAGON_SPIKE = ENTITY_TYPES.register("dragon_spike", () -> EntityType.Builder.<DragonSpikeEntity>of(DragonSpikeEntity::new, MobCategory.MISC).sized(0.5F, 0.5F).clientTrackingRange(4).updateInterval(1).build("dragon_spike"));
-	public static RegistryObject<EntityType<BallLightningEntity>> BALL_LIGHTNING = ENTITY_TYPES.register("ball_lightning", () -> EntityType.Builder.<BallLightningEntity>of(BallLightningEntity::new, MobCategory.MISC).sized(1F, 1F).clientTrackingRange(4).updateInterval(1).build("ball_lightning"));
-	public static RegistryObject<EntityType<FireBallEntity>> FIREBALL = ENTITY_TYPES.register("fireball", () -> EntityType.Builder.<FireBallEntity>of(FireBallEntity::new, MobCategory.MISC).sized(1F, 1F).clientTrackingRange(4).updateInterval(1).build("fireball"));
+    @Translation(type = Translation.Type.ENTITY, comments = "Dragon")
+    public static DeferredHolder<EntityType<?>, EntityType<DragonEntity>> DRAGON = REGISTRY.register(
+            "dummy_dragon",
+            () -> new EntityType<>(DragonEntity::new, MobCategory.MISC, true, false, false, false, ImmutableSet.of(), EntityDimensions.fixed(0.9f, 1.9f), 1.0f, 0, 0, FeatureFlagSet.of(FeatureFlags.VANILLA)));
 
-	// Entities
-	public static RegistryObject<EntityType<HunterHoundEntity>> HUNTER_HOUND = ENTITY_TYPES.register("hunter_hound", () -> EntityType.Builder.of(HunterHoundEntity::new, MobCategory.MONSTER).sized(0.6F, 0.85F).clientTrackingRange(64).updateInterval(1).build("hunter_hound"));
-	public static RegistryObject<EntityType<Shooter>> SHOOTER_HUNTER = ENTITY_TYPES.register("shooter", () -> EntityType.Builder.of(Shooter::new, MobCategory.MONSTER).sized(0.6F, 1.95F).clientTrackingRange(64).updateInterval(1).build("shooter"));
-	public static RegistryObject<EntityType<SquireEntity>> SQUIRE_HUNTER = ENTITY_TYPES.register("squire", () -> EntityType.Builder.of(SquireEntity::new, MobCategory.MONSTER).sized(0.6F, 1.95F).clientTrackingRange(64).updateInterval(1).build("squire"));
-	public static RegistryObject<EntityType<Princess>> PRINCESS = ENTITY_TYPES.register("princess_entity", () -> EntityType.Builder.<Princess>of(Princess::new, MobCategory.MONSTER).sized(0.6F, 1.9F).clientTrackingRange(64).updateInterval(1).build("princess_entity"));
-	public static RegistryObject<EntityType<KnightEntity>> KNIGHT = ENTITY_TYPES.register("knight", () -> EntityType.Builder.of(KnightEntity::new, MobCategory.MONSTER).sized(0.8f, 2.5f).clientTrackingRange(64).updateInterval(1).build("knight"));
-	public static RegistryObject<EntityType<PrincesHorseEntity>> PRINCESS_ON_HORSE = ENTITY_TYPES.register("princess", () -> EntityType.Builder.of(PrincesHorseEntity::new, MobCategory.MONSTER).sized(0.8f, 2.5f).clientTrackingRange(64).updateInterval(1).build("princess"));
-	public static RegistryObject<EntityType<PrinceHorseEntity>> PRINCE_ON_HORSE = ENTITY_TYPES.register("prince", () -> EntityType.Builder.of(PrinceHorseEntity::new, MobCategory.MONSTER).sized(0.8f, 2.5f).clientTrackingRange(64).updateInterval(1).build("prince"));
+    // --- Fake entities --- //
 
-	// Professions
-	public static VillagerProfession PRINCESS_PROFESSION, PRINCE_PROFESSION;
+    // Properties copied from the ARROW entity that Minecraft uses
+    @Translation(type = Translation.Type.ENTITY, comments = "Bolas")
+    public static DeferredHolder<EntityType<?>, EntityType<Bolas>> BOLAS_ENTITY = REGISTRY.register(
+            "bolas",
+            () -> EntityType.Builder.<Bolas>of((entity, level) ->
+                            new Bolas(level), MobCategory.MISC)
+                    .sized(0.5F, 0.5F)
+                    .eyeHeight(0.13F)
+                    .clientTrackingRange(4)
+                    .updateInterval(20)
+                    .build("bolas"));
 
-	@SubscribeEvent
-	public static void register(final RegisterEvent event) {
-		ResourceKey<? extends Registry<?>> key = event.getRegistryKey();
+    @Translation(type = Translation.Type.ENTITY, comments = "Generic Ball Entity")
+    public static DeferredHolder<EntityType<?>, EntityType<GenericBallEntity>> GENERIC_BALL_ENTITY = REGISTRY.register(
+            "generic_ball_entity",
+            () -> EntityType.Builder.<GenericBallEntity>of(GenericBallEntity::new, MobCategory.MISC)
+                    .sized(1F, 1F)
+                    .clientTrackingRange(4)
+                    .updateInterval(1)
+                    .build("generic_ball_entity"));
 
-		if (key.equals(ForgeRegistries.Keys.VILLAGER_PROFESSIONS)) {
-			registerVillageTypes(event);
-		} else if (key.equals(ForgeRegistries.Keys.ITEMS)) {
-			registerSpawnEggs(event);
-		}
-	}
+    @Translation(type = Translation.Type.ENTITY, comments = "Generic Arrow Entity")
+    public static DeferredHolder<EntityType<?>, EntityType<GenericArrowEntity>> GENERIC_ARROW_ENTITY = REGISTRY.register(
+            "generic_arrow_entity",
+            () -> EntityType.Builder.<GenericArrowEntity>of(GenericArrowEntity::new, MobCategory.MISC)
+                    .sized(0.5F, 0.5F)
+                    .clientTrackingRange(4)
+                    .updateInterval(1)
+                    .build("generic_arrow_entity"));
 
-	@SubscribeEvent
-	public static void attributeCreationEvent(final EntityAttributeCreationEvent event) {
-		event.put(DRAGON.get(), DragonEntity.createLivingAttributes().build());
-		event.put(DRAGON_ARMOR.get(), DragonEntity.createLivingAttributes().build());
-		event.put(HUNTER_HOUND.get(), Wolf.createAttributes().add(Attributes.MOVEMENT_SPEED, ServerConfig.houndSpeed).add(Attributes.ATTACK_DAMAGE, ServerConfig.houndDamage).add(Attributes.MAX_HEALTH, ServerConfig.houndHealth).build());
-		event.put(SHOOTER_HUNTER.get(), Pillager.createAttributes().add(Attributes.MOVEMENT_SPEED, ServerConfig.hunterSpeed).add(Attributes.MAX_HEALTH, ServerConfig.hunterHealth).add(Attributes.ARMOR, ServerConfig.hunterArmor).add(Attributes.ATTACK_DAMAGE, ServerConfig.hunterDamage).build());
-		event.put(SQUIRE_HUNTER.get(), Vindicator.createAttributes().add(Attributes.MOVEMENT_SPEED, ServerConfig.squireSpeed).add(Attributes.ATTACK_DAMAGE, ServerConfig.squireDamage).add(Attributes.ARMOR, ServerConfig.squireArmor).add(Attributes.MAX_HEALTH, ServerConfig.squireHealth).build());
-		event.put(KNIGHT.get(), KnightEntity.createMobAttributes().add(Attributes.MOVEMENT_SPEED, ServerConfig.knightSpeed).add(Attributes.ATTACK_DAMAGE, ServerConfig.knightDamage).add(Attributes.ARMOR, ServerConfig.knightArmor).add(Attributes.MAX_HEALTH, ServerConfig.knightHealth).build());
-		event.put(PRINCESS.get(), Villager.createAttributes().add(Attributes.MAX_HEALTH, ServerConfig.princessHealth).add(Attributes.ARMOR, ServerConfig.princessArmor).add(Attributes.MOVEMENT_SPEED, ServerConfig.princessSpeed).build());
-		event.put(PRINCESS_ON_HORSE.get(), Villager.createAttributes().add(Attributes.MAX_HEALTH, ServerConfig.princessHealth).add(Attributes.ARMOR, ServerConfig.princessArmor).add(Attributes.MOVEMENT_SPEED, ServerConfig.princessSpeed).build());
-		event.put(PRINCE_ON_HORSE.get(), Villager.createAttributes().add(Attributes.ATTACK_DAMAGE, ServerConfig.princeDamage).add(Attributes.MAX_HEALTH, ServerConfig.princeHealth).add(Attributes.ARMOR, ServerConfig.princeArmor).add(Attributes.MOVEMENT_SPEED, ServerConfig.princeSpeed).build());
-	}
+    // --- Entities --- //
 
-	@SubscribeEvent
-	public static void registerSpawn(final SpawnPlacementRegisterEvent event) {
-		SpawnPlacements.SpawnPredicate predicate = (pEntityType, serverWorld, mobSpawnType, pPos, random) -> serverWorld.getBlockState(pPos.below()).is(BlockTags.ANIMALS_SPAWNABLE_ON) && serverWorld.canSeeSky(pPos);
-		SpawnPlacements.SpawnPredicate princeSpawn = (pEntityType, serverWorld, mobSpawnType, pPos, random) -> predicate.test(pEntityType, serverWorld, mobSpawnType, pPos, random) && serverWorld.getLevel().isVillage(pPos);
+    @Translation(type = Translation.Type.ENTITY, comments = "Hunter Hound")
+    public static DeferredHolder<EntityType<?>, EntityType<HoundEntity>> HUNTER_HOUND = REGISTRY.register(
+            "hunter_hound",
+            () -> EntityType.Builder.of(HoundEntity::new, MobCategory.MONSTER)
+                    .sized(0.6F, 0.85F)
+                    .clientTrackingRange(64)
+                    .updateInterval(1)
+                    .build("hunter_hound"));
 
-		event.register(SHOOTER_HUNTER.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, predicate, SpawnPlacementRegisterEvent.Operation.REPLACE);
-		event.register(SQUIRE_HUNTER.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, predicate, SpawnPlacementRegisterEvent.Operation.REPLACE);
-		event.register(KNIGHT.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, predicate, SpawnPlacementRegisterEvent.Operation.REPLACE);
-		event.register(PRINCE_ON_HORSE.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, princeSpawn, SpawnPlacementRegisterEvent.Operation.REPLACE);
-		event.register(PRINCESS_ON_HORSE.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, princeSpawn, SpawnPlacementRegisterEvent.Operation.REPLACE);
-	}
+    @Translation(type = Translation.Type.ENTITY, comments = "Hunter Griffin")
+    public static DeferredHolder<EntityType<?>, EntityType<GriffinEntity>> HUNTER_GRIFFIN = REGISTRY.register(
+            "hunter_griffin",
+            () -> EntityType.Builder.of(GriffinEntity::new, MobCategory.MONSTER)
+                    .sized(0.6F, 0.85F)
+                    .clientTrackingRange(64)
+                    .updateInterval(1)
+                    .build("hunter_griffin"));
 
-	static {
-		VillagerRelationsHandler.dragonHunters = new ArrayList<>(4);
+    @Translation(type = Translation.Type.ENTITY, comments = "Hunter Spearman")
+    public static DeferredHolder<EntityType<?>, EntityType<SpearmanEntity>> HUNTER_SPEARMAN = REGISTRY.register(
+            "hunter_spearman",
+            () -> EntityType.Builder.of(SpearmanEntity::new, MobCategory.MONSTER)
+                    .sized(0.6F, 1.95F)
+                    .clientTrackingRange(64)
+                    .updateInterval(1)
+                    .build("hunter_spearman"));
 
-		if (ServerConfig.spawnHound) {
-			VillagerRelationsHandler.dragonHunters.add(castToPathFinder(HUNTER_HOUND));
-		}
+    @Translation(type = Translation.Type.ENTITY, comments = "Hunter Knight")
+    public static DeferredHolder<EntityType<?>, EntityType<KnightEntity>> HUNTER_KNIGHT = REGISTRY.register(
+            "hunter_knight", () -> EntityType.Builder.of(KnightEntity::new, MobCategory.MONSTER)
+                    .sized(1.5f, 3f)
+                    .clientTrackingRange(64)
+                    .updateInterval(1)
+                    .build("hunter_knight"));
 
-		if (ServerConfig.spawnSquire) {
-			VillagerRelationsHandler.dragonHunters.add(castToPathFinder(SQUIRE_HUNTER));
-		}
+    @Translation(type = Translation.Type.ENTITY, comments = "Hunter Ambusher")
+    public static DeferredHolder<EntityType<?>, EntityType<AmbusherEntity>> HUNTER_AMBUSHER = REGISTRY.register(
+            "hunter_ambusher", () -> EntityType.Builder.of(AmbusherEntity::new, MobCategory.MONSTER)
+                    .sized(0.8f, 2.5f)
+                    .clientTrackingRange(64)
+                    .updateInterval(1)
+                    .build("hunter_ambusher"));
 
-		if (ServerConfig.spawnHunter) {
-			VillagerRelationsHandler.dragonHunters.add(castToPathFinder(SHOOTER_HUNTER));
-		}
+    @Translation(type = Translation.Type.ENTITY, comments = "Hunter Leader")
+    public static DeferredHolder<EntityType<?>, EntityType<LeaderEntity>> HUNTER_LEADER = REGISTRY.register(
+            "hunter_leader",
+            () -> EntityType.Builder.of(LeaderEntity::new, MobCategory.MONSTER)
+                    .sized(0.6F, 1.95F)
+                    .clientTrackingRange(64)
+                    .updateInterval(1)
+                    .build("hunter_leader"));
 
-		if (ServerConfig.spawnKnight) {
-			VillagerRelationsHandler.dragonHunters.add(castToPathFinder(KNIGHT));
-		}
-	}
+    @SubscribeEvent
+    public static void attributeCreationEvent(final EntityAttributeCreationEvent event) {
+        event.put(DRAGON.value(), LivingEntity.createLivingAttributes().build());
 
-	public static <T extends RegistryObject<EntityType<? extends PathfinderMob>>> T castToPathFinder(final RegistryObject entityType) {
-		return (T) entityType;
-	}
+        // There is no reason to set values here since it will always be the default config values
+        // We set the correct values on entity creation through 'finalizeSpawn' (this also means no restart is required)
+        event.put(HUNTER_HOUND.value(), hunterAttributes().build());
+        event.put(HUNTER_SPEARMAN.value(), hunterAttributes().build());
+        event.put(HUNTER_KNIGHT.value(), hunterAttributes().build());
+        event.put(HUNTER_AMBUSHER.value(), hunterAttributes().build());
+        event.put(HUNTER_GRIFFIN.value(), hunterAttributes().add(Attributes.FLYING_SPEED).build());
+        event.put(HUNTER_LEADER.value(), hunterAttributes().build());
+    }
 
-	public static <T extends RegistryObject<EntityType<? extends Mob>>> T castToMob(final RegistryObject entityType) {
-		return (T) entityType;
-	}
+    private static AttributeSupplier.Builder hunterAttributes() {
+        return Mob.createMobAttributes().add(Attributes.ATTACK_DAMAGE);
+    }
 
-	public static void registerVillageTypes(RegisterEvent ignored) {
-		PRINCESS_PROFESSION = new VillagerProfession("princess", PoiType.NONE, PoiType.NONE, ImmutableSet.of(), ImmutableSet.of(), null);
-		PRINCE_PROFESSION = new VillagerProfession("prince", PoiType.NONE, PoiType.NONE, ImmutableSet.of(), ImmutableSet.of(), null);
-	}
+    @SubscribeEvent
+    @SuppressWarnings({"unchecked", "rawtypes", "deprecation"}) // ignore
+    public static void registerSpawn(final RegisterSpawnPlacementsEvent event) {
+        SpawnPlacements.SpawnPredicate predicate = (entity, level, spawnType, position, random) -> level.canSeeSky(position) && level.getBlockState(position.below()).isSolid();
 
-	public static List<Item> SPAWN_EGGS = new ArrayList<>();
-
-	public static void registerSpawnEggs(RegisterEvent event){
-		registerSpawnEgg(event, castToMob(HUNTER_HOUND), 10510648, 8934192);
-		registerSpawnEgg(event, castToMob(SHOOTER_HUNTER), 12486764, 2690565);
-		registerSpawnEgg(event, castToMob(SQUIRE_HUNTER), 12486764, 5318420);
-		registerSpawnEgg(event, castToMob(KNIGHT),  -15526631, -8750470);
-		registerSpawnEgg(event, castToMob(PRINCE_ON_HORSE), -14210026, -9571315);
-		registerSpawnEgg(event, castToMob(PRINCESS_ON_HORSE), -14804205, -14047);
-	}
-
-	private static void registerSpawnEgg(final RegisterEvent event, final RegistryObject<EntityType<? extends Mob>> entity, int eggPrimary, int eggSecondary) {
-		Item spawnEgg = new ForgeSpawnEggItem(entity, eggPrimary, eggSecondary, new Item.Properties()/*.tab(DragonSurvivalMod.items)*/);
-		event.register(ForgeRegistries.Keys.ITEMS, new ResourceLocation(DragonSurvivalMod.MODID, entity.getKey().location().getPath() + "_spawn_egg"), () -> spawnEgg);
-		SPAWN_EGGS.add(spawnEgg);
-	}
+        event.register(HUNTER_SPEARMAN.value(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, predicate, RegisterSpawnPlacementsEvent.Operation.REPLACE);
+        event.register(HUNTER_KNIGHT.value(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, predicate, RegisterSpawnPlacementsEvent.Operation.REPLACE);
+        event.register(HUNTER_AMBUSHER.value(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, predicate, RegisterSpawnPlacementsEvent.Operation.REPLACE);
+        event.register(HUNTER_HOUND.value(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, predicate, RegisterSpawnPlacementsEvent.Operation.REPLACE);
+        event.register(HUNTER_GRIFFIN.value(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, predicate, RegisterSpawnPlacementsEvent.Operation.REPLACE);
+    }
 }

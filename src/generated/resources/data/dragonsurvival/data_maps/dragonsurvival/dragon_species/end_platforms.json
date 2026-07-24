@@ -1,0 +1,49 @@
+{
+  "values": {
+    "dragonsurvival:cave_dragon": {
+      "neoforge:conditions": [
+        {
+          "type": "dragonsurvival:registered",
+          "registry": "dragonsurvival:dragon_species",
+          "value": "dragonsurvival:cave_dragon"
+        }
+      ],
+      "spawn_position": [
+        -200,
+        50,
+        0
+      ],
+      "structure": "dragonsurvival:end_spawn_platforms/cave_end_spawn_platform"
+    },
+    "dragonsurvival:forest_dragon": {
+      "neoforge:conditions": [
+        {
+          "type": "dragonsurvival:registered",
+          "registry": "dragonsurvival:dragon_species",
+          "value": "dragonsurvival:forest_dragon"
+        }
+      ],
+      "spawn_position": [
+        0,
+        50,
+        -200
+      ],
+      "structure": "dragonsurvival:end_spawn_platforms/forest_end_spawn_platform"
+    },
+    "dragonsurvival:sea_dragon": {
+      "neoforge:conditions": [
+        {
+          "type": "dragonsurvival:registered",
+          "registry": "dragonsurvival:dragon_species",
+          "value": "dragonsurvival:sea_dragon"
+        }
+      ],
+      "spawn_position": [
+        0,
+        50,
+        200
+      ],
+      "structure": "dragonsurvival:end_spawn_platforms/sea_end_spawn_platform"
+    }
+  }
+}

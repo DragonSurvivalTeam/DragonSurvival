@@ -1,126 +1,208 @@
 package by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects;
 
-import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.DragonEditorRegistry;
-import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.EnumSkinLayer;
-import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
-import by.dragonsurvivalteam.dragonsurvival.common.capability.NBTInterface;
-import by.dragonsurvivalteam.dragonsurvival.common.dragon_types.AbstractDragonType;
-import by.dragonsurvivalteam.dragonsurvival.util.DragonLevel;
+import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.loader.DefaultPartLoader;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
+import by.dragonsurvivalteam.dragonsurvival.util.ResourceHelper;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraftforge.common.util.Lazy;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.neoforged.fml.loading.FMLLoader;
+import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.common.util.Lazy;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
-public class SkinPreset implements NBTInterface{
-	public HashMap<DragonLevel, Lazy<SkinAgeGroup>> skinAges = new HashMap<>();
+public class SkinPreset implements INBTSerializable<CompoundTag> {
+    private static final String MODEL = "model";
+    private static final String SPECIES = "species";
 
-	public SkinPreset(){
-		for(DragonLevel level : DragonLevel.values()){
-			skinAges.computeIfAbsent(level, (_level)->Lazy.of(()->new SkinAgeGroup(_level)));
-		}
-	}
+    private final Lazy<HashMap<ResourceKey<DragonStage>, Lazy<DragonStageCustomization>>> skins = Lazy.of(this::initialize);
+    private ResourceKey<DragonSpecies> species;
+    private ResourceLocation model = DragonBody.DEFAULT_MODEL;
 
-	public void initDefaults(DragonStateHandler handler){
-		initDefaults(handler.getType());
-	}
+    public boolean isEmpty() {
+        return skins.get().values().stream().allMatch(
+                dragonStageCustomizationLazy -> dragonStageCustomizationLazy.get().layerSettings.values().stream().allMatch(
+                        layerSettingsLazy -> Objects.equals(layerSettingsLazy.get().partKey, DefaultPartLoader.NO_PART)));
+    }
 
-	public void initDefaults(AbstractDragonType type){
-		for(DragonLevel level : DragonLevel.values()){
-			skinAges.put(level, Lazy.of(()->new SkinAgeGroup(level, type)));
-		}
-	}
+    public void setAllStagesToUseDefaultSkin(boolean defaultSkin) {
+        for (ResourceKey<DragonStage> dragonStage : ResourceHelper.keys(null, DragonStage.REGISTRY)) {
+            Lazy<DragonStageCustomization> customizationForStage = skins.get().get(dragonStage);
+            if(customizationForStage == null) {
+                continue;
+            }
 
-	@Override
-	public CompoundTag writeNBT(){
-		CompoundTag nbt = new CompoundTag();
+            DragonStageCustomization stageCustomization = customizationForStage.get();
+            stageCustomization.defaultSkin = defaultSkin;
+            skins.get().put(dragonStage, Lazy.of(() -> stageCustomization));
+        }
+    }
 
-		for(DragonLevel level : DragonLevel.values()){
-			nbt.put(level.name, skinAges.getOrDefault(level, Lazy.of(()->new SkinAgeGroup(level))).get().writeNBT());
-		}
+    public boolean isAnyStageUsingDefaultSkin() {
+        for (ResourceKey<DragonStage> dragonStage : ResourceHelper.keys(null, DragonStage.REGISTRY)) {
+            Lazy<DragonStageCustomization> customizationForStage = skins.get().get(dragonStage);
+            if (customizationForStage != null && customizationForStage.get().defaultSkin) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-		return nbt;
-	}
+    public boolean isStageUsingDefaultSkin(final ResourceKey<DragonStage> dragonStage) {
+        return skins.get().get(dragonStage).get().defaultSkin;
+    }
 
-	@Override
-	public void readNBT(CompoundTag base){
-		for(DragonLevel level : DragonLevel.values()){
-			skinAges.put(level,
-					Lazy.of(()->{
-						SkinAgeGroup ageGroup = new SkinAgeGroup(level);
-						CompoundTag nbt = base.getCompound(level.name);
-						ageGroup.readNBT(nbt);
-						return ageGroup;
-					})
-			);
-		}
-	}
+    public Lazy<DragonStageCustomization> get(final ResourceKey<DragonStage> dragonStage) {
+        return skins.get().get(dragonStage);
+    }
 
-	public static class SkinAgeGroup implements NBTInterface{
-		public DragonLevel level;
-		public HashMap<EnumSkinLayer, Lazy<LayerSettings>> layerSettings = new HashMap<>();
+    public void put(final ResourceKey<DragonStage> dragonStage, final Lazy<DragonStageCustomization> customization) {
+        skins.get().put(dragonStage, customization);
+    }
 
-		public boolean wings = true;
-		public boolean defaultSkin = false;
+    public void initDefaults(final Holder<DragonSpecies> species, final ResourceLocation model) {
+        if (FMLLoader.getDist().isDedicatedServer()) {
+            // Don't try to initialize default data for skin presets when asked by the server, as the server doesn't have the part data
+            // to construct this data anyways
+            return;
+        }
 
-		public SkinAgeGroup(DragonLevel level, AbstractDragonType type){
-			this(level);
-			for(EnumSkinLayer layer : EnumSkinLayer.values()){
-				String part = DragonEditorRegistry.getDefaultPart(type, level, layer);
-				EnumSkinLayer trueLayer = EnumSkinLayer.valueOf(layer.getNameUpperCase());
-				HashMap<EnumSkinLayer, DragonEditorObject.Texture[]> hm = DragonEditorRegistry.CUSTOMIZATIONS.get(type.getTypeNameUpperCase());
-				if (hm != null) {
-					DragonEditorObject.Texture[] texts = hm.get(trueLayer);
-					if (texts != null) {
-						for (DragonEditorObject.Texture text : texts) {
-							if (text.key.equals(part)) {
-								layerSettings.put(layer, Lazy.of(()->new LayerSettings(part, text.average_hue != null ? text.average_hue : 0.5f)));
-								break;
-							}
-						}
-					} else {
-						layerSettings.put(layer, Lazy.of(() -> new LayerSettings(part, 0.5f)));
-					}
-				} else {
-					layerSettings.put(layer, Lazy.of(()->new LayerSettings(part, 0.5f)));
-				}
-			}
-		}
+        if (species == null) {
+            return;
+        }
 
-		public SkinAgeGroup(DragonLevel level){
-			this.level = level;
+        this.species = species.getKey();
 
-			for(EnumSkinLayer layer : EnumSkinLayer.values()){
-				layerSettings.computeIfAbsent(layer, s -> Lazy.of(LayerSettings::new));
-			}
-		}
+        if (model != null) {
+            this.model = model;
+        }
 
-		@Override
-		public CompoundTag writeNBT(){
-			CompoundTag nbt = new CompoundTag();
+        if (this.model == null) {
+            for (Holder<DragonStage> dragonStage : species.value().getStages(null)) {
+                skins.get().put(dragonStage.getKey(), Lazy.of(DragonStageCustomization::new));
+            }
+        } else {
+            for (Holder<DragonStage> dragonStage : species.value().getStages(null)) {
+                skins.get().put(dragonStage.getKey(), Lazy.of(() -> new DragonStageCustomization(dragonStage.getKey(), species.getKey(), this.model)));
+            }
+        }
+    }
 
-			nbt.putBoolean("wings", wings);
-			nbt.putBoolean("defaultSkin", defaultSkin);
+    public HashMap<ResourceKey<DragonStage>, Lazy<DragonStageCustomization>> initialize() {
+        if (FMLLoader.getDist().isDedicatedServer()) {
+            // Don't try to initialize default data for skin presets when asked by the server, as the server doesn't have the part data
+            // to construct this data anyways
+            return new HashMap<>();
+        }
 
-			for(EnumSkinLayer layer : EnumSkinLayer.values()){
-				nbt.put(layer.name(), layerSettings.getOrDefault(layer, Lazy.of(LayerSettings::new)).get().writeNBT());
-			}
+        HashMap<ResourceKey<DragonStage>, Lazy<DragonStageCustomization>> customizations = new HashMap<>();
 
-			return nbt;
-		}
+        List<ResourceKey<DragonStage>> stageKeys;
+        if (species != null) {
+            Optional<Holder.Reference<DragonSpecies>> speciesHolder = ResourceHelper.get(null, species);
+            stageKeys = speciesHolder.map(dragonSpeciesReference -> dragonSpeciesReference.value().getStages(null).stream().map(Holder::getKey).toList()).orElseGet(List::of);
+        } else {
+            stageKeys = ResourceHelper.keys(null, DragonStage.REGISTRY);
+        }
 
-		@Override
-		public void readNBT(CompoundTag base){
-			wings = base.getBoolean("wings");
-			defaultSkin = base.getBoolean("defaultSkin");
+        for (ResourceKey<DragonStage> dragonStage : stageKeys) {
+            customizations.computeIfAbsent(dragonStage, location -> Lazy.of(() -> new DragonStageCustomization(dragonStage, species, model)));
+        }
 
-			for(EnumSkinLayer layer : EnumSkinLayer.values()){
-				layerSettings.put(layer, Lazy.of(()->{
-					LayerSettings ageGroup = new LayerSettings();
-					CompoundTag nbt = base.getCompound(layer.name());
-					ageGroup.readNBT(nbt);
-					return ageGroup;
-				}));
-			}
-		}
-	}
+        return customizations;
+    }
+
+    @Override
+    public CompoundTag serializeNBT(@NotNull final HolderLookup.Provider provider) {
+        CompoundTag tag = new CompoundTag();
+        tag.putString(MODEL, model.toString());
+
+        if (species != null) {
+            tag.putString(SPECIES, species.location().toString());
+        }
+
+        List<ResourceKey<DragonStage>> stageKeys;
+        if (species != null) {
+            Optional<Holder.Reference<DragonSpecies>> speciesHolder = ResourceHelper.get(provider, species);
+            stageKeys = speciesHolder.map(dragonSpeciesReference -> dragonSpeciesReference.value().getStages(provider).stream().map(Holder::getKey).toList()).orElseGet(List::of);
+        } else {
+            stageKeys = ResourceHelper.keys(provider, DragonStage.REGISTRY);
+        }
+
+        for (ResourceKey<DragonStage> dragonStage : stageKeys) {
+            if(skins.get().containsKey(dragonStage)) {
+                tag.put(dragonStage.location().toString(), skins.get().getOrDefault(dragonStage, Lazy.of(DragonStageCustomization::new)).get().serializeNBT(provider));
+            }
+        }
+
+        return tag;
+    }
+
+    // Special version of deserializeNBT to fix up broken data from an older version of the mod
+    // The tag encoding of the species was broken and was just giving "minecraft:" as the species instead of what it should be
+    public void deserializeNBT(@NotNull final HolderLookup.Provider provider, @NotNull final CompoundTag base, ResourceKey<DragonSpecies> species) {
+        this.species = species;
+        ResourceLocation.read(base.getString(MODEL)).ifSuccess(model -> this.model = model);
+
+        List<ResourceKey<DragonStage>> stageKeys;
+        if (species != null) {
+            Optional<Holder.Reference<DragonSpecies>> speciesHolder = ResourceHelper.get(provider, species);
+            stageKeys = speciesHolder.map(dragonSpeciesReference -> dragonSpeciesReference.value().getStages(provider).stream().map(Holder::getKey).toList()).orElseGet(List::of);
+        } else {
+            stageKeys = ResourceHelper.keys(provider, DragonStage.REGISTRY);
+        }
+
+        for (ResourceKey<DragonStage> dragonStage : stageKeys) {
+            if (base.contains(dragonStage.location().toString())) {
+                skins.get().put(dragonStage, Lazy.of(() -> {
+                    DragonStageCustomization group = new DragonStageCustomization();
+                    CompoundTag dragonStageData = base.getCompound(dragonStage.location().toString());
+                    group.deserializeNBT(provider, dragonStageData);
+                    return group;
+                }));
+            }
+        }
+    }
+
+    @Override
+    public void deserializeNBT(@NotNull final HolderLookup.Provider provider, @NotNull final CompoundTag base) {
+        this.species = ResourceKey.create(DragonSpecies.REGISTRY, ResourceLocation.parse(base.getString(SPECIES)));
+        ResourceLocation.read(base.getString(MODEL)).ifSuccess(model -> this.model = model);
+
+        List<ResourceKey<DragonStage>> stageKeys;
+        if (species != null) {
+            Optional<Holder.Reference<DragonSpecies>> speciesHolder = ResourceHelper.get(provider, species);
+            stageKeys = speciesHolder.map(dragonSpeciesReference -> dragonSpeciesReference.value().getStages(provider).stream().map(Holder::getKey).toList()).orElseGet(List::of);
+        } else {
+            stageKeys = ResourceHelper.keys(provider, DragonStage.REGISTRY);
+        }
+
+        for (ResourceKey<DragonStage> dragonStage : stageKeys) {
+            if (base.contains(dragonStage.location().toString())) {
+                skins.get().put(dragonStage, Lazy.of(() -> {
+                    DragonStageCustomization group = new DragonStageCustomization();
+                    CompoundTag dragonStageData = base.getCompound(dragonStage.location().toString());
+                    group.deserializeNBT(provider, dragonStageData);
+                    return group;
+                }));
+            }
+        }
+    }
+
+    public ResourceLocation getModel() {
+        return model;
+    }
+
+    public ResourceKey<DragonSpecies> getSpecies() {
+        return species;
+    }
 }

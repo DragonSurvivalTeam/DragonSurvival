@@ -1,0 +1,9 @@
+{
+  "parent": "minecraft:block/orientable_with_bottom",
+  "textures": {
+    "bottom": "dragonsurvival:block/chocolate_dragon_treasure_bottom",
+    "front": "dragonsurvival:block/chocolate_dragon_treasure_side",
+    "side": "dragonsurvival:block/chocolate_dragon_treasure_side",
+    "top": "dragonsurvival:block/chocolate_dragon_treasure"
+  }
+}

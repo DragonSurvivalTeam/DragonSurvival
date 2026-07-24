@@ -1,0 +1,34 @@
+{
+  "values": [
+    "#c:boats",
+    "#c:minecarts",
+    {
+      "id": "littlelogistics:seater_barge",
+      "required": false
+    },
+    {
+      "id": "create:seat",
+      "required": false
+    },
+    {
+      "id": "create:contraption",
+      "required": false
+    },
+    {
+      "id": "create:gantry_contraption",
+      "required": false
+    },
+    {
+      "id": "create:stationary_contraption",
+      "required": false
+    },
+    {
+      "id": "hexerei:broom",
+      "required": false
+    },
+    {
+      "id": "botania:player_mover",
+      "required": false
+    }
+  ]
+}

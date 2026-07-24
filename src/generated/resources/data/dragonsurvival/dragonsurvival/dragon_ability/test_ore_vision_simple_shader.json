@@ -1,0 +1,145 @@
+{
+  "actions": [
+    {
+      "target_selection": {
+        "applied_effects": {
+          "entity_effect": [
+            {
+              "block_visions": [
+                {
+                  "base": {
+                    "id": "dragonsurvival:plant_simple_shader",
+                    "is_hidden": true
+                  },
+                  "blocks": [
+                    "minecraft:tall_grass",
+                    "minecraft:fern",
+                    "minecraft:lily_pad",
+                    "minecraft:kelp_plant",
+                    "minecraft:kelp",
+                    "minecraft:seagrass"
+                  ],
+                  "color_shift_rate": 0.7,
+                  "colors": [
+                    {
+                      "alpha": 0.2,
+                      "color": "dark_blue"
+                    },
+                    {
+                      "alpha": 0.2,
+                      "color": "blue"
+                    },
+                    {
+                      "alpha": 0.2,
+                      "color": "dark_aqua"
+                    },
+                    {
+                      "alpha": 0.2,
+                      "color": "aqua"
+                    },
+                    {
+                      "alpha": 0.2,
+                      "color": "green"
+                    },
+                    {
+                      "alpha": 0.2,
+                      "color": "dark_green"
+                    }
+                  ],
+                  "display_type": "simple_shader",
+                  "range": 36.0
+                }
+              ],
+              "effect_type": "dragonsurvival:block_vision"
+            },
+            {
+              "block_visions": [
+                {
+                  "base": {
+                    "id": "dragonsurvival:diamond_vision_simple_shader",
+                    "is_hidden": true
+                  },
+                  "blocks": "#c:ores/diamond",
+                  "color_shift_rate": 0.3,
+                  "colors": [
+                    {
+                      "alpha": 0.2,
+                      "color": "gold"
+                    },
+                    {
+                      "alpha": 0.2,
+                      "color": "dark_purple"
+                    },
+                    {
+                      "alpha": 0.2,
+                      "color": "green"
+                    },
+                    {
+                      "alpha": 0.2,
+                      "color": "red"
+                    },
+                    {
+                      "alpha": 0.2,
+                      "color": "blue"
+                    }
+                  ],
+                  "display_type": "simple_shader",
+                  "range": 36.0
+                }
+              ],
+              "effect_type": "dragonsurvival:block_vision"
+            },
+            {
+              "block_visions": [
+                {
+                  "base": {
+                    "id": "dragonsurvival:stair_vision_simple_shader",
+                    "is_hidden": true
+                  },
+                  "blocks": "#minecraft:stairs",
+                  "color_shift_rate": 0.3,
+                  "colors": [
+                    {
+                      "alpha": 0.7,
+                      "color": "#0040FF"
+                    },
+                    {
+                      "color": "#4030E0"
+                    },
+                    {
+                      "alpha": 0.7,
+                      "color": "#8020C0"
+                    },
+                    {
+                      "color": "#C010A0"
+                    },
+                    {
+                      "alpha": 0.7,
+                      "color": "#FF0080"
+                    }
+                  ],
+                  "display_type": "simple_shader",
+                  "range": 36.0
+                }
+              ],
+              "effect_type": "dragonsurvival:block_vision"
+            }
+          ],
+          "targeting_mode": "allies_and_self"
+        },
+        "target_type": "dragonsurvival:self"
+      }
+    }
+  ],
+  "activation": {
+    "activation_type": "dragonsurvival:passive"
+  },
+  "icon": {
+    "texture_entries": [
+      {
+        "from_level": 0,
+        "texture_resource": "dragonsurvival:test"
+      }
+    ]
+  }
+}

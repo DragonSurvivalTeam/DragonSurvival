@@ -1,0 +1,116 @@
+{
+	"credit": "Made with Blockbench",
+	"render_type": "cutout",
+	"texture_size": [256, 256],
+	"textures": {
+		"skeleton_texture": "skeleton_dragon_1"
+	},
+	"elements": [
+		{
+			"name": "Pelvis_s",
+			"from": [3.5, 0.3, 3],
+			"to": [3.5, 10.3, 13],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, -11.9, 1.5]},
+			"faces": {
+				"north": {"uv": [0.625, 3.0625, 1.1875, 3.6875], "texture": "#skeleton_texture"},
+				"east": {"uv": [1.8125, 3.0625, 1.1875, 3.6875], "texture": "#skeleton_texture"},
+				"south": {"uv": [1.8125, 3.0625, 2.375, 3.6875], "texture": "#skeleton_texture"},
+				"west": {"uv": [1.1875, 3.0625, 1.8125, 3.6875], "texture": "#skeleton_texture"},
+				"up": {"uv": [1.1875, 3.0625, 0.625, 2.4375], "texture": "#skeleton_texture"},
+				"down": {"uv": [1.75, 2.4375, 1.1875, 3.0625], "texture": "#skeleton_texture"}
+			}
+		},
+		{
+			"name": "Torso",
+			"from": [8.03, 10.29, 3.002],
+			"to": [8.03, 17.29, 15.999],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, -11.7, 13]},
+			"faces": {
+				"north": {"uv": [0.8125, 4.375, 0.8125, 4.8125], "texture": "#skeleton_texture"},
+				"east": {"uv": [0, 4.375, 0.8125, 4.8125], "texture": "#skeleton_texture"},
+				"south": {"uv": [1.625, 4.375, 1.625, 4.8125], "texture": "#skeleton_texture"},
+				"west": {"uv": [0.8125, 4.375, 0, 4.8125], "texture": "#skeleton_texture"},
+				"up": {"uv": [0.8125, 4.375, 0.8125, 3.5625], "texture": "#skeleton_texture"},
+				"down": {"uv": [0.8125, 3.5625, 0.8125, 4.375], "texture": "#skeleton_texture"}
+			}
+		},
+		{
+			"name": "Pelvis_s",
+			"from": [12.5, 0.3, 3],
+			"to": [12.5, 10.3, 13],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, -11.9, 1.5]},
+			"faces": {
+				"north": {"uv": [0.625, 3.0625, 1.1875, 3.6875], "texture": "#skeleton_texture"},
+				"east": {"uv": [0, 3.0625, 0.625, 3.6875], "texture": "#skeleton_texture"},
+				"south": {"uv": [1.8125, 3.0625, 2.375, 3.6875], "texture": "#skeleton_texture"},
+				"west": {"uv": [0.625, 3.0625, 0, 3.6875], "texture": "#skeleton_texture"},
+				"up": {"uv": [1.1875, 3.0625, 0.625, 2.4375], "texture": "#skeleton_texture"},
+				"down": {"uv": [1.75, 2.4375, 1.1875, 3.0625], "texture": "#skeleton_texture"}
+			}
+		},
+		{
+			"name": "Pelvis_s",
+			"from": [3.5, 0.3, 3],
+			"to": [12.5, 10.3, 3],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, -11.9, 1.5]},
+			"faces": {
+				"north": {"uv": [0.625, 3.0625, 1.1875, 3.6875], "texture": "#skeleton_texture"},
+				"east": {"uv": [0, 3.0625, 0.625, 3.6875], "texture": "#skeleton_texture"},
+				"south": {"uv": [0.625, 3.0625, 1.1875, 3.6875], "texture": "#skeleton_texture"},
+				"west": {"uv": [1.1875, 3.0625, 1.8125, 3.6875], "texture": "#skeleton_texture"},
+				"up": {"uv": [1.1875, 3.0625, 0.625, 2.4375], "texture": "#skeleton_texture"},
+				"down": {"uv": [1.75, 2.4375, 1.1875, 3.0625], "texture": "#skeleton_texture"}
+			}
+		},
+		{
+			"name": "Pelvis_s",
+			"from": [3.5, 0.3, 13],
+			"to": [12.5, 10.3, 13],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, -11.9, 1.5]},
+			"faces": {
+				"north": {"uv": [1.8125, 3.0625, 2.375, 3.6875], "texture": "#skeleton_texture"},
+				"east": {"uv": [0, 3.0625, 0.625, 3.6875], "texture": "#skeleton_texture"},
+				"south": {"uv": [1.8125, 3.0625, 2.375, 3.6875], "texture": "#skeleton_texture"},
+				"west": {"uv": [1.1875, 3.0625, 1.8125, 3.6875], "texture": "#skeleton_texture"},
+				"up": {"uv": [1.1875, 3.0625, 0.625, 2.4375], "texture": "#skeleton_texture"},
+				"down": {"uv": [1.75, 2.4375, 1.1875, 3.0625], "texture": "#skeleton_texture"}
+			}
+		},
+		{
+			"name": "Pelvis_s",
+			"from": [3.5, 0.3, 3],
+			"to": [12.5, 0.3, 13],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, -11.9, 1.5]},
+			"faces": {
+				"north": {"uv": [0.625, 3.0625, 1.1875, 3.6875], "texture": "#skeleton_texture"},
+				"east": {"uv": [0, 3.0625, 0.625, 3.6875], "texture": "#skeleton_texture"},
+				"south": {"uv": [1.8125, 3.0625, 2.375, 3.6875], "texture": "#skeleton_texture"},
+				"west": {"uv": [1.1875, 3.0625, 1.8125, 3.6875], "texture": "#skeleton_texture"},
+				"up": {"uv": [1.75, 3.0625, 1.1875, 2.4375], "texture": "#skeleton_texture"},
+				"down": {"uv": [1.75, 2.4375, 1.1875, 3.0625], "texture": "#skeleton_texture"}
+			}
+		},
+		{
+			"name": "Pelvis_s",
+			"from": [3.5, 10.3, 3],
+			"to": [12.5, 10.3, 13],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, -11.9, 1.5]},
+			"faces": {
+				"north": {"uv": [0.625, 3.0625, 1.1875, 3.6875], "texture": "#skeleton_texture"},
+				"east": {"uv": [0, 3.0625, 0.625, 3.6875], "texture": "#skeleton_texture"},
+				"south": {"uv": [1.8125, 3.0625, 2.375, 3.6875], "texture": "#skeleton_texture"},
+				"west": {"uv": [1.1875, 3.0625, 1.8125, 3.6875], "texture": "#skeleton_texture"},
+				"up": {"uv": [1.1875, 3.0625, 0.625, 2.4375], "texture": "#skeleton_texture"},
+				"down": {"uv": [1.1875, 2.4375, 0.625, 3.0625], "texture": "#skeleton_texture"}
+			}
+		}
+	],
+	"groups": [
+		{
+			"name": "bone9",
+			"origin": [8, -77.9, 5.5],
+			"color": 0,
+			"children": [0, 1, 2, 3, 4, 5, 6]
+		}
+	]
+}

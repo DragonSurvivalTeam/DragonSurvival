@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "lgl",
+    "gdg",
+    "cgc"
+  ],
+  "key": {
+    "l": {
+      "item": "minecraft:lapis_lazuli"
+    },
+    "g": {
+      "item": "minecraft:gold_nugget"
+    },
+    "d": {
+      "item": "dragonsurvival:heart_element"
+    },
+    "c": {
+      "item": "dragonsurvival:charged_coal"
+    }
+  },
+  "result": {
+    "id": "dragonsurvival:weak_dragon_heart",
+    "count": 1
+  }
+}

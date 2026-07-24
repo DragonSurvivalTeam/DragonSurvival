@@ -1,8 +1,0 @@
-{
-  "parent": "block/orientable",
-  "textures": {
-    "top": "dragonsurvival:block/dragon_gate_controller_top",
-    "front": "dragonsurvival:block/dragon_gate_controller_front",
-    "side": "dragonsurvival:block/dragon_gate_controller"
-  }
-}

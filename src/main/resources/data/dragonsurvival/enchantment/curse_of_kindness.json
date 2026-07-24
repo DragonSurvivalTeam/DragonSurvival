@@ -1,0 +1,35 @@
+{
+  "anvil_cost": 2,
+  "description": {
+    "translate": "enchantment.dragonsurvival.curse_of_kindness"
+  },
+  "effects": {
+    "minecraft:attributes": [
+      {
+        "amount": {
+          "type": "minecraft:linear",
+          "base": -0.25,
+          "per_level_above_first": -0.25
+        },
+        "attribute": "dragonsurvival:hunter_faction_damage",
+        "id": "dragonsurvival:enchantment.curse_of_kindness",
+        "operation": "add_value"
+      }
+    ]
+  },
+  "exclusive_set": "#dragonsurvival:exclusive_set/dark_dragon",
+  "max_cost": {
+    "base": 21,
+    "per_level_above_first": 11
+  },
+  "max_level": 1,
+  "min_cost": {
+    "base": 1,
+    "per_level_above_first": 11
+  },
+  "slots": [
+    "any"
+  ],
+  "supported_items": "#minecraft:enchantable/durability",
+  "weight": 10
+}

@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/orientable",
+  "textures": {
+    "down": "dragonsurvival:block/prismarine_dragon_altar_top",
+    "east": "dragonsurvival:block/prismarine_dragon_altar_east",
+    "north": "dragonsurvival:block/prismarine_dragon_altar_north",
+    "particle": "dragonsurvival:block/prismarine_dragon_altar_top",
+    "south": "dragonsurvival:block/prismarine_dragon_altar_south",
+    "up": "dragonsurvival:block/prismarine_dragon_altar_top",
+    "west": "dragonsurvival:block/prismarine_dragon_altar_west"
+  }
+}

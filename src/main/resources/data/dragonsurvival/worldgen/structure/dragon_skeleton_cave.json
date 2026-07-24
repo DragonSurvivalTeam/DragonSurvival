@@ -1,0 +1,50 @@
+{
+  "type": "minecraft:jigsaw",
+  "biomes": "#dragonsurvival:is_dragon_skeleton_cave_spawn",
+  "step": "underground_decoration",
+  "spawn_overrides": {
+    "ambient": {
+      "bounding_box": "full",
+      "spawns": []
+    },
+    "axolotls": {
+      "bounding_box": "full",
+      "spawns": []
+    },
+    "creature": {
+      "bounding_box": "full",
+      "spawns": []
+    },
+    "misc": {
+      "bounding_box": "full",
+      "spawns": []
+    },
+    "underground_water_creature": {
+      "bounding_box": "full",
+      "spawns": []
+    },
+    "water_ambient": {
+      "bounding_box": "full",
+      "spawns": []
+    },
+    "water_creature": {
+      "bounding_box": "full",
+      "spawns": []
+    }
+  },
+  "start_pool": "dragonsurvival:dragon_skeleton_cave_spawn_pool",
+  "size": 4,
+  "terrain_adaptation": "none",
+  "start_height": {
+    "type": "minecraft:uniform",
+    "min_inclusive": {
+      "absolute": -30
+    },
+    "max_inclusive": {
+      "absolute": -10
+    }
+  },
+  "max_distance_from_center": 100,
+  "use_expansion_hack": true,
+  "liquid_settings": "ignore_waterlogging"
+}

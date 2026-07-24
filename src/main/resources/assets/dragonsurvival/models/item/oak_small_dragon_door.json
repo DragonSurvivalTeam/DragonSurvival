@@ -1,6 +1,0 @@
-{
-  "parent": "item/generated",
-  "textures": {
-    "layer0": "dragonsurvival:block/oak_small_dragon_door"
-  }
-}

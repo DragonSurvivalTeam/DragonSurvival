@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "redstone",
+  "ingredients": [
+    {
+      "item": "minecraft:birch_door"
+    },
+    {
+      "item": "minecraft:birch_door"
+    },
+    {
+      "item": "minecraft:birch_door"
+    }
+  ],
+  "result": {
+    "count": 2,
+    "id": "dragonsurvival:birch_dragon_door"
+  }
+}

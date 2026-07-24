@@ -1,220 +1,184 @@
 package by.dragonsurvivalteam.dragonsurvival.common.handlers;
 
-import by.dragonsurvivalteam.dragonsurvival.DragonSurvivalMod;
+import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
-import by.dragonsurvivalteam.dragonsurvival.config.ConfigHandler;
-import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
-import by.dragonsurvivalteam.dragonsurvival.network.NetworkHandler;
-import by.dragonsurvivalteam.dragonsurvival.network.player.SyncSize;
-import by.dragonsurvivalteam.dragonsurvival.registry.DSItems;
-import by.dragonsurvivalteam.dragonsurvival.util.DragonLevel;
-import by.dragonsurvivalteam.dragonsurvival.util.DragonUtils;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.GrowthItem;
+import by.dragonsurvivalteam.dragonsurvival.mixins.EntityAccessor;
+import by.dragonsurvivalteam.dragonsurvival.network.player.SyncGrowthState;
+import by.dragonsurvivalteam.dragonsurvival.registry.DSAdvancementTriggers;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
+import by.dragonsurvivalteam.dragonsurvival.util.Functions;
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.TickEvent.Phase;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.network.PacketDistributor;
+import net.minecraft.world.level.border.WorldBorder;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
+import net.neoforged.neoforge.event.tick.PlayerTickEvent;
+import net.neoforged.neoforge.network.PacketDistributor;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
+@EventBusSubscriber
+public class DragonGrowthHandler {
+    @Translation(comments = "Natural growth is §cinactive§r")
+    private static final String INACTIVE = Translation.Type.GUI.wrap("message.natural_growth_inactive");
 
-import static by.dragonsurvivalteam.dragonsurvival.util.DragonLevel.*;
+    @Translation(comments = "Natural growth is §2active§r")
+    private static final String ACTIVE = Translation.Type.GUI.wrap("message.natural_growth_active");
 
-@Mod.EventBusSubscriber( modid = DragonSurvivalMod.MODID )
-public class DragonGrowthHandler{
-	public static long newbornToYoung = TimeUnit.SECONDS.convert(3, TimeUnit.HOURS);
-	public static long youngToAdult = TimeUnit.SECONDS.convert(15, TimeUnit.HOURS);
-	public static long adultToMax = TimeUnit.SECONDS.convert(24, TimeUnit.HOURS);
-	public static long beyond = TimeUnit.SECONDS.convert(30, TimeUnit.DAYS);
+    @Translation(comments = "You have reached the largest growth")
+    private static final String REACHED_LARGEST = Translation.Type.GUI.wrap("system.reached_largest");
 
-	@SubscribeEvent
-	public static void onItemUse(PlayerInteractEvent.RightClickItem event){
-		ItemStack stack = event.getItemStack();
-		Item item = stack.getItem();
+    @Translation(comments = "You have reached the smallest growth")
+    private static final String REACHED_SMALLEST = Translation.Type.GUI.wrap("system.reached_smallest");
 
-		Player player = event.getEntity();
-		Level world = player.getCommandSenderWorld();
+    @Translation(comments = "Your surroundings prevent you from increasing your growth")
+    private static final String ENCLOSED_SPACE = Translation.Type.GUI.wrap("system.enclosed_space");
 
-		DragonStateProvider.getCap(player).ifPresent(handler -> {
-			if(!handler.isDragon()){
-				return;
-			}
+    private static final int INTERVAL = Functions.secondsToTicks(1);
 
-			double size = handler.getSize();
+    @SubscribeEvent
+    public static void onItemUse(final PlayerInteractEvent.RightClickItem event) {
+        Player player = event.getEntity();
+        DragonStateHandler handler = DragonStateProvider.getData(player);
 
-			if(size >= ServerConfig.maxGrowthSize){
-				return;
-			}
+        if (!handler.isDragon()) {
+            return;
+        }
 
-			boolean canContinue = false;
+        Double growth = getGrowth(player, handler, event.getItemStack().getItem());
 
-			List<Item> newbornList = ConfigHandler.getResourceElements(Item.class, ServerConfig.growNewborn);
-			List<Item> youngList = ConfigHandler.getResourceElements(Item.class, ServerConfig.growYoung);
-			List<Item> adultList = ConfigHandler.getResourceElements(Item.class, ServerConfig.growAdult);
+        if (growth.isNaN()) {
+            if (player instanceof ServerPlayer serverPlayer) {
+                DSAdvancementTriggers.STOP_NATURAL_GROWTH.get().trigger(serverPlayer);
+            }
 
-			List<Item> allowedItems = new ArrayList<>();
+            handler.isGrowthStopped = !handler.isGrowthStopped;
+            event.getItemStack().consume(1, player);
 
-			switch(handler.getLevel()){
-				case NEWBORN:
-					if(newbornList.contains(item)){
-						canContinue = true;
-					}else if(youngList.contains(item) || adultList.contains(item)){
-						allowedItems = newbornList;
-					}
+            if (player.level().isClientSide()) {
+                String message = handler.isGrowthStopped ? INACTIVE : ACTIVE;
+                player.displayClientMessage(Component.translatable(message), true);
+            }
 
-					break;
-				case YOUNG:
-					if(youngList.contains(item)){
-						canContinue = true;
-					}else if(newbornList.contains(item) || adultList.contains(item)){
-						allowedItems = youngList;
-					}
+            return;
+        } else if (growth == 0d) {
+            return;
+        }
 
-					break;
-				case ADULT:
-					if(adultList.contains(item)){
-						canContinue = true;
-					}else if(newbornList.contains(item) || youngList.contains(item)){
-						allowedItems = adultList;
-					}
+        handler.incrementGrowthUses(event.getItemStack().getItem());
+        double oldGrowth = handler.getDesiredGrowth();
+        double desiredGrowth = handler.getDesiredGrowth() + growth;
 
-					break;
-			}
+        if (!isGrowthAllowed(player, handler, desiredGrowth)) {
+            if (player.level().isClientSide()) {
+                player.displayClientMessage(Component.translatable(ENCLOSED_SPACE).withStyle(ChatFormatting.RED), true);
+            }
 
-			if(!canContinue){
-				if(!allowedItems.isEmpty() && world.isClientSide()){
-					List<String> displayData = allowedItems.stream().map(i -> new ItemStack(i).getDisplayName().getString()).toList();
-					StringBuilder result = new StringBuilder();
+            return;
+        }
 
-					for(int i = 0; i < displayData.size(); i++){
-						String entry = displayData.get(i);
+        handler.setDesiredGrowth(player, desiredGrowth);
 
-						result.append(entry).append(i + 1 < displayData.size() ? ", " : "");
-					}
+        if (handler.getDesiredGrowth() == oldGrowth) {
+            if (player.level().isClientSide()) {
+                player.displayClientMessage(Component.translatable(growth > 0 ? REACHED_LARGEST : REACHED_SMALLEST).withStyle(ChatFormatting.RED), true);
+            }
 
-					player.displayClientMessage(Component.translatable("ds.invalid_grow_item", result), false);
-				}
+            return;
+        }
 
-				return;
-			}
+        event.getItemStack().consume(1, player);
+    }
 
-			int increment = getIncrement(item, handler.getLevel());
-			size += increment;
-			handler.setSize(size, player);
+    public static Double getGrowth(final Player player, final DragonStateHandler handler, final Item item) {
+        // Get stage from desired growth, so that you are prevented from spamming growth items intended for an earlier stage as you grow
+        for (GrowthItem growthItem : handler.stageFromDesiredSize(player).value().growthItems()) {
+            if (!growthItem.canBeUsed(handler, item)) {
+                continue;
+            }
 
-			if(!player.isCreative()){
-				event.getItemStack().shrink(1);
-			}
+            if (growthItem.growthInTicks() == 0) {
+                return Double.NaN;
+            }
 
-			if(world.isClientSide()){
-				return;
-			}
+            return handler.stage().value().ticksToGrowth(growthItem.growthInTicks());
+        }
 
-			NetworkHandler.CHANNEL.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> player), new SyncSize(player.getId(), size));
-			player.refreshDimensions();
-		});
-	}
+        return 0d;
+    }
 
-	public static int getIncrement(Item item, DragonLevel level){
-		List<Item> newbornList = ConfigHandler.getResourceElements(Item.class, ServerConfig.growNewborn);
-		List<Item> youngList = ConfigHandler.getResourceElements(Item.class, ServerConfig.growYoung);
-		List<Item> adultList = ConfigHandler.getResourceElements(Item.class, ServerConfig.growAdult);
+    @SubscribeEvent
+    public static void onPlayerUpdate(final PlayerTickEvent.Pre event) {
+        if (!(event.getEntity() instanceof ServerPlayer player)) {
+            return;
+        }
 
-		int increment = 0;
+        DragonStateHandler handler = DragonStateProvider.getData(player);
 
-		if(item == DSItems.starBone){
-			return -2;
-		}
+        if (!handler.isDragon()) {
+            return;
+        }
 
-//TODO Add the ability to control this numbers with configs
+        if (player.tickCount % INTERVAL == 0) {
+            DragonStage dragonStage = handler.stage().value();
+            double oldGrowth = handler.getDesiredGrowth();
+            double desiredGrowth = handler.getDesiredGrowth() + dragonStage.ticksToGrowth(INTERVAL);
 
-		switch(level){
-			case NEWBORN:
-				if(adultList.contains(item)){
-					increment = 3;
-				}else if(youngList.contains(item)){
-					increment = 2;
-				}else if(newbornList.contains(item)){
-					increment = 1;
-				}
-				break;
-			case YOUNG:
-				if(adultList.contains(item)){
-					increment = 2;
-				}else if(youngList.contains(item)){
-					increment = 1;
-				}
-				break;
+            // This check makes it so that we don't add to natural growth when the dragon is in an enclosed space
+            // If this is removed, we still won't clip into walls due to the check in lerpGrowth, but we would
+            // "accumulate" growth over time and gain it all at once if in an enclosed space
+            boolean isGrowthAllowed = isGrowthAllowed(player, handler, desiredGrowth);
 
-			case ADULT:
-				if(adultList.contains(item)){
-					increment = 1;
-				}
-				break;
-		}
-		return increment;
-	}
+            if (!isGrowthAllowed || oldGrowth == desiredGrowth || dragonStage.isNaturalGrowthStopped().map(condition -> condition.matches(player.serverLevel(), player.position(), player)).orElse(false)) {
+                if (handler.isGrowing) {
+                    handler.isGrowing = false;
+                    PacketDistributor.sendToPlayer(player, new SyncGrowthState(false));
+                }
 
-	@SubscribeEvent
-	public static void onPlayerUpdate(TickEvent.PlayerTickEvent event){
-		if(!ServerConfig.alternateGrowing){
-			return;
-		}
+                return;
+            } else if (!handler.isGrowing) {
+                handler.isGrowing = true;
+                PacketDistributor.sendToPlayer(player, new SyncGrowthState(true));
+            }
 
-		Player player = event.player;
-		Level world = player.getCommandSenderWorld();
+            handler.setDesiredGrowth(player, desiredGrowth);
+        }
+    }
 
-		if(world.isClientSide() || event.phase == Phase.END){
-			return;
-		}
+    public static boolean isGrowthAllowed(final Player player, final DragonStateHandler handler, final double desiredGrowth) {
+        float currentScale = player.getScale();
+        float newScale = handler.calculateScale(player.getAttribute(Attributes.SCALE), desiredGrowth);
+        float difference = newScale - currentScale;
 
-		if(!DragonUtils.isDragon(player)){
-			return;
-		}
+        if (difference > 0) {
+            EntityDimensions dimensions = ((EntityAccessor) player).dragonSurvival$getDimensions();
+            AABB playerBounds = dimensions.scale(1 + difference).makeBoundingBox(player.position()).inflate(Shapes.BIG_EPSILON);
+            // Move y position slightly upwards to prevent false-positives with floor collisions
+            double verticalBoundsAdjustment = playerBounds.getYsize() * 0.02;
+            AABB adjustedBounds = playerBounds.setMinY(playerBounds.minY + verticalBoundsAdjustment);
 
-		if(player.tickCount % (60 * 20) != 0){
-			return;
-		}
+            WorldBorder border = player.level().getWorldBorder();
+            double borderEpsilon = 1.0E-2;
 
-		DragonStateProvider.getCap(player).ifPresent(handler -> {
-			if(handler.growing){
-                /*
-                    1. Newborn - young = 3-4 h
-                    2. Young - adult = 15-20h
-                    3. Adult - maximum growth = 24h
-                    4. After maximum growth. = 30 days for max growth
-                 */
+            if (playerBounds.minX < border.getMinX() + borderEpsilon
+                || playerBounds.maxX > border.getMaxX() - borderEpsilon
+                || playerBounds.minZ < border.getMinZ() + borderEpsilon
+                || playerBounds.maxZ > border.getMaxZ() - borderEpsilon) {
+                return false;
+            } else if (!player.level().noBlockCollision(player, adjustedBounds)) {
+                // Move y position slightly upwards to prevent false-positives with floor collisions
+                return false;
+            }
+        }
 
-				double d = 0;
-				double timeIncrement = 60 * 20;
-
-				if(handler.getSize() < YOUNG.size){
-					d = (YOUNG.size - NEWBORN.size) / (newbornToYoung * 20.0) * timeIncrement * ServerConfig.newbornGrowthModifier;
-				}else if(handler.getSize() < ADULT.size){
-					d = (ADULT.size - YOUNG.size) / (youngToAdult * 20.0) * timeIncrement * ServerConfig.youngGrowthModifier;
-				}else if(handler.getSize() < 40){
-					d = (40 - ADULT.size) / (adultToMax * 20.0) * timeIncrement * ServerConfig.adultGrowthModifier;
-				}else{
-					d = (60 - 40) / (beyond * 20.0) * timeIncrement * ServerConfig.maxGrowthModifier;
-				}
-
-				double size = handler.getSize() + d;
-				size = Math.min(size, ServerConfig.maxGrowthSize);
-
-				if(handler.getSize() != size){
-					handler.setSize(size, player);
-
-					NetworkHandler.CHANNEL.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> player), new SyncSize(player.getId(), size));
-					player.refreshDimensions();
-				}
-			}
-		});
-	}
+        return true;
+    }
 }

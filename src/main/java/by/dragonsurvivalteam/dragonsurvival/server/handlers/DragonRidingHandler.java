@@ -2,13 +2,13 @@ package by.dragonsurvivalteam.dragonsurvival.server.handlers;
 
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
-import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
-import by.dragonsurvivalteam.dragonsurvival.network.NetworkHandler;
-import by.dragonsurvivalteam.dragonsurvival.network.player.SynchronizeDragonCap;
-import by.dragonsurvivalteam.dragonsurvival.network.status.RefreshDragons;
-import by.dragonsurvivalteam.dragonsurvival.util.DragonLevel;
-import by.dragonsurvivalteam.dragonsurvival.util.DragonUtils;
-import by.dragonsurvivalteam.dragonsurvival.util.ResourceHelper;
+import by.dragonsurvivalteam.dragonsurvival.config.OffsetConfig;
+import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
+import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigRange;
+import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
+import by.dragonsurvivalteam.dragonsurvival.network.player.SyncDragonPassengerID;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSetPassengersPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -16,135 +16,173 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.entity.EntityMountEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent.EntityInteractSpecific;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.network.PacketDistributor;
+import net.minecraft.world.phys.Vec3;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.common.Tags;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
+import net.neoforged.neoforge.event.tick.PlayerTickEvent;
+import net.neoforged.neoforge.network.PacketDistributor;
+
+import java.text.NumberFormat;
+import java.util.List;
 
 @EventBusSubscriber
-public class DragonRidingHandler{
-	/**
-	 * Mounting a dragon
-	 */
-	@SubscribeEvent
-	public static void onEntityInteract(EntityInteractSpecific event){
-		Entity ent = event.getTarget();
+public class DragonRidingHandler {
+    @Translation(key = "riding_offsets", type = Translation.Type.CONFIGURATION, comments = {
+            "Offset the riding position per entity type",
+            "Format: resource/tag;x_offset;y_offset;z_offset",
+            "The resource can also be defined using regular expressions (for both namespace and path)",
+    })
+    @ConfigOption(side = ConfigSide.SERVER, category = "riding", key = "riding_offsets")
+    public static List<OffsetConfig> OFFSETS = List.of(
+            // To avoid touching the water
+            OffsetConfig.create(Tags.EntityTypes.BOATS, new Vec3(0, 0.9, 0))
+    );
+    @ConfigRange(min = -1000, max = 1000)
+    @Translation(key = "player_riding_scale", type = Translation.Type.CONFIGURATION, comments = "Maximum human-rider size compared to mount dragon. Default: 0.7 (70%).")
+    @ConfigOption(side = ConfigSide.SERVER, category = "riding", key = "player_riding_scale")
+    public static Float playerRidingScale = 0.7F;
 
-		if(event.getHand() != InteractionHand.MAIN_HAND){
-			return;
-		}
+    @ConfigRange(min = -1000, max = 1000)
+    @Translation(key = "dragon_riding_scale", type = Translation.Type.CONFIGURATION, comments = "Maximum dragon-rider size compared to mount dragon. Default: 0.8 (80%).")
+    @ConfigOption(side = ConfigSide.SERVER, category = "riding", key = "dragon_riding_scale")
+    public static Float dragonRidingScale = 0.8F;
 
+    @Translation(comments = "You are too big to mount on this creature. You must be at most %s the scale of the creature you are trying to ride or smaller, but you are scale %s and the creature is scale %s.")
+    private static final String SELF_TOO_BIG = Translation.Type.GUI.wrap("message.self_too_big");
 
-		if(ent instanceof ServerPlayer target){
-			Player self = event.getEntity();
+    @Translation(comments = "The creature you are trying to ride must be crouching for you to mount them.")
+    private static final String NOT_CROUCHING = Translation.Type.GUI.wrap("message.not_crouching");
 
-			DragonStateProvider.getCap(target).ifPresent(targetCap -> {
-				if(targetCap.isDragon() && target.getPose() == Pose.CROUCHING && targetCap.getSize() >= 40 && !target.isVehicle()){
-					DragonStateProvider.getCap(self).ifPresent(selfCap -> {
-						if(!selfCap.isDragon() || selfCap.getLevel() == DragonLevel.NEWBORN){
-							self.startRiding(target);
-							target.connection.send(new ClientboundSetPassengersPacket(target));
-							targetCap.setPassengerId(self.getId());
-							NetworkHandler.CHANNEL.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> target), new SynchronizeDragonCap(target.getId(), targetCap.isHiding(), targetCap.getType(), targetCap.getBody(), targetCap.getSize(), targetCap.hasFlight(), self.getId()));
-							event.setCancellationResult(InteractionResult.SUCCESS);
-							event.setCanceled(true);
-						}
-					});
-				}
-			});
-		}
-	}
+    public static final int NO_PASSENGER = -1;
 
-	@SubscribeEvent
-	public static void handleMounts(final EntityMountEvent event) {
-		if (!event.isMounting()) {
-			return;
-		}
+    public static final Vec3 BASE_MOUNTING_OFFSET = new Vec3(0, 0.63, 0);
+    public static final float PLAYER_RIDING_SCALE_RATIO = playerRidingScale;
+    public static final float DRAGON_RIDING_SCALE_RATIO = dragonRidingScale;
 
-		if (ServerConfig.ridingBlacklist && DragonUtils.isDragon(event.getEntityMounting())) {
-			if (DragonUtils.isDragon(event.getEntityBeingMounted())) {
-				return;
-			}
+    private enum DragonRideAttemptResult {
+        SELF_TOO_BIG,
+        NOT_CROUCHING,
+        OTHER,
+        SUCCESS
+    }
 
-			if (!ServerConfig.allowedVehicles.contains(ResourceHelper.getKey(event.getEntityBeingMounted()).toString())) {
-				event.setCanceled(true);
-			}
-		}
-	}
+    public static Vec3 getMountingOffsetForEntity(final Entity entity) {
+        for (OffsetConfig config : DragonRidingHandler.OFFSETS) {
+            //noinspection deprecation -> ignore
+            Vec3 offset = config.getOffset(entity.getType().builtInRegistryHolder().key());
 
-	@SubscribeEvent
-	public static void onServerPlayerTick(TickEvent.PlayerTickEvent event) {
-		if (!(event.player instanceof ServerPlayer player)) {
-			return;
-		}
+            if (offset != null) {
+                return offset;
+            }
+        }
 
-		DragonStateProvider.getCap(player).ifPresent(handler -> {
-			Entity passenger = player.level().getEntity(handler.getPassengerId());
-			boolean stopRiding = false;
+        return BASE_MOUNTING_OFFSET;
+    }
 
-			if (!(passenger instanceof ServerPlayer)) {
-				return;
-			}
+    private static DragonRideAttemptResult playerCanRideDragon(Player rider, Player mount) {
+        if (rider.isSpectator() || mount.isSpectator() || rider.isSleeping() || mount.isSleeping()) {
+            return DragonRideAttemptResult.OTHER;
+        }
 
-			if (!handler.isDragon()) {
-				stopRiding = true;
-			} else if (player.isSpectator()) {
-				stopRiding = true;
-			} else if (handler.isDragon() && handler.getSize() < 40) {
-				stopRiding = true;
-			} else if (player.isSleeping()) {
-				stopRiding = true;
-			}
+        DragonStateHandler mountData = DragonStateProvider.getData(mount);
 
-			if (!stopRiding) {
-				DragonStateHandler passengerHandler = DragonUtils.getHandler(passenger);
+        if (!mountData.isDragon() || mountData.body().value().mountingOffsets().isEmpty()) {
+            return DragonRideAttemptResult.OTHER;
+        }
 
-				if (passengerHandler.isDragon() && passengerHandler.getLevel() != DragonLevel.NEWBORN) {
-					stopRiding = true;
-				} else if (passenger.getRootVehicle() != player.getRootVehicle()) {
-					stopRiding = true;
-				} else if (passenger.isSpectator()) {
-					stopRiding = true;
-				}
-			}
+        double scaleRatio = rider.getScale() / mount.getScale();
+        boolean dragonIsTooSmallToRide = DragonStateProvider.isDragon(rider) ? scaleRatio >= DRAGON_RIDING_SCALE_RATIO : scaleRatio >= PLAYER_RIDING_SCALE_RATIO;
 
-			if (stopRiding) {
-				passenger.stopRiding();
-				player.connection.send(new ClientboundSetPassengersPacket(player));
-			}
+        if (dragonIsTooSmallToRide) {
+            return DragonRideAttemptResult.SELF_TOO_BIG;
+        } else if (mount.getPose() != Pose.CROUCHING) {
+            return DragonRideAttemptResult.NOT_CROUCHING;
+        }
 
-			if (stopRiding || !player.hasPassenger(passenger)) {
-				handler.setPassengerId(DragonStateHandler.NO_ENTITY);
-				NetworkHandler.CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), new SynchronizeDragonCap(player.getId(), handler.isHiding(), handler.getType(), handler.getBody(), handler.getSize(), handler.hasFlight(), 0));
-			}
-		});
-	}
+        return DragonRideAttemptResult.SUCCESS;
+    }
 
-	@SubscribeEvent
-	public static void onPlayerDisconnect(PlayerEvent.PlayerLoggedOutEvent event){
-		ServerPlayer player = (ServerPlayer)event.getEntity();
-		if(player.getVehicle() == null || !(player.getVehicle() instanceof ServerPlayer vehicle)){
-			return;
-		}
-		DragonStateProvider.getCap(player).ifPresent(playerCap -> {
-			DragonStateProvider.getCap(vehicle).ifPresent(vehicleCap -> {
-				player.stopRiding();
-				vehicle.connection.send(new ClientboundSetPassengersPacket(vehicle));
-				vehicleCap.setPassengerId(DragonStateHandler.NO_ENTITY);
-				NetworkHandler.CHANNEL.send(PacketDistributor.PLAYER.with(() -> vehicle), new SynchronizeDragonCap(player.getId(), vehicleCap.isHiding(), vehicleCap.getType(), vehicleCap.getBody(), vehicleCap.getSize(), vehicleCap.hasFlight(), 0));
-			});
-		});
-	}
+    @SubscribeEvent
+    public static void onRideAttempt(final PlayerInteractEvent.EntityInteractSpecific event) {
+        if (!(event.getTarget() instanceof ServerPlayer target)) {
+            return;
+        }
 
-	@SubscribeEvent
-	public static void changedDimension(PlayerEvent.PlayerChangedDimensionEvent changedDimensionEvent){
-		Player player = changedDimensionEvent.getEntity();
-		DragonStateProvider.getCap(player).ifPresent(dragonStateHandler -> {
-			NetworkHandler.CHANNEL.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> player), new SynchronizeDragonCap(player.getId(), dragonStateHandler.isHiding(), dragonStateHandler.getType(), dragonStateHandler.getBody(), dragonStateHandler.getSize(), dragonStateHandler.hasFlight(), 0));
-			NetworkHandler.CHANNEL.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> player), new RefreshDragons(player.getId()));
-		});
-	}
+        if (event.getHand() != InteractionHand.MAIN_HAND || !event.getItemStack().isEmpty()) {
+            return;
+        }
+
+        Player self = event.getEntity();
+        DragonRideAttemptResult result = playerCanRideDragon(self, target);
+
+        if (result == DragonRideAttemptResult.SUCCESS && !target.isVehicle()) {
+            self.startRiding(target);
+            target.connection.send(new ClientboundSetPassengersPacket(target));
+
+            DragonStateProvider.getData(target).setPassengerId(self.getId());
+            PacketDistributor.sendToPlayersTrackingEntityAndSelf(target, new SyncDragonPassengerID(target.getId(), self.getId()));
+
+            event.setCancellationResult(InteractionResult.SUCCESS);
+            event.setCanceled(true);
+        } else {
+            if (result == DragonRideAttemptResult.SELF_TOO_BIG) {
+                float ridingScaleRatio = DragonStateProvider.isDragon(self) ? DRAGON_RIDING_SCALE_RATIO : PLAYER_RIDING_SCALE_RATIO;
+                self.sendSystemMessage(Component.translatable(SELF_TOO_BIG, NumberFormat.getPercentInstance().format(ridingScaleRatio), String.format("%.2f", self.getScale()), String.format("%.2f", target.getScale())));
+            } else if (result == DragonRideAttemptResult.NOT_CROUCHING) {
+                self.sendSystemMessage(Component.translatable(NOT_CROUCHING));
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void updateRidingState(PlayerTickEvent.Post event) {
+        if (event.getEntity() instanceof ServerPlayer player) {
+            DragonStateProvider.getOptional(player).ifPresent(dragonStateHandler -> {
+                int passengerId = dragonStateHandler.getPassengerId();
+                if (passengerId == NO_PASSENGER) {
+                    return;
+                }
+
+                Entity passenger = player.level().getEntity(passengerId);
+                // Check for any way that riding could have been interrupted and update our internal state tracking
+                if (passenger == null || !player.hasPassenger(passenger) || passenger.getRootVehicle() != player.getRootVehicle() || !player.isVehicle()) {
+                    dragonStateHandler.setPassengerId(NO_PASSENGER);
+                    PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new SyncDragonPassengerID(player.getId(), NO_PASSENGER));
+                    if (passenger != null) {
+                        passenger.stopRiding();
+                    }
+                    player.connection.send(new ClientboundSetPassengersPacket(player));
+                    return;
+                }
+
+                if (passenger instanceof Player playerPassenger) {
+                    // In addition, if any of the conditions to allow a player to ride a dragon are no longer met, dismount the player
+                    DragonRideAttemptResult result = playerCanRideDragon(playerPassenger, player);
+                    if (result == DragonRideAttemptResult.SUCCESS || result == DragonRideAttemptResult.NOT_CROUCHING) {
+                        return;
+                    }
+
+                    dragonStateHandler.setPassengerId(NO_PASSENGER);
+                    PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new SyncDragonPassengerID(player.getId(), NO_PASSENGER));
+                    passenger.stopRiding();
+                    player.connection.send(new ClientboundSetPassengersPacket(player));
+                }
+            });
+        }
+    }
+
+    @SubscribeEvent
+    public static void dismountOnPlayerDisconnect(PlayerEvent.PlayerLoggedOutEvent event) {
+        if (event.getEntity() instanceof ServerPlayer player && player.getVehicle() instanceof ServerPlayer vehicle) {
+            DragonStateProvider.getOptional(vehicle).ifPresent(handler -> {
+                player.stopRiding();
+                vehicle.connection.send(new ClientboundSetPassengersPacket(vehicle));
+                handler.setPassengerId(NO_PASSENGER);
+                PacketDistributor.sendToPlayersTrackingEntityAndSelf(vehicle, new SyncDragonPassengerID(vehicle.getId(), NO_PASSENGER));
+            });
+        }
+    }
 }

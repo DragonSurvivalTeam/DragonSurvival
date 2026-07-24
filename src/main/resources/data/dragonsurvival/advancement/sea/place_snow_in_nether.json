@@ -1,0 +1,54 @@
+{
+  "parent": "dragonsurvival:sea/rain_dancing",
+  "criteria": {
+    "place_snow_in_nether": {
+      "conditions": {
+        "location": [
+          {
+            "block": "minecraft:snow_block",
+            "condition": "minecraft:block_state_property"
+          }
+        ],
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "location": {
+                "dimension": "minecraft:the_nether"
+              },
+              "type_specific": {
+                "type": "dragonsurvival:dragon_predicate",
+                "dragon_species": "dragonsurvival:sea_dragon"
+              }
+            }
+          }
+        ]
+      },
+      "trigger": "minecraft:placed_block"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "description": {
+      "translate": "dragonsurvival.advancement.sea/place_snow_in_nether.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "minecraft:snow_block"
+    },
+    "show_toast": false,
+    "title": {
+      "translate": "dragonsurvival.advancement.sea/place_snow_in_nether"
+    }
+  },
+  "requirements": [
+    [
+      "place_snow_in_nether"
+    ]
+  ],
+  "rewards": {
+    "experience": 16
+  },
+  "sends_telemetry_event": true
+}

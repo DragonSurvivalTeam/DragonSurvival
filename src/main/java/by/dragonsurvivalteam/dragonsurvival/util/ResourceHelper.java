@@ -1,36 +1,106 @@
 package by.dragonsurvivalteam.dragonsurvival.util;
 
-import net.minecraft.core.particles.ParticleType;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.block.Block;
-import net.minecraftforge.registries.ForgeRegistries;
+import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import com.mojang.datafixers.util.Pair;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.Registry;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.nbt.StringTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.util.RandomSource;
+import net.neoforged.neoforge.common.CommonHooks;
+import org.jetbrains.annotations.Nullable;
 
-public class ResourceHelper
-{
-    public static ResourceLocation getKey(Block object)
-    {
-        return ForgeRegistries.BLOCKS.getKey(object);
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Function;
+
+public class ResourceHelper {
+    private static final RandomSource RANDOM = RandomSource.create();
+
+    public static <T> Optional<Holder.Reference<T>> get(@Nullable final HolderLookup.Provider provider, final ResourceKey<T> key) {
+        return getRegistry(provider, key.registryKey()).get(key);
     }
 
-    public static ResourceLocation getKey(Item object)
-    {
-        return ForgeRegistries.ITEMS.getKey(object);
-    }
-    public static ResourceLocation getKey(EntityType<?> object) {
-        return ForgeRegistries.ENTITY_TYPES.getKey(object);
+    public static <T> List<Holder.Reference<T>> all(@Nullable final HolderLookup.Provider provider, final ResourceKey<Registry<T>> key) {
+        return getRegistry(provider, key).listElements().toList();
     }
 
-    public static ResourceLocation getKey(Entity object) {
-        return getKey(object.getType());
+    public static <T> Holder<T> random(@Nullable final HolderLookup.Provider provider, final ResourceKey<Registry<T>> key) {
+        List<Holder.Reference<T>> elements = getRegistry(provider, key).listElements().toList();
+        return elements.get(RANDOM.nextInt(elements.size()));
     }
-    public static ResourceLocation getKey(SoundEvent event)
-    {
-        return ForgeRegistries.SOUND_EVENTS.getKey(event);
+
+    public static <T> List<ResourceKey<T>> keys(@Nullable final HolderLookup.Provider provider, final ResourceKey<Registry<T>> key) {
+        return getRegistry(provider, key).listElementIds().toList();
+    }
+
+    /**
+     * Returns either the key stored in the tag or 'null' if: <br>
+     * - The key is not present in the tag <br>
+     * - Or the read value is not present in the registry <br>
+     * - Or no registry access is available
+     */
+    public static @Nullable <T> ResourceKey<T> decodeKey(@Nullable final HolderLookup.Provider provider, final ResourceKey<Registry<T>> registryKey, final CompoundTag tag, final String key) {
+        if (!tag.contains(key)) {
+            return null;
+        }
+
+        HolderLookup.Provider actualProvider = provider != null ? provider : DragonSurvival.PROXY.getAccess();
+
+        if (actualProvider == null) {
+            DragonSurvival.LOGGER.error("Context was not available to deserialize the value of [{}] from the tag [{}]", key, tag);
+            return null;
+        }
+
+        ResourceKey<T> resource = ResourceKey.codec(registryKey).decode(actualProvider.createSerializationContext(NbtOps.INSTANCE), tag.get(key)).mapOrElse(Pair::getFirst, error -> {
+            DragonSurvival.LOGGER.error(error.message());
+            return null;
+        });
+
+        if (resource != null && actualProvider.holder(resource).isEmpty()) {
+            return null;
+        }
+
+        return resource;
+    }
+
+    /**
+     * Returns either the tag (normally {@link StringTag}) or 'null' if: <br>
+     * - The key is null <br>
+     * - Or the key is not present in the registry <br>
+     * - Or no registry access is available
+     */
+    public static @Nullable <T> Tag encodeKey(@Nullable final HolderLookup.Provider provider, final ResourceKey<T> key) {
+        if (key == null) {
+            return null;
+        }
+
+        HolderLookup.Provider actualProvider = provider != null ? provider : DragonSurvival.PROXY.getAccess();
+
+        if (actualProvider == null) {
+            DragonSurvival.LOGGER.error("Context was not available to serialize the value [{}]", key);
+            return null;
+        }
+
+        return ResourceKey.codec(key.registryKey()).encodeStart(actualProvider.createSerializationContext(NbtOps.INSTANCE), key).mapOrElse(Function.identity(), error -> {
+            DragonSurvival.LOGGER.error(error.message());
+            return null;
+        });
+    }
+
+    private static <T> HolderLookup.RegistryLookup<T> getRegistry(@Nullable final HolderLookup.Provider provider, final ResourceKey<Registry<T>> key) {
+        HolderLookup.RegistryLookup<T> registry;
+
+        if (provider == null) {
+            registry = CommonHooks.resolveLookup(key);
+        } else {
+            registry = provider.lookupOrThrow(key);
+        }
+
+        return registry;
     }
 }

@@ -1,58 +1,161 @@
 package by.dragonsurvivalteam.dragonsurvival.config;
 
-
+import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.world.level.block.state.BlockState;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Optional;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 
-public class ConfigUtils{ // FIXME :: Unused
+public class ConfigUtils {
+    private static final int NAMESPACE = 0;
+    private static final int PATH = 1;
 
-	public static boolean containsEntity(List<? extends String> values, Entity entity){
-		String type = entity.getEncodeId();
-		return values.contains(type) || values.contains("entity:" + type);
-	}
+    public static Predicate<ItemStack> itemStackPredicate(final String[] splitData) {
+        boolean isTag = splitData[NAMESPACE].startsWith("#");
 
-	public static List<Item> parseConfigItemList(List<? extends String> values){
-		List<Item> result = new ArrayList<>();
+        ResourceLocation location = getLocation(splitData, isTag);
+        if (isTag) {
+            TagKey<Item> tag = TagKey.create(Registries.ITEM, location);
+            return stack -> stack.is(tag);
+        } else {
+            Item item = BuiltInRegistries.ITEM.get(location);
+            return stack -> stack.is(item);
+        }
+    }
 
-		for(String entry : values.stream().map(s -> s.replace("tag:", "").replace("item:", "")).toList()){
-			String[] spEntry = entry.split(":");
-			String ent = spEntry[0] + ":" + spEntry[1];
-			if(ResourceLocation.isValidResourceLocation(ent)){
-				ResourceLocation rlEntry = new ResourceLocation(ent);
-				TagKey<Item> tagKey = TagKey.create(ForgeRegistries.Keys.ITEMS, rlEntry);
-				result.addAll(ForgeRegistries.ITEMS.tags().getTag(tagKey).stream().toList());
-				result.add(ForgeRegistries.ITEMS.getValue(rlEntry));
-			}
-		}
+    public static Predicate<Item> itemPredicate(final String[] splitData) {
+        boolean isTag = splitData[NAMESPACE].startsWith("#");
+        ResourceLocation location = getLocation(splitData, isTag);
 
-		return result;
-	}
+        if (isTag) {
+            TagKey<Item> tag = TagKey.create(Registries.ITEM, location);
+            return item -> item.builtInRegistryHolder().is(tag);
+        } else {
+            Item itemToCheck = BuiltInRegistries.ITEM.get(location);
+            return item -> item == itemToCheck;
+        }
+    }
 
-	public static List<Block> parseConfigBlockList(List<? extends String> values){
-		List<Block> result = new ArrayList<>();
+    public static Predicate<BlockState> blockStatePredicate(final String[] splitData) {
+        boolean isTag = splitData[NAMESPACE].startsWith("#");
+        ResourceLocation location = getLocation(splitData, isTag);
 
-		for(String entry : values.stream().map(s -> s.replace("tag:", "").replace("block:", "")).toList()){
-			String[] spEntry = entry.split(":");
-			String ent = spEntry[0] + ":" + spEntry[1];
-			if(ResourceLocation.isValidResourceLocation(ent)){
-				ResourceLocation rlEntry = new ResourceLocation(ent);
-				TagKey<Block> tagKey = TagKey.create(ForgeRegistries.Keys.BLOCKS, rlEntry);
-				result.addAll(ForgeRegistries.BLOCKS.tags().getTag(tagKey).stream().toList());
-				Block block = ForgeRegistries.BLOCKS.getValue(rlEntry);
-				if(block != Blocks.AIR){
-					result.add(block);
-				}
-			}
-		}
+        if (isTag) {
+            TagKey<Block> tag = TagKey.create(Registries.BLOCK, location);
+            return stack -> stack.is(tag);
+        } else {
+            Block block = BuiltInRegistries.BLOCK.get(location);
+            return stack -> stack.is(block);
+        }
+    }
 
-		return result;
-	}
+    public static Supplier<HolderSet<Item>> itemSupplier(final String[] splitData) {
+        boolean isTag = splitData[NAMESPACE].startsWith("#");
+        ResourceLocation location = getLocation(splitData, isTag);
+
+        if (isTag) {
+            TagKey<Item> tag = TagKey.create(Registries.ITEM, location);
+
+            return () -> {
+                Optional<HolderSet.Named<Item>> optional = BuiltInRegistries.ITEM.getTag(tag);
+                return optional.isPresent() ? optional.get() : HolderSet.empty();
+            };
+        } else {
+            return () -> {
+                Optional<Holder.Reference<Item>> optional = BuiltInRegistries.ITEM.getHolder(location);
+                return optional.isPresent() ? HolderSet.direct(optional.get()) : HolderSet.empty();
+            };
+        }
+    }
+
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted") // ignore
+    public static boolean validateResourceLocation(final String[] splitData) {
+        if (splitData.length < 2) {
+            return false;
+        }
+
+        String namespace = splitData[NAMESPACE].startsWith("#") ? splitData[NAMESPACE].substring(1) : splitData[NAMESPACE];
+        String path = splitData[PATH];
+
+        return ResourceLocation.tryParse(namespace + ":" + path) != null;
+    }
+
+    public static boolean validateInteger(final String string) {
+        try {
+            Integer.parseInt(string);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
+    public static boolean validateFloat(final String string) {
+        try {
+            Float.parseFloat(string);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
+    public static boolean validateDouble(final String string) {
+        try {
+            Double.parseDouble(string);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
+    @SuppressWarnings("deprecation") // ignore
+    public static String location(final Object object) {
+        if (object instanceof TagKey<?> tag) {
+            return "#" + tag.location();
+        }
+
+        if (object instanceof Block block) {
+            return location(block.builtInRegistryHolder().getRegisteredName());
+        }
+
+        if (object instanceof Item item) {
+            return location(item.builtInRegistryHolder().getRegisteredName());
+        }
+
+        if (object instanceof ResourceKey<?> key) {
+            return location(key);
+        }
+
+        if (object instanceof Holder<?> holder) {
+            return holder.getRegisteredName();
+        }
+
+        if (object instanceof ResourceLocation location) {
+            return location.toString();
+        }
+
+        throw new IllegalArgumentException("Cannot handle [" + object.getClass().getName() + "]");
+    }
+
+    private static String location(final ResourceKey<?> key) {
+        return key.location().toString();
+    }
+
+    private static ResourceLocation getLocation(final String[] splitData, boolean isTag) {
+        if (isTag) {
+            return DragonSurvival.location(splitData[NAMESPACE].substring(1), splitData[PATH]);
+        }
+
+        return DragonSurvival.location(splitData[NAMESPACE], splitData[PATH]);
+    }
 }

@@ -1,0 +1,15 @@
+{
+  "name": "dragonsurvival:treasure_corner_hunters_right_pool_2",
+  "fallback": "minecraft:empty",
+  "elements": [
+	{	
+      "weight": 1,
+      "element": {
+        "location": "dragonsurvival:treasure_hunters/treasure_corner_hunters_right_2",
+        "processors": "dragonsurvival:dragon_skeletons_random",
+		"projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    }
+  ]
+}

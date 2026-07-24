@@ -1,72 +1,42 @@
 package by.dragonsurvivalteam.dragonsurvival.network.dragon_editor;
 
+import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
-import by.dragonsurvivalteam.dragonsurvival.network.IMessage;
-import by.dragonsurvivalteam.dragonsurvival.network.NetworkHandler;
-import by.dragonsurvivalteam.dragonsurvival.network.client.ClientProxy;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.network.NetworkDirection;
-import net.minecraftforge.network.NetworkEvent;
-import net.minecraftforge.network.PacketDistributor;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.function.Supplier;
+public record SyncDragonSkinSettings(int playerId, boolean renderCustomSkin) implements CustomPacketPayload {
+    public static final CustomPacketPayload.Type<SyncDragonSkinSettings> TYPE = new CustomPacketPayload.Type<>(DragonSurvival.res("sync_dragon_skin_settings"));
 
-public class SyncDragonSkinSettings implements IMessage<SyncDragonSkinSettings> {
-	public int playerId;
-	public boolean newborn;
-	public boolean young;
-	public boolean adult;
+    public static final StreamCodec<FriendlyByteBuf, SyncDragonSkinSettings> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.VAR_INT, SyncDragonSkinSettings::playerId,
+            ByteBufCodecs.BOOL, SyncDragonSkinSettings::renderCustomSkin,
+            SyncDragonSkinSettings::new
+    );
 
-	public SyncDragonSkinSettings() {}
+    @Override
+    public @NotNull CustomPacketPayload.Type<? extends CustomPacketPayload> type() {
+        return TYPE;
+    }
 
-	public SyncDragonSkinSettings(int playerId, boolean newborn, boolean young, boolean adult) {
-		this.playerId = playerId;
-		this.newborn = newborn;
-		this.young = young;
-		this.adult = adult;
-	}
+    public static void handleClient(final SyncDragonSkinSettings packet, final IPayloadContext context) {
+        context.enqueueWork(() -> {
+            Entity entity = context.player().level().getEntity(packet.playerId());
+            DragonStateProvider.getOptional(entity).ifPresent(handler -> handler.getSkinData().renderCustomSkin = packet.renderCustomSkin());
+        });
+    }
 
-	@Override
-	public void encode(final SyncDragonSkinSettings message, final FriendlyByteBuf buffer) {
-		buffer.writeInt(message.playerId);
-		buffer.writeBoolean(message.newborn);
-		buffer.writeBoolean(message.young);
-		buffer.writeBoolean(message.adult);
-	}
+    public static void handleServer(final SyncDragonSkinSettings packet, final IPayloadContext context) {
+        Player sender = context.player();
 
-	@Override
-	public SyncDragonSkinSettings decode(FriendlyByteBuf buffer) {
-		int playerId = buffer.readInt();
-		boolean newborn = buffer.readBoolean();
-		boolean young = buffer.readBoolean();
-		boolean adult = buffer.readBoolean();
-		return new SyncDragonSkinSettings(playerId, newborn, young, adult);
-	}
-
-	@Override
-	public void handle(final SyncDragonSkinSettings message, final Supplier<NetworkEvent.Context> supplier) {
-		NetworkEvent.Context context = supplier.get();
-
-		if (context.getDirection() == NetworkDirection.PLAY_TO_CLIENT) {
-			context.enqueueWork(() -> ClientProxy.handleSyncDragonSkinSettings(message));
-		}
-
-		if (context.getDirection() == NetworkDirection.PLAY_TO_SERVER) {
-			ServerPlayer sender = context.getSender();
-
-			if (sender != null) {
-				DragonStateProvider.getCap(sender).ifPresent(handler -> {
-					handler.getSkinData().renderNewborn = message.newborn;
-					handler.getSkinData().renderYoung = message.young;
-					handler.getSkinData().renderAdult = message.adult;
-				});
-
-				// Make the other clients aware of the changes
-				NetworkHandler.CHANNEL.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> sender), new SyncDragonSkinSettings(sender.getId(), message.newborn, message.young, message.adult));
-			}
-		}
-
-		context.setPacketHandled(true);
-	}
+        context.enqueueWork(() -> DragonStateProvider.getOptional(sender).ifPresent(handler -> handler.getSkinData().renderCustomSkin = packet.renderCustomSkin())
+        ).thenRun(() -> PacketDistributor.sendToPlayersTrackingEntityAndSelf(sender, packet));
+    }
 }

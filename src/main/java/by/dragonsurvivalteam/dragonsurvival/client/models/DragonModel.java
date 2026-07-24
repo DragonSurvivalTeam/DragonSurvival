@@ -1,125 +1,143 @@
 package by.dragonsurvivalteam.dragonsurvival.client.models;
 
-import by.dragonsurvivalteam.dragonsurvival.DragonSurvivalMod;
-import by.dragonsurvivalteam.dragonsurvival.client.render.ClientDragonRender;
+import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.DragonEditorHandler;
-import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.SkinPreset.SkinAgeGroup;
+import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.DragonStageCustomization;
+import by.dragonsurvivalteam.dragonsurvival.client.skins.DragonSkins;
 import by.dragonsurvivalteam.dragonsurvival.client.util.FakeClientPlayer;
+import by.dragonsurvivalteam.dragonsurvival.client.util.RenderingUtils;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
-import by.dragonsurvivalteam.dragonsurvival.common.capability.objects.DragonMovementData;
-import by.dragonsurvivalteam.dragonsurvival.common.dragon_types.AbstractDragonBody;
+import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.StageResources;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.HunterData;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MovementData;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import by.dragonsurvivalteam.dragonsurvival.util.AnimationUtils;
-import by.dragonsurvivalteam.dragonsurvival.util.DragonUtils;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.core.Holder;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.common.ForgeMod;
-import software.bernie.geckolib.core.molang.MolangParser;
+import software.bernie.geckolib.animation.AnimationState;
+import software.bernie.geckolib.loading.math.MathParser;
 import software.bernie.geckolib.model.GeoModel;
 
-import java.util.Locale;
-
 public class DragonModel extends GeoModel<DragonEntity> {
-	private final ResourceLocation defaultTexture = new ResourceLocation(DragonSurvivalMod.MODID, "textures/dragon/cave_newborn.png");
-	private final ResourceLocation model = new ResourceLocation(DragonSurvivalMod.MODID, "geo/dragon_model.geo.json");
-	private ResourceLocation currentTexture;
+    /** Factor to multiply the delta yaw and pitch by, needed for scaling for the animations */
+    private static final double DELTA_YAW_PITCH_FACTOR = 0.2;
 
-	/** Factor to multiply the delta yaw and pitch by, needed for scaling for the animations */
-	private static final double DELTA_YAW_PITCH_FACTOR = 0.2;
+    /** Factor to multiply the delta movement by, needed for scaling for the animations */
+    private static final double DELTA_MOVEMENT_FACTOR = 10;
 
-	/** Factor to multiply the delta movement by, needed for scaling for the animations */
-	private static final double DELTA_MOVEMENT_FACTOR = 10;
+    // FIXME 'dragon_dragon'?
+    private final ResourceLocation defaultTexture = DragonSurvival.res("textures/dragon_dragon/newborn.png");
 
-	/**TODO Body Types Update
-	Required:
-	 - tips for body types like for magic abilities
+    private ResourceLocation overrideTexture;
 
-	 Extras:
-		 - emotes.json - Ability to disallow some emotions for certain Body Types.
-	*/
+    @Override
+    public void applyMolangQueries(final AnimationState<DragonEntity> animationState, double currentTick) {
+        super.applyMolangQueries(animationState, currentTick);
 
-	@Override
-	public void applyMolangQueries(final DragonEntity dragon, double currentTick) {
-		super.applyMolangQueries(dragon, currentTick);
-		Player player = dragon.getPlayer();
+        DragonEntity dragon = animationState.getAnimatable();
+        Player player = dragon.getPlayer();
 
-		if (player == null) {
-			return;
-		}
+        if (player == null) {
+            return;
+        }
 
-		float deltaTick = AnimationUtils.getRealtimeDeltaTicks();
-		float partialTick = Minecraft.getInstance().getPartialTick();
-		DragonStateHandler handler = DragonUtils.getHandler(player);
-		DragonMovementData md = handler.getMovementData();
-		MolangParser parser = MolangParser.INSTANCE;
+        MovementData movement = MovementData.getData(player);
+        float deltaTick = Minecraft.getInstance().getTimer().getRealtimeDeltaTicks();
+        float partialDeltaTick = Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(false);
 
-		parser.setValue("query.head_yaw", () -> md.headYaw);
-		parser.setValue("query.head_pitch", () -> md.headPitch);
+        if (dragon.neckLocked) {
+            MathParser.setVariable("query.head_yaw", () -> 0);
+            MathParser.setVariable("query.head_pitch", () -> 0);
+        } else {
+            MathParser.setVariable("query.head_yaw", () -> movement.headYaw);
+            MathParser.setVariable("query.head_pitch", () -> movement.headPitch);
+        }
 
-		double gravity = player.getAttributeValue(ForgeMod.ENTITY_GRAVITY.get());
-		parser.setValue("query.gravity", () -> gravity);
+        double gravity = player.getAttributeValue(Attributes.GRAVITY);
+        MathParser.setVariable("query.gravity", () -> gravity);
 
+        double bodyYawAvg;
+        double headYawAvg;
+        double headPitchAvg;
+        double verticalVelocityAvg;
 
-		double bodyYawAvg;
-		double headYawAvg;
-		double headPitchAvg;
-		double verticalVelocityAvg;
-		if (!ClientDragonRender.isOverridingMovementData) {
-			double bodyYawChange = Functions.angleDifference(md.bodyYaw, md.bodyYawLastFrame) / deltaTick * DELTA_YAW_PITCH_FACTOR;
-			double headYawChange = Functions.angleDifference(md.headYaw, md.headYawLastFrame) / deltaTick * DELTA_YAW_PITCH_FACTOR;
-			double headPitchChange = Functions.angleDifference(md.headPitch, md.headPitchLastFrame) / deltaTick * DELTA_YAW_PITCH_FACTOR;
+        if (!dragon.isInInventory) {
+            double bodyYawChange = Functions.angleDifference(movement.bodyYaw, movement.bodyYawLastFrame) / deltaTick * DELTA_YAW_PITCH_FACTOR;
+            double headYawChange = Functions.angleDifference(movement.headYaw, movement.headYawLastFrame) / deltaTick * DELTA_YAW_PITCH_FACTOR;
+            double headPitchChange = Functions.angleDifference(movement.headPitch, movement.headPitchLastFrame) / deltaTick * DELTA_YAW_PITCH_FACTOR;
 
-			double verticalVelocity = Mth.lerp(partialTick, md.deltaMovementLastFrame.y, md.deltaMovement.y) * DELTA_MOVEMENT_FACTOR;
-			// Factor in the vertical angle of the dragon so that the vertical velocity is scaled down when the dragon is looking up or down
-			// Ideally, we would just use more precise data (factor in the full rotation of the player in our animations)
-			// but this works pretty well in most situations the player will encounter
-			verticalVelocity *= 1 - Mth.abs(Mth.clampedMap(md.prevXRot, -90, 90, -1, 1));
+            double verticalVelocity = Mth.lerp(partialDeltaTick, movement.deltaMovementLastFrame.y, movement.deltaMovement.y) * DELTA_MOVEMENT_FACTOR;
+            // Factor in the vertical angle of the dragon so that the vertical velocity is scaled down when the dragon is looking up or down
+            // Ideally, we would just use more precise data (factor in the full rotation of the player in our animations)
+            // but this works pretty well in most situations the player will encounter
+            verticalVelocity *= 1 - Mth.abs(Mth.clampedMap(movement.prevXRot, -90, 90, -1, 1));
 
-			float deltaTickFor60FPS = AnimationUtils.getDeltaTickFor60FPS();
-			// Accumulate them in the history
-			while (dragon.bodyYawHistory.size() > 10 / deltaTickFor60FPS) {
-				dragon.bodyYawHistory.remove(0);
-			}
-			dragon.bodyYawHistory.add(bodyYawChange);
+            float deltaTickFor60FPS = AnimationUtils.getDeltaTickFor60FPS();
+            int removeSize = (int) (10 / deltaTickFor60FPS);
 
-			while (dragon.headYawHistory.size() > 10 / deltaTickFor60FPS) {
-				dragon.headYawHistory.remove(0);
-			}
-			dragon.headYawHistory.add(headYawChange);
+            // Handle the clear case (see DragonEntity.java)
+            if (dragon.clearVerticalVelocity) {
+                dragon.verticalVelocityHistory.clear();
 
-			while (dragon.headPitchHistory.size() > 10 / deltaTickFor60FPS) {
-				dragon.headPitchHistory.remove(0);
-			}
-			dragon.headPitchHistory.add(headPitchChange);
+                while (dragon.verticalVelocityHistory.size() < removeSize) {
+                    dragon.verticalVelocityHistory.add(0d);
+                }
+            }
 
-			// Handle the clear case (see DragonEntity.java)
-			if (dragon.clearVerticalVelocity) {
-				dragon.verticalVelocityHistory.clear();
-				while (dragon.verticalVelocityHistory.size() < 10 / deltaTickFor60FPS) {
-					dragon.verticalVelocityHistory.add(0.);
-				}
-			}
+            while (true) {
+                boolean removedElement = false;
 
-			while (dragon.verticalVelocityHistory.size() > 10 / deltaTickFor60FPS) {
-				dragon.verticalVelocityHistory.remove(0);
-			}
-			dragon.verticalVelocityHistory.add(verticalVelocity);
+                if (dragon.bodyYawHistory.size() > removeSize) {
+                    dragon.bodyYawHistory.removeFirst();
+                    removedElement = true;
+                }
 
-			bodyYawAvg = dragon.bodyYawHistory.stream().mapToDouble(Double::doubleValue).average().orElse(0);
-			headYawAvg = dragon.headYawHistory.stream().mapToDouble(Double::doubleValue).average().orElse(0);
-			headPitchAvg = dragon.headPitchHistory.stream().mapToDouble(Double::doubleValue).average().orElse(0);
-			verticalVelocityAvg = dragon.verticalVelocityHistory.stream().mapToDouble(Double::doubleValue).average().orElse(0);
-		} else {
-			bodyYawAvg = 0;
-			headYawAvg = 0;
-			headPitchAvg = 0;
-			verticalVelocityAvg = 0;
-		}
+                if (dragon.headYawHistory.size() > removeSize) {
+                    dragon.headYawHistory.removeFirst();
+                    removedElement = true;
+                }
+
+                if (dragon.headPitchHistory.size() > removeSize) {
+                    dragon.headPitchHistory.removeFirst();
+                    removedElement = true;
+                }
+
+                if (dragon.verticalVelocityHistory.size() > removeSize) {
+                    dragon.verticalVelocityHistory.removeFirst();
+                    removedElement = true;
+                }
+
+                if (!removedElement) {
+                    break;
+                }
+            }
+
+            dragon.bodyYawHistory.add(bodyYawChange);
+            dragon.headYawHistory.add(headYawChange);
+            dragon.headPitchHistory.add(headPitchChange);
+            dragon.verticalVelocityHistory.add(verticalVelocity);
+
+            bodyYawAvg = dragon.bodyYawHistory.stream().mapToDouble(Double::doubleValue).average().orElse(0);
+            headYawAvg = dragon.headYawHistory.stream().mapToDouble(Double::doubleValue).average().orElse(0);
+            headPitchAvg = dragon.headPitchHistory.stream().mapToDouble(Double::doubleValue).average().orElse(0);
+            verticalVelocityAvg = dragon.verticalVelocityHistory.stream().mapToDouble(Double::doubleValue).average().orElse(0);
+        } else {
+            bodyYawAvg = 0;
+            headYawAvg = 0;
+            headPitchAvg = 0;
+            verticalVelocityAvg = 0;
+        }
 
         // Clear out any NaNs that may have been caused by the average calculation (I think this happens if we try to load data before the game logic has actually begun?
         bodyYawAvg = Double.isNaN(bodyYawAvg) ? 0 : bodyYawAvg;
@@ -127,87 +145,145 @@ public class DragonModel extends GeoModel<DragonEntity> {
         headPitchAvg = Double.isNaN(headPitchAvg) ? 0 : headPitchAvg;
         verticalVelocityAvg = Double.isNaN(verticalVelocityAvg) ? 0 : verticalVelocityAvg;
 
-		double lerpRate = Math.min(1., deltaTick);
-		dragon.currentBodyYawChange = Mth.lerp(lerpRate, dragon.currentBodyYawChange, bodyYawAvg);
-		dragon.currentHeadYawChange = Mth.lerp(lerpRate, dragon.currentHeadYawChange, headYawAvg);
-		dragon.currentHeadPitchChange = Mth.lerp(lerpRate, dragon.currentHeadPitchChange, headPitchAvg);
-		if(dragon.clearVerticalVelocity) {
-			dragon.currentTailMotionUp = 0;
-			dragon.clearVerticalVelocity = false;
-		} else {
-			dragon.currentTailMotionUp = Mth.lerp(lerpRate, dragon.currentTailMotionUp, -verticalVelocityAvg);
-		}
+        double lerpRate = Math.min(1, deltaTick);
+        dragon.currentBodyYawChange = Mth.lerp(lerpRate, dragon.currentBodyYawChange, bodyYawAvg);
+        dragon.currentHeadYawChange = Mth.lerp(lerpRate, dragon.currentHeadYawChange, headYawAvg);
+        dragon.currentHeadPitchChange = Mth.lerp(lerpRate, dragon.currentHeadPitchChange, headPitchAvg);
 
-        double finalBodyYawAvg = bodyYawAvg;
-        double finalHeadYawAvg = headYawAvg;
-        double finalHeadPitchAvg = headPitchAvg;
-        double finalVerticalVelocityAvg = verticalVelocityAvg;
-        parser.setValue("query.body_yaw_change", () -> Mth.lerp(lerpRate, dragon.currentBodyYawChange, finalBodyYawAvg));
-        parser.setValue("query.head_yaw_change", () -> Mth.lerp(lerpRate, dragon.currentHeadPitchChange, finalHeadYawAvg));
-        parser.setValue("query.head_pitch_change", () -> Mth.lerp(lerpRate, dragon.currentHeadYawChange, finalHeadPitchAvg));
-        parser.setValue("query.tail_motion_up", () -> Mth.lerp(lerpRate, dragon.currentTailMotionUp, -finalVerticalVelocityAvg));
-	}
-	
-	@Override
-	public ResourceLocation getModelResource(final DragonEntity dragon) {
-		return model;
-	}
+        if (dragon.clearVerticalVelocity) {
+            dragon.currentTailMotionUp = 0;
+            dragon.clearVerticalVelocity = false;
+        } else {
+            dragon.currentTailMotionUp = Mth.lerp(lerpRate, dragon.currentTailMotionUp, -verticalVelocityAvg);
+        }
 
-	public ResourceLocation getTextureResource(final DragonEntity dragon) {
-		if (dragon.playerId != null || dragon.getPlayer() != null) {
-			DragonStateHandler handler = DragonUtils.getHandler(dragon.getPlayer());
-			SkinAgeGroup ageGroup = handler.getSkinData().skinPreset.skinAges.get(handler.getLevel()).get();
+        if (dragon.tailLocked) {
+            MathParser.setVariable("query.tail_motion_up", () -> 0);
+            MathParser.setVariable("query.body_yaw_change", () -> 0);
+        } else {
+            MathParser.setVariable("query.body_yaw_change", () -> dragon.currentBodyYawChange);
+            MathParser.setVariable("query.tail_motion_up", () -> dragon.currentTailMotionUp);
+        }
 
-			if (handler.getSkinData().recompileSkin) {
-				DragonEditorHandler.generateSkinTextures(dragon);
-			}
+        MathParser.setVariable("query.head_yaw_change", () -> dragon.currentHeadYawChange);
+        MathParser.setVariable("query.head_pitch_change", () -> dragon.currentHeadPitchChange);
+    }
 
-			if (handler.getSkinData().blankSkin) {
-				return new ResourceLocation(DragonSurvivalMod.MODID, "textures/dragon/blank_skin_" + handler.getTypeNameLowerCase() + ".png");
-			}
+    @Override
+    public ResourceLocation getModelResource(final DragonEntity dragon) {
+        ResourceLocation model;
 
-			if (ageGroup.defaultSkin) {
-				if (currentTexture != null) {
-					return currentTexture;
-				}
+        if (dragon.getPlayer() == null) {
+            model = DragonBody.DEFAULT_MODEL;
+        } else {
+            model = DragonStateProvider.getData(dragon.getPlayer()).getModel();
+        }
 
-				return new ResourceLocation(DragonSurvivalMod.MODID, "textures/dragon/" + handler.getTypeNameLowerCase() + "_" + handler.getLevel().name.toLowerCase(Locale.ENGLISH) + ".png");
-			}
+        model = model.withPrefix("geo/").withSuffix(".geo.json");
 
-			if (handler.getSkinData().isCompiled && currentTexture == null) {
-				return new ResourceLocation(DragonSurvivalMod.MODID, "dynamic_normal_" + dragon.getPlayer().getStringUUID() + "_" + handler.getLevel().name);
-			}
-		}
+        try {
+            getBakedModel(model);
+        } catch (Exception e) {
+            DragonSurvival.LOGGER.error("Model not found for dragon species: {}", Translation.Type.DRAGON_SPECIES.wrap(DragonStateProvider.getData(dragon.getPlayer()).speciesKey().location()));
+            return DragonBody.DEFAULT_MODEL;
+        }
 
-		if (currentTexture == null && dragon.getPlayer() instanceof FakeClientPlayer) {
-			LocalPlayer localPlayer = Minecraft.getInstance().player;
+        return model;
+    }
 
-			if (localPlayer != null) { // TODO :: Check if skin is compiled?
-				return new ResourceLocation(DragonSurvivalMod.MODID, "dynamic_normal_" + localPlayer.getStringUUID() + "_" + DragonUtils.getHandler(dragon.getPlayer()).getLevel().name);
-			}
-		}
+    @Override
+    public ResourceLocation getTextureResource(final DragonEntity dragon) {
+        if (overrideTexture != null && RenderingUtils.hasTexture(overrideTexture)) {
+            return overrideTexture;
+        }
 
-		return currentTexture == null ? defaultTexture : currentTexture;
-	}
+        Player player;
 
-	public void setCurrentTexture(final ResourceLocation currentTexture) {
-		this.currentTexture = currentTexture;
-	}
+        if (dragon.overrideUUIDWithLocalPlayerForTextureFetch) {
+            player = Minecraft.getInstance().player;
+        } else {
+            player = dragon.getPlayer();
+        }
 
-	@Override
-	public ResourceLocation getAnimationResource(final DragonEntity dragon) {
-		if (dragon.playerId != null || dragon.getPlayer() != null) {
-			DragonStateHandler handler = DragonUtils.getHandler(dragon.getPlayer());
-			AbstractDragonBody body = handler.getBody();
-			if (body != null) {
-				return new ResourceLocation(DragonSurvivalMod.MODID, String.format("animations/dragon_%s.json", body.getBodyName().toLowerCase(Locale.ENGLISH)));
-			}
-		}
-		return new ResourceLocation(DragonSurvivalMod.MODID, "animations/dragon.animations.json");
-	}
+        if (player == null) {
+            return defaultTexture;
+        }
 
-	@Override
-	public RenderType getRenderType(final DragonEntity animatable, final ResourceLocation texture) {
-		return RenderType.entityCutout(texture);
-	}
+        DragonStateHandler handler = DragonStateProvider.getData(player);
+        DragonStageCustomization customization = handler.getCurrentStageCustomization();
+
+        // Don't try to fetch skins if it is a fake client player; the only case where we need custom skins for a fake client player
+        // is in the dragon skins screen, and we already have special logic for that outside of this getTextureResource method
+        if (handler.getModel().equals(DragonBody.DEFAULT_MODEL) && !(player instanceof FakeClientPlayer)) {
+            ResourceLocation skin = DragonSkins.getPlayerSkin(player, handler.stageKey());
+
+            if (RenderingUtils.hasTexture(skin)) {
+                return skin;
+            }
+        }
+
+        if (handler.getSkinData().blankSkin) {
+            return DragonSurvival.res("textures/dragon/" + handler.speciesId().getPath() + "/blank_skin.png");
+        }
+
+        ResourceKey<DragonStage> stageKey = handler.stageKey();
+        if (handler.needsSkinRecompilation()) {
+            DragonEditorHandler.generateSkinTextures(dragon);
+            handler.getSkinData().isCompiled.put(handler.stageKey(), true);
+            handler.getSkinData().recompileSkin.put(handler.stageKey(), false);
+        }
+
+        ResourceLocation texture = dynamicTexture(player, handler, false);
+
+        // Show the default skin while we are compiling if we haven't already compiled the skin
+        if (customization.defaultSkin || !handler.getSkinData().isCompiled.getOrDefault(stageKey, false)) {
+            return StageResources.getDefaultSkin(handler.species(), handler.stageKey(), false);
+        }
+
+        if (!DragonEditorHandler.hasGeneratedSkinTexture(texture)) {
+            DragonEditorHandler.generateSkinTextures(dragon);
+        }
+
+        DragonEditorHandler.markSkinTextureUsed(texture);
+        return texture;
+    }
+
+    public static ResourceLocation dynamicTexture(final Player player, final DragonStateHandler handler, boolean isGlowLayer) {
+        String prefix = isGlowLayer ? "dynamic_glow_" : "dynamic_normal_";
+        return DragonSurvival.res(prefix + player.getStringUUID() + "_" + handler.speciesId().getPath() + "_" + handler.stageKey().location().getPath());
+    }
+
+    @Override
+    public ResourceLocation getAnimationResource(final DragonEntity dragon) {
+        Player player = dragon.getPlayer();
+        return getAnimationResource(player);
+    }
+
+    @Override // GeoEntityRenderer#getRenderType handles invisible and glowing
+    public RenderType getRenderType(final DragonEntity animatable, final ResourceLocation texture) {
+        Player player = animatable.getPlayer();
+
+        if (player != null && HunterData.hasTransparency(player)) {
+            return RenderType.itemEntityTranslucentCull(texture);
+        }
+
+        return RenderType.entityCutout(texture);
+    }
+
+    public void setOverrideTexture(final ResourceLocation overrideTexture) {
+        this.overrideTexture = overrideTexture;
+    }
+
+    public static ResourceLocation getAnimationResource(final Player player) {
+        if (player != null) {
+            DragonStateHandler handler = DragonStateProvider.getData(player);
+            Holder<DragonBody> body = handler.body();
+
+            if (body != null) {
+                return body.value().animation().withPrefix("animations/").withSuffix(".json");
+            }
+        }
+
+        return DragonSurvival.res("animations/dragon_center.json");
+    }
 }

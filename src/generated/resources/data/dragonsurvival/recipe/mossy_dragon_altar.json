@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "minecraft:mossy_cobblestone"
+    },
+    {
+      "item": "dragonsurvival:elder_dragon_bone"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "dragonsurvival:mossy_dragon_altar"
+  }
+}

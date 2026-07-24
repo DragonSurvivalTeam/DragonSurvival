@@ -1,0 +1,14 @@
+{
+  "structures": [
+    {
+      "structure": "dragonsurvival:dragon_hunters_castle",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 1579761354,
+    "spacing": 36,
+    "separation": 30
+  }
+}

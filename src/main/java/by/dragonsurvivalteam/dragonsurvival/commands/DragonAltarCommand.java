@@ -1,29 +1,26 @@
 package by.dragonsurvivalteam.dragonsurvival.commands;
 
-import by.dragonsurvivalteam.dragonsurvival.network.NetworkHandler;
 import by.dragonsurvivalteam.dragonsurvival.network.container.OpenDragonAltar;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.tree.LiteralCommandNode;
-import com.mojang.brigadier.tree.RootCommandNode;
 import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.network.PacketDistributor;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import static net.minecraft.commands.Commands.literal;
 
+public class DragonAltarCommand {
+    public static void register(final CommandDispatcher<CommandSourceStack> dispatcher) {
+        dispatcher.getRoot().addChild(literal("dragon-altar")
+                .requires(source -> source.hasPermission(Commands.LEVEL_GAMEMASTERS))
+                .executes(context -> runCommand(context.getSource().getPlayerOrException()))
+                .build()
+        );
+    }
 
-public class DragonAltarCommand{
-	public static void register(CommandDispatcher<CommandSourceStack> commandDispatcher){
-		RootCommandNode<CommandSourceStack> rootCommandNode = commandDispatcher.getRoot();
-		LiteralCommandNode<CommandSourceStack> dragon = literal("dragon-altar").requires(commandSource -> commandSource.hasPermission(2)).executes(context -> {
-			return runCommand(context.getSource().getPlayerOrException());
-		}).build();
-
-		rootCommandNode.addChild(dragon);
-	}
-
-	private static int runCommand(ServerPlayer serverPlayer){
-		NetworkHandler.CHANNEL.send(PacketDistributor.PLAYER.with(() -> serverPlayer), new OpenDragonAltar());
-		return 1;
-	}
+    private static int runCommand(final ServerPlayer player) {
+        PacketDistributor.sendToPlayer(player, new OpenDragonAltar(DragonSpecies.getSpecies(player, true)));
+        return 1;
+    }
 }

@@ -1,24 +1,25 @@
 package by.dragonsurvivalteam.dragonsurvival.common.blocks;
 
-import by.dragonsurvivalteam.dragonsurvival.client.particles.TreasureParticleData;
-import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
-import by.dragonsurvivalteam.dragonsurvival.network.NetworkHandler;
-import by.dragonsurvivalteam.dragonsurvival.network.status.SyncTreasureRestStatus;
-import by.dragonsurvivalteam.dragonsurvival.util.DragonUtils;
+import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
+import by.dragonsurvivalteam.dragonsurvival.common.particles.TreasureParticleOption;
+import by.dragonsurvivalteam.dragonsurvival.network.status.SyncResting;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.TreasureRestData;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
+import net.minecraft.util.FastColor;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.FallingBlockEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -42,249 +43,266 @@ import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
-import net.minecraft.world.phys.shapes.EntityCollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
-import software.bernie.geckolib.core.object.Color;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
 
-public class TreasureBlock extends FallingBlock implements SimpleWaterloggedBlock{
-	public static final IntegerProperty LAYERS = BlockStateProperties.LAYERS;
-	public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
+public class TreasureBlock extends FallingBlock implements SimpleWaterloggedBlock, ModCompat {
+    @Translation(comments = "■§7 Creatures can sleep on treasure to regenerate health and mana. Gathering more treasure increases the speed of the regeneration. Build your horde and show off your wealth!")
+    private static final String TREASURE = Translation.Type.DESCRIPTION.wrap("treasure");
 
-	protected static final VoxelShape[] SHAPE_BY_LAYER = new VoxelShape[]{Shapes.empty(), Block.box(0.0D, 0.0D, 0.0D, 16.0D, 2.0D, 16.0D), Block.box(0.0D, 0.0D, 0.0D, 16.0D, 4.0D, 16.0D), Block.box(0.0D, 0.0D, 0.0D, 16.0D, 6.0D, 16.0D), Block.box(0.0D, 0.0D, 0.0D, 16.0D, 8.0D, 16.0D), Block.box(0.0D, 0.0D, 0.0D, 16.0D, 10.0D, 16.0D), Block.box(0.0D, 0.0D, 0.0D, 16.0D, 12.0D, 16.0D), Block.box(0.0D, 0.0D, 0.0D, 16.0D, 14.0D, 16.0D), Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D)};
+    public static final IntegerProperty LAYERS = BlockStateProperties.LAYERS;
+    public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
-	private final Color effectColor;
+    protected static final VoxelShape[] SHAPE_BY_LAYER = new VoxelShape[]{Shapes.empty(), Block.box(0.0D, 0.0D, 0.0D, 16.0D, 2.0D, 16.0D), Block.box(0.0D, 0.0D, 0.0D, 16.0D, 4.0D, 16.0D), Block.box(0.0D, 0.0D, 0.0D, 16.0D, 6.0D, 16.0D), Block.box(0.0D, 0.0D, 0.0D, 16.0D, 8.0D, 16.0D), Block.box(0.0D, 0.0D, 0.0D, 16.0D, 10.0D, 16.0D), Block.box(0.0D, 0.0D, 0.0D, 16.0D, 12.0D, 16.0D), Block.box(0.0D, 0.0D, 0.0D, 16.0D, 14.0D, 16.0D), Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D)};
 
-	public TreasureBlock(Color c, Properties p_i48328_1_){
-		super(p_i48328_1_);
-		registerDefaultState(stateDefinition.any().setValue(LAYERS, 1).setValue(WATERLOGGED, false));
-		effectColor = c;
-	}
+    private final String compatId;
+    private final int effectColor;
 
+    public TreasureBlock(int effectColor, Properties properties) {
+        this(effectColor, properties, null);
+    }
 
-	@Override
-	public boolean isPathfindable(BlockState p_196266_1_, BlockGetter p_196266_2_, BlockPos p_196266_3_, PathComputationType p_196266_4_){
-		return switch(p_196266_4_){
-			case LAND -> p_196266_1_.getValue(LAYERS) < 5;
-			case WATER -> false;
-			case AIR -> false;
-			default -> false;
-		};
-	}
+    public TreasureBlock(final int effectColor, final Properties properties, final String compatId) {
+        super(properties);
+        this.compatId = compatId;
+        this.effectColor = effectColor;
 
-	@Override
-	public InteractionResult use(BlockState p_225533_1_, Level world, BlockPos p_225533_3_, Player player, InteractionHand hand, BlockHitResult p_225533_6_){
-		if(DragonUtils.isDragon(player) && player.getItemInHand(hand).isEmpty()){
-			if(player.getFeetBlockState().getBlock() == p_225533_1_.getBlock()){
-				DragonStateHandler handler = DragonUtils.getHandler(player);
+        registerDefaultState(stateDefinition.any().setValue(LAYERS, 1).setValue(WATERLOGGED, false));
+    }
 
-				if(!handler.treasureResting){
-					if(world.isClientSide()){
-						handler.treasureResting = true;
-						NetworkHandler.CHANNEL.sendToServer(new SyncTreasureRestStatus(player.getId(), true));
-					}
+    @Override
+    public @Nullable String getCompatId() {
+        return compatId;
+    }
 
-					return InteractionResult.SUCCESS;
-				}
+    @Override
+    public boolean isPathfindable(@NotNull BlockState state, PathComputationType pPathComputationType) {
+        return switch (pPathComputationType) {
+            case LAND -> state.getValue(LAYERS) < 5;
+            case WATER, AIR -> false;
+        };
+    }
 
-				if(!world.isClientSide()){
-					player.resetStat(Stats.CUSTOM.get(Stats.TIME_SINCE_REST));
-					ServerPlayer serverplayerentity = (ServerPlayer)player;
-					if(serverplayerentity.getRespawnPosition() == null || serverplayerentity.getRespawnDimension() != world.dimension() || serverplayerentity.getRespawnPosition() != null && !serverplayerentity.getRespawnPosition().equals(p_225533_3_) && serverplayerentity.getRespawnPosition().distSqr(p_225533_3_) > 40){
-						serverplayerentity.setRespawnPosition(world.dimension(), p_225533_3_, 0.0F, false, true);
-						return InteractionResult.SUCCESS;
-					}
-				}
-			}
-		}
+    @Override
+    public @NotNull InteractionResult useWithoutItem(@NotNull final BlockState state, @NotNull final Level level, @NotNull final BlockPos position, @NotNull final Player player, @NotNull final BlockHitResult hitResult) {
+        if (!DragonStateProvider.isDragon(player)) {
+            return InteractionResult.PASS;
+        }
 
-		return super.use(p_225533_1_, world, p_225533_3_, player, hand, p_225533_6_);
-	}
+        if (player.getBlockStateOn().getBlock() == state.getBlock()) {
+            TreasureRestData treasureData = TreasureRestData.getData(player);
+            treasureData.setResting(true);
 
-	@Override
-	public boolean useShapeForLightOcclusion(BlockState p_220074_1_){
-		return true;
-	}
+            if (player instanceof ServerPlayer serverPlayer) {
+                serverPlayer.resetStat(Stats.CUSTOM.get(Stats.TIME_SINCE_REST));
+                serverPlayer.serverLevel().updateSleepingPlayerList();
+                PacketDistributor.sendToPlayersTrackingEntityAndSelf(serverPlayer, new SyncResting(serverPlayer.getId(), treasureData.isResting()));
 
-	@Override
-	public Optional<Vec3> getRespawnPosition(BlockState state, EntityType<?> type, LevelReader levelReader, BlockPos pos, float orientation, LivingEntity entity){
-		if(levelReader instanceof Level){
-			return RespawnAnchorBlock.findStandUpPosition(type, levelReader, pos);
-		}
+                BlockPos respawnPosition = serverPlayer.getRespawnPosition();
 
-		return Optional.empty();
-	}
+                if (respawnPosition == null || serverPlayer.getRespawnDimension() != level.dimension() || !respawnPosition.equals(position) && respawnPosition.distSqr(position) > 40) {
+                    serverPlayer.setRespawnPosition(level.dimension(), position, 0, false, true);
+                }
+            }
 
-	@Override
-	public boolean isBed(BlockState state, BlockGetter level, BlockPos pos, @Nullable Entity player){
-		return DragonUtils.isDragon(player);
-	}
+            return InteractionResult.sidedSuccess(level.isClientSide());
+        }
 
-	@Override
-	public FluidState getFluidState(BlockState state){
-		return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
-	}
+        return super.useWithoutItem(state, level, position, player, hitResult);
+    }
 
-	@Override
-	public boolean canBeReplaced(BlockState p_196253_1_, BlockPlaceContext p_196253_2_){
-		int i = p_196253_1_.getValue(LAYERS);
+    @Override
+    public boolean useShapeForLightOcclusion(@NotNull BlockState blockState) {
+        return true;
+    }
 
-		if(p_196253_2_.getItemInHand().getItem() == asItem() && i < 8){
-			if(p_196253_2_.replacingClickedOnBlock()){
-				return p_196253_2_.getClickedFace() == Direction.UP;
-			}
-		}
+    @Override
+    public @NotNull Optional<ServerPlayer.RespawnPosAngle> getRespawnPosition(@NotNull BlockState state, @NotNull EntityType<?> type, @NotNull LevelReader levelReader, @NotNull BlockPos pos, float orientation) {
+        if (levelReader instanceof Level) {
+            Optional<Vec3> standUpPosition = RespawnAnchorBlock.findStandUpPosition(type, levelReader, pos);
+            if (standUpPosition.isPresent()) {
+                return Optional.of(new ServerPlayer.RespawnPosAngle(standUpPosition.get(), orientation));
+            }
+        }
 
-		return false;
-	}
+        return Optional.empty();
+    }
 
-	@Override
-	public VoxelShape getBlockSupportShape(BlockState p_230335_1_, BlockGetter p_230335_2_, BlockPos p_230335_3_){
-		return SHAPE_BY_LAYER[p_230335_1_.getValue(LAYERS)];
-	}
+    @Override
+    public boolean isBed(@NotNull BlockState state, @NotNull BlockGetter level, @NotNull BlockPos pos, @NotNull LivingEntity sleeper) {
+        return DragonStateProvider.isDragon(sleeper);
+    }
 
-	@Override
-	@OnlyIn( Dist.CLIENT )
-	public float getShadeBrightness(BlockState p_220080_1_, BlockGetter p_220080_2_, BlockPos p_220080_3_){
-		return 1.0F;
-	}
+    @Override
+    public @NotNull FluidState getFluidState(BlockState state) {
+        return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
+    }
 
-	@Override
-	public VoxelShape getShape(BlockState p_220053_1_, BlockGetter p_220053_2_, BlockPos p_220053_3_, CollisionContext p_220053_4_){
-		return SHAPE_BY_LAYER[p_220053_1_.getValue(LAYERS)];
-	}
+    @Override
+    public boolean canBeReplaced(BlockState blockState, BlockPlaceContext context) {
+        int i = blockState.getValue(LAYERS);
 
-	@Override
-	public VoxelShape getCollisionShape(BlockState p_220071_1_, BlockGetter p_220071_2_, BlockPos p_220071_3_, CollisionContext p_220071_4_){
-		if(p_220071_4_ instanceof EntityCollisionContext && ((EntityCollisionContext)p_220071_4_).getEntity() instanceof FallingBlockEntity){
-			return SHAPE_BY_LAYER[p_220071_1_.getValue(LAYERS)];
-		}
+        if (context.getItemInHand().getItem() == asItem() && i < 8) {
+            if (context.replacingClickedOnBlock()) {
+                return context.getClickedFace() == Direction.UP;
+            }
+        }
 
-		return SHAPE_BY_LAYER[Math.max(p_220071_1_.getValue(LAYERS) - 1, 0)];
-	}
+        return false;
+    }
 
-	@Override
-	public VoxelShape getVisualShape(BlockState p_230322_1_, BlockGetter p_230322_2_, BlockPos p_230322_3_, CollisionContext p_230322_4_){
-		return Shapes.empty();
-	}
+    @Override
+    public @NotNull VoxelShape getBlockSupportShape(@NotNull BlockState blockState, @NotNull BlockGetter blockGetter, @NotNull BlockPos blockPos) {
+        return SHAPE_BY_LAYER[blockState.getValue(LAYERS)];
+    }
 
-	@Override
-	public boolean propagatesSkylightDown(BlockState p_200123_1_, BlockGetter p_200123_2_, BlockPos p_200123_3_){
-		return true;
-	}
+    @Override
+    public float getShadeBrightness(@NotNull BlockState blockState, @NotNull BlockGetter blockGetter, @NotNull BlockPos blockPos) {
+        return 1.0F;
+    }
 
-	@Override
-	@Nullable
-	public BlockState getStateForPlacement(BlockPlaceContext p_196258_1_){
-		BlockState blockstate = p_196258_1_.getLevel().getBlockState(p_196258_1_.getClickedPos());
-		if(blockstate.is(this)){
-			int i = blockstate.getValue(LAYERS);
-			return blockstate.setValue(LAYERS, Integer.valueOf(Math.min(8, i + 1))).setValue(WATERLOGGED, p_196258_1_.getLevel().getFluidState(p_196258_1_.getClickedPos()).getType() == Fluids.WATER);
-		}else{
-			return super.getStateForPlacement(p_196258_1_).setValue(WATERLOGGED, p_196258_1_.getLevel().getFluidState(p_196258_1_.getClickedPos()).getType() == Fluids.WATER);
-		}
-	}
+    @Override
+    public @NotNull VoxelShape getShape(BlockState blockState, @NotNull BlockGetter blockGetter, @NotNull BlockPos blockPos, @NotNull CollisionContext context) {
+        return SHAPE_BY_LAYER[blockState.getValue(LAYERS)];
+    }
 
-	@Override
-	public boolean isPossibleToRespawnInThis(@NotNull final BlockState ignored) {
-		return true;
-	}
+    @Override
+    public @NotNull VoxelShape getCollisionShape(@NotNull BlockState blockState, @NotNull BlockGetter blockGetter, @NotNull BlockPos blockPos, @NotNull CollisionContext context) {
+        return SHAPE_BY_LAYER[Math.max(blockState.getValue(LAYERS), 0)];
+    }
 
-	@Override
-	protected void createBlockStateDefinition(Builder<Block, BlockState> p_206840_1_){
-		p_206840_1_.add(LAYERS);
-		p_206840_1_.add(WATERLOGGED);
-	}
+    @Override
+    public @NotNull VoxelShape getVisualShape(@NotNull BlockState blockState, @NotNull BlockGetter blockGetter, @NotNull BlockPos blockPos, @NotNull CollisionContext context) {
+        return Shapes.empty();
+    }
 
-	@Override
-	public void appendHoverText(ItemStack pStack, @org.jetbrains.annotations.Nullable BlockGetter pLevel, List<net.minecraft.network.chat.Component> pTooltip, TooltipFlag pFlag){
-		super.appendHoverText(pStack, pLevel, pTooltip, pFlag);
-		pTooltip.add(Component.translatable("ds.description.treasures"));
-	}
+    @Override
+    public boolean propagatesSkylightDown(@NotNull BlockState blockState, @NotNull BlockGetter blockGetter, @NotNull BlockPos blockPos) {
+        return true;
+    }
 
-	@Override
-	public void onBrokenAfterFall(Level world, BlockPos pos, FallingBlockEntity entity){
-		BlockState state = world.getBlockState(pos);
-		if(state.getBlock() instanceof TreasureBlock){
-			if(state.getBlock() == entity.getBlockState().getBlock()){
-				int i = state.getValue(LAYERS);
-				world.setBlockAndUpdate(pos, state.setValue(LAYERS, Integer.valueOf(Math.min(8, i + entity.getBlockState().getValue(LAYERS)))));
-			}
-		}
-	}
+    @Override
+    public @Nullable BlockState getStateForPlacement(final BlockPlaceContext context) {
+        BlockState clickedState = context.getLevel().getBlockState(context.getClickedPos());
 
-	@Override
-	public BlockState updateShape(BlockState pState, Direction pFacing, BlockState pFacingState, LevelAccessor pLevel, BlockPos pCurrentPos, BlockPos pFacingPos){
-		if(pState.getValue(WATERLOGGED)){
-			pLevel.scheduleTick(pCurrentPos, Fluids.WATER, Fluids.WATER.getTickDelay(pLevel));
-		}
-		pLevel.scheduleTick(pCurrentPos, this, getDelayAfterPlace());
-		return super.updateShape(pState, pFacing, pFacingState, pLevel, pCurrentPos, pFacingPos);
-	}
+        if (clickedState.is(this)) {
+            int layers = clickedState.getValue(LAYERS);
+            return clickedState.setValue(LAYERS, Math.min(8, layers + 1)).setValue(WATERLOGGED, context.getLevel().getFluidState(context.getClickedPos()).getType() == Fluids.WATER);
+        } else {
+            BlockState state = super.getStateForPlacement(context);
 
-	@Override
-	public void tick(BlockState p_225534_1_, ServerLevel p_225534_2_, BlockPos p_225534_3_, RandomSource p_225534_4_){
-		boolean belowEmpty = isFree(p_225534_2_.getBlockState(p_225534_3_.below())) && p_225534_3_.getY() >= p_225534_2_.getMinBuildHeight();
-		boolean lowerLayer = p_225534_2_.getBlockState(p_225534_3_.below()).getBlock() == p_225534_1_.getBlock() && p_225534_2_.getBlockState(p_225534_3_.below()).getValue(LAYERS) < 8;
-		if(belowEmpty || lowerLayer){
-			FallingBlockEntity fallingblockentity = new FallingBlockEntity(p_225534_2_, (double)p_225534_3_.getX() + 0.5D, p_225534_3_.getY(), (double)p_225534_3_.getZ() + 0.5D, p_225534_2_.getBlockState(p_225534_3_)){
-				@Override
-				public void tick(){
-					BlockState state = level().getBlockState(blockPosition().below());
+            if (state == null) {
+                return null;
+            }
 
-					if(state.getBlock() == getBlockState().getBlock()){
-						int i = state.getValue(LAYERS);
+            return state.setValue(WATERLOGGED, context.getLevel().getFluidState(context.getClickedPos()).getType() == Fluids.WATER);
+        }
+    }
 
-						if(i > 0 && i < 8){
-							int missingLayers = 8 - i;
-							int newLayers = getBlockState().getValue(LAYERS);
-							int leftOver = 0;
+    @Override
+    public boolean isPossibleToRespawnInThis(@NotNull final BlockState ignored) {
+        return true;
+    }
 
-							if(newLayers > missingLayers){
-								leftOver = newLayers - missingLayers;
-								newLayers = missingLayers;
-							}
+    @Override
+    protected void createBlockStateDefinition(Builder<Block, BlockState> builder) {
+        builder.add(LAYERS);
+        builder.add(WATERLOGGED);
+    }
 
-							level().setBlockAndUpdate(blockPosition().below(), state.setValue(LAYERS, Integer.valueOf(Math.min(8, i + newLayers))));
+    @Override
+    public void appendHoverText(@NotNull ItemStack pStack, Item.@NotNull TooltipContext pContext, @NotNull List<Component> pTooltipComponents, @NotNull TooltipFlag pTooltipFlag) {
+        super.appendHoverText(pStack, pContext, pTooltipComponents, pTooltipFlag);
+        pTooltipComponents.add(Component.translatable(TREASURE));
+    }
 
-							if(leftOver > 0){
-								p_225534_2_.setBlock(blockPosition(), getBlockState().setValue(LAYERS, Integer.valueOf(Math.min(8, leftOver))), Block.UPDATE_ALL);
-							}else{
-								p_225534_2_.setBlock(p_225534_3_, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
-							}
+    @Override
+    public void onBrokenAfterFall(Level world, @NotNull BlockPos pos, @NotNull FallingBlockEntity entity) {
+        BlockState state = world.getBlockState(pos);
+        if (state.getBlock() instanceof TreasureBlock) {
+            if (state.getBlock() == entity.getBlockState().getBlock()) {
+                int i = state.getValue(LAYERS);
+                world.setBlockAndUpdate(pos, state.setValue(LAYERS, Math.min(8, i + entity.getBlockState().getValue(LAYERS))));
+            }
+        }
+    }
 
-							remove(RemovalReason.DISCARDED);
-							return;
-						}
-					}
+    @Override
+    protected @NotNull MapCodec<? extends FallingBlock> codec() {
+        return MapCodec.unit(this);
+    }
 
-					super.tick();
-				}
-			};
-			p_225534_2_.setBlock(p_225534_3_, p_225534_1_.getFluidState().createLegacyBlock(), Block.UPDATE_ALL);
-			p_225534_2_.addFreshEntity(fallingblockentity);
-			falling(fallingblockentity);
-		}
-	}
+    @Override
+    public @NotNull BlockState updateShape(BlockState pState, @NotNull Direction pFacing, @NotNull BlockState pFacingState, @NotNull LevelAccessor pLevel, @NotNull BlockPos pCurrentPos, @NotNull BlockPos pFacingPos) {
+        if (pState.getValue(WATERLOGGED)) {
+            pLevel.scheduleTick(pCurrentPos, Fluids.WATER, Fluids.WATER.getTickDelay(pLevel));
+        }
+        pLevel.scheduleTick(pCurrentPos, this, getDelayAfterPlace());
+        return super.updateShape(pState, pFacing, pFacingState, pLevel, pCurrentPos, pFacingPos);
+    }
 
-	@Override
-	@OnlyIn( Dist.CLIENT )
-	public void animateTick(BlockState block, Level world, BlockPos pos, RandomSource random){
-		double d1 = random.nextDouble();
-		double d2 = block.getValue(LAYERS) * (1.0 / 8) + .1;
-		double d3 = random.nextDouble();
+    @Override
+    public void tick(BlockState state, ServerLevel level, BlockPos blockPos, @NotNull RandomSource randomSource) {
+        boolean belowEmpty = isFree(level.getBlockState(blockPos.below())) && blockPos.getY() >= level.getMinBuildHeight();
+        boolean lowerLayer = level.getBlockState(blockPos.below()).getBlock() == state.getBlock() && level.getBlockState(blockPos.below()).getValue(LAYERS) < 8;
+        if (belowEmpty || lowerLayer) {
+            FallingBlockEntity fallingblockentity = new FallingBlockEntity(level, (double) blockPos.getX() + 0.5D, blockPos.getY(), (double) blockPos.getZ() + 0.5D, level.getBlockState(blockPos)) {
+                @Override
+                public void tick() {
+                    BlockState state = level().getBlockState(blockPosition().below());
 
-		if(world.isEmptyBlock(pos.above())){
-			if(random.nextInt(100) < 35){
-				world.addParticle(new TreasureParticleData(effectColor.getRed() / 255F, effectColor.getGreen() / 255F, effectColor.getBlue() / 255F, 1F), (double)pos.getX() + d1, (double)pos.getY() + d2, (double)pos.getZ() + d3, 0.0D, 0.0D, 0.0D);
-			}
-		}
-	}
+                    if (state.getBlock() == getBlockState().getBlock()) {
+                        int i = state.getValue(LAYERS);
+
+                        // TODO: This code snaps the block in place if it enters the same block as a treasure layer, even if the layer is only 1 block high. Maybe check for collisions with the actual voxel shape somehow?
+                        if (i > 0 && i < 8) {
+                            int missingLayers = 8 - i;
+                            int newLayers = getBlockState().getValue(LAYERS);
+                            int leftOver = 0;
+
+                            if (newLayers > missingLayers) {
+                                leftOver = newLayers - missingLayers;
+                                newLayers = missingLayers;
+                            }
+
+                            level().setBlockAndUpdate(blockPosition().below(), state.setValue(LAYERS, Math.min(8, i + newLayers)));
+
+                            if (leftOver > 0) {
+                                level().setBlock(blockPosition(), getBlockState().setValue(LAYERS, Math.min(8, leftOver)), Block.UPDATE_ALL);
+                            } else {
+                                level().setBlock(blockPos, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
+                            }
+
+                            remove(RemovalReason.DISCARDED);
+                            return;
+                        }
+                    }
+
+                    super.tick();
+                }
+            };
+            level.setBlock(blockPos, state.getFluidState().createLegacyBlock(), Block.UPDATE_ALL);
+            level.addFreshEntity(fallingblockentity);
+            falling(fallingblockentity);
+        }
+    }
+
+    @Override
+    public void animateTick(@NotNull BlockState block, Level level, BlockPos position, @NotNull RandomSource random) {
+        double xOffset = random.nextDouble();
+        double yOffset = block.getValue(LAYERS) * (1.0 / 8) + 0.1;
+        double zOffset = random.nextDouble();
+
+        if (level.isEmptyBlock(position.above())) {
+            if (random.nextInt(100) < 35) {
+                level.addParticle(new TreasureParticleOption(FastColor.ARGB32.red(effectColor) / 255F, FastColor.ARGB32.green(effectColor) / 255F, FastColor.ARGB32.blue(effectColor) / 255F, 1F), (double) position.getX() + xOffset, (double) position.getY() + yOffset, (double) position.getZ() + zOffset, 0, 0, 0);
+            }
+        }
+    }
 }

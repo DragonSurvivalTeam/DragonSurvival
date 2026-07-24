@@ -1,62 +1,46 @@
 package by.dragonsurvivalteam.dragonsurvival.network.claw;
 
-import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
+import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
-import by.dragonsurvivalteam.dragonsurvival.network.IMessage;
-import by.dragonsurvivalteam.dragonsurvival.network.NetworkHandler;
-import by.dragonsurvivalteam.dragonsurvival.network.client.ClientProxy;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ClawInventoryData;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.network.NetworkDirection;
-import net.minecraftforge.network.NetworkEvent;
-import net.minecraftforge.network.PacketDistributor;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.world.entity.player.Player;
+import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.function.Supplier;
+public record SyncDragonClawRender(int playerId, boolean shouldRender) implements CustomPacketPayload {
+    public static final Type<SyncDragonClawRender> TYPE = new Type<>(DragonSurvival.res("sync_dragon_claw_render"));
 
-public class SyncDragonClawRender implements IMessage<SyncDragonClawRender> {
-	public int playerId;
-	public boolean state;
+    public static final StreamCodec<FriendlyByteBuf, SyncDragonClawRender> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.VAR_INT, SyncDragonClawRender::playerId,
+            ByteBufCodecs.BOOL, SyncDragonClawRender::shouldRender,
+            SyncDragonClawRender::new
+    );
 
-	public SyncDragonClawRender() { /* Nothing to do */ }
+    public static void handleClient(final SyncDragonClawRender packet, final IPayloadContext context) {
+        context.enqueueWork(() -> {
+            if (context.player().level().getEntity(packet.playerId()) instanceof Player player) {
+                ClawInventoryData.getData(player).shouldRenderClaws = packet.shouldRender();
+            }
+        });
+    }
 
-	public SyncDragonClawRender(int playerId, boolean state) {
-		this.playerId = playerId;
-		this.state = state;
-	}
+    public static void handleServer(final SyncDragonClawRender packet, final IPayloadContext context) {
+        if (ServerConfig.syncClawRender) {
+            context.enqueueWork(() -> {
+                if (context.player().level().getEntity(packet.playerId()) instanceof Player player) {
+                    ClawInventoryData.getData(player).shouldRenderClaws = packet.shouldRender();
+                }
+            }).thenRun(() -> PacketDistributor.sendToPlayersTrackingEntityAndSelf(context.player(), packet));
+        }
+    }
 
-	@Override
-	public void encode(final SyncDragonClawRender message, final FriendlyByteBuf buffer) {
-		buffer.writeInt(message.playerId);
-		buffer.writeBoolean(message.state);
-	}
-
-	@Override
-	public SyncDragonClawRender decode(final FriendlyByteBuf buffer) {
-		int playerId = buffer.readInt();
-		boolean state = buffer.readBoolean();
-		return new SyncDragonClawRender(playerId, state);
-	}
-
-	@Override
-	public void handle(final SyncDragonClawRender message, final Supplier<NetworkEvent.Context> supplier) {
-		NetworkEvent.Context context = supplier.get();
-
-		if (context.getDirection() == NetworkDirection.PLAY_TO_CLIENT) {
-			context.enqueueWork(() -> ClientProxy.handleSyncDragonClawRender(message));
-		} else if (context.getDirection() == NetworkDirection.PLAY_TO_SERVER) {
-			ServerPlayer sender = context.getSender();
-
-			if (sender != null) {
-				DragonStateProvider.getCap(sender).ifPresent(handler -> handler.getClawToolData().shouldRenderClaws = message.state);
-
-				if (ServerConfig.syncClawRender) {
-					// Make the other clients aware of the changes (but only if the option to do so is enabled)
-					// TODO :: If a player hides their claw and then the server config changes, won't that claw stay hidden for other players (until restart)?
-					NetworkHandler.CHANNEL.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> sender), new SyncDragonClawRender(sender.getId(), message.state));
-				}
-			}
-		}
-
-		supplier.get().setPacketHandled(true);
-	}
+    @Override
+    public @NotNull Type<? extends CustomPacketPayload> type() {
+        return TYPE;
+    }
 }

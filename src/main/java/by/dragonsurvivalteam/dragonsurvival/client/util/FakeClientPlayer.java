@@ -2,123 +2,130 @@ package by.dragonsurvivalteam.dragonsurvival.client.util;
 
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
-
 import com.mojang.authlib.GameProfile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.stats.Stat;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
-import software.bernie.geckolib.core.animation.AnimationController;
-
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import software.bernie.geckolib.animation.AnimationController;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.UUID;
 import java.util.function.Supplier;
 
-@OnlyIn( Dist.CLIENT )
-public class FakeClientPlayer extends AbstractClientPlayer{
-	private static final ResourceLocation STEVE_SKIN_LOCATION = new ResourceLocation("textures/entity/player/slim/steve.png");
-	private static final ResourceLocation ALEX_SKIN_LOCATION = new ResourceLocation("textures/entity/player/slim/alex.png");
-	public DragonStateHandler handler = new DragonStateHandler();
-	public Supplier<String> animationSupplier = null;
-	public AnimationController<DragonEntity> animationController = null;
-	public Long lastAccessed;
-	public int number;
+public class FakeClientPlayer extends AbstractClientPlayer {
+    public final int number;
+    public boolean useVisualScale;
 
-	public FakeClientPlayer(int number){
-		super(Minecraft.getInstance().level, new GameProfile(UUID.randomUUID(), "FAKE_PLAYER_" + number));
-		this.number = number;
-	}
+    public double scale = -1;
 
-	@Override
-	public @NotNull ResourceLocation getSkinTextureLocation(){
-		return number % 2 == 0 ? STEVE_SKIN_LOCATION : ALEX_SKIN_LOCATION;
-	}
+    public DragonStateHandler handler = new DragonStateHandler();
+    public Supplier<String> animationSupplier = null;
+    public AnimationController<DragonEntity> animationController = null;
+    public Long lastAccessed;
 
-	@Override
-	public boolean shouldRender(double pX, double pY, double pZ){
-		return true;
-	}
+    public FakeClientPlayer(int number) {
+        //noinspection DataFlowIssue -> level is expected to be present
+        super(Minecraft.getInstance().level, new GameProfile(UUID.randomUUID(), "FAKE_PLAYER_" + number));
+        this.number = number;
+    }
 
-	@Override
-	public boolean shouldRenderAtSqrDistance(double pDistance){
-		return true;
-	}
+    @Override
+    public float getScale() {
+        if (scale == -1) {
+            return super.getScale();
+        }
 
-	@Override
-	public Packet<ClientGamePacketListener> getAddEntityPacket(){return null;}
+        return (float) scale;
+    }
 
-	@Override
-	public void tick(){return;}
+    @Override
+    public boolean shouldRender(double pX, double pY, double pZ) {
+        return true;
+    }
 
-	@Override
-	public void die(DamageSource source){return;}
+    @Override
+    public boolean shouldRenderAtSqrDistance(double pDistance) {
+        return true;
+    }
 
-	@Override
-	public void readAdditionalSaveData(CompoundTag pCompound){}
+    @Override
+    public void tick() {
+    }
 
-	@Override
-	public void addAdditionalSaveData(CompoundTag pCompound){}
+    @Override
+    public void die(@NotNull DamageSource source) {
+    }
 
-	@Override
-	public boolean isInvulnerableTo(DamageSource source){return true;}
+    @Override
+    public void readAdditionalSaveData(@NotNull CompoundTag pCompound) {
+    }
 
-	@Override
-	public boolean canHarmPlayer(Player player){return false;}
+    @Override
+    public void addAdditionalSaveData(@NotNull CompoundTag pCompound) {
+    }
 
-	@Override
-	public void displayClientMessage(Component chatComponent, boolean actionBar){}
+    @Override
+    public boolean isInvulnerableTo(@NotNull DamageSource source) {
+        return true;
+    }
 
-	@Override
-	public void awardStat(Stat par1StatBase, int par2){}
+    @Override
+    public boolean canHarmPlayer(@NotNull Player player) {
+        return false;
+    }
 
-	@Override
-	public boolean shouldShowName(){
-		return false;
-	}
+    @Override
+    public void displayClientMessage(@NotNull Component chatComponent, boolean actionBar) {
+    }
 
-	@Override
-	public Component getDisplayName(){
-		return Component.empty();
-	}
+    @Override
+    public void awardStat(@NotNull Stat par1StatBase, int par2) {
+    }
 
-	@Nonnull
-	@Override
-	public <T> LazyOptional<T> getCapability(
-		@Nonnull
-			Capability<T> cap){return LazyOptional.empty();}
+    @Override
+    public boolean shouldShowName() {
+        return false;
+    }
 
-	@Override
-	public boolean saveAsPassenger(CompoundTag pCompound){return false;}
+    @Override
+    public @NotNull Component getDisplayName() {
+        return Component.empty();
+    }
 
-	@Override
-	public boolean save(CompoundTag pCompound){return false;}
+    @Override
+    public boolean saveAsPassenger(@NotNull CompoundTag pCompound) {
+        return false;
+    }
 
-	@Override
-	@Nullable
-	public MinecraftServer getServer(){return Minecraft.getInstance().getSingleplayerServer();}
+    @Override
+    public boolean save(@NotNull CompoundTag pCompound) {
+        return false;
+    }
 
-	@Override
-	public Vec3 position(){return new Vec3(0, 0, 0);}
+    @Override
+    public @Nullable MinecraftServer getServer() {
+        return Minecraft.getInstance().getSingleplayerServer();
+    }
 
-	@Override
-	public BlockPos blockPosition(){return BlockPos.ZERO;}
+    @Override
+    public @NotNull Vec3 position() {
+        return new Vec3(0, 0, 0);
+    }
 
-	@Override
-	public void onAddedToWorld(){}
+    @Override
+    public @NotNull BlockPos blockPosition() {
+        return BlockPos.ZERO;
+    }
+
+    @Override
+    public void onAddedToLevel() {
+    }
 }

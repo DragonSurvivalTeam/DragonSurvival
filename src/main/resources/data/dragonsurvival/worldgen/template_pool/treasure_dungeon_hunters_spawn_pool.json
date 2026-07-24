@@ -1,0 +1,42 @@
+{
+  "name": "dragonsurvival:treasure_dungeon_hunters_spawn_pool",
+  "fallback": "minecraft:empty",
+  "elements": [
+	{	
+      "weight": 1,
+      "element": {
+        "location": "dragonsurvival:treasure_hunters/treasure_spawn_hunters_1",
+        "processors": "dragonsurvival:dragon_skeletons_random",
+		"projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+	{	
+      "weight": 1,
+      "element": {
+        "location": "dragonsurvival:treasure_hunters/treasure_spawn_hunters_2",
+        "processors": "dragonsurvival:dragon_skeletons_random",
+		"projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+	{	
+      "weight": 1,
+      "element": {
+        "location": "dragonsurvival:treasure_hunters/treasure_spawn_hunters_3",
+        "processors": "dragonsurvival:dragon_skeletons_random",
+		"projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+	{	
+      "weight": 1,
+      "element": {
+        "location": "dragonsurvival:treasure_hunters/treasure_spawn_hunters_4",
+        "processors": "dragonsurvival:dragon_skeletons_random",
+		"projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    }
+  ]
+}

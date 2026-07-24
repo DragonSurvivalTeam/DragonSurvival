@@ -1,0 +1,51 @@
+{
+  "name": "dragonsurvival:treasure_friendly_cave_spawn_pool",
+  "fallback": "minecraft:empty",
+  "elements": [
+	{	
+      "weight": 1,
+      "element": {
+        "location": "dragonsurvival:treasure_friendly/treasure_friendly_center_cave",
+        "processors": "dragonsurvival:obsidian_replace_cave",
+		"projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+	{	
+      "weight": 1,
+      "element": {
+        "location": "dragonsurvival:treasure_friendly/treasure_friendly_western_cave",
+        "processors": "dragonsurvival:obsidian_replace_cave",
+		"projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+	{	
+      "weight": 1,
+      "element": {
+        "location": "dragonsurvival:treasure_friendly/treasure_friendly_eastern_cave",
+        "processors": "dragonsurvival:obsidian_replace_cave",
+		"projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+	{	
+      "weight": 1,
+      "element": {
+        "location": "dragonsurvival:treasure_friendly/treasure_friendly_northern_cave",
+        "processors": "dragonsurvival:obsidian_replace_cave",
+		"projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+	{	
+      "weight": 1,
+      "element": {
+        "location": "dragonsurvival:treasure_friendly/treasure_friendly_southern_cave",
+        "processors": "dragonsurvival:obsidian_replace_cave",
+		"projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    }
+  ]
+}

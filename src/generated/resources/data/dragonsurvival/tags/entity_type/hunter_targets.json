@@ -1,0 +1,29 @@
+{
+  "values": [
+    "minecraft:evoker",
+    "minecraft:pillager",
+    "minecraft:vindicator",
+    "minecraft:stray",
+    "minecraft:skeleton",
+    "minecraft:spider",
+    "minecraft:cave_spider",
+    "minecraft:zombie",
+    "minecraft:zombie_villager",
+    "minecraft:husk",
+    "minecraft:zombified_piglin",
+    "minecraft:blaze",
+    "minecraft:drowned",
+    "minecraft:endermite",
+    "minecraft:hoglin",
+    "minecraft:magma_cube",
+    "minecraft:ravager",
+    "minecraft:slime",
+    "minecraft:witch",
+    "minecraft:wither_skeleton",
+    "minecraft:wither",
+    {
+      "id": "#zombiemobs:zombie_animals",
+      "required": false
+    }
+  ]
+}

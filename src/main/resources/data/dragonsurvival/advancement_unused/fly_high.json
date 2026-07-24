@@ -1,0 +1,62 @@
+{
+  "parent": "dragonsurvival:be_full_growth_dragon",
+  "display": {
+    "icon": {
+      "id": "minecraft:saddle"
+    },
+    "title": {
+      "translate": "ds.advancements.fly_high.title"
+    },
+    "description": {
+      "translate": "ds.advancements.fly_high.description"
+    },
+    "hidden": false
+  },
+  "criteria": {
+    "be_a_dragon": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": [
+          {
+            "condition": "minecraft:inverted",
+            "term": {
+              "condition": "minecraft:entity_properties",
+              "entity": "this",
+              "predicate": {
+                "nbt": "{'neoforge:attachments':{'dragonsurvival:dragon_handler': {'type': 'none'}}}"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "fly_high": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "location": {
+                "position": {
+                  "y": {
+                    "min": 500,
+                    "max": 10000
+                  }
+                }
+              },
+              "passenger": {
+                "type": "minecraft:player",
+                "nbt": "{'neoforge:attachments':{'dragonsurvival:dragon_handler': {'type': 'none'}}}"
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  "rewards": {
+    "experience": 120
+  }
+}

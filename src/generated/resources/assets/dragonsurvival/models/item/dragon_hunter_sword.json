@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "dragonsurvival:item/dragon_hunter_sword"
+  }
+}

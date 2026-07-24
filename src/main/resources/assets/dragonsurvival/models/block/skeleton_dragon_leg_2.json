@@ -1,0 +1,55 @@
+{
+	"credit": "Made with Blockbench",
+	"render_type": "cutout",
+	"texture_size": [256, 256],
+	"textures": {
+		"skeleton_texture": "skeleton_dragon_1"
+	},
+	"elements": [
+		{
+			"name": "FrontLegLeftUpper",
+			"from": [3.04381, 0.02059, 10.95708],
+			"to": [9.04381, 3.02059, 13.95708],
+			"rotation": {"angle": -45, "axis": "y", "origin": [6.04381, 1.52059, 12.45708]},
+			"faces": {
+				"north": {"uv": [5.3125, 6.5625, 5.125, 6.9375], "rotation": 90, "texture": "#skeleton_texture"},
+				"east": {"uv": [5.3125, 6.375, 5.5, 6.5625], "rotation": 270, "texture": "#skeleton_texture"},
+				"south": {"uv": [5.6875, 6.5625, 5.5, 6.9375], "rotation": 270, "texture": "#skeleton_texture"},
+				"west": {"uv": [5.125, 6.5625, 5.3125, 6.375], "rotation": 270, "texture": "#skeleton_texture"},
+				"up": {"uv": [5.5, 6.5625, 5.3125, 6.9375], "rotation": 270, "texture": "#skeleton_texture"},
+				"down": {"uv": [5.125, 6.5625, 4.9375, 6.9375], "rotation": 270, "texture": "#skeleton_texture"}
+			}
+		},
+		{
+			"name": "FrontLegLeftLower",
+			"from": [6.96177, -0.01152, 3.02146],
+			"to": [9.96177, 1.98848, 10.02146],
+			"rotation": {"angle": 0, "axis": "z", "origin": [13.26177, 0.98848, 6.52146]},
+			"faces": {
+				"north": {"uv": [3.9375, 8.1875, 3.8125, 8.375], "rotation": 90, "texture": "#skeleton_texture"},
+				"east": {"uv": [3.9375, 7.75, 4.0625, 8.1875], "rotation": 270, "texture": "#skeleton_texture"},
+				"south": {"uv": [4.5, 8.1875, 4.375, 8.375], "rotation": 270, "texture": "#skeleton_texture"},
+				"west": {"uv": [3.8125, 8.1875, 3.9375, 7.75], "rotation": 270, "texture": "#skeleton_texture"},
+				"up": {"uv": [4.375, 8.1875, 3.9375, 8.375], "rotation": 270, "texture": "#skeleton_texture"},
+				"down": {"uv": [3.8125, 8.1875, 3.375, 8.375], "rotation": 270, "texture": "#skeleton_texture"}
+			}
+		}
+	],
+	"groups": [
+		{
+			"name": "bone2",
+			"origin": [11, -5, 18.5],
+			"color": 0,
+			"children": [
+				{
+					"name": "bone7",
+					"origin": [5.5, 2.05, 11.15],
+					"color": 0,
+					"children": []
+				},
+				0,
+				1
+			]
+		}
+	]
+}

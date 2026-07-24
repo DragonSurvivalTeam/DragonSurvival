@@ -1,0 +1,42 @@
+{
+  "parent": "dragonsurvival:be_young_dragon",
+  "criteria": {
+    "reach_adult_stage": {
+      "conditions": {
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "type_specific": {
+                "type": "dragonsurvival:dragon_predicate",
+                "stage_specific": {
+                  "dragon_stage": "dragonsurvival:adult"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "trigger": "dragonsurvival:be_dragon"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "dragonsurvival.advancement.be_adult_dragon.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "dragonsurvival:weak_dragon_heart"
+    },
+    "title": {
+      "translate": "dragonsurvival.advancement.be_adult_dragon"
+    }
+  },
+  "requirements": [
+    [
+      "reach_adult_stage"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

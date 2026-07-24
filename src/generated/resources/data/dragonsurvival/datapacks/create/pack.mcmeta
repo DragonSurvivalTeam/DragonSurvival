@@ -1,0 +1,11 @@
+{
+  "features": {
+    "enabled": []
+  },
+  "pack": {
+    "description": {
+      "translate": "dragonsurvival.gui.datapack.create"
+    },
+    "pack_format": 48
+  }
+}

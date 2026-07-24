@@ -1,7 +1,0 @@
-{
-  "parent": "block/snow_height4",
-  "textures": {
-    "particle": "dragonsurvival:block/treasure_iron",
-    "texture": "dragonsurvival:block/treasure_iron"
-  }
-}

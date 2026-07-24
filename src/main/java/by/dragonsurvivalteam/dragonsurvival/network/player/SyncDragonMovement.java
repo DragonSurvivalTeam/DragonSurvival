@@ -1,70 +1,56 @@
 package by.dragonsurvivalteam.dragonsurvival.network.player;
 
-import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
-import by.dragonsurvivalteam.dragonsurvival.network.IMessage;
-import by.dragonsurvivalteam.dragonsurvival.network.NetworkHandler;
-import by.dragonsurvivalteam.dragonsurvival.network.client.ClientProxy;
+import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscCodecs;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MovementData;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.phys.Vec2;
-import net.minecraftforge.network.NetworkDirection;
-import net.minecraftforge.network.NetworkEvent;
-import net.minecraftforge.network.PacketDistributor;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.function.Supplier;
+public record SyncDragonMovement(int playerId, boolean isFirstPerson, boolean bite, boolean dig, boolean isFreeLook, Vec3 movement) implements CustomPacketPayload {
+    public static final Type<SyncDragonMovement> TYPE = new Type<>(DragonSurvival.res("sync_dragon_movement"));
 
-public class SyncDragonMovement implements IMessage<SyncDragonMovement> {
-	public int playerId;
-	public boolean isFirstPerson;
-	public boolean bite;
-	public boolean isFreeLook;
-	public float desiredMoveVecX;
-	public float desiredMoveVecY;
+    public static final StreamCodec<FriendlyByteBuf, SyncDragonMovement> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.VAR_INT, SyncDragonMovement::playerId,
+            ByteBufCodecs.BOOL, SyncDragonMovement::isFirstPerson,
+            ByteBufCodecs.BOOL, SyncDragonMovement::bite,
+            ByteBufCodecs.BOOL, SyncDragonMovement::dig,
+            ByteBufCodecs.BOOL, SyncDragonMovement::isFreeLook,
+            MiscCodecs.VEC3_STREAM_CODEC, SyncDragonMovement::movement,
+            SyncDragonMovement::new
+    );
 
-	public SyncDragonMovement() {}
-
-	public SyncDragonMovement(int playerId, boolean isFirstPerson, boolean bite, boolean isFreeLook, float desiredMoveVecX, float desiredMoveVecY) {
-		this.playerId = playerId;
-		this.isFirstPerson = isFirstPerson;
-		this.bite = bite;
-		this.isFreeLook = isFreeLook;
-		this.desiredMoveVecX = desiredMoveVecX;
-		this.desiredMoveVecY = desiredMoveVecY;
-	}
-
-	@Override
-	public void encode(final SyncDragonMovement message, final FriendlyByteBuf buffer) {
-		buffer.writeInt(message.playerId);
-		buffer.writeBoolean(message.isFirstPerson);
-		buffer.writeBoolean(message.bite);
-		buffer.writeBoolean(message.isFreeLook);
-		buffer.writeFloat(message.desiredMoveVecX);
-		buffer.writeFloat(message.desiredMoveVecY);
+    public static void handleClient(final SyncDragonMovement packet, final IPayloadContext context) {
+        context.enqueueWork(() -> {
+            if (context.player().level().getEntity(packet.playerId()) instanceof Player player && player != DragonSurvival.PROXY.getLocalPlayer()) {
+                // Local player already has the correct values
+                handle(packet, player);
+            }
+        });
     }
 
-	@Override
-	public SyncDragonMovement decode(final FriendlyByteBuf buffer) {
-		return new SyncDragonMovement(buffer.readInt(), buffer.readBoolean(), buffer.readBoolean(), buffer.readBoolean(), buffer.readFloat(), buffer.readFloat());
-	}
+    public static void handleServer(final SyncDragonMovement packet, final IPayloadContext context) {
+        context.enqueueWork(() -> handle(packet, context.player()))
+                .thenRun(() -> PacketDistributor.sendToPlayersTrackingEntity(context.player(), packet));
+    }
 
-	@Override
-	public void handle(final SyncDragonMovement message, final Supplier<NetworkEvent.Context> supplier) {
-		NetworkEvent.Context context = supplier.get();
+    private static void handle(final SyncDragonMovement packet, final Player player) {
+        MovementData data = MovementData.getData(player);
+        data.setFirstPerson(packet.isFirstPerson());
+        data.setBite(packet.bite());
+        data.setDig(packet.dig());
+        data.setFreeLook(packet.isFreeLook());
+        data.setDesiredMoveVec(packet.movement());
+    }
 
-		if (context.getDirection() == NetworkDirection.PLAY_TO_CLIENT) {
-			context.enqueueWork(() -> ClientProxy.handlePacketSyncCapabilityMovement(message)).thenRun(() -> context.setPacketHandled(true));
-		} else if (context.getDirection() == NetworkDirection.PLAY_TO_SERVER) {
-			Entity entity = context.getSender();
-			context.enqueueWork(() -> {
-				DragonStateProvider.getCap(entity).ifPresent(handler -> {
-					handler.setFirstPerson(message.isFirstPerson);
-					handler.setBite(message.bite);
-					handler.setFreeLook(message.isFreeLook);
-					handler.setDesiredMoveVec(new Vec2(message.desiredMoveVecX, message.desiredMoveVecY));
-				});
-			})
-					.thenRun(() -> NetworkHandler.CHANNEL.send(PacketDistributor.TRACKING_ENTITY.with(() -> entity), message))
-					.thenRun(() -> context.setPacketHandled(true));
-		}
-	}
+    @Override
+    public @NotNull Type<? extends CustomPacketPayload> type() {
+        return TYPE;
+    }
 }

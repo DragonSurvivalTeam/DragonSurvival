@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "down": "dragonsurvival:block/dragon_rider_workbench_down",
+    "east": "dragonsurvival:block/dragon_rider_workbench_east",
+    "north": "dragonsurvival:block/dragon_rider_workbench_north",
+    "particle": "dragonsurvival:block/dragon_rider_workbench_down",
+    "south": "dragonsurvival:block/dragon_rider_workbench_south",
+    "up": "dragonsurvival:block/dragon_rider_workbench_up",
+    "west": "dragonsurvival:block/dragon_rider_workbench_west"
+  }
+}

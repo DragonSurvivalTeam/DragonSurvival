@@ -2,214 +2,249 @@ package by.dragonsurvivalteam.dragonsurvival.common.handlers;
 
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
-import by.dragonsurvivalteam.dragonsurvival.common.dragon_types.DragonTypes;
-import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
+import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
+import by.dragonsurvivalteam.dragonsurvival.compat.Compat;
+import by.dragonsurvivalteam.dragonsurvival.mixins.EntityAccessor;
 import by.dragonsurvivalteam.dragonsurvival.server.handlers.ServerFlightHandler;
-import by.dragonsurvivalteam.dragonsurvival.util.DragonUtils;
-import net.minecraft.client.Minecraft;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.entity.EntityEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.BooleanOp;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import net.neoforged.bus.api.EventPriority;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.EntityEvent;
+import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
+import net.neoforged.neoforge.event.entity.EntityLeaveLevelEvent;
+import net.neoforged.neoforge.event.tick.PlayerTickEvent;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.StreamSupport;
 
-@Mod.EventBusSubscriber
-public class DragonSizeHandler{
-	// TODO :: Add timestamp and clear cache
-	private static final ConcurrentHashMap<String, Boolean> WAS_DRAGON = new ConcurrentHashMap<>(20);
-	private static final ConcurrentHashMap<String, Double> LAST_SIZE = new ConcurrentHashMap<>(20);
+@EventBusSubscriber
+public class DragonSizeHandler {
+    private static final ConcurrentHashMap<String, Boolean> WAS_DRAGON = new ConcurrentHashMap<>();
 
-	@SubscribeEvent
-	public static void getDragonSize(EntityEvent.Size event){
-		if (!(event.getEntity() instanceof Player player)) {
-			return;
-		}
+    @SubscribeEvent
+    public static void initializeGrowthOnJoin(final EntityJoinLevelEvent event) {
+        // There is no entity context when de-serializing the data
+        // Therefor we set the growth again, causing a refresh of the dimension
+        if (event.getEntity() instanceof ServerPlayer serverPlayer) {
+            DragonStateHandler data = DragonStateProvider.getData(serverPlayer);
 
-		DragonStateHandler handler = DragonUtils.getHandler(player);
+            if (data.isDragon()) {
+                data.setGrowth(serverPlayer, data.getGrowth(), true);
+            }
+        }
+    }
 
-		if (!handler.isDragon()) {
-			return;
-		}
+    // This needs to fire as early as possible, since it is the "baseline" for the size of the player
+    // Other mods might throw out this baseline or modify it further, but when the player is a dragon
+    // that should be the initial size to work with
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public static void getDragonSize(final EntityEvent.Size event) {
+        if (!(event.getEntity() instanceof Player player)) {
+            return;
+        }
 
-		double size = handler.getSize();
-		// Calculate base values
-		double height = calculateDragonHeight(size, ServerConfig.hitboxGrowsPastHuman);
-		double width = calculateDragonWidth(size, ServerConfig.hitboxGrowsPastHuman);
-		double eyeHeight = calculateDragonEyeHeight(size, ServerConfig.hitboxGrowsPastHuman);
-		boolean squish = false;
-		if (handler.getBody() != null) {
-			squish = handler.getBody().isSquish();
-			height *= handler.getBody().getHeightMult();
-			eyeHeight *= handler.getBody().getEyeHeightMult();
-		}
-		// Handle Pose stuff
-		if(ServerConfig.sizeChangesHitbox){
-			Pose overridePose = overridePose(player);
-			height = calculateModifiedHeight(height, overridePose, true, squish);
-			eyeHeight = calculateModifiedEyeHeight(eyeHeight, overridePose, squish);
-			// Apply changes
-			event.setNewEyeHeight((float)eyeHeight);
-			// Rounding solves floating point issues that caused the dragon to get stuck inside a block at times.
-			event.setNewSize(calculateDimensions(width, height));
-		}
-	}
-	
-	public static double getDragonHeight(Player player) {
-		DragonStateHandler handler = DragonUtils.getHandler(player);
-		double height = calculateDragonHeight(handler.getSize(), ServerConfig.hitboxGrowsPastHuman);
-		boolean squish = false;
-		if (handler.getBody() != null) {
-			height *= handler.getBody().getHeightMult();
-			squish = handler.getBody().isSquish();
-		}
-		Pose overridePose = overridePose(player);
-		return calculateModifiedHeight(height, overridePose, true, squish);
-	}
+        if (!DragonStateProvider.isDragon(player)) {
+            return;
+        }
 
-	public static double calculateDragonHeight(double size, boolean growsPastHuman){
-		double height = (size + 4.0D) / 20.0D; // 0.9 -> Config Dragon Max
-		if(!growsPastHuman){
-			height = 0.9D + 0.9D * (size - 14.0D) / (ServerConfig.maxGrowthSize - 14.0D); // 0.9 -> 1.8 (Min to Human Max)
-		}
-		return height;
-	}
+        DragonStateHandler handler = DragonStateProvider.getData(player);
 
-	public static double calculateDragonWidth(double size, boolean growsPastHuman){
-		double width = (3.0D * size + 62.0D) / 260.0D; // 0.4 -> Config Dragon Max
-		if(!growsPastHuman){
-			width = 0.4D + 0.2D * (size - 14.0D) / (ServerConfig.maxGrowthSize - 14.0D); // 0.4 -> 0.6 (Min to Human Max)
-		}
-		return width;
-	}
+        if (handler.previousPose == null) {
+            handler.previousPose = overridePose(player);
+        }
 
-	public static double calculateDragonEyeHeight(double size, boolean growsPastHuman){
-		double eyeHeight = (11.0D * size + 54.0D) / 260.0D; // 0.8 -> Config Dragon Max
-		if(!growsPastHuman){
-			eyeHeight = 0.8D + 0.8D * (size - 14.0D) / (ServerConfig.maxGrowthSize - 14.0D); // 0.8 -> 1.6 (Min to Human Max)
-		}
-		return eyeHeight;
-	}
+        Pose sizePose = Compat.hasModelSwapOrDoesNotUseModel(player) ? event.getPose() : handler.previousPose;
+        EntityDimensions newDimensions = calculateDimensions(handler, player, sizePose);
+        event.setNewSize(new EntityDimensions(newDimensions.width(), newDimensions.height(), newDimensions.eyeHeight(), event.getOldSize().attachments(), event.getOldSize().fixed()));
+    }
 
-	public static double calculateModifiedEyeHeight(double eyeHeight, Pose pose, boolean squish){
-		if(pose == Pose.CROUCHING && !squish){
-			eyeHeight *= 5.0D / 6.0D;
-		}else if(pose == Pose.CROUCHING) {
-			eyeHeight *= 3.0D / 6.0D;
-		}else if(pose == Pose.SWIMMING || pose == Pose.FALL_FLYING || pose == Pose.SPIN_ATTACK){
-			eyeHeight *= 7.0D / 12.0D;
-		}
-		return eyeHeight;
-	}
+    public static double calculateDragonEyeHeight(final DragonStateHandler handler, final Player player) {
+        double scale = player.getAttributeValue(Attributes.SCALE);
+        double eyeHeight = handler.body().value().scalingProportions().eyeHeight();
+        return applyPose(eyeHeight * scale, overridePose(player), handler.body().value().crouchHeightRatio());
+    }
 
-	public static EntityDimensions calculateDimensions(double width, double height)
-	{
-		return new EntityDimensions((float)(Math.round(width * 100.0D) / 100.0D), (float)(Math.round(height * 100.0D) / 100.0D), false);
-	}
+    public static EntityDimensions calculateDimensions(final DragonStateHandler handler, @Nullable final Player player, @Nullable final Pose overridePose) {
+        double scale = player != null ? player.getAttributeValue(Attributes.SCALE) : 1;
+        double height = handler.body().value().scalingProportions().height();
+        double eyeHeight = handler.body().value().scalingProportions().eyeHeight();
+        double width = handler.body().value().scalingProportions().width();
 
-	public static Pose overridePose(final Player player) {
-		if (player == null) {
-			return Pose.STANDING;
-		}
+        height = applyPose(height, overridePose, handler.body().value().crouchHeightRatio());
+        eyeHeight = applyPose(eyeHeight, overridePose, handler.body().value().crouchHeightRatio());
 
-		Pose overridePose = getOverridePose(player);
+        return EntityDimensions.scalable((float) (width * scale), (float) (height * scale)).withEyeHeight((float) (eyeHeight * scale));
+    }
 
-		if (player.getForcedPose() != overridePose) {
-			player.setForcedPose(overridePose);
+    public static double applyPose(double height, @Nullable final Pose pose, double crouchHeightRatio) {
+        if (pose == Pose.CROUCHING || pose == Pose.FALL_FLYING || pose == Pose.SWIMMING || pose == Pose.SPIN_ATTACK) {
+            height *= crouchHeightRatio;
+        }
 
-			if (player.level().isClientSide() && Minecraft.getInstance().getCameraEntity() != player) {
-				player.refreshDimensions();
-			}
-		}
+        return height;
+    }
 
-		return overridePose;
-	}
+    public static Pose overridePose(final Player player) {
+        Pose overridePose = getOverridePose(player);
+        if (player == null) {
+            return overridePose;
+        }
 
-	public static Pose getOverridePose(LivingEntity player){
-		if(player != null){
-			boolean swimming = (player.isInWaterOrBubble() || player.isInLava() && ServerConfig.bonuses && ServerConfig.caveLavaSwimming && DragonUtils.isDragonType(player, DragonTypes.CAVE)) && player.isSprinting() && !player.isPassenger();
-			boolean flying = ServerFlightHandler.isFlying(player);
-			boolean spinning = player.isAutoSpinAttack();
-			boolean crouching = player.isShiftKeyDown();
-			if(flying && !player.isSleeping()){
-				return Pose.FALL_FLYING;
-			}else if(swimming || (player.isInWaterOrBubble() || player.isInLava()) && !canPoseFit(player, Pose.STANDING) && canPoseFit(player, Pose.SWIMMING)){
-				return Pose.SWIMMING;
-			}else if(spinning){
-				return Pose.SPIN_ATTACK;
-			}else if(crouching || !canPoseFit(player, Pose.STANDING) && canPoseFit(player, Pose.CROUCHING)){
-				return Pose.CROUCHING;
-			}
-		}
-		return Pose.STANDING;
-	}
+        if (Compat.hasModelSwapOrDoesNotUseModel(player)) {
+            player.setForcedPose(null);
+            return overridePose;
+        }
 
-	public static boolean canPoseFit(LivingEntity player, Pose pose){
-		LazyOptional<DragonStateHandler> capability = DragonStateProvider.getCap(player);
+        if (player.getForcedPose() != overridePose) {
+            player.setForcedPose(overridePose);
+        }
 
-		if (!capability.isPresent()){
-			return false;
-		}
-		
-		double size = capability.orElseThrow(() -> new IllegalStateException("Dragon State was not valid")).getSize();
-		boolean squish = DragonUtils.getDragonBody(player) != null ? DragonUtils.getDragonBody(player).isSquish() : false;
-		double height = calculateModifiedHeight(calculateDragonHeight((float)size, ServerConfig.hitboxGrowsPastHuman), pose, ServerConfig.sizeChangesHitbox, squish);
-		double width = calculateDragonWidth((float)size, ServerConfig.hitboxGrowsPastHuman);
-		return player.level().noCollision(calculateDimensions(width,height).makeBoundingBox(player.position()));
-	}
+        DragonStateHandler data = DragonStateProvider.getData(player);
+        data.previousPose = overridePose;
+        return overridePose;
+    }
 
-	public static double calculateModifiedHeight(double height, Pose pose, boolean sizeChangesHitbox, boolean squish){
-		if(pose == Pose.CROUCHING){
-			if(sizeChangesHitbox && !squish){
-				height *= 5.0D / 6.0D;
-			}else if (sizeChangesHitbox) {
-				height *= 3.0D / 6.0D;
-			}else{
-				height = 1.5D;
-			}
-		}else if(pose == Pose.SWIMMING || pose == Pose.FALL_FLYING || pose == Pose.SPIN_ATTACK){
-			if(sizeChangesHitbox){
-				height *= 7.0D / 12.0D;
-			}else{
-				height = 0.6D;
-			}
-		}
-		return height;
-	}
+    public static Pose getOverridePose(final Player player) {
+        if (player == null) {
+            return Pose.STANDING;
+        }
 
-	@SubscribeEvent
-	public static void playerTick(final TickEvent.PlayerTickEvent event) {
-		Player player = event.player;
+        Pose pose;
 
-		if (player == null || event.phase == TickEvent.Phase.END || !ServerConfig.sizeChangesHitbox) {
-			return;
-		}
+        if ((player.getAbilities().flying || ServerFlightHandler.isFlying(player)) && !player.isSleeping()) {
+            pose = Pose.FALL_FLYING;
+        } else if (DragonEntity.isConsideredSwimmingForAnimation(player) && player.isSprinting()) {
+            pose = Pose.SWIMMING;
+        } else if (player.isAutoSpinAttack()) {
+            pose = Pose.SPIN_ATTACK;
+        } else if (player.isShiftKeyDown()) {
+            pose = Pose.CROUCHING;
+        } else {
+            pose = Pose.STANDING;
+        }
 
-		// In cases where client and server runs on the same machine
-		// Only using the player id results in one side not refreshing the dimensions
-		String playerIdSide = player.getId() + event.side.name();
+        if (player.isSpectator() || player.isPassenger() || canPoseFit(player, pose)) {
+            return pose;
+        } else if (canPoseFit(player, Pose.CROUCHING)) {
+            return Pose.CROUCHING;
+        }
 
-		DragonStateProvider.getCap(player).ifPresent(handler -> {
-			if (handler.isDragon()) {
-				overridePose(player);
+        return Pose.STANDING;
+    }
 
-				if (!WAS_DRAGON.getOrDefault(playerIdSide, false)) {
-					player.refreshDimensions();
-					WAS_DRAGON.put(playerIdSide, true);
-				} else if (LAST_SIZE.getOrDefault(playerIdSide, 20.0) != handler.getSize()) {
-					player.refreshDimensions();
-					LAST_SIZE.put(playerIdSide, handler.getSize());
-				}
-			} else if (WAS_DRAGON.getOrDefault(playerIdSide, false)) {
-				player.setForcedPose(null);
-				player.refreshDimensions();
-				WAS_DRAGON.put(playerIdSide, false);
-			}
-		});
-	}
+    /**
+     * Modified version of {@link Entity#fudgePositionAfterSizeChange(EntityDimensions)} </br>
+     * Note that the smooth growth may cause this to be called very often, usually related to: </br>
+     * - Growth command / Anything that sets a new stage </br>
+     * - High natural growth value </br>
+     * - Growth item with a high value </br>
+     */
+    public static void fudgePositionAfterSizeChange(final Entity entity, final EntityDimensions currentDimension, final EntityDimensions newDimensions) {
+        if (entity.noPhysics || ((EntityAccessor) entity).dragonSurvival$isFirstTick()) {
+            // Reasonable checks that vanilla is also doing
+            return;
+        }
+
+        float newWidth = newDimensions.width();
+        float newHeight = newDimensions.height();
+
+        if (currentDimension.width() > newWidth && currentDimension.height() > newHeight) {
+            return;
+        }
+
+        if (entity.level().noBlockCollision(entity, newDimensions.makeBoundingBox(entity.position()))) {
+            // Do a minimal check to see if the player is phasing into any blocks
+            // It doesn't seem to have a big impact when actual collision happens and skips unneeded shape calculations
+            return;
+        }
+
+        double yOffset = newHeight / 2;
+        AABB expandedBounds = createPlayerBounds(entity, currentDimension, newDimensions, yOffset);
+        // We expand the shape of each collision with a smaller height since we usually don't need to adjust the position on the y level
+        // The height has a big impact on the performance
+        Vec3 newPosition = findNewPosition(entity, expandedBounds, createCollisionShape(entity, expandedBounds, newWidth, newHeight), yOffset);
+
+        if (newPosition != null) {
+            // Technically the position should never be null
+            // Since it should at least be the original position
+            entity.setPos(newPosition.add(0, -yOffset, 0));
+        }
+    }
+
+    private static Vec3 findNewPosition(final Entity entity, final AABB boundingBox, final VoxelShape collisionShape, final double yOffset) {
+        // Don't bother optimizing, since the shape is just discarded anyway
+        return Shapes.joinUnoptimized(Shapes.create(boundingBox), collisionShape, BooleanOp.ONLY_FIRST)
+                .closestPointTo(entity.position().add(0, yOffset, 0))
+                .orElse(null);
+    }
+
+    public static AABB createPlayerBounds(final Entity entity, final EntityDimensions currentDimensions, final EntityDimensions newDimensions, final double yOffset) {
+        double widthDifference = newDimensions.width() - currentDimensions.width() + Shapes.BIG_EPSILON;
+        double heightDifference = newDimensions.height() - currentDimensions.height() + Shapes.BIG_EPSILON;
+
+        AABB boundingBox = AABB.ofSize(entity.position().add(0, yOffset, 0), widthDifference, heightDifference, widthDifference);
+        // Inflate adds the sizes fully to min and max, meaning it doubles the size of the actual shape
+        // This is used to catch more blocks and therefore collect more positions that the player can be moved to
+        return boundingBox.inflate(newDimensions.width(), newDimensions.height(), newDimensions.width());
+    }
+
+    public static VoxelShape createCollisionShape(final Entity entity, final AABB boundingBox, double widthExpansion, double heightExpansion) {
+        double width = widthExpansion / 2;
+        double height = heightExpansion / 2;
+
+        return StreamSupport.stream(entity.level().getBlockCollisions(entity, boundingBox).spliterator(), false)
+                .filter(shape -> entity.level().getWorldBorder().isWithinBounds(shape.bounds()))
+                .flatMap(shape -> shape.toAabbs().stream())
+                // Increase the area in which it can find suitable positions
+                .map(aabb -> aabb.inflate(width, height, width))
+                .map(Shapes::create)
+                // Make sure we don't add any unnecessary optimization calls
+                .reduce(Shapes.empty(), (first, second) -> Shapes.joinUnoptimized(first, second, BooleanOp.OR));
+    }
+
+    public static boolean canPoseFit(final Player player, @Nullable final Pose pose) {
+        return player.level().noCollision(calculateDimensions(DragonStateProvider.getData(player), player, pose).makeBoundingBox(player.position()).deflate(Shapes.EPSILON));
+    }
+
+    @SubscribeEvent
+    public static void handleLerpGrowthAndPose(final PlayerTickEvent.Pre event) {
+        Player player = event.getEntity();
+        DragonStateHandler data = DragonStateProvider.getData(player);
+
+        boolean isDragon = data.isDragon(); // TODO :: remove and handle it when reverted to human
+        Boolean wasDragon = WAS_DRAGON.put(getKey(player), isDragon);
+
+        if (wasDragon != null && wasDragon && !isDragon) {
+            player.setForcedPose(null);
+            player.refreshDimensions();
+        } else if (isDragon) {
+            data.lerpGrowth(player);
+
+            // Required for smooth transitions of the pose (e.g. sneaking)
+            DragonSizeHandler.overridePose(event.getEntity());
+        }
+    }
+
+    @SubscribeEvent
+    public static void removeMapEntry(final EntityLeaveLevelEvent event) {
+        if (event.getEntity() instanceof Player player) {
+            WAS_DRAGON.remove(getKey(player));
+        }
+    }
+
+    private static String getKey(final Player player) {
+        return player.getId() + (player.level().isClientSide() ? "client" : "server");
+    }
 }

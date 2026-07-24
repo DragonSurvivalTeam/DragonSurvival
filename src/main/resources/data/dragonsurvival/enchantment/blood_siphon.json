@@ -1,0 +1,62 @@
+{
+  "anvil_cost": 2,
+  "description": {
+    "translate": "enchantment.dragonsurvival.blood_siphon"
+  },
+  "effects": {
+    "minecraft:post_attack": [
+      {
+        "enchanted": "victim",
+        "affected": "attacker",
+        "effect": {
+          "type": "minecraft:all_of",
+          "effects": [
+            {
+              "type": "minecraft:apply_mob_effect",
+              "to_apply": "dragonsurvival:blood_siphon",
+              "min_duration": 3,
+              "max_duration": 10,
+              "min_amplifier": 1,
+              "max_amplifier": 2
+            },
+            {
+              "type": "minecraft:damage_item",
+              "amount": 2
+            }
+          ]
+        },
+        "requirements": {
+          "condition": "minecraft:random_chance",
+          "chance": {
+            "type": "minecraft:enchantment_level",
+            "amount": {
+              "type": "minecraft:clamped",
+              "value": {
+                "type": "minecraft:linear",
+                "base": 0.3,
+                "per_level_above_first": 0.15
+              },
+              "min": 0.0,
+              "max": 1.0
+            }
+          }
+        }
+      }
+    ]
+  },
+  "exclusive_set": "#dragonsurvival:exclusive_set/light_dragon",
+  "max_cost": {
+    "base": 21,
+    "per_level_above_first": 11
+  },
+  "max_level": 1,
+  "min_cost": {
+    "base": 1,
+    "per_level_above_first": 11
+  },
+  "slots": [
+    "head"
+  ],
+  "supported_items": "#minecraft:enchantable/head_armor",
+  "weight": 10
+}

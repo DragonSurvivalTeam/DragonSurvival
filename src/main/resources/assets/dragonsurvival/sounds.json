@@ -1,4 +1,9 @@
 {
+  "bonk": {
+    "sounds": [
+      "dragonsurvival:bonk"
+    ]
+  },
   "activate_beacon": {
     "sounds": [
       "dragonsurvival:beacon_activate"

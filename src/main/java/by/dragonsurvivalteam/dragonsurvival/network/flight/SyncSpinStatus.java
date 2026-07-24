@@ -1,69 +1,55 @@
 package by.dragonsurvivalteam.dragonsurvival.network.flight;
 
-import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
-import by.dragonsurvivalteam.dragonsurvival.network.IMessage;
-import by.dragonsurvivalteam.dragonsurvival.network.NetworkHandler;
-import by.dragonsurvivalteam.dragonsurvival.network.client.ClientProxy;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.network.NetworkDirection;
-import net.minecraftforge.network.NetworkEvent;
-import net.minecraftforge.network.PacketDistributor;
+import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.client.handlers.ClientFlightHandler;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.FlightData;
+import net.minecraft.core.HolderSet;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.world.entity.player.Player;
+import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.function.Supplier;
+import java.util.Optional;
 
-public class SyncSpinStatus implements IMessage<SyncSpinStatus> {
-	public int playerId;
-	public int spinAttack;
-	public int spinCooldown;
-	public boolean spinLearned;
+public record SyncSpinStatus(int playerId, boolean hasSpin, Optional<HolderSet<FluidType>> swimSpinFluid) implements CustomPacketPayload {
+    public static final Type<SyncSpinStatus> TYPE = new Type<>(DragonSurvival.res("sync_spin_status"));
 
-	public SyncSpinStatus(int playerId, int spinAttack, int spinCooldown, boolean spinLearned) {
-		this.playerId = playerId;
-		this.spinAttack = spinAttack;
-		this.spinCooldown = spinCooldown;
-		this.spinLearned = spinLearned;
-	}
+    public static final StreamCodec<RegistryFriendlyByteBuf, SyncSpinStatus> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.VAR_INT, SyncSpinStatus::playerId,
+            ByteBufCodecs.BOOL, SyncSpinStatus::hasSpin,
+            ByteBufCodecs.optional(ByteBufCodecs.holderSet(NeoForgeRegistries.Keys.FLUID_TYPES)), SyncSpinStatus::swimSpinFluid,
+            SyncSpinStatus::new
+    );
 
-	public SyncSpinStatus() { /* Nothing to do */ }
+    public static void handleClient(final SyncSpinStatus packet, final IPayloadContext context) {
+        context.enqueueWork(() -> {
+            if (context.player().level().getEntity(packet.playerId()) instanceof Player player) {
+                FlightData spin = FlightData.getData(player);
+                spin.hasSpin = packet.hasSpin();
+                spin.inFluid = packet.swimSpinFluid().orElse(null);
+                ClientFlightHandler.lastSync = player.tickCount;
+            }
+        });
+    }
 
-	@Override
-	public void encode(final SyncSpinStatus message, final FriendlyByteBuf buffer) {
-		buffer.writeInt(message.playerId);
-		buffer.writeInt(message.spinAttack);
-		buffer.writeInt(message.spinCooldown);
-		buffer.writeBoolean(message.spinLearned);
-	}
+    public static void handleServer(final SyncSpinStatus packet, final IPayloadContext context) {
+        context.enqueueWork(() -> {
+            if (context.player().level().getEntity(packet.playerId()) instanceof Player player) {
+                FlightData spin = FlightData.getData(player);
+                spin.hasSpin = packet.hasSpin();
+                spin.inFluid = packet.swimSpinFluid().orElse(null);
+            }
+        }).thenRun(() -> PacketDistributor.sendToPlayersTrackingEntityAndSelf(context.player(), packet));
+    }
 
-	@Override
-	public SyncSpinStatus decode(final FriendlyByteBuf buffer) {
-		int playerId = buffer.readInt();
-		int spinAttack = buffer.readInt();
-		int spinCooldown = buffer.readInt();
-		boolean spinLearned = buffer.readBoolean();
-		return new SyncSpinStatus(playerId, spinAttack, spinCooldown, spinLearned);
-	}
-
-	@Override
-	public void handle(final SyncSpinStatus message, final Supplier<NetworkEvent.Context> supplier) {
-		NetworkEvent.Context context = supplier.get();
-
-		if (context.getDirection() == NetworkDirection.PLAY_TO_CLIENT) {
-			context.enqueueWork(() -> ClientProxy.handleSyncSpinStatus(message));
-		} else if (context.getDirection() == NetworkDirection.PLAY_TO_SERVER) {
-			ServerPlayer sender = context.getSender();
-
-			if (sender != null) {
-				DragonStateProvider.getCap(sender).ifPresent(handler -> {
-					handler.getMovementData().spinAttack = message.spinAttack;
-					handler.getMovementData().spinCooldown = message.spinCooldown;
-					handler.getMovementData().spinLearned = message.spinLearned;
-				});
-
-				NetworkHandler.CHANNEL.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> sender), new SyncSpinStatus(sender.getId(), message.spinAttack, message.spinCooldown, message.spinLearned));
-			}
-		}
-
-		context.setPacketHandled(true);
-	}
+    @Override
+    public @NotNull Type<? extends CustomPacketPayload> type() {
+        return TYPE;
+    }
 }

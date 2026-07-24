@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "minecraft:mangrove_planks"
+    },
+    {
+      "item": "dragonsurvival:elder_dragon_bone"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "dragonsurvival:mangrove_dragon_altar"
+  }
+}

@@ -1,94 +1,142 @@
 package by.dragonsurvivalteam.dragonsurvival.client.handlers.magic;
 
-import by.dragonsurvivalteam.dragonsurvival.client.handlers.Keybind;
-import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
+import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.config.ClientConfig;
-import by.dragonsurvivalteam.dragonsurvival.magic.common.active.ActiveDragonAbility;
-import by.dragonsurvivalteam.dragonsurvival.network.NetworkHandler;
-import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncAbilityCasting;
-import by.dragonsurvivalteam.dragonsurvival.util.DragonUtils;
+import by.dragonsurvivalteam.dragonsurvival.input.Keybind;
+import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncBeginCast;
+import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncStopCast;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
+import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.InputEvent;
+import net.neoforged.neoforge.network.PacketDistributor;
 
-@Mod.EventBusSubscriber( Dist.CLIENT )
-public class ClientCastingHandler{
-	public static final byte StatusIdle = 0;
-	public static final byte StatusInProgress = 1;
-	public static final byte StatusStop = 2;
-	public static byte status = StatusIdle;
-	public static boolean hasCast = false;
-	public static long castStartTime = -1;
-	private static int castSlot = -1;
+import java.util.Optional;
 
-	@SubscribeEvent
-	public static void abilityKeyBindingChecks(TickEvent.ClientTickEvent clientTickEvent){
-		Minecraft instance = Minecraft.getInstance();
-		if(instance.player == null || instance.level == null || clientTickEvent.phase != TickEvent.Phase.END)
-			return;
+@EventBusSubscriber(Dist.CLIENT)
+public class ClientCastingHandler {
+    @Translation(comments = "Dragon ability bar enabled")
+    public static final String ABILITY_BAR_ENABLED = Translation.Type.GUI.wrap("display.toggle_ability_bar.enabled");
 
-		Player player = instance.player;
-		if(player.isSpectator() || !DragonUtils.isDragon(player))
-			return;
+    @Translation(comments = "Dragon ability bar disabled")
+    public static final String ABILITY_BAR_DISABLED = Translation.Type.GUI.wrap("display.toggle_ability_bar.disabled");
 
-		DragonStateHandler dragonStateHandler = DragonUtils.getHandler(player);
+    private static final Keybind[] slotKeybinds = new Keybind[]{
+            Keybind.ABILITY1,
+            Keybind.ABILITY2,
+            Keybind.ABILITY3,
+            Keybind.ABILITY4
+    };
 
-		boolean isKeyDown = Keybind.USE_ABILITY.isDown() || ClientConfig.alternateCastMode && (
-								Keybind.ABILITY1.isDown() && dragonStateHandler.getMagicData().getSelectedAbilitySlot() == 0
-								|| Keybind.ABILITY2.isDown() && dragonStateHandler.getMagicData().getSelectedAbilitySlot() == 1
-								|| Keybind.ABILITY3.isDown() && dragonStateHandler.getMagicData().getSelectedAbilitySlot() == 2
-								|| Keybind.ABILITY4.isDown() && dragonStateHandler.getMagicData().getSelectedAbilitySlot() == 3);
+    @SubscribeEvent
+    private static void handleMouseInput(final InputEvent.MouseButton.Pre event) {
+        handleCastingInput(InputConstants.Type.MOUSE.getOrCreate(event.getButton()), event.getAction());
+    }
 
-		int slot = dragonStateHandler.getMagicData().getSelectedAbilitySlot();
-		ActiveDragonAbility ability = dragonStateHandler.getMagicData().getAbilityFromSlot(castSlot);
-		
-		if (ability == null) {
-			castSlot = slot;
-			ability = dragonStateHandler.getMagicData().getAbilityFromSlot(castSlot);
-		}
+    @SubscribeEvent
+    private static void handleKeyInput(final InputEvent.Key event) {
+        handleCastingInput(InputConstants.getKey(event.getKey(), event.getScanCode()), event.getAction());
+    }
 
-		if (castSlot != slot) { // ability slot has been changed, cancel any casts and put skills on cooldown if needed
-			status = StatusIdle;
-			//System.out.println(player + " ability changed from " + ability.getName() + " to " + dragonStateHandler.getMagicData().getAbilityFromSlot(slot).getName() + ".");
-			if (castStartTime != -1 && ability.canCastSkill(player)) {
-				NetworkHandler.CHANNEL.sendToServer(new SyncAbilityCasting(player.getId(), true, castSlot, ability.saveNBT(), castStartTime, player.level().getGameTime()));
-				//System.out.println(ability.getName() + " finished casting due to swap.");
-			}
-			hasCast = false;
-			ability.onKeyReleased(player);
-			castStartTime = -1;
-			castSlot = slot;
-			return;
-		}
+    private static void handleCastingInput(final InputConstants.Key input, final int action) {
+        Minecraft instance = Minecraft.getInstance();
 
-		if(status == StatusIdle && isKeyDown) {
-			castStartTime = -1;
-			status = StatusInProgress;
-		}
+        if (instance.screen != null || instance.player == null || instance.level == null) {
+            return;
+        }
 
-		if(status == StatusInProgress && !isKeyDown){
-			castStartTime = -1;
-			status = StatusStop;
-		}
+        Player player = instance.player;
 
-		if(!isKeyDown){
-			castStartTime = -1;
-			hasCast = false;
-		}
+        if (player.isSpectator() || !DragonStateProvider.isDragon(player)) {
+            return;
+        }
 
-		if(status == StatusInProgress && ability.canCastSkill(player) ){
-			if (castStartTime == -1)
-				castStartTime = player.level().getGameTime();
-			NetworkHandler.CHANNEL.sendToServer(new SyncAbilityCasting(player.getId(), true, castSlot, ability.saveNBT(), castStartTime, player.level().getGameTime()));
-		} else if(status == StatusStop || status == StatusInProgress && !ability.canCastSkill(player) && castStartTime != -1){
-			NetworkHandler.CHANNEL.sendToServer(new SyncAbilityCasting(player.getId(), false, castSlot, ability.saveNBT(), castStartTime, player.level().getGameTime()));
-			ability.onKeyReleased(player);
-			status = StatusIdle;
-			castStartTime = -1;
-		}
-		castSlot = slot;
-	}
+        if (action == InputConstants.PRESS) {
+            handleVisibilityToggle(player, input);
+            handleSlotSelection(player, input);
+            beginCast(player, input);
+        } else if (action == InputConstants.RELEASE) {
+            stopCast(player, input);
+        }
+    }
+
+    private static void handleVisibilityToggle(final Player player, final InputConstants.Key input) {
+        MagicData magicData = MagicData.getData(player);
+        // Toggle HUD visibility
+        if (Keybind.TOGGLE_ABILITIES.matches(input)) {
+            magicData.setRenderAbilities(!magicData.shouldRenderAbilities());
+            String message = magicData.shouldRenderAbilities() ? ABILITY_BAR_ENABLED : ABILITY_BAR_DISABLED;
+            player.displayClientMessage(Component.translatable(message), true);
+        }
+    }
+
+    private static void handleSlotSelection(final Player player, final InputConstants.Key input) {
+        MagicData magicData = MagicData.getData(player);
+
+        int lastSelectedSlot = magicData.getSelectedAbilitySlot();
+        int selectedSlot = lastSelectedSlot;
+
+        if (Keybind.NEXT_ABILITY.matches(input)) {
+            selectedSlot = (selectedSlot + 1) % slotKeybinds.length;
+        } else if (Keybind.PREVIOUS_ABILITY.matches(input)) {
+            // Add length because % can return a negative remainder
+            selectedSlot = (selectedSlot - 1 + slotKeybinds.length) % slotKeybinds.length;
+        }
+
+        // (This overrides the previous / next key press)
+        for (int i = 0; i < slotKeybinds.length; i++) {
+            if (slotKeybinds[i].matches(input)) {
+                selectedSlot = i;
+                break;
+            }
+        }
+
+        if (selectedSlot != lastSelectedSlot) {
+            if (magicData.isCasting()) {
+                magicData.stopCasting(player);
+                PacketDistributor.sendToServer(new SyncStopCast(player.getId(), Optional.empty()));
+            }
+
+            magicData.setSelectedAbilitySlot(selectedSlot);
+        }
+    }
+
+    /** Starts the cast if the relevant key is pressed */
+    private static void beginCast(final Player player, final InputConstants.Key input) {
+        MagicData magicData = MagicData.getData(player);
+        int selectedSlot = magicData.getSelectedAbilitySlot();
+
+        // Proceed with casting (ignore anything blocking the cast from happening; we'll let the server deny the client later)
+        if (getKey(magicData.getSelectedAbilitySlot()).matches(input) && !magicData.isCasting() && magicData.attemptCast(player, selectedSlot)) {
+            PacketDistributor.sendToServer(new SyncBeginCast(player.getId(), selectedSlot));
+        }
+    }
+
+    /** Stops the cast if the relevant key is released */
+    private static void stopCast(final Player player, final InputConstants.Key input) {
+        MagicData magicData = MagicData.getData(player);
+
+        if (getKey(magicData.getSelectedAbilitySlot()).isReleased(input)) {
+            if (magicData.isCasting()) {
+                magicData.stopCasting(player);
+                PacketDistributor.sendToServer(new SyncStopCast(player.getId(), Optional.empty()));
+            }
+
+            magicData.setErrorMessageSent(false);
+        }
+    }
+
+    private static Keybind getKey(int selectedSlot) {
+        if (ClientConfig.alternateCastMode) {
+            return slotKeybinds[selectedSlot];
+        } else {
+            return Keybind.USE_ABILITY;
+        }
+    }
 }

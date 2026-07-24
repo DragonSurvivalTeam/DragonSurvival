@@ -1,0 +1,28 @@
+{
+  "variants": {
+    "layers=1": {
+      "model": "dragonsurvival:block/bottle_caps_treasure2"
+    },
+    "layers=2": {
+      "model": "dragonsurvival:block/bottle_caps_treasure4"
+    },
+    "layers=3": {
+      "model": "dragonsurvival:block/bottle_caps_treasure6"
+    },
+    "layers=4": {
+      "model": "dragonsurvival:block/bottle_caps_treasure8"
+    },
+    "layers=5": {
+      "model": "dragonsurvival:block/bottle_caps_treasure10"
+    },
+    "layers=6": {
+      "model": "dragonsurvival:block/bottle_caps_treasure12"
+    },
+    "layers=7": {
+      "model": "dragonsurvival:block/bottle_caps_treasure14"
+    },
+    "layers=8": {
+      "model": "dragonsurvival:block/bottle_caps_treasure"
+    }
+  }
+}

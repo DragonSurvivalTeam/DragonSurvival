@@ -1,0 +1,97 @@
+{
+  "values": {
+    "#dragonsurvival:all": {
+      "effects": [
+        {
+          "duration": 400,
+          "effect": "dragonsurvival:empowered_soul"
+        }
+      ],
+      "payment_data": {
+        "duration_multiplier": 30,
+        "experience_cost": 60
+      }
+    },
+    "dragonsurvival:cave_dragon": {
+      "neoforge:conditions": [
+        {
+          "type": "dragonsurvival:registered",
+          "registry": "dragonsurvival:dragon_species",
+          "value": "dragonsurvival:cave_dragon"
+        }
+      ],
+      "effects": [
+        {
+          "duration": 400,
+          "effect": "dragonsurvival:cave_fire"
+        },
+        {
+          "duration": 400,
+          "effect": "dragonsurvival:sturdy_skin"
+        },
+        {
+          "duration": 400,
+          "effect": "dragonsurvival:empowered_soul"
+        }
+      ],
+      "payment_data": {
+        "duration_multiplier": 30,
+        "experience_cost": 60
+      }
+    },
+    "dragonsurvival:forest_dragon": {
+      "neoforge:conditions": [
+        {
+          "type": "dragonsurvival:registered",
+          "registry": "dragonsurvival:dragon_species",
+          "value": "dragonsurvival:forest_dragon"
+        }
+      ],
+      "effects": [
+        {
+          "duration": 400,
+          "effect": "dragonsurvival:forest_magic"
+        },
+        {
+          "duration": 400,
+          "effect": "dragonsurvival:animal_peace"
+        },
+        {
+          "duration": 400,
+          "effect": "dragonsurvival:empowered_soul"
+        }
+      ],
+      "payment_data": {
+        "duration_multiplier": 30,
+        "experience_cost": 60
+      }
+    },
+    "dragonsurvival:sea_dragon": {
+      "neoforge:conditions": [
+        {
+          "type": "dragonsurvival:registered",
+          "registry": "dragonsurvival:dragon_species",
+          "value": "dragonsurvival:sea_dragon"
+        }
+      ],
+      "effects": [
+        {
+          "duration": 400,
+          "effect": "dragonsurvival:sea_peace"
+        },
+        {
+          "duration": 400,
+          "effect": "minecraft:haste"
+        },
+        {
+          "duration": 400,
+          "effect": "dragonsurvival:empowered_soul"
+        }
+      ],
+      "payment_data": {
+        "duration_multiplier": 30,
+        "experience_cost": 60
+      }
+    }
+  }
+}

@@ -1,7 +1,0 @@
-{
-  "parent": "minecraft:block/snow_height2",
-  "textures": {
-    "particle": "dragonsurvival:block/treasure_copper",
-    "texture": "dragonsurvival:block/treasure_copper"
-  }
-}

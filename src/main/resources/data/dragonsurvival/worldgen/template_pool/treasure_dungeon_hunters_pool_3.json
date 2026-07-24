@@ -1,0 +1,15 @@
+{
+  "name": "dragonsurvival:treasure_dungeon_hunters_pool_3",
+  "fallback": "minecraft:empty",
+  "elements": [
+	{	
+      "weight": 1,
+      "element": {
+        "location": "dragonsurvival:treasure_hunters/treasure_dungeon_hunters_3",
+        "processors": "dragonsurvival:dragon_skeletons_random",
+		"projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "D": {
+      "tag": "c:gems/diamond"
+    },
+    "G": {
+      "tag": "c:ingots/gold"
+    },
+    "H": {
+      "item": "dragonsurvival:weak_dragon_heart"
+    },
+    "N": {
+      "item": "minecraft:netherite_scrap"
+    }
+  },
+  "pattern": [
+    "DGD",
+    "GHG",
+    "NGN"
+  ],
+  "result": {
+    "count": 1,
+    "id": "dragonsurvival:elder_dragon_heart"
+  }
+}

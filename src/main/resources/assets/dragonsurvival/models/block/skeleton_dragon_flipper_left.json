@@ -1,0 +1,46 @@
+{
+	"credit": "Made with Blockbench",
+	"render_type": "cutout",
+	"texture_size": [256, 256],
+	"textures": {
+		"skeleton_texture": "skeleton_dragon_1"
+	},
+	"elements": [
+		{
+			"name": "BackFlipperEdgeRight",
+			"from": [-6.95, 0.05, 1.8],
+			"to": [4.05, 0.05, 14.8],
+			"rotation": {"angle": 0, "axis": "z", "origin": [4.3, 0.05, 8.3]},
+			"faces": {
+				"north": {"uv": [0, 0, 0, 0.6875], "rotation": 90, "texture": "#skeleton_texture"},
+				"east": {"uv": [0, 0, 0, 0.8125], "rotation": 270, "texture": "#skeleton_texture"},
+				"south": {"uv": [0, 0, 0, 0.6875], "rotation": 270, "texture": "#skeleton_texture"},
+				"west": {"uv": [0, 0, 0, 0.8125], "rotation": 270, "texture": "#skeleton_texture"},
+				"up": {"uv": [9.78125, 14.5625, 10.59375, 15.25], "rotation": 270, "texture": "#skeleton_texture"},
+				"down": {"uv": [10.59375, 14.5625, 9.78125, 15.25], "rotation": 270, "texture": "#skeleton_texture"}
+			}
+		},
+		{
+			"name": "BackFlipperRight",
+			"from": [4.05, 0.05, 1.8],
+			"to": [16.05, 0.05, 14.8],
+			"rotation": {"angle": 0, "axis": "z", "origin": [4.3, 0.05, 8.3]},
+			"faces": {
+				"north": {"uv": [0, 0, 0, 0.6875], "rotation": 90, "texture": "#skeleton_texture"},
+				"east": {"uv": [0, 0, 0, 0.8125], "rotation": 270, "texture": "#skeleton_texture"},
+				"south": {"uv": [0, 0, 0, 0.6875], "rotation": 270, "texture": "#skeleton_texture"},
+				"west": {"uv": [0, 0, 0, 0.8125], "rotation": 270, "texture": "#skeleton_texture"},
+				"up": {"uv": [9.78125, 15.25, 10.59375, 16], "rotation": 270, "texture": "#skeleton_texture"},
+				"down": {"uv": [10.59375, 15.25, 9.78125, 16], "rotation": 270, "texture": "#skeleton_texture"}
+			}
+		}
+	],
+	"groups": [
+		{
+			"name": "bone37",
+			"origin": [39, -13.4, 44.5],
+			"color": 0,
+			"children": [0, 1]
+		}
+	]
+}

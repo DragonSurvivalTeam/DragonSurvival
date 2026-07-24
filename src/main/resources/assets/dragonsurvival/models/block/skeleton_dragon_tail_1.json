@@ -1,0 +1,102 @@
+{
+	"credit": "Made with Blockbench",
+	"render_type": "cutout",
+	"texture_size": [256, 256],
+	"textures": {
+		"skeleton_texture": "skeleton_dragon_1"
+	},
+	"elements": [
+		{
+			"name": "Tail5_s",
+			"from": [8.02, 6.19, 2.002],
+			"to": [8.02, 10.19, 13.999],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, -14.9, -8]},
+			"faces": {
+				"north": {"uv": [0.8125, 6.5625, 0.8125, 6.8125], "texture": "#skeleton_texture"},
+				"east": {"uv": [0, 6.5625, 0.75, 6.8125], "texture": "#skeleton_texture"},
+				"south": {"uv": [1.625, 6.5625, 1.625, 6.8125], "texture": "#skeleton_texture"},
+				"west": {"uv": [0.75, 6.5625, 0, 6.8125], "texture": "#skeleton_texture"},
+				"up": {"uv": [0.8125, 6.5625, 0.8125, 5.75], "texture": "#skeleton_texture"},
+				"down": {"uv": [0.8125, 5.75, 0.8125, 6.5625], "texture": "#skeleton_texture"}
+			}
+		},
+		{
+			"name": "Tail5_s",
+			"from": [5, 0.2, 2],
+			"to": [5, 6.2, 14],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, -14.9, -8]},
+			"faces": {
+				"north": {"uv": [6.4375, 6.4375, 6.8125, 6.8125], "texture": "#skeleton_texture"},
+				"east": {"uv": [7.5625, 6.4375, 6.8125, 6.8125], "texture": "#skeleton_texture"},
+				"south": {"uv": [7.5625, 6.4375, 7.9375, 6.8125], "texture": "#skeleton_texture"},
+				"west": {"uv": [6.8125, 6.4375, 7.5625, 6.8125], "texture": "#skeleton_texture"},
+				"up": {"uv": [6.8125, 6.4375, 6.4375, 5.6875], "texture": "#skeleton_texture"},
+				"down": {"uv": [7.1875, 5.6875, 6.8125, 6.4375], "texture": "#skeleton_texture"}
+			}
+		},
+		{
+			"name": "Tail5_s",
+			"from": [11, 0.2, 2],
+			"to": [11, 6.2, 14],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, -14.9, -8]},
+			"faces": {
+				"north": {"uv": [6.4375, 6.4375, 6.8125, 6.8125], "texture": "#skeleton_texture"},
+				"east": {"uv": [5.6875, 6.4375, 6.4375, 6.8125], "texture": "#skeleton_texture"},
+				"south": {"uv": [7.5625, 6.4375, 7.9375, 6.8125], "texture": "#skeleton_texture"},
+				"west": {"uv": [6.4375, 6.4375, 5.6875, 6.8125], "texture": "#skeleton_texture"},
+				"up": {"uv": [6.8125, 6.4375, 6.4375, 5.6875], "texture": "#skeleton_texture"},
+				"down": {"uv": [7.1875, 5.6875, 6.8125, 6.4375], "texture": "#skeleton_texture"}
+			}
+		},
+		{
+			"name": "Tail5_s",
+			"from": [5, 0.2, 2],
+			"to": [11, 6.2, 2],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, -14.9, -8]},
+			"faces": {
+				"north": {"uv": [6.4375, 6.4375, 6.8125, 6.8125], "texture": "#skeleton_texture"},
+				"east": {"uv": [5.6875, 6.4375, 6.4375, 6.8125], "texture": "#skeleton_texture"},
+				"south": {"uv": [6.8125, 6.4375, 6.4375, 6.8125], "texture": "#skeleton_texture"},
+				"west": {"uv": [6.8125, 6.4375, 7.5625, 6.8125], "texture": "#skeleton_texture"},
+				"up": {"uv": [6.8125, 6.4375, 6.4375, 5.6875], "texture": "#skeleton_texture"},
+				"down": {"uv": [7.1875, 5.6875, 6.8125, 6.4375], "texture": "#skeleton_texture"}
+			}
+		},
+		{
+			"name": "Tail5_s",
+			"from": [5, 0.2, 14],
+			"to": [11, 6.2, 14],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, -14.9, -8]},
+			"faces": {
+				"north": {"uv": [7.9375, 6.4375, 7.5625, 6.8125], "texture": "#skeleton_texture"},
+				"east": {"uv": [5.6875, 6.4375, 6.4375, 6.8125], "texture": "#skeleton_texture"},
+				"south": {"uv": [7.5625, 6.4375, 7.9375, 6.8125], "texture": "#skeleton_texture"},
+				"west": {"uv": [6.8125, 6.4375, 7.5625, 6.8125], "texture": "#skeleton_texture"},
+				"up": {"uv": [6.8125, 6.4375, 6.4375, 5.6875], "texture": "#skeleton_texture"},
+				"down": {"uv": [7.1875, 5.6875, 6.8125, 6.4375], "texture": "#skeleton_texture"}
+			}
+		},
+		{
+			"name": "Tail5_s",
+			"from": [5, 6.2, 2],
+			"to": [11, 6.2, 14],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, -14.9, -8]},
+			"faces": {
+				"north": {"uv": [6.4375, 6.4375, 6.8125, 6.8125], "texture": "#skeleton_texture"},
+				"east": {"uv": [5.6875, 6.4375, 6.4375, 6.8125], "texture": "#skeleton_texture"},
+				"south": {"uv": [7.5625, 6.4375, 7.9375, 6.8125], "texture": "#skeleton_texture"},
+				"west": {"uv": [6.8125, 6.4375, 7.5625, 6.8125], "texture": "#skeleton_texture"},
+				"up": {"uv": [6.8125, 6.4375, 6.4375, 5.6875], "texture": "#skeleton_texture"},
+				"down": {"uv": [6.8125, 5.6875, 6.4375, 6.4375], "texture": "#skeleton_texture"}
+			}
+		}
+	],
+	"groups": [
+		{
+			"name": "bone11",
+			"origin": [8, -14.9, 8],
+			"color": 0,
+			"children": [0, 1, 2, 3, 4, 5]
+		}
+	]
+}

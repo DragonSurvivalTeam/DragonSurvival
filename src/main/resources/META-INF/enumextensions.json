@@ -1,0 +1,13 @@
+{
+  "entries": [
+    {
+      "enum": "net/minecraft/world/entity/MobCategory",
+      "name": "DRAGONSURVIVAL_HUNTER_FACTION",
+      "constructor": "(Ljava/lang/String;IZZI)V",
+      "parameters": {
+        "class": "by/dragonsurvivalteam/dragonsurvival/common/entity/HunterFaction",
+        "field": "DRAGONSURVIVAL_HUNTER_FACTION"
+      }
+    }
+  ]
+}

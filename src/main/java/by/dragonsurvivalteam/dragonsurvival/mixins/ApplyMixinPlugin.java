@@ -1,6 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.mixins;
 
-import net.minecraftforge.fml.loading.LoadingModList;
+import by.dragonsurvivalteam.dragonsurvival.compat.ModCheck;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
@@ -21,19 +21,21 @@ public class ApplyMixinPlugin implements IMixinConfigPlugin {
 
     @Override
     public boolean shouldApplyMixin(final String targetClassName, final String mixinClassName) {
-        String modid = mixinClassName.replace(PREFIX, "");
+        String directory = mixinClassName.replace(PREFIX, "");
         // Remove directories which are not related to mods
-        modid = modid.replace("client.", "");
-        modid = modid.replace("tool_swap.", "");
+        directory = directory.replace("client.", "");
+        directory = directory.replace("tool_swap.", "");
         // If a directory is still present it will run through the check below
-        String[] elements = modid.split("\\.");
+        String[] elements = directory.split("\\.");
 
         if (elements.length == 2) {
-            return LoadingModList.get().getModFileById(elements[0]) != null;
+            String modid = elements[0];
+            return ModCheck.isModLoaded(modid);
         }
 
-        if (mixinClassName.equals("by.dragonsurvivalteam.dragonsurvival.mixins.client.LiquidBlockRendererMixin")) {
-            return LoadingModList.get().getModFileById("embeddium") == null;
+        if (mixinClassName.equals(PREFIX + "HolderSetCodecMixin") || mixinClassName.equals(PREFIX + "Holder$ReferenceAccess")) {
+            // 'null' in production or when not started from our run configuration
+            return System.getProperty("dragonsurvival.data_generation", "false").equals("true");
         }
 
         return true;

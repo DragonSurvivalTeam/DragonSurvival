@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "dragonsurvival:block/dragon_rider_workbench",
+      "y": 270
+    },
+    "facing=north": {
+      "model": "dragonsurvival:block/dragon_rider_workbench",
+      "y": 180
+    },
+    "facing=south": {
+      "model": "dragonsurvival:block/dragon_rider_workbench"
+    },
+    "facing=west": {
+      "model": "dragonsurvival:block/dragon_rider_workbench",
+      "y": 90
+    }
+  }
+}

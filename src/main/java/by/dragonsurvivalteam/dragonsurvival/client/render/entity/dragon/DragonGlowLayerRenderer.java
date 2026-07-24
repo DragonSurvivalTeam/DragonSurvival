@@ -1,13 +1,15 @@
 package by.dragonsurvivalteam.dragonsurvival.client.render.entity.dragon;
 
-import by.dragonsurvivalteam.dragonsurvival.DragonSurvivalMod;
-import by.dragonsurvivalteam.dragonsurvival.client.render.ClientDragonRender;
-import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.SkinPreset;
-import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.SkinPreset.SkinAgeGroup;
+import by.dragonsurvivalteam.dragonsurvival.client.models.DragonModel;
+import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.DragonEditorHandler;
+import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.DragonStageCustomization;
 import by.dragonsurvivalteam.dragonsurvival.client.skins.DragonSkins;
+import by.dragonsurvivalteam.dragonsurvival.client.util.RenderingUtils;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
+import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.StageResources;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
-import by.dragonsurvivalteam.dragonsurvival.util.DragonUtils;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
@@ -20,73 +22,66 @@ import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
 import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
 
-import java.util.Locale;
-
+// TODO :: geckolib has an 'AutoGlowingGeoLayer' class, could that help here?
+// FIXME :: glow layer doesn't like translucency much (it goes dark once the alpha changes)
 public class DragonGlowLayerRenderer extends GeoRenderLayer<DragonEntity> {
-	private final GeoEntityRenderer<DragonEntity> renderer;
+    private final GeoEntityRenderer<DragonEntity> renderer;
 
-	public DragonGlowLayerRenderer(final GeoEntityRenderer<DragonEntity> renderer) {
-		super(renderer);
-		this.renderer = renderer;
-	}
+    public DragonGlowLayerRenderer(final GeoEntityRenderer<DragonEntity> renderer) {
+        super(renderer);
+        this.renderer = renderer;
+    }
 
-	@Override
-	public void render(final PoseStack poseStack, final DragonEntity animatable, final BakedGeoModel bakedModel, final RenderType renderType, final MultiBufferSource bufferSource, final VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
-		if (!(renderer instanceof DragonRenderer dragonRenderer)) {
-			return;
-		}
+    @Override
+    public void render(final PoseStack poseStack, final DragonEntity animatable, final BakedGeoModel bakedModel, final RenderType renderType, final MultiBufferSource bufferSource, final VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
+        if (!(renderer instanceof DragonRenderer dragonRenderer)) {
+            return;
+        }
 
-		if (!dragonRenderer.shouldRenderLayers) {
-			return;
-		}
+        Player player;
 
-		if (animatable == ClientDragonRender.dragonArmor) {
-			return;
-		}
+        if (animatable.overrideUUIDWithLocalPlayerForTextureFetch) {
+            player = Minecraft.getInstance().player;
+        } else {
+            player = animatable.getPlayer();
+        }
 
-		Player player = animatable.getPlayer();
+        if (player == null) {
+            return;
+        }
 
-		if (player == null) {
-			return;
-		}
+        DragonStateHandler handler = DragonStateProvider.getData(player);
+        DragonStageCustomization customization = handler.getCurrentStageCustomization();
+        ResourceLocation glowTexture = null;
 
-		DragonStateHandler handler = DragonUtils.getHandler(player);
+        // At the moment GitHub only contains textures based on the dragon model
+        if (handler.getModel().equals(DragonBody.DEFAULT_MODEL)) {
+            glowTexture = DragonSkins.getGlowTexture(player, handler.stageKey());
+        }
 
-		SkinPreset preset = handler.getSkinData().skinPreset;
-		SkinAgeGroup ageGroup = preset.skinAges.get(handler.getLevel()).get();
+        // FIXME :: is this safe?
+        if (dragonRenderer.glowTexture != null && (glowTexture == null || glowTexture.getPath().contains("/" + handler.speciesId().getPath() + "_"))) {
+            glowTexture = dragonRenderer.glowTexture;
+        }
 
-		ResourceLocation glowTexture = DragonSkins.getGlowTexture(player, handler.getType(), handler.getLevel());
+        if (glowTexture == null && handler.getCurrentStageCustomization().defaultSkin) {
+            ResourceLocation defaultGlowSkin = StageResources.getDefaultSkin(handler.species(), handler.stageKey(), true);
 
-		if (glowTexture == null || glowTexture.getPath().contains("/" + handler.getTypeNameLowerCase() + "_")) {
-			if (dragonRenderer.glowTexture != null) {
-				glowTexture = dragonRenderer.glowTexture;
-			}
-		}
+            if (Minecraft.getInstance().getResourceManager().getResource(defaultGlowSkin).isPresent()) {
+                glowTexture = defaultGlowSkin;
+            }
+        }
 
-		if (glowTexture == null && handler.getSkinData().skinPreset.skinAges.get(handler.getLevel()).get().defaultSkin) {
-			ResourceLocation location = new ResourceLocation(DragonSurvivalMod.MODID, "textures/dragon/" + handler.getTypeNameLowerCase() + "_" + handler.getLevel().name.toLowerCase(Locale.ENGLISH) + "_glow.png");
+        if (glowTexture == null && customization.layerSettings.values().stream().anyMatch(layerSettings -> layerSettings.get().isGlowing)) {
+            glowTexture = DragonModel.dynamicTexture(player, handler, true);
+        }
 
-			if (Minecraft.getInstance().getResourceManager().getResource(location).isPresent()) {
-				glowTexture = location;
-			}
-		}
+        boolean hasGlowTexture = glowTexture != null && (DragonEditorHandler.hasGeneratedSkinTexture(glowTexture) || (!DragonEditorHandler.isDynamicSkinTexture(glowTexture) && RenderingUtils.hasTexture(glowTexture)));
 
-		if (glowTexture != null) {
-			RenderType type = RenderType.eyes(glowTexture);
-			VertexConsumer vertexConsumer = bufferSource.getBuffer(type);
-			dragonRenderer.isRenderLayers = true;
-			dragonRenderer.actuallyRender(poseStack, animatable, bakedModel, type, bufferSource, vertexConsumer, true, partialTick, packedLight, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
-		} else {
-			ResourceLocation dynamicGlowKey = new ResourceLocation(DragonSurvivalMod.MODID, "dynamic_glow_" + animatable.getPlayer().getStringUUID() + "_" + handler.getLevel().name);
-			dragonRenderer.isRenderLayers = true;
-
-			if (ageGroup.layerSettings.values().stream().anyMatch(layerSettings -> layerSettings.get().glowing)) {
-				RenderType type = RenderType.eyes(dynamicGlowKey);
-				VertexConsumer vertexConsumer = bufferSource.getBuffer(type);
-				dragonRenderer.actuallyRender(poseStack, animatable, bakedModel, type, bufferSource, vertexConsumer, true, partialTick, packedLight, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
-			}
-		}
-
-		dragonRenderer.isRenderLayers = false;
-	}
+        if (hasGlowTexture) {
+            DragonEditorHandler.markSkinTextureUsed(glowTexture);
+            RenderType type = RenderType.EYES.apply(glowTexture, RenderType.LIGHTNING_TRANSPARENCY);
+            dragonRenderer.actuallyRender(poseStack, animatable, bakedModel, type, bufferSource, bufferSource.getBuffer(type), true, partialTick, packedLight, OverlayTexture.NO_OVERLAY, renderer.getRenderColor(animatable, partialTick, packedLight).getColor());
+        }
+    }
 }

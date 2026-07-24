@@ -1,0 +1,116 @@
+{
+	"credit": "Made with Blockbench",
+	"render_type": "cutout",
+	"texture_size": [256, 256],
+	"textures": {
+		"skeleton_texture": "skeleton_dragon_1"
+	},
+	"elements": [
+		{
+			"name": "Neck3_s",
+			"from": [8, 8.07807, 5.00592],
+			"to": [8, 12.07806, 11.00292],
+			"rotation": {"angle": 0, "axis": "x", "origin": [8, 5.08249, 8.00443]},
+			"faces": {
+				"north": {"uv": [2.4375, 4.875, 2.4375, 4.6875], "rotation": 180, "texture": "#skeleton_texture"},
+				"east": {"uv": [2.25, 4.875, 2.5, 5.25], "rotation": 90, "texture": "#skeleton_texture"},
+				"south": {"uv": [2.4375, 4.6875, 2.4375, 4.875], "texture": "#skeleton_texture"},
+				"west": {"uv": [2.5, 4.875, 2.25, 5.25], "rotation": 270, "texture": "#skeleton_texture"},
+				"up": {"uv": [2.625, 4.875, 2.625, 5.375], "texture": "#skeleton_texture"},
+				"down": {"uv": [2.4375, 4.875, 2.4375, 5.375], "rotation": 180, "texture": "#skeleton_texture"}
+			}
+		},
+		{
+			"name": "Neck3_s",
+			"from": [5, 8.08691, 5.00443],
+			"to": [11, 8.08691, 11.00443],
+			"rotation": {"angle": 0, "axis": "x", "origin": [8, 5.08249, 8.00443]},
+			"faces": {
+				"north": {"uv": [0.875, 7.3125, 0.5, 6.8125], "rotation": 180, "texture": "#skeleton_texture"},
+				"east": {"uv": [0, 7.3125, 0.5, 7.6875], "rotation": 90, "texture": "#skeleton_texture"},
+				"south": {"uv": [1.25, 6.8125, 0.875, 7.3125], "texture": "#skeleton_texture"},
+				"west": {"uv": [0.875, 7.3125, 1.375, 7.6875], "rotation": 270, "texture": "#skeleton_texture"},
+				"up": {"uv": [1.375, 7.3125, 1.75, 7.6875], "texture": "#skeleton_texture"},
+				"down": {"uv": [1.375, 7.3125, 1.75, 7.6875], "rotation": 180, "texture": "#skeleton_texture"}
+			}
+		},
+		{
+			"name": "Neck3_s",
+			"from": [11, 0.08691, 5.00443],
+			"to": [11, 8.08691, 11.00443],
+			"rotation": {"angle": 0, "axis": "x", "origin": [8, 5.08249, 8.00443]},
+			"faces": {
+				"north": {"uv": [0.875, 7.3125, 0.5, 6.8125], "rotation": 180, "texture": "#skeleton_texture"},
+				"east": {"uv": [0, 7.3125, 0.5, 7.6875], "rotation": 90, "texture": "#skeleton_texture"},
+				"south": {"uv": [1.25, 6.8125, 0.875, 7.3125], "texture": "#skeleton_texture"},
+				"west": {"uv": [0.5, 7.3125, 0, 7.6875], "rotation": 270, "texture": "#skeleton_texture"},
+				"up": {"uv": [1.375, 7.3125, 1.75, 7.6875], "texture": "#skeleton_texture"},
+				"down": {"uv": [0.5, 7.3125, 0.875, 7.6875], "rotation": 180, "texture": "#skeleton_texture"}
+			}
+		},
+		{
+			"name": "Neck3_s",
+			"from": [5, 0.08691, 5.00443],
+			"to": [5, 8.08691, 11.00443],
+			"rotation": {"angle": 0, "axis": "x", "origin": [8, 5.08249, 8.00443]},
+			"faces": {
+				"north": {"uv": [0.875, 7.3125, 0.5, 6.8125], "rotation": 180, "texture": "#skeleton_texture"},
+				"east": {"uv": [1.375, 7.3125, 0.875, 7.6875], "rotation": 90, "texture": "#skeleton_texture"},
+				"south": {"uv": [1.25, 6.8125, 0.875, 7.3125], "texture": "#skeleton_texture"},
+				"west": {"uv": [0.875, 7.3125, 1.375, 7.6875], "rotation": 270, "texture": "#skeleton_texture"},
+				"up": {"uv": [1.375, 7.3125, 1.75, 7.6875], "texture": "#skeleton_texture"},
+				"down": {"uv": [0.5, 7.3125, 0.875, 7.6875], "rotation": 180, "texture": "#skeleton_texture"}
+			}
+		},
+		{
+			"name": "Neck3_s",
+			"from": [5, 0.08691, 5.00443],
+			"to": [11, 8.08691, 5.00443],
+			"rotation": {"angle": 0, "axis": "x", "origin": [8, 5.08249, 8.00443]},
+			"faces": {
+				"north": {"uv": [0.875, 7.3125, 0.5, 6.8125], "rotation": 180, "texture": "#skeleton_texture"},
+				"east": {"uv": [0, 7.3125, 0.5, 7.6875], "rotation": 90, "texture": "#skeleton_texture"},
+				"south": {"uv": [0.875, 6.8125, 0.5, 7.3125], "texture": "#skeleton_texture"},
+				"west": {"uv": [0.875, 7.3125, 1.375, 7.6875], "rotation": 270, "texture": "#skeleton_texture"},
+				"up": {"uv": [1.375, 7.3125, 1.75, 7.6875], "texture": "#skeleton_texture"},
+				"down": {"uv": [0.5, 7.3125, 0.875, 7.6875], "rotation": 180, "texture": "#skeleton_texture"}
+			}
+		},
+		{
+			"name": "Neck3_s",
+			"from": [5, 0.08691, 11.00443],
+			"to": [11, 8.08691, 11.00443],
+			"rotation": {"angle": 0, "axis": "x", "origin": [8, 5.08249, 8.00443]},
+			"faces": {
+				"north": {"uv": [1.25, 7.3125, 0.875, 6.8125], "rotation": 180, "texture": "#skeleton_texture"},
+				"east": {"uv": [0, 7.3125, 0.5, 7.6875], "rotation": 90, "texture": "#skeleton_texture"},
+				"south": {"uv": [1.25, 6.8125, 0.875, 7.3125], "texture": "#skeleton_texture"},
+				"west": {"uv": [0.875, 7.3125, 1.375, 7.6875], "rotation": 270, "texture": "#skeleton_texture"},
+				"up": {"uv": [1.375, 7.3125, 1.75, 7.6875], "texture": "#skeleton_texture"},
+				"down": {"uv": [0.5, 7.3125, 0.875, 7.6875], "rotation": 180, "texture": "#skeleton_texture"}
+			}
+		},
+		{
+			"name": "Neck3_s",
+			"from": [5, 0.08691, 5.00443],
+			"to": [11, 0.08691, 11.00443],
+			"rotation": {"angle": 0, "axis": "x", "origin": [8, 5.08249, 8.00443]},
+			"faces": {
+				"north": {"uv": [0.875, 7.3125, 0.5, 6.8125], "rotation": 180, "texture": "#skeleton_texture"},
+				"east": {"uv": [0, 7.3125, 0.5, 7.6875], "rotation": 90, "texture": "#skeleton_texture"},
+				"south": {"uv": [1.25, 6.8125, 0.875, 7.3125], "texture": "#skeleton_texture"},
+				"west": {"uv": [0.875, 7.3125, 1.375, 7.6875], "rotation": 270, "texture": "#skeleton_texture"},
+				"up": {"uv": [0.5, 7.3125, 0.875, 7.6875], "texture": "#skeleton_texture"},
+				"down": {"uv": [0.5, 7.3125, 0.875, 7.6875], "rotation": 180, "texture": "#skeleton_texture"}
+			}
+		}
+	],
+	"groups": [
+		{
+			"name": "bone16",
+			"origin": [8, 7.0825, 8.00443],
+			"color": 0,
+			"children": [0, 1, 2, 3, 4, 5, 6]
+		}
+	]
+}

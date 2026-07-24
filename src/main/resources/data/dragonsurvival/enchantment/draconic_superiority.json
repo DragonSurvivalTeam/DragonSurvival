@@ -1,0 +1,40 @@
+{
+  "anvil_cost": 2,
+  "description": {
+    "translate": "enchantment.dragonsurvival.draconic_superiority"
+  },
+  "effects": {
+    "minecraft:damage": [
+      {
+        "effect": {
+          "type": "minecraft:multiply",
+          "factor": {
+            "type": "minecraft:clamped",
+            "value": {
+              "type": "minecraft:linear",
+              "base": 1.2,
+              "per_level_above_first": 0.08
+            },
+            "min": 0.0,
+            "max": 70.0
+          }
+        }
+      }
+    ]
+  },
+  "exclusive_set": "#dragonsurvival:exclusive_set/light_dragon",
+  "max_cost": {
+    "base": 21,
+    "per_level_above_first": 11
+  },
+  "max_level": 1,
+  "min_cost": {
+    "base": 1,
+    "per_level_above_first": 11
+  },
+  "slots": [
+    "feet"
+  ],
+  "supported_items": "#minecraft:enchantable/foot_armor",
+  "weight": 10
+}

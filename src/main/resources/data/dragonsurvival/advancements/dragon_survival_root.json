@@ -1,7 +1,0 @@
-{
-    "criteria": {
-      "dragon_survival_root": {
-        "trigger": "minecraft:tick"
-      }
-    }
-}

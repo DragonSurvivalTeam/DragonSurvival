@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:jigsaw",
+  "biomes": "#dragonsurvival:is_treasure_end_spawn",
+  "step": "surface_structures",
+  "spawn_overrides": {},
+  "start_pool": "dragonsurvival:treasure_end_spawn_pool",
+  "size": 4,
+  "terrain_adaptation": "none",
+  "start_height": {
+    "type": "minecraft:uniform",
+    "min_inclusive": {
+      "absolute": 50
+    },
+    "max_inclusive": {
+      "absolute": 52
+    }
+  },
+  "max_distance_from_center": 100,
+  "use_expansion_hack": true
+}

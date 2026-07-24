@@ -1,0 +1,113 @@
+{
+  "processors": [
+    {
+      "rules": [
+        {
+          "output_state": {
+            "Name": "minecraft:emerald_block"
+          },
+          "input_predicate": {
+            "block": "minecraft:obsidian",
+            "probability": 0.60,
+            "predicate_type": "minecraft:random_block_match"
+          },
+          "location_predicate": {
+            "predicate_type": "minecraft:always_true"
+          }
+        },
+		{
+          "output_state": {
+            "Name": "minecraft:diamond_block"
+          },
+          "input_predicate": {
+            "block": "minecraft:obsidian",
+            "probability": 0.60,
+            "predicate_type": "minecraft:random_block_match"
+          },
+          "location_predicate": {
+            "predicate_type": "minecraft:always_true"
+          }
+        },
+        {
+          "output_state": {
+            "Name": "minecraft:slime_block"
+          },
+          "input_predicate": {
+            "block": "minecraft:obsidian",
+            "probability": 0.60,
+            "predicate_type": "minecraft:random_block_match"
+          },
+          "location_predicate": {
+            "predicate_type": "minecraft:always_true"
+          }
+        },
+        {
+          "output_state": {
+            "Name": "minecraft:honey_block"
+          },
+          "input_predicate": {
+            "block": "minecraft:obsidian",
+            "probability": 0.60,
+            "predicate_type": "minecraft:random_block_match"
+          },
+          "location_predicate": {
+            "predicate_type": "minecraft:always_true"
+          }
+        },
+        {
+          "output_state": {
+            "Name": "minecraft:spore_blossom"
+          },
+          "input_predicate": {
+            "block": "minecraft:obsidian",
+            "probability": 0.60,
+            "predicate_type": "minecraft:random_block_match"
+          },
+          "location_predicate": {
+            "predicate_type": "minecraft:always_true"
+          }
+        },
+        {
+          "output_state": {
+            "Name": "minecraft:crying_obsidian"
+          },
+          "input_predicate": {
+            "block": "minecraft:obsidian",
+            "probability": 0.60,
+            "predicate_type": "minecraft:random_block_match"
+          },
+          "location_predicate": {
+            "predicate_type": "minecraft:always_true"
+          }
+        },
+        {
+          "output_state": {
+            "Name": "minecraft:cherry_leaves"
+          },
+          "input_predicate": {
+            "block": "minecraft:obsidian",
+            "probability": 0.60,
+            "predicate_type": "minecraft:random_block_match"
+          },
+          "location_predicate": {
+            "predicate_type": "minecraft:always_true"
+          }
+        },
+        {
+          "output_state": {
+            "Name": "minecraft:air"
+          },
+          "input_predicate": {
+            "block": "minecraft:chest",
+            "probability": 0.85,
+            "predicate_type": "minecraft:random_block_match"
+          },
+          "location_predicate": {
+            "predicate_type": "minecraft:always_true"
+          }
+        }
+      ],
+      "processor_type": "minecraft:rule"
+    }
+  ]
+}

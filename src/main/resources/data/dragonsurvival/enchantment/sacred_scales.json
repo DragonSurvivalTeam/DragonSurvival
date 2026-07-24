@@ -1,0 +1,56 @@
+{
+  "anvil_cost": 2,
+  "description": {
+    "translate": "enchantment.dragonsurvival.sacred_scales"
+  },
+  "effects": {
+    "minecraft:damage_protection": [
+      {
+        "effect": {
+          "type": "minecraft:add",
+          "value": {
+            "type": "minecraft:clamped",
+            "value": {
+              "type": "minecraft:linear",
+              "base": 20.0,
+              "per_level_above_first": 8.0
+            },
+            "min": 0.0,
+            "max": 70.0
+          }
+        },
+        "requirements": {
+          "condition": "minecraft:random_chance",
+          "chance": {
+            "type": "minecraft:enchantment_level",
+            "amount": {
+              "type": "minecraft:clamped",
+              "value": {
+                "type": "minecraft:linear",
+                "base": 0.2,
+                "per_level_above_first": 0.12
+              },
+              "min": 0.0,
+              "max": 0.8
+            }
+          }
+        }
+      }
+    ]
+  },
+  "exclusive_set": "#dragonsurvival:exclusive_set/dark_dragon",
+  "max_cost": {
+    "base": 21,
+    "per_level_above_first": 11
+  },
+  "max_level": 1,
+  "min_cost": {
+    "base": 1,
+    "per_level_above_first": 11
+  },
+  "slots": [
+    "feet"
+  ],
+  "supported_items": "#minecraft:enchantable/foot_armor",
+  "weight": 10
+}

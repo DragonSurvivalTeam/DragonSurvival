@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/orientable",
+  "textures": {
+    "down": "dragonsurvival:block/purpur_dragon_altar_top",
+    "east": "dragonsurvival:block/purpur_dragon_altar_east",
+    "north": "dragonsurvival:block/purpur_dragon_altar_north",
+    "particle": "dragonsurvival:block/purpur_dragon_altar_top",
+    "south": "dragonsurvival:block/purpur_dragon_altar_south",
+    "up": "dragonsurvival:block/purpur_dragon_altar_top",
+    "west": "dragonsurvival:block/purpur_dragon_altar_west"
+  }
+}

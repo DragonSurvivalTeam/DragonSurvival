@@ -1,0 +1,52 @@
+{
+  "variants": {
+    "rotation=0": {
+      "model": "dragonsurvival:block/golden_knight_helmet"
+    },
+    "rotation=1": {
+      "model": "dragonsurvival:block/golden_knight_helmet"
+    },
+    "rotation=10": {
+      "model": "dragonsurvival:block/golden_knight_helmet"
+    },
+    "rotation=11": {
+      "model": "dragonsurvival:block/golden_knight_helmet"
+    },
+    "rotation=12": {
+      "model": "dragonsurvival:block/golden_knight_helmet"
+    },
+    "rotation=13": {
+      "model": "dragonsurvival:block/golden_knight_helmet"
+    },
+    "rotation=14": {
+      "model": "dragonsurvival:block/golden_knight_helmet"
+    },
+    "rotation=15": {
+      "model": "dragonsurvival:block/golden_knight_helmet"
+    },
+    "rotation=2": {
+      "model": "dragonsurvival:block/golden_knight_helmet"
+    },
+    "rotation=3": {
+      "model": "dragonsurvival:block/golden_knight_helmet"
+    },
+    "rotation=4": {
+      "model": "dragonsurvival:block/golden_knight_helmet"
+    },
+    "rotation=5": {
+      "model": "dragonsurvival:block/golden_knight_helmet"
+    },
+    "rotation=6": {
+      "model": "dragonsurvival:block/golden_knight_helmet"
+    },
+    "rotation=7": {
+      "model": "dragonsurvival:block/golden_knight_helmet"
+    },
+    "rotation=8": {
+      "model": "dragonsurvival:block/golden_knight_helmet"
+    },
+    "rotation=9": {
+      "model": "dragonsurvival:block/golden_knight_helmet"
+    }
+  }
+}

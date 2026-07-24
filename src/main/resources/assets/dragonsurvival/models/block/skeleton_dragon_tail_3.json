@@ -1,0 +1,46 @@
+{
+	"credit": "Made with Blockbench",
+	"render_type": "cutout",
+	"texture_size": [256, 256],
+	"textures": {
+		"skeleton_texture": "skeleton_dragon_1"
+	},
+	"elements": [
+		{
+			"name": "Tail3_s",
+			"from": [6.95, 0, 3],
+			"to": [8.95, 3, 12],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, -17.3, -28]},
+			"faces": {
+				"north": {"uv": [7.125, 7.5, 7.25, 7.6875], "texture": "#skeleton_texture"},
+				"east": {"uv": [6.4375, 7.5, 7, 7.6875], "texture": "#skeleton_texture"},
+				"south": {"uv": [7.9375, 7.5, 8.0625, 7.6875], "texture": "#skeleton_texture"},
+				"west": {"uv": [7.34375, 7.5, 7.90625, 7.6875], "texture": "#skeleton_texture"},
+				"up": {"uv": [7.25, 7.375, 7.125, 6.8125], "texture": "#skeleton_texture"},
+				"down": {"uv": [7.375, 6.8125, 7.25, 7.375], "texture": "#skeleton_texture"}
+			}
+		},
+		{
+			"name": "Tail3_s",
+			"from": [8, 3, 3],
+			"to": [8, 7, 12],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8.9, -17.3, -28]},
+			"faces": {
+				"north": {"uv": [5.625, 6.125, 5.625, 6.375], "texture": "#skeleton_texture"},
+				"east": {"uv": [4.9375, 6.125, 5.5, 6.375], "texture": "#skeleton_texture"},
+				"south": {"uv": [6.3125, 6.125, 6.3125, 6.375], "texture": "#skeleton_texture"},
+				"west": {"uv": [5.5, 6.125, 4.9375, 6.375], "texture": "#skeleton_texture"},
+				"up": {"uv": [5.625, 6.125, 5.625, 5.4375], "texture": "#skeleton_texture"},
+				"down": {"uv": [5.625, 5.4375, 5.625, 6.125], "texture": "#skeleton_texture"}
+			}
+		}
+	],
+	"groups": [
+		{
+			"name": "bone13",
+			"origin": [8, -17.3, -28],
+			"color": 0,
+			"children": [0, 1]
+		}
+	]
+}

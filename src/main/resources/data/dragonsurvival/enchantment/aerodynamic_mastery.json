@@ -1,0 +1,47 @@
+{
+  "anvil_cost": 2,
+  "description": {
+    "translate": "enchantment.dragonsurvival.aerodynamic_mastery"
+  },
+  "comment": [
+    {
+      "amount": {
+        "type": "minecraft:linear",
+        "base": 0.5,
+        "per_level_above_first": 0.2
+      },
+      "attribute": "minecraft:generic.flying_speed",
+      "id": "dragonsurvival:enchantment.aerodynamic_mastery",
+      "operation": "add_multiplied_base"
+    }
+  ],
+  "effects": {
+    "minecraft:attributes": [
+      {
+        "amount": {
+          "type": "minecraft:linear",
+          "base": 0.5,
+          "per_level_above_first": 0.25
+        },
+        "attribute": "dragonsurvival:flight_stamina",
+        "id": "dragonsurvival:enchantment.aerodynamic_mastery",
+        "operation": "add_value"
+      }
+    ]
+  },
+  "exclusive_set": "#dragonsurvival:exclusive_set/dark_dragon",
+  "max_cost": {
+    "base": 21,
+    "per_level_above_first": 11
+  },
+  "max_level": 1,
+  "min_cost": {
+    "base": 1,
+    "per_level_above_first": 11
+  },
+  "slots": [
+    "chest"
+  ],
+  "supported_items": "#dragonsurvival:enchantable/chest_armor_and_elytra",
+  "weight": 10
+}

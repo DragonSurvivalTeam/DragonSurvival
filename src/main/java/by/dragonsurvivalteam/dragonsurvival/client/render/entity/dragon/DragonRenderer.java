@@ -1,148 +1,213 @@
 package by.dragonsurvivalteam.dragonsurvival.client.render.entity.dragon;
 
-import by.dragonsurvivalteam.dragonsurvival.client.render.ClientDragonRender;
+import by.dragonsurvivalteam.dragonsurvival.client.render.ClientDragonRenderer;
+import by.dragonsurvivalteam.dragonsurvival.client.util.RenderingUtils;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
+import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
-import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
-import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
-import by.dragonsurvivalteam.dragonsurvival.util.DragonUtils;
+import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.HunterHandler;
+import by.dragonsurvivalteam.dragonsurvival.compat.Compat;
+import by.dragonsurvivalteam.dragonsurvival.compat.ModID;
+import by.dragonsurvivalteam.dragonsurvival.compat.sophisticatedBackpacks.DragonBackpackRenderLayer;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MovementData;
+import by.dragonsurvivalteam.dragonsurvival.server.handlers.ServerFlightHandler;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.effect.MobEffects;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemDisplayContext;
-import net.minecraftforge.fml.ModList;
+import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
+import org.joml.Vector3d;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
-import software.bernie.geckolib.cache.object.GeoBone;
-import software.bernie.geckolib.core.animatable.model.CoreGeoBone;
-import software.bernie.geckolib.core.object.Color;
 import software.bernie.geckolib.model.GeoModel;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
-import software.bernie.geckolib.util.RenderUtils;
+import software.bernie.geckolib.util.Color;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
-	@ConfigOption( side = ConfigSide.CLIENT, key = "renderHeldItem", comment = "Should items be rendered in third person for dragon players?", category = "rendering" )
-	public static boolean renderHeldItem = true;
+    public static final Map<Integer, Map<String, Vec3>> BONE_POSITIONS = new HashMap<>();
+    private static final List<String> BONES = List.of("BreathSource");
 
-	public ResourceLocation glowTexture = null;
+    private static final Color RENDER_COLOR = Color.ofRGB(255, 255, 255);
+    private static final Color TRANSPARENT_RENDER_COLOR = Color.ofRGBA(1, 1, 1, HunterHandler.MIN_ALPHA);
 
-	public boolean shouldRenderLayers = true;
-	public boolean isRenderLayers = false;
+    public ResourceLocation glowTexture;
 
-	/** Used when rendering dyeable armor pieces in {@link ClientDragonRender#renderArmorPiece} */
-	public Color renderColor = Color.ofRGB(255, 255, 255);
+    private boolean resetNeckVisibility;
 
-	public DragonRenderer(final EntityRendererProvider.Context context, final GeoModel<DragonEntity> model) {
-		super(context, model);
+    public DragonRenderer(final EntityRendererProvider.Context context, final GeoModel<DragonEntity> model) {
+        super(context, model);
 
-		getRenderLayers().add(new DragonGlowLayerRenderer(this));
-		getRenderLayers().add(new ClawsAndTeethRenderLayer(this));
-		getRenderLayers().add(new DragonArmorRenderLayer(this));
+        getRenderLayers().add(new DragonGlowLayerRenderer(this));
+        getRenderLayers().add(new DragonArmorRenderLayer(this));
+        getRenderLayers().add(new DragonItemRenderLayer(this, (bone, animatable) -> {
+            if (bone.getName().equals(ClientDragonRenderer.renderItemsInMouth ? "RightItem_jaw" : "RightItem")) {
+                return animatable.getMainHandItem();
+            } else if (bone.getName().equals(ClientDragonRenderer.renderItemsInMouth ? "LeftItem_jaw" : "LeftItem")) {
+                return animatable.getOffhandItem();
+            }
+            return null;
+        }, (bone, animatable) -> null));
 
-		if (ModList.get().isLoaded("curios")) {
-			getRenderLayers().add(new DragonCuriosRenderLayer(this));
-		}
-	}
+        if (ModID.SOPHISTICATED_BACKPACKS.isLoaded()) {
+            getRenderLayers().add(new DragonBackpackRenderLayer(this));
+        }
+    }
 
-	@Override
-	public void preRender(final PoseStack poseStack, final DragonEntity animatable, final BakedGeoModel model, final MultiBufferSource bufferSource, final VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-		Minecraft.getInstance().getProfiler().push("player_dragon");
-		super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, red, green, blue, alpha);
-	}
+    /**
+     * Note: Position does not work in first person <br>
+     * - GeckoLib cannot update the bone positions if ClientDragonRenderer#renderInFirstPerson is not enabled <br>
+     * - Even if it is enabled the position won't be correct - unsure as to why
+     */
+    public static Vec3 getBonePosition(final Player player, final String name) {
+        DragonEntity dragon = ClientDragonRenderer.getDragon(player);
 
-	@Override
-	public void postRender(final PoseStack poseStack, final DragonEntity animatable, final BakedGeoModel model, final MultiBufferSource bufferSource, final VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-		super.postRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, red, green, blue, alpha);
-		Minecraft.getInstance().getProfiler().pop();
-	}
+        if (dragon == null) {
+            return Vec3.ZERO;
+        }
 
-	@Override
-	public void actuallyRender(final PoseStack poseStack, final DragonEntity animatable, final BakedGeoModel model, final RenderType renderType, final MultiBufferSource bufferSource, final VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-		Player player = animatable.getPlayer();
+        Map<String, Vec3> positions = BONE_POSITIONS.get(dragon.getId());
 
-		if (player == null || player.hasEffect(MobEffects.INVISIBILITY)) {
-			return;
-		}
+        if (positions == null) {
+            return Vec3.ZERO;
+        }
 
-		DragonStateHandler handler = DragonUtils.getHandler(player);
+        return positions.getOrDefault(name, Vec3.ZERO);
+    }
 
-		boolean hasWings = handler.getSkinData().skinPreset.skinAges.get(handler.getLevel()).get().wings;
-		if (handler.getBody() != null)
-			hasWings = hasWings || !handler.getBody().canHideWings();
+    @Override
+    public void preRender(final PoseStack poseStack, final DragonEntity animatable, final BakedGeoModel model, final MultiBufferSource bufferSource, final VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, int color) {
+        Minecraft.getInstance().getProfiler().push("player_dragon");
+        Player player = animatable.getPlayer();
 
-		CoreGeoBone leftWing = ClientDragonRender.dragonModel.getAnimationProcessor().getBone("WingLeft");
-		CoreGeoBone rightWing = ClientDragonRender.dragonModel.getAnimationProcessor().getBone("WingRight");
-		CoreGeoBone smallLeftWing = ClientDragonRender.dragonModel.getAnimationProcessor().getBone("SmallWingLeft");
-		CoreGeoBone smallRightWing = ClientDragonRender.dragonModel.getAnimationProcessor().getBone("SmallWingRight");
+        resetNeckVisibility = model.getBone("Neck").map(bone -> {
+            if (bone.isHidden()) {
+                return false;
+            }
 
-		if (leftWing != null)
-			leftWing.setHidden(!hasWings);
+            if (animatable.isInInventory || Compat.displayNeck()) {
+                return false;
+            }
 
-		if(rightWing != null)
-			rightWing.setHidden(!hasWings);
-		
-		if (smallLeftWing != null)
-			smallLeftWing.setHidden(!hasWings);
-		
-		if (smallRightWing != null)
-			smallRightWing.setHidden(!hasWings);
+            if (RenderingUtils.isFirstPerson(player)) {
+                bone.setHidden(true);
+            } else {
+                return false;
+            }
 
-		super.actuallyRender(poseStack, animatable, model, renderType, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, red, green, blue, alpha);
-	}
+            return true;
+        }).orElse(false);
 
-	@Override
-	public void renderRecursively(final PoseStack poseStack, final DragonEntity animatable, final GeoBone bone, final RenderType renderType, final MultiBufferSource bufferSource, final VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-		if (isReRender) {
-			super.renderRecursively(poseStack, animatable, bone, renderType, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, red, green, blue, alpha);
-			return;
-		}
+        super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, color);
+    }
 
-		if (!isRenderLayers) {
-			Player player = animatable.getPlayer();
+    @Override
+    public void postRender(final PoseStack poseStack, final DragonEntity animatable, final BakedGeoModel model, final MultiBufferSource bufferSource, final VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, int color) {
+        super.postRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, color);
 
-			ResourceLocation currentTexture = getTextureLocation(animatable);
-			VertexConsumer customBuffer = buffer;
+        if (resetNeckVisibility) {
+            model.getBone("Neck").ifPresent(bone -> bone.setHidden(false));
+            resetNeckVisibility = false;
+        }
 
-			if (renderHeldItem) {
-				if (player != Minecraft.getInstance().player || ClientDragonRender.alternateHeldItem || !Minecraft.getInstance().options.getCameraType().isFirstPerson()) {
-					if (bone.getName().equals(ClientDragonRender.renderItemsInMouth ? "LeftItem_jaw" : "LeftItem") && !player.getInventory().offhand.get(0).isEmpty()) {
-						poseStack.pushPose();
+        // Need to store the positions per entity ourselves
+        // Since the model is a singleton, and it stores the bones
+        BONES.forEach(name -> model.getBone(name).ifPresent(bone -> {
+            Vector3d worldPosition = bone.getWorldPosition();
+            Vec3 position = new Vec3(worldPosition.x(), worldPosition.y(), worldPosition.z()).subtract(getModelOffset(animatable, 1));
+            BONE_POSITIONS.computeIfAbsent(animatable.getId(), key -> new HashMap<>()).put(bone.getName(), position);
+        }));
 
-						RenderUtils.prepMatrixForBone(poseStack, bone);
-						RenderUtils.translateAndRotateMatrixForBone(poseStack, bone);
+        Minecraft.getInstance().getProfiler().pop();
+    }
 
-						Minecraft.getInstance().getItemRenderer().renderStatic(player.getInventory().offhand.get(0), ClientDragonRender.thirdPersonItemRender ? ItemDisplayContext.THIRD_PERSON_LEFT_HAND : ItemDisplayContext.GROUND, packedLight, packedOverlay, poseStack, bufferSource, player.level(), 0);
-						customBuffer = bufferSource.getBuffer(RenderType.entityTranslucent(currentTexture));
-						poseStack.popPose();
-					}
+    @Override
+    public void actuallyRender(final PoseStack poseStack, final DragonEntity animatable, final BakedGeoModel model, final RenderType renderType, final MultiBufferSource bufferSource, final VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, int color) {
+        Player player = animatable.getPlayer();
 
-					if (bone.getName().equals(ClientDragonRender.renderItemsInMouth ? "RightItem_jaw" : "RightItem") && !player.getInventory().getSelected().isEmpty()) {
-						poseStack.pushPose();
-						RenderUtils.prepMatrixForBone(poseStack, bone);
-						RenderUtils.translateAndRotateMatrixForBone(poseStack, bone);
+        //noinspection DataFlowIssue -> player is present
+        if (player == null || player.isSpectator() || player.isInvisibleTo(Minecraft.getInstance().player)) {
+            return;
+        }
 
-						Minecraft.getInstance().getItemRenderer().renderStatic(player.getInventory().getSelected(), ClientDragonRender.thirdPersonItemRender ? ItemDisplayContext.THIRD_PERSON_RIGHT_HAND : ItemDisplayContext.GROUND, packedLight, packedOverlay, poseStack, bufferSource, player.level(), 0);
-						customBuffer = bufferSource.getBuffer(RenderType.entityTranslucent(currentTexture));
-						poseStack.popPose();
-					}
-				}
-			}
+        poseStack.pushPose();
+        setupRender(animatable, player, poseStack, partialTick);
 
-			poseStack.pushPose();
-			RenderUtils.prepMatrixForBone(poseStack, bone);
-			super.renderCubesOfBone(poseStack, bone, customBuffer, packedLight, packedOverlay, red, green, blue, alpha);
-			super.renderChildBones(poseStack, animatable, bone, renderType, bufferSource, customBuffer, isReRender, partialTick, packedLight, packedOverlay, red, green, blue, alpha);
-			poseStack.popPose();
-		}
-	}
+        DragonStateHandler handler = DragonStateProvider.getData(player);
+        boolean hasWings = !handler.body().value().canHideWings() || handler.getCurrentStageCustomization().wings;
 
-	@Override
-	public Color getRenderColor(final DragonEntity animatable, float partialTick, int packedLight) {
-		return renderColor;
-	}
+        for (String boneName : handler.body().value().bonesToHideForToggle()) {
+            model.getBone(boneName).ifPresent(bone -> bone.setHidden(!hasWings));
+        }
+
+        super.actuallyRender(poseStack, animatable, model, renderType, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, color);
+
+        // If a body refresh was requested, all the animations will have been reset once we are post-render
+        handler.refreshBody = false;
+
+        poseStack.popPose();
+    }
+
+    private void setupRender(final DragonEntity dragon, final Player player, final PoseStack pose, final float partialTick) {
+        MovementData movement = MovementData.getData(player);
+
+        // This is normally used in 'EntityRenderDispatcher#render', but that isn't triggered for 'DragonEntity'
+        Vec3 offset = getRenderOffset(dragon, partialTick);
+        pose.translate(-offset.x(), -offset.y(), -offset.z());
+
+        pose.mulPose(Axis.YN.rotationDegrees((float) movement.bodyYaw));
+
+        if (ServerFlightHandler.isGliding(player) || (player.isPassenger() && DragonStateProvider.isDragon(player.getVehicle()) && ServerFlightHandler.isGliding((Player) player.getVehicle()))) {
+            // Responsible for the pitch (rotating entity downward / upward)
+            pose.mulPose(Axis.XN.rotationDegrees(dragon.prevXRot));
+            // Responsible for the roll (rotating entity to the side)
+            pose.mulPose(Axis.ZP.rotation(dragon.prevZRot));
+        }
+    }
+
+    private Vec3 getModelOffset(final DragonEntity dragon, float partialTicks) {
+        Player player = dragon.getPlayer();
+
+        if (player == null) {
+            return Vec3.ZERO;
+        }
+
+        float angle = -(float) MovementData.getData(player).bodyYaw * ((float) Math.PI / 180);
+        float x = Mth.sin(angle);
+        float z = Mth.cos(angle);
+
+        DragonStateHandler handler = DragonStateProvider.getData(player);
+        float scale = (float) handler.getVisualScale(player, partialTicks) * (float) handler.body().value().scalingProportions().scaleMultiplier();
+
+        return new Vec3(x * scale, 0, z * scale);
+    }
+
+    @Override // Also used by the layers
+    public Color getRenderColor(final DragonEntity animatable, float partialTick, int packedLight) {
+        boolean isInvisible = animatable.isInvisible();
+        Color color;
+
+        //noinspection DataFlowIssue -> player is not null
+        if (isInvisible && !animatable.isInvisibleTo(Minecraft.getInstance().player)) {
+            color = TRANSPARENT_RENDER_COLOR;
+        } else {
+            color = RENDER_COLOR;
+        }
+
+        return HunterHandler.modifyAlpha(animatable.getPlayer(), color);
+    }
+
+    @Override
+    public @NotNull Vec3 getRenderOffset(@NotNull final DragonEntity dragon, final float partialTicks) {
+        return getModelOffset(dragon, partialTicks);
+    }
 }

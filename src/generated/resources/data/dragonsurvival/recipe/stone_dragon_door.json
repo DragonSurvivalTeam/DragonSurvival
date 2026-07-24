@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "redstone",
+  "ingredients": [
+    {
+      "tag": "dragonsurvival:wooden_dragon_doors"
+    },
+    {
+      "tag": "minecraft:stone_bricks"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "dragonsurvival:stone_dragon_door"
+  }
+}

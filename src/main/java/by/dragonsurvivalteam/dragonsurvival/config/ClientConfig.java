@@ -3,55 +3,49 @@ package by.dragonsurvivalteam.dragonsurvival.config;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigRange;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
-import net.minecraftforge.common.ForgeConfigSpec;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
-public class ClientConfig{
-	@ConfigOption(side = ConfigSide.CLIENT, category = "misc", key = "alternateCastMode", comment = "Should the cast mode where you click the keybind to cast be used?")
-	public static Boolean alternateCastMode = false;
+public class ClientConfig {
+    ClientConfig(ModConfigSpec.Builder builder) {
+        ConfigHandler.createConfigEntries(builder, ConfigSide.CLIENT);
+    }
 
-	ClientConfig(ForgeConfigSpec.Builder builder){
-		ConfigHandler.addConfigs(builder, ConfigSide.CLIENT);
-	}
+    @Translation(key = "alternate_cast_mode", type = Translation.Type.CONFIGURATION, comments = {"If enabled abilities will be cast by pressing their respective keybinds", "If disabled the global casting keybind will be used"})
+    @ConfigOption(side = ConfigSide.CLIENT, category = "misc", key = "alternate_cast_mode")
+    public static Boolean alternateCastMode = false;
 
-	// FIXME :: Remove - unused
-	@ConfigOption( side = ConfigSide.CLIENT, category = "misc", key = "clientDebugMessages", comment = "Enable client-side debug messages" )
-	public static Boolean clientDebugMessages = false;
+    @Translation(key = "stable_night_vision", type = Translation.Type.CONFIGURATION, comments = "If enabled night vision will no longer flicker when on a low duration")
+    @ConfigOption(side = ConfigSide.CLIENT, category = "misc", key = "stable_night_vision")
+    public static Boolean stableNightVision = true;
 
-	@ConfigOption(side = ConfigSide.CLIENT, category = "misc", key = "renderBreathRange", comment = "Whether the range of the breath should be rendered (while hitboxes are shown)")
-	public static Boolean renderBreathRange = true;
+    @ConfigRange(min = 0.0, max = 1.0) // FIXME :: rework comment (unclear what this exactly does / what changing animation speed results in)
+    @Translation(key = "small_size_animation_speed_factor", type = Translation.Type.CONFIGURATION, comments = "The factor by which the additional animation speed from being smaller is multiplied. 1.0 represents the speed accurately reflecting the size of the dragon.")
+    @ConfigOption(side = ConfigSide.CLIENT, category = "animation", key = "small_size_animation_speed_factor")
+    public static Double smallSizeAnimationSpeedFactor = 0.3;
 
-	@ConfigOption( side = ConfigSide.CLIENT, category = "rendering", key = "enableTailPhysics", comment = "Enable movement based physics on the tail, this is still a work in progress and can be buggy." )
-	public static Boolean enableTailPhysics = false;
+    @ConfigRange(min = 0.0, max = 1.0) // FIXME :: rework comment (unclear what this exactly does / what changing animation speed results in)
+    @Translation(key = "large_size_animation_speed_factor", type = Translation.Type.CONFIGURATION, comments = "The factor by which the reduced additional animation speed from being bigger is multiplied. 1.0 represents the speed accurately reflecting the size of the dragon.")
+    @ConfigOption(side = ConfigSide.CLIENT, category = "animation", key = "large_size_animation_speed_factor")
+    public static Double largeSizeAnimationSpeedFactor = 1.0;
 
-	@ConfigOption(side = ConfigSide.CLIENT, category = "misc", key = "stableNightVision", comment = "When enabled it stops the blinking effect of night vision when low duration, disable if it causes rendering issues with other mods.")
-	public static Boolean stableNightVision = true;
+    @ConfigRange(min = 0.0, max = 1.0) // FIXME :: rework comment (unclear what this exactly does / what changing animation speed results in)
+    @Translation(key = "movement_animation_speed_factor", type = Translation.Type.CONFIGURATION, comments = "The amount by which the movement animation speed factor is multiplied. 1.0 represents the animation speed accurately reflecting the speed of your movement.")
+    @ConfigOption(side = ConfigSide.CLIENT, category = "animation", key = "movement_animation_speed_factor")
+    public static Double movementAnimationSpeedFactor = 1.0;
 
-	@ConfigRange(min=0, max=Integer.MAX_VALUE)
-	@ConfigOption(side = ConfigSide.CLIENT, category = "misc", key = "skinTimeoutInSeconds", comment = "How long the system will wait before trying to fetch skins online after a failed attempt")
-	public static int skinTimeoutInSeconds = 100;
+    @ConfigRange(min = 0.0, max = 10.0) // FIXME :: rework comment (unclear what this exactly does / what changing animation speed results in)
+    @Translation(key = "max_animation_speed_factor", type = Translation.Type.CONFIGURATION, comments = "The maximum value that the speed factor can add to the base animation speed.")
+    @ConfigOption(side = ConfigSide.CLIENT, category = "animation", key = "max_animation_speed_factor")
+    public static Double maxAnimationSpeedFactor = 3.0;
 
-	@ConfigRange(min =0.0, max = 1.0)
-	@ConfigOption(side = ConfigSide.CLIENT, category = "animation", key = "smallSizeAnimationSpeedFactor", comment = "The factor by which the additional animation speed from being smaller is multiplied. 1.0 represents the speed accurately reflecting the size of the dragon.")
-	public static Double smallSizeAnimationSpeedFactor = 0.3;
+    @ConfigRange(min = 1.0, max = 5.0) // FIXME :: rework comment (unclear what this exactly does / what changing animation speed results in)
+    @Translation(key = "max_animation_speed", type = Translation.Type.CONFIGURATION, comments = "The maximum animation speed allowed for dragons.")
+    @ConfigOption(side = ConfigSide.CLIENT, category = "animation", key = "max_animation_speed")
+    public static Double maxAnimationSpeed = 1.5;
 
-	@ConfigRange(min =0.0, max = 1.0)
-	@ConfigOption(side = ConfigSide.CLIENT, category = "animation", key = "largeSizeAnimationSpeedFactor", comment = "The factor by which the reduced additional animation speed from being bigger is multiplied. 1.0 represents the speed accurately reflecting the size of the dragon.")
-	public static Double largeSizeAnimationSpeedFactor = 1.0;
-
-	@ConfigRange(min = 0.0, max = 1.0)
-	@ConfigOption(side = ConfigSide.CLIENT, category = "animation", key = "movementAnimationSpeedFactor", comment = "The amount by which the movement animation speed factor is multiplied. 1.0 represents the animation speed accurately reflecting the speed of your movement.")
-	public static Double movementAnimationSpeedFactor = 1.0;
-
-	@ConfigRange(min = 0.0, max = 10.0)
-	@ConfigOption(side = ConfigSide.CLIENT, category = "animation", key = "movementAnimationSpeedFactor", comment = "The maximum value that the speed factor can add to the base animation speed.")
-	public static Double maxAnimationSpeedFactor = 5.0;
-
-	@ConfigRange(min = 1.0, max = 5.0)
-	@ConfigOption(side = ConfigSide.CLIENT, category = "animation", key = "maxAnimationSpeed", comment = "The maximum animation speed allowed for dragons.")
-	public static Double maxAnimationSpeed = 1.5;
-
-	@ConfigRange(min = 0.05, max = 1.0)
-	@ConfigOption(side = ConfigSide.CLIENT, category = "animation", key = "minAnimationSpeed", comment = "The minimum animation speed allowed for dragons.")
-	public static Double minAnimationSpeed = 0.2;
-
+    @ConfigRange(min = 0.05, max = 1.0) // FIXME :: rework comment (unclear what this exactly does / what changing animation speed results in)
+    @Translation(key = "min_animation_speed", type = Translation.Type.CONFIGURATION, comments = "The minimum animation speed allowed for dragons.")
+    @ConfigOption(side = ConfigSide.CLIENT, category = "animation", key = "min_animation_speed")
+    public static Double minAnimationSpeed = 0.2;
 }

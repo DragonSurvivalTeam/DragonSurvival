@@ -1,0 +1,47 @@
+{
+  "parent": "dragonsurvival:use_memory_block",
+  "criteria": {
+    "activate_beacon": {
+      "conditions": {
+        "location": [
+          {
+            "condition": "minecraft:location_check",
+            "predicate": {
+              "block": {
+                "blocks": "dragonsurvival:dragon_beacon"
+              }
+            }
+          },
+          {
+            "condition": "minecraft:match_tool",
+            "predicate": {
+              "items": "dragonsurvival:beacon_activator"
+            }
+          }
+        ]
+      },
+      "trigger": "minecraft:item_used_on_block"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "dragonsurvival.advancement.change_beacon.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "dragonsurvival:beacon_activator"
+    },
+    "title": {
+      "translate": "dragonsurvival.advancement.change_beacon"
+    }
+  },
+  "requirements": [
+    [
+      "activate_beacon"
+    ]
+  ],
+  "rewards": {
+    "experience": 10
+  },
+  "sends_telemetry_event": true
+}

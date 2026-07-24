@@ -1,0 +1,63 @@
+{
+  "parent": "dragonsurvival:forest/be_old_dragon",
+  "criteria": {
+    "master_cliffhanger": {
+      "conditions": {
+        "ability": "dragonsurvival:cliffhanger",
+        "level": 6
+      },
+      "trigger": "dragonsurvival:upgrade_ability"
+    },
+    "master_forest_athletics": {
+      "conditions": {
+        "ability": "dragonsurvival:forest_athletics",
+        "level": 5
+      },
+      "trigger": "dragonsurvival:upgrade_ability"
+    },
+    "master_forest_magic": {
+      "conditions": {
+        "ability": "dragonsurvival:forest_magic",
+        "level": 10
+      },
+      "trigger": "dragonsurvival:upgrade_ability"
+    },
+    "master_light_in_darkness": {
+      "conditions": {
+        "ability": "dragonsurvival:light_in_darkness",
+        "level": 8
+      },
+      "trigger": "dragonsurvival:upgrade_ability"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "dragonsurvival.advancement.forest/master_all_passives.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "dragonsurvival:forest_source_of_magic"
+    },
+    "title": {
+      "translate": "dragonsurvival.advancement.forest/master_all_passives"
+    }
+  },
+  "requirements": [
+    [
+      "master_cliffhanger"
+    ],
+    [
+      "master_forest_athletics"
+    ],
+    [
+      "master_light_in_darkness"
+    ],
+    [
+      "master_forest_magic"
+    ]
+  ],
+  "rewards": {
+    "experience": 150
+  },
+  "sends_telemetry_event": true
+}

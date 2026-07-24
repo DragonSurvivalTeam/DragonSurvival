@@ -1,9 +1,11 @@
 package by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components;
 
-import by.dragonsurvivalteam.dragonsurvival.DragonSurvivalMod;
-import by.dragonsurvivalteam.dragonsurvival.client.gui.dragon_editor.DragonEditorScreen;
+import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.ConfirmableScreen;
 import by.dragonsurvivalteam.dragonsurvival.client.util.TextRenderUtil;
 import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -15,81 +17,116 @@ import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.DyeColor;
-import net.minecraftforge.client.gui.widget.ExtendedButton;
+import net.neoforged.neoforge.client.gui.widget.ExtendedButton;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
 public class DragonEditorConfirmComponent extends AbstractContainerEventHandler implements Renderable {
-	public static final ResourceLocation BACKGROUND_TEXTURE = new ResourceLocation(DragonSurvivalMod.MODID, "textures/gui/dragon_altar_warning.png");
-	private final AbstractWidget btn1;
-	private final AbstractWidget btn2;
-	private final int x;
-	private final int y;
-	private final int xSize;
-	private final int ySize;
-	public boolean visible;
+    @Translation(comments = "\n§4All progress will be lost!§r§f Use the Dragon Soul to avoid this.\n\nWould you still like to continue?")
+    private final static String CONFIRM_LOSE_ALL = Translation.Type.GUI.wrap("dragon_editor.confirm.all");
 
+    @Translation(comments = "\n§4Your growth progress will be lost!§r§f Use the Dragon Soul to avoid this.\n\nWould you still like to continue?")
+    private final static String CONFIRM_LOSE_GROWTH = Translation.Type.GUI.wrap("dragon_editor.confirm.growth");
 
-	public DragonEditorConfirmComponent(DragonEditorScreen screen, int x, int y, int xSize, int ySize){
-		this.x = x;
-		this.y = y;
-		this.xSize = xSize;
-		this.ySize = ySize;
+    @Translation(comments = "\n§4Your ability progress will be lost!§r§f Use the Dragon Soul to avoid this.\n\nWould you still like to continue?")
+    private final static String CONFIRM_LOSE_ABILITIES = Translation.Type.GUI.wrap("dragon_editor.confirm.abilities");
 
-		btn1 = new ExtendedButton(x + 19, y + 133, 41, 21, CommonComponents.GUI_YES, null){
-			@Override
-			public void renderWidget(@NotNull final GuiGraphics guiGraphics, int mouseX, int mouseY, float partial){
-				guiGraphics.drawCenteredString(Minecraft.getInstance().font, getMessage(), getX() + getWidth() / 2, getY() + (getHeight() - 8) / 2, getFGColor());
+    private static final ResourceLocation WARNING_MAIN = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/editor/warning_main.png");
+    private static final ResourceLocation WARNING_ACCEPT = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/editor/warning_accept.png");
+    private static final ResourceLocation WARNING_CANCEL = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/editor/warning_cancel.png");
 
-				if (isHovered()) {
-					guiGraphics.renderTooltip(Minecraft.getInstance().font, Component.translatable("ds.gui.dragon_editor.tooltip.done"), mouseX, mouseY);
-				}
-			}
+    private final AbstractWidget confirmButton;
+    private final AbstractWidget cancelButton;
 
-			@Override
-			public void onPress(){
-				screen.confirm();
-			}
-		};
+    public boolean visible;
+    public boolean isBodyTypeChange;
 
-		btn2 = new ExtendedButton(x + 66, y + 133, 41, 21, CommonComponents.GUI_NO, null){
-			@Override
-			public void renderWidget(@NotNull final GuiGraphics guiGraphics, int mouseX, int mouseY, float partial){
-				guiGraphics.drawCenteredString(Minecraft.getInstance().font, getMessage(), getX() + getWidth() / 2, getY() + (getHeight() - 8) / 2, getFGColor());
+    private final int x;
+    private final int y;
+    private final int xSize;
+    private final int ySize;
 
-				if (isHovered) {
-					guiGraphics.renderTooltip(Minecraft.getInstance().font, Component.translatable("ds.gui.dragon_editor.tooltip.cancel"), mouseX, mouseY);
-				}
-			}
+    public DragonEditorConfirmComponent(ConfirmableScreen screen, int x, int y, int xSize, int ySize) {
+        this.x = x;
+        this.y = y;
+        this.xSize = xSize;
+        this.ySize = ySize;
+        this.isBodyTypeChange = false;
 
-			@Override
-			public void onPress(){
-				screen.confirmation = false;
-			}
-		};
-	}
+        confirmButton = new ExtendedButton(x + 3, y + 132, 60, 19, CommonComponents.GUI_YES, action -> { /* Nothing to do */ }) {
+            @Override
+            public void renderWidget(@NotNull final GuiGraphics guiGraphics, int mouseX, int mouseY, float partial) {
+                guiGraphics.drawCenteredString(Minecraft.getInstance().font, getMessage(), getX() + getWidth() / 2, getY() + (getHeight() - 8) / 2, getFGColor());
 
-	@Override
-	public @NotNull List<? extends GuiEventListener> children(){
-		return ImmutableList.of(btn1, btn2);
-	}
+                if (isHovered()) {
+                    guiGraphics.renderTooltip(Minecraft.getInstance().font, Component.translatable(LangKey.GUI_CONFIRM), mouseX, mouseY);
+                }
+            }
 
-	@Override
-	public boolean mouseClicked(double pMouseX, double pMouseY, int pButton){
-		return super.mouseClicked(pMouseX, pMouseY, pButton);
-	}
+            @Override
+            public void onPress() {
+                screen.confirm();
+            }
+        };
 
-	@Override
-	public void render(@NotNull final GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTicks){
-		guiGraphics.fillGradient(0, 0, Minecraft.getInstance().getWindow().getWidth(), Minecraft.getInstance().getWindow().getHeight(), -1072689136, -804253680);
+        cancelButton = new ExtendedButton(x + 66, y + 132, 60, 19, CommonComponents.GUI_NO, action -> { /* Nothing to do */ }) {
+            @Override
+            public void renderWidget(@NotNull final GuiGraphics guiGraphics, int mouseX, int mouseY, float partial) {
+                guiGraphics.drawCenteredString(Minecraft.getInstance().font, getMessage(), getX() + getWidth() / 2, getY() + (getHeight() - 8) / 2, getFGColor());
 
-		String key = "ds.gui.dragon_editor.confirm." + (!ServerConfig.saveAllAbilities && !ServerConfig.saveGrowthStage ? "all" : ServerConfig.saveAllAbilities && !ServerConfig.saveGrowthStage ? "ability" : !ServerConfig.saveAllAbilities && ServerConfig.saveGrowthStage ? "growth" : "");
-		String text = Component.translatable(key).getString();
-		guiGraphics.blit(BACKGROUND_TEXTURE, x, y, 0, 0, xSize, ySize);
-		TextRenderUtil.drawCenteredScaledTextSplit(guiGraphics, x + xSize / 2, y + 42, 1f, text, DyeColor.WHITE.getTextColor(), xSize - 10, 150);
+                if (isHovered) {
+                    guiGraphics.renderTooltip(Minecraft.getInstance().font, Component.translatable(LangKey.GUI_CANCEL), mouseX, mouseY);
+                }
+            }
 
-		btn1.render(guiGraphics, pMouseX, pMouseY, pPartialTicks);
-		btn2.render(guiGraphics, pMouseX, pMouseY, pPartialTicks);
-	}
+            @Override
+            public void onPress() {
+                screen.cancel();
+            }
+        };
+    }
+
+    @Override
+    public @NotNull List<? extends GuiEventListener> children() {
+        return ImmutableList.of(confirmButton, cancelButton);
+    }
+
+    @Override
+    public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
+        return super.mouseClicked(pMouseX, pMouseY, pButton);
+    }
+
+    @Override
+    public void render(@NotNull final GuiGraphics graphics, int pMouseX, int pMouseY, float pPartialTicks) {
+        graphics.pose().pushPose();
+        // Render above the rendered dragon
+        graphics.pose().translate(0, 0, 100);
+        graphics.fillGradient(0, 0, Minecraft.getInstance().getWindow().getWidth(), Minecraft.getInstance().getWindow().getHeight(), -1072689136, -804253680);
+
+        String key = "";
+
+        if (!ServerConfig.saveAllAbilities && (!ServerConfig.saveGrowthStage && !isBodyTypeChange)) {
+            key = CONFIRM_LOSE_ALL;
+        } else if ((ServerConfig.saveAllAbilities || isBodyTypeChange) && !ServerConfig.saveGrowthStage) {
+            key = CONFIRM_LOSE_GROWTH;
+        } else if (!ServerConfig.saveAllAbilities) {
+            key = CONFIRM_LOSE_ABILITIES;
+        }
+
+        String text = Component.translatable(key).getString();
+        if (confirmButton.isHovered()) {
+            graphics.blit(WARNING_ACCEPT, x, y, 0, 0, xSize, ySize);
+        } else if (cancelButton.isHovered()) {
+            graphics.blit(WARNING_CANCEL, x, y, 0, 0, xSize, ySize);
+        } else {
+            graphics.blit(WARNING_MAIN, x, y, 0, 0, xSize, ySize);
+        }
+
+        TextRenderUtil.drawCenteredScaledTextSplit(graphics, x + xSize / 2, y + 42, 1f, text, DyeColor.WHITE.getTextColor(), xSize - 10, 150);
+
+        confirmButton.render(graphics, pMouseX, pMouseY, pPartialTicks);
+        cancelButton.render(graphics, pMouseX, pMouseY, pPartialTicks);
+        graphics.pose().popPose();
+    }
 }

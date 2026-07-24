@@ -1,71 +1,68 @@
 package by.dragonsurvivalteam.dragonsurvival.client.render.blocks;
 
-import by.dragonsurvivalteam.dragonsurvival.client.particles.DSParticles;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSBlocks;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSItems;
-import by.dragonsurvivalteam.dragonsurvival.server.tileentity.DragonBeaconTileEntity;
+import by.dragonsurvivalteam.dragonsurvival.registry.DSParticles;
+import by.dragonsurvivalteam.dragonsurvival.server.tileentity.DragonBeaconBlockEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.util.Mth;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemDisplayContext;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import org.jetbrains.annotations.NotNull;
 
-public class DragonBeaconRenderer implements BlockEntityRenderer<DragonBeaconTileEntity>{
+import java.util.Objects;
 
-	public DragonBeaconRenderer(BlockEntityRendererProvider.Context pContext){}
+public class DragonBeaconRenderer implements BlockEntityRenderer<DragonBeaconBlockEntity> {
+    public DragonBeaconRenderer(final BlockEntityRendererProvider.Context ignored) { /* Nothing to do */ }
 
-	@Override
-	public void render(DragonBeaconTileEntity dragonBeaconEntity, float v, PoseStack PoseStack, MultiBufferSource iRenderTypeBuffer, int light, int overlay){
-		dragonBeaconEntity.tick += 0.5;
-		PoseStack.pushPose();
-		DragonBeaconTileEntity.Type type = dragonBeaconEntity.type;
+    @Override
+    public void render(final DragonBeaconBlockEntity beacon, final float partialTick, final PoseStack pose, @NotNull final MultiBufferSource buffer, final int packedLight, final int packedOverlay) {
+        Level level = Objects.requireNonNull(beacon.getLevel());
 
-		Item item = DSBlocks.dragonBeacon.asItem();
+        boolean hasMemoryBlock = level.getBlockState(beacon.getBlockPos().below()).is(DSBlocks.DRAGON_MEMORY_BLOCK);
+        boolean isPaused = Minecraft.getInstance().isPaused();
 
-		ClientLevel clientWorld = (ClientLevel)dragonBeaconEntity.getLevel();
-		Minecraft minecraft = Minecraft.getInstance();
-		RandomSource random = clientWorld.random;
-		double x = 0.25 + random.nextInt(5) / 10d;
-		double z = 0.25 + random.nextInt(5) / 10d;
+        double x = beacon.getBlockPos().getX() + (0.25 + level.getRandom().nextInt(5) / 10d);
+        double y = beacon.getBlockPos().getY() + 0.5;
+        double z = beacon.getBlockPos().getZ() + (0.25 + level.getRandom().nextInt(5) / 10d);
 
-		boolean hasMemoryBlock = dragonBeaconEntity.getLevel().getBlockState(dragonBeaconEntity.getBlockPos().below()).is(DSBlocks.dragonMemoryBlock);
+        boolean isActive = beacon.getBlockState().getValue(BlockStateProperties.LIT);
+        Item item = isActive ? DSItems.ACTIVATED_DRAGON_BEACON.value() : DSBlocks.DRAGON_BEACON.value().asItem();
 
-		switch(type){
-			case PEACE -> {
-				item = hasMemoryBlock ? DSItems.passivePeaceBeacon : DSItems.inactivePeaceDragonBeacon;
+        if (!isPaused && isActive && beacon.tick % 5 == 0 && hasMemoryBlock) {
+            double random = level.getRandom().nextDouble();
+            ParticleOptions particle;
 
-				if(!minecraft.isPaused() && dragonBeaconEntity.tick % 5 == 0 && hasMemoryBlock){
-					clientWorld.addParticle(DSParticles.peaceBeaconParticle, dragonBeaconEntity.getX() + x, dragonBeaconEntity.getY() + 0.5, dragonBeaconEntity.getZ() + z, 0, 0, 0);
-				}
-			}
-			case MAGIC -> {
-				item = hasMemoryBlock ? DSItems.passiveMagicBeacon : DSItems.inactiveMagicDragonBeacon;
+            if (random < 0.33) {
+                particle = DSParticles.CAVE_BEACON_PARTICLE.value();
+            } else if (random < 0.66) {
+                particle = DSParticles.FOREST_BEACON_PARTICLE.value();
+            } else {
+                particle = DSParticles.SEA_BEACON_PARTICLE.value();
+            }
 
-				if(!minecraft.isPaused() && dragonBeaconEntity.tick % 5 == 0 && hasMemoryBlock){
-					clientWorld.addParticle(DSParticles.magicBeaconParticle, dragonBeaconEntity.getX() + x, dragonBeaconEntity.getY() + 0.5, dragonBeaconEntity.getZ() + z, 0, 0, 0);
-				}
-			}
-			case FIRE -> {
-				item = hasMemoryBlock ? DSItems.passiveFireBeacon : DSItems.inactiveFireDragonBeacon;
+            level.addParticle(particle, x, y, z, 0, 0, 0);
+        }
 
-				if(!minecraft.isPaused() && dragonBeaconEntity.tick % 5 == 0 && hasMemoryBlock){
-					clientWorld.addParticle(DSParticles.fireBeaconParticle, dragonBeaconEntity.getX() + x, dragonBeaconEntity.getY() + 0.5, dragonBeaconEntity.getZ() + z, 0, 0, 0);
-				}
-			}
-		}
+        if (!isPaused) {
+            beacon.tick += 0.5f;
+        }
 
-		float f1 = Mth.sin(((float)dragonBeaconEntity.tick + v) / 20.0F + dragonBeaconEntity.bobOffs) * 0.1F + 0.1F;
-		PoseStack.translate(0.5, 0.25 + f1 / 2f, 0.5);
-		PoseStack.mulPose(Axis.YP.rotationDegrees(dragonBeaconEntity.tick));
-		PoseStack.scale(2, 2, 2);
-		Minecraft.getInstance().getItemRenderer().renderStatic(new ItemStack(item), ItemDisplayContext.GROUND, light, overlay, PoseStack, iRenderTypeBuffer, clientWorld, 0);
-		PoseStack.popPose();
-	}
+        pose.pushPose();
+        float bounce = Mth.sin((beacon.tick + partialTick) / 20 + beacon.bobOffset) * 0.1f + 0.1f;
+        pose.translate(0.5, 0.25 + bounce / 2f, 0.5);
+        pose.mulPose(Axis.YP.rotationDegrees(beacon.tick));
+
+        pose.scale(2, 2, 2);
+        Minecraft.getInstance().getItemRenderer().renderStatic(item.getDefaultInstance(), ItemDisplayContext.GROUND, packedLight, packedOverlay, pose, buffer, level, 0);
+        pose.popPose();
+    }
 }

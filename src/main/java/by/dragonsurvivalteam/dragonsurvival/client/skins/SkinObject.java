@@ -1,6 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.client.skins;
 
-public class SkinObject{
+public class SkinObject {
     public String id;
     public String name;
     public String short_name;

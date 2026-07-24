@@ -1,0 +1,43 @@
+{
+  "parent": "dragonsurvival:path_choice",
+  "criteria": {
+    "affected_by_hunter_omen": {
+      "conditions": {
+        "effects": {
+          "dragonsurvival:hunter_omen": {
+            "duration": {
+              "min": 300
+            }
+          }
+        }
+      },
+      "trigger": "minecraft:effects_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "dragonsurvival.advancement.dark/affected_by_hunter_omen.desc"
+    },
+    "icon": {
+      "components": {
+        "minecraft:profile": {
+          "name": "MHF_Villager"
+        }
+      },
+      "count": 1,
+      "id": "minecraft:player_head"
+    },
+    "title": {
+      "translate": "dragonsurvival.advancement.dark/affected_by_hunter_omen"
+    }
+  },
+  "requirements": [
+    [
+      "affected_by_hunter_omen"
+    ]
+  ],
+  "rewards": {
+    "experience": 6
+  },
+  "sends_telemetry_event": true
+}

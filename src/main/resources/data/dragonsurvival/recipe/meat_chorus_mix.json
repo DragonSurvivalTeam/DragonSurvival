@@ -1,0 +1,21 @@
+{
+    "type": "minecraft:crafting_shapeless",
+    "ingredients": [
+        {
+            "tag": "c:foods/raw_meat"
+        },
+        {
+            "tag": "c:foods/raw_meat"
+        },
+        {
+            "tag": "c:foods/raw_meat"
+        },
+        {
+            "item": "minecraft:chorus_fruit"
+        }
+    ],
+    "result": {
+        "id": "dragonsurvival:meat_chorus_mix",
+        "count": 1
+    }
+}

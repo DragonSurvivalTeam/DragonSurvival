@@ -1,0 +1,84 @@
+{
+  "description": {
+    "translate": "enchantment.dragonsurvival.combat_recovery"
+  },
+  "exclusive_set": "#dragonsurvival:exclusive_set/dark_dragon",
+  "supported_items": "#minecraft:enchantable/head_armor",
+  "weight": 5,
+  "max_level": 1,
+  "min_cost": {
+    "base": 3,
+    "per_level_above_first": 6
+  },
+  "max_cost": {
+    "base": 9,
+    "per_level_above_first": 6
+  },
+  "anvil_cost": 2,
+  "slots": [
+    "head"
+  ],
+  "effects": {
+    "minecraft:post_attack": [
+      {
+        "enchanted": "victim",
+        "affected": "victim",
+        "effect": {
+          "type": "minecraft:all_of",
+          "effects": [
+            {
+              "type": "minecraft:apply_mob_effect",
+              "to_apply": "minecraft:regeneration",
+              "min_duration": 5,
+              "max_duration": 10,
+              "min_amplifier": 0,
+              "max_amplifier": 1
+            },
+            {
+              "type": "minecraft:apply_mob_effect",
+              "to_apply": "dragonsurvival:regeneration_delay",
+              "min_duration": 40,
+              "max_duration": 40,
+              "min_amplifier": 0,
+              "max_amplifier": 0
+            }
+          ]
+        },
+        "requirements": [
+          {
+            "condition": "minecraft:inverted",
+            "term": {
+              "condition": "minecraft:entity_properties",
+              "entity": "this",
+              "predicate": {
+                "effects": {
+                  "dragonsurvival:regeneration_delay": {
+                    "amplifier": {
+                      "min": 0,
+                      "max": 0
+                    },
+                    "duration": {
+                      "min": 0,
+                      "max": 99999999
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "condition": "minecraft:random_chance",
+            "chance": {
+              "type": "minecraft:enchantment_level",
+              "amount": {
+                "type": "minecraft:linear",
+                "base": 0.2,
+                "per_level_above_first": 0.1
+              }
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

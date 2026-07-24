@@ -1,0 +1,10 @@
+{
+  "parent": "minecraft:block/template_vault",
+  "render_type": "minecraft:cutout",
+  "textures": {
+    "bottom": "dragonsurvival:block/dark_vault_bottom",
+    "front": "dragonsurvival:block/dark_vault_front_off",
+    "side": "dragonsurvival:block/dark_vault_side_off",
+    "top": "dragonsurvival:block/dark_vault_top"
+  }
+}

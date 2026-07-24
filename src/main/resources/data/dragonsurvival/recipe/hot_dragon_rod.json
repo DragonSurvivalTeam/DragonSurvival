@@ -1,0 +1,16 @@
+{
+    "type": "minecraft:crafting_shapeless",
+    "ingredients": [
+        {
+            "item": "minecraft:blaze_rod"
+        },
+        {
+            "item": "dragonsurvival:elder_dragon_dust",
+			"count": 8
+        }
+    ],
+    "result": {
+        "id": "dragonsurvival:hot_dragon_rod",
+        "count": 1
+    }
+}

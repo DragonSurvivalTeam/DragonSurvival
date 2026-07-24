@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column",
+  "textures": {
+    "end": "dragonsurvival:block/dragons_memory_top",
+    "side": "dragonsurvival:block/dragons_memory_side"
+  }
+}

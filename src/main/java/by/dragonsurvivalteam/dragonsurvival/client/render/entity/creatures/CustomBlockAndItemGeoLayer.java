@@ -8,12 +8,11 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
+import software.bernie.geckolib.animatable.GeoAnimatable;
 import software.bernie.geckolib.cache.object.GeoBone;
-import software.bernie.geckolib.core.animatable.GeoAnimatable;
 import software.bernie.geckolib.renderer.GeoRenderer;
 import software.bernie.geckolib.renderer.layer.BlockAndItemGeoLayer;
-
-import javax.annotation.Nullable;
 
 public class CustomBlockAndItemGeoLayer<T extends GeoAnimatable> extends BlockAndItemGeoLayer<T> {
     public CustomBlockAndItemGeoLayer(final GeoRenderer<T> renderer) {
@@ -25,22 +24,15 @@ public class CustomBlockAndItemGeoLayer<T extends GeoAnimatable> extends BlockAn
         poseStack.pushPose();
 
         if (animatable instanceof KnightEntity) {
-
             if (bone.getName().equalsIgnoreCase("left_item")) {
                 // Shield
                 poseStack.mulPose(Axis.ZP.rotationDegrees(180)); // Turn shield around (handle towards entity body)
                 poseStack.mulPose(Axis.XP.rotationDegrees(-90));
                 poseStack.translate(0, 0, -1);
-
             } else {
                 // Sword
                 poseStack.mulPose(Axis.XP.rotationDegrees(-90));
             }
-        } else {
-            // 		matrixStack.last().normal().mul(bone.getWorldSpaceNormal());
-            //		matrixStack.last().pose().multiply(bone.getWorldSpaceXform());
-            //		matrixStack.mulPose(Vector3f.ZP.rotationDegrees(180));
-            // 		matrixStack.translate(0.0, -0.3, -0.5);
         }
 
         if (animatable instanceof LivingEntity livingEntity) {
@@ -63,9 +55,8 @@ public class CustomBlockAndItemGeoLayer<T extends GeoAnimatable> extends BlockAn
         return ItemDisplayContext.NONE;
     }
 
-    @Nullable
     @Override
-    protected ItemStack getStackForBone(final GeoBone bone, final T animatable) {
+    protected @Nullable ItemStack getStackForBone(final GeoBone bone, final T animatable) {
         if (bone != null && animatable instanceof LivingEntity livingEntity) {
             if (bone.getName().equalsIgnoreCase("left_item")) {
                 return livingEntity.getOffhandItem();

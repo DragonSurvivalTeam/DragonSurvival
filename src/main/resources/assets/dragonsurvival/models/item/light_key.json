@@ -1,0 +1,64 @@
+{
+	"base": {
+		"parent": "builtin/entity",
+		"display": {
+			"thirdperson_righthand": {
+				"translation": [0, 3, 1],
+				"scale": [0.55, 0.55, 0.55]
+			},
+			"thirdperson_lefthand": {
+				"translation": [0, 3, 1],
+				"scale": [0.55, 0.55, 0.55]
+			},
+			"firstperson_righthand": {
+				"rotation": [0, 0, 0],
+				"translation": [1.13, 3.2, 1.13],
+				"scale": [0.68, 0.68, 0.68]
+			},
+			"firstperson_lefthand": {
+				"rotation": [0, 0, 0],
+				"translation": [1.13, 3.2, 1.13],
+				"scale": [0.68, 0.68, 0.68]
+			},
+			"ground": {
+				"scale": [0.5, 0.5, 0.5]
+			},
+			"gui": {
+				"rotation": [180, -58, 27],
+				"translation": [-0.75, -1, 1.25]
+			},
+			"head": {
+				"translation": [2, 13.5, 1]
+			},
+			"fixed": {
+				"rotation": [180, 90, 0],
+				"translation": [0.75, 0, 0]
+			}
+		},
+		"groups": [
+			{
+				"name": "root",
+				"origin": [8, 8, 8],
+				"color": 0,
+				"children": [
+					{
+						"name": "group",
+						"origin": [5, 10, 9],
+						"color": 0,
+						"children": [0, 1, 2, 3, 4, 5, 6]
+					}
+				]
+			}
+		]
+	},
+	"loader": "neoforge:separate_transforms",
+	"gui_light": "front",
+	"perspectives": {
+		"gui": {
+			"parent": "minecraft:item/generated",
+			"textures": {
+				"layer0": "dragonsurvival:item/light_key_icon"
+			}
+		}
+	}
+}

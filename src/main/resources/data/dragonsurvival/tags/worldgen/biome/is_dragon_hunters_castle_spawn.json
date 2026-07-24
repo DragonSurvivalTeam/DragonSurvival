@@ -1,0 +1,45 @@
+{
+	"replace": false,
+	"values": [
+		{
+            "id": "#minecraft:is_taiga",
+            "required": false
+        },
+        {
+            "id": "minecraft:taiga",
+            "required": false
+        },
+        {
+            "id": "minecraft:old_growth_pine_taiga",
+            "required": false
+        },
+        {
+            "id": "minecraft:old_growth_spruce_taiga",
+            "required": false
+        },
+        {
+            "id": "minecraft:dark_forest",
+            "required": false
+        },
+        {
+            "id": "#forge:is_spooky",
+            "required": false
+        },
+        {
+            "id": "#forge:is_taiga",
+            "required": false
+        },
+        {
+            "id": "#byg:is_spooky",
+            "required": false
+        },
+		{
+            "id": "#byg:is_taiga",
+            "required": false
+        },
+        {
+            "id": "#wythers:is_dark_forest",
+            "required": false
+        }
+	]
+}

@@ -1,0 +1,26 @@
+{
+  "structures": [
+    {
+      "structure": "dragonsurvival:treasure_friendly_cave",
+      "weight": 1
+    },
+	{
+      "structure": "dragonsurvival:treasure_friendly_forest",
+      "weight": 1
+    },
+	{
+      "structure": "dragonsurvival:treasure_friendly_sea",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 32477869,
+    "spacing": 36,
+    "separation": 10,    
+	"super_exclusion_zone": {
+      "chunk_count": 1,
+      "other_set": "#dragonsurvival:underground_avoid"
+    }
+  }
+}

@@ -1,40 +1,31 @@
 package by.dragonsurvivalteam.dragonsurvival.network.player;
 
-import by.dragonsurvivalteam.dragonsurvival.network.IMessage;
-import by.dragonsurvivalteam.dragonsurvival.network.client.ClientProxy;
+import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.network.NetworkDirection;
-import net.minecraftforge.network.NetworkEvent;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.function.Supplier;
+public record SyncGrowthState(boolean isGrowing) implements CustomPacketPayload {
+    public static final Type<SyncGrowthState> TYPE = new Type<>(DragonSurvival.res("sync_growth_state"));
 
-public class SyncGrowthState implements IMessage<SyncGrowthState> {
-	public boolean growing;
+    public static final StreamCodec<FriendlyByteBuf, SyncGrowthState> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.BOOL, SyncGrowthState::isGrowing,
+            SyncGrowthState::new
+    );
 
-	public SyncGrowthState(boolean growing) {
-		this.growing = growing;
-	}
+    public static void handleClient(final SyncGrowthState packet, final IPayloadContext context) {
+        context.enqueueWork(() -> {
+            DragonStateProvider.getData(context.player()).isGrowing = packet.isGrowing();
+        });
+    }
 
-	public SyncGrowthState() { /* Nothing to do */ }
 
-	@Override
-	public void encode(final SyncGrowthState message, final FriendlyByteBuf buffer) {
-		buffer.writeBoolean(message.growing);
-	}
-
-	@Override
-	public SyncGrowthState decode(final FriendlyByteBuf buffer) {
-		return new SyncGrowthState(buffer.readBoolean());
-	}
-
-	@Override
-	public void handle(final SyncGrowthState message, final Supplier<NetworkEvent.Context> supplier) {
-		NetworkEvent.Context context = supplier.get();
-
-		if (context.getDirection() == NetworkDirection.PLAY_TO_CLIENT) {
-			context.enqueueWork(() -> ClientProxy.handleSyncGrowthState(message));
-		}
-
-		context.setPacketHandled(true);
-	}
+    @Override
+    public @NotNull Type<? extends CustomPacketPayload> type() {
+        return TYPE;
+    }
 }

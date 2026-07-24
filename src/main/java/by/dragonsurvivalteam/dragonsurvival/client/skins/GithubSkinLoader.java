@@ -1,21 +1,30 @@
 package by.dragonsurvivalteam.dragonsurvival.client.skins;
 
-import by.dragonsurvivalteam.dragonsurvival.DragonSurvivalMod;
-import by.dragonsurvivalteam.dragonsurvival.util.DragonLevel;
-import by.dragonsurvivalteam.dragonsurvival.util.GsonFactory;
+import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.util.json.GsonFactory;
 import com.google.gson.Gson;
-import org.apache.logging.log4j.Level;
+import com.google.gson.JsonSyntaxException;
 
-import java.io.*;
-import java.net.URL;
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collection;
+import java.util.List;
 
-public class GithubSkinLoader extends NetSkinLoader {
-    public static final String SKIN_LIST_API = "https://api.github.com/repositories/280658566/git/trees/6597d654e16568d2d9e2cdf0dc372041cb081c35?ref=master";
-    public static final String SKIN = "https://raw.githubusercontent.com/DragonSurvivalTeam/DragonSurvival/master/src/test/resources/";
+public class GithubSkinLoader implements NetSkinLoader {
+    private static final String SKIN_LIST_API = "https://api.github.com/repos/DragonSurvivalTeam/DragonSurvival/git/trees/master?recursive=1";
+    private static final String SKIN = "https://raw.githubusercontent.com/DragonSurvivalTeam/DragonSurvival/master/src/test/resources/";
     private static final String SKINS_PING = "https://raw.githubusercontent.com/DragonSurvivalTeam/DragonSurvival/master/README.md";
+
+    private static final String SKIN_PATH_IN_REPO = "src/test/resources/";
+    private int remaining = -1;
+    private int limit = -1;
+
+    private int resetTime = -1;
 
     private static class SkinFileMetaInfo {
         String content;
@@ -32,39 +41,71 @@ public class GithubSkinLoader extends NetSkinLoader {
         SkinResponseItem[] tree;
     }
 
+
+    protected void updateRateLimitFromRequest(HttpRequestHelper http)
+    {
+        http.getResponseHeaders().getOrDefault("X-RateLimit-Remaining", List.of()).stream()
+                .findFirst().ifPresent(
+                        s -> this.remaining = Integer.parseInt(s)
+                );
+        http.getResponseHeaders().getOrDefault("X-RateLimit-Limit", List.of()).stream()
+                .findFirst().ifPresent(
+                        s -> this.limit = Integer.parseInt(s)
+                );
+        http.getResponseHeaders().getOrDefault("X-RateLimit-Reset", List.of()).stream()
+                .findFirst().ifPresent(
+                        s -> this.resetTime = Integer.parseInt(s)
+                );
+    }
+
     @Override
-    public Collection<SkinObject> querySkinList() {
+    public Collection<SkinObject> querySkinList() throws IOException {
         ArrayList<SkinObject> result = new ArrayList<>();
-        try {
-            Gson gson = GsonFactory.getDefault();
-            URL url = new URL(SKIN_LIST_API);
+        Gson gson = GsonFactory.getDefault();
 
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(internetGetStream(url, 2 * 1000)))) {
-                SkinListApiResponse skinListResponse = gson.fromJson(reader, SkinListApiResponse.class);
+        HttpRequestHelper http = new HttpRequestHelper();
+        http.url(SKIN_LIST_API).timeout(5000);
+        http.execute();
+        updateRateLimitFromRequest(http);
 
-                for (SkinResponseItem skinResponse : skinListResponse.tree) {
+        if (http.getResponseCode() != 200) {
+            throw new NetRateLimitException(http.getUrl(), this.getRateLimit());
+        }
+
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(http.getResponseBody()))) {
+            SkinListApiResponse skinListResponse = gson.fromJson(reader, SkinListApiResponse.class);
+
+            for (SkinResponseItem skinResponse : skinListResponse.tree) {
+                if (skinResponse.path.startsWith(SKIN_PATH_IN_REPO)) {
                     SkinObject skinObject = new SkinObject();
-                    skinObject.name = skinResponse.path;
+                    skinObject.name = skinResponse.path.substring(SKIN_PATH_IN_REPO.length());
                     skinObject.id = skinResponse.sha;
                     skinObject.user_extra = skinResponse;
                     result.add(skinObject);
                 }
-                return result;
-            } catch (IOException exception) {
-                DragonSurvivalMod.LOGGER.warn("Reader could not be closed", exception);
             }
-        } catch (IOException exception) {
-            DragonSurvivalMod.LOGGER.log(Level.WARN, "Failed to get skin information in GitHub");
+        } catch (JsonSyntaxException exception) {
+            // Premature EOF error than can apparently occur on very slow internet connections
+            DragonSurvival.LOGGER.error("Invalid skin response from GitHub", exception);
         }
 
-        return null;
+        return result;
     }
 
     @Override
     public InputStream querySkinImage(SkinObject skin) throws IOException {
         Gson gson = GsonFactory.getDefault();
         SkinResponseItem skinExtra = (SkinResponseItem) skin.user_extra;
-        try (InputStream skinMetadataStream = internetGetStream(new URL(skinExtra.url), 15 * 1000)) {
+
+        HttpRequestHelper http = new HttpRequestHelper();
+        http.url(skinExtra.url).timeout(15000);
+        http.execute();
+        updateRateLimitFromRequest(http);
+        if (http.getResponseCode() != 200) {
+            throw new NetRateLimitException(http.getUrl(), this.getRateLimit());
+        }
+
+        try (InputStream skinMetadataStream = http.getResponseBody()) {
             SkinFileMetaInfo skinMetaInfo = gson.fromJson(new BufferedReader(new InputStreamReader(skinMetadataStream)), SkinFileMetaInfo.class);
             String base64Content = skinMetaInfo.content.replace("\n", "");
             return new ByteArrayInputStream(Base64.getDecoder().decode(base64Content));
@@ -72,33 +113,19 @@ public class GithubSkinLoader extends NetSkinLoader {
     }
 
     @Override
+    public NetRateLimit getRateLimit() {
+        return new NetRateLimit(remaining,limit,resetTime);
+    }
+
+    @Override
     public boolean ping() {
-        try (InputStream ignore = internetGetStream(new URL(SKINS_PING), 3 * 1000)) {
-            return true;
+        HttpRequestHelper http = new HttpRequestHelper();
+        http.url(SKINS_PING).timeout(3000);
+        try {
+            http.execute();
         } catch (IOException e) {
             return false;
         }
-    }
-
-    private static final String GLOW = "_glow";
-
-    public InputStream querySkinImage(final String skinName, final DragonLevel level) {
-        try {
-            String fetchName;
-
-            if (skinName.endsWith(GLOW)) {
-                fetchName = skinName.replace(GLOW, "");
-                fetchName = SKIN + fetchName + "_" + level.name + GLOW + ".png";
-            } else {
-                fetchName = SKIN + skinName + "_" + level.name + ".png";
-            }
-
-            URL url = new URL(fetchName);
-            return internetGetStream(url, 15 * 1000);
-        } catch (IOException exception) {
-            DragonSurvivalMod.LOGGER.error("Failed to get skin information in GitHub");
-        }
-
-        return null;
+        return http.getResponseCode() == 200;
     }
 }

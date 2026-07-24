@@ -1,0 +1,19 @@
+{
+  "structures": [
+    {
+      "structure": "dragonsurvival:treasure_end",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "minecraft:random_spread",
+    "spread_type": "triangular",
+    "salt": 2067420057,
+    "spacing": 36,
+    "separation": 10,   
+	"super_exclusion_zone": {
+      "chunk_count": 1,
+      "other_set": "#dragonsurvival:underground_avoid_end"
+    }
+  }
+}

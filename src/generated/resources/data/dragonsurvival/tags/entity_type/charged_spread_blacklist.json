@@ -1,0 +1,18 @@
+{
+  "values": [
+    "minecraft:armor_stand",
+    "minecraft:cat",
+    "minecraft:minecart",
+    "minecraft:guardian",
+    "minecraft:elder_guardian",
+    "minecraft:enderman",
+    {
+      "id": "upgrade_aquatic:thrasher",
+      "required": false
+    },
+    {
+      "id": "upgrade_aquatic:great_thrasher",
+      "required": false
+    }
+  ]
+}

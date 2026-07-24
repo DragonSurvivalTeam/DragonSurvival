@@ -1,0 +1,18 @@
+{
+  "structures": [
+    {
+      "structure": "dragonsurvival:treasure_hunters",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 459312459,
+    "separation": 30,
+    "spacing": 36,
+	"super_exclusion_zone": {
+      "chunk_count": 1,
+      "other_set": "#dragonsurvival:underground_avoid"
+    }
+  }
+}

@@ -1,0 +1,73 @@
+{
+	"replace": false,
+	"values": [
+        {
+            "id": "#minecraft:is_desert",
+            "required": false
+        },
+        {
+            "id": "#minecraft:is_badlands",
+            "required": false
+        },
+        {
+            "id": "minecraft:desert",
+            "required": false
+        },
+        {
+            "id": "minecraft:badlands",
+            "required": false
+        },
+        {
+            "id": "minecraft:wooded_badlands",
+            "required": false
+        },
+        {
+            "id": "minecraft:eroded_badlands",
+            "required": false
+        },
+        {
+            "id": "#forge:is_desert",
+            "required": false
+        },
+        {
+            "id": "#forge:is_badlands",
+            "required": false
+        },
+        {
+            "id": "#neoforge:is_desert",
+            "required": false
+        },
+        {
+            "id": "#c:is_badlands",
+            "required": false
+        },
+        {
+            "id": "#c:is_desert",
+            "required": false
+        },
+        {
+            "id": "#c:is_badlands",
+            "required": false
+        },
+        {
+            "id": "#byg:is_wasteland",
+            "required": false
+        },
+        {
+            "id": "#byg:is_desert",
+            "required": false
+        },
+        {
+            "id": "#byg:is_badlands",
+            "required": false
+        },
+        {
+            "id": "#wythers:is_desert",
+            "required": false
+        },
+        {
+            "id": "#dragonsurvival:compat_is_wythers",
+            "required": false
+        }
+	]
+}

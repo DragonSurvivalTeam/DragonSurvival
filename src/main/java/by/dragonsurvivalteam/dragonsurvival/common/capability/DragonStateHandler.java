@@ -1,675 +1,933 @@
 package by.dragonsurvivalteam.dragonsurvival.common.capability;
 
-import by.dragonsurvivalteam.dragonsurvival.common.capability.objects.DragonMovementData;
-import by.dragonsurvivalteam.dragonsurvival.common.capability.subcapabilities.*;
-import by.dragonsurvivalteam.dragonsurvival.common.dragon_types.AbstractDragonBody;
-import by.dragonsurvivalteam.dragonsurvival.common.dragon_types.AbstractDragonType;
-import by.dragonsurvivalteam.dragonsurvival.common.dragon_types.DragonBodies;
-import by.dragonsurvivalteam.dragonsurvival.common.dragon_types.DragonTypes;
+import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.TimeComponent;
+import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.DragonStageCustomization;
+import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.SkinPreset;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscCodecs;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.Modifier;
+import by.dragonsurvivalteam.dragonsurvival.common.handlers.DragonGrowthHandler;
 import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
 import by.dragonsurvivalteam.dragonsurvival.network.client.ClientProxy;
-import by.dragonsurvivalteam.dragonsurvival.registry.DragonModifiers;
-import by.dragonsurvivalteam.dragonsurvival.util.DragonLevel;
+import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncMagicData;
+import by.dragonsurvivalteam.dragonsurvival.network.player.SyncDesiredGrowth;
+import by.dragonsurvivalteam.dragonsurvival.network.player.SyncGrowth;
+import by.dragonsurvivalteam.dragonsurvival.registry.DSAdvancementTriggers;
+import by.dragonsurvivalteam.dragonsurvival.registry.DSModifiers;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AltarData;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ClawInventoryData;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.HarvestBonuses;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.PenaltySupply;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.InputData;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
+import by.dragonsurvivalteam.dragonsurvival.server.handlers.DragonRidingHandler;
 import by.dragonsurvivalteam.dragonsurvival.util.DragonUtils;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
-import net.minecraft.core.BlockPos;
+import by.dragonsurvivalteam.dragonsurvival.util.ResourceHelper;
+import by.dragonsurvivalteam.dragonsurvival.util.ToolUtils;
+import com.mojang.datafixers.util.Either;
+import com.mojang.datafixers.util.Pair;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.HolderSet;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.FormattedText;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.TagKey;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Tier;
-import net.minecraft.world.item.Tiers;
-import net.minecraft.world.level.block.Block;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.common.ForgeMod;
-import net.minecraftforge.fml.loading.FMLEnvironment;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.neoforged.fml.loading.FMLLoader;
+import net.neoforged.neoforge.common.util.Lazy;
+import net.neoforged.neoforge.network.PacketDistributor;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
-import java.util.Locale;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Supplier;
+import java.util.Optional;
 
 public class DragonStateHandler extends EntityStateHandler {
-	public static final int NO_ENTITY = -1;
+    @Translation(comments = "You cannot turn into a human in this world")
+    private static final String NO_HUMANS = Translation.Type.GUI.wrap("message.no_humans");
 
-	public final Supplier<SubCap>[] caps = new Supplier[]{this::getSkinData, this::getMagicData, this::getEmoteData, this::getClawToolData, this::getVillageRelationShips};
+    public static final double NO_GROWTH = -1;
 
-    /** Used in {@link by.dragonsurvivalteam.dragonsurvival.mixins.MixinPlayerStart} and {@link by.dragonsurvivalteam.dragonsurvival.mixins.MixinPlayerEnd} */
-    public ItemStack storedMainHandWeapon = ItemStack.EMPTY;
-	public boolean switchedWeapon;
+    private static final double AGE_LERP_SPEED = 0.1; // 10% per tick
+    private static final double AGE_EPSILON = 0.01;
 
-	public ItemStack storedMainHandTool = ItemStack.EMPTY;
-	public boolean switchedTool;
-	public int switchedToolSlot = -1;
-	/**
-	 * Since {@link Player#hasCorrectToolForDrops(BlockState)} has its own swap<br>
-	 * Which would close the swap of {@link net.minecraft.server.level.ServerPlayerGameMode#destroyBlock(BlockPos)}
-	 */
-	public int toolSwapLayer;
+    public MultiMining multiMining = MultiMining.ENABLED;
+    public LargeDragonDestruction largeDragonDestruction = LargeDragonDestruction.ENABLED;
 
-	public boolean hasFlown;
-	public boolean growing = true;
+    // Gets reset once the growth reaches the starting growth of the dragon species
+    // Currently also stores the usages of non-limited items (but doesn't limit them by doing so)
+    // (Preferably it would not but the additional checks may not be worth it)
+    private final Map<ResourceKey<DragonStage>, Map<Item, Integer>> usedGrowthItems = new HashMap<>();
 
-	public boolean treasureResting;
-	public int treasureRestTimer;
-	public int treasureSleepTimer;
+    public boolean isGrowthStopped;
+    public boolean isGrowing = true;
 
-	public int altarCooldown;
-	public boolean hasUsedAltar;
-	public boolean refreshBody;
+    public int magicSource;
+    public boolean isOnMagicSource;
+    public boolean markedByEnderDragon;
+    public boolean flightWasGranted;
+    public boolean spinWasGranted;
+
+    public boolean refreshBody;
+    /** Currently only set when the dimension refresh occurs due to a size (scale) change */
+    public boolean shouldFudgePosition;
 
     /** Last timestamp the server synchronized the player */
     public int lastSync;
 
-
-	private final DragonMovementData movementData = new DragonMovementData(0, 0, 0, false);
-	private final ClawInventory clawToolData = new ClawInventory(this);
-	private final EmoteCap emoteData = new EmoteCap(this);
-	private final MagicCap magicData = new MagicCap(this);
-	private final SkinCap skinData = new SkinCap(this);
-	private final VillageRelationShips villageRelationShips = new VillageRelationShips(this);
-	private final Map<String, Double> savedDragonSize = new ConcurrentHashMap<>();
-
-	private AbstractDragonType dragonType;
-	private AbstractDragonBody dragonBody;
-
-	private int passengerId = NO_ENTITY;
-	private boolean isHiding;
-	private boolean hasFlight;
-	private boolean areWingsSpread;
-	private double size;
-
-	/** Sets the size, health and base damage */
-	public void setSize(double size, final Player player) {
-		setSize(size);
-		updateModifiers(player);
-	}
-
-	private void updateModifiers(final Player player) {
-		if (isDragon()) {
-			// Grant the dragon attribute modifiers
-			DragonModifiers.updateSizeModifiers(player);
-		} else {
-			// Remove the dragon attribute modifiers
-			checkAndRemoveModifier(player.getAttribute(Attributes.MAX_HEALTH), DragonModifiers.getHealthModifier(player));
-			checkAndRemoveModifier(player.getAttribute(Attributes.ATTACK_DAMAGE), DragonModifiers.getDamageModifier(player));
-			checkAndRemoveModifier(player.getAttribute(ForgeMod.SWIM_SPEED.get()), DragonModifiers.getSwimSpeedModifier(player));
-			checkAndRemoveModifier(player.getAttribute(ForgeMod.BLOCK_REACH.get()), DragonModifiers.getBlockReachModifier(player));
-			checkAndRemoveModifier(player.getAttribute(ForgeMod.ENTITY_REACH.get()), DragonModifiers.getEntityReachModifier(player));
-			checkAndRemoveModifier(player.getAttribute(ForgeMod.STEP_HEIGHT_ADDITION.get()), DragonModifiers.getStepHeightModifier(player));
-		}
-	}
-
-	private void checkAndRemoveModifier(@Nullable final AttributeInstance attribute, @Nullable final AttributeModifier modifier) {
-		if (attribute != null && modifier != null && attribute.hasModifier(modifier)) {
-			attribute.removeModifier(modifier);
-		}
-	}
-
-	public void setFreeLook(boolean isFreeLook) {
-		movementData.wasFreeLook = movementData.isFreeLook;
-		movementData.isFreeLook = isFreeLook;
-	}
-
-	public void setFirstPerson(boolean isFirstPerson) {
-		movementData.isFirstPerson = isFirstPerson;
-	}
-
-	public void setBite(boolean bite) {
-		movementData.bite = bite;
-	}
-
-	public void setDesiredMoveVec(Vec2 desiredMoveVec) {
-		movementData.desiredMoveVec = desiredMoveVec;
-	}
-
-	@Override
-	public CompoundTag writeNBT() {
-		CompoundTag tag = new CompoundTag();
-		tag.putString("type", dragonType != null ? dragonType.getTypeName() : "none");
-		tag.putString("subtype", dragonType != null ? dragonType.getSubtypeName(): "none");
-		tag.putString("dragonBody", dragonBody != null ? dragonBody.getBodyName() : "none");
-
-		if (isDragon()) {
-			tag.put("typeData", dragonType.writeNBT());
-			if (dragonBody != null) {
-				tag.put("bodyData", dragonBody.writeNBT());
-			}
-
-			//Rendering
-			DragonMovementData movementData = getMovementData();
-			tag.putBoolean("bite", movementData.bite);
-			tag.putBoolean("dig", movementData.dig);
-			tag.putBoolean("isHiding", isHiding());
-
-			//Spin attack
-			tag.putInt("spinCooldown", movementData.spinCooldown);
-			tag.putInt("spinAttack", movementData.spinAttack);
-
-			tag.putDouble("size", getSize());
-			tag.putBoolean("growing", growing);
-
-			tag.putBoolean("isFlying", isWingsSpread());
-
-			tag.putBoolean("resting", treasureResting);
-			tag.putInt("restingTimer", treasureRestTimer);
-		}
-
-		if (isDragon() || ServerConfig.saveAllAbilities) { // FIXME :: Is this growing or abilities?
-			tag.putBoolean("spinLearned", getMovementData().spinLearned);
-			tag.putBoolean("hasWings", hasFlight());
-		}
-
-		tag.putDouble("seaSize", getSavedDragonSize(DragonTypes.SEA.getTypeName()));
-		tag.putDouble("caveSize", getSavedDragonSize(DragonTypes.CAVE.getTypeName()));
-		tag.putDouble("forestSize", getSavedDragonSize(DragonTypes.FOREST.getTypeName()));
-
-		for (int i = 0; i < caps.length; i++) {
-			tag.put("cap_" + i, caps[i].get().writeNBT());
-		}
-
-		tag.putInt("altarCooldown", altarCooldown);
-		tag.putBoolean("usedAltar", hasUsedAltar);
-
-		if (lastPos != null) {
-			tag.put("lastPos", Functions.newDoubleList(lastPos.x, lastPos.y, lastPos.z));
-		}
-
-		tag.putInt("lastAfflicted", lastAfflicted);
-
-		return tag;
-	}
-
-	@Override
-	public void readNBT(final CompoundTag tag) {
-		if (tag.getAllKeys().contains("subtype"))
-			dragonType = DragonTypes.newDragonTypeInstance(tag.getString("subtype"));
-		else
-			dragonType = DragonTypes.newDragonTypeInstance(tag.getString("type"));
-
-		if (dragonType != null) {
-			if (tag.contains("typeData")) {
-				dragonType.readNBT(tag.getCompound("typeData"));
-			}
-		}
-
-		dragonBody = DragonBodies.newDragonBodyInstance(tag.getString("dragonBody"));
-		if (dragonBody != null) {
-			if (tag.contains("bodyData")) {
-				dragonBody.readNBT(tag.getCompound("bodyData"));
-			}
-		}
-
-		if (isDragon()) {
-			setBite(tag.getBoolean("bite"));
-			getMovementData().headYawLastFrame = getMovementData().headYaw;
-			getMovementData().bodyYawLastFrame = getMovementData().bodyYaw;
-			getMovementData().headPitchLastFrame = getMovementData().headPitch;
-			setIsHiding(tag.getBoolean("isHiding"));
-			getMovementData().dig = tag.getBoolean("dig");
-
-			setWingsSpread(tag.getBoolean("isFlying"));
-
-			getMovementData().spinCooldown = tag.getInt("spinCooldown");
-			getMovementData().spinAttack = tag.getInt("spinAttack");
-
-			setSize(tag.getDouble("size"));
-			growing = !tag.contains("growing") || tag.getBoolean("growing");
-
-			treasureResting = tag.getBoolean("resting");
-			treasureRestTimer = tag.getInt("restingTimer");
-
-			if(getSize() == 0){
-				setSize(DragonLevel.NEWBORN.size);
-			}
-		}
-
-		if (isDragon() || ServerConfig.saveAllAbilities) {
-			getMovementData().spinLearned = tag.getBoolean("spinLearned");
-			setHasFlight(tag.getBoolean("hasWings"));
-		}
-
-		setSavedDragonSize(DragonTypes.SEA.getTypeName(), tag.getDouble("seaSize"));
-		setSavedDragonSize(DragonTypes.CAVE.getTypeName(), tag.getDouble("caveSize"));
-		setSavedDragonSize(DragonTypes.FOREST.getTypeName(), tag.getDouble("forestSize"));
-
-		for (int i = 0; i < caps.length; i++) {
-			if (tag.contains("cap_" + i)) {
-				caps[i].get().readNBT((CompoundTag) tag.get("cap_" + i));
-			}
-		}
-
-		altarCooldown = tag.getInt("altarCooldown");
-		hasUsedAltar = tag.getBoolean("usedAltar");
-
-		if (tag.contains("lastPos")) {
-			ListTag listnbt = tag.getList("lastPos", 6);
-			lastPos = new Vec3(listnbt.getDouble(0), listnbt.getDouble(1), listnbt.getDouble(2));
-		}
-
-		lastAfflicted = tag.getInt("lastAfflicted");
-
-		getSkinData().compileSkin();
-	}
-
-	public void setMovementData(double bodyYaw, double headYaw, double headPitch, Vec3 deltaMovement) {
-		movementData.headYawLastFrame = movementData.headYaw;
-		movementData.bodyYawLastFrame = movementData.bodyYaw;
-		movementData.headPitchLastFrame = movementData.headPitch;
-		movementData.deltaMovementLastFrame = movementData.deltaMovement;
-
-		movementData.bodyYaw = bodyYaw;
-		movementData.headYaw = headYaw;
-		movementData.headPitch = headPitch;
-		movementData.deltaMovement = deltaMovement;
-	}
-
-	// Only call this version of setSize if we are doing something purely for rendering. Otherwise, call the setSize that accepts a Player object so that the player's attributes are updated.
-	public void setSize(double size) {
-		if (size != this.size) {
-			DragonLevel oldLevel = getLevel();
-			this.size = size;
-
-			if (oldLevel != getLevel()) {
-				requestClientData();
-			}
-
-			if (dragonType != null) {
-				setSavedDragonSize(dragonType.getTypeName(), size);
-			}
-		}
-	}
-
-	public double getSavedDragonSize(final String type) {
-		Double value = savedDragonSize.get(type);
-		value = value == null ? 0 : value;
-
-		return value;
-	}
-
-	public void setSavedDragonSize(final String type, double size) {
-		Double value = savedDragonSize.get(type);
-
-		if (size == 0 || (value != null && value == size)) {
-			return;
-		}
-
-		savedDragonSize.put(type, size);
-	}
-
-	public void requestClientData() {
-		if (FMLEnvironment.dist == Dist.CLIENT) {
-			ClientProxy.requestClientData(this);
-		}
-	}
-
-	public @Nullable AbstractDragonType getType(){
-		return dragonType;
-	}
-	
-	public AbstractDragonBody getBody() {
-		return dragonBody;
-	}
-
-	public String getTypeName() {
-		if (dragonType == null) {
-			return "human";
-		}
-
-		return dragonType.getTypeName();
-	}
-
-	public String getTypeNameLowerCase() {
-		if (dragonType == null) {
-			return "human";
-		}
-
-		return dragonType.getTypeNameLowerCase();
-	}
-
-	public String getSubtypeName() {
-		if (dragonType == null) {
-			return "human";
-		}
-
-		return dragonType.getSubtypeName();
-	}
-
-	public void setType(final AbstractDragonType type, Player player) {
-		AbstractDragonType oldType = dragonType;
-		setType(type);
-
-		if (!player.level().isClientSide() && oldType != dragonType) {
-			DragonModifiers.updateTypeModifiers(player);
-		}
-	}
-
-	// Only call this version of setType if we are doing something purely for rendering. Otherwise, call the setSize that accepts a Player object so that the player's attributes are updated.
-	public void setType(final AbstractDragonType type) {
-		if (type != null && !Objects.equals(dragonType, type)) {
-			growing = true;
-			getMagicData().initAbilities(type);
-		}
-
-		if (type != null) {
-			if (Objects.equals(dragonType, type)) {
-				return;
-			}
-
-			dragonType = DragonTypes.newDragonTypeInstance(type.getSubtypeName());
-		} else {
-			dragonType = null;
-		}
-	}
-
-	public void setBody(final AbstractDragonBody body, Player player) {
-		AbstractDragonBody oldBody = dragonBody;
-		setBody(body);
-
-		if (!player.level().isClientSide() && oldBody != dragonBody) {
-			DragonModifiers.updateBodyModifiers(player);
-		}
-	}
-
-	// Only call this version of setBody if we are doing something purely for rendering. Otherwise, call the setSize that accepts a Player object so that the player's attributes are updated.
-	public void setBody(final AbstractDragonBody body) {
-		if (body != null) {
-			if (!body.equals(dragonBody)) {
-				dragonBody = DragonBodies.newDragonBodyInstance(body.getBodyName());
-				refreshBody = true;
-			}
-		} else {
-			dragonBody = null;
-		}
-	}
-
-	public DragonLevel getLevel() {
-		if (size < 20F) {
-			return DragonLevel.NEWBORN;
-		} else if (size < 30F) {
-			return DragonLevel.YOUNG;
-		} else {
-			return DragonLevel.ADULT;
-		}
-	}
-
-	/** Determines if the current dragon type can harvest the supplied block (with or without tools) (configured harvest bonuses are taken into account) */
-	public boolean canHarvestWithPaw(final BlockState state) {
-		if (!isDragon()) {
-			return false;
-		}
-
-		for (int i = 0; i < 4; i++) {
-			ItemStack stack = getClawToolData().getClawsInventory().getItem(i);
-
-			if (stack.isCorrectToolForDrops(state)) {
-				return true;
-			}
-		}
-
-		return canHarvestWithPawNoTools(state);
-	}
-
-	/** Determines if the current dragon type can harvest the supplied block without a tool (configured harvest bonuses are taken into account) */
-	public boolean canHarvestWithPawNoTools(final BlockState blockState) {
-		if (!isDragon()) {
-			return false;
-		}
-
-		boolean initialCheck = getFakeTool(blockState).isCorrectToolForDrops(blockState);
-
-		if (initialCheck) {
-			return true;
-		}
-
-		int harvestLevel = blockState.is(BlockTags.NEEDS_DIAMOND_TOOL) ? 3 : blockState.is(BlockTags.NEEDS_IRON_TOOL) ? 2 : blockState.is(BlockTags.NEEDS_STONE_TOOL) ? 1 : 0;
-
-		if (harvestLevel <= ServerConfig.baseHarvestLevel) {
-			return true;
-		}
-
-		for (TagKey<Block> tagKey : getType().mineableBlocks()) {
-			if (blockState.is(tagKey)) {
-				return harvestLevel <= getDragonHarvestLevel(getType().slotForBonus);
-			}
-		}
-
-		return false;
-	}
-
-	/**
-	 * Returns an effective tool for the supplied block state<br>
-	 * The tier of the tool is based on the current harvest level of the dragon
-	 * @param blockState The block for which the tool is required for
-	 * @return The appropriate harvest tool for the supplied block<br>
-	 * The tier depends on the dragon and configured harvest bonuses
-	 */
-	public ItemStack getFakeTool(final BlockState blockState) {
-		if (getType() == null) {
-			return ItemStack.EMPTY;
-		}
-
-		int harvestLevel = 0;
-
-		for (TagKey<Block> tagKey : getType().mineableBlocks()) {
-			if (blockState.is(tagKey)) {
-				harvestLevel = getDragonHarvestLevel(blockState);
-
-				break;
-			}
-		}
-
-		if (harvestLevel < 0) {
-			return ItemStack.EMPTY;
-		} else {
-			return getToolOfType(getDragonHarvestTier(blockState), blockState);
-		}
-	}
-
-	/**
-	 * @return Harvest tool of which the dragon type is effective for (tier is based on the current harvest level of the dragon)
-	 */
-	public ItemStack getInnateFakeTool() {
-		if (getType() == null) {
-			return ItemStack.EMPTY;
-		}
-
-		int harvestLevel = getDragonHarvestLevel(getType().slotForBonus);
-
-		if (harvestLevel < 0) {
-			return ItemStack.EMPTY;
-		} else {
-			return getToolOfType(DragonUtils.levelToVanillaTier(harvestLevel), getType().slotForBonus);
-		}
-	}
-
-	/** Calls {@link DragonStateHandler#getToolOfType(Tier, int)} with the result of {@link DragonStateHandler#getRelevantToolSlot(BlockState)} */
-	public ItemStack getToolOfType(final Tier tier, final BlockState blockState) {
-		return getToolOfType(tier, getRelevantToolSlot(blockState));
-	}
-
-	/**
-	 * Returns a tiered item for the supplied slot - useful to fake checks regarding block breaking
-	 * @param tier The tier which the returned item is supposed to have
-	 * @param toolSlot To determine the type of harvest tool (e.g. `1` for Pickaxe)
-	 * @return A default instance of the tool (or {@link ItemStack#EMPTY} if nothing matches / some problem occurs)
-	 */
-	public ItemStack getToolOfType(final Tier tier, int toolSlot) {
-		if (!(tier instanceof Tiers tiers)) {
-			// TODO :: Do something with ForgeTier to support custom tools (benefit = ?)
-			return ItemStack.EMPTY;
-		}
-
-		String tierPath = tiers.name().toLowerCase(Locale.ENGLISH) + "_";
-		tierPath = tierPath.replace("wood", "wooden");
-
-		Item item = switch (toolSlot) {
-			case 1 -> ForgeRegistries.ITEMS.getValue(new ResourceLocation("minecraft", tierPath + "pickaxe"));
-			case 2 -> ForgeRegistries.ITEMS.getValue(new ResourceLocation("minecraft", tierPath + "axe"));
-			case 3 -> ForgeRegistries.ITEMS.getValue(new ResourceLocation("minecraft", tierPath + "shovel"));
-			default -> ItemStack.EMPTY.getItem();
-		};
-
-		if (item != null) {
-			return item.getDefaultInstance();
-		}
-
-		return ItemStack.EMPTY;
-	}
-
-	/** Calls {@link DragonStateHandler#getDragonHarvestLevel(int)} with the result of {@link DragonStateHandler#getRelevantToolSlot(BlockState)} */
-	public int getDragonHarvestLevel(final BlockState blockState) {
-		return getDragonHarvestLevel(getRelevantToolSlot(blockState));
-	}
-
-	/**
-	 * Don't call this when the player is not a dragon, if you do you get a -1
-	 * @param slot The dragon tool slot of the harvest tool which needs to be checked
-	 * @return The harvest level of the current dragon type for the provided slot
-	 */
-	public int getDragonHarvestLevel(int slot) {
-		if (getType() == null) {
-			return -1;
-		}
-
-		int harvestLevel = ServerConfig.baseHarvestLevel;
-		int bonusLevel = 0;
-
-		if (getLevel() == DragonLevel.NEWBORN && ServerConfig.bonusUnlockedAt == DragonLevel.NEWBORN) {
-			bonusLevel = ServerConfig.bonusHarvestLevel;
-		} else if (getLevel() == DragonLevel.YOUNG && ServerConfig.bonusUnlockedAt != DragonLevel.ADULT) {
-			bonusLevel = ServerConfig.bonusHarvestLevel;
-		} else if (getLevel() == DragonLevel.ADULT) {
-			bonusLevel = ServerConfig.bonusHarvestLevel;
-		}
-
-		if (slot == getType().slotForBonus) {
-			return harvestLevel + bonusLevel;
-		}
-
-		return harvestLevel;
-	}
-
-	/** Calls {@link DragonStateHandler#getDragonHarvestTier(int)} with the result of {@link DragonStateHandler#getRelevantToolSlot(BlockState)} */
-	public @Nullable Tier getDragonHarvestTier(final BlockState blockState) {
-		return getDragonHarvestTier(getRelevantToolSlot(blockState));
-	}
-
-	/**
-	 *
-	 * @param slot The (dragon) tool slot the item would belong to (e.g. `1` for Pickaxe)
-	 * @return the tier of the current dragon harvest level<br>
-	 * (Which is a combination of {@link ServerConfig#baseHarvestLevel} and {@link ServerConfig#bonusHarvestLevel} (if enabled))<br>
-	 * Will return null if the config somehow set a negative harvest level
-	 */
-	public @Nullable Tier getDragonHarvestTier(int slot) {
-		int harvestLevel = getDragonHarvestLevel(slot);
-
-		if (harvestLevel < 0) {
-			return null;
-		}
-
-		return switch(harvestLevel) {
-			case 0 -> Tiers.WOOD;
-			case 1 -> Tiers.STONE;
-			case 2 -> Tiers.IRON;
-			case 3 -> Tiers.DIAMOND;
-			default -> Tiers.NETHERITE;
-		};
-	}
-
-	/**
-	 * @param blockState The block to test against
-	 * @return The dragon tool slot which is effective for the supplied block (e.g. `1` (Pickaxe) for the block `Stone`)
-	 */
-	public int getRelevantToolSlot(final BlockState blockState) {
-		if (blockState.is(BlockTags.MINEABLE_WITH_PICKAXE)) {
-			return 1;
-		} else if (blockState.is(BlockTags.MINEABLE_WITH_AXE)) {
-			return 2;
-		} else if (blockState.is(BlockTags.MINEABLE_WITH_SHOVEL)) {
-			return 3;
-		}
-
-		return 0;
-	}
-
-	public void setPassengerId(int passengerId) {
-		this.passengerId = passengerId;
-	}
-
-	public void setWingsSpread(boolean areWingsSpread) {
-		this.areWingsSpread = areWingsSpread;
-	}
-
-	public void setHasFlight(boolean hasFlight) {
-		if (hasFlight != this.hasFlight) { // TODO :: Why this check?
-			this.hasFlight = hasFlight;
-		}
-	}
-
-	public void setIsHiding(boolean isHiding) {
-		this.isHiding = isHiding;
-	}
-
-	public MagicCap getMagicData(){
-		return magicData;
-	}
-
-	public DragonMovementData getMovementData() {
-		return movementData;
-	}
-
-	public double getSize(){
-		return size;
-	}
-
-	public boolean isDragon() {
-		return dragonType != null;
-	}
-
-	public int getPassengerId() {
-		return passengerId;
-	}
-
-	public EmoteCap getEmoteData() {
-		return emoteData;
-	}
-
-	public SkinCap getSkinData() {
-		return skinData;
-	}
-
-	public boolean hasFlight() {
-		return hasFlight;
-	}
-
-	public boolean isWingsSpread() {
-		return hasFlight && areWingsSpread;
-	}
-
-	public boolean isHiding(){
-		return isHiding;
-	}
-
-	public ClawInventory getClawToolData()  {
-		return clawToolData;
-	}
-
-	public VillageRelationShips getVillageRelationShips() {
-		return villageRelationShips;
-	}
+    private final Map<ResourceKey<DragonSpecies>, Double> savedGrowth = new HashMap<>();
+    private final Map<ResourceKey<DragonSpecies>, Double> savedDesiredGrowth = new HashMap<>();
+    private SkinData skinData = new SkinData();
+
+    private Holder<DragonSpecies> dragonSpecies;
+    private Holder<DragonBody> dragonBody;
+    private Holder<DragonStage> dragonStage;
+
+    private int passengerId = DragonRidingHandler.NO_PASSENGER;
+    private double growth = NO_GROWTH;
+    private double visualGrowth = NO_GROWTH;
+    private double visualGrowthLastTick = NO_GROWTH;
+    private double desiredGrowth = NO_GROWTH;
+
+    private boolean destructionEnabled;
+
+    public Pose previousPose;
+
+    // Needed to calculate collision damage correctly when flying. See ServerFlightHandler.
+    public Vec3 preCollisionDeltaMovement = Vec3.ZERO;
+
+    private static final RandomSource RANDOM = RandomSource.create();
+
+    public void setRandomValidStage(@Nullable final Player player) {
+        if (dragonSpecies == null) {
+            return;
+        }
+
+        HolderSet<DragonStage> stages = dragonSpecies.value().getStages(player != null ? player.registryAccess() : null);
+        setStage(player, stages.getRandomElement(player != null ? player.getRandom() : RANDOM).orElseThrow());
+    }
+
+    /** Sets the stage and retains the current age */
+    public void setStage(@Nullable final Player player, final Holder<DragonStage> dragonStage) {
+        if (!dragonSpecies.value().getStages(player != null ? player.registryAccess() : null).contains(dragonStage)) {
+            //noinspection DataFlowIssue -> key is present
+            Functions.logOrThrow("The dragon stage [" + dragonStage.getKey().location() + "] is not valid for the dragon species [" + speciesId() + "]");
+            return;
+        }
+
+        double boundedGrowth = dragonStage.value().getBoundedGrowth(growth);
+
+        if (boundedGrowth == dragonStage.value().growthRange().max()) {
+            // Ties go to the larger stage, so we need to be slightly below the maximum growth of the stage
+            boundedGrowth -= Shapes.EPSILON;
+        }
+
+        if (this.dragonStage == null) {
+            // No reason to slowly adjust to the growth in this case
+            setDesiredGrowth(player, boundedGrowth);
+            setGrowth(player, desiredGrowth);
+        } else {
+            setDesiredGrowth(player, boundedGrowth);
+        }
+    }
+
+    /**
+     * - Server-side: lerp to the actual growth <br>
+     * - Client-side: update the visual growth
+     */
+    public void lerpGrowth(final Player player) {
+        if (player.level().isClientSide() && visualGrowth - desiredGrowth == 0) return;
+        if (!player.level().isClientSide() && growth - desiredGrowth == 0) return;
+
+        // Check the marginal growth, not the desired growth, as otherwise you'll end up with your growth stunted if you
+        // can't reach the maximum desired growth, even when there is room to grow to some percentage of the desired growth
+        double growthForNextTick = Mth.lerp(AGE_LERP_SPEED, player.level().isClientSide() ? visualGrowth : growth, desiredGrowth);
+        boolean isGrowthAllowed = DragonGrowthHandler.isGrowthAllowed(player, DragonStateProvider.getData(player), growthForNextTick);
+
+        if (player.level().isClientSide()) {
+            if (visualGrowth == NO_GROWTH) {
+                visualGrowth = growth;
+            }
+
+            visualGrowthLastTick = visualGrowth;
+
+            // Need to update the visualGrowthLastTick to prevent weird jittering due to partial tick interpolation, even when growth is blocked
+            if (!isGrowthAllowed) return;
+
+            if (Math.abs(visualGrowth - desiredGrowth) < AGE_EPSILON) {
+                visualGrowth = desiredGrowth;
+            } else {
+                visualGrowth = Mth.lerp(AGE_LERP_SPEED, visualGrowth, desiredGrowth);
+            }
+        } else if (Math.abs(growth - desiredGrowth) < AGE_EPSILON) {
+            if (!isGrowthAllowed) return;
+            setGrowth(player, desiredGrowth);
+        } else {
+            if (!isGrowthAllowed) return;
+            setGrowth(player, Mth.lerp(AGE_LERP_SPEED, growth, desiredGrowth));
+        }
+    }
+
+    public void setGrowth(@Nullable final Player player, final double growth) {
+        setGrowth(player, growth, false);
+    }
+
+    /**
+     * @param forceUpdate Bypass the check that could result in skipping updating modifiers / synchronizing the state to the client <br>
+     *                    Needed after de-serialization of the data (since that had no player context)
+     */
+    public void setGrowth(@Nullable final Player player, final double growth, final boolean forceUpdate) {
+        double oldGrowth = this.growth;
+        Holder<DragonStage> oldStage = dragonStage;
+        updateGrowthAndStage(player != null ? player.registryAccess() : null, growth);
+
+        if (player == null) {
+            return;
+        }
+
+        if (dragonStage == null) {
+            DSModifiers.updateGrowthModifiers(player, this);
+            return;
+        }
+
+        if (!forceUpdate && oldGrowth == this.growth && oldStage != null && dragonStage.is(oldStage)) {
+            // There is no need to refresh the dimensions / fudge the position in this case
+            // the visual size is only for the client (rendering) and therefor doesn't cause position desync
+            return;
+        }
+
+        // Update modifiers before refreshing the dimensions, as the growth modifiers may affect them
+        DSModifiers.updateGrowthModifiers(player, this);
+        shouldFudgePosition = true;
+        player.refreshDimensions();
+        shouldFudgePosition = false;
+
+        if (player instanceof ServerPlayer serverPlayer) {
+            PacketDistributor.sendToPlayersTrackingEntityAndSelf(serverPlayer, new SyncGrowth(serverPlayer.getId(), getGrowth()));
+            MagicData.getData(player).handleAutoUpgrades(serverPlayer, InputData.growth((int) this.growth));
+            DSAdvancementTriggers.BE_DRAGON.get().trigger(serverPlayer);
+        }
+
+        if (player.level().isClientSide()) {
+            ClientProxy.sendClientData();
+        }
+    }
+
+    public void setDesiredGrowth(@Nullable final Player player, double growth) {
+        if (player == null) {
+            desiredGrowth = growth;
+            setGrowth(null, growth);
+            return;
+        }
+
+        desiredGrowth = clampGrowth(player.registryAccess(), growth);
+
+        if (player instanceof ServerPlayer serverPlayer) {
+            PacketDistributor.sendToPlayersTrackingEntityAndSelf(serverPlayer, new SyncDesiredGrowth(serverPlayer.getId(), desiredGrowth));
+        }
+    }
+
+    private double clampGrowth(@Nullable final HolderLookup.Provider provider, double growth) {
+        MiscCodecs.Bounds bounds = DragonStage.getBounds();
+        double newGrowth = Math.clamp(growth, bounds.min(), bounds.max());
+
+        if (dragonSpecies == null) {
+            return newGrowth;
+        }
+
+        Holder<DragonStage> stage = DragonStage.get(dragonSpecies.value().getStages(provider), newGrowth);
+        return stage.value().getBoundedGrowth(newGrowth);
+    }
+
+    private void updateGrowthAndStage(@Nullable final HolderLookup.Provider provider, double growth) {
+        if (growth == NO_GROWTH) {
+            dragonStage = null;
+            this.growth = NO_GROWTH;
+            this.desiredGrowth = NO_GROWTH;
+            return;
+        }
+
+        dragonStage = dragonSpecies != null ? DragonStage.get(dragonSpecies.value().getStages(provider), growth) : null;
+        this.growth = clampGrowth(provider, growth);
+
+        if (dragonSpecies != null && this.growth == dragonSpecies.value().getStartingGrowth(provider)) {
+            // Allow the player to re-use growth items if their growth is reset
+            // Don't clear if the player is a human in case the growth is saved
+            // It will be cleared once they turn into a dragon, and its growth matches the requirements
+            usedGrowthItems.clear();
+        }
+    }
+
+    public List<Holder<DragonStage>> getStagesSortedByProgression(@Nullable final HolderLookup.Provider provider) {
+        List<Holder<DragonStage>> stages = getStages(provider);
+        List<Holder<DragonStage>> sortedStages = new ArrayList<>(stages);
+        sortedStages.sort(Comparator.comparingDouble(stage -> stage.value().growthRange().min()));
+        return sortedStages;
+    }
+
+    public List<Holder<DragonStage>> getStages(@Nullable final HolderLookup.Provider provider) {
+        if (dragonSpecies.value().stages().isPresent()) {
+            return dragonSpecies.value().stages().get().stream().toList();
+        } else {
+            return DragonStage.getDefaultStages(provider).stream().toList();
+        }
+    }
+
+    /** Should only be called if the player is a dragon */
+    public void incrementGrowthUses(final Item item) {
+        Map<Item, Integer> items = usedGrowthItems.computeIfAbsent(stageKey(), key -> new HashMap<>());
+        items.compute(item, (key, timesUsed) -> timesUsed == null ? 1 : timesUsed + 1);
+    }
+
+    /** Should only be called if the player is a dragon */
+    public int getGrowthUses(final Item item) {
+        Map<Item, Integer> items = usedGrowthItems.get(stageKey());
+
+        if (items == null) {
+            return 0;
+        }
+
+        Integer uses = items.get(item);
+
+        if (uses == null) {
+            return 0;
+        }
+
+        return uses;
+    }
+
+    public Holder<DragonSpecies> species() {
+        return dragonSpecies;
+    }
+
+    /** Should only be called if the player is a dragon */
+    public ResourceKey<DragonSpecies> speciesKey() {
+        return species().getKey();
+    }
+
+    /** Should only be called if the player is a dragon */
+    public ResourceLocation speciesId() {
+        return speciesKey().location();
+    }
+
+    public Holder<DragonStage> stage() {
+        return dragonStage;
+    }
+
+    public Holder<DragonStage> stageFromDesiredSize(Player player) {
+        return DragonStage.get(dragonSpecies.value().getStages(player.registryAccess()), desiredGrowth);
+    }
+
+    /** Should only be called if the player is a dragon */
+    public ResourceKey<DragonStage> stageKey() {
+        return stage().getKey();
+    }
+
+    /** Should only be called if the player is a dragon */
+    public ResourceLocation stageId() {
+        return stageKey().location();
+    }
+
+    public Holder<DragonBody> body() {
+        return dragonBody;
+    }
+
+    /** Should only be called if the player is a dragon */
+    public ResourceKey<DragonBody> bodyKey() {
+        return body().getKey();
+    }
+
+    /** Should only be called if the player is a dragon */
+    public ResourceLocation bodyId() {
+        return bodyKey().location();
+    }
+
+    public void refreshMagicData(final ServerPlayer player, boolean forceRetainMagicData) {
+        MagicData magic = MagicData.getData(player);
+
+        if (!ServerConfig.saveAllAbilities && !forceRetainMagicData) {
+            magic.refresh(player, dragonSpecies);
+            flightWasGranted = false;
+            spinWasGranted = false;
+        } else {
+            if (dragonSpecies == null || magic.dataForSpeciesIsEmpty(speciesKey())) {
+                magic.refresh(player, dragonSpecies);
+            } else {
+                magic.setCurrentSpecies(player, speciesKey());
+            }
+        }
+
+        PacketDistributor.sendToPlayer(player, new SyncMagicData(magic.serializeNBT(player.registryAccess())));
+    }
+
+    public void setSpecies(@Nullable final Player player, @Nullable final Holder<DragonSpecies> species, boolean savedForSoul) {
+        Holder<DragonSpecies> oldSpecies = dragonSpecies;
+        double oldGrowth = growth;
+        double oldDesiredGrowth = desiredGrowth;
+        dragonSpecies = species;
+
+        boolean hasChanged = species != null && !DragonUtils.isSpecies(oldSpecies, species);
+
+        if (hasChanged) {
+            if (body() == null || !species.value().isValidForBody(body())) {
+                if (player instanceof ServerPlayer serverPlayer) {
+                    setBody(serverPlayer, DragonBody.getRandomUnlocked(serverPlayer));
+                } else {
+                    setBody(player, DragonBody.getRandom(player != null ? player.registryAccess() : null, species));
+                }
+            }
+
+            // Also make sure we clamp our growth to a valid stage
+            updateGrowthAndStage(player != null ? player.registryAccess() : null, getSavedDragonAge(speciesKey()));
+            desiredGrowth = getSavedDragonDesiredAge(player != null ? player.registryAccess() : null, speciesKey());
+
+            // The server doesn't need to check for skin preset refreshes; the client handles this
+            if (FMLLoader.getDist().isClient()) {
+                if (skinData.skinPresets.get().get(speciesKey()).isEmpty()) {
+                    refreshSkinPresetForSpecies(dragonSpecies, dragonBody);
+                    recompileCurrentSkin();
+                }
+            }
+        }
+
+        if (oldSpecies != null && !savedForSoul) {
+            // Save the growth for the previous species if we have changed and it isn't due to a soul save
+            savedGrowth.put(oldSpecies.getKey(), oldGrowth);
+            savedDesiredGrowth.put(oldSpecies.getKey(), oldDesiredGrowth);
+        } else if (oldSpecies != null) {
+            // Clear out saved growth data if we are saving for soul, to prevent the player from getting their growth back and repeatedly saving to a soul
+            savedGrowth.remove(oldSpecies.getKey());
+            savedDesiredGrowth.remove(oldSpecies.getKey());
+        }
+
+        if (player == null) {
+            return;
+        }
+
+        if (hasChanged) {
+            PenaltySupply.clear(player);
+            DSModifiers.updateTypeModifiers(player, this);
+
+            if (player instanceof ServerPlayer serverPlayer) {
+                refreshMagicData(serverPlayer, false);
+            }
+        } else if (species == null) {
+            PenaltySupply.clear(player);
+            DSModifiers.clearModifiers(player);
+        }
+    }
+
+    public void setSpecies(@Nullable final Player player, final Holder<DragonSpecies> species) {
+        setSpecies(player, species, false);
+    }
+
+    /** Does *not* synchronize the change to the client */
+    public void setBody(@Nullable final Player player, final Holder<DragonBody> dragonBody) {
+        Holder<DragonBody> oldBody = this.dragonBody;
+        this.dragonBody = dragonBody;
+        boolean isSameBody = DragonUtils.isBody(oldBody, this.dragonBody);
+
+        if (this.dragonBody != null && !isSameBody) {
+            refreshBody = true;
+
+// Temporary disabled for skill with change bodies
+//            if (oldBody != null && this.dragonBody.value().model() != oldBody.value().model()) {
+//                // If the model has changed, just override the skin preset with the default one as a failsafe
+//                refreshSkinPresetForSpecies(dragonSpecies, this.dragonBody);
+//
+//                recompileCurrentSkin();
+//            }
+        }
+
+        if (player == null) {
+            return;
+        }
+
+        if (!isSameBody) {
+            DSModifiers.updateBodyModifiers(player, this);
+        }
+    }
+
+    /** Determines if the current dragon species can harvest the supplied block (with or without tools) (configured harvest bonuses are taken into account) */
+    public boolean canHarvestWithPaw(final Player player, final BlockState state) {
+        if (!ToolUtils.shouldUseDragonTools(player.getMainHandItem())) {
+            // Player is holding a tool in the hotbar
+            return HarvestBonuses.canHarvest(player, state, player.getMainHandItem());
+        }
+
+        return HarvestBonuses.canHarvest(player, state, ClawInventoryData.getData(player).getTool(state));
+    }
+
+    public void setPassengerId(int passengerId) {
+        this.passengerId = passengerId;
+    }
+
+    public double getVisualScale(final Player player, float partialTick) {
+        if (!DragonSurvival.PROXY.isOnRenderThread()) {
+            Functions.logOrThrow("Visual scale update should only be used for rendering purposes!");
+            return player.getAttributeValue(Attributes.SCALE);
+        }
+
+        // Missing attribute would result in an unstable environment / experience
+        AttributeInstance instance = Objects.requireNonNull(player.getAttribute(Attributes.SCALE));
+        double partialVisualGrowth = Mth.lerp(partialTick, visualGrowthLastTick, visualGrowth);
+
+        if (DragonSurvival.PROXY.isFakePlayer(player)) {
+            double scale = DragonSurvival.PROXY.getFakePlayerScale(player);
+            return scale == -1 ? instance.getValue() : scale;
+        }
+
+        if (partialVisualGrowth == visualGrowth) {
+            return instance.getValue();
+        }
+
+        return calculateScale(instance, partialVisualGrowth);
+    }
+
+    public float calculateScale(final AttributeInstance scale, final double growth) {
+        List<AttributeModifier> attributeModifiers = stage().value().filterModifiers(scale);
+        List<Modifier> modifiers = stage().value().modifiers().stream().filter(modifier -> modifier.attribute().is(Attributes.SCALE)).toList();
+
+        return (float) Functions.calculateAttributeValue(scale, growth - stage().value().growthRange().min(), attributeModifiers, modifiers);
+    }
+
+    public double getGrowth() {
+        return growth;
+    }
+
+    public double getDesiredGrowth() {
+        return desiredGrowth;
+    }
+
+    public boolean isDragon() {
+        return dragonSpecies != null && dragonBody != null && dragonStage != null;
+    }
+
+    public int getPassengerId() {
+        return passengerId;
+    }
+
+    public SkinData getSkinData() {
+        return skinData;
+    }
+
+    public ResourceLocation getModel() {
+        return dragonBody.value().model();
+    }
+
+    public void setSkinPresetForType(final ResourceKey<DragonSpecies> dragonSpecies, SkinPreset preset) {
+        skinData.skinPresets.get().put(dragonSpecies, preset);
+    }
+
+    public void setCurrentSkinPreset(final SkinPreset preset) {
+        skinData.skinPresets.get().put(speciesKey(), preset);
+        recompileCurrentSkin();
+    }
+
+    public SkinPreset getCurrentSkinPreset() {
+        return skinData.skinPresets.get().get(speciesKey());
+    }
+
+    public void refreshSkinPresetForSpecies(final Holder<DragonSpecies> species, final Holder<DragonBody> body) {
+        SkinPreset freshSkinPreset = new SkinPreset();
+        freshSkinPreset.initDefaults(species, body != null ? body.value().model() : DragonBody.DEFAULT_MODEL);
+        skinData.skinPresets.get().put(species.getKey(), freshSkinPreset);
+    }
+
+    public SkinPreset getSkinPresetForSpecies(final Holder<DragonSpecies> species, final Holder<DragonBody> body) {
+        SkinPreset skinPreset = skinData.skinPresets.get().get(species.getKey());
+
+        if (skinPreset.isEmpty()) {
+            refreshSkinPresetForSpecies(species, body);
+        }
+
+        return skinData.skinPresets.get().get(species.getKey());
+    }
+
+    public void recompileCurrentSkin() {
+        if (!isDragon()) {
+            return;
+        }
+
+        skinData.compileSkin(stageKey());
+    }
+
+    public void setCurrentStageCustomization(final DragonStageCustomization customization) {
+        skinData.skinPresets.get().get(speciesKey()).put(stageKey(), Lazy.of(() -> customization));
+    }
+
+    public DragonStageCustomization getCurrentStageCustomization() {
+        Lazy<DragonStageCustomization> customizationLazy = skinData.get(speciesKey(), stageKey());
+        if (customizationLazy == null) {
+            DragonSurvival.LOGGER.error("Failed to get customization for species [{}] and stage [{}]. Returning empty customization.", speciesId(), stageId());
+            return new DragonStageCustomization(); // Return a default customization if none exists
+        }
+
+        return customizationLazy.get();
+    }
+
+    public DragonStageCustomization getCustomizationForStageAndSpecies(final ResourceKey<DragonSpecies> species, final ResourceKey<DragonStage> stage) {
+        return skinData.get(species, stage).get();
+    }
+
+    public CompoundTag serializeNBT(HolderLookup.Provider provider, boolean isDragonSoul) {
+        CompoundTag tag = new CompoundTag();
+
+        if (isDragon()) {
+            tag.putString(DRAGON_SPECIES, speciesId().toString());
+            tag.putString(DRAGON_BODY, bodyId().toString());
+            tag.putString(DRAGON_STAGE, stageId().toString());
+            tag.putDouble(GROWTH, growth);
+            tag.putDouble(DESIRED_GROWTH, desiredGrowth);
+            tag.putBoolean(IS_GROWTH_STOPPED, isGrowthStopped);
+            tag.putBoolean(IS_GROWING, isGrowing);
+            tag.putBoolean(DESTRUCTION_ENABLED, destructionEnabled);
+            tag.putBoolean(MARKED_BY_ENDER_DRAGON, markedByEnderDragon);
+            tag.putBoolean(WINGS_WAS_GRANTED, flightWasGranted);
+            tag.putBoolean(SPIN_WAS_GRANTED, spinWasGranted);
+        }
+
+        // TODO :: these probably shouldn't be applied to other players (dragon soul)?
+        //  but a player re-using the should keep them
+        //  -> store entity uuid in dragon soul and have separate loading method for dragon soul data with entity context
+        tag.putString(MULTI_MINING, multiMining.name());
+        tag.putString(GIANT_DRAGON_DESTRUCTION, largeDragonDestruction.name());
+
+        if (isDragonSoul && dragonSpecies != null) {
+            // Only store the growth of the dragon the player is currently in if we are saving for the soul
+            storeSavedAge(speciesKey(), growth, desiredGrowth, tag);
+            // Also, clear the saved growth for the current species in this case to prevent keeping growth data post-soul save
+            savedGrowth.remove(speciesKey());
+            savedDesiredGrowth.remove(speciesKey());
+        } else if (!isDragonSoul) {
+            for (ResourceKey<DragonSpecies> type : ResourceHelper.keys(provider, DragonSpecies.REGISTRY)) {
+                boolean hasSavedGrowth = savedGrowth.containsKey(type);
+
+                if (hasSavedGrowth) {
+                    storeSavedAge(type, tag);
+                }
+            }
+        }
+
+        CompoundTag usedGrowthItems = new CompoundTag();
+
+        this.usedGrowthItems.forEach((key, items) -> {
+            CompoundTag perStage = new CompoundTag();
+
+            items.forEach((item, count) -> {
+                //noinspection deprecation,DataFlowIssue -> ignore / key is present
+                perStage.putInt(item.builtInRegistryHolder().getKey().location().toString(), count);
+            });
+
+            usedGrowthItems.put(key.location().toString(), perStage);
+        });
+
+        tag.put(USED_GROWTH_ITEMS, usedGrowthItems);
+        tag.put(SKIN_DATA, skinData.serializeNBT(provider));
+        tag.put(ENTITY_STATE, super.serializeNBT(provider));
+
+        return tag;
+    }
+
+    @Override
+    public CompoundTag serializeNBT(@NotNull final HolderLookup.Provider provider) {
+        return serializeNBT(provider, false);
+    }
+
+    public void deserializeNBT(@NotNull final HolderLookup.Provider provider, final CompoundTag tag, boolean isDragonSoul) {
+        savedGrowth.clear();
+        savedDesiredGrowth.clear();
+
+        ResourceKey<DragonSpecies> species = ResourceHelper.decodeKey(provider, DragonSpecies.REGISTRY, tag, DRAGON_SPECIES);
+
+        if (species != null) {
+            dragonSpecies = provider.holderOrThrow(species);
+        } else {
+            dragonSpecies = null;
+        }
+
+        ResourceKey<DragonBody> body = ResourceHelper.decodeKey(provider, DragonBody.REGISTRY, tag, DRAGON_BODY);
+
+        if (body != null) {
+            dragonBody = provider.holderOrThrow(body);
+        } else {
+            dragonBody = null;
+        }
+
+        ResourceKey<DragonStage> stage = ResourceHelper.decodeKey(provider, DragonStage.REGISTRY, tag, DRAGON_STAGE);
+
+        if (stage != null) {
+            dragonStage = provider.holderOrThrow(stage);
+        } else {
+            dragonStage = null;
+        }
+
+        multiMining = Functions.getEnum(MultiMining.class, tag.getString(MULTI_MINING));
+        largeDragonDestruction = Functions.getEnum(LargeDragonDestruction.class, tag.getString(GIANT_DRAGON_DESTRUCTION));
+
+        if (dragonSpecies != null) {
+            if (dragonBody == null) {
+                // This can happen if a dragon body gets removed; we pick a random one, which will cause a desync between clients
+                // But this situation should only happen during testing; the end user should not be removing body types once real gameplay is occurring
+                dragonBody = DragonBody.getRandom(provider, dragonSpecies);
+            }
+
+            // Makes sure that the set growth matches the previously set stage
+            setGrowth(null, tag.getDouble(GROWTH));
+            desiredGrowth = clampGrowth(provider, tag.contains(DESIRED_GROWTH) ? tag.getDouble(DESIRED_GROWTH) : growth);
+            destructionEnabled = tag.getBoolean(DESTRUCTION_ENABLED);
+            isGrowing = !tag.contains(IS_GROWING) || tag.getBoolean(IS_GROWING);
+            isGrowthStopped = tag.getBoolean(IS_GROWTH_STOPPED);
+            markedByEnderDragon = tag.getBoolean(MARKED_BY_ENDER_DRAGON);
+            flightWasGranted = tag.getBoolean(WINGS_WAS_GRANTED);
+            spinWasGranted = tag.getBoolean(SPIN_WAS_GRANTED);
+        }
+
+        if (isDragonSoul) {
+            if (dragonSpecies != null) {
+                ResourceKey<DragonSpecies> currentSpeciesKey = speciesKey();
+                savedGrowth.put(currentSpeciesKey, loadSavedStage(provider, currentSpeciesKey, tag, growth));
+                savedDesiredGrowth.put(currentSpeciesKey, getSavedDragonDesiredAge(provider, currentSpeciesKey, tag, desiredGrowth));
+            }
+        } else {
+            for (ResourceKey<DragonSpecies> type : ResourceHelper.keys(provider, DragonSpecies.REGISTRY)) {
+                CompoundTag compound = tag.getCompound(type.location() + SAVED_GROWTH_SUFFIX);
+
+                if (!compound.isEmpty()) {
+                    savedGrowth.put(type, loadSavedStage(provider, type, tag));
+                    savedDesiredGrowth.put(type, getSavedDragonDesiredAge(provider, type, tag));
+                }
+            }
+        }
+
+        this.usedGrowthItems.clear();
+
+        CompoundTag usedGrowthItems = tag.getCompound(USED_GROWTH_ITEMS);
+        usedGrowthItems.getAllKeys().forEach(growthItemStage -> {
+            ResourceLocation stageResource = ResourceLocation.tryParse(growthItemStage);
+
+            if (stageResource == null) {
+                // Just to be safe - would normally not occur
+                return;
+            }
+
+            CompoundTag perStage = usedGrowthItems.getCompound(growthItemStage);
+            ResourceKey<DragonStage> stageKey = ResourceKey.create(DragonStage.REGISTRY, stageResource);
+
+            perStage.getAllKeys().forEach(itemResource -> {
+                Item item = BuiltInRegistries.ITEM.get(ResourceLocation.tryParse(itemResource));
+
+                if (item != Items.AIR) {
+                    this.usedGrowthItems.computeIfAbsent(stageKey, ignored -> new HashMap<>()).put(item, perStage.getInt(itemResource));
+                }
+            });
+        });
+
+        skinData = new SkinData();
+        skinData.deserializeNBT(provider, tag.getCompound(SKIN_DATA), dragonBody);
+        super.deserializeNBT(provider, tag.getCompound(ENTITY_STATE));
+
+        if (isDragon()) {
+            refreshBody = true;
+            getSkinData().compileSkin(stageKey());
+        }
+    }
+
+    private double loadSavedStage(@NotNull final HolderLookup.Provider provider, final ResourceKey<DragonSpecies> dragonSpecies, final CompoundTag tag) {
+        return loadSavedStage(provider, dragonSpecies, tag, getStartingGrowthForSpecies(provider, dragonSpecies, tag));
+    }
+
+    private double loadSavedStage(@NotNull final HolderLookup.Provider provider, final ResourceKey<DragonSpecies> dragonSpecies, final CompoundTag tag, final double fallbackGrowth) {
+        CompoundTag compound = tag.getCompound(dragonSpecies.location() + SAVED_GROWTH_SUFFIX);
+
+        if (compound.isEmpty()) {
+            return fallbackGrowth;
+        }
+
+        return compound.getDouble(GROWTH);
+    }
+
+    private double getSavedDragonDesiredAge(@Nullable final HolderLookup.Provider provider, final ResourceKey<DragonSpecies> dragonSpecies) {
+        return clampGrowth(provider, savedDesiredGrowth.getOrDefault(dragonSpecies, getSavedDragonAge(dragonSpecies)));
+    }
+
+    private double getSavedDragonDesiredAge(@NotNull final HolderLookup.Provider provider, final ResourceKey<DragonSpecies> dragonSpecies, final CompoundTag tag) {
+        return getSavedDragonDesiredAge(provider, dragonSpecies, tag, getSavedDragonAge(dragonSpecies));
+    }
+
+    private double getSavedDragonDesiredAge(@NotNull final HolderLookup.Provider provider, final ResourceKey<DragonSpecies> dragonSpecies, final CompoundTag tag, final double fallbackDesiredGrowth) {
+        CompoundTag compound = tag.getCompound(dragonSpecies.location() + SAVED_GROWTH_SUFFIX);
+
+        if (compound.isEmpty()) {
+            return clampGrowth(provider, fallbackDesiredGrowth);
+        }
+
+        double savedGrowth = compound.contains(GROWTH) ? compound.getDouble(GROWTH) : fallbackDesiredGrowth;
+        return clampGrowth(provider, compound.contains(DESIRED_GROWTH) ? compound.getDouble(DESIRED_GROWTH) : savedGrowth);
+    }
+
+    private void storeSavedAge(final ResourceKey<DragonSpecies> speciesKey, final CompoundTag tag) {
+        storeSavedAge(speciesKey, getSavedDragonAge(speciesKey), getSavedDragonDesiredAge(null, speciesKey), tag);
+    }
+
+    private void storeSavedAge(final ResourceKey<DragonSpecies> speciesKey, final double savedGrowth, final double savedDesiredGrowth, final CompoundTag tag) {
+        CompoundTag savedGrowthTag = new CompoundTag();
+        savedGrowthTag.putDouble(GROWTH, savedGrowth);
+        savedGrowthTag.putDouble(DESIRED_GROWTH, savedDesiredGrowth);
+        tag.put(speciesKey.location() + SAVED_GROWTH_SUFFIX, savedGrowthTag);
+    }
+
+    private double getStartingGrowthForSpecies(@NotNull final HolderLookup.Provider provider, final ResourceKey<DragonSpecies> dragonSpecies, final CompoundTag tag) {
+        Optional<Holder.Reference<DragonSpecies>> optional = ResourceHelper.get(provider, dragonSpecies);
+
+        if (optional.isPresent()) {
+            return optional.get().value().getStartingGrowth(provider);
+        } else {
+            DragonSurvival.LOGGER.warn("Cannot load saved growth for dragon species [{}] while deserializing NBT of [{}] due to the dragon type not existing. Falling back to the smallest growth.", dragonSpecies, tag);
+            return DragonStage.getBounds().min();
+        }
+    }
+
+    @Override
+    public void deserializeNBT(@NotNull final HolderLookup.Provider provider, final CompoundTag tag) {
+        deserializeNBT(provider, tag, false);
+    }
+
+    public void revertToHumanForm(final Player player, boolean isDragonSoul) {
+        if (ServerConfig.noHumansAllowed) {
+            player.displayClientMessage(Component.translatable(NO_HUMANS), true);
+            return;
+        }
+
+        // Drop everything in your claw slots
+        ClawInventoryData.reInsertClawTools(player);
+
+        setSpecies(player, null, isDragonSoul);
+        setBody(player, null);
+        setDesiredGrowth(player, NO_GROWTH);
+
+        AltarData altarData = AltarData.getData(player);
+        altarData.altarCooldown = Functions.secondsToTicks(ServerConfig.altarUsageCooldown);
+        altarData.hasUsedAltar = true;
+    }
+
+    public boolean needsSkinRecompilation() {
+        return isDragon() && getSkinData().recompileSkin.getOrDefault(stageKey(), true);
+    }
+
+    public double getSavedDragonAge(final ResourceKey<DragonSpecies> type) {
+        return savedGrowth.getOrDefault(type, NO_GROWTH);
+    }
+
+    private static final int MAX_SHOWN = 5;
+
+    public Pair<List<Either<FormattedText, TooltipComponent>>, Integer> getGrowthDescription(int currentScroll) {
+        DragonStage stage = dragonStage.value();
+        double percentage = Math.clamp(stage.getProgress(getGrowth()), 0, 1);
+        String ageInformation = stage.getTimeToGrowFormattedWithPercentage(percentage, getGrowth(), isGrowing);
+
+        List<TimeComponent> growthItems = new ArrayList<>();
+
+        stage().value().growthItems().forEach(growthItem -> {
+            // A bit of wasted processing since not all are shown
+            growthItem.items().forEach(item -> growthItems.add(new TimeComponent(item.value(), growthItem.growthInTicks(), TimeComponent.GROWTH)));
+        });
+
+        int scroll = currentScroll;
+        if (growthItems.size() <= MAX_SHOWN) {
+            scroll = 0;
+        } else {
+            scroll = Math.clamp(scroll, 0, growthItems.size() - MAX_SHOWN);
+        }
+
+        int max = Math.min(growthItems.size(), scroll + MAX_SHOWN);
+
+        List<Either<FormattedText, TooltipComponent>> components = new ArrayList<>();
+        components.add(Either.left(Component.translatable(LangKey.GROWTH_STAGE).append(DragonStage.translatableName(stageKey()))));
+        components.add(Either.left(Component.translatable(LangKey.GROWTH_AGE, ageInformation)));
+        components.add(Either.left(Component.translatable(LangKey.GROWTH_AMOUNT, (int) getGrowth())));
+
+        MutableComponent growthInfo = species().value().miscResources().customGrowthInfo().orElse(Component.translatable(LangKey.GROWTH_INFO)).copy();
+
+        if (!growthItems.isEmpty()) {
+            growthInfo.append(Component.literal(" [" + Math.min(growthItems.size(), scroll + MAX_SHOWN) + " / " + growthItems.size() + "]").withStyle(ChatFormatting.DARK_GRAY));
+        }
+
+        components.add(Either.left(growthInfo));
+
+        for (int i = scroll; i < max; i++) {
+            components.add(Either.right(growthItems.get(i)));
+        }
+
+        return Pair.of(components, scroll);
+    }
+
+    @Translation(comments = "Multi Mining")
+    public enum MultiMining {
+        @Translation(comments = "Enabled")
+        ENABLED,
+        @Translation(comments = "Disabled")
+        DISABLED
+    }
+
+    @Translation(comments = "Large Dragon Destruction")
+    public enum LargeDragonDestruction {
+        @Translation(comments = "Enabled")
+        ENABLED,
+        @Translation(comments = "Disabled")
+        DISABLED
+    }
+
+    // Used by the dragon soul item
+    public static final String DRAGON_SPECIES = "dragon_species";
+    public static final String DRAGON_STAGE = "dragon_stage";
+    public static final String GROWTH = "growth";
+    public static final String DESIRED_GROWTH = "desired_growth";
+
+    private static final String DRAGON_BODY = "dragon_body";
+
+    private static final String ENTITY_STATE = "entity_state";
+    private static final String SKIN_DATA = "skin_data";
+
+    private static final String SAVED_GROWTH_SUFFIX = "_saved_growth";
+
+    private static final String MULTI_MINING = "multi_mining";
+    private static final String GIANT_DRAGON_DESTRUCTION = "giant_dragon_destruction";
+
+    private static final String IS_GROWTH_STOPPED = "is_growth_stopped";
+    private static final String MARKED_BY_ENDER_DRAGON = "marked_by_ender_dragon";
+    private static final String SPIN_WAS_GRANTED = "spin_was_granted";
+    private static final String WINGS_WAS_GRANTED = "wings_was_granted";
+    private static final String IS_GROWING = "is_growing";
+    private static final String DESTRUCTION_ENABLED = "destruction_enabled";
+    private static final String USED_GROWTH_ITEMS = "used_growth_items";
 }

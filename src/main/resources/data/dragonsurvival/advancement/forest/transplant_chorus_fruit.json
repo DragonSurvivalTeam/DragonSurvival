@@ -1,0 +1,54 @@
+{
+  "parent": "dragonsurvival:forest/meat_eater",
+  "criteria": {
+    "place_chorus_fruit": {
+      "conditions": {
+        "location": [
+          {
+            "block": "minecraft:chorus_flower",
+            "condition": "minecraft:block_state_property"
+          }
+        ],
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "location": {
+                "dimension": "minecraft:overworld"
+              },
+              "type_specific": {
+                "type": "dragonsurvival:dragon_predicate",
+                "dragon_species": "dragonsurvival:forest_dragon"
+              }
+            }
+          }
+        ]
+      },
+      "trigger": "minecraft:placed_block"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "description": {
+      "translate": "dragonsurvival.advancement.forest/transplant_chorus_fruit.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "dragonsurvival:diamond_chorus"
+    },
+    "show_toast": false,
+    "title": {
+      "translate": "dragonsurvival.advancement.forest/transplant_chorus_fruit"
+    }
+  },
+  "requirements": [
+    [
+      "place_chorus_fruit"
+    ]
+  ],
+  "rewards": {
+    "experience": 90
+  },
+  "sends_telemetry_event": true
+}

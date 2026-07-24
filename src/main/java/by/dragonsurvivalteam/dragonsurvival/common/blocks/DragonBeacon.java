@@ -1,183 +1,178 @@
 package by.dragonsurvivalteam.dragonsurvival.common.blocks;
 
-import by.dragonsurvivalteam.dragonsurvival.client.sounds.SoundRegistry;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
-import by.dragonsurvivalteam.dragonsurvival.config.ConfigHandler;
-import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
-import by.dragonsurvivalteam.dragonsurvival.registry.DSBlocks;
-import by.dragonsurvivalteam.dragonsurvival.server.tileentity.DSTileEntities;
-import by.dragonsurvivalteam.dragonsurvival.server.tileentity.DragonBeaconTileEntity;
-import by.dragonsurvivalteam.dragonsurvival.util.Functions;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.DragonBeaconData;
+import by.dragonsurvivalteam.dragonsurvival.registry.DSBlockEntities;
+import by.dragonsurvivalteam.dragonsurvival.registry.DSDataMaps;
+import by.dragonsurvivalteam.dragonsurvival.registry.DSSounds;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSItemTags;
+import by.dragonsurvivalteam.dragonsurvival.server.tileentity.DragonBeaconBlockEntity;
+import by.dragonsurvivalteam.dragonsurvival.util.ExperienceUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.MenuProvider;
-import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.effect.MobEffect;
-import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.BaseEntityBlock;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.SimpleWaterloggedBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.common.util.LazyOptional;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
+public class DragonBeacon extends Block implements SimpleWaterloggedBlock, EntityBlock {
+    @Translation(comments = "Not enough experience to gain the beacon effects (%s / %s)")
+    private static final String NOT_ENOUGH_EXPERIENCE = Translation.Type.GUI.wrap("message.not_enough_experience");
 
-public class DragonBeacon extends Block implements SimpleWaterloggedBlock, EntityBlock{
-	public static BooleanProperty LIT = BlockStateProperties.LIT;
-	public static BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
+    @Translation(comments = "You require a §6beacon activator§r to unlock the effects")
+    private static final String USE_ACTIVATOR = Translation.Type.GUI.wrap("message.beacon.use_activator");
 
-	public DragonBeacon(Properties p_i48440_1_){
-		super(p_i48440_1_);
-		registerDefaultState(getStateDefinition().any().setValue(LIT, false).setValue(WATERLOGGED, false));
-	}
+    public DragonBeacon(final Properties properties) {
+        super(properties);
+        registerDefaultState(getStateDefinition().any().setValue(BlockStateProperties.LIT, false).setValue(BlockStateProperties.WATERLOGGED, false));
+    }
 
-	@Override
-	public BlockState updateShape(BlockState blockState, Direction direction, BlockState blockState1, LevelAccessor world, BlockPos blockPos, BlockPos blockPos1){
-		if(blockState.getValue(WATERLOGGED)){
-			world.scheduleTick(blockPos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
-		}
-		return super.updateShape(blockState, direction, blockState1, world, blockPos, blockPos1);
-	}
+    @Override
+    public @NotNull BlockState updateShape(final BlockState state, @NotNull final Direction direction, @NotNull final BlockState neighborState, @NotNull final LevelAccessor level, @NotNull final BlockPos position, @NotNull final BlockPos neighborPosition) {
+        if (state.getValue(BlockStateProperties.WATERLOGGED)) {
+            level.scheduleTick(position, Fluids.WATER, Fluids.WATER.getTickDelay(level));
+        }
 
-	@Override
-	public InteractionResult use(BlockState blockState, Level world, BlockPos pos, Player playerEntity, InteractionHand hand, BlockHitResult p_225533_6_){
-		ItemStack itemStack = playerEntity.getItemInHand(hand);
-		Item item = itemStack.getItem();
-		//upgrading
-		if(this == DSBlocks.dragonBeacon){
-			DragonBeaconTileEntity old = (DragonBeaconTileEntity)world.getBlockEntity(pos);
-			if(item == Items.GOLD_BLOCK){
-				world.setBlockAndUpdate(pos, DSBlocks.peaceDragonBeacon.defaultBlockState());
-				DragonBeaconTileEntity dragonBeaconEntity = (DragonBeaconTileEntity)world.getBlockEntity(pos);
-				dragonBeaconEntity.type = DragonBeaconTileEntity.Type.PEACE;
-				dragonBeaconEntity.tick = old.tick;
-				itemStack.shrink(1);
-				world.playSound(playerEntity, pos, SoundRegistry.upgradeBeacon, SoundSource.BLOCKS, 1, 1);
-				return InteractionResult.SUCCESS;
-			}else if(item == Items.DIAMOND_BLOCK){
-				world.setBlockAndUpdate(pos, DSBlocks.magicDragonBeacon.defaultBlockState());
-				DragonBeaconTileEntity dragonBeaconEntity = (DragonBeaconTileEntity)world.getBlockEntity(pos);
-				dragonBeaconEntity.type = DragonBeaconTileEntity.Type.MAGIC;
-				dragonBeaconEntity.tick = old.tick;
-				itemStack.shrink(1);
-				world.playSound(playerEntity, pos, SoundRegistry.upgradeBeacon, SoundSource.BLOCKS, 1, 1);
-				return InteractionResult.SUCCESS;
-			}else if(item == Items.NETHERITE_INGOT){
-				world.setBlockAndUpdate(pos, DSBlocks.fireDragonBeacon.defaultBlockState());
-				DragonBeaconTileEntity dragonBeaconEntity = (DragonBeaconTileEntity)world.getBlockEntity(pos);
-				dragonBeaconEntity.type = DragonBeaconTileEntity.Type.FIRE;
-				dragonBeaconEntity.tick = old.tick;
-				itemStack.shrink(1);
-				world.playSound(playerEntity, pos, SoundRegistry.upgradeBeacon, SoundSource.BLOCKS, 1, 1);
-				return InteractionResult.SUCCESS;
-			}
-		}
-		//apply temporary benefits
-		if(itemStack.isEmpty()){
-			LazyOptional<DragonStateHandler> dragonState = DragonStateProvider.getCap(playerEntity);
-			if(dragonState.isPresent()){
-				DragonStateHandler dragonStateHandler = dragonState.orElse(null);
-				if(dragonStateHandler.isDragon() && (playerEntity.totalExperience >= 60 || playerEntity.isCreative())){
-					if(this == DSBlocks.peaceDragonBeacon){
-						if(!world.isClientSide()){
-							ConfigHandler.getResourceElements(MobEffect.class, ServerConfig.peaceBeaconEffects).forEach(effect -> {
-								if(effect != null){
-									playerEntity.addEffect(new MobEffectInstance(effect, Functions.minutesToTicks(ServerConfig.secondsOfBeaconEffect)));
-								}
-							});
-						}
-					}else if(this == DSBlocks.magicDragonBeacon){
-						if(!world.isClientSide()){
-							ConfigHandler.getResourceElements(MobEffect.class, ServerConfig.magicBeaconEffects).forEach(effect -> {
-								if(effect != null){
-									playerEntity.addEffect(new MobEffectInstance(effect, Functions.minutesToTicks(ServerConfig.secondsOfBeaconEffect)));
-								}
-							});
-						}
-					}else if(this == DSBlocks.fireDragonBeacon){
-						if(!world.isClientSide()){
-							ConfigHandler.getResourceElements(MobEffect.class, ServerConfig.fireBeaconEffects).forEach(effect -> {
-								if(effect != null){
-									playerEntity.addEffect(new MobEffectInstance(effect, Functions.minutesToTicks(ServerConfig.secondsOfBeaconEffect)));
-								}
-							});
-						}
-					}
+        return super.updateShape(state, direction, neighborState, level, position, neighborPosition);
+    }
 
-					playerEntity.giveExperiencePoints(-60);
-					world.playSound(playerEntity, pos, SoundRegistry.applyEffect, SoundSource.PLAYERS, 1, 1);
-					return InteractionResult.SUCCESS;
-				}
-			}
-		}
-		playerEntity.hurt(playerEntity.damageSources().generic(), 1);
-		return InteractionResult.SUCCESS;
-	}
+    @Override
+    public @NotNull InteractionResult useWithoutItem(@NotNull final BlockState state, @NotNull final Level level, @NotNull final BlockPos position, @NotNull final Player player, @NotNull final BlockHitResult hitResult) {
+        if (!(level.getBlockEntity(position) instanceof DragonBeaconBlockEntity beacon)) {
+            return InteractionResult.FAIL;
+        }
 
-	@Override
-	public boolean triggerEvent(BlockState pState, Level pLevel, BlockPos pPos, int pId, int pParam){
-		super.triggerEvent(pState, pLevel, pPos, pId, pParam);
-		BlockEntity blockentity = pLevel.getBlockEntity(pPos);
-		return blockentity != null && blockentity.triggerEvent(pId, pParam);
-	}
+        int playerExperience = ExperienceUtils.getTotalExperience(player);
 
-	//methods below are required for waterlogged property to work
+        if ((player.hasInfiniteMaterials() || playerExperience >= beacon.getExperienceCost())) {
+            // The client does not retain the block entity data - not worth to sync it
+            if (!player.level().isClientSide() && beacon.applyEffects(player, true)) {
+                if (!player.hasInfiniteMaterials()) {
+                    player.giveExperiencePoints(-beacon.getExperienceCost());
+                }
 
-	@Override
-	public RenderShape getRenderShape(BlockState p_149645_1_){
-		return RenderShape.ENTITYBLOCK_ANIMATED;
-	}
+                level.playSound(null, position, DSSounds.APPLY_EFFECT.get(), SoundSource.PLAYERS, 1, 1);
+            }
 
-	@Override
-	public FluidState getFluidState(BlockState blockState){
-		return blockState.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(blockState);
-	}
+            return InteractionResult.sidedSuccess(level.isClientSide());
+        } else {
+            player.displayClientMessage(Component.translatable(NOT_ENOUGH_EXPERIENCE, playerExperience, beacon.getExperienceCost()), true);
+        }
 
-	@Override
-	@Nullable
-	public MenuProvider getMenuProvider(BlockState pState, Level pLevel, BlockPos pPos){
-		BlockEntity blockentity = pLevel.getBlockEntity(pPos);
-		return blockentity instanceof MenuProvider ? (MenuProvider)blockentity : null;
-	}
+        return InteractionResult.FAIL;
+    }
 
-	@Override
-	public BlockState getStateForPlacement(BlockPlaceContext context){
-		return defaultBlockState().setValue(WATERLOGGED, context.getLevel().getFluidState(context.getClickedPos()).getType() == Fluids.WATER);
-	}
+    @Override
+    public @NotNull ItemInteractionResult useItemOn(@NotNull final ItemStack stack, @NotNull final BlockState state, @NotNull final Level level, @NotNull final BlockPos position, @NotNull final Player player, @NotNull final InteractionHand hand, @NotNull final BlockHitResult hitResult) {
+        if (state.getValue(BlockStateProperties.LIT)) {
+            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        }
 
-	@Override
-	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> p_206840_1_){
-		super.createBlockStateDefinition(p_206840_1_);
-		p_206840_1_.add(LIT, WATERLOGGED);
-	}
+        if (!stack.is(DSItemTags.ACTIVATES_DRAGON_BEACON)) {
+            if (player.level().isClientSide()) {
+                player.displayClientMessage(Component.translatable(USE_ACTIVATOR), true);
+            }
 
-	@org.jetbrains.annotations.Nullable
-	@Override
-	public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState){
-		return DSTileEntities.dragonBeacon.create(pPos, pState);
-	}
+            return ItemInteractionResult.FAIL;
+        }
 
-	@Override
-	@Nullable
-	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level pLevel, BlockState pState, BlockEntityType<T> pBlockEntityType){
-		return pLevel.isClientSide() ? null : BaseEntityBlock.createTickerHelper(pBlockEntityType, DSTileEntities.dragonBeacon, DragonBeaconTileEntity::serverTick);
-	}
+        DragonStateHandler handler = DragonStateProvider.getData(player);
+
+        if (!handler.isDragon()) {
+            return ItemInteractionResult.FAIL;
+        }
+
+        if (player.level().isClientSide()) {
+            // We don't sync the beacon data to the client since it doesn't get retained anyway
+            // Therefor we just think of it as a successful interaction at this point
+            return ItemInteractionResult.sidedSuccess(true);
+        }
+
+        DragonBeaconData beaconData = handler.species().getData(DSDataMaps.DRAGON_BEACON_DATA);
+
+        if (beaconData == null) {
+            return ItemInteractionResult.FAIL;
+        }
+
+        if (!(level.getBlockEntity(position) instanceof DragonBeaconBlockEntity beacon)) {
+            return ItemInteractionResult.FAIL;
+        }
+
+        beacon.setData(beaconData);
+        stack.consume(1, player);
+
+        level.setBlockAndUpdate(position, state.cycle(BlockStateProperties.LIT));
+        level.playSound(null, position, DSSounds.ACTIVATE_BEACON.get(), SoundSource.BLOCKS, 1, 1);
+
+        return ItemInteractionResult.sidedSuccess(level.isClientSide());
+    }
+
+    @Override
+    public boolean triggerEvent(@NotNull final BlockState state, @NotNull final Level level, @NotNull final BlockPos position, int id, int param) {
+        super.triggerEvent(state, level, position, id, param);
+        BlockEntity blockentity = level.getBlockEntity(position);
+        return blockentity != null && blockentity.triggerEvent(id, param);
+    }
+
+    @Override
+    public @NotNull RenderShape getRenderShape(@NotNull final BlockState state) {
+        return RenderShape.ENTITYBLOCK_ANIMATED;
+    }
+
+    @Override
+    public @NotNull FluidState getFluidState(final BlockState state) {
+        return state.getValue(BlockStateProperties.WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
+    }
+
+    @Override
+    public @Nullable MenuProvider getMenuProvider(@NotNull final BlockState state, final Level level, @NotNull final BlockPos position) {
+        BlockEntity blockentity = level.getBlockEntity(position);
+        return blockentity instanceof MenuProvider menuProvider ? menuProvider : null;
+    }
+
+    @Override
+    public BlockState getStateForPlacement(final BlockPlaceContext context) {
+        return defaultBlockState().setValue(BlockStateProperties.WATERLOGGED, context.getLevel().getFluidState(context.getClickedPos()).getType() == Fluids.WATER);
+    }
+
+    @Override
+    protected void createBlockStateDefinition(@NotNull final StateDefinition.Builder<Block, BlockState> builder) {
+        super.createBlockStateDefinition(builder);
+        builder.add(BlockStateProperties.LIT, BlockStateProperties.WATERLOGGED);
+    }
+
+    @Override
+    public BlockEntity newBlockEntity(@NotNull final BlockPos position, @NotNull final BlockState state) {
+        return DSBlockEntities.DRAGON_BEACON.get().create(position, state);
+    }
+
+    @Override
+    public <T extends BlockEntity> @Nullable BlockEntityTicker<T> getTicker(final Level level, @NotNull final BlockState state, @NotNull final BlockEntityType<T> type) {
+        return level.isClientSide ? null : BaseEntityBlock.createTickerHelper(type, DSBlockEntities.DRAGON_BEACON.get(), DragonBeaconBlockEntity::serverTick);
+    }
 }

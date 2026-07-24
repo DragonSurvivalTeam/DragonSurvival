@@ -1,117 +1,117 @@
 package by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons;
 
-import by.dragonsurvivalteam.dragonsurvival.client.gui.AbilityScreen;
-import by.dragonsurvivalteam.dragonsurvival.client.gui.DragonScreen;
-import by.dragonsurvivalteam.dragonsurvival.client.gui.SkinsScreen;
-import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.MouseTooltipPositioner;
-import by.dragonsurvivalteam.dragonsurvival.client.handlers.ClientEvents;
-import by.dragonsurvivalteam.dragonsurvival.client.handlers.magic.ClientMagicHUDHandler;
-import by.dragonsurvivalteam.dragonsurvival.network.NetworkHandler;
-import by.dragonsurvivalteam.dragonsurvival.network.container.OpenDragonInventory;
-import by.dragonsurvivalteam.dragonsurvival.network.container.OpenInventory;
+import by.dragonsurvivalteam.dragonsurvival.client.gui.hud.MagicHUD;
+import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.DragonAbilityScreen;
+import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.DragonEmoteScreen;
+import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.DragonInventoryScreen;
+import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.DragonSkinsScreen;
+import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.DragonSpeciesScreen;
+import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.InventoryScreenHandler;
+import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
+import by.dragonsurvivalteam.dragonsurvival.mixins.client.ScreenAccessor;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.DSLanguageProvider;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
-import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipPositioner;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 
-import static by.dragonsurvivalteam.dragonsurvival.network.container.OpenDragonInventory.SendOpenDragonInventoryAndMaintainCursorPosition;
-
-
 public class TabButton extends Button {
-	public enum TabType {
-		INVENTORY,
-		ABILITY,
-		GITHUB_REMINDER,
-		SKINS
-	}
+    public enum TabButtonType {
+        @Translation(comments = "Dragon Inventory")
+        INVENTORY_TAB,
+        @Translation(comments = "Abilities Info")
+        ABILITY_TAB,
+        @Translation(comments = "Species Info")
+        SPECIES_TAB,
+        @Translation(comments = "Skin Info")
+        SKINS_TAB,
+        @Translation(comments = "Emotes")
+        EMOTES_TAB
+    }
 
-	private final TabType tabType;
-	private final Screen parent;
+    private final TabButtonType tabButtonType;
+    private final Screen parent;
 
-	public TabButton(int x, int y, TabType tabType, Screen parent){
-		super(x, y, 28, 32, Component.empty(), button -> {}, DEFAULT_NARRATION);
-		this.tabType = tabType;
-		this.parent = parent;
+    public TabButton(int x, int y, final TabButtonType tabButton, final Screen parent) {
+        super(x, y, 28, 32, Component.empty(), action -> { /* Nothing to do */ }, DEFAULT_NARRATION);
+        this.tabButtonType = tabButton;
+        this.parent = parent;
 
-		setTooltip(Tooltip.create(Component.translatable("ds.gui.tab_button." + tabType.ordinal())));
-	}
+        setTooltip(Tooltip.create(DSLanguageProvider.enumValue(tabButton)));
+    }
 
-	private boolean setInventoryScreen(Screen sourceScreen) {
-		if (sourceScreen instanceof InventoryScreen) {
-			Minecraft.getInstance().setScreen(new InventoryScreen(Minecraft.getInstance().player));
-			NetworkHandler.CHANNEL.sendToServer(new OpenInventory());
-			return true;
-		} else if (sourceScreen instanceof DragonScreen) {
-			SendOpenDragonInventoryAndMaintainCursorPosition();
-			return true;
-		}
+    @Override
+    public void onPress() {
+        if (isCurrent()) {
+            return;
+        }
 
-		return false;
-	}
+        switch (tabButtonType) {
+            case INVENTORY_TAB -> InventoryScreenHandler.openDragonInventory();
+            case ABILITY_TAB -> Minecraft.getInstance().setScreen(new DragonAbilityScreen());
+            case SKINS_TAB -> Minecraft.getInstance().setScreen(new DragonSkinsScreen());
+            case SPECIES_TAB -> Minecraft.getInstance().setScreen(new DragonSpeciesScreen());
+            case EMOTES_TAB -> Minecraft.getInstance().setScreen(new DragonEmoteScreen());
+        }
+    }
 
-	@Override
-	public void onPress(){
-		if(!isCurrent())
-			switch(tabType){
-				case INVENTORY -> {
-					boolean setSuccessfully = false;
-					if(parent instanceof AbilityScreen){
-						if(((AbilityScreen)parent).sourceScreen != null){
-							setSuccessfully = setInventoryScreen(((AbilityScreen)parent).sourceScreen);
-						}
-					} else if(parent instanceof SkinsScreen){
-						if(((SkinsScreen)parent).sourceScreen != null){
-							setSuccessfully = setInventoryScreen(((SkinsScreen)parent).sourceScreen);
-						}
-					}
+    public boolean isCurrent() {
+        return switch (tabButtonType) {
+            case INVENTORY_TAB -> parent instanceof DragonInventoryScreen || parent instanceof InventoryScreen;
+            case ABILITY_TAB -> parent instanceof DragonAbilityScreen;
+            case SKINS_TAB -> parent instanceof DragonSkinsScreen;
+            case SPECIES_TAB -> parent instanceof DragonSpeciesScreen;
+            case EMOTES_TAB -> parent instanceof DragonEmoteScreen;
+        };
+    }
 
-					if(!setSuccessfully) {
-						if(ClientEvents.dragonInventory){
-							SendOpenDragonInventoryAndMaintainCursorPosition();
-						} else {
-							Minecraft.getInstance().setScreen(new InventoryScreen(Minecraft.getInstance().player));
-							NetworkHandler.CHANNEL.sendToServer(new OpenInventory());
-						}
-					}
-				}
-				case ABILITY -> Minecraft.getInstance().setScreen(new AbilityScreen(parent));
-				case SKINS -> Minecraft.getInstance().setScreen(new SkinsScreen(parent));
-			}
-	}
+    @Override
+    public void renderWidget(@NotNull final GuiGraphics guiGraphics, int mouseX, int mouseY, float p_230431_4_) {
+        if (isCurrent()) {
+            guiGraphics.blit(MagicHUD.WIDGET_TEXTURES, getX(), getY(), 28, 0, 28, 32);
+        } else if (isHovered()) {
+            guiGraphics.blit(MagicHUD.WIDGET_TEXTURES, getX(), getY(), 84, 0, 28, 32);
+        } else {
+            guiGraphics.blit(MagicHUD.WIDGET_TEXTURES, getX(), getY(), 56, 0, 28, 32);
+        }
 
-	public boolean isCurrent(){
-		return switch(tabType){
-			case INVENTORY -> parent instanceof DragonScreen || parent instanceof InventoryScreen;
-			case ABILITY -> parent instanceof AbilityScreen;
-			case SKINS -> parent instanceof SkinsScreen;
-			default -> false;
-		};
-	}
+        if (isHovered() || isCurrent()) {
+            guiGraphics.blit(MagicHUD.WIDGET_TEXTURES, getX() + 2, getY() + 2 + (isCurrent() ? 2 : 0), tabButtonType.ordinal() * 24, 67, 24, 24);
+        } else {
+            guiGraphics.blit(MagicHUD.WIDGET_TEXTURES, getX() + 2, getY() + 2 + (isCurrent() ? 2 : 0), tabButtonType.ordinal() * 24, 41, 24, 24);
+        }
+    }
 
-	@Override
-	public void renderWidget(@NotNull final GuiGraphics guiGraphics, int mouseX, int mouseY, float p_230431_4_){
-		if (isCurrent()) {
-			guiGraphics.blit(ClientMagicHUDHandler.widgetTextures, getX(), getY(), tabType == TabType.INVENTORY ? 0 : 28, 0, 28, 32);
-		} else if (isHovered()) {
-			guiGraphics.blit(ClientMagicHUDHandler.widgetTextures, getX(), getY(), 84, 0, 28, 32);
-		} else {
-			guiGraphics.blit(ClientMagicHUDHandler.widgetTextures, getX(), getY(), 56, 0, 28, 32);
-		}
+    public static void addTabButtonsToScreen(final Screen screen, int offsetX, int offsetY, final TabButtonType selectedButton) {
+        //noinspection DataFlowIssue -> player is present
+        boolean ignoreAbilityTab = Minecraft.getInstance().player.getData(DSDataAttachments.MAGIC).getAbilities().isEmpty();
+        boolean ignoreSkins = DragonStateProvider.getData(Minecraft.getInstance().player).body().value().noDragonModelRendering();
+        boolean ignoreEmote = DragonStateProvider.getData(Minecraft.getInstance().player).body().value().noDragonModelRendering();
+        int visibleTabIndex = 0;
 
-		if (isHovered() || isCurrent()) {
-			guiGraphics.blit(ClientMagicHUDHandler.widgetTextures, getX() + 2, getY() + 2 + (isCurrent() ? 2 : 0), tabType.ordinal() * 24, 67, 24, 24);
-		} else {
-			guiGraphics.blit(ClientMagicHUDHandler.widgetTextures, getX() + 2, getY() + 2 + (isCurrent() ? 2 : 0), tabType.ordinal() * 24, 41, 24, 24);
-		}
-	}
+        for (TabButtonType tabButton : TabButtonType.values()) {
+            if (ignoreAbilityTab && tabButton == TabButtonType.ABILITY_TAB
+                    || ignoreSkins && tabButton == TabButtonType.SKINS_TAB
+                    || ignoreEmote && tabButton == TabButtonType.EMOTES_TAB) {
+                continue;
+            }
 
-	@Override
-	protected @NotNull ClientTooltipPositioner createTooltipPositioner() {
-		return new MouseTooltipPositioner(this);
-	}
+            int x = offsetX + visibleTabIndex * 28;
+            int y = offsetY;
+
+            if (tabButton == selectedButton) {
+                x++;
+                y -= 2;
+            }
+
+            ((ScreenAccessor) screen).dragonSurvival$addRenderableWidget(new TabButton(x, y, tabButton, screen));
+            visibleTabIndex++;
+        }
+    }
 }

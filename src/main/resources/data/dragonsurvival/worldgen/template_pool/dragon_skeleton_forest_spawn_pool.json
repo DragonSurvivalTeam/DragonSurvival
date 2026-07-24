@@ -1,0 +1,105 @@
+{
+  "name": "dragonsurvival:dragon_skeleton_forest_spawn_pool",
+  "fallback": "minecraft:empty",
+  "elements": [
+	{	
+      "weight": 1,
+      "element": {
+        "location": "dragonsurvival:dragon_skeletons/forest_dragon_skeleton_1",
+		"processors": {
+          "processors": []
+        },
+		"projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },	
+	{	
+      "weight": 1,
+      "element": {
+        "location": "dragonsurvival:dragon_skeletons/forest_dragon_skeleton_2",
+		"processors": {
+          "processors": []
+        },
+		"projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },	
+	{	
+      "weight": 1,
+      "element": {
+        "location": "dragonsurvival:dragon_skeletons/forest_dragon_skeleton_3",
+		"processors": {
+          "processors": []
+        },
+		"projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },	
+	{	
+      "weight": 1,
+      "element": {
+        "location": "dragonsurvival:dragon_skeletons/forest_dragon_skeleton_4",
+		"processors": {
+          "processors": []
+        },
+		"projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },	
+	{	
+      "weight": 1,
+      "element": {
+        "location": "dragonsurvival:dragon_skeletons/forest_dragon_skeleton_5",
+		"processors": {
+          "processors": []
+        },
+		"projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },	
+	{	
+      "weight": 1,
+      "element": {
+        "location": "dragonsurvival:dragon_skeletons/forest_dragon_skeleton_6",
+		"processors": {
+          "processors": []
+        },
+		"projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },	
+	{	
+      "weight": 1,
+      "element": {
+        "location": "dragonsurvival:dragon_skeletons/forest_dragon_skeleton_7",
+		"processors": {
+          "processors": []
+        },
+		"projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },	
+	{	
+      "weight": 1,
+      "element": {
+        "location": "dragonsurvival:dragon_skeletons/forest_dragon_skeleton_8",
+		"processors": {
+          "processors": []
+        },
+		"projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },	
+	{	
+      "weight": 1,
+      "element": {
+        "location": "dragonsurvival:dragon_skeletons/forest_dragon_skeleton_9",
+		"processors": {
+          "processors": []
+        },
+		"projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    }
+  ]
+}

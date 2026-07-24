@@ -1,114 +1,112 @@
 package by.dragonsurvivalteam.dragonsurvival.common.handlers;
 
+import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
-import by.dragonsurvivalteam.dragonsurvival.common.dragon_types.DragonTypes;
-import by.dragonsurvivalteam.dragonsurvival.common.dragon_types.types.SeaDragonType;
-import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
-import by.dragonsurvivalteam.dragonsurvival.network.NetworkHandler;
-import by.dragonsurvivalteam.dragonsurvival.network.player.SyncDragonTypeData;
-import by.dragonsurvivalteam.dragonsurvival.registry.DSDamageTypes;
-import by.dragonsurvivalteam.dragonsurvival.registry.DragonEffects;
-import by.dragonsurvivalteam.dragonsurvival.util.ResourceHelper;
-import net.minecraft.world.entity.EntityType;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.PenaltySupply;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty.DragonPenalty;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty.HitByProjectileTrigger;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty.ItemUsedTrigger;
+import by.dragonsurvivalteam.dragonsurvival.server.containers.slots.ClawToolSlot;
+import net.minecraft.core.Holder;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.ThrownPotion;
+import net.minecraft.world.inventory.ArmorSlot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.PotionItem;
-import net.minecraft.world.item.alchemy.PotionUtils;
-import net.minecraft.world.item.alchemy.Potions;
-import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.event.entity.ProjectileImpactEvent;
-import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.network.PacketDistributor;
+import net.minecraft.world.phys.EntityHitResult;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.ItemStackedOnOtherEvent;
+import net.neoforged.neoforge.event.entity.ProjectileImpactEvent;
+import net.neoforged.neoforge.event.entity.living.LivingEntityUseItemEvent;
+import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+@EventBusSubscriber
+public class DragonPenaltyHandler {
+    @SubscribeEvent
+    public static void applyPenalties(final PlayerTickEvent.Post event) {
+        if (!(event.getEntity() instanceof ServerPlayer serverPlayer)) {
+            return;
+        }
 
-@Mod.EventBusSubscriber
-public class DragonPenaltyHandler{
-	@SubscribeEvent
-	public static void hitByPotion(ProjectileImpactEvent potionEvent){
-		if(!ServerConfig.penalties || ServerConfig.caveSplashDamage == 0.0){
-			return;
-		}
+        if (serverPlayer.isSpectator() || serverPlayer.isCreative()) {
+            return;
+        }
 
-		if(potionEvent.getProjectile() instanceof ThrownPotion potion){
-			if(potion.getItem().getItem() != Items.SPLASH_POTION){
-				return;
-			}
-			if(!PotionUtils.getPotion(potion.getItem()).getEffects().isEmpty()){
-				return; //Remove this line if you want potions with effects to also damage rather then just water ones.
-			}
+        DragonStateHandler handler = DragonStateProvider.getData(serverPlayer);
 
-			Vec3 pos = potionEvent.getRayTraceResult().getLocation();
-			List<Player> entities = potion.level().getEntities(EntityType.PLAYER, new AABB(pos.x - 5, pos.y - 1, pos.z - 5, pos.x + 5, pos.y + 1, pos.z + 5), entity -> entity.position().distanceTo(pos) <= 4);
+        if (!handler.isDragon()) {
+            PenaltySupply.clear(serverPlayer);
+            return;
+        }
 
-			for(Player player : entities){
-				if(player.hasEffect(DragonEffects.FIRE)){
-					continue;
-				}
+        for (Holder<DragonPenalty> penalty : handler.species().value().penalties()) {
+            if (penalty.value().trigger().hasCustomTrigger()) {
+                continue;
+            }
 
-				DragonStateProvider.getCap(player).ifPresent(dragonStateHandler -> {
-					if(dragonStateHandler.isDragon()){
-						if(dragonStateHandler.getType() == null || !Objects.equals(dragonStateHandler.getType(), DragonTypes.CAVE)){
-							return;
-						}
-						player.hurt(DSDamageTypes.damageSource(player.level(), DSDamageTypes.WATER_BURN), ServerConfig.caveSplashDamage.floatValue());
-					}
-				});
-			}
-		}
-	}
+            penalty.value().apply(serverPlayer, penalty);
+        }
+    }
 
-	@SubscribeEvent
-	public static void consumeHurtfulItem(LivingEntityUseItemEvent.Finish destroyItemEvent){
-		if(!ServerConfig.penalties || !(destroyItemEvent.getEntity() instanceof Player player)){
-			return;
-		}
+    @SubscribeEvent
+    public static void applyItemConsumedPenalties(final LivingEntityUseItemEvent.Finish event) {
+        if (!(event.getEntity() instanceof ServerPlayer serverPlayer)) {
+            return;
+        }
 
-		ItemStack itemStack = destroyItemEvent.getItem();
+        DragonStateHandler handler = DragonStateProvider.getData(serverPlayer);
 
-		DragonStateProvider.getCap(player).ifPresent(dragonStateHandler -> {
-			if(dragonStateHandler.isDragon()){
-				List<String> hurtfulItems = new ArrayList<>(
-						Objects.equals(dragonStateHandler.getType(), DragonTypes.FOREST) ? ServerConfig.forestDragonHurtfulItems : Objects.equals(dragonStateHandler.getType(), DragonTypes.CAVE) ? ServerConfig.caveDragonHurtfulItems : Objects.equals(dragonStateHandler.getType(), DragonTypes.SEA) ? ServerConfig.seaDragonHurtfulItems : new ArrayList<>());
+        if (!handler.isDragon()) {
+            return;
+        }
 
-				for(String item : hurtfulItems){
-					if(item.replace("item:", "").replace("tag:", "").startsWith(ResourceHelper.getKey(itemStack.getItem()).toString() + ":")){
-						String damage = item.substring(item.lastIndexOf(":") + 1);
-						player.hurt(player.damageSources().generic(), Float.parseFloat(damage));
-						break;
-					}
-				}
-			}
-		});
-	}
+        for (Holder<DragonPenalty> penalty : handler.species().value().penalties()) {
+            if (penalty.value().trigger() instanceof ItemUsedTrigger trigger && trigger.test(event.getItem())) {
+                penalty.value().apply(serverPlayer, penalty);
+            }
+        }
+    }
 
-	@SubscribeEvent
-	public static void onWaterConsumed(LivingEntityUseItemEvent.Finish destroyItemEvent){
-		if(!ServerConfig.penalties || ServerConfig.seaTicksWithoutWater == 0){
-			return;
-		}
-		ItemStack itemStack = destroyItemEvent.getItem();
-		DragonStateProvider.getCap(destroyItemEvent.getEntity()).ifPresent(dragonStateHandler -> {
-			if(dragonStateHandler.isDragon() && dragonStateHandler.getType() instanceof SeaDragonType seaDragonType){
-				Player player = (Player)destroyItemEvent.getEntity();
-				if(ServerConfig.seaAllowWaterBottles && itemStack.getItem() instanceof PotionItem){
-					if(PotionUtils.getPotion(itemStack) == Potions.WATER && Objects.equals(dragonStateHandler.getType(), DragonTypes.SEA) && !player.level().isClientSide()){
-						seaDragonType.timeWithoutWater = Math.max(seaDragonType.timeWithoutWater - ServerConfig.seaTicksWithoutWaterRestored, 0);
-						NetworkHandler.CHANNEL.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> player), new SyncDragonTypeData(player.getId(), seaDragonType));
-					}
-				}
-				if(DragonConfigHandler.SEA_DRAGON_HYDRATION_USE_ALTERNATIVES.contains(itemStack.getItem()) && !player.level().isClientSide()){
-					seaDragonType.timeWithoutWater = Math.max(seaDragonType.timeWithoutWater - ServerConfig.seaTicksWithoutWaterRestored, 0);
-					NetworkHandler.CHANNEL.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> player), new SyncDragonTypeData(player.getId(), seaDragonType));
-				}
-			}
-		});
-	}
+    @SubscribeEvent
+    public static void applyHitByProjectilePenalties(final ProjectileImpactEvent event) {
+        if (!(event.getRayTraceResult() instanceof EntityHitResult hitResult && hitResult.getEntity() instanceof ServerPlayer serverPlayer)) {
+            return;
+        }
+
+        DragonStateHandler handler = DragonStateProvider.getData(serverPlayer);
+
+        if (!handler.isDragon()) {
+            return;
+        }
+
+        for (Holder<DragonPenalty> penalty : handler.species().value().penalties()) {
+            //noinspection DeconstructionCanBeUsed -> spotless is too stupid to handle this
+            if (penalty.value().trigger() instanceof HitByProjectileTrigger trigger && event.getProjectile().getType().is(trigger.projectiles())) {
+                penalty.value().apply(serverPlayer, penalty);
+            }
+        }
+    }
+
+    @SubscribeEvent // Prevent the player from equipping blacklisted armor (or from mixing light and dark dragon armor)
+    public static void preventEquipment(final ItemStackedOnOtherEvent event) {
+        ItemStack stack = event.getCarriedItem();
+        Player player = event.getPlayer();
+
+        if (stack.isEmpty()) {
+            return;
+        }
+
+        // Will have to see what type of slots modded inventories may use
+        if (!(event.getSlot() instanceof ArmorSlot) && !(event.getSlot() instanceof ClawToolSlot)) {
+            return;
+        }
+
+        DragonStateHandler data = DragonStateProvider.getData(player);
+
+        if (data.isDragon() && data.species().value().isItemBlacklisted(stack.getItem())) {
+            event.setCanceled(true);
+        }
+
+        // TODO :: this doesn't check for shift-click-equipping items
+    }
 }

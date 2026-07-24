@@ -1,0 +1,19 @@
+{
+  "species": "dragonsurvival:cave_dragon",
+  "stage": "dragonsurvival:ancient",
+  "model": "dragonsurvival:dragon_model",
+  "parts": {
+    "base": "base_3",
+    "bottom": "bottom_3",
+    "eyes": "eyes_1",
+    "horns": "horns_20",
+    "spikes": "spikes_2",
+    "claws": "claw_3_cave_3",
+    "teeth": "teeth_3",
+    "magic": "cave_magic_3",
+    "extra": "cave_extra_mouth_1",
+    "extra1": "cave_extra_paws_3",
+    "extra2": "cave_extra_tail_3",
+    "extra3": "extra_horns_19"
+  }
+}

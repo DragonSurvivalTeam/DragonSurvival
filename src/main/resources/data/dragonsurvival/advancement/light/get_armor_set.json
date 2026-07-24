@@ -1,0 +1,72 @@
+{
+  "parent": "dragonsurvival:light/get_armor_item",
+  "criteria": {
+    "collect_light_armor_boots": {
+      "conditions": {
+        "items": [
+          {
+            "items": "dragonsurvival:light_dragon_boots"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "collect_light_armor_chestplate": {
+      "conditions": {
+        "items": [
+          {
+            "items": "dragonsurvival:light_dragon_chestplate"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "collect_light_armor_helmet": {
+      "conditions": {
+        "items": [
+          {
+            "items": "dragonsurvival:light_dragon_helmet"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "collect_light_armor_leggings": {
+      "conditions": {
+        "items": [
+          {
+            "items": "dragonsurvival:light_dragon_leggings"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "dragonsurvival.advancement.light/get_armor_set.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "dragonsurvival:light_dragon_helmet"
+    },
+    "title": {
+      "translate": "dragonsurvival.advancement.light/get_armor_set"
+    }
+  },
+  "requirements": [
+    [
+      "collect_light_armor_helmet"
+    ],
+    [
+      "collect_light_armor_chestplate"
+    ],
+    [
+      "collect_light_armor_leggings"
+    ],
+    [
+      "collect_light_armor_boots"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

@@ -1,0 +1,14 @@
+{
+  "vertex": "skin_generation",
+  "fragment": "skin_generation",
+  "samplers": [
+    { "name": "SkinTexture" }
+  ],
+  "uniforms": [
+    { "name": "HueVal", "type": "float", "count": 1, "values": [ 0.0 ] },
+    { "name": "SatVal", "type": "float", "count": 1, "values": [ 0.0 ] },
+    { "name": "BrightVal", "type": "float", "count": 1, "values": [ 0.0 ] },
+    { "name": "Colorable", "type": "float", "count": 1, "values": [ 0.0 ] },
+    { "name": "Glowing", "type": "float", "count": 1, "values": [ 0.0 ] }
+  ]
+}

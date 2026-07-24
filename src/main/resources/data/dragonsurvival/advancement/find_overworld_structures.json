@@ -1,0 +1,42 @@
+{
+  "parent": "dragonsurvival:find_bones",
+  "criteria": {
+    "find_light_treasure": {
+      "conditions": {
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "location": {
+                "structures": "#dragonsurvival:light_treasure"
+              }
+            }
+          }
+        ]
+      },
+      "trigger": "minecraft:location"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "dragonsurvival.advancement.find_overworld_structures.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "minecraft:grass_block"
+    },
+    "title": {
+      "translate": "dragonsurvival.advancement.find_overworld_structures"
+    }
+  },
+  "requirements": [
+    [
+      "find_light_treasure"
+    ]
+  ],
+  "rewards": {
+    "experience": 24
+  },
+  "sends_telemetry_event": true
+}

@@ -1,0 +1,10 @@
+{
+  "parent": "minecraft:block/template_vault",
+  "render_type": "minecraft:cutout",
+  "textures": {
+    "bottom": "dragonsurvival:block/light_vault_bottom",
+    "front": "dragonsurvival:block/light_vault_front_ejecting",
+    "side": "dragonsurvival:block/light_vault_side_on",
+    "top": "dragonsurvival:block/light_vault_top_ejecting"
+  }
+}

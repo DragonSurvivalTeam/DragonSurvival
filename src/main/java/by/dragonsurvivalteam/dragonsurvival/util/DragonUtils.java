@@ -2,105 +2,104 @@ package by.dragonsurvivalteam.dragonsurvival.util;
 
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
-import by.dragonsurvivalteam.dragonsurvival.common.capability.EntityStateHandler;
-import by.dragonsurvivalteam.dragonsurvival.common.dragon_types.AbstractDragonBody;
-import by.dragonsurvivalteam.dragonsurvival.common.dragon_types.AbstractDragonType;
-import com.google.common.base.Objects;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
+import net.minecraft.core.Holder;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Tier;
-import net.minecraft.world.item.Tiers;
-import net.minecraftforge.common.util.LazyOptional;
+import net.minecraft.world.level.Level;
 
-import javax.annotation.Nullable;
+import java.util.List;
 
 public class DragonUtils {
-	public static DragonStateHandler getHandler(final Entity entity) {
-		if (entity == null) {
-			return new DragonStateHandler();
-		}
+    public static Holder<DragonSpecies> getType(Player entity) {
+        return DragonStateProvider.getData(entity).species();
+    }
 
-		LazyOptional<DragonStateHandler> cap = DragonStateProvider.getCap(entity);
+    public static Holder<DragonSpecies> getType(DragonStateHandler handler) {
+        return handler.species();
+    }
 
-		return cap.orElse(new DragonStateHandler());
-	}
+    public static Holder<DragonBody> getBody(Player player) {
+        return getBody(DragonStateProvider.getData(player));
+    }
 
-	public static EntityStateHandler getEntityHandler(Entity entity){
-		if (entity == null) {
-			return new EntityStateHandler();
-		}
+    public static Holder<DragonBody> getBody(DragonStateHandler handler) {
+        return handler.body();
+    }
 
-		LazyOptional<EntityStateHandler> cap = (LazyOptional<EntityStateHandler>) DragonStateProvider.getEntityCap(entity);
+    public static boolean isBody(final DragonStateHandler data, final Holder<DragonBody> typeToCheck) {
+        if (data == null) {
+            return false;
+        }
 
-		return cap.orElse(new EntityStateHandler());
-	}
+        return isBody(data.body(), typeToCheck);
+    }
 
-	public static boolean isDragon(Entity entity){
-		if (!(entity instanceof Player)) {
-			return false;
-		}
+    public static boolean isBody(final Holder<DragonBody> playerBody, final Holder<DragonBody> typeToCheck) {
+        if (playerBody == typeToCheck) {
+            return true;
+        }
 
-		return DragonStateProvider.getCap(entity).filter(DragonStateHandler::isDragon).isPresent();
-	}
+        if (playerBody == null || typeToCheck == null) {
+            return false;
+        }
 
-	public static AbstractDragonType getDragonType(Entity entity){
-		return getHandler(entity).getType();
-	}
-	
-	public static AbstractDragonType getDragonType(DragonStateHandler handler) {
-		return handler.getType();
-	}
+        return playerBody.is(typeToCheck);
+    }
 
-	public static AbstractDragonBody getDragonBody(Entity entity) {
-		return getHandler(entity).getBody();
-	}
+    public static boolean isSpecies(final DragonStateHandler handler, final ResourceKey<DragonSpecies> typeToCheck) {
+        return isSpecies(handler.speciesKey(), typeToCheck);
+    }
 
-	public static AbstractDragonBody getDragonBody(DragonStateHandler handler) {
-		return handler.getBody();
-	}
+    public static boolean isSpecies(final Entity entity, ResourceKey<DragonSpecies> typeToCheck) {
+        if (!(entity instanceof Player player)) {
+            return false;
+        }
 
-	public static boolean isDragonType(final Entity entity, final AbstractDragonType typeToCheck) {
-		if (!(entity instanceof Player)) {
-			return false;
-		}
+        Holder<DragonSpecies> playerType = DragonStateProvider.getData(player).species();
 
-		return isDragonType(getHandler(entity), typeToCheck);
-	}
-	
-	public static boolean isDragonType(final DragonStateHandler playerHandler, final AbstractDragonType typeToCheck) {
-		if (playerHandler == null || typeToCheck == null || playerHandler.getType() == null) {
-			return false;
-		}
+        if (playerType == null) {
+            return false;
+        }
 
-		return Objects.equal(playerHandler.getType().getTypeName(), typeToCheck.getTypeName());
-	}
+        return isSpecies(playerType.getKey(), typeToCheck);
+    }
 
-	public static boolean isDragonType(final AbstractDragonType playerType, final AbstractDragonType typeToCheck) {
-		if (playerType == null || typeToCheck == null) {
-			return false;
-		}
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted") // ignore
+    public static boolean isSpecies(final Holder<DragonSpecies> first, final Holder<DragonSpecies> second) {
+        if (first == second) {
+            return true;
+        }
 
-		return Objects.equal(playerType.getTypeName(), typeToCheck.getTypeName());
-	}
+        if (first == null || second == null) {
+            return false;
+        }
 
-	public static DragonLevel getDragonLevel(Entity entity){
-		return getHandler(entity).getLevel();
-	}
+        return first.getKey() == second.getKey();
+    }
 
-	/** Converts the supplied {@link Tier#getLevel} to vanilla values (0 to 4) */
-	public static @Nullable Tier levelToVanillaTier(int level) {
-		if (level < 0) {
-			return null;
-		} else if (level == 0) {
-			return Tiers.WOOD;
-		} else if (level == 1) {
-			return Tiers.STONE;
-		} else if (level == 2) {
-			return Tiers.IRON;
-		} else if (level == 3) {
-			return Tiers.DIAMOND;
-		}
+    public static boolean isSpecies(final ResourceKey<DragonSpecies> playerType, final ResourceKey<DragonSpecies> typeToCheck) {
+        if (playerType == typeToCheck) {
+            return true;
+        }
 
-		return Tiers.NETHERITE;
-	}
+        if (playerType == null || typeToCheck == null) {
+            return false;
+        }
+
+        return playerType.equals(typeToCheck);
+    }
+
+    public static boolean isNearbyDragonPlayerToEntity(double detectionRadius, Level level, Entity entity) {
+        List<Player> players = level.getEntitiesOfClass(Player.class, entity.getBoundingBox().inflate(detectionRadius));
+
+        for (Player player : players) {
+            if (DragonStateProvider.isDragon(player)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

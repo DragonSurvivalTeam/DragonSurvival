@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/door_bottom_right",
+  "render_type": "minecraft:cutout",
+  "textures": {
+    "bottom": "dragonsurvival:block/stone_dragon_door_bottom",
+    "top": "dragonsurvival:block/stone_dragon_door_bottom"
+  }
+}

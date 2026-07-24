@@ -1,95 +1,70 @@
 package by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic;
 
-import by.dragonsurvivalteam.dragonsurvival.DragonSurvivalMod;
-import by.dragonsurvivalteam.dragonsurvival.common.dragon_types.AbstractDragonType;
-import by.dragonsurvivalteam.dragonsurvival.common.dragon_types.DragonTypes;
-import by.dragonsurvivalteam.dragonsurvival.util.DragonUtils;
-import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.datafixers.util.Either;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.FormattedText;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.client.gui.widget.ExtendedButton;
+import net.minecraft.world.inventory.tooltip.TooltipComponent;
+import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.client.gui.widget.ExtendedButton;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
+
+import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 
 public class HelpButton extends ExtendedButton {
-	public static final ResourceLocation texture = new ResourceLocation(DragonSurvivalMod.MODID, "textures/gui/help_button.png");
-	public String text;
-	private final List<Component> tooltip;
-	public int variation;
-	public AbstractDragonType type;
+    private static final ResourceLocation MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/ability_screen/info_main.png");
+    private static final ResourceLocation HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/ability_screen/info_hover.png");
+    private static final int TEXTURE_SIZE = 16;
+    private static final int UV = 13;
 
-	public HelpButton(int x, int y, int sizeX, int sizeY, String text, int variation){
-		this(DragonUtils.getDragonType(Minecraft.getInstance().player), x, y, sizeX, sizeY, text, variation);
-	}
+    private final ResourceLocation hover;
+    private final ResourceLocation main;
 
-	public HelpButton(AbstractDragonType type, int x, int y, int sizeX, int sizeY, String text, int variation){
-		super(x, y, sizeX, sizeY, Component.empty(), s -> {});
-		this.text = text;
-		this.variation = variation;
-		this.type = type;
+    private List<Either<FormattedText, TooltipComponent>> tooltip;
 
-		tooltip = new ArrayList<>();
+    public HelpButton(int x, int y, int sizeX, int sizeY, final String tooltip) {
+        this(x, y, sizeX, sizeY, new ArrayList<>(List.of(Either.left(Component.translatable(tooltip)))));
+    }
 
-		if (text != null && !text.isBlank()) {
-			for (String string : I18n.get(text).split("\n")) {
-				tooltip.add(Component.literal(string));
-			}
-		}
-	}
+    public HelpButton(int x, int y, int sizeX, int sizeY, final List<Either<FormattedText, TooltipComponent>> tooltip) {
+        super(x, y, sizeX, sizeY, Component.empty(), action -> { /* Nothing to do */ });
+        this.tooltip = tooltip;
+        this.main = MAIN;
+        this.hover = HOVER;
+    }
 
-	@Override
-	public void renderWidget(@NotNull final GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-		RenderSystem.setShaderTexture(0, texture);
+    public HelpButton(int x, int y, int sizeX, int sizeY, final String tooltip, final ResourceLocation main, final ResourceLocation hover) {
+        super(x, y, sizeX, sizeY, Component.empty(), action -> { /* Nothing to do */ });
+        this.tooltip = new ArrayList<>(List.of(Either.left(Component.translatable(tooltip))));
+        this.main = main;
+        this.hover = hover;
+    }
 
-		float size = variation == 0 ? 18f : 22f;
-		float xSize = (float)(width + (variation == 0 ? 0 : 2)) / size;
-		float ySize = (float)(height + (variation == 0 ? 0 : 2)) / size;
+    public void setTooltip(final List<Either<FormattedText, TooltipComponent>> tooltip) {
+        this.tooltip = tooltip;
+    }
 
-		int offset = 0;
+    @Override
+    public void renderWidget(@NotNull final GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        ResourceLocation resource;
 
-		if (isHoveredOrFocused()) {
-			int id;
+        if (isHovered()) {
+            graphics.renderComponentTooltipFromElements(Minecraft.getInstance().font, tooltip, mouseX, mouseY, ItemStack.EMPTY);
+            resource = hover;
+        } else {
+            resource = main;
+        }
 
-			if (type == null) {
-				id = 4;
-			} else {
-				id = switch (type.getTypeName()) {
-					case "cave" -> 1;
-					case "forest" -> 2;
-					case "sea" -> 3;
-					default -> 0;
-				};
-			}
+        graphics.blit(resource, getX(), getY(), width, height, 0, 0, UV, UV, TEXTURE_SIZE, TEXTURE_SIZE);
+    }
 
-			offset += (int) (id * size);
-		}
-
-		guiGraphics.pose().pushPose();
-		guiGraphics.pose().translate(getX() - getX() * xSize, getY() - getY() * ySize, 0);
-		guiGraphics.pose().scale(xSize, ySize, 0);
-
-		if (variation == 0) {
-			guiGraphics.blit(texture, getX(), getY(), 0, (float) offset, 18, 18, 256, 256);
-		} else {
-			guiGraphics.blit(texture, getX() - 1, getY() - 1, 18, (float) offset, 22, 22, 256, 256);
-		}
-
-		guiGraphics.pose().popPose();
-	}
-
-	/** To prevent the tooltip from getting overlayed by the screen. See postScreenRender in ToolTipHandler.java. */
-	public void renderTooltip(final GuiGraphics guiGraphics, int mouseX, int mouseY) {
-		guiGraphics.renderComponentTooltip(Minecraft.getInstance().font, tooltip, mouseX, mouseY);
-	}
-
-	@Override
-	public boolean mouseClicked(double p_231044_1_, double p_231044_3_, int p_231044_5_){
-		return false;
-	}
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        return false;
+    }
 }

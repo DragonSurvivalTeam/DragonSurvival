@@ -1,0 +1,113 @@
+{
+  "processors": [
+    {
+      "rules": [
+        {
+          "output_state": {
+            "Name": "minecraft:air"
+          },
+          "input_predicate": {
+            "block": "dragonsurvival:skeleton_dragon_skull_2_skin4",
+            "probability": 0.90,
+            "predicate_type": "minecraft:random_block_match"
+          },
+          "location_predicate": {
+            "predicate_type": "minecraft:always_true"
+          }
+        },
+		{
+          "output_state": {
+            "Name": "dragonsurvival:skeleton_dragon_chest_skin4"
+          },
+          "input_predicate": {
+            "block": "dragonsurvival:skeleton_dragon_skull_2_skin4",
+            "probability": 0.10,
+            "predicate_type": "minecraft:random_block_match"
+          },
+          "location_predicate": {
+            "predicate_type": "minecraft:always_true"
+          }
+        },
+        {
+          "output_state": {
+            "Name": "dragonsurvival:skeleton_dragon_leg_1_skin4"
+          },
+          "input_predicate": {
+            "block": "dragonsurvival:skeleton_dragon_skull_2_skin4",
+            "probability": 0.10,
+            "predicate_type": "minecraft:random_block_match"
+          },
+          "location_predicate": {
+            "predicate_type": "minecraft:always_true"
+          }
+        },
+        {
+          "output_state": {
+            "Name": "dragonsurvival:skeleton_dragon_leg_3_skin4"
+          },
+          "input_predicate": {
+            "block": "dragonsurvival:skeleton_dragon_skull_2_skin4",
+            "probability": 0.10,
+            "predicate_type": "minecraft:random_block_match"
+          },
+          "location_predicate": {
+            "predicate_type": "minecraft:always_true"
+          }
+        },
+        {
+          "output_state": {
+            "Name": "dragonsurvival:skeleton_dragon_neck_3_skin4"
+          },
+          "input_predicate": {
+            "block": "dragonsurvival:skeleton_dragon_skull_2_skin4",
+            "probability": 0.30,
+            "predicate_type": "minecraft:random_block_match"
+          },
+          "location_predicate": {
+            "predicate_type": "minecraft:always_true"
+          }
+        },
+        {
+          "output_state": {
+            "Name": "dragonsurvival:skeleton_dragon_pelvis_skin4"
+          },
+          "input_predicate": {
+            "block": "dragonsurvival:skeleton_dragon_skull_2_skin4",
+            "probability": 0.30,
+            "predicate_type": "minecraft:random_block_match"
+          },
+          "location_predicate": {
+            "predicate_type": "minecraft:always_true"
+          }
+        },
+        {
+          "output_state": {
+            "Name": "dragonsurvival:skeleton_dragon_tail_1_skin4"
+          },
+          "input_predicate": {
+            "block": "dragonsurvival:skeleton_dragon_skull_2_skin4",
+            "probability": 0.30,
+            "predicate_type": "minecraft:random_block_match"
+          },
+          "location_predicate": {
+            "predicate_type": "minecraft:always_true"
+          }
+        },
+        {
+          "output_state": {
+            "Name": "dragonsurvival:skeleton_dragon_tail_3_skin4"
+          },
+          "input_predicate": {
+            "block": "dragonsurvival:skeleton_dragon_skull_2_skin4",
+            "probability": 0.30,
+            "predicate_type": "minecraft:random_block_match"
+          },
+          "location_predicate": {
+            "predicate_type": "minecraft:always_true"
+          }
+        }
+      ],
+      "processor_type": "minecraft:rule"
+    }
+  ]
+}

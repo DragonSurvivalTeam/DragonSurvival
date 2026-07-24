@@ -1,0 +1,15 @@
+{
+  "species": "dragonsurvival:sea_dragon",
+  "stage": "dragonsurvival:newborn",
+  "model": "dragonsurvival:dragon_model",
+  "parts": {
+    "base": "base_1",
+    "bottom": "bottom_1",
+    "eyes": "eyes_11",
+    "horns": "horns_45",
+    "claws": "claw_3_sea_1",
+    "teeth": "teeth_1",
+    "magic": "sea_magic_3",
+    "spikes": "spikes_1"
+  }
+}

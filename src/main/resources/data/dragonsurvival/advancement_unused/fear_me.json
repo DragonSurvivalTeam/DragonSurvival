@@ -1,0 +1,38 @@
+{
+  "parent": "dragonsurvival:evil/get_hunter_omen",
+  "display": {
+    "icon": {
+      "id": "dragonsurvival:partisan"
+    },
+    "title": {
+      "translate": "ds.advancements.fear_me.title"
+    },
+    "description": {
+      "translate": "ds.advancements.fear_me.description"
+    },
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "requirement": {
+      "trigger": "minecraft:player_interacted_with_entity",
+      "conditions": {
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "effects": {
+                "dragonsurvival:hunter_omen": {}
+              }
+            }
+          }
+        ],
+        "entity": {
+          "type": "minecraft:villager"
+        }
+      }
+    }
+  }
+}

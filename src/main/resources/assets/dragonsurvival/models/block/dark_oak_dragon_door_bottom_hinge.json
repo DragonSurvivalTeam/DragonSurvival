@@ -1,7 +1,0 @@
-{
-  "parent": "block/door_bottom_right",
-  "textures": {
-    "bottom": "dragonsurvival:block/dark_oak_dragon_door_bottom",
-    "top": "dragonsurvival:block/dark_oak_dragon_door_bottom"
-  }
-}

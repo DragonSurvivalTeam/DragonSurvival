@@ -1,0 +1,14 @@
+{
+  "values": [
+    "minecraft:snowball",
+    "minecraft:ice",
+    "minecraft:packed_ice",
+    "minecraft:snow",
+    "minecraft:snow_block",
+    "minecraft:powder_snow_bucket",
+    {
+      "id": "immersive_weathering:icicle",
+      "required": false
+    }
+  ]
+}

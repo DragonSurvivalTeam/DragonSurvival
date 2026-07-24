@@ -1,0 +1,17 @@
+{
+  "species": "dragonsurvival:forest_dragon",
+  "stage": "dragonsurvival:ancient",
+  "model": "dragonsurvival:dragon_model",
+  "parts": {
+    "base": "base_0",
+    "bottom": "bottom_1",
+    "eyes": "eyes_12",
+    "horns": "horns_20",
+    "spikes": "spikes_2",
+    "claws": "claw_3_forest",
+    "teeth": "teeth_3",
+    "magic": "forest_magic_4",
+    "extra": "forest_extra_wings_2",
+    "extra1": "forest_extra_tail_11"
+  }
+}

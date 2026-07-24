@@ -1,0 +1,93 @@
+package by.dragonsurvivalteam.dragonsurvival.util.proxy;
+
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.AbilityAnimation;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.AnimationType;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.emotes.DragonEmote;
+import by.dragonsurvivalteam.dragonsurvival.server.tileentity.DragonSoulBlockEntity;
+import com.mojang.datafixers.util.Pair;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.common.util.FakePlayer;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Set;
+
+public interface Proxy {
+    default @Nullable Player getLocalPlayer() {
+        return null;
+    }
+
+    default @Nullable Level getLocalLevel() {
+        return null;
+    }
+
+    default void playSoundAtEyeLevel(final Player player, final SoundEvent event) { /* Nothing to do */ }
+
+    default void queueTickingSound(final ResourceLocation id, final SoundEvent soundEvent, final SoundSource soundSource, final Entity entity) { /* Nothing to do */ }
+
+    default void stopTickingSound(final ResourceLocation id) { /* Nothing to do */ }
+
+    default void setCurrentAbilityAnimation(final Player player, final Pair<AbilityAnimation, AnimationType> animation) { /* Nothing to do */ }
+
+    default void stopEmote(final Player player, final DragonEmote emote) { /* Nothing to do */ }
+
+    default void beginPlayingEmote(final Player player, final DragonEmote emote) { /* Nothing to do */ }
+
+    default void stopAllEmotes(final Player player) { /* Nothing to do */ }
+
+    default boolean isPlayingEmote(final Player player, final DragonEmote emote) {
+        return false;
+    }
+
+    default float getTimer() {
+        return 1;
+    }
+
+    default float getPartialTick() {
+        return 1;
+    }
+
+    /** This will always return 'false' when in production */
+    default boolean isOnRenderThread() {
+        return false;
+    }
+
+    default boolean isFakePlayer(final Player player) {
+        return player instanceof FakePlayer;
+    }
+
+    default double getFakePlayerScale(final Player player) {
+        return -1;
+    }
+
+    default boolean dragonRenderingWasCancelled(final Player player) {
+        return false;
+    }
+
+    default boolean updateDragonSoulBlockAnimation(final DragonSoulBlockEntity soul, final String animation) {
+        return false;
+    }
+
+    default MutableComponent translateKeyMapping(final String key) {
+        return Component.translatable(key);
+    }
+
+    default Set<String> getAnimations(final DragonSoulBlockEntity soul) {
+        return Set.of();
+    }
+
+    default Component getDragonSoulPlacementKeybind() {
+        return Component.empty();
+    }
+
+    @Nullable RegistryAccess getAccess();
+
+    boolean isMining(final Player player);
+}

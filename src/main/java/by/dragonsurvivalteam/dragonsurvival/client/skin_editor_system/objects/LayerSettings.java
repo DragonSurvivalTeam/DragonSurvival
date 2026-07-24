@@ -1,47 +1,64 @@
 package by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects;
 
-import by.dragonsurvivalteam.dragonsurvival.common.capability.NBTInterface;
-import by.dragonsurvivalteam.dragonsurvival.common.capability.subcapabilities.SkinCap;
+import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.loader.DefaultPartLoader;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.neoforged.neoforge.common.util.INBTSerializable;
+import org.jetbrains.annotations.NotNull;
 
-public class LayerSettings implements NBTInterface{
-	public String selectedSkin = SkinCap.defaultSkinValue;
+/** Entries within the 'saved_customizations.json' file */
+public class LayerSettings implements INBTSerializable<CompoundTag> {
+    public static final String PART_KEY = "part_key";
+    public static final String HUE = "hue";
+    public static final String SATURATION = "saturation";
+    public static final String BRIGHTNESS = "brightness";
+    public static final String IS_COLOR_MODIFIED = "modifiedColor"; // TODO 1.22 :: rename to is_modified
+    public static final String IS_GLOWING = "glowing"; // TODO 1.22 :: rename to is_glowing
 
-	public float hue = 0.5f, saturation = 0.5f, brightness = 0.5f;
-	public boolean modifiedColor = false;
+    public String partKey;
 
-	public boolean glowing = false;
+    public float hue;
+    public float saturation;
+    public float brightness;
 
-	public LayerSettings(){}
+    public boolean isModified;
+    public boolean isGlowing;
 
-	public LayerSettings(String selectedSkin, float defaultHue){
-		this.selectedSkin = selectedSkin;
-		this.hue = defaultHue;
-	}
+    public LayerSettings() {
+        this(DefaultPartLoader.NO_PART, 0.5f, false);
+    }
 
-	@Override
-	public CompoundTag writeNBT(){
-		CompoundTag nbt = new CompoundTag();
-		nbt.putString("skin", selectedSkin);
+    public LayerSettings(final String partKey, final float defaultHue, final boolean isGlowing) {
+        this.partKey = partKey;
+        this.hue = defaultHue;
+        this.saturation = 0.5f;
+        this.brightness = 0.5f;
+        this.isGlowing = isGlowing;
+    }
 
-		nbt.putFloat("hue", hue);
-		nbt.putFloat("saturation", saturation);
-		nbt.putFloat("brightness", brightness);
+    @Override
+    public CompoundTag serializeNBT(@NotNull final HolderLookup.Provider provider) {
+        CompoundTag nbt = new CompoundTag();
+        nbt.putString(PART_KEY, partKey);
 
-		nbt.putBoolean("modifiedColor", modifiedColor);
-		nbt.putBoolean("glowing", glowing);
-		return nbt;
-	}
+        nbt.putFloat(HUE, hue);
+        nbt.putFloat(SATURATION, saturation);
+        nbt.putFloat(BRIGHTNESS, brightness);
 
-	@Override
-	public void readNBT(CompoundTag base){
-		selectedSkin = base.getString("skin");
+        nbt.putBoolean(IS_COLOR_MODIFIED, isModified);
+        nbt.putBoolean(IS_GLOWING, isGlowing);
+        return nbt;
+    }
 
-		hue = base.getFloat("hue");
-		saturation = base.getFloat("saturation");
-		brightness = base.getFloat("brightness");
+    @Override
+    public void deserializeNBT(@NotNull final HolderLookup.Provider provider, @NotNull final CompoundTag tag) {
+        partKey = tag.getString(PART_KEY);
 
-		modifiedColor = base.getBoolean("modifiedColor");
-		glowing = base.getBoolean("glowing");
-	}
+        hue = tag.getFloat(HUE);
+        saturation = tag.getFloat(SATURATION);
+        brightness = tag.getFloat(BRIGHTNESS);
+
+        isModified = tag.getBoolean(IS_COLOR_MODIFIED);
+        isGlowing = tag.getBoolean(IS_GLOWING);
+    }
 }

@@ -1,0 +1,44 @@
+{
+  "type": "minecraft:jigsaw",
+  "biomes": "#dragonsurvival:is_treasure_friendly_forest_spawn",
+  "step": "underground_decoration",
+  "spawn_overrides": {
+    "ambient": {
+      "bounding_box": "full",
+      "spawns": []
+    },
+    "axolotls": {
+      "bounding_box": "full",
+      "spawns": []
+    },
+    "creature": {
+      "bounding_box": "full",
+      "spawns": []
+    },
+    "misc": {
+      "bounding_box": "full",
+      "spawns": []
+    },
+    "underground_water_creature": {
+      "bounding_box": "full",
+      "spawns": []
+    },
+    "water_ambient": {
+      "bounding_box": "full",
+      "spawns": []
+    },
+    "water_creature": {
+      "bounding_box": "full",
+      "spawns": []
+    }
+  },
+  "start_pool": "dragonsurvival:treasure_friendly_forest_spawn_pool",
+  "size": 4,
+  "terrain_adaptation": "encapsulate",
+  "start_height": {
+    "absolute": -40
+  },
+  "max_distance_from_center": 100,
+  "use_expansion_hack": true,
+  "liquid_settings": "ignore_waterlogging"
+}

@@ -1,0 +1,34 @@
+{
+  "abilities": "#dragonsurvival:forest_dragon",
+  "misc_resources": {
+    "ability_bar": "dragonsurvival:textures/gui/custom/casting_bars/forest/cast_bar.png",
+    "altar_banner": "dragonsurvival:textures/gui/custom/altar/forest/altar_icon.png",
+    "claw_texture_slot": "axe",
+    "food_sprites": "dragonsurvival:textures/gui/custom/food_icons/forest_food_icons.png",
+    "food_tooltip": {
+      "nutrition_icon": "\\uEA01",
+      "saturation_icon": "\\uEA04"
+    },
+    "growth_crystal": {
+      "empty": "dragonsurvival:textures/gui/custom/stage/forest/point_main.png",
+      "full": "dragonsurvival:textures/gui/custom/stage/forest/point_hover.png"
+    },
+    "growth_left_arrow": {
+      "hover_icon": "dragonsurvival:textures/gui/custom/stage/forest/left_arrow_hover.png",
+      "icon": "dragonsurvival:textures/gui/custom/stage/forest/left_arrow_main.png"
+    },
+    "growth_right_arrow": {
+      "hover_icon": "dragonsurvival:textures/gui/custom/stage/forest/right_arrow_hover.png",
+      "icon": "dragonsurvival:textures/gui/custom/stage/forest/right_arrow_main.png"
+    },
+    "mana_sprites": {
+      "empty": "dragonsurvival:textures/gui/custom/mana_icons/forest/empty.png",
+      "full": "dragonsurvival:textures/gui/custom/mana_icons/forest/full.png",
+      "recovery": "dragonsurvival:textures/gui/custom/mana_icons/forest/recovery.png",
+      "reserved": "dragonsurvival:textures/gui/custom/mana_icons/forest/reserved.png"
+    },
+    "primary_color": "#41CC48",
+    "secondary_color": "#117816"
+  },
+  "penalties": "#dragonsurvival:forest_dragon"
+}

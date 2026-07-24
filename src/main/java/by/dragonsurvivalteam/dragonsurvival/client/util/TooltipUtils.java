@@ -7,6 +7,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
+import net.minecraft.util.FormattedCharSequence;
 
 import java.util.List;
 
@@ -31,7 +32,7 @@ public class TooltipUtils {
             return true;
         }
 
-        Component message = tooltip.message;
-        return message == null || message.getString().equals(EMPTY);
+        List<FormattedCharSequence> message = tooltip.toCharSequence(Minecraft.getInstance());
+        return message.isEmpty();
     }
 }

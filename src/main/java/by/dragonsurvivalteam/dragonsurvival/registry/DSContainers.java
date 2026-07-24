@@ -1,32 +1,34 @@
 package by.dragonsurvivalteam.dragonsurvival.registry;
 
-import by.dragonsurvivalteam.dragonsurvival.DragonSurvivalMod;
+import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.DragonInventoryScreen;
+import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.SourceOfMagicScreen;
 import by.dragonsurvivalteam.dragonsurvival.server.containers.DragonContainer;
 import by.dragonsurvivalteam.dragonsurvival.server.containers.SourceOfMagicContainer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraftforge.common.extensions.IForgeMenuType;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegisterEvent;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
+import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
+import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.registries.DeferredRegister;
 
-@Mod.EventBusSubscriber( bus = Mod.EventBusSubscriber.Bus.MOD )
-public class DSContainers{
+@EventBusSubscriber
+public class DSContainers {
 
-	public static MenuType<SourceOfMagicContainer> nestContainer;
-	public static MenuType<DragonContainer> dragonContainer;
+    public static final DeferredRegister<MenuType<?>> REGISTRY = DeferredRegister.create(
+            BuiltInRegistries.MENU,
+            DragonSurvival.MODID
+    );
 
-	//MenuType
-	@SubscribeEvent
-	public static void registerContainers(RegisterEvent event){
-		if (!event.getRegistryKey().equals(ForgeRegistries.Keys.MENU_TYPES))
-			return;
+    public static final DeferredHolder<MenuType<?>, MenuType<SourceOfMagicContainer>> SOURCE_OF_MAGIC_CONTAINER = REGISTRY.register("dragon_nest", () -> IMenuTypeExtension.create(SourceOfMagicContainer::new));
+    public static final DeferredHolder<MenuType<?>, MenuType<DragonContainer>> DRAGON_CONTAINER = REGISTRY.register("dragon_container", () -> new MenuType<>(DragonContainer::new, FeatureFlags.DEFAULT_FLAGS));
 
-		nestContainer = IForgeMenuType.create(SourceOfMagicContainer::new);
-		event.register(ForgeRegistries.Keys.MENU_TYPES, new ResourceLocation(DragonSurvivalMod.MODID, "dragon_nest"), ()->nestContainer);
-
-		dragonContainer = IForgeMenuType.create((windowId, inv, data) -> new DragonContainer(windowId, inv));
-		event.register(ForgeRegistries.Keys.MENU_TYPES, new ResourceLocation(DragonSurvivalMod.MODID, "dragon_container"), ()->dragonContainer);
-	}
+    @SubscribeEvent
+    public static void registerScreens(RegisterMenuScreensEvent event) {
+        event.register(SOURCE_OF_MAGIC_CONTAINER.get(), SourceOfMagicScreen::new);
+        event.register(DRAGON_CONTAINER.get(), DragonInventoryScreen::new);
+    }
 }

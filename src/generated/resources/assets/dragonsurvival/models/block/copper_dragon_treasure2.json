@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/snow_height2",
+  "textures": {
+    "particle": "dragonsurvival:block/copper_dragon_treasure",
+    "texture": "dragonsurvival:block/copper_dragon_treasure"
+  }
+}

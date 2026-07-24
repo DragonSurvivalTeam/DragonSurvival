@@ -1,6 +1,10 @@
 {
   "pack": {
     "pack_format": 15,
-    "description": "§8by §dDragon Survival and Unique Dark"
-  }
+    "supported_formats": {
+      "min_inclusive": 1,
+      "max_inclusive": 60
+	  },
+      "description": "§8by §dDragon Survival and Unique Dark"
+	}
 }

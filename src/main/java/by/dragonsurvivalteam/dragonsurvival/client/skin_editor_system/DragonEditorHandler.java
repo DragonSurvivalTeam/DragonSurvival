@@ -1,214 +1,215 @@
 package by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system;
 
-import by.dragonsurvivalteam.dragonsurvival.DragonSurvivalMod;
-import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.DragonEditorObject.Texture;
+import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.client.models.DragonModel;
+import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.loader.DragonPartLoader;
+import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.DragonPart;
+import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.DragonStageCustomization;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.LayerSettings;
-import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.SkinPreset.SkinAgeGroup;
+import by.dragonsurvivalteam.dragonsurvival.client.util.RenderingUtils;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
-import by.dragonsurvivalteam.dragonsurvival.common.capability.subcapabilities.SkinCap;
-import by.dragonsurvivalteam.dragonsurvival.common.dragon_types.AbstractDragonType;
+import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
-import by.dragonsurvivalteam.dragonsurvival.util.DragonLevel;
-import by.dragonsurvivalteam.dragonsurvival.util.DragonUtils;
-import com.mojang.blaze3d.platform.NativeImage;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
+import com.mojang.blaze3d.pipeline.RenderTarget;
+import com.mojang.blaze3d.pipeline.TextureTarget;
+import com.mojang.blaze3d.platform.GlConst;
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.BufferUploader;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.texture.DynamicTexture;
+import net.minecraft.client.renderer.ShaderInstance;
+import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.Resource;
-import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
-import org.jetbrains.annotations.Nullable;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.GlStateBackup;
+import net.neoforged.neoforge.client.event.RegisterShadersEvent;
+import net.neoforged.neoforge.client.event.RenderFrameEvent;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL20;
 
-import java.awt.*;
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.*;
-import java.util.function.Supplier;
+import java.util.HashSet;
+import java.util.Set;
 
-public class DragonEditorHandler{
-	public static ResourceLocation getSkinTexture(Player player, EnumSkinLayer layer, String key, AbstractDragonType type){
-		if(Objects.equals(layer.name, "Extra") && layer != EnumSkinLayer.EXTRA){
-			return getSkinTexture(player, EnumSkinLayer.EXTRA, key, type);
-		}
+@EventBusSubscriber(value = Dist.CLIENT)
+public class DragonEditorHandler {
+    private static ShaderInstance skinGenerationShader;
+    private static final Set<ResourceLocation> generatedSkinTextures = new HashSet<>();
+    private static final Set<ResourceLocation> usedSkinTextures = new HashSet<>();
 
-		if(layer == EnumSkinLayer.BASE && (key.equalsIgnoreCase("Skin") || key.equalsIgnoreCase(SkinCap.defaultSkinValue))){
-			DragonStateHandler handler = DragonUtils.getHandler(player);
-			return getSkinTexture(player, layer, type.getTypeNameLowerCase() + "_base_" + handler.getLevel().ordinal(), type);
-		}
+    public static void generateSkinTextures(final DragonEntity dragon) {
+        Player player = dragon.getPlayer();
 
-		Texture[] texts = DragonEditorRegistry.CUSTOMIZATIONS.getOrDefault(type.getTypeNameUpperCase(), new HashMap<>()).getOrDefault(layer, new Texture[0]);
+        if (player == null) {
+            return;
+        }
 
-		for(Texture texture : texts){
-			if(Objects.equals(texture.key, key)){
-				return new ResourceLocation(texture.texture);
-			}
-		}
+        DragonStateHandler handler = DragonStateProvider.getData(player);
+        DragonBody.TextureSize textureSize = handler.body().value().textureSize();
 
-		return null;
-	}
+        GlStateBackup state = new GlStateBackup();
+        RenderSystem.backupGlState(state);
+        RenderSystem.backupProjectionMatrix();
 
-	public static Texture getSkin(Player player, EnumSkinLayer layer, String key, AbstractDragonType type){
-		if(Objects.equals(layer.name, "Extra") && layer != EnumSkinLayer.EXTRA){
-			return getSkin(player, EnumSkinLayer.EXTRA, key, type);
-		}
+        int currentFrameBuffer = GlStateManager.getBoundFramebuffer();
+        int currentViewportX = GlStateManager.Viewport.x();
+        int currentViewportY = GlStateManager.Viewport.y();
+        int currentViewportWidth = GlStateManager.Viewport.width();
+        int currentViewportHeight = GlStateManager.Viewport.height();
+        int activeTexture = GlStateManager._getActiveTexture();
+        int activeTextureBinding = GL11.glGetInteger(GL11.GL_TEXTURE_BINDING_2D);
+        int shaderProgram = GL11.glGetInteger(GL20.GL_CURRENT_PROGRAM);
 
-		if(layer == EnumSkinLayer.BASE && (key.equalsIgnoreCase("Skin") || key.equalsIgnoreCase(SkinCap.defaultSkinValue))){
-			return getSkin(player, layer, type.getTypeNameLowerCase() + "_base_" + DragonUtils.getDragonLevel(player).ordinal(), type);
-		}
+        RenderSystem.activeTexture(GlConst.GL_TEXTURE0);
+        int texture0 = GL11.glGetInteger(GL11.GL_TEXTURE_BINDING_2D);
+        RenderSystem.activeTexture(activeTexture);
+        RenderSystem.bindTexture(activeTextureBinding);
 
-		Texture[] texts = DragonEditorRegistry.CUSTOMIZATIONS.getOrDefault(type.getTypeNameUpperCase(), new HashMap<>()).getOrDefault(layer, new Texture[0]);
+        RenderTarget normalTarget = null;
+        RenderTarget glowTarget = null;
 
-		for(Texture texture : texts){
-			if(Objects.equals(texture.key, key)){
-				return texture;
-			}
-		}
+        try {
+            normalTarget = new TextureTarget(textureSize.width(), textureSize.height(), false, Minecraft.ON_OSX);
+            glowTarget = new TextureTarget(textureSize.width(), textureSize.height(), false, Minecraft.ON_OSX);
+            normalTarget.setClearColor(0.0F, 0.0F, 0.0F, 0.0F);
+            glowTarget.setClearColor(0.0F, 0.0F, 0.0F, 0.0F);
+            normalTarget.clear(true);
+            glowTarget.clear(true);
 
-		return null;
-	}
+            DragonStageCustomization customization = handler.getCurrentStageCustomization();
 
-	public static ArrayList<String> getKeys(AbstractDragonType type, EnumSkinLayer layers){
-		if(Objects.equals(layers.name, "Extra") && layers != EnumSkinLayer.EXTRA){
-			return getKeys(type, EnumSkinLayer.EXTRA);
-		}
+            for (SkinLayer layer : SkinLayer.values()) {
+                LayerSettings settings = customization.layerSettings.get(layer).get();
+                String partKey = settings.partKey;
 
-		ArrayList<String> list = new ArrayList<>();
+                if (partKey != null) {
+                    DragonPart skinTexture = DragonPartLoader.getDragonPart(layer, handler.speciesKey(), handler.body(), partKey);
 
-		Texture[] texts = DragonEditorRegistry.CUSTOMIZATIONS.getOrDefault(type.getTypeNameUpperCase(), new HashMap<>()).getOrDefault(layers, new Texture[0]);
-		for(Texture texture : texts){
-			list.add(texture.key);
-		}
+                    if (skinTexture != null) {
+                        float hueVal = settings.hue - skinTexture.averageHue();
+                        float satVal = settings.saturation;
+                        float brightVal = settings.brightness;
 
-		return list;
-	}
+                        DragonPart part = DragonPartLoader.getDragonPart(layer, handler.speciesKey(), handler.body(), partKey);
 
-	public static ArrayList<String> getKeys(Player player, EnumSkinLayer layers){
-		return getKeys(DragonUtils.getDragonType(player), layers);
-	}
+                        if (part == null) {
+                            continue;
+                        }
 
-	public static void generateSkinTextures(final DragonEntity dragon) {
-		Player player = dragon.getPlayer();
-		DragonStateHandler handler = DragonUtils.getHandler(player);
+                        AbstractTexture texture = Minecraft.getInstance().getTextureManager().getTexture(part.texture());
 
-		if (!RenderSystem.isOnRenderThreadOrInit()) {
-			RenderSystem.recordRenderCall(() -> genTextures(player, handler));
-		} else {
-			genTextures(player, handler);
-		}
-	}
+                        if (settings.isGlowing) {
+                            glowTarget.bindWrite(true);
+                        } else {
+                            normalTarget.bindWrite(true);
+                        }
 
-	private static void genTextures(final Player player, final DragonStateHandler handler) {
-		Set<DragonLevel> dragonLevels = handler.getSkinData().skinPreset.skinAges.keySet();
+                        RenderSystem.enableBlend();
+                        RenderSystem.colorMask(true, true, true, true);
+                        RenderSystem.blendEquation(GlConst.GL_FUNC_ADD);
+                        RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE);
+                        RenderSystem.disableDepthTest();
+                        RenderSystem.depthMask(false);
+                        skinGenerationShader.setSampler("SkinTexture", texture);
+                        skinGenerationShader.getUniform("HueVal").set(hueVal);
+                        skinGenerationShader.getUniform("SatVal").set(satVal);
+                        skinGenerationShader.getUniform("BrightVal").set(brightVal);
+                        skinGenerationShader.getUniform("Colorable").set(skinTexture.isColorable() ? 1.0f : 0.0f);
+                        skinGenerationShader.getUniform("Glowing").set(settings.isGlowing ? 1.0f : 0.0f);
+                        skinGenerationShader.apply();
 
-		for (DragonLevel dragonLevel : dragonLevels) {
-			SkinAgeGroup skinAgeGroup = handler.getSkinData().skinPreset.skinAges.get(dragonLevel).get();
+                        BufferBuilder bufferbuilder = RenderSystem.renderThreadTesselator().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.BLIT_SCREEN);
+                        bufferbuilder.addVertex(0.0F, 0.0F, 0.0F);
+                        bufferbuilder.addVertex(1.0F, 0.0F, 0.0F);
+                        bufferbuilder.addVertex(1.0F, 1.0F, 0.0F);
+                        bufferbuilder.addVertex(0.0F, 1.0F, 0.0F);
+                        BufferUploader.draw(bufferbuilder.buildOrThrow());
 
-			NativeImage normal = new NativeImage(512, 512, true);
-			NativeImage glow = new NativeImage(512, 512, true);
+                        if (settings.isGlowing && layer == SkinLayer.BASE) {
+                            normalTarget.bindWrite(true);
+                            bufferbuilder = RenderSystem.renderThreadTesselator().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.BLIT_SCREEN);
+                            bufferbuilder.addVertex(0.0F, 0.0F, 0.0F);
+                            bufferbuilder.addVertex(1.0F, 0.0F, 0.0F);
+                            bufferbuilder.addVertex(1.0F, 1.0F, 0.0F);
+                            bufferbuilder.addVertex(0.0F, 1.0F, 0.0F);
+                            BufferUploader.draw(bufferbuilder.buildOrThrow());
+                            normalTarget.unbindWrite();
+                        }
 
-			for (EnumSkinLayer layer : EnumSkinLayer.values()) {
-				LayerSettings settings = skinAgeGroup.layerSettings.get(layer).get();
-				String selectedSkin = settings.selectedSkin;
+                        skinGenerationShader.clear();
+                        if (settings.isGlowing) {
+                            glowTarget.unbindWrite();
+                        } else {
+                            normalTarget.unbindWrite();
+                        }
+                    }
+                }
+            }
 
-				if (selectedSkin != null) {
-					Texture skinTexture = getSkin(player, layer, selectedSkin, handler.getType());
+            ResourceLocation normalTexture = DragonModel.dynamicTexture(player, handler, false);
+            ResourceLocation glowTexture = DragonModel.dynamicTexture(player, handler, true);
+            RenderingUtils.copyTextureFromRenderTarget(normalTarget, normalTexture);
+            RenderingUtils.copyTextureFromRenderTarget(glowTarget, glowTexture);
+            generatedSkinTextures.add(normalTexture);
+            generatedSkinTextures.add(glowTexture);
+        } finally {
+            if (glowTarget != null) {
+                glowTarget.destroyBuffers();
+            }
 
-					if (skinTexture != null) {
-						float hueVal = settings.hue - skinTexture.average_hue;
-						float satVal = settings.saturation;
-						float brightVal = settings.brightness;
+            if (normalTarget != null) {
+                normalTarget.destroyBuffers();
+            }
 
-						try {
-							ResourceLocation textureLocation = getSkinTexture(player, layer, selectedSkin, handler.getType());
-							Optional<Resource> resource = Minecraft.getInstance().getResourceManager().getResource(textureLocation);
+            RenderSystem.restoreGlState(state);
+            RenderSystem.restoreProjectionMatrix();
+            GlStateManager._glBindFramebuffer(GlConst.GL_FRAMEBUFFER, currentFrameBuffer);
+            GlStateManager._viewport(currentViewportX, currentViewportY, currentViewportWidth, currentViewportHeight);
+            RenderSystem.activeTexture(GlConst.GL_TEXTURE0);
+            RenderSystem.bindTexture(texture0);
+            RenderSystem.activeTexture(activeTexture);
+            RenderSystem.bindTexture(activeTextureBinding);
+            GL20.glUseProgram(shaderProgram);
+        }
+    }
 
-							if (resource.isEmpty()) {
-								throw new IOException(String.format("Resource %s not found!", textureLocation.getPath()));
-							}
+    public static void markSkinTextureUsed(final ResourceLocation texture) {
+        if (generatedSkinTextures.contains(texture)) {
+            usedSkinTextures.add(texture);
+        }
+    }
 
-							InputStream textureStream = resource.get().open();
-							NativeImage tempColorPicker = NativeImage.read(textureStream);
-							textureStream.close();
+    public static boolean hasGeneratedSkinTexture(final ResourceLocation texture) {
+        return generatedSkinTextures.contains(texture);
+    }
 
-							for (int x = 0; x < tempColorPicker.getWidth(); x++) {
-								for (int y = 0; y < tempColorPicker.getHeight(); y++) {
-									Color color = getColor(settings, skinTexture, hueVal, satVal, brightVal, tempColorPicker, x, y);
+    public static boolean isDynamicSkinTexture(final ResourceLocation texture) {
+        String path = texture.getPath();
+        return path.startsWith("dynamic_normal_") || path.startsWith("dynamic_glow_");
+    }
 
-									if (color == null) {
-										continue;
-									}
+    @SubscribeEvent
+    public static void purgeUnusedSkinTextures(final RenderFrameEvent.Pre event) {
+        generatedSkinTextures.removeIf(texture -> {
+            if (usedSkinTextures.contains(texture)) {
+                return false;
+            }
 
-									if (color.getAlpha() != 0) {
-										Supplier<NativeImage> g2 = settings.glowing ? () -> glow : () -> normal;
-										g2.get().setPixelRGBA(x, y, color.getRGB());
+            Minecraft.getInstance().getTextureManager().release(texture);
+            return true;
+        });
+        usedSkinTextures.clear();
+    }
 
-										if (settings.glowing && layer == EnumSkinLayer.BASE) {
-											normal.setPixelRGBA(x, y, color.getRGB());
-										}
-									}
-								}
-							}
-
-							tempColorPicker.close();
-						} catch (IOException e) {
-							DragonSurvivalMod.LOGGER.error("An error occured while compiling the dragon skin texture", e);
-						}
-					}
-				}
-			}
-
-			String uuid = player.getStringUUID();
-			ResourceLocation dynamicNormalKey = new ResourceLocation(DragonSurvivalMod.MODID, "dynamic_normal_" + uuid + "_" + dragonLevel.name);
-			ResourceLocation dynamicGlowKey = new ResourceLocation(DragonSurvivalMod.MODID, "dynamic_glow_" + uuid + "_" + dragonLevel.name);
-
-			registerCompiledTexture(normal, dynamicNormalKey);
-			registerCompiledTexture(glow, dynamicGlowKey);
-		}
-
-		handler.getSkinData().recompileSkin = false;
-		handler.getSkinData().isCompiled = true;
-	}
-
-	@Nullable
-	private static Color getColor(LayerSettings settings, Texture text, float hueVal, float satVal, float brightVal, NativeImage img, int x, int y){
-		float[] hsb = new float[3];
-
-		Color color = new Color(img.getPixelRGBA(x, y), true);
-		Color.RGBtoHSB(color.getRed(), color.getGreen(), color.getBlue(), hsb);
-
-		if(text.colorable){
-			if(settings.glowing && hsb[0] == 0.5f && hsb[1] == 0.5f){
-				return null;
-			}
-
-            hsb[0] = (float)(hsb[0] - hueVal);
-			hsb[1] = (float)Mth.lerp(Math.abs(satVal - 0.5f) * 2 , hsb[1], satVal > 0.5f ? 1.0 : 0.0);
-			hsb[2] = (float)Mth.lerp(Math.abs(brightVal - 0.5f) * 2, hsb[2], brightVal > 0.5f ? 1.0 : 0.0);
-		}
-
-		Color c = new Color(Color.HSBtoRGB(hsb[0], hsb[1], hsb[2]));
-		return new Color(c.getRed(), c.getGreen(), c.getBlue(), color.getAlpha());
-	}
-
-	private static void registerCompiledTexture(NativeImage image, ResourceLocation key){
-		try (image) {
-			// DEBUG :: Export the texture
-//			if (key.toString().contains("dynamic_normal")) {
-//				File file = new File(Minecraft.getInstance().gameDirectory, "texture");
-//				file.mkdirs();
-//				file = new File(file.getPath(), key.toString().replace(":", "_") + ".png");
-//				image.writeToFile(file);
-//			}
-			if (Minecraft.getInstance().getTextureManager().getTexture(key, null) instanceof DynamicTexture texture) {
-				texture.setPixels(image);
-				texture.upload();
-			} else {
-				DynamicTexture layer = new DynamicTexture(image);
-				Minecraft.getInstance().getTextureManager().register(key, layer);
-			}
-		} catch (Exception e) {
-			DragonSurvivalMod.LOGGER.error(e);
-		}
-	}
+    @SubscribeEvent
+    public static void registerShaders(RegisterShadersEvent event) throws IOException {
+        event.registerShader(new ShaderInstance(event.getResourceProvider(), DragonSurvival.res("skin_generation"), DefaultVertexFormat.BLIT_SCREEN), instance -> skinGenerationShader = instance);
+    }
 }

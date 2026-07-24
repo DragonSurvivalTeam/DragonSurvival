@@ -1,147 +1,143 @@
 package by.dragonsurvivalteam.dragonsurvival.common.handlers.magic;
 
-import by.dragonsurvivalteam.dragonsurvival.common.blocks.TreasureBlock;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
-import by.dragonsurvivalteam.dragonsurvival.common.handlers.DragonConfigHandler;
-import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
-import by.dragonsurvivalteam.dragonsurvival.magic.DragonAbilities;
-import by.dragonsurvivalteam.dragonsurvival.magic.common.passive.MagicAbility;
-import by.dragonsurvivalteam.dragonsurvival.network.NetworkHandler;
-import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncMagicStats;
-import by.dragonsurvivalteam.dragonsurvival.registry.DragonEffects;
-import by.dragonsurvivalteam.dragonsurvival.util.DragonUtils;
-import by.dragonsurvivalteam.dragonsurvival.util.Functions;
-import net.minecraft.server.level.ServerPlayer;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.ManaHandling;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.ManaCost;
+import by.dragonsurvivalteam.dragonsurvival.registry.DSAttributes;
+import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
+import by.dragonsurvivalteam.dragonsurvival.util.ExperienceUtils;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.block.AbstractCauldronBlock;
-import net.minecraft.world.level.block.AbstractFurnaceBlock;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.event.TickEvent.Phase;
-import net.minecraftforge.event.TickEvent.PlayerTickEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.network.PacketDistributor;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
 @EventBusSubscriber
-public class ManaHandler{
-	@SubscribeEvent
-	public static void playerTick(PlayerTickEvent event){
-		if(event.phase == Phase.START){
-			return;
-		}
+public class ManaHandler {
+    @SubscribeEvent
+    public static void playerTick(final PlayerTickEvent.Post event) {
+        Player player = event.getEntity();
 
-		Player player = event.player;
+        if (!DragonStateProvider.isDragon(player)) {
+            return;
+        }
 
-		DragonStateProvider.getCap(player).ifPresent(cap -> {
-			if(cap.getMagicData().getCurrentlyCasting() != null){
-				return;
-			}
+        MagicData magic = MagicData.getData(player);
 
-			boolean goodConditions = ManaHandler.isPlayerInGoodConditions(player);
+        if (magic.isCasting()) {
+            return;
+        }
 
-			int timeToRecover = goodConditions ? ServerConfig.favorableManaTicks : ServerConfig.normalManaTicks;
+        if (magic.getCurrentMana() < getMaxMana(player)) {
+            replenishMana(player, (float) player.getAttributeValue(DSAttributes.MANA_REGENERATION));
+        }
+    }
 
-			if(player.hasEffect(DragonEffects.SOURCE_OF_MAGIC)){
-				timeToRecover = 1;
-			}
+    public static boolean hasEnoughMana(final Player player, float manaCost) {
+        if (manaCost == 0 || player.hasEffect(DSEffects.SOURCE_OF_MAGIC) || player.hasInfiniteMaterials()) {
+            return true;
+        }
 
-			if(player.tickCount % Functions.secondsToTicks(timeToRecover) == 0){
-				if(cap.getMagicData().getCurrentMana() < getMaxMana(player)){
-					replenishMana(player, 1);
-				}
-			}
-		});
-	}
+        if (getMaxMana(player) == 0) {
+            // The player does not have any mana or reserved too much of it
+            return false;
+        }
 
-	public static boolean isPlayerInGoodConditions(Player player){
-		if(!DragonUtils.isDragon(player)){
-			return false;
-		}
+        return getCurrentMana(player) + getManaFromExperience(player) - manaCost >= 0;
+    }
 
-		BlockState blockBelow = player.level().getBlockState(player.blockPosition().below());
-		BlockState feetBlock = player.getFeetBlockState();
+    public static float getMaxMana(final Player player) {
+        float mana = (float) player.getAttributeValue(DSAttributes.MANA);
+        mana += getBonusManaFromExperience(player);
+        mana -= getReservedMana(player);
 
-		if(feetBlock.getBlock() instanceof TreasureBlock || blockBelow.getBlock() instanceof TreasureBlock){
-			return true;
-		}
+        return Math.max(0, mana);
+    }
 
-		if(player.hasEffect(DragonEffects.SOURCE_OF_MAGIC)){
-			return true;
-		}
+    public static void replenishMana(final Player player, float mana) {
+        MagicData data = MagicData.getData(player);
+        data.setCurrentMana(Math.min(getMaxMana(player), data.getCurrentMana() + mana));
+    }
 
-		return DragonStateProvider.getCap(player).map(cap -> {
-			if(DragonConfigHandler.DRAGON_MANA_BLOCKS != null && DragonConfigHandler.DRAGON_MANA_BLOCKS.containsKey(cap.getTypeName())){
-				if(DragonConfigHandler.DRAGON_MANA_BLOCKS.get(cap.getTypeName()).contains(blockBelow.getBlock()) || DragonConfigHandler.DRAGON_MANA_BLOCKS.get(cap.getTypeName()).contains(feetBlock.getBlock())){
-					if(!(blockBelow.getBlock() instanceof AbstractFurnaceBlock) && !(feetBlock.getBlock() instanceof AbstractFurnaceBlock) && !(blockBelow.getBlock() instanceof AbstractCauldronBlock) && !(feetBlock.getBlock() instanceof AbstractCauldronBlock)){
-						return true;
-					}
-				}
-			}
+    public static void consumeMana(final Player player, float manaCost) {
+        if (manaCost == 0 || player == null || player.hasInfiniteMaterials() || player.hasEffect(DSEffects.SOURCE_OF_MAGIC)) {
+            return;
+        }
 
-			return cap.getType().isInManaCondition(player, cap);
-		}).orElse(false);
-	}
+        float pureMana = getCurrentMana(player);
+        ManaHandling manaHandling = DragonStateProvider.getData(player).species().value().manaHandling();
 
-	public static int getMaxMana(Player entity){
-		int mana = 1 + (ServerConfig.noEXPRequirements ? 9 : Math.max(0, (Math.min(50, entity.experienceLevel) - 5) / 5) + (DragonAbilities.getSelfAbility(entity, MagicAbility.class) != null ? DragonAbilities.getSelfAbility(entity, MagicAbility.class).getMana() : 0));
-		if (DragonUtils.getDragonBody(entity) != null)
-			mana += DragonUtils.getDragonBody(entity).getManaBonus();
-		return Math.max(mana, 0);
-	}
-	public static boolean canConsumeMana(Player player, int manaCost)
-	{
-		manaCost -= ManaHandler.getCurrentMana(player);
-		if (ServerConfig.consumeEXPAsMana)
-			manaCost -= player.totalExperience / 10;
-		return manaCost <= 0;
-	}
-	public static void replenishMana(Player entity, int mana){
-		if(entity.level().isClientSide()){
-			return;
-		}
+        if (manaHandling.manaXpConversion() > 0 && player.level().isClientSide()) {
+            // Check if experience would be consumed as part of the mana cost
+            if (pureMana < manaCost && getCurrentMana(player) + getManaFromExperience(player) >= manaCost) {
+                player.playSound(SoundEvents.EXPERIENCE_ORB_PICKUP, 0.01F, 0.01F);
+            }
+        }
 
-		DragonStateProvider.getCap(entity).ifPresent(cap -> {
-			cap.getMagicData().setCurrentMana(Math.min(getMaxMana(entity), cap.getMagicData().getCurrentMana() + mana));
-			NetworkHandler.CHANNEL.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer)entity), new SyncMagicStats(entity.getId(), cap.getMagicData().getSelectedAbilitySlot(), cap.getMagicData().getCurrentMana(), cap.getMagicData().shouldRenderAbilities()));
-		});
-	}
+        MagicData magic = MagicData.getData(player);
 
-	public static void consumeMana(Player entity, int mana){
-		if(entity == null || entity.isCreative() || entity.hasEffect(DragonEffects.SOURCE_OF_MAGIC))
-			return;
+        if (manaHandling.manaXpConversion() > 0) {
+            if (pureMana < manaCost) {
+                float missingMana = pureMana - manaCost;
+                player.giveExperiencePoints(convertMana(missingMana, manaHandling.manaXpConversion()));
+                magic.setCurrentMana(0);
+            } else {
+                magic.setCurrentMana(pureMana - manaCost);
+            }
+        } else {
+            magic.setCurrentMana(pureMana - manaCost);
+        }
+    }
 
-		if(ServerConfig.consumeEXPAsMana){
-			if(entity.level().isClientSide()){
-				if(getCurrentMana(entity) < mana && (getCurrentMana(entity) + entity.totalExperience / 10 >= mana || entity.experienceLevel > 0)){
-					entity.playSound(SoundEvents.EXPERIENCE_ORB_PICKUP, 0.01F, 0.01F);
-				}
-			}
-		}
+    public static float getReservedMana(final Player player) {
+        float reservedMana = 0;
+        MagicData magic = MagicData.getData(player);
 
-		if(entity.level().isClientSide()){
-			return;
-		}
+        for (DragonAbilityInstance ability : magic.getAbilities().values()) {
+            if (ability.isApplyingEffects()) {
+                reservedMana += ability.getContinuousManaCost(ManaCost.ManaCostType.RESERVED);
+            }
+        }
 
-		DragonStateProvider.getCap(entity).ifPresent(cap -> {
-			if(ServerConfig.consumeEXPAsMana){
-				if(getCurrentMana(entity) < mana && (getCurrentMana(entity) + entity.totalExperience / 10 >= mana || entity.experienceLevel > 0)){
-					int missingMana = mana - getCurrentMana(entity);
-					int missingExp = missingMana * 10;
-					entity.giveExperiencePoints(-missingExp);
-					cap.getMagicData().setCurrentMana(0);
-				}else{
-					cap.getMagicData().setCurrentMana(Math.max(0, cap.getMagicData().getCurrentMana() - mana));
-				}
-			}else{
-				cap.getMagicData().setCurrentMana(Math.max(0, cap.getMagicData().getCurrentMana() - mana));
-			}
+        return reservedMana;
+    }
 
-			NetworkHandler.CHANNEL.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer)entity), new SyncMagicStats(entity.getId(), cap.getMagicData().getSelectedAbilitySlot(), cap.getMagicData().getCurrentMana(), cap.getMagicData().shouldRenderAbilities()));
-		});
-	}
+    public static float getCurrentMana(final Player player) {
+        return Math.min(MagicData.getData(player).getCurrentMana(), getMaxMana(player));
+    }
 
-	public static int getCurrentMana(Player entity){
-		return DragonStateProvider.getCap(entity).map(cap -> Math.min(cap.getMagicData().getCurrentMana(), getMaxMana(entity))).orElse(0);
-	}
+    public static float getBonusManaFromExperience(final Player player) {
+        ManaHandling manaHandling = DragonStateProvider.getData(player).species().value().manaHandling();
+
+        if (manaHandling.maxManaFromLevels() == 0) {
+            return 0;
+        }
+
+        return (float) Math.min(manaHandling.maxManaFromLevels(), player.experienceLevel * manaHandling.manaPerLevel());
+    }
+
+    public static float getManaFromExperience(final Player player) {
+        ManaHandling manaHandling = DragonStateProvider.getData(player).species().value().manaHandling();
+
+        if (manaHandling.manaXpConversion() == 0) {
+            return 0;
+        }
+
+        return (float) (ExperienceUtils.getTotalExperience(player) * manaHandling.manaXpConversion());
+    }
+
+    private static int convertMana(float mana, double manaXpConversion) {
+        double converted = mana / manaXpConversion;
+
+        if (converted > 0) {
+            return Mth.ceil(converted);
+        } else if (converted < 0) {
+            return Mth.floor(converted);
+        }
+
+        return 0;
+    }
 }

@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/skull",
+  "textures": {
+    "all": "dragonsurvival:block/gray_knight_helmet"
+  }
+}

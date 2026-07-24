@@ -1,0 +1,25 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "#S#",
+        "GPG"
+    ],
+    "key": {
+        "#": {
+            "item": "minecraft:diamond"
+        },
+        "S": {
+            "item": "minecraft:saddle"
+        },
+        "G": {
+            "item": "minecraft:gold_block"
+        },
+        "P": {
+            "item": "minecraft:smithing_table"
+        }
+    },
+    "result": {
+        "id": "dragonsurvival:dragon_rider_workbench",
+        "count": 1
+    }
+}
