@@ -30,7 +30,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.item.enchantment.LevelBasedValue;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.LevelBasedValue;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.attachment.AttachmentType;
 import net.minecraftforge.network.PacketDistributor;

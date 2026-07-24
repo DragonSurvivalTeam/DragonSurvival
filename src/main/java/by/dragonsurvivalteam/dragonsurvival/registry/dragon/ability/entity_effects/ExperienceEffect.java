@@ -14,7 +14,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.enchantment.LevelBasedValue;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.LevelBasedValue;
 import org.jetbrains.annotations.NotNull;
 
 import java.text.NumberFormat;

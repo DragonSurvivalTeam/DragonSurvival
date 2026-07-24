@@ -4,7 +4,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.util.StringRepresentable;
-import net.minecraft.world.item.enchantment.LevelBasedValue;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.LevelBasedValue;
 import org.jetbrains.annotations.NotNull;
 
 public record ManaCost(ManaCostType manaCostType, LevelBasedValue manaCost) {

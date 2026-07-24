@@ -28,7 +28,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.valueproviders.ConstantFloat;
 import net.minecraft.world.damagesource.DamageTypes;
-import net.minecraft.world.item.enchantment.LevelBasedValue;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.LevelBasedValue;
 
 import java.util.List;
 import java.util.Optional;

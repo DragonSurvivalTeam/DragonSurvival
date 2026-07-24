@@ -5,7 +5,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.t
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.trigger.ConstantTrigger;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.world.item.enchantment.LevelBasedValue;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.LevelBasedValue;
 
 import java.util.Optional;
 

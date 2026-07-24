@@ -6,7 +6,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.projectile.Projectile;
-import net.minecraft.world.item.enchantment.LevelBasedValue;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.LevelBasedValue;
 
 public record ProjectileBlockParticleEffect(SpawnParticles particleData, LevelBasedValue particleCount) implements ProjectileBlockEffect {
     public static final MapCodec<ProjectileBlockParticleEffect> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(

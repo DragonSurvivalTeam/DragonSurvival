@@ -7,7 +7,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.item.enchantment.LevelBasedValue;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.LevelBasedValue;
 
 public record ExperienceLevelUpgrade(int maxLevel, LevelBasedValue levelRequirement) implements UpgradeType<InputData> {
     @Translation(comments = "§6■ Next level will be unlocked at experience level %s")
