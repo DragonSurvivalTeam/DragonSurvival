@@ -26,7 +26,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.RegistryFixedCodec;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.registries.DataPackRegistryEvent;
@@ -163,9 +163,9 @@ public class DragonSpecies implements AttributeModifierSupplier {
         return unlockedSpecies.get(player.getRandom().nextInt(unlockedSpecies.size())).species();
     }
 
-    public boolean isItemBlacklisted(final Item item) {
+    public boolean isItemBlacklisted(final ItemStack stack) {
         for (Holder<DragonPenalty> penalty : penalties) {
-            if (penalty.value().effect() instanceof ItemBlacklistPenalty blacklist && blacklist.isBlacklisted(item)) {
+            if (penalty.value().effect() instanceof ItemBlacklistPenalty blacklist && blacklist.isBlacklisted(stack)) {
                 return true;
             }
         }
