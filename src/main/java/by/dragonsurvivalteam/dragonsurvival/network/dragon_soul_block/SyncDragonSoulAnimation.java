@@ -6,10 +6,10 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.ByteBufCodecs;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.CustomPacketPayload;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraftforge.network.PacketDistributor;
-import net.minecraftforge.network.handling.IPayloadContext;
+import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.PayloadContext;
 import org.jetbrains.annotations.NotNull;
 
 public record SyncDragonSoulAnimation(BlockPos position, String animation) implements CustomPacketPayload {
@@ -21,7 +21,7 @@ public record SyncDragonSoulAnimation(BlockPos position, String animation) imple
             SyncDragonSoulAnimation::new
     );
 
-    public static void handleServer(final SyncDragonSoulAnimation packet, final IPayloadContext context) {
+    public static void handleServer(final SyncDragonSoulAnimation packet, final PayloadContext context) {
         context.enqueueWork(() -> {
             if (context.player().level().getBlockEntity(packet.position()) instanceof DragonSoulBlockEntity soul) {
                 soul.animation = packet.animation();
@@ -29,7 +29,7 @@ public record SyncDragonSoulAnimation(BlockPos position, String animation) imple
         }).thenRun(() -> PacketDistributor.sendToPlayersInDimension(((ServerLevel) context.player().level()), packet));
     }
 
-    public static void handleClient(final SyncDragonSoulAnimation packet, final IPayloadContext context) {
+    public static void handleClient(final SyncDragonSoulAnimation packet, final PayloadContext context) {
         context.enqueueWork(() -> {
             if (context.player().level().getBlockEntity(packet.position()) instanceof DragonSoulBlockEntity soul) {
                 soul.animation = packet.animation();

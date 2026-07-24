@@ -7,9 +7,9 @@ import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ModifiersWithDu
 import net.minecraft.network.FriendlyByteBuf;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.ByteBufCodecs;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.CustomPacketPayload;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.network.handling.IPayloadContext;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.PayloadContext;
 import org.jetbrains.annotations.NotNull;
 
 public record SyncModifierWithDuration(int playerId, ModifierWithDuration.Instance modifierInstance, boolean remove) implements CustomPacketPayload {
@@ -22,7 +22,7 @@ public record SyncModifierWithDuration(int playerId, ModifierWithDuration.Instan
             SyncModifierWithDuration::new
     );
 
-    public static void handleClient(final SyncModifierWithDuration packet, final IPayloadContext context) {
+    public static void handleClient(final SyncModifierWithDuration packet, final PayloadContext context) {
         context.enqueueWork(() -> {
             if (context.player().level().getEntity(packet.playerId()) instanceof Player player) {
                 ModifiersWithDuration data = player.getData(DSDataAttachments.MODIFIERS_WITH_DURATION);

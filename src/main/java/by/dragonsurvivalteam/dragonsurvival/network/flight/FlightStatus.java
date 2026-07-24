@@ -5,10 +5,10 @@ import by.dragonsurvivalteam.dragonsurvival.registry.attachments.FlightData;
 import io.netty.buffer.ByteBuf;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.ByteBufCodecs;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.CustomPacketPayload;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.network.PacketDistributor;
-import net.minecraftforge.network.handling.IPayloadContext;
+import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.PayloadContext;
 import org.jetbrains.annotations.NotNull;
 
 public record FlightStatus(int playerId, boolean hasFlight) implements CustomPacketPayload {
@@ -20,7 +20,7 @@ public record FlightStatus(int playerId, boolean hasFlight) implements CustomPac
             FlightStatus::new
     );
 
-    public static void handleClient(final FlightStatus packet, final IPayloadContext context) {
+    public static void handleClient(final FlightStatus packet, final PayloadContext context) {
         context.enqueueWork(() -> {
             if (context.player().level().getEntity(packet.playerId()) instanceof Player player) {
                 FlightData data = FlightData.getData(player);
@@ -29,7 +29,7 @@ public record FlightStatus(int playerId, boolean hasFlight) implements CustomPac
         });
     }
 
-    public static void handleServer(final FlightStatus packet, final IPayloadContext context) {
+    public static void handleServer(final FlightStatus packet, final PayloadContext context) {
         context.enqueueWork(() -> {
             if (context.player().level().getEntity(packet.playerId()) instanceof Player player) {
                 FlightData data = FlightData.getData(player);

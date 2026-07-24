@@ -35,7 +35,7 @@ import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.event.entity.player.PlayerFlyableFallEvent;
 import net.minecraftforge.event.tick.PlayerTickEvent;
 import net.minecraftforge.fluids.FluidType;
-import net.minecraftforge.network.PacketDistributor;
+import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
 
 import java.util.List;
 

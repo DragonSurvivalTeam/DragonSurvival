@@ -6,9 +6,9 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilit
 import net.minecraft.network.FriendlyByteBuf;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.ByteBufCodecs;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.CustomPacketPayload;
 import net.minecraft.resources.ResourceKey;
-import net.minecraftforge.network.handling.IPayloadContext;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.PayloadContext;
 import org.jetbrains.annotations.NotNull;
 
 public record SyncSlotAssignment(ResourceKey<DragonAbility> abilityToMove, int newSlot) implements CustomPacketPayload {
@@ -20,7 +20,7 @@ public record SyncSlotAssignment(ResourceKey<DragonAbility> abilityToMove, int n
             SyncSlotAssignment::new
     );
 
-    public static void handleServer(final SyncSlotAssignment packet, final IPayloadContext context) {
+    public static void handleServer(final SyncSlotAssignment packet, final PayloadContext context) {
         context.enqueueWork(() -> {
             MagicData data = MagicData.getData(context.player());
             data.moveAbilityToSlot(packet.abilityToMove(), packet.newSlot());

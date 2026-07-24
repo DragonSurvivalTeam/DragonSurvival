@@ -6,8 +6,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.ByteBufCodecs;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraftforge.network.handling.IPayloadContext;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.CustomPacketPayload;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.PayloadContext;
 import org.jetbrains.annotations.NotNull;
 
 public record SyncMagicData(CompoundTag magicData) implements CustomPacketPayload {
@@ -18,7 +18,7 @@ public record SyncMagicData(CompoundTag magicData) implements CustomPacketPayloa
             SyncMagicData::new
     );
 
-    public static void handleClient(final SyncMagicData packet, final IPayloadContext context) {
+    public static void handleClient(final SyncMagicData packet, final PayloadContext context) {
         context.enqueueWork(() -> MagicData.getData(context.player()).deserializeNBT(context.player().registryAccess(), packet.magicData()));
     }
 

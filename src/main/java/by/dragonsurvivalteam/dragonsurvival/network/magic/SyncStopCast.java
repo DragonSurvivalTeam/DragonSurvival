@@ -9,11 +9,11 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilit
 import net.minecraft.network.FriendlyByteBuf;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.ByteBufCodecs;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.CustomPacketPayload;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.network.PacketDistributor;
-import net.minecraftforge.network.handling.IPayloadContext;
+import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.PayloadContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -28,7 +28,7 @@ public record SyncStopCast(int playerId, Optional<ResourceKey<DragonAbility>> ab
             SyncStopCast::new
     );
 
-    public static void handleClient(final SyncStopCast packet, final IPayloadContext context) {
+    public static void handleClient(final SyncStopCast packet, final PayloadContext context) {
         context.enqueueWork(() -> {
             if (context.player().level().getEntity(packet.playerId()) instanceof Player player) {
                 MagicData magic = MagicData.getData(player);
@@ -68,7 +68,7 @@ public record SyncStopCast(int playerId, Optional<ResourceKey<DragonAbility>> ab
         }
     }
 
-    public static void handleServer(final SyncStopCast packet, final IPayloadContext context) {
+    public static void handleServer(final SyncStopCast packet, final PayloadContext context) {
         context.enqueueWork(() -> {
             if (context.player().level().getEntity(packet.playerId()) instanceof Player player) {
                 packet.ability().ifPresentOrElse(ability -> handleServer(player, ability), () -> handleServer(player, null));

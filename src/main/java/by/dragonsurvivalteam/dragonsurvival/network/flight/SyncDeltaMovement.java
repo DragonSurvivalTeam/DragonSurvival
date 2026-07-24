@@ -5,11 +5,11 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscCodecs;
 import net.minecraft.network.FriendlyByteBuf;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.ByteBufCodecs;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.CustomPacketPayload;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.network.PacketDistributor;
-import net.minecraftforge.network.handling.IPayloadContext;
+import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.PayloadContext;
 import org.jetbrains.annotations.NotNull;
 
 public record SyncDeltaMovement(int playerId, Vec3 movement) implements CustomPacketPayload {
@@ -21,7 +21,7 @@ public record SyncDeltaMovement(int playerId, Vec3 movement) implements CustomPa
             SyncDeltaMovement::new
     );
 
-    public static void handleClient(final SyncDeltaMovement packet, final IPayloadContext context) {
+    public static void handleClient(final SyncDeltaMovement packet, final PayloadContext context) {
         context.enqueueWork(() -> {
             // Local player already has the correct values of themselves
             if (context.player().level().getEntity(packet.playerId()) instanceof Player player && player != DragonSurvival.PROXY.getLocalPlayer()) {
@@ -30,7 +30,7 @@ public record SyncDeltaMovement(int playerId, Vec3 movement) implements CustomPa
         });
     }
 
-    public static void handleServer(final SyncDeltaMovement packet, final IPayloadContext context) {
+    public static void handleServer(final SyncDeltaMovement packet, final PayloadContext context) {
         context.enqueueWork(() -> {
             if (context.player().level().getEntity(packet.playerId()) instanceof Player player) {
                 player.setDeltaMovement(packet.movement());

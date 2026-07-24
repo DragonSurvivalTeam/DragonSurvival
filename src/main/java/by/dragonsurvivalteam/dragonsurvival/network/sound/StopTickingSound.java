@@ -4,9 +4,9 @@ import by.dragonsurvivalteam.dragonsurvival.network.codec.ByteBufCodecs;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import net.minecraft.network.FriendlyByteBuf;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.network.handling.IPayloadContext;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.PayloadContext;
 import org.jetbrains.annotations.NotNull;
 
 public record StopTickingSound(ResourceLocation id) implements CustomPacketPayload {
@@ -17,7 +17,7 @@ public record StopTickingSound(ResourceLocation id) implements CustomPacketPaylo
             StopTickingSound::new
     );
 
-    public static void handleClient(final StopTickingSound packet, final IPayloadContext context) {
+    public static void handleClient(final StopTickingSound packet, final PayloadContext context) {
         context.enqueueWork(() -> DragonSurvival.PROXY.stopTickingSound(packet.id()));
     }
 

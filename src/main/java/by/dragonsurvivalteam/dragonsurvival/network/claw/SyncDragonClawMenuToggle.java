@@ -6,8 +6,8 @@ import by.dragonsurvivalteam.dragonsurvival.server.containers.DragonContainer;
 import net.minecraft.network.FriendlyByteBuf;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.ByteBufCodecs;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraftforge.network.handling.IPayloadContext;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.CustomPacketPayload;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.PayloadContext;
 import org.jetbrains.annotations.NotNull;
 
 public record SyncDragonClawMenuToggle(boolean isOpen) implements CustomPacketPayload {
@@ -18,7 +18,7 @@ public record SyncDragonClawMenuToggle(boolean isOpen) implements CustomPacketPa
             SyncDragonClawMenuToggle::new
     );
 
-    public static void handleServer(final SyncDragonClawMenuToggle packet, final IPayloadContext context) {
+    public static void handleServer(final SyncDragonClawMenuToggle packet, final PayloadContext context) {
         context.enqueueWork(() -> {
             ClawInventoryData data = ClawInventoryData.getData(context.player());
             data.setMenuOpen(packet.isOpen());

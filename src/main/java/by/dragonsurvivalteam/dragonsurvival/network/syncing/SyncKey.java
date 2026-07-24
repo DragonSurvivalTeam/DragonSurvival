@@ -10,8 +10,8 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.t
 import io.netty.buffer.ByteBuf;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.ByteBufCodecs;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraftforge.network.handling.IPayloadContext;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.CustomPacketPayload;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.PayloadContext;
 import org.jetbrains.annotations.NotNull;
 
 public record SyncKey(String key, boolean isDown) implements CustomPacketPayload {
@@ -23,7 +23,7 @@ public record SyncKey(String key, boolean isDown) implements CustomPacketPayload
             SyncKey::new
     );
 
-    public static void handleServer(final SyncKey packet, final IPayloadContext context) {
+    public static void handleServer(final SyncKey packet, final PayloadContext context) {
         context.enqueueWork(() -> {
             boolean hasChanged = context.player().getData(DSDataAttachments.PLAYER_DATA).updateKey(packet.key(), packet.isDown());
 

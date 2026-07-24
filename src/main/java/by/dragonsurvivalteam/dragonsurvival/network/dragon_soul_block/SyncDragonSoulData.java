@@ -9,8 +9,8 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.ByteBufCodecs;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraftforge.network.handling.IPayloadContext;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.CustomPacketPayload;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.PayloadContext;
 import org.jetbrains.annotations.NotNull;
 
 public record SyncDragonSoulData(BlockPos position, Tag data) implements CustomPacketPayload {
@@ -22,7 +22,7 @@ public record SyncDragonSoulData(BlockPos position, Tag data) implements CustomP
             SyncDragonSoulData::new
     );
 
-    public static void handleClient(final SyncDragonSoulData packet, final IPayloadContext context) {
+    public static void handleClient(final SyncDragonSoulData packet, final PayloadContext context) {
         context.enqueueWork(() -> {
             if (context.player().level().getBlockEntity(packet.position()) instanceof DragonSoulBlockEntity soul) {
                 soul.setComponents(DataComponentMap.CODEC.decode(context.player().registryAccess().createSerializationContext(NbtOps.INSTANCE), packet.data()).getOrThrow().getFirst());

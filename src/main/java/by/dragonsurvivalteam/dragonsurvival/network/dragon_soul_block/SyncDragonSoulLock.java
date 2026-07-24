@@ -6,8 +6,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.ByteBufCodecs;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraftforge.network.handling.IPayloadContext;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.CustomPacketPayload;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.PayloadContext;
 import org.jetbrains.annotations.NotNull;
 
 public record SyncDragonSoulLock(BlockPos position, Boolean locked) implements CustomPacketPayload {
@@ -19,7 +19,7 @@ public record SyncDragonSoulLock(BlockPos position, Boolean locked) implements C
             SyncDragonSoulLock::new
     );
 
-    public static void handleClient(final SyncDragonSoulLock packet, final IPayloadContext context) {
+    public static void handleClient(final SyncDragonSoulLock packet, final PayloadContext context) {
         context.enqueueWork(() -> {
             if (context.player().level().getBlockEntity(packet.position()) instanceof DragonSoulBlockEntity soul) {
                 soul.locked = packet.locked();

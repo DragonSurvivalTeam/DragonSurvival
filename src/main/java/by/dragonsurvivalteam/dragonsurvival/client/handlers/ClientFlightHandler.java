@@ -43,7 +43,7 @@ import net.minecraftforge.client.event.CalculateDetachedCameraDistanceEvent;
 import net.minecraftforge.client.event.ClientTickEvent;
 import net.minecraftforge.client.event.ViewportEvent;
 import net.minecraftforge.event.tick.PlayerTickEvent;
-import net.minecraftforge.network.PacketDistributor;
+import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 

@@ -5,8 +5,8 @@ import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachmen
 import io.netty.buffer.ByteBuf;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.ByteBufCodecs;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraftforge.network.handling.IPayloadContext;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.CustomPacketPayload;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.PayloadContext;
 import org.jetbrains.annotations.NotNull;
 
 public record SyncDragonSoulPlacement(boolean isEnabled) implements CustomPacketPayload {
@@ -17,7 +17,7 @@ public record SyncDragonSoulPlacement(boolean isEnabled) implements CustomPacket
             SyncDragonSoulPlacement::new
     );
 
-    public static void handleServer(final SyncDragonSoulPlacement packet, final IPayloadContext context) {
+    public static void handleServer(final SyncDragonSoulPlacement packet, final PayloadContext context) {
         context.enqueueWork(() -> context.player().getData(DSDataAttachments.PLAYER_DATA).enabledDragonSoulPlacement = packet.isEnabled());
     }
 

@@ -6,12 +6,12 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.ByteBufCodecs;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraftforge.attachment.AttachmentType;
 import net.minecraftforge.common.util.INBTSerializable;
-import net.minecraftforge.network.handling.IPayloadContext;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.PayloadContext;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
@@ -25,7 +25,7 @@ public record SyncData(int targetEntityId, ResourceLocation attachmentType, Comp
             SyncData::new
     );
 
-    public static void handleCommon(final SyncData packet, final IPayloadContext context) {
+    public static void handleCommon(final SyncData packet, final PayloadContext context) {
         context.enqueueWork(() -> {
             try {
                 AttachmentType<?> type = ForgeRegistries.ATTACHMENT_TYPES.get(packet.attachmentType());

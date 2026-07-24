@@ -5,10 +5,10 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.emotes.DragonEm
 import net.minecraft.network.FriendlyByteBuf;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.ByteBufCodecs;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.CustomPacketPayload;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.network.PacketDistributor;
-import net.minecraftforge.network.handling.IPayloadContext;
+import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.PayloadContext;
 import org.jetbrains.annotations.NotNull;
 
 public record SyncEmote(int playerId, DragonEmote emote, boolean stop) implements CustomPacketPayload {
@@ -21,7 +21,7 @@ public record SyncEmote(int playerId, DragonEmote emote, boolean stop) implement
             SyncEmote::new
     );
 
-    public static void handleServer(final SyncEmote packet, final IPayloadContext context) {
+    public static void handleServer(final SyncEmote packet, final PayloadContext context) {
         context.enqueueWork(() -> {
             if (context.player().level().getEntity(packet.playerId()) instanceof Player player) {
                 PacketDistributor.sendToPlayersTrackingEntity(player, packet);
@@ -29,7 +29,7 @@ public record SyncEmote(int playerId, DragonEmote emote, boolean stop) implement
         });
     }
 
-    public static void handleClient(final SyncEmote packet, final IPayloadContext context) {
+    public static void handleClient(final SyncEmote packet, final PayloadContext context) {
         context.enqueueWork(() -> {
             if (context.player().level().getEntity(packet.playerId()) instanceof Player player) {
                 if (!packet.stop) {

@@ -7,11 +7,11 @@ import net.minecraft.core.HolderSet;
 import net.minecraft.network.FriendlyByteBuf;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.ByteBufCodecs;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.CustomPacketPayload;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.fluids.FluidType;
-import net.minecraftforge.network.PacketDistributor;
-import net.minecraftforge.network.handling.IPayloadContext;
+import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.PayloadContext;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
@@ -27,7 +27,7 @@ public record SyncSpinStatus(int playerId, boolean hasSpin, Optional<HolderSet<F
             SyncSpinStatus::new
     );
 
-    public static void handleClient(final SyncSpinStatus packet, final IPayloadContext context) {
+    public static void handleClient(final SyncSpinStatus packet, final PayloadContext context) {
         context.enqueueWork(() -> {
             if (context.player().level().getEntity(packet.playerId()) instanceof Player player) {
                 FlightData spin = FlightData.getData(player);
@@ -38,7 +38,7 @@ public record SyncSpinStatus(int playerId, boolean hasSpin, Optional<HolderSet<F
         });
     }
 
-    public static void handleServer(final SyncSpinStatus packet, final IPayloadContext context) {
+    public static void handleServer(final SyncSpinStatus packet, final PayloadContext context) {
         context.enqueueWork(() -> {
             if (context.player().level().getEntity(packet.playerId()) instanceof Player player) {
                 FlightData spin = FlightData.getData(player);

@@ -6,8 +6,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.ByteBufCodecs;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraftforge.network.handling.IPayloadContext;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.CustomPacketPayload;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.PayloadContext;
 import org.jetbrains.annotations.NotNull;
 
 public record SyncAltarState(CompoundTag altarData) implements CustomPacketPayload {
@@ -18,7 +18,7 @@ public record SyncAltarState(CompoundTag altarData) implements CustomPacketPaylo
             SyncAltarState::new
     );
 
-    public static void handleClient(final SyncAltarState message, final IPayloadContext context) {
+    public static void handleClient(final SyncAltarState message, final PayloadContext context) {
         context.enqueueWork(() -> {
             AltarData data = AltarData.getData(context.player());
             data.deserializeNBT(context.player().registryAccess(), message.altarData());

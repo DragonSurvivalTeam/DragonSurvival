@@ -6,10 +6,10 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.ByteBufCodecs;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.CustomPacketPayload;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraftforge.network.handling.IPayloadContext;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.PayloadContext;
 import org.jetbrains.annotations.NotNull;
 
 public record SyncVisualEffectRemoval(int entityId, Holder<MobEffect> effect) implements CustomPacketPayload {
@@ -21,7 +21,7 @@ public record SyncVisualEffectRemoval(int entityId, Holder<MobEffect> effect) im
             SyncVisualEffectRemoval::new
     );
 
-    public static void handleClient(final SyncVisualEffectRemoval packet, final IPayloadContext context) {
+    public static void handleClient(final SyncVisualEffectRemoval packet, final PayloadContext context) {
         context.enqueueWork(() -> {
             if (context.player().level().getEntity(packet.entityId()) instanceof LivingEntity entity) {
                 if (entity.hasEffect(packet.effect())) {

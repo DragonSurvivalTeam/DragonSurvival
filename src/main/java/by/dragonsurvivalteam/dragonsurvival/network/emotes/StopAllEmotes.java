@@ -4,10 +4,10 @@ import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import net.minecraft.network.FriendlyByteBuf;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.ByteBufCodecs;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.CustomPacketPayload;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.network.PacketDistributor;
-import net.minecraftforge.network.handling.IPayloadContext;
+import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.PayloadContext;
 import org.jetbrains.annotations.NotNull;
 
 public record StopAllEmotes(int playerId) implements CustomPacketPayload {
@@ -18,7 +18,7 @@ public record StopAllEmotes(int playerId) implements CustomPacketPayload {
             StopAllEmotes::new
     );
 
-    public static void handleServer(final StopAllEmotes packet, final IPayloadContext context) {
+    public static void handleServer(final StopAllEmotes packet, final PayloadContext context) {
         context.enqueueWork(() -> {
             if (context.player().level().getEntity(packet.playerId()) instanceof Player player) {
                 PacketDistributor.sendToPlayersTrackingEntity(player, packet);
@@ -26,7 +26,7 @@ public record StopAllEmotes(int playerId) implements CustomPacketPayload {
         });
     }
 
-    public static void handleClient(final StopAllEmotes packet, final IPayloadContext context) {
+    public static void handleClient(final StopAllEmotes packet, final PayloadContext context) {
         context.enqueueWork(() -> {
             if (context.player().level().getEntity(packet.playerId()) instanceof Player player) {
                 DragonSurvival.PROXY.stopAllEmotes(player);

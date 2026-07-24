@@ -13,11 +13,11 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.ByteBufCodecs;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.network.PacketDistributor;
-import net.minecraftforge.network.handling.IPayloadContext;
+import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.PayloadContext;
 import org.jetbrains.annotations.NotNull;
 
 public record SyncComplete(int playerId, CompoundTag data) implements CustomPacketPayload {
@@ -45,7 +45,7 @@ public record SyncComplete(int playerId, CompoundTag data) implements CustomPack
         }
     }
 
-    public static void handleClient(final SyncComplete packet, final IPayloadContext context) {
+    public static void handleClient(final SyncComplete packet, final PayloadContext context) {
         context.enqueueWork(() -> {
             if (context.player().level().getEntity(packet.playerId()) instanceof Player player) {
                 DragonStateHandler handler = DragonStateProvider.getData(player);
@@ -55,7 +55,7 @@ public record SyncComplete(int playerId, CompoundTag data) implements CustomPack
         });
     }
 
-    public static void handleServer(final SyncComplete packet, final IPayloadContext context) {
+    public static void handleServer(final SyncComplete packet, final PayloadContext context) {
         context.enqueueWork(() -> {
             ServerPlayer player = (ServerPlayer) context.player();
 

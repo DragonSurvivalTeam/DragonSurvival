@@ -7,9 +7,9 @@ import by.dragonsurvivalteam.dragonsurvival.registry.attachments.GlowData;
 import net.minecraft.network.FriendlyByteBuf;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.ByteBufCodecs;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.CustomPacketPayload;
 import net.minecraft.world.entity.Entity;
-import net.minecraftforge.network.handling.IPayloadContext;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.PayloadContext;
 import org.jetbrains.annotations.NotNull;
 
 public record SyncGlowInstance(int entityId, Glow.Instance instance, boolean isRemoval) implements CustomPacketPayload {
@@ -22,7 +22,7 @@ public record SyncGlowInstance(int entityId, Glow.Instance instance, boolean isR
             SyncGlowInstance::new
     );
 
-    public static void handleClient(final SyncGlowInstance packet, final IPayloadContext context) {
+    public static void handleClient(final SyncGlowInstance packet, final PayloadContext context) {
         context.enqueueWork(() -> {
             if (context.player().level().getEntity(packet.entityId()) instanceof Entity entity) {
                 GlowData data = entity.getData(DSDataAttachments.GLOW);

@@ -5,9 +5,9 @@ import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachmen
 import io.netty.buffer.ByteBuf;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.ByteBufCodecs;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.CustomPacketPayload;
 import net.minecraft.world.entity.Entity;
-import net.minecraftforge.network.handling.IPayloadContext;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.PayloadContext;
 import org.jetbrains.annotations.NotNull;
 
 public record SyncHunterStacksRemoval(int entityId) implements CustomPacketPayload {
@@ -17,7 +17,7 @@ public record SyncHunterStacksRemoval(int entityId) implements CustomPacketPaylo
             SyncHunterStacksRemoval::new
     );
 
-    public static void handleClient(final SyncHunterStacksRemoval packet, final IPayloadContext context) {
+    public static void handleClient(final SyncHunterStacksRemoval packet, final PayloadContext context) {
         context.enqueueWork(() -> {
             Entity entity = context.player().level().getEntity(packet.entityId());
 

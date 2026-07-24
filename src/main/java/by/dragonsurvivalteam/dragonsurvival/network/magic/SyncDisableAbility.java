@@ -7,9 +7,9 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilit
 import net.minecraft.network.FriendlyByteBuf;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.ByteBufCodecs;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.CustomPacketPayload;
 import net.minecraft.resources.ResourceKey;
-import net.minecraftforge.network.handling.IPayloadContext;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.PayloadContext;
 import org.jetbrains.annotations.NotNull;
 
 public record SyncDisableAbility(ResourceKey<DragonAbility> ability, boolean isDisabled, boolean isManual) implements CustomPacketPayload {
@@ -22,7 +22,7 @@ public record SyncDisableAbility(ResourceKey<DragonAbility> ability, boolean isD
             SyncDisableAbility::new
     );
 
-    public static void handleServer(final SyncDisableAbility packet, final IPayloadContext context) {
+    public static void handleServer(final SyncDisableAbility packet, final PayloadContext context) {
         context.enqueueWork(() -> {
             MagicData data = MagicData.getData(context.player());
             DragonAbilityInstance ability = data.getAbility(packet.ability());
@@ -39,7 +39,7 @@ public record SyncDisableAbility(ResourceKey<DragonAbility> ability, boolean isD
         });
     }
 
-    public static void handleClient(final SyncDisableAbility packet, final IPayloadContext context) {
+    public static void handleClient(final SyncDisableAbility packet, final PayloadContext context) {
         context.enqueueWork(() -> {
             MagicData data = MagicData.getData(context.player());
             DragonAbilityInstance ability = data.getAbility(packet.ability());

@@ -6,8 +6,8 @@ import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.network.FriendlyByteBuf;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.ByteBufCodecs;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraftforge.network.handling.IPayloadContext;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.CustomPacketPayload;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.PayloadContext;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3f;
 
@@ -21,7 +21,7 @@ public record SyncParticleTrail(Vector3f source, Vector3f target, ParticleOption
             SyncParticleTrail::new
     );
 
-    public static void handleClient(final SyncParticleTrail packet, final IPayloadContext context) {
+    public static void handleClient(final SyncParticleTrail packet, final PayloadContext context) {
         context.enqueueWork(() -> ClientProxy.handleSyncParticleTrail(packet));
     }
 

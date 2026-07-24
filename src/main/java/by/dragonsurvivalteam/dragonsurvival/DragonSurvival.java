@@ -1,6 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival;
 
 import by.dragonsurvivalteam.dragonsurvival.config.ConfigHandler;
+import by.dragonsurvivalteam.dragonsurvival.network.NetworkHandler;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAdvancementTriggers;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAttributes;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSBlockEntities;
@@ -81,6 +82,7 @@ public class DragonSurvival {
         DSCommands.REGISTRY.register(bus);
         DSLootModifiers.REGISTRY.register(bus);
         DSConditions.REGISTRY.register(bus);
+        NetworkHandler.register();
 
         MinecraftForge.EVENT_BUS.addListener(OnSelfHit::trigger);
         MinecraftForge.EVENT_BUS.addListener(OnTargetHit::trigger);

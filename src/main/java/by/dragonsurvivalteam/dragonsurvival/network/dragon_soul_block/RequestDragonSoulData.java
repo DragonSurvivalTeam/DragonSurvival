@@ -8,8 +8,8 @@ import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.FriendlyByteBuf;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraftforge.network.handling.IPayloadContext;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.CustomPacketPayload;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.PayloadContext;
 import org.jetbrains.annotations.NotNull;
 
 public record RequestDragonSoulData(BlockPos position) implements CustomPacketPayload {
@@ -20,7 +20,7 @@ public record RequestDragonSoulData(BlockPos position) implements CustomPacketPa
             RequestDragonSoulData::new
     );
 
-    public static void handleServer(final RequestDragonSoulData packet, final IPayloadContext context) {
+    public static void handleServer(final RequestDragonSoulData packet, final PayloadContext context) {
         context.enqueueWork(() -> {
             if (context.player().level().getBlockEntity(packet.position()) instanceof DragonSoulBlockEntity soul) {
                 return soul.components();

@@ -5,8 +5,8 @@ import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvide
 import net.minecraft.network.FriendlyByteBuf;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.ByteBufCodecs;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraftforge.network.handling.IPayloadContext;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.CustomPacketPayload;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.PayloadContext;
 import org.jetbrains.annotations.NotNull;
 
 public record SyncEnderDragonMark(boolean isMarked) implements CustomPacketPayload {
@@ -17,7 +17,7 @@ public record SyncEnderDragonMark(boolean isMarked) implements CustomPacketPaylo
             SyncEnderDragonMark::new
     );
 
-    public static void handleClient(final SyncEnderDragonMark packet, final IPayloadContext context) {
+    public static void handleClient(final SyncEnderDragonMark packet, final PayloadContext context) {
         context.enqueueWork(() -> {
             DragonStateProvider.getData(context.player()).markedByEnderDragon = packet.isMarked();
         });

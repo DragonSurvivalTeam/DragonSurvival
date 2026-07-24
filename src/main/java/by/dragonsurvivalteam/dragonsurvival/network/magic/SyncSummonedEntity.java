@@ -7,8 +7,8 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.common_effec
 import net.minecraft.network.FriendlyByteBuf;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.ByteBufCodecs;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraftforge.network.handling.IPayloadContext;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.CustomPacketPayload;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.PayloadContext;
 import org.jetbrains.annotations.NotNull;
 
 public record SyncSummonedEntity(SummonEntityEffect.Instance instance, boolean isRemoval) implements CustomPacketPayload {
@@ -20,7 +20,7 @@ public record SyncSummonedEntity(SummonEntityEffect.Instance instance, boolean i
             SyncSummonedEntity::new
     );
 
-    public static void handleClient(final SyncSummonedEntity packet, final IPayloadContext context) {
+    public static void handleClient(final SyncSummonedEntity packet, final PayloadContext context) {
         context.enqueueWork(() -> {
             SummonedEntities data = context.player().getData(DSDataAttachments.SUMMONED_ENTITIES);
 

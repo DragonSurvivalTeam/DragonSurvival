@@ -7,9 +7,9 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilit
 import net.minecraft.network.FriendlyByteBuf;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.ByteBufCodecs;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.CustomPacketPayload;
 import net.minecraft.resources.ResourceKey;
-import net.minecraftforge.network.handling.IPayloadContext;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.PayloadContext;
 import org.jetbrains.annotations.NotNull;
 
 public record SyncCooldown(ResourceKey<DragonAbility> ability, int cooldown) implements CustomPacketPayload {
@@ -21,7 +21,7 @@ public record SyncCooldown(ResourceKey<DragonAbility> ability, int cooldown) imp
             SyncCooldown::new
     );
 
-    public static void handleClient(final SyncCooldown packet, final IPayloadContext context) {
+    public static void handleClient(final SyncCooldown packet, final PayloadContext context) {
         context.enqueueWork(() -> {
             MagicData magic = MagicData.getData(context.player());
             DragonAbilityInstance instance = magic.getAbility(packet.ability());

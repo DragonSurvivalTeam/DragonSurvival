@@ -5,9 +5,9 @@ import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvide
 import net.minecraft.network.FriendlyByteBuf;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.ByteBufCodecs;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.CustomPacketPayload;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.network.handling.IPayloadContext;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.PayloadContext;
 import org.jetbrains.annotations.NotNull;
 
 public record SyncDragonPassengerID(int playerId, int passengerId) implements CustomPacketPayload {
@@ -19,7 +19,7 @@ public record SyncDragonPassengerID(int playerId, int passengerId) implements Cu
             SyncDragonPassengerID::new
     );
 
-    public static void handleClient(final SyncDragonPassengerID packet, final IPayloadContext context) {
+    public static void handleClient(final SyncDragonPassengerID packet, final PayloadContext context) {
         context.enqueueWork(() -> {
             if (context.player().level().getEntity(packet.playerId()) instanceof Player player) {
                 DragonStateProvider.getData(player).setPassengerId(packet.passengerId());

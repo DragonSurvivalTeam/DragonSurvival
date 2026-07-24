@@ -6,11 +6,11 @@ import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MovementData;
 import net.minecraft.network.FriendlyByteBuf;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.ByteBufCodecs;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.CustomPacketPayload;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.network.PacketDistributor;
-import net.minecraftforge.network.handling.IPayloadContext;
+import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.PayloadContext;
 import org.jetbrains.annotations.NotNull;
 
 public record SyncDragonMovement(int playerId, boolean isFirstPerson, boolean bite, boolean dig, boolean isFreeLook, Vec3 movement) implements CustomPacketPayload {
@@ -26,7 +26,7 @@ public record SyncDragonMovement(int playerId, boolean isFirstPerson, boolean bi
             SyncDragonMovement::new
     );
 
-    public static void handleClient(final SyncDragonMovement packet, final IPayloadContext context) {
+    public static void handleClient(final SyncDragonMovement packet, final PayloadContext context) {
         context.enqueueWork(() -> {
             if (context.player().level().getEntity(packet.playerId()) instanceof Player player && player != DragonSurvival.PROXY.getLocalPlayer()) {
                 // Local player already has the correct values
@@ -35,7 +35,7 @@ public record SyncDragonMovement(int playerId, boolean isFirstPerson, boolean bi
         });
     }
 
-    public static void handleServer(final SyncDragonMovement packet, final IPayloadContext context) {
+    public static void handleServer(final SyncDragonMovement packet, final PayloadContext context) {
         context.enqueueWork(() -> handle(packet, context.player()))
                 .thenRun(() -> PacketDistributor.sendToPlayersTrackingEntity(context.player(), packet));
     }

@@ -5,8 +5,8 @@ import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvide
 import net.minecraft.network.FriendlyByteBuf;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.ByteBufCodecs;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraftforge.network.handling.IPayloadContext;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.CustomPacketPayload;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.PayloadContext;
 import org.jetbrains.annotations.NotNull;
 
 public record SyncGrowthState(boolean isGrowing) implements CustomPacketPayload {
@@ -17,7 +17,7 @@ public record SyncGrowthState(boolean isGrowing) implements CustomPacketPayload 
             SyncGrowthState::new
     );
 
-    public static void handleClient(final SyncGrowthState packet, final IPayloadContext context) {
+    public static void handleClient(final SyncGrowthState packet, final PayloadContext context) {
         context.enqueueWork(() -> {
             DragonStateProvider.getData(context.player()).isGrowing = packet.isGrowing();
         });

@@ -13,10 +13,10 @@ import com.mojang.serialization.Codec;
 import net.minecraft.network.FriendlyByteBuf;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.ByteBufCodecs;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.CustomPacketPayload;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.network.handling.IPayloadContext;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.PayloadContext;
 import org.jetbrains.annotations.NotNull;
 
 public record SyncAbilityAnimation(int playerId, AnimationType animationType, Either<CompoundAbilityAnimation, SimpleAbilityAnimation> animation) implements CustomPacketPayload {
@@ -30,7 +30,7 @@ public record SyncAbilityAnimation(int playerId, AnimationType animationType, Ei
             SyncAbilityAnimation::new
     );
 
-    public static void handleClient(final SyncAbilityAnimation packet, final IPayloadContext context) {
+    public static void handleClient(final SyncAbilityAnimation packet, final PayloadContext context) {
         context.enqueueWork(() -> {
             Entity entity = context.player().level().getEntity(packet.playerId());
 

@@ -6,9 +6,9 @@ import net.minecraft.core.Holder;
 import net.minecraft.network.FriendlyByteBuf;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.ByteBufCodecs;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.CustomPacketPayload;
 import net.minecraftforge.fluids.FluidType;
-import net.minecraftforge.network.handling.IPayloadContext;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.PayloadContext;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
@@ -22,7 +22,7 @@ public record SyncSwimDataEntry(int maxOxygen, Holder<FluidType> fluidType, bool
             SyncSwimDataEntry::new
     );
 
-    public static void handleClient(final SyncSwimDataEntry packet, final IPayloadContext context) {
+    public static void handleClient(final SyncSwimDataEntry packet, final PayloadContext context) {
         context.enqueueWork(() -> {
             SwimData data = SwimData.getData(context.player());
 

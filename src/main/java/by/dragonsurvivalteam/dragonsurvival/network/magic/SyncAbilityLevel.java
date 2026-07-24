@@ -7,9 +7,9 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilit
 import net.minecraft.network.FriendlyByteBuf;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.ByteBufCodecs;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.CustomPacketPayload;
 import net.minecraft.resources.ResourceKey;
-import net.minecraftforge.network.handling.IPayloadContext;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.PayloadContext;
 import org.jetbrains.annotations.NotNull;
 
 public record SyncAbilityLevel(ResourceKey<DragonAbility> ability, int level) implements CustomPacketPayload {
@@ -21,7 +21,7 @@ public record SyncAbilityLevel(ResourceKey<DragonAbility> ability, int level) im
             SyncAbilityLevel::new
     );
 
-    public static void handleClient(final SyncAbilityLevel packet, final IPayloadContext context) {
+    public static void handleClient(final SyncAbilityLevel packet, final PayloadContext context) {
         context.enqueueWork(() -> {
             MagicData data = MagicData.getData(context.player());
             DragonAbilityInstance ability = data.getAbility(packet.ability());

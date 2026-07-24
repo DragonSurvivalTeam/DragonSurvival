@@ -6,9 +6,9 @@ import by.dragonsurvivalteam.dragonsurvival.registry.attachments.PenaltySupply;
 import net.minecraft.network.FriendlyByteBuf;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.ByteBufCodecs;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.network.handling.IPayloadContext;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.PayloadContext;
 import org.jetbrains.annotations.NotNull;
 
 public record SyncPenaltySupplyAmount(ResourceLocation supplyType, float amount) implements CustomPacketPayload {
@@ -20,7 +20,7 @@ public record SyncPenaltySupplyAmount(ResourceLocation supplyType, float amount)
             SyncPenaltySupplyAmount::new
     );
 
-    public static void handleClient(final SyncPenaltySupplyAmount packet, final IPayloadContext context) {
+    public static void handleClient(final SyncPenaltySupplyAmount packet, final PayloadContext context) {
         context.enqueueWork(() -> {
             PenaltySupply penaltySupply = context.player().getData(DSDataAttachments.PENALTY_SUPPLY);
             penaltySupply.setSupply(packet.supplyType(), packet.amount());

@@ -6,8 +6,8 @@ import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import net.minecraft.network.FriendlyByteBuf;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraftforge.network.handling.IPayloadContext;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.CustomPacketPayload;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.PayloadContext;
 import org.jetbrains.annotations.NotNull;
 
 public record SyncMultiMining(DragonStateHandler.MultiMining multiMining) implements CustomPacketPayload {
@@ -18,7 +18,7 @@ public record SyncMultiMining(DragonStateHandler.MultiMining multiMining) implem
             SyncMultiMining::new
     );
 
-    public static void handleServer(final SyncMultiMining packet, final IPayloadContext context) {
+    public static void handleServer(final SyncMultiMining packet, final PayloadContext context) {
         context.enqueueWork(() -> {
             DragonStateProvider.getData(context.player()).multiMining = packet.multiMining();
         });

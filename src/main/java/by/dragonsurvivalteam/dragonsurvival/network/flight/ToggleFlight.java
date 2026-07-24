@@ -10,11 +10,11 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effec
 import by.dragonsurvivalteam.dragonsurvival.server.handlers.ServerFlightHandler;
 import net.minecraft.network.FriendlyByteBuf;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.network.PacketDistributor;
-import net.minecraftforge.network.handling.IPayloadContext;
+import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.PayloadContext;
 import org.jetbrains.annotations.NotNull;
 
 public record ToggleFlight(Activation activation, Result result) implements CustomPacketPayload {
@@ -26,11 +26,11 @@ public record ToggleFlight(Activation activation, Result result) implements Cust
             ToggleFlight::new
     );
 
-    public static void handleClient(final ToggleFlight packet, final IPayloadContext context) {
+    public static void handleClient(final ToggleFlight packet, final PayloadContext context) {
         context.enqueueWork(() -> ClientFlightHandler.handleToggleResult(packet.activation(), packet.result()));
     }
 
-    public static void handleServer(final ToggleFlight packet, final IPayloadContext context) {
+    public static void handleServer(final ToggleFlight packet, final PayloadContext context) {
         context.enqueueWork(() -> {
             Player player = context.player();
 

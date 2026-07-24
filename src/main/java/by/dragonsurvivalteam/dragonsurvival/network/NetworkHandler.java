@@ -1,5 +1,10 @@
 package by.dragonsurvivalteam.dragonsurvival.network;
 
+import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.CustomPacketPayload;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.DirectionalPayloadHandler;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.PayloadContext;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.PayloadRegistrar;
 import by.dragonsurvivalteam.dragonsurvival.network.animation.StopAbilityAnimation;
 import by.dragonsurvivalteam.dragonsurvival.network.animation.SyncAbilityAnimation;
 import by.dragonsurvivalteam.dragonsurvival.network.claw.SyncBrokenTool;
@@ -74,20 +79,33 @@ import by.dragonsurvivalteam.dragonsurvival.network.syncing.SyncCooldown;
 import by.dragonsurvivalteam.dragonsurvival.network.syncing.SyncDragonSoulPlacement;
 import by.dragonsurvivalteam.dragonsurvival.network.syncing.SyncKey;
 import by.dragonsurvivalteam.dragonsurvival.network.syncing.SyncMana;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.network.event.RegisterPayloadHandlersEvent;
-import net.minecraftforge.network.handling.DirectionalPayloadHandler;
-import net.minecraftforge.network.registration.PayloadRegistrar;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.network.NetworkEvent;
+import net.minecraftforge.network.NetworkRegistry;
+import net.minecraftforge.network.simple.SimpleChannel;
 
-@EventBusSubscriber
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.function.Supplier;
+
 public class NetworkHandler {
     private static final String PROTOCOL_VERSION = "3";
+    private static final SimpleChannel CHANNEL = NetworkRegistry.newSimpleChannel(
+            DragonSurvival.res("main"),
+            () -> PROTOCOL_VERSION,
+            PROTOCOL_VERSION::equals,
+            PROTOCOL_VERSION::equals
+    );
+    private static final Map<ResourceLocation, PayloadRegistrar.Registration<?>> REGISTRATIONS = new LinkedHashMap<>();
+    private static boolean initialized;
 
-    @SubscribeEvent
-    public static void register(final RegisterPayloadHandlersEvent event) {
-        // Sets the current network version
-        final PayloadRegistrar registrar = event.registrar(PROTOCOL_VERSION);
+    public static synchronized void register() {
+        if (initialized) {
+            return;
+        }
+
+        final PayloadRegistrar registrar = new PayloadRegistrar();
 
         // Generic packets
         registrar.playToClient(SyncPlayerJump.TYPE, SyncPlayerJump.STREAM_CODEC, SyncPlayerJump::handleClient);
@@ -189,5 +207,78 @@ public class NetworkHandler {
         registrar.playBidirectional(SyncPlayerSkinPreset.TYPE, SyncPlayerSkinPreset.STREAM_CODEC, new DirectionalPayloadHandler<>(SyncPlayerSkinPreset::handleClient, SyncPlayerSkinPreset::handleServer));
         registrar.playBidirectional(SyncDragonClawRender.TYPE, SyncDragonClawRender.STREAM_CODEC, new DirectionalPayloadHandler<>(SyncDragonClawRender::handleClient, SyncDragonClawRender::handleServer));
         registrar.playBidirectional(SyncDragonSkinSettings.TYPE, SyncDragonSkinSettings.STREAM_CODEC, new DirectionalPayloadHandler<>(SyncDragonSkinSettings::handleClient, SyncDragonSkinSettings::handleServer));
+
+        for (PayloadRegistrar.Registration<?> registration : registrar.registrations()) {
+            PayloadRegistrar.Registration<?> previous = REGISTRATIONS.put(registration.type().id(), registration);
+            if (previous != null) {
+                throw new IllegalStateException("Duplicate payload id: " + registration.type().id());
+            }
+        }
+
+        CHANNEL.messageBuilder(PacketEnvelope.class, 0)
+                .encoder(NetworkHandler::encode)
+                .decoder(NetworkHandler::decode)
+                .consumerNetworkThread(NetworkHandler::handle)
+                .add();
+        initialized = true;
     }
+
+    public static void send(
+            final net.minecraftforge.network.PacketDistributor.PacketTarget target,
+            final CustomPacketPayload payload
+    ) {
+        requireRegistered(payload);
+        CHANNEL.send(target, new PacketEnvelope(payload));
+    }
+
+    public static void sendToServer(final CustomPacketPayload payload) {
+        requireRegistered(payload);
+        CHANNEL.sendToServer(new PacketEnvelope(payload));
+    }
+
+    public static void reply(final CustomPacketPayload payload, final NetworkEvent.Context context) {
+        requireRegistered(payload);
+        CHANNEL.reply(new PacketEnvelope(payload), context);
+    }
+
+    private static void encode(final PacketEnvelope envelope, final FriendlyByteBuf buffer) {
+        CustomPacketPayload payload = envelope.payload();
+        PayloadRegistrar.Registration<?> registration = requireRegistered(payload);
+        buffer.writeResourceLocation(payload.type().id());
+        registration.encode(buffer, payload);
+    }
+
+    private static PacketEnvelope decode(final FriendlyByteBuf buffer) {
+        ResourceLocation id = buffer.readResourceLocation();
+        PayloadRegistrar.Registration<?> registration = REGISTRATIONS.get(id);
+        if (registration == null) {
+            throw new IllegalArgumentException("Unknown Dragon Survival payload: " + id);
+        }
+        return new PacketEnvelope(registration.decode(buffer));
+    }
+
+    private static void handle(
+            final PacketEnvelope envelope,
+            final Supplier<NetworkEvent.Context> contextSupplier
+    ) {
+        NetworkEvent.Context context = contextSupplier.get();
+        PayloadRegistrar.Registration<?> registration = requireRegistered(envelope.payload());
+        if (!registration.direction().accepts(context.getDirection())) {
+            throw new IllegalStateException("Payload " + envelope.payload().type().id()
+                    + " cannot be received on " + context.getDirection());
+        }
+
+        registration.handle(envelope.payload(), new PayloadContext(context));
+        context.setPacketHandled(true);
+    }
+
+    private static PayloadRegistrar.Registration<?> requireRegistered(final CustomPacketPayload payload) {
+        PayloadRegistrar.Registration<?> registration = REGISTRATIONS.get(payload.type().id());
+        if (registration == null) {
+            throw new IllegalStateException("Unregistered Dragon Survival payload: " + payload.type().id());
+        }
+        return registration;
+    }
+
+    private record PacketEnvelope(CustomPacketPayload payload) {}
 }

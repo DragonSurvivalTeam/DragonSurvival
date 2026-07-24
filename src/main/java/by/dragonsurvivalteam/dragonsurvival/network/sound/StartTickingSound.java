@@ -4,13 +4,13 @@ import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import net.minecraft.network.FriendlyByteBuf;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.ByteBufCodecs;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.network.handling.IPayloadContext;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.PayloadContext;
 import org.jetbrains.annotations.NotNull;
 
 public record StartTickingSound(int playerId, SoundEvent soundEvent, ResourceLocation id) implements CustomPacketPayload {
@@ -23,7 +23,7 @@ public record StartTickingSound(int playerId, SoundEvent soundEvent, ResourceLoc
             StartTickingSound::new
     );
 
-    public static void handleClient(final StartTickingSound packet, final IPayloadContext context) {
+    public static void handleClient(final StartTickingSound packet, final PayloadContext context) {
         context.enqueueWork(() -> {
             Entity entity = context.player().level().getEntity(packet.playerId());
 

@@ -5,9 +5,9 @@ import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.FlightData;
 import io.netty.buffer.ByteBuf;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.network.handling.IPayloadContext;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.PayloadContext;
 import org.jetbrains.annotations.NotNull;
 
 public record SyncWingIcon(ResourceLocation icon) implements CustomPacketPayload {
@@ -18,7 +18,7 @@ public record SyncWingIcon(ResourceLocation icon) implements CustomPacketPayload
             SyncWingIcon::new
     );
 
-    public static void handleClient(final SyncWingIcon packet, final IPayloadContext context) {
+    public static void handleClient(final SyncWingIcon packet, final PayloadContext context) {
         context.enqueueWork(() -> {
             FlightData.getData(context.player()).icon = packet.icon();
         });

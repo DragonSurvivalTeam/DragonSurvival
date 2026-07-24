@@ -6,10 +6,10 @@ import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
 import net.minecraft.network.FriendlyByteBuf;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.ByteBufCodecs;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.CustomPacketPayload;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraftforge.network.handling.IPayloadContext;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.PayloadContext;
 import org.jetbrains.annotations.NotNull;
 
 public record SyncVisualEffectAdded(int entityId, MobEffectInstance effect) implements CustomPacketPayload {
@@ -21,7 +21,7 @@ public record SyncVisualEffectAdded(int entityId, MobEffectInstance effect) impl
             SyncVisualEffectAdded::new
     );
 
-    public static void handleClient(final SyncVisualEffectAdded packet, final IPayloadContext context) {
+    public static void handleClient(final SyncVisualEffectAdded packet, final PayloadContext context) {
         context.enqueueWork(() -> {
             if (context.player().level().getEntity(packet.entityId()) instanceof LivingEntity entity) {
                 MobEffectInstance current = entity.getEffect(packet.effect().getEffect());

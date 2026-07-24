@@ -1,36 +1,34 @@
 package by.dragonsurvivalteam.dragonsurvival.network.container;
 
+import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.UnlockableBehavior;
 import by.dragonsurvivalteam.dragonsurvival.network.client.ClientProxy;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import net.minecraft.network.FriendlyByteBuf;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.ByteBufCodecs;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.network.PacketDistributor;
-import net.minecraftforge.network.handling.IPayloadContext;
+import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.PayloadContext;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
-
 public record OpenDragonAltar(List<UnlockableBehavior.SpeciesEntry> entries) implements CustomPacketPayload {
-    public static final Type<OpenDragonAltar> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(MODID, "open_dragon_altar"));
+    public static final Type<OpenDragonAltar> TYPE = new Type<>(DragonSurvival.res("open_dragon_altar"));
 
     public static final StreamCodec<FriendlyByteBuf, OpenDragonAltar> STREAM_CODEC = StreamCodec.composite(
             UnlockableBehavior.SpeciesEntry.STREAM_CODEC.apply(ByteBufCodecs.list()), OpenDragonAltar::entries,
             OpenDragonAltar::new
     );
 
-    public static void handleServer(final OpenDragonAltar ignored, final IPayloadContext context) {
+    public static void handleServer(final OpenDragonAltar ignored, final PayloadContext context) {
         context.enqueueWork(() -> DragonSpecies.getSpecies((ServerPlayer) context.player(), true))
                 .thenAccept(unlockedSpecies -> PacketDistributor.sendToPlayer((ServerPlayer) context.player(), new OpenDragonAltar(unlockedSpecies)));
     }
 
-    public static void handleClient(final OpenDragonAltar packet, final IPayloadContext context) {
+    public static void handleClient(final OpenDragonAltar packet, final PayloadContext context) {
         context.enqueueWork(() -> ClientProxy.openDragonAltar(packet.entries()));
     }
 

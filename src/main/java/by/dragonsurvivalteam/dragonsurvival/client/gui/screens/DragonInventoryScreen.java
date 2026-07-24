@@ -41,7 +41,7 @@ import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.client.gui.IConfigScreenFactory;
 import net.minecraftforge.client.gui.widget.ExtendedButton;
-import net.minecraftforge.network.PacketDistributor;
+import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
 import net.minecraftforgespi.language.IModInfo;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;

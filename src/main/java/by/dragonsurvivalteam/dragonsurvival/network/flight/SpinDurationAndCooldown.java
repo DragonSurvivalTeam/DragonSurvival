@@ -5,10 +5,10 @@ import by.dragonsurvivalteam.dragonsurvival.registry.attachments.FlightData;
 import net.minecraft.network.FriendlyByteBuf;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.ByteBufCodecs;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.CustomPacketPayload;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.network.PacketDistributor;
-import net.minecraftforge.network.handling.IPayloadContext;
+import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.PayloadContext;
 import org.jetbrains.annotations.NotNull;
 
 public record SpinDurationAndCooldown(int playerId, int duration, int cooldown) implements CustomPacketPayload {
@@ -26,7 +26,7 @@ public record SpinDurationAndCooldown(int playerId, int duration, int cooldown) 
         return TYPE;
     }
 
-    public static void handleClient(final SpinDurationAndCooldown packet, final IPayloadContext context) {
+    public static void handleClient(final SpinDurationAndCooldown packet, final PayloadContext context) {
         context.enqueueWork(() -> {
             if(context.player().level().getEntity(packet.playerId()) instanceof Player player) {
                 FlightData spin = FlightData.getData(player);
@@ -36,7 +36,7 @@ public record SpinDurationAndCooldown(int playerId, int duration, int cooldown) 
         });
     }
 
-    public static void handleServer(final SpinDurationAndCooldown packet, final IPayloadContext context) {
+    public static void handleServer(final SpinDurationAndCooldown packet, final PayloadContext context) {
         Player sender = context.player();
 
         context.enqueueWork(() -> {

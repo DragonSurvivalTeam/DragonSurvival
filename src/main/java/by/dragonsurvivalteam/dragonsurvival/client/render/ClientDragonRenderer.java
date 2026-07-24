@@ -64,7 +64,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.TriState;
 import net.minecraftforge.event.entity.EntityLeaveLevelEvent;
 import net.minecraftforge.event.level.LevelEvent;
-import net.minecraftforge.network.PacketDistributor;
+import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 import net.minecraft.util.Mth;

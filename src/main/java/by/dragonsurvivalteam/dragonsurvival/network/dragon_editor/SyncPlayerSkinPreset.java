@@ -9,11 +9,11 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.ByteBufCodecs;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.CustomPacketPayload;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.network.PacketDistributor;
-import net.minecraftforge.network.handling.IPayloadContext;
+import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.PayloadContext;
 import org.jetbrains.annotations.NotNull;
 
 public record SyncPlayerSkinPreset(int playerId, ResourceKey<DragonSpecies> dragonSpecies, CompoundTag preset) implements CustomPacketPayload {
@@ -26,7 +26,7 @@ public record SyncPlayerSkinPreset(int playerId, ResourceKey<DragonSpecies> drag
             SyncPlayerSkinPreset::new
     );
 
-    public static void handleClient(final SyncPlayerSkinPreset packet, final IPayloadContext context) {
+    public static void handleClient(final SyncPlayerSkinPreset packet, final PayloadContext context) {
         context.enqueueWork(() -> {
             if (context.player().level().getEntity(packet.playerId()) instanceof Player player) {
                 SkinPreset newPreset = new SkinPreset();
@@ -39,7 +39,7 @@ public record SyncPlayerSkinPreset(int playerId, ResourceKey<DragonSpecies> drag
         });
     }
 
-    public static void handleServer(final SyncPlayerSkinPreset packet, final IPayloadContext context) {
+    public static void handleServer(final SyncPlayerSkinPreset packet, final PayloadContext context) {
         context.enqueueWork(() -> {
             if (context.player().level().getEntity(packet.playerId()) instanceof Player player) {
                 SkinPreset newPreset = new SkinPreset();

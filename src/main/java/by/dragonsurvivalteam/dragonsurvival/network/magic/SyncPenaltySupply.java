@@ -7,8 +7,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.ByteBufCodecs;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraftforge.network.handling.IPayloadContext;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.CustomPacketPayload;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.PayloadContext;
 import org.jetbrains.annotations.NotNull;
 
 public record SyncPenaltySupply(CompoundTag nbt) implements CustomPacketPayload {
@@ -19,7 +19,7 @@ public record SyncPenaltySupply(CompoundTag nbt) implements CustomPacketPayload 
             SyncPenaltySupply::new
     );
 
-    public static void handleClient(final SyncPenaltySupply packet, final IPayloadContext context) {
+    public static void handleClient(final SyncPenaltySupply packet, final PayloadContext context) {
         context.enqueueWork(() -> {
             PenaltySupply penaltySupply = context.player().getData(DSDataAttachments.PENALTY_SUPPLY);
             penaltySupply.deserializeNBT(context.player().registryAccess(), packet.nbt());

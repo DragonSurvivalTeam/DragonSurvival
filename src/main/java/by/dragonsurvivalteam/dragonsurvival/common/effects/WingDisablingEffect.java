@@ -6,7 +6,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.attachments.FlightData;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.network.PacketDistributor;
+import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
 
 public class WingDisablingEffect extends ModifiableMobEffect {
     public WingDisablingEffect(final MobEffectCategory type, int color, boolean incurable) {

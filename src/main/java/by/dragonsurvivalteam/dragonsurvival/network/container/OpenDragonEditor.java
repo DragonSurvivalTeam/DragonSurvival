@@ -8,11 +8,11 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import net.minecraft.network.FriendlyByteBuf;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.ByteBufCodecs;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.CustomPacketPayload;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.network.PacketDistributor;
-import net.minecraftforge.network.handling.IPayloadContext;
+import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.PayloadContext;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -27,12 +27,12 @@ public record OpenDragonEditor(ResourceKey<DragonSpecies> species, List<Unlockab
             OpenDragonEditor::new
     );
 
-    public static void handleServer(final OpenDragonEditor packet, final IPayloadContext context) {
+    public static void handleServer(final OpenDragonEditor packet, final PayloadContext context) {
         context.enqueueWork(() -> DragonBody.getBodies((ServerPlayer) context.player(), true))
                 .thenAccept(unlockedBodies -> PacketDistributor.sendToPlayer((ServerPlayer) context.player(), new OpenDragonEditor(packet.species(), unlockedBodies, packet.fromAltar())));
     }
 
-    public static void handleClient(final OpenDragonEditor packet, final IPayloadContext context) {
+    public static void handleClient(final OpenDragonEditor packet, final PayloadContext context) {
         context.enqueueWork(() -> ClientProxy.openDragonEditor(packet.entries(), packet.species(), packet.fromAltar()));
     }
 

@@ -5,9 +5,9 @@ import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
 import net.minecraft.network.FriendlyByteBuf;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.ByteBufCodecs;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.CustomPacketPayload;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.network.handling.IPayloadContext;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.PayloadContext;
 import org.jetbrains.annotations.NotNull;
 
 /** Jump animation length is 20.8 ticks */
@@ -20,7 +20,7 @@ public record SyncPlayerJump(int playerId, boolean state) implements CustomPacke
             SyncPlayerJump::new
     );
 
-    public static void handleClient(final SyncPlayerJump packet, final IPayloadContext context) {
+    public static void handleClient(final SyncPlayerJump packet, final PayloadContext context) {
         context.enqueueWork(() -> {
             if (context.player().level().getEntity(packet.playerId()) instanceof Player) {
                 DragonEntity.DRAGONS_JUMPING.put(packet.playerId(), packet.state());

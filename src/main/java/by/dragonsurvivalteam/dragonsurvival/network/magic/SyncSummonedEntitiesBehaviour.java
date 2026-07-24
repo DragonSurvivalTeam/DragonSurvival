@@ -7,11 +7,11 @@ import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SummonData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SummonedEntities;
 import net.minecraft.network.FriendlyByteBuf;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.CustomPacketPayload;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
-import net.minecraftforge.network.handling.IPayloadContext;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.PayloadContext;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
@@ -25,7 +25,7 @@ public record SyncSummonedEntitiesBehaviour(SummonedEntities.AttackBehaviour att
             SyncSummonedEntitiesBehaviour::new
     );
 
-    public static void handleServer(final SyncSummonedEntitiesBehaviour packet, final IPayloadContext context) {
+    public static void handleServer(final SyncSummonedEntitiesBehaviour packet, final PayloadContext context) {
         context.enqueueWork(() -> {
             SummonedEntities summonData = context.player().getData(DSDataAttachments.SUMMONED_ENTITIES);
             summonData.attackBehaviour = packet.attackBehaviour();

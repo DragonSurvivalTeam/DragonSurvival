@@ -6,9 +6,9 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.ByteBufCodecs;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.CustomPacketPayload;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.network.handling.IPayloadContext;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.PayloadContext;
 import org.jetbrains.annotations.NotNull;
 
 public record SyncDragonClawsMenu(int playerId, boolean isOpen, CompoundTag data) implements CustomPacketPayload {
@@ -21,7 +21,7 @@ public record SyncDragonClawsMenu(int playerId, boolean isOpen, CompoundTag data
             SyncDragonClawsMenu::new
     );
 
-    public static void handleClient(final SyncDragonClawsMenu packet, final IPayloadContext context) {
+    public static void handleClient(final SyncDragonClawsMenu packet, final PayloadContext context) {
         context.enqueueWork(() -> {
             if (context.player().level().getEntity(packet.playerId()) instanceof Player player) {
                 ClawInventoryData data = ClawInventoryData.getData(player);

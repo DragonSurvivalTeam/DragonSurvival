@@ -7,9 +7,9 @@ import by.dragonsurvivalteam.dragonsurvival.server.containers.DragonContainer;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.chat.Component;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.CustomPacketPayload;
 import net.minecraft.world.SimpleMenuProvider;
-import net.minecraftforge.network.handling.IPayloadContext;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.PayloadContext;
 import org.jetbrains.annotations.NotNull;
 
 public record RequestOpenDragonInventory() implements CustomPacketPayload {
@@ -18,7 +18,7 @@ public record RequestOpenDragonInventory() implements CustomPacketPayload {
     public static final RequestOpenDragonInventory INSTANCE = new RequestOpenDragonInventory();
     public static final StreamCodec<ByteBuf, RequestOpenDragonInventory> STREAM_CODEC = StreamCodec.unit(INSTANCE);
 
-    public static void handleServer(final RequestOpenDragonInventory ignored, final IPayloadContext context) {
+    public static void handleServer(final RequestOpenDragonInventory ignored, final PayloadContext context) {
         context.enqueueWork(() -> {
             DragonStateHandler handler = DragonStateProvider.getData(context.player());
 

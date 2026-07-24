@@ -6,9 +6,9 @@ import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MovementData;
 import net.minecraft.network.FriendlyByteBuf;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.ByteBufCodecs;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.CustomPacketPayload;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.network.handling.IPayloadContext;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.PayloadContext;
 import org.jetbrains.annotations.NotNull;
 
 // While this data is being sent over to the server every client tick, it is only used when players begin tracking or change dimensions
@@ -24,7 +24,7 @@ public record SyncPitchAndYaw(int playerId, double headYaw, double headPitch, do
             SyncPitchAndYaw::new
     );
 
-    public static void handleClient(final SyncPitchAndYaw packet, final IPayloadContext context) {
+    public static void handleClient(final SyncPitchAndYaw packet, final PayloadContext context) {
         context.enqueueWork(() -> {
             if (context.player().level().getEntity(packet.playerId()) instanceof Player player) {
                 MovementData movementData = player.getData(DSDataAttachments.MOVEMENT);
@@ -35,7 +35,7 @@ public record SyncPitchAndYaw(int playerId, double headYaw, double headPitch, do
         });
     }
 
-    public static void handleServer(final SyncPitchAndYaw packet, final IPayloadContext context) {
+    public static void handleServer(final SyncPitchAndYaw packet, final PayloadContext context) {
         context.enqueueWork(() -> {
             if (context.player().level().getEntity(packet.playerId()) instanceof Player player) {
                 MovementData movementData = player.getData(DSDataAttachments.MOVEMENT);
