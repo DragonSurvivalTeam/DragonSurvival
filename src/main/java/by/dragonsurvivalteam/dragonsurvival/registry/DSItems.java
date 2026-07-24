@@ -7,6 +7,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.SourceOfMagicData;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.ManaHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.items.BolasArrowItem;
 import by.dragonsurvivalteam.dragonsurvival.common.items.ChargedCoalItem;
+import by.dragonsurvivalteam.dragonsurvival.common.items.ComponentItem;
 import by.dragonsurvivalteam.dragonsurvival.common.items.DarkKeyItem;
 import by.dragonsurvivalteam.dragonsurvival.common.items.DragonSoulItem;
 import by.dragonsurvivalteam.dragonsurvival.common.items.FlightGrantItem;
@@ -342,8 +343,8 @@ public class DSItems {
 
     public static final Holder<Item> CAVE_SOURCE_OF_MAGIC = REGISTRY.register("cave_source_of_magic", () -> new SourceOfMagicItem(
             DSBlocks.CAVE_SOURCE_OF_MAGIC.get(),
-            new Item.Properties().rarity(Rarity.EPIC)
-                    .component(DSDataComponents.SOURCE_OF_MAGIC, new SourceOfMagicData(
+            new Item.Properties().rarity(Rarity.EPIC),
+            new SourceOfMagicData(
                             List.of(
                                     new SourceOfMagicData.Consumable(DSItems.ELDER_DRAGON_DUST.value(), Functions.secondsToTicks(10)),
                                     new SourceOfMagicData.Consumable(DSItems.ELDER_DRAGON_BONE.value(), Functions.secondsToTicks(30)),
@@ -352,13 +353,13 @@ public class DSItems {
                                     new SourceOfMagicData.Consumable(DSItems.ELDER_DRAGON_HEART.value(), Functions.secondsToTicks(300))
                             ),
                             List.of(BuiltInDragonSpecies.CAVE_DRAGON)
-                    ))
+                    )
     ));
 
     public static final Holder<Item> FOREST_SOURCE_OF_MAGIC = REGISTRY.register("forest_source_of_magic", () -> new SourceOfMagicItem(
             DSBlocks.FOREST_SOURCE_OF_MAGIC.get(),
-            new Item.Properties().rarity(Rarity.EPIC)
-                    .component(DSDataComponents.SOURCE_OF_MAGIC, new SourceOfMagicData(
+            new Item.Properties().rarity(Rarity.EPIC),
+            new SourceOfMagicData(
                             List.of(
                                     new SourceOfMagicData.Consumable(DSItems.ELDER_DRAGON_DUST.value(), Functions.secondsToTicks(10)),
                                     new SourceOfMagicData.Consumable(DSItems.ELDER_DRAGON_BONE.value(), Functions.secondsToTicks(30)),
@@ -367,13 +368,13 @@ public class DSItems {
                                     new SourceOfMagicData.Consumable(DSItems.ELDER_DRAGON_HEART.value(), Functions.secondsToTicks(300))
                             ),
                             List.of(BuiltInDragonSpecies.FOREST_DRAGON)
-                    ))
+                    )
     ));
 
     public static final Holder<Item> SEA_SOURCE_OF_MAGIC = REGISTRY.register("sea_source_of_magic", () -> new SourceOfMagicItem(
             DSBlocks.SEA_SOURCE_OF_MAGIC.get(),
-            new Item.Properties().rarity(Rarity.EPIC)
-                    .component(DSDataComponents.SOURCE_OF_MAGIC, new SourceOfMagicData(
+            new Item.Properties().rarity(Rarity.EPIC),
+            new SourceOfMagicData(
                             List.of(
                                     new SourceOfMagicData.Consumable(DSItems.ELDER_DRAGON_DUST.value(), Functions.secondsToTicks(10)),
                                     new SourceOfMagicData.Consumable(DSItems.ELDER_DRAGON_BONE.value(), Functions.secondsToTicks(30)),
@@ -382,7 +383,7 @@ public class DSItems {
                                     new SourceOfMagicData.Consumable(DSItems.ELDER_DRAGON_HEART.value(), Functions.secondsToTicks(300))
                             ),
                             List.of(BuiltInDragonSpecies.SEA_DRAGON)
-                    ))
+                    )
     ));
 
     // --- Misc --- //
@@ -399,7 +400,7 @@ public class DSItems {
     @Translation(type = Translation.Type.ITEM, comments = "Light Key")
     @Translation(type = Translation.Type.DESCRIPTION, comments = "■§7 An enchanted key that unlocks the Light Vault. Purchased from the dragon rider villager.")
     public static final Holder<Item> LIGHT_KEY = REGISTRY.register(LIGHT_KEY_ID, () -> new LightKeyItem(
-            new Item.Properties().rarity(Rarity.UNCOMMON).component(DSDataComponents.TARGET_POSITION, new Vector3f()),
+            new Item.Properties().rarity(Rarity.UNCOMMON),
             DragonSurvival.res("geo/" + LIGHT_KEY_ID + ".geo.json"),
             DragonSurvival.res("textures/item/" + LIGHT_KEY_ID + ".png"),
             DragonSurvival.res("light_treasure")));
@@ -409,7 +410,7 @@ public class DSItems {
     @Translation(type = Translation.Type.ITEM, comments = "Dark Key")
     @Translation(type = Translation.Type.DESCRIPTION, comments = "■§7 An enchanted key that unlocks the Dark Vault in Nether. Drops if you kill a dragon hunter knight.")
     public static final Holder<Item> DARK_KEY = REGISTRY.register(DARK_KEY_ID, () -> new DarkKeyItem(
-            new Item.Properties().rarity(Rarity.UNCOMMON).component(DSDataComponents.TARGET_POSITION, new Vector3f()),
+            new Item.Properties().rarity(Rarity.UNCOMMON),
             DragonSurvival.res("geo/" + DARK_KEY_ID + ".geo.json"),
             DragonSurvival.res("textures/item/" + DARK_KEY_ID + ".png"),
             DragonSurvival.res("dark_treasure")));
@@ -419,7 +420,7 @@ public class DSItems {
     @Translation(type = Translation.Type.ITEM, comments = "Hunter Key")
     @Translation(type = Translation.Type.DESCRIPTION, comments = "■§7 An enchanted key that unlocks a treasure vault for dragon hunters. Can be purchased from the Hunter Leader in the Hunter Castle.")
     public static final Holder<Item> HUNTER_KEY = REGISTRY.register(HUNTER_KEY_ID, () -> new HunterKeyItem(
-            new Item.Properties().rarity(Rarity.UNCOMMON).component(DSDataComponents.TARGET_POSITION, new Vector3f()),
+            new Item.Properties().rarity(Rarity.UNCOMMON),
             DragonSurvival.res("geo/" + HUNTER_KEY_ID + ".geo.json"),
             DragonSurvival.res("textures/item/" + HUNTER_KEY_ID + ".png"),
             DragonSurvival.res("hunter_treasure")));
@@ -458,10 +459,10 @@ public class DSItems {
 
     // --- Test Item --- //
     @Translation(type = Translation.Type.ITEM, comments = "Magic Stick")
-    public static final Holder<Item> MAGIC_STICK = REGISTRY.register("magic_stick", () -> new Item(
-            new Item.Properties().rarity(Rarity.EPIC)
-                    .component(DSDataComponents.DRAGON_ABILITIES,
-                            new DragonAbilityHolder(
+    public static final Holder<Item> MAGIC_STICK = REGISTRY.register("magic_stick", () -> new ComponentItem<>(
+            new Item.Properties().rarity(Rarity.EPIC),
+            DSDataComponents.DRAGON_ABILITIES,
+            new DragonAbilityHolder(
                                     List.of(
                                             new DragonAbilityHolder.AbilityPair(
                                                     List.of(ResourceLocationWrapper.convert(DSDragonAbilityTags.TEST_ABILITIES)),
@@ -482,7 +483,6 @@ public class DSItems {
                                     Optional.empty(),
                                     List.of(ResourceLocationWrapper.convert(BuiltInDragonSpecies.FOREST_DRAGON))
                             )
-                    )
     ));
 
     // --- Not shown in creative tab --- //

@@ -5,18 +5,17 @@ import by.dragonsurvivalteam.dragonsurvival.network.dragon_soul_block.SyncDragon
 import by.dragonsurvivalteam.dragonsurvival.registry.DSBlockEntities;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSBlocks;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSItems;
+import by.dragonsurvivalteam.dragonsurvival.registry.data_components.DSDataComponents;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.DSLanguageProvider;
 import by.dragonsurvivalteam.dragonsurvival.server.tileentity.DragonSoulBlockEntity;
 import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -25,7 +24,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
@@ -42,7 +41,6 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.event.level.BlockEvent;
@@ -85,7 +83,7 @@ public class DragonSoulBlock extends Block implements SimpleWaterloggedBlock, En
 
     @SubscribeEvent
     public static void preventBreaking(final BlockEvent.BreakEvent event) {
-        if (!event.getState().is(DSBlocks.DRAGON_SOUL)) {
+        if (!event.getState().is(DSBlocks.DRAGON_SOUL.get())) {
             return;
         }
 
@@ -95,24 +93,25 @@ public class DragonSoulBlock extends Block implements SimpleWaterloggedBlock, En
     }
 
     @Override
-    protected @NotNull ItemInteractionResult useItemOn(@NotNull final ItemStack stack, @NotNull final BlockState state, @NotNull final Level level, @NotNull final BlockPos position, @NotNull final Player player, @NotNull final InteractionHand hand, @NotNull final BlockHitResult hitResult) {
+    public @NotNull InteractionResult use(@NotNull final BlockState state, @NotNull final Level level, @NotNull final BlockPos position, @NotNull final Player player, @NotNull final InteractionHand hand, @NotNull final BlockHitResult hitResult) {
         if (!(level.getBlockEntity(position) instanceof DragonSoulBlockEntity soul)) {
-            return super.useItemOn(stack, state, level, position, player, hand, hitResult);
+            return super.use(state, level, position, player, hand, hitResult);
         }
 
+        ItemStack stack = player.getItemInHand(hand);
         if (stack.is(Items.NAME_TAG) && soul.canInteract(player)) {
-            Component name = stack.get(DataComponents.CUSTOM_NAME);
+            Component name = stack.hasCustomHoverName() ? stack.getHoverName() : null;
             String animation = name == null ? DragonSoulBlockEntity.DEFAULT_ANIMATION : name.getString();
 
             if (level.isClientSide()) {
                 if (DragonSurvival.PROXY.updateDragonSoulBlockAnimation(soul, animation)) {
-                    return ItemInteractionResult.sidedSuccess(level.isClientSide());
+                    return InteractionResult.sidedSuccess(level.isClientSide());
                 }
 
                 player.displayClientMessage(Component.translatable(INVALID_ANIMATION, DSColors.withColor(animation, DSColors.GOLD)), true);
-                return ItemInteractionResult.FAIL;
+                return InteractionResult.FAIL;
             } else {
-                return ItemInteractionResult.sidedSuccess(level.isClientSide());
+                return InteractionResult.sidedSuccess(level.isClientSide());
             }
         } else if (stack.is(Items.PAPER)) {
             if (level.isClientSide()) {
@@ -120,14 +119,9 @@ public class DragonSoulBlock extends Block implements SimpleWaterloggedBlock, En
                 player.displayClientMessage(Component.translatable(APPLICABLE_ANIMATIONS, DSColors.withColor(animations, DSColors.GOLD)), false);
             }
 
-            return ItemInteractionResult.sidedSuccess(level.isClientSide());
+            return InteractionResult.sidedSuccess(level.isClientSide());
         }
 
-        return super.useItemOn(stack, state, level, position, player, hand, hitResult);
-    }
-
-    @Override
-    protected @NotNull InteractionResult useWithoutItem(@NotNull final BlockState state, @NotNull final Level level, @NotNull final BlockPos position, @NotNull final Player player, @NotNull final BlockHitResult hitResult) {
         if (!player.getMainHandItem().isEmpty() || !player.isCrouching()) {
             if (level.isClientSide()) {
                 player.displayClientMessage(Component.translatable(INFO, DSColors.withColor(DragonSoulBlockEntity.DEFAULT_ANIMATION, DSColors.GOLD)), false);
@@ -136,7 +130,7 @@ public class DragonSoulBlock extends Block implements SimpleWaterloggedBlock, En
             return InteractionResult.PASS;
         }
 
-        if (level.getBlockEntity(position) instanceof DragonSoulBlockEntity soul && soul.playerUUID != null && soul.playerUUID.equals(player.getUUID())) {
+        if (soul.playerUUID != null && soul.playerUUID.equals(player.getUUID())) {
             soul.locked = !soul.locked;
 
             if (level.isClientSide()) {
@@ -148,23 +142,24 @@ public class DragonSoulBlock extends Block implements SimpleWaterloggedBlock, En
             return InteractionResult.sidedSuccess(level.isClientSide());
         }
 
-        return super.useWithoutItem(state, level, position, player, hitResult);
+        return super.use(state, level, position, player, hand, hitResult);
     }
 
     @Override // Similar to 'ShulkerBoxBlock' we will drop the soul in creative mode
-    public @NotNull BlockState playerWillDestroy(@NotNull final Level level, @NotNull final BlockPos position, @NotNull final BlockState state, @NotNull final Player player) {
+    public void playerWillDestroy(@NotNull final Level level, @NotNull final BlockPos position, @NotNull final BlockState state, @NotNull final Player player) {
         if (!level.isClientSide() && player.isCreative()) {
-            level.getBlockEntity(position, DSBlockEntities.DRAGON_SOUL.get()).ifPresent(soul -> {
-                ItemStack stack = DSItems.DRAGON_SOUL.value().getDefaultInstance();
-                soul.saveToItem(stack, level.registryAccess());
+            if (level.getBlockEntity(position) instanceof DragonSoulBlockEntity soul) {
+                ItemStack stack = DSItems.DRAGON_SOUL.get().getDefaultInstance();
+                soul.saveToItem(stack);
+                copySoulData(soul, stack);
 
                 ItemEntity item = new ItemEntity(level, position.getX(), position.getY(), position.getZ(), stack);
                 item.setDefaultPickUpDelay();
                 level.addFreshEntity(item);
-            });
+            }
         }
 
-        return super.playerWillDestroy(level, position, state, player);
+        super.playerWillDestroy(level, position, state, player);
     }
 
     @Override
@@ -177,10 +172,19 @@ public class DragonSoulBlock extends Block implements SimpleWaterloggedBlock, En
     }
 
     @Override
-    public @NotNull ItemStack getCloneItemStack(@NotNull final BlockState state, @NotNull final HitResult target, @NotNull final LevelReader level, @NotNull final BlockPos position, @NotNull final Player player) {
-        ItemStack stack = super.getCloneItemStack(state, target, level, position, player);
-        level.getBlockEntity(position, DSBlockEntities.DRAGON_SOUL.get()).ifPresent(soul -> soul.saveToItem(stack, level.registryAccess()));
+    public @NotNull ItemStack getCloneItemStack(@NotNull final BlockGetter level, @NotNull final BlockPos position, @NotNull final BlockState state) {
+        ItemStack stack = super.getCloneItemStack(level, position, state);
+        if (level.getBlockEntity(position) instanceof DragonSoulBlockEntity soul) {
+            soul.saveToItem(stack);
+            copySoulData(soul, stack);
+        }
         return stack;
+    }
+
+    private static void copySoulData(final DragonSoulBlockEntity soul, final ItemStack stack) {
+        if (soul.getSoulData() != null) {
+            DSDataComponents.DRAGON_SOUL.set(stack, soul.getSoulData());
+        }
     }
 
     @Override
@@ -211,12 +215,12 @@ public class DragonSoulBlock extends Block implements SimpleWaterloggedBlock, En
     }
 
     @Override
-    protected @NotNull BlockState rotate(final BlockState state, final Rotation rotation) {
+    public @NotNull BlockState rotate(final BlockState state, final Rotation rotation) {
         return state.setValue(BlockStateProperties.HORIZONTAL_FACING, rotation.rotate(state.getValue(BlockStateProperties.HORIZONTAL_FACING)));
     }
 
     @Override
-    protected @NotNull BlockState mirror(final BlockState state, final Mirror mirror) {
+    public @NotNull BlockState mirror(final BlockState state, final Mirror mirror) {
         //noinspection deprecation -> ignore
         return state.rotate(mirror.getRotation(state.getValue(BlockStateProperties.HORIZONTAL_FACING)));
     }

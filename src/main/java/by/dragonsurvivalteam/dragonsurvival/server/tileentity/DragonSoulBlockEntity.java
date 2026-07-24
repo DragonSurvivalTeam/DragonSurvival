@@ -9,9 +9,8 @@ import by.dragonsurvivalteam.dragonsurvival.registry.data_components.DragonSoulD
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtOps;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -36,6 +35,7 @@ public class DragonSoulBlockEntity extends BlockEntity {
     public float packetTimeout;
 
     private DragonStateHandler handler;
+    private DragonSoulData soulData;
 
     public DragonSoulBlockEntity(final BlockPos position, final BlockState state) {
         super(DSBlockEntities.DRAGON_SOUL.get(), position, state);
@@ -46,25 +46,42 @@ public class DragonSoulBlockEntity extends BlockEntity {
     }
 
     public @Nullable DragonStateHandler getHandler() {
-        if ((handler == null || !handler.isDragon()) && components().has(DSDataComponents.DRAGON_SOUL.get())) {
-            // This is only the case when placed, and at that point the client still has the data component
-            //noinspection DataFlowIssue -> level and components are expected to be present
-            initializeHandler(level.registryAccess(), components().get(DSDataComponents.DRAGON_SOUL.get()).dragonData());
+        if ((handler == null || !handler.isDragon()) && soulData != null && level != null) {
+            initializeHandler(level.registryAccess(), soulData.dragonData());
         }
 
         return handler;
     }
 
     public double getScale() {
-        DragonSoulData data = components().get(DSDataComponents.DRAGON_SOUL.get());
-
-        if (data == null) {
+        if (soulData == null) {
             // Can occur before the packet from the server with the data arrives
-            // Otherwise the part below only gets called during player placement (in which case the component is present)
             return 1;
         }
 
-        return data.scale();
+        return soulData.scale();
+    }
+
+    public @Nullable DragonSoulData getSoulData() {
+        return soulData;
+    }
+
+    public void setSoulData(final @Nullable DragonSoulData data) {
+        soulData = data;
+        handler = null;
+    }
+
+    public CompoundTag saveComponentData() {
+        CompoundTag components = new CompoundTag();
+        if (soulData != null) {
+            components.put(DSDataComponents.DRAGON_SOUL.id().toString(), DSDataComponents.DRAGON_SOUL.encode(soulData));
+        }
+        return components;
+    }
+
+    public void loadComponentData(final CompoundTag components) {
+        Tag encoded = components.get(DSDataComponents.DRAGON_SOUL.id().toString());
+        setSoulData(encoded != null ? DSDataComponents.DRAGON_SOUL.decode(encoded) : null);
     }
 
     public boolean canInteract(final Player player) {
@@ -81,21 +98,18 @@ public class DragonSoulBlockEntity extends BlockEntity {
     }
 
     @Override // Responsible for synchronizing the data to the client that joins the world
-    public @NotNull CompoundTag getUpdateTag(@NotNull final HolderLookup.Provider provider) {
-        CompoundTag tag = super.getUpdateTag(provider);
-        saveAdditional(tag, provider);
-
-        // We need to do this because components are not synchronized / retained client-side by default
-        // 'BlockEntity.ComponentHelper' is private, but this is the "official" key to serialize components (see 'BlockEntity#loadWithComponents')
-        tag.put("components", DataComponentMap.CODEC.encodeStart(provider.createSerializationContext(NbtOps.INSTANCE), components()).getOrThrow());
+    public @NotNull CompoundTag getUpdateTag() {
+        CompoundTag tag = new CompoundTag();
+        saveAdditional(tag);
         return tag;
     }
 
     @Override
-    protected void saveAdditional(@NotNull final CompoundTag tag, @NotNull final HolderLookup.Provider registries) {
-        super.saveAdditional(tag, registries);
+    protected void saveAdditional(@NotNull final CompoundTag tag) {
+        super.saveAdditional(tag);
         tag.putString(ANIMATION, animation);
         tag.putBoolean(LOCKED, locked);
+        tag.put(COMPONENTS, saveComponentData());
 
         if (playerUUID != null) {
             tag.putUUID(PLAYER_UUID, playerUUID);
@@ -103,10 +117,11 @@ public class DragonSoulBlockEntity extends BlockEntity {
     }
 
     @Override
-    public void loadAdditional(@NotNull final CompoundTag tag, @NotNull final HolderLookup.Provider provider) {
-        super.loadAdditional(tag, provider);
+    public void load(@NotNull final CompoundTag tag) {
+        super.load(tag);
         animation = tag.getString(ANIMATION);
         locked = tag.getBoolean(LOCKED);
+        loadComponentData(tag.getCompound(COMPONENTS));
 
         if (tag.hasUUID(PLAYER_UUID)) {
             playerUUID = tag.getUUID(PLAYER_UUID);
@@ -114,10 +129,13 @@ public class DragonSoulBlockEntity extends BlockEntity {
             playerUUID = null;
         }
 
-        initializeHandler(provider, tag);
+        if (level != null && soulData != null) {
+            initializeHandler(level.registryAccess(), soulData.dragonData());
+        }
     }
 
     private static final String ANIMATION = "animation";
     private static final String PLAYER_UUID = "player_uuid";
     private static final String LOCKED = "locked";
+    private static final String COMPONENTS = "components";
 }

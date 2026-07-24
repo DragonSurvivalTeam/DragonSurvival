@@ -22,7 +22,6 @@ import by.dragonsurvivalteam.dragonsurvival.registry.DSStructurePlacementTypes;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSSubPredicates;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSTrades;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
-import by.dragonsurvivalteam.dragonsurvival.registry.data_components.DSDataComponents;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.trigger.OnBlockBreak;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.trigger.OnDeath;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.trigger.OnSelfHit;
@@ -61,7 +60,6 @@ public class DragonSurvival {
         ConfigHandler.initConfig();
 
         DSDataAttachments.REGISTRY.register(bus);
-        DSDataComponents.REGISTRY.register(bus);
         DSAttributes.REGISTRY.register(bus);
         DSEquipment.REGISTRY.register(bus);
         DSBlocks.REGISTRY.register(bus); // Needs to happen before items

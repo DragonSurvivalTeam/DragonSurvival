@@ -19,7 +19,10 @@ public class DragonBeaconItem extends BlockItem {
         boolean placed = super.placeBlock(context, state);
 
         if (placed && context.getLevel().getBlockEntity(context.getClickedPos()) instanceof DragonBeaconBlockEntity beacon) {
-            DragonBeaconData data = context.getItemInHand().getComponents().get(DSDataComponents.DRAGON_BEACON.get());
+            DragonBeaconData data = DSDataComponents.DRAGON_BEACON.get(
+                    context.getItemInHand(),
+                    context.getLevel().registryAccess()
+            );
 
             if (data != null) {
                 beacon.setData(data);

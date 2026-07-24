@@ -81,15 +81,15 @@ public class ToolTipHandler {
 
     @SubscribeEvent
     public static void addAbilityHolderInfo(final ItemTooltipEvent event) {
-        DragonAbilityHolder holder = event.getItemStack().get(DSDataComponents.DRAGON_ABILITIES);
+        Level level = event.getEntity() != null ? event.getEntity().level() : null;
 
-        if (holder == null) {
+        if (level == null) {
             return;
         }
 
-        Level level = event.getContext().level();
+        DragonAbilityHolder holder = DSDataComponents.DRAGON_ABILITIES.get(event.getItemStack(), level.registryAccess());
 
-        if (level == null) {
+        if (holder == null) {
             return;
         }
 

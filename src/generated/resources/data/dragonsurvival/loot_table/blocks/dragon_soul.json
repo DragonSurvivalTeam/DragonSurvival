@@ -13,7 +13,14 @@
           "type": "minecraft:item",
           "functions": [
             {
-              "function": "minecraft:copy_components",
+              "function": "minecraft:copy_nbt",
+              "ops": [
+                {
+                  "op": "replace",
+                  "source": "components",
+                  "target": "components"
+                }
+              ],
               "source": "block_entity"
             }
           ],

@@ -4,8 +4,7 @@ import by.dragonsurvivalteam.dragonsurvival.network.codec.ByteBufCodecs;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.server.tileentity.DragonSoulBlockEntity;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.component.DataComponentMap;
-import net.minecraft.nbt.NbtOps;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
 import by.dragonsurvivalteam.dragonsurvival.network.compat.CustomPacketPayload;
@@ -23,11 +22,11 @@ public record RequestDragonSoulData(BlockPos position) implements CustomPacketPa
     public static void handleServer(final RequestDragonSoulData packet, final PayloadContext context) {
         context.enqueueWork(() -> {
             if (context.player().level().getBlockEntity(packet.position()) instanceof DragonSoulBlockEntity soul) {
-                return soul.components();
+                return soul.saveComponentData();
             }
 
-            return DataComponentMap.EMPTY;
-        }).thenAccept(map -> context.reply(new SyncDragonSoulData(packet.position(), DataComponentMap.CODEC.encodeStart(context.player().registryAccess().createSerializationContext(NbtOps.INSTANCE), map).getOrThrow())));
+            return new CompoundTag();
+        }).thenAccept(data -> context.reply(new SyncDragonSoulData(packet.position(), data)));
     }
 
     @Override

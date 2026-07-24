@@ -22,7 +22,8 @@ import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.AlternativesEntry;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.entries.LootPoolSingletonContainer;
-import net.minecraft.world.level.storage.loot.functions.CopyComponentsFunction;
+import net.minecraft.world.level.storage.loot.functions.CopyNbtFunction;
+import net.minecraft.world.level.storage.loot.providers.nbt.ContextNbtProvider;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.predicates.LootItemBlockStatePropertyCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemEntityPropertyCondition;
@@ -79,7 +80,9 @@ public class BlockLootTableSubProvider extends BlockLootSubProvider {
                             applyExplosionCondition(block, LootPool.lootPool()
                                     .setRolls(ConstantValue.exactly(1))
                                     // Make sure it copies the soul data back into the dropped item
-                                    .add(LootItem.lootTableItem(block).apply(CopyComponentsFunction.copyComponents(CopyComponentsFunction.Source.BLOCK_ENTITY)))
+                                    .add(LootItem.lootTableItem(block).apply(
+                                            CopyNbtFunction.copyData(ContextNbtProvider.BLOCK_ENTITY).copy("components", "components")
+                                    ))
                             ));
                 }
 

@@ -28,7 +28,6 @@ import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import by.dragonsurvivalteam.dragonsurvival.util.ResourceHelper;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -45,7 +44,6 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.UseAnim;
-import net.minecraft.world.item.component.CustomModelData;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
@@ -99,7 +97,7 @@ public class DragonSoulItem extends BlockItem {
 
     @Override
     public @NotNull InteractionResultHolder<ItemStack> use(@NotNull final Level level, @NotNull final Player player, @NotNull final InteractionHand hand) {
-        if (!player.hasEffect(DSEffects.EXHAUSTED_SOUL) && (DragonStateProvider.isDragon(player) || player.getItemInHand(hand).has(DSDataComponents.DRAGON_SOUL))) {
+        if (!player.hasEffect(DSEffects.EXHAUSTED_SOUL.value()) && (DragonStateProvider.isDragon(player) || DSDataComponents.DRAGON_SOUL.has(player.getItemInHand(hand)))) {
             player.startUsingItem(hand);
             return InteractionResultHolder.success(player.getItemInHand(hand));
         } else {
@@ -119,7 +117,7 @@ public class DragonSoulItem extends BlockItem {
             return InteractionResult.PASS;
         }
 
-        DragonSoulData data = context.getItemInHand().get(DSDataComponents.DRAGON_SOUL);
+        DragonSoulData data = DSDataComponents.DRAGON_SOUL.get(context.getItemInHand());
 
         if (data == null) {
             return InteractionResult.PASS;
@@ -152,10 +150,10 @@ public class DragonSoulItem extends BlockItem {
         DragonSoulData data = null;
 
         // FIXME 1.22 :: remove, this was only a fallback for a breaking change
-        if (stack.has(DataComponents.CUSTOM_DATA)) {
-            CompoundTag tag = stack.get(DataComponents.CUSTOM_DATA).getUnsafe();
+        if (stack.hasTag()) {
+            CompoundTag tag = stack.getTag();
 
-            if (tag.contains(DragonSoulData.DRAGON)) {
+            if (tag != null && tag.contains(DragonSoulData.DRAGON)) {
                 data = DragonSoulData.parseLegacy(tag);
 
                 tag.remove(DragonSoulData.DRAGON);
@@ -164,9 +162,9 @@ public class DragonSoulItem extends BlockItem {
         }
 
         if (data == null) {
-            data = stack.get(DSDataComponents.DRAGON_SOUL);
+            data = DSDataComponents.DRAGON_SOUL.get(stack);
         } else {
-            stack.set(DSDataComponents.DRAGON_SOUL, data);
+            DSDataComponents.DRAGON_SOUL.set(stack, data);
         }
 
         DragonStateHandler handler = DragonStateProvider.getData(player);
@@ -192,8 +190,8 @@ public class DragonSoulItem extends BlockItem {
 
                 PenaltySupply.clear(player);
 
-                stack.set(DSDataComponents.DRAGON_SOUL, new DragonSoulData(currentDragonData, currentAbilityData, EntityScale.get(player)));
-                stack.set(DataComponents.CUSTOM_MODEL_DATA, new CustomModelData(getCustomModelData(level.registryAccess(), currentDragonData)));
+                DSDataComponents.DRAGON_SOUL.set(stack, new DragonSoulData(currentDragonData, currentAbilityData, EntityScale.get(player)));
+                setCustomModelData(stack, getCustomModelData(level.registryAccess(), currentDragonData));
             } else {
                 // Preserve spin/flight grant state
                 boolean flightGranted = handler.flightWasGranted;
@@ -205,20 +203,20 @@ public class DragonSoulItem extends BlockItem {
                 magicData.setCurrentSpecies(player, handler.speciesKey());
                 magicData.deserializeNBTForCurrentSpecies(level.registryAccess(), data.abilityData());
 
-                stack.remove(DSDataComponents.DRAGON_SOUL);
-                stack.remove(DataComponents.CUSTOM_MODEL_DATA);
+                DSDataComponents.DRAGON_SOUL.remove(stack);
+                stack.removeTagKey("CustomModelData");
             }
         } else if (handler.isDragon()) {
             CompoundTag currentDragonData = handler.serializeNBT(level.registryAccess(), true);
             CompoundTag currentAbilityData = magicData.serializeNBTForCurrentSpecies(level.registryAccess());
 
-            stack.set(DSDataComponents.DRAGON_SOUL, new DragonSoulData(currentDragonData, currentAbilityData, EntityScale.get(player)));
-            stack.set(DataComponents.CUSTOM_MODEL_DATA, new CustomModelData(getCustomModelData(level.registryAccess(), currentDragonData)));
+            DSDataComponents.DRAGON_SOUL.set(stack, new DragonSoulData(currentDragonData, currentAbilityData, EntityScale.get(player)));
+            setCustomModelData(stack, getCustomModelData(level.registryAccess(), currentDragonData));
             handler.revertToHumanForm(player, true);
         }
 
         if (!player.isCreative()) {
-            player.addEffect(new MobEffectInstance(DSEffects.EXHAUSTED_SOUL, COOLDOWN, 0, false, true, true));
+            player.addEffect(new MobEffectInstance(DSEffects.EXHAUSTED_SOUL.value(), COOLDOWN, 0, false, true, true));
         }
 
         if (player instanceof ServerPlayer serverPlayer) {
@@ -231,7 +229,7 @@ public class DragonSoulItem extends BlockItem {
         }
 
         if (player instanceof ServerPlayer serverPlayer) {
-            PacketDistributor.sendToPlayer(serverPlayer, new SyncMagicData(magicData.serializeNBT(player.registryAccess())));
+            PacketDistributor.sendToPlayer(serverPlayer, new SyncMagicData(magicData.serializeNBT(player.level().registryAccess())));
         }
 
         level.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SoundEvents.ENDER_DRAGON_GROWL, entity.getSoundSource(), 0.6f, 1);
@@ -250,20 +248,20 @@ public class DragonSoulItem extends BlockItem {
     }
 
     @Override
-    public int getUseDuration(@NotNull final ItemStack stack, @NotNull final LivingEntity entity) {
+    public int getUseDuration(@NotNull final ItemStack stack) {
         return Functions.secondsToTicks(2);
     }
 
     @Override
-    public void appendHoverText(@NotNull final ItemStack stack, @NotNull final TooltipContext context, @NotNull final List<Component> tooltips, @NotNull final TooltipFlag flag) {
-        super.appendHoverText(stack, context, tooltips, flag);
-        HolderLookup.Provider provider = context.registries();
+    public void appendHoverText(@NotNull final ItemStack stack, @Nullable final Level level, @NotNull final List<Component> tooltips, @NotNull final TooltipFlag flag) {
+        super.appendHoverText(stack, level, tooltips, flag);
+        HolderLookup.Provider provider = level != null ? level.registryAccess() : DragonSurvival.PROXY.getAccess();
 
         if (provider == null) {
             return;
         }
 
-        if (stack.has(DSDataComponents.DRAGON_SOUL)) {
+        if (DSDataComponents.DRAGON_SOUL.has(stack)) {
             CompoundTag handlerData = getHandlerData(stack);
             tooltips.add(Component.translatable(DESCRIPTION, DSColors.dynamicValue(DragonSurvival.PROXY.getDragonSoulPlacementKeybind())));
 
@@ -293,7 +291,7 @@ public class DragonSoulItem extends BlockItem {
             }
 
             //noinspection DataFlowIssue -> key is present
-            tooltips.add(Component.translatable(INFO, name, DragonStage.translatableName(stage.getKey()), String.format("%.0f", growth)));
+            tooltips.add(Component.translatable(INFO, name, DragonStage.translatableName(stage.unwrapKey().orElseThrow()), String.format("%.0f", growth)));
         } else {
             tooltips.add(Component.translatable(IS_EMPTY));
         }
@@ -302,12 +300,12 @@ public class DragonSoulItem extends BlockItem {
     @Override
     public void onUseTick(@NotNull final Level level, @NotNull final LivingEntity entity, @NotNull final ItemStack soul, int remainingUseDuration) {
         super.onUseTick(level, entity, soul, remainingUseDuration);
-        entity.playSound(SoundEvents.SOUL_ESCAPE.value(), (float) (0.2 + 0.15 * entity.getRandom().nextInt(2)), entity.getRandom().nextFloat() - entity.getRandom().nextFloat() * 0.2f + 1.0f);
+        entity.playSound(SoundEvents.SOUL_ESCAPE, (float) (0.2 + 0.15 * entity.getRandom().nextInt(2)), entity.getRandom().nextFloat() - entity.getRandom().nextFloat() * 0.2f + 1.0f);
     }
 
     @Override
     public boolean isFoil(final ItemStack stack) {
-        return stack.has(DSDataComponents.DRAGON_SOUL);
+        return DSDataComponents.DRAGON_SOUL.has(stack);
     }
 
     @Override
@@ -322,7 +320,29 @@ public class DragonSoulItem extends BlockItem {
     }
 
     public CompoundTag getHandlerData(final ItemStack stack) {
-        return stack.getOrDefault(DSDataComponents.DRAGON_SOUL, DragonSoulData.EMPTY).dragonData();
+        return DSDataComponents.DRAGON_SOUL.getOrDefault(stack, DragonSoulData.EMPTY).dragonData();
+    }
+
+    private static void setCustomModelData(final ItemStack stack, final int value) {
+        stack.getOrCreateTag().putInt("CustomModelData", value);
+    }
+
+    @Override
+    protected boolean updateCustomBlockEntityTag(
+            final net.minecraft.core.BlockPos position,
+            final Level level,
+            final @Nullable Player player,
+            final ItemStack stack,
+            final net.minecraft.world.level.block.state.BlockState state
+    ) {
+        boolean updated = super.updateCustomBlockEntityTag(position, level, player, stack, state);
+        DragonSoulData data = DSDataComponents.DRAGON_SOUL.get(stack);
+        if (data != null && level.getBlockEntity(position) instanceof by.dragonsurvivalteam.dragonsurvival.server.tileentity.DragonSoulBlockEntity soul) {
+            soul.setSoulData(data);
+            soul.setChanged();
+            return true;
+        }
+        return updated;
     }
 
     public @Nullable ResourceKey<DragonSpecies> getSpecies(final ItemStack stack, final HolderLookup.Provider provider) {

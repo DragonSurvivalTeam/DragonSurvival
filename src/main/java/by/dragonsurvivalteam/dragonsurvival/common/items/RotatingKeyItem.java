@@ -96,7 +96,7 @@ public class RotatingKeyItem extends TooltipItem implements GeoItem {
 
         if (!(level instanceof ServerLevel serverLevel)) {
             playerHoldingItem = player;
-            currentTarget = stack.get(DSDataComponents.TARGET_POSITION);
+            currentTarget = DSDataComponents.TARGET_POSITION.get(stack);
             return;
         }
 
@@ -112,16 +112,16 @@ public class RotatingKeyItem extends TooltipItem implements GeoItem {
                     StructureStart start = serverLevel.structureManager().getStartForStructure(section, nearest.getSecond().value(), serverLevel.getChunk(section.x(), section.z(), ChunkStatus.STRUCTURE_STARTS));
 
                     if (start != null) {
-                        stack.set(DSDataComponents.TARGET_POSITION, start.getBoundingBox().getCenter().getCenter().toVector3f());
+                        DSDataComponents.TARGET_POSITION.set(stack, start.getBoundingBox().getCenter().getCenter().toVector3f());
                         return;
                     }
                 }
             }
 
-            stack.set(DSDataComponents.TARGET_POSITION, fake_target);
+            DSDataComponents.TARGET_POSITION.set(stack, fake_target);
         } else {
             playerHoldingItem = player;
-            currentTarget = stack.get(DSDataComponents.TARGET_POSITION);
+            currentTarget = DSDataComponents.TARGET_POSITION.get(stack);
             String animation;
 
             if (currentTarget == fake_target || currentTarget == null || currentTarget.length() < 0.1) {

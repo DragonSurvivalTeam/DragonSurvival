@@ -20,7 +20,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class VaultBlockEntityServerMixin {
     @ModifyReturnValue(method = "isValidToInsert", at = @At(value = "RETURN"))
     private static boolean dragonSurvival$isValidToInsert(boolean original, final VaultConfig config, final ItemStack stack) {
-        if (stack.getComponents().get(DSDataComponents.TARGET_POSITION.get()) != null) {
+        if (DSDataComponents.TARGET_POSITION.has(stack)) {
             // Skip the components check if it is our vaults and keys
             return ItemStack.isSameItem(stack, config.keyItem()) && stack.getCount() >= config.keyItem().getCount();
         }

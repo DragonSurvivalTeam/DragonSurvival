@@ -10,8 +10,18 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
 public class SourceOfMagicItem extends BlockItem {
-    public SourceOfMagicItem(final Block block, final Properties properties) {
+    private final SourceOfMagicData defaultData;
+
+    public SourceOfMagicItem(final Block block, final Properties properties, final SourceOfMagicData defaultData) {
         super(block, properties);
+        this.defaultData = defaultData;
+    }
+
+    @Override
+    public @NotNull net.minecraft.world.item.ItemStack getDefaultInstance() {
+        net.minecraft.world.item.ItemStack stack = super.getDefaultInstance();
+        DSDataComponents.SOURCE_OF_MAGIC.set(stack, defaultData);
+        return stack;
     }
 
     @Override
@@ -19,12 +29,14 @@ public class SourceOfMagicItem extends BlockItem {
         boolean placed = super.placeBlock(context, state);
 
         if (placed && context.getLevel().getBlockEntity(context.getClickedPos()) instanceof SourceOfMagicBlockEntity source) {
-            SourceOfMagicData data = context.getItemInHand().getComponents().get(DSDataComponents.SOURCE_OF_MAGIC.get());
+            SourceOfMagicData data = DSDataComponents.SOURCE_OF_MAGIC.get(
+                    context.getItemInHand(),
+                    context.getLevel().registryAccess()
+            );
 
-            if (data != null) {
-                source.setConsumables(data.consumables());
-                source.setApplicableSpecies(data.applicableSpecies());
-            }
+            SourceOfMagicData appliedData = data != null ? data : defaultData;
+            source.setConsumables(appliedData.consumables());
+            source.setApplicableSpecies(appliedData.applicableSpecies());
         }
 
         return placed;

@@ -240,7 +240,7 @@ public class MagicData implements INBTSerializable<CompoundTag> {
         }
 
         MagicData magic = MagicData.getData(player);
-        DragonAbilityHolder abilityHolder = stack.get(DSDataComponents.DRAGON_ABILITIES);
+        DragonAbilityHolder abilityHolder = DSDataComponents.DRAGON_ABILITIES.get(stack, player.serverLevel().registryAccess());
 
         if (abilityHolder != null && abilityHolder.use(player, handler, magic)) {
             stack.consume(1, player);
