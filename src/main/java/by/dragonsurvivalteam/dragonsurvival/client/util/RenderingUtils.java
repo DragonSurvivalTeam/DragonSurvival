@@ -6,11 +6,11 @@ import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
 import by.dragonsurvivalteam.dragonsurvival.mixins.client.TextureManagerAccessor;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
+import com.mojang.blaze3d.opengl.GlStateManager;
 import com.mojang.blaze3d.pipeline.BlendFunction;
 import com.mojang.blaze3d.pipeline.ColorTargetState;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.pipeline.RenderTarget;
-import com.mojang.blaze3d.opengl.GlStateManager;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.textures.GpuTexture;
@@ -37,6 +37,7 @@ import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL14;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
+import org.lwjgl.opengl.GL33;
 
 import java.awt.Color;
 
@@ -414,13 +415,16 @@ public class RenderingUtils {
         private final int activeTextureBinding = GL11.glGetInteger(GL11.GL_TEXTURE_BINDING_2D);
         private final int shaderProgram = GL11.glGetInteger(GL20.GL_CURRENT_PROGRAM);
         private final int[] boundTextures;
+        private final int[] boundSamplers;
 
         private RenderStateSnapshot(final int textureUnitCount) {
             boundTextures = new int[textureUnitCount];
+            boundSamplers = new int[textureUnitCount];
 
             for (int i = 0; i < boundTextures.length; i++) {
                 GlStateManager._activeTexture(GL13.GL_TEXTURE0 + i);
                 boundTextures[i] = GL11.glGetInteger(GL11.GL_TEXTURE_BINDING_2D);
+                boundSamplers[i] = GL30.glGetIntegeri(GL33.GL_SAMPLER_BINDING, i);
             }
 
             GlStateManager._activeTexture(activeTexture);
@@ -497,6 +501,7 @@ public class RenderingUtils {
             for (int i = 0; i < boundTextures.length; i++) {
                 GlStateManager._activeTexture(GL13.GL_TEXTURE0 + i);
                 GlStateManager._bindTexture(boundTextures[i]);
+                GL33.glBindSampler(i, boundSamplers[i]);
             }
 
             GlStateManager._activeTexture(activeTexture);
