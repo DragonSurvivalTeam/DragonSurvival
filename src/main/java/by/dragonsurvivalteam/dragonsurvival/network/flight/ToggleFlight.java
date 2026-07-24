@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.network.flight;
 
+import by.dragonsurvivalteam.dragonsurvival.network.codec.ByteBufCodecs;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.handlers.ClientFlightHandler;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
@@ -8,12 +9,11 @@ import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.FlightEffect;
 import by.dragonsurvivalteam.dragonsurvival.server.handlers.ServerFlightHandler;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
+import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.network.PacketDistributor;
-import net.minecraftforge.network.codec.NeoForgeStreamCodecs;
 import net.minecraftforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
@@ -21,8 +21,8 @@ public record ToggleFlight(Activation activation, Result result) implements Cust
     public static final Type<ToggleFlight> TYPE = new Type<>(DragonSurvival.res("toggle_flight"));
 
     public static final StreamCodec<FriendlyByteBuf, ToggleFlight> STREAM_CODEC = StreamCodec.composite(
-            NeoForgeStreamCodecs.enumCodec(Activation.class), ToggleFlight::activation,
-            NeoForgeStreamCodecs.enumCodec(Result.class), ToggleFlight::result,
+            ByteBufCodecs.enumCodec(Activation.class), ToggleFlight::activation,
+            ByteBufCodecs.enumCodec(Result.class), ToggleFlight::result,
             ToggleFlight::new
     );
 

@@ -1,12 +1,12 @@
 package by.dragonsurvivalteam.dragonsurvival.network.player;
 
+import by.dragonsurvivalteam.dragonsurvival.network.codec.ByteBufCodecs;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
+import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraftforge.network.codec.NeoForgeStreamCodecs;
 import net.minecraftforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
@@ -14,7 +14,7 @@ public record SyncLargeDragonDestruction(DragonStateHandler.LargeDragonDestructi
     public static final Type<SyncLargeDragonDestruction> TYPE = new Type<>(DragonSurvival.res("sync_large_dragon_destruction"));
 
     public static final StreamCodec<FriendlyByteBuf, SyncLargeDragonDestruction> STREAM_CODEC = StreamCodec.composite(
-            NeoForgeStreamCodecs.enumCodec(DragonStateHandler.LargeDragonDestruction.class), SyncLargeDragonDestruction::largeDragonDestruction,
+            ByteBufCodecs.enumCodec(DragonStateHandler.LargeDragonDestruction.class), SyncLargeDragonDestruction::largeDragonDestruction,
             SyncLargeDragonDestruction::new
     );
 

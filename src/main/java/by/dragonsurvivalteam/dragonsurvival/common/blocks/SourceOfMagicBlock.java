@@ -428,11 +428,11 @@ public class SourceOfMagicBlock extends HorizontalDirectionalBlock implements Si
                 ParticleOptions particle = null;
 
                 if (state.getBlock() == DSBlocks.CAVE_SOURCE_OF_MAGIC.get()) {
-                    particle = DSParticles.CAVE_BEACON_PARTICLE.value();
+                particle = DSParticles.CAVE_BEACON_PARTICLE.get();
                 } else if (state.getBlock() == DSBlocks.FOREST_SOURCE_OF_MAGIC.get()) {
-                    particle = DSParticles.FOREST_BEACON_PARTICLE.value();
+                particle = DSParticles.FOREST_BEACON_PARTICLE.get();
                 } else if (state.getBlock() == DSBlocks.SEA_SOURCE_OF_MAGIC.get()) {
-                    particle = DSParticles.SEA_BEACON_PARTICLE.value();
+                particle = DSParticles.SEA_BEACON_PARTICLE.get();
                 }
 
                 if (particle != null) {

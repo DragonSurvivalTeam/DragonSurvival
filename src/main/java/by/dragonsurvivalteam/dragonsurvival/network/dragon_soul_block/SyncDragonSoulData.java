@@ -7,8 +7,8 @@ import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
+import by.dragonsurvivalteam.dragonsurvival.network.codec.ByteBufCodecs;
+import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraftforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
@@ -17,7 +17,7 @@ public record SyncDragonSoulData(BlockPos position, Tag data) implements CustomP
     public static final Type<SyncDragonSoulData> TYPE = new Type<>(DragonSurvival.res("sync_dragon_soul_data"));
 
     public static final StreamCodec<FriendlyByteBuf, SyncDragonSoulData> STREAM_CODEC = StreamCodec.composite(
-            BlockPos.STREAM_CODEC, SyncDragonSoulData::position,
+            ByteBufCodecs.BLOCK_POS, SyncDragonSoulData::position,
             ByteBufCodecs.TAG, SyncDragonSoulData::data,
             SyncDragonSoulData::new
     );

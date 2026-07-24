@@ -4,8 +4,8 @@ import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.PenaltySupply;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
+import by.dragonsurvivalteam.dragonsurvival.network.codec.ByteBufCodecs;
+import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.network.handling.IPayloadContext;
@@ -15,7 +15,7 @@ public record SyncPenaltySupplyAmount(ResourceLocation supplyType, float amount)
     public static final Type<SyncPenaltySupplyAmount> TYPE = new CustomPacketPayload.Type<>(DragonSurvival.res("sync_penalty_supply_amount"));
 
     public static final StreamCodec<FriendlyByteBuf, SyncPenaltySupplyAmount> STREAM_CODEC = StreamCodec.composite(
-            ResourceLocation.STREAM_CODEC, SyncPenaltySupplyAmount::supplyType,
+            ByteBufCodecs.RESOURCE_LOCATION, SyncPenaltySupplyAmount::supplyType,
             ByteBufCodecs.FLOAT, SyncPenaltySupplyAmount::amount,
             SyncPenaltySupplyAmount::new
     );

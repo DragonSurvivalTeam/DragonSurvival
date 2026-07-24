@@ -5,7 +5,7 @@ import by.dragonsurvivalteam.dragonsurvival.client.render.ClientDragonRenderer;
 import by.dragonsurvivalteam.dragonsurvival.network.claw.SyncDragonClawRender;
 import by.dragonsurvivalteam.dragonsurvival.network.dragon_editor.SyncDragonSkinSettings;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.network.codec.StreamCodec;
+import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraftforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;

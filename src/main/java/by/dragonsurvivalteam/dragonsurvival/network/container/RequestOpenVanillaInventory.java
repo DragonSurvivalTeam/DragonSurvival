@@ -2,7 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.network.container;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.network.codec.StreamCodec;
+import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.inventory.InventoryMenu;

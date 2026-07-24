@@ -6,7 +6,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.DragonBeaconData;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.SourceOfMagicData;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.network.codec.ByteBufCodecs;
+import by.dragonsurvivalteam.dragonsurvival.network.codec.ByteBufCodecs;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraftforge.registries.DeferredRegister;
 import org.joml.Vector3f;

@@ -4,9 +4,9 @@ import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ModifierWithDuration;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ModifiersWithDuration;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.FriendlyByteBuf;
+import by.dragonsurvivalteam.dragonsurvival.network.codec.ByteBufCodecs;
+import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.network.handling.IPayloadContext;
@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
 public record SyncModifierWithDuration(int playerId, ModifierWithDuration.Instance modifierInstance, boolean remove) implements CustomPacketPayload {
     public static final Type<SyncModifierWithDuration> TYPE = new Type<>(DragonSurvival.res("sync_modifier_with_duration"));
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, SyncModifierWithDuration> STREAM_CODEC = StreamCodec.composite(
+    public static final StreamCodec<FriendlyByteBuf, SyncModifierWithDuration> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.VAR_INT, SyncModifierWithDuration::playerId,
             ByteBufCodecs.fromCodecWithRegistries(ModifierWithDuration.Instance.CODEC), SyncModifierWithDuration::modifierInstance,
             ByteBufCodecs.BOOL, SyncModifierWithDuration::remove,

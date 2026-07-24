@@ -4,9 +4,9 @@ import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.handlers.ClientFlightHandler;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.FlightData;
 import net.minecraft.core.HolderSet;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.FriendlyByteBuf;
+import by.dragonsurvivalteam.dragonsurvival.network.codec.ByteBufCodecs;
+import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.fluids.FluidType;
@@ -20,7 +20,7 @@ import java.util.Optional;
 public record SyncSpinStatus(int playerId, boolean hasSpin, Optional<HolderSet<FluidType>> swimSpinFluid) implements CustomPacketPayload {
     public static final Type<SyncSpinStatus> TYPE = new Type<>(DragonSurvival.res("sync_spin_status"));
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, SyncSpinStatus> STREAM_CODEC = StreamCodec.composite(
+    public static final StreamCodec<FriendlyByteBuf, SyncSpinStatus> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.VAR_INT, SyncSpinStatus::playerId,
             ByteBufCodecs.BOOL, SyncSpinStatus::hasSpin,
             ByteBufCodecs.optional(ByteBufCodecs.holderSet(ForgeRegistries.Keys.FLUID_TYPES)), SyncSpinStatus::swimSpinFluid,

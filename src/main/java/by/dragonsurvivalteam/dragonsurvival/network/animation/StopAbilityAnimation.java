@@ -2,8 +2,8 @@ package by.dragonsurvivalteam.dragonsurvival.network.animation;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
+import by.dragonsurvivalteam.dragonsurvival.network.codec.ByteBufCodecs;
+import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.network.handling.IPayloadContext;

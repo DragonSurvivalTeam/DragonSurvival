@@ -42,11 +42,11 @@ public class DragonBeaconRenderer implements BlockEntityRenderer<DragonBeaconBlo
             ParticleOptions particle;
 
             if (random < 0.33) {
-                particle = DSParticles.CAVE_BEACON_PARTICLE.value();
+            particle = DSParticles.CAVE_BEACON_PARTICLE.get();
             } else if (random < 0.66) {
-                particle = DSParticles.FOREST_BEACON_PARTICLE.value();
+            particle = DSParticles.FOREST_BEACON_PARTICLE.get();
             } else {
-                particle = DSParticles.SEA_BEACON_PARTICLE.value();
+            particle = DSParticles.SEA_BEACON_PARTICLE.get();
             }
 
             level.addParticle(particle, x, y, z, 0, 0, 0);

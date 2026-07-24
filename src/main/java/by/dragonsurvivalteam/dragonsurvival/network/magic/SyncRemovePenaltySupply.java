@@ -1,10 +1,11 @@
 package by.dragonsurvivalteam.dragonsurvival.network.magic;
 
+import by.dragonsurvivalteam.dragonsurvival.network.codec.ByteBufCodecs;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.PenaltySupply;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
+import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.network.handling.IPayloadContext;
@@ -14,7 +15,7 @@ public record SyncRemovePenaltySupply(ResourceLocation id) implements CustomPack
     public static final Type<SyncRemovePenaltySupply> TYPE = new CustomPacketPayload.Type<>(DragonSurvival.res("sync_remove_penalty_supply"));
 
     public static final StreamCodec<FriendlyByteBuf, SyncRemovePenaltySupply> STREAM_CODEC = StreamCodec.composite(
-            ResourceLocation.STREAM_CODEC, SyncRemovePenaltySupply::id,
+            ByteBufCodecs.RESOURCE_LOCATION, SyncRemovePenaltySupply::id,
             SyncRemovePenaltySupply::new
     );
 

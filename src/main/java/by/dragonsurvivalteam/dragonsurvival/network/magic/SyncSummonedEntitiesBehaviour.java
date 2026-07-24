@@ -1,16 +1,16 @@
 package by.dragonsurvivalteam.dragonsurvival.network.magic;
 
+import by.dragonsurvivalteam.dragonsurvival.network.codec.ByteBufCodecs;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SummonData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SummonedEntities;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
+import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
-import net.minecraftforge.network.codec.NeoForgeStreamCodecs;
 import net.minecraftforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
@@ -20,8 +20,8 @@ public record SyncSummonedEntitiesBehaviour(SummonedEntities.AttackBehaviour att
     public static final Type<SyncSummonedEntitiesBehaviour> TYPE = new Type<>(DragonSurvival.res("sync_summoned_entities_behaviour"));
 
     public static final StreamCodec<FriendlyByteBuf, SyncSummonedEntitiesBehaviour> STREAM_CODEC = StreamCodec.composite(
-            NeoForgeStreamCodecs.enumCodec(SummonedEntities.AttackBehaviour.class), SyncSummonedEntitiesBehaviour::attackBehaviour,
-            NeoForgeStreamCodecs.enumCodec(SummonedEntities.MovementBehaviour.class), SyncSummonedEntitiesBehaviour::movementBehaviour,
+            ByteBufCodecs.enumCodec(SummonedEntities.AttackBehaviour.class), SyncSummonedEntitiesBehaviour::attackBehaviour,
+            ByteBufCodecs.enumCodec(SummonedEntities.MovementBehaviour.class), SyncSummonedEntitiesBehaviour::movementBehaviour,
             SyncSummonedEntitiesBehaviour::new
     );
 

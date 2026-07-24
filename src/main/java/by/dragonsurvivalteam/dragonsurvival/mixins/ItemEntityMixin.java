@@ -2,7 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.mixins;
 
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -20,12 +20,12 @@ public abstract class ItemEntityMixin extends Entity implements IEntityWithCompl
     }
 
     @Override
-    public void writeSpawnData(@NotNull final RegistryFriendlyByteBuf buffer) {
+    public void writeSpawnData(@NotNull final FriendlyByteBuf buffer) {
         getExistingData(DSDataAttachments.ITEM).ifPresentOrElse(data -> buffer.writeBoolean(data.isFireImmune), () -> buffer.writeBoolean(false));
     }
 
     @Override
-    public void readSpawnData(@NotNull final RegistryFriendlyByteBuf buffer) {
+    public void readSpawnData(@NotNull final FriendlyByteBuf buffer) {
         if (/* Fire immune */ !buffer.readBoolean()) {
             return;
         }

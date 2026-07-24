@@ -4,9 +4,9 @@ import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Glow;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.GlowData;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.FriendlyByteBuf;
+import by.dragonsurvivalteam.dragonsurvival.network.codec.ByteBufCodecs;
+import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.entity.Entity;
 import net.minecraftforge.network.handling.IPayloadContext;
@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
 public record SyncGlowInstance(int entityId, Glow.Instance instance, boolean isRemoval) implements CustomPacketPayload {
     public static final Type<SyncGlowInstance> TYPE = new Type<>(DragonSurvival.res("sync_glow"));
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, SyncGlowInstance> STREAM_CODEC = StreamCodec.composite(
+    public static final StreamCodec<FriendlyByteBuf, SyncGlowInstance> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.VAR_INT, SyncGlowInstance::entityId,
             ByteBufCodecs.fromCodecWithRegistries(Glow.Instance.CODEC), SyncGlowInstance::instance,
             ByteBufCodecs.BOOL, SyncGlowInstance::isRemoval,

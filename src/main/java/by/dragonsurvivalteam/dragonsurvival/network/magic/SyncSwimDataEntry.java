@@ -3,9 +3,9 @@ package by.dragonsurvivalteam.dragonsurvival.network.magic;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SwimData;
 import net.minecraft.core.Holder;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.FriendlyByteBuf;
+import by.dragonsurvivalteam.dragonsurvival.network.codec.ByteBufCodecs;
+import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.network.handling.IPayloadContext;
@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
 public record SyncSwimDataEntry(int maxOxygen, Holder<FluidType> fluidType, boolean remove) implements CustomPacketPayload {
     public static final Type<SyncSwimDataEntry> TYPE = new CustomPacketPayload.Type<>(DragonSurvival.res("sync_swim_data_entry"));
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, SyncSwimDataEntry> STREAM_CODEC = StreamCodec.composite(
+    public static final StreamCodec<FriendlyByteBuf, SyncSwimDataEntry> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.INT, SyncSwimDataEntry::maxOxygen,
             ByteBufCodecs.fromCodecWithRegistries(ForgeRegistries.FLUID_TYPES.holderByNameCodec()), SyncSwimDataEntry::fluidType,
             ByteBufCodecs.BOOL, SyncSwimDataEntry::remove,

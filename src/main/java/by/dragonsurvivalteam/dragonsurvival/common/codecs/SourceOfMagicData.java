@@ -5,9 +5,9 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.FriendlyByteBuf;
+import by.dragonsurvivalteam.dragonsurvival.network.codec.ByteBufCodecs;
+import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
 
@@ -21,9 +21,9 @@ public record SourceOfMagicData(List<Consumable> consumables, List<ResourceKey<D
             ResourceKey.codec(DragonSpecies.REGISTRY).listOf().fieldOf("applicable_species").forGetter(SourceOfMagicData::applicableSpecies)
     ).apply(instance, SourceOfMagicData::new));
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, SourceOfMagicData> STREAM_CODEC = StreamCodec.composite(
+    public static final StreamCodec<FriendlyByteBuf, SourceOfMagicData> STREAM_CODEC = StreamCodec.composite(
             Consumable.STREAM_CODEC.apply(ByteBufCodecs.list()), SourceOfMagicData::consumables,
-            ResourceKey.streamCodec(DragonSpecies.REGISTRY).apply(ByteBufCodecs.list()), SourceOfMagicData::applicableSpecies,
+            ByteBufCodecs.resourceKey(DragonSpecies.REGISTRY).apply(ByteBufCodecs.list()), SourceOfMagicData::applicableSpecies,
             SourceOfMagicData::new
     );
 
@@ -33,7 +33,7 @@ public record SourceOfMagicData(List<Consumable> consumables, List<ResourceKey<D
                 Codec.INT.fieldOf("duration").forGetter(Consumable::duration)
         ).apply(instance, Consumable::new));
 
-        public static final StreamCodec<RegistryFriendlyByteBuf, Consumable> STREAM_CODEC = StreamCodec.composite(
+        public static final StreamCodec<FriendlyByteBuf, Consumable> STREAM_CODEC = StreamCodec.composite(
                 ByteBufCodecs.registry(Registries.ITEM), Consumable::item,
                 ByteBufCodecs.VAR_INT, Consumable::duration,
                 Consumable::new

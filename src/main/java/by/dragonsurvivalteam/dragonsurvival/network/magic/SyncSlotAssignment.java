@@ -4,8 +4,8 @@ import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbility;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
+import by.dragonsurvivalteam.dragonsurvival.network.codec.ByteBufCodecs;
+import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceKey;
 import net.minecraftforge.network.handling.IPayloadContext;
@@ -15,7 +15,7 @@ public record SyncSlotAssignment(ResourceKey<DragonAbility> abilityToMove, int n
     public static final Type<SyncSlotAssignment> TYPE = new CustomPacketPayload.Type<>(DragonSurvival.res("sync_slot_assignment"));
 
     public static final StreamCodec<FriendlyByteBuf, SyncSlotAssignment> STREAM_CODEC = StreamCodec.composite(
-            ResourceKey.streamCodec(DragonAbility.REGISTRY), SyncSlotAssignment::abilityToMove,
+            ByteBufCodecs.resourceKey(DragonAbility.REGISTRY), SyncSlotAssignment::abilityToMove,
             ByteBufCodecs.VAR_INT, SyncSlotAssignment::newSlot,
             SyncSlotAssignment::new
     );

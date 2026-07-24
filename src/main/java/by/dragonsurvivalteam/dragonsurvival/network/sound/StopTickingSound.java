@@ -1,8 +1,9 @@
 package by.dragonsurvivalteam.dragonsurvival.network.sound;
 
+import by.dragonsurvivalteam.dragonsurvival.network.codec.ByteBufCodecs;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
+import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.network.handling.IPayloadContext;
@@ -12,7 +13,7 @@ public record StopTickingSound(ResourceLocation id) implements CustomPacketPaylo
     public static final CustomPacketPayload.Type<StopTickingSound> TYPE = new CustomPacketPayload.Type<>(DragonSurvival.res("stop_ticking_sound"));
 
     public static final StreamCodec<FriendlyByteBuf, StopTickingSound> STREAM_CODEC = StreamCodec.composite(
-            ResourceLocation.STREAM_CODEC, StopTickingSound::id,
+            ByteBufCodecs.RESOURCE_LOCATION, StopTickingSound::id,
             StopTickingSound::new
     );
 

@@ -4,9 +4,9 @@ import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SummonedEntities;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.common_effects.SummonEntityEffect;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.FriendlyByteBuf;
+import by.dragonsurvivalteam.dragonsurvival.network.codec.ByteBufCodecs;
+import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraftforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 public record SyncSummonedEntity(SummonEntityEffect.Instance instance, boolean isRemoval) implements CustomPacketPayload {
     public static final Type<SyncSummonedEntity> TYPE = new Type<>(DragonSurvival.res("sync_summoned_entity"));
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, SyncSummonedEntity> STREAM_CODEC = StreamCodec.composite(
+    public static final StreamCodec<FriendlyByteBuf, SyncSummonedEntity> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.fromCodecWithRegistries(SummonEntityEffect.Instance.CODEC), SyncSummonedEntity::instance,
             ByteBufCodecs.BOOL, SyncSummonedEntity::isRemoval,
             SyncSummonedEntity::new

@@ -3,9 +3,9 @@ package by.dragonsurvivalteam.dragonsurvival.network.player;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MovementData;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.FriendlyByteBuf;
+import by.dragonsurvivalteam.dragonsurvival.network.codec.ByteBufCodecs;
+import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.network.handling.IPayloadContext;
@@ -16,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
 public record SyncPitchAndYaw(int playerId, double headYaw, double headPitch, double bodyYaw) implements  CustomPacketPayload {
     public static final CustomPacketPayload.Type<SyncPitchAndYaw> TYPE = new CustomPacketPayload.Type<>(DragonSurvival.res("sync_pitch_and_yaw"));
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, SyncPitchAndYaw> STREAM_CODEC = StreamCodec.composite(
+    public static final StreamCodec<FriendlyByteBuf, SyncPitchAndYaw> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.VAR_INT, SyncPitchAndYaw::playerId,
             ByteBufCodecs.DOUBLE, SyncPitchAndYaw::headYaw,
             ByteBufCodecs.DOUBLE, SyncPitchAndYaw::headPitch,

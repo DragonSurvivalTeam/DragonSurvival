@@ -5,8 +5,8 @@ import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbility;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
+import by.dragonsurvivalteam.dragonsurvival.network.codec.ByteBufCodecs;
+import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceKey;
 import net.minecraftforge.network.handling.IPayloadContext;
@@ -16,7 +16,7 @@ public record SyncDisableAbility(ResourceKey<DragonAbility> ability, boolean isD
     public static final Type<SyncDisableAbility> TYPE = new Type<>(DragonSurvival.res("sync_ability_enabled"));
 
     public static final StreamCodec<FriendlyByteBuf, SyncDisableAbility> STREAM_CODEC = StreamCodec.composite(
-            ResourceKey.streamCodec(DragonAbility.REGISTRY), SyncDisableAbility::ability,
+            ByteBufCodecs.resourceKey(DragonAbility.REGISTRY), SyncDisableAbility::ability,
             ByteBufCodecs.BOOL, SyncDisableAbility::isDisabled,
             ByteBufCodecs.BOOL, SyncDisableAbility::isManual,
             SyncDisableAbility::new

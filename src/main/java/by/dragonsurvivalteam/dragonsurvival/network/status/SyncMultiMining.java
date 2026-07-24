@@ -1,12 +1,12 @@
 package by.dragonsurvivalteam.dragonsurvival.network.status;
 
+import by.dragonsurvivalteam.dragonsurvival.network.codec.ByteBufCodecs;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
+import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraftforge.network.codec.NeoForgeStreamCodecs;
 import net.minecraftforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
@@ -14,7 +14,7 @@ public record SyncMultiMining(DragonStateHandler.MultiMining multiMining) implem
     public static final Type<SyncMultiMining> TYPE = new Type<>(DragonSurvival.res("sync_multi_mining"));
 
     public static final StreamCodec<FriendlyByteBuf, SyncMultiMining> STREAM_CODEC = StreamCodec.composite(
-            NeoForgeStreamCodecs.enumCodec(DragonStateHandler.MultiMining.class), SyncMultiMining::multiMining,
+            ByteBufCodecs.enumCodec(DragonStateHandler.MultiMining.class), SyncMultiMining::multiMining,
             SyncMultiMining::new
     );
 

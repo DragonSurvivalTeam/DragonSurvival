@@ -4,9 +4,9 @@ import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.block_vision.BlockVision;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.BlockVisionData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.FriendlyByteBuf;
+import by.dragonsurvivalteam.dragonsurvival.network.codec.ByteBufCodecs;
+import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.network.handling.IPayloadContext;
@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
 public record SyncBlockVision(int playerId, BlockVision.Instance blockVisionInstance, boolean isRemoval) implements CustomPacketPayload {
     public static final CustomPacketPayload.Type<SyncBlockVision> TYPE = new CustomPacketPayload.Type<>(DragonSurvival.res("sync_block_vision"));
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, SyncBlockVision> STREAM_CODEC = StreamCodec.composite(
+    public static final StreamCodec<FriendlyByteBuf, SyncBlockVision> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.VAR_INT, SyncBlockVision::playerId,
             ByteBufCodecs.fromCodecWithRegistries(BlockVision.Instance.CODEC), SyncBlockVision::blockVisionInstance,
             ByteBufCodecs.BOOL, SyncBlockVision::isRemoval,

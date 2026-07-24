@@ -2,8 +2,8 @@ package by.dragonsurvivalteam.dragonsurvival.network.sound;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
+import by.dragonsurvivalteam.dragonsurvival.network.codec.ByteBufCodecs;
+import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
@@ -19,7 +19,7 @@ public record StartTickingSound(int playerId, SoundEvent soundEvent, ResourceLoc
     public static final StreamCodec<FriendlyByteBuf, StartTickingSound> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.VAR_INT, StartTickingSound::playerId,
             SoundEvent.DIRECT_STREAM_CODEC, StartTickingSound::soundEvent,
-            ResourceLocation.STREAM_CODEC, StartTickingSound::id,
+            ByteBufCodecs.RESOURCE_LOCATION, StartTickingSound::id,
             StartTickingSound::new
     );
 

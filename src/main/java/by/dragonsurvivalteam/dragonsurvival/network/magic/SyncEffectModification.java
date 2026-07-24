@@ -4,9 +4,9 @@ import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.EffectModification;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.EffectModifications;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.FriendlyByteBuf;
+import by.dragonsurvivalteam.dragonsurvival.network.codec.ByteBufCodecs;
+import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.network.handling.IPayloadContext;
@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
 public record SyncEffectModification(int playerId, EffectModification.Instance modifierInstance, boolean remove) implements CustomPacketPayload {
     public static final Type<SyncEffectModification> TYPE = new Type<>(DragonSurvival.res("sync_effect_modification"));
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, SyncEffectModification> STREAM_CODEC = StreamCodec.composite(
+    public static final StreamCodec<FriendlyByteBuf, SyncEffectModification> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.VAR_INT, SyncEffectModification::playerId,
             ByteBufCodecs.fromCodecWithRegistries(EffectModification.Instance.CODEC), SyncEffectModification::modifierInstance,
             ByteBufCodecs.BOOL, SyncEffectModification::remove,

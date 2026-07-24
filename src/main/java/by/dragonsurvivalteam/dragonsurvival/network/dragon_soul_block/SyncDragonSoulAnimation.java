@@ -4,8 +4,8 @@ import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.server.tileentity.DragonSoulBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
+import by.dragonsurvivalteam.dragonsurvival.network.codec.ByteBufCodecs;
+import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.network.PacketDistributor;
@@ -16,7 +16,7 @@ public record SyncDragonSoulAnimation(BlockPos position, String animation) imple
     public static final Type<SyncDragonSoulAnimation> TYPE = new Type<>(DragonSurvival.res("sync_dragon_soul_animation"));
 
     public static final StreamCodec<FriendlyByteBuf, SyncDragonSoulAnimation> STREAM_CODEC = StreamCodec.composite(
-            BlockPos.STREAM_CODEC, SyncDragonSoulAnimation::position,
+            ByteBufCodecs.BLOCK_POS, SyncDragonSoulAnimation::position,
             ByteBufCodecs.STRING_UTF8, SyncDragonSoulAnimation::animation,
             SyncDragonSoulAnimation::new
     );

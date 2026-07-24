@@ -2,9 +2,9 @@ package by.dragonsurvivalteam.dragonsurvival.network.player;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.FriendlyByteBuf;
+import by.dragonsurvivalteam.dragonsurvival.network.codec.ByteBufCodecs;
+import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.network.handling.IPayloadContext;
@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 public record SyncGrowth(int playerId, double growth) implements CustomPacketPayload {
     public static final Type<SyncGrowth> TYPE = new Type<>(DragonSurvival.res("sync_growth"));
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, SyncGrowth> STREAM_CODEC = StreamCodec.composite(
+    public static final StreamCodec<FriendlyByteBuf, SyncGrowth> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.VAR_INT, SyncGrowth::playerId,
             ByteBufCodecs.DOUBLE, SyncGrowth::growth,
             SyncGrowth::new

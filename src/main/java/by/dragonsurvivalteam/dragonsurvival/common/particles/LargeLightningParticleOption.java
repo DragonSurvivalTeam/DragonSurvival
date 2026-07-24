@@ -2,17 +2,16 @@ package by.dragonsurvivalteam.dragonsurvival.common.particles;
 
 import by.dragonsurvivalteam.dragonsurvival.registry.DSParticles;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
+import by.dragonsurvivalteam.dragonsurvival.network.codec.ByteBufCodecs;
+import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
 import org.jetbrains.annotations.NotNull;
 
-public record LargeLightningParticleOption(float duration, boolean swirls) implements ParticleOptions {
-    public static final MapCodec<LargeLightningParticleOption> CODEC = RecordCodecBuilder.mapCodec(codecBuilder -> codecBuilder.group(
+public record LargeLightningParticleOption(float duration, boolean swirls) implements DurationParticleOption {
+    public static final Codec<LargeLightningParticleOption> CODEC = RecordCodecBuilder.create(codecBuilder -> codecBuilder.group(
             Codec.FLOAT.fieldOf("duration").forGetter(LargeLightningParticleOption::duration),
             Codec.BOOL.fieldOf("swirls").forGetter(LargeLightningParticleOption::swirls)
     ).apply(codecBuilder, LargeLightningParticleOption::new));
@@ -22,9 +21,10 @@ public record LargeLightningParticleOption(float duration, boolean swirls) imple
             ByteBufCodecs.BOOL, LargeLightningParticleOption::swirls,
             LargeLightningParticleOption::new
     );
+    public static final ParticleOptions.Deserializer<LargeLightningParticleOption> DESERIALIZER = DurationParticleOption.deserializer(LargeLightningParticleOption::new);
 
     @Override
     public @NotNull ParticleType<?> getType() {
-        return DSParticles.LARGE_LIGHTNING.value();
+        return DSParticles.LARGE_LIGHTNING.get();
     }
 }

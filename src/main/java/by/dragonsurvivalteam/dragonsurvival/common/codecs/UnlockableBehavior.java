@@ -5,9 +5,9 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.FriendlyByteBuf;
+import by.dragonsurvivalteam.dragonsurvival.network.codec.ByteBufCodecs;
+import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import org.jetbrains.annotations.NotNull;
@@ -40,7 +40,7 @@ public record UnlockableBehavior(Optional<LootItemCondition> unlockCondition, Op
                 Codec.BOOL.fieldOf("is_unlocked").forGetter(SpeciesEntry::isUnlocked)
         ).apply(instance, SpeciesEntry::new));
 
-        public static final StreamCodec<RegistryFriendlyByteBuf, SpeciesEntry> STREAM_CODEC = StreamCodec.composite(
+        public static final StreamCodec<FriendlyByteBuf, SpeciesEntry> STREAM_CODEC = StreamCodec.composite(
                 DragonSpecies.STREAM_CODEC, SpeciesEntry::species,
                 ByteBufCodecs.BOOL, SpeciesEntry::isUnlocked,
                 SpeciesEntry::new
@@ -53,7 +53,7 @@ public record UnlockableBehavior(Optional<LootItemCondition> unlockCondition, Op
                 Codec.BOOL.fieldOf("is_unlocked").forGetter(BodyEntry::isUnlocked)
         ).apply(instance, BodyEntry::new));
 
-        public static final StreamCodec<RegistryFriendlyByteBuf, BodyEntry> STREAM_CODEC = StreamCodec.composite(
+        public static final StreamCodec<FriendlyByteBuf, BodyEntry> STREAM_CODEC = StreamCodec.composite(
                 DragonBody.STREAM_CODEC, BodyEntry::body,
                 ByteBufCodecs.BOOL, BodyEntry::isUnlocked,
                 BodyEntry::new

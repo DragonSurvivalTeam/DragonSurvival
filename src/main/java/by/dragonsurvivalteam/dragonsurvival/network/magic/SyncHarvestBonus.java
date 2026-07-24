@@ -4,9 +4,9 @@ import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.HarvestBonus;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.HarvestBonuses;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.FriendlyByteBuf;
+import by.dragonsurvivalteam.dragonsurvival.network.codec.ByteBufCodecs;
+import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.network.handling.IPayloadContext;
@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
 public record SyncHarvestBonus(int playerId, HarvestBonus.Instance harvestBonusInstance, boolean remove) implements CustomPacketPayload {
     public static final CustomPacketPayload.Type<SyncHarvestBonus> TYPE = new CustomPacketPayload.Type<>(DragonSurvival.res("sync_harvest_bonus"));
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, SyncHarvestBonus> STREAM_CODEC = StreamCodec.composite(
+    public static final StreamCodec<FriendlyByteBuf, SyncHarvestBonus> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.VAR_INT, SyncHarvestBonus::playerId,
             ByteBufCodecs.fromCodecWithRegistries(HarvestBonus.Instance.CODEC), SyncHarvestBonus::harvestBonusInstance,
             ByteBufCodecs.BOOL, SyncHarvestBonus::remove,

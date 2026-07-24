@@ -12,9 +12,9 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.FriendlyByteBuf;
+import by.dragonsurvivalteam.dragonsurvival.network.codec.ByteBufCodecs;
+import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
 import net.minecraft.resources.RegistryFixedCodec;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -37,7 +37,7 @@ public record ProjectileData(GeneralData generalData, Either<GenericBallData, Ge
     ).apply(instance, ProjectileData::new));
 
     public static final Codec<Holder<ProjectileData>> CODEC = RegistryFixedCodec.create(REGISTRY);
-    public static final StreamCodec<RegistryFriendlyByteBuf, Holder<ProjectileData>> STREAM_CODEC = ByteBufCodecs.holderRegistry(REGISTRY);
+    public static final StreamCodec<FriendlyByteBuf, Holder<ProjectileData>> STREAM_CODEC = ByteBufCodecs.holderRegistry(REGISTRY);
 
     @SubscribeEvent
     public static void register(final DataPackRegistryEvent.NewRegistry event) {

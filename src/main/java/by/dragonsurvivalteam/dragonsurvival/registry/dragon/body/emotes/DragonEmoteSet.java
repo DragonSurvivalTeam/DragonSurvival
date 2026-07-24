@@ -5,9 +5,9 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.FriendlyByteBuf;
+import by.dragonsurvivalteam.dragonsurvival.network.codec.ByteBufCodecs;
+import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
 import net.minecraft.resources.RegistryFixedCodec;
 import net.minecraft.resources.ResourceKey;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -25,7 +25,7 @@ public record DragonEmoteSet(List<DragonEmote> emotes) {
     ).apply(instance, DragonEmoteSet::new));
 
     public static final Codec<Holder<DragonEmoteSet>> CODEC = RegistryFixedCodec.create(REGISTRY);
-    public static final StreamCodec<RegistryFriendlyByteBuf, Holder<DragonEmoteSet>> STREAM_CODEC = ByteBufCodecs.holderRegistry(REGISTRY);
+    public static final StreamCodec<FriendlyByteBuf, Holder<DragonEmoteSet>> STREAM_CODEC = ByteBufCodecs.holderRegistry(REGISTRY);
 
     @SubscribeEvent
     public static void register(final DataPackRegistryEvent.NewRegistry event) {

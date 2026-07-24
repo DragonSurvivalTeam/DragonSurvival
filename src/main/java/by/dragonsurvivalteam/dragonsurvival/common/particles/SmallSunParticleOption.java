@@ -2,17 +2,16 @@ package by.dragonsurvivalteam.dragonsurvival.common.particles;
 
 import by.dragonsurvivalteam.dragonsurvival.registry.DSParticles;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
+import by.dragonsurvivalteam.dragonsurvival.network.codec.ByteBufCodecs;
+import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
 import org.jetbrains.annotations.NotNull;
 
-public record SmallSunParticleOption(float duration, boolean swirls) implements ParticleOptions {
-    public static final MapCodec<SmallSunParticleOption> CODEC = RecordCodecBuilder.mapCodec(codecBuilder -> codecBuilder.group(
+public record SmallSunParticleOption(float duration, boolean swirls) implements DurationParticleOption {
+    public static final Codec<SmallSunParticleOption> CODEC = RecordCodecBuilder.create(codecBuilder -> codecBuilder.group(
             Codec.FLOAT.fieldOf("duration").forGetter(SmallSunParticleOption::duration),
             Codec.BOOL.fieldOf("swirls").forGetter(SmallSunParticleOption::swirls)
     ).apply(codecBuilder, SmallSunParticleOption::new));
@@ -22,9 +21,10 @@ public record SmallSunParticleOption(float duration, boolean swirls) implements 
             ByteBufCodecs.BOOL, SmallSunParticleOption::swirls,
             SmallSunParticleOption::new
     );
+    public static final ParticleOptions.Deserializer<SmallSunParticleOption> DESERIALIZER = DurationParticleOption.deserializer(SmallSunParticleOption::new);
 
     @Override
     public @NotNull ParticleType<?> getType() {
-        return DSParticles.SUN.value();
+        return DSParticles.SUN.get();
     }
 }

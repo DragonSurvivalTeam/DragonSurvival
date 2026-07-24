@@ -1,16 +1,16 @@
 package by.dragonsurvivalteam.dragonsurvival.network.magic;
 
+import by.dragonsurvivalteam.dragonsurvival.network.codec.ByteBufCodecs;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbility;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.ExperiencePointsUpgrade;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
+import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.network.codec.NeoForgeStreamCodecs;
 import net.minecraftforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
@@ -18,8 +18,8 @@ public record AttemptManualUpgrade(ResourceKey<DragonAbility> ability, Experienc
     public static final Type<AttemptManualUpgrade> TYPE = new Type<>(DragonSurvival.res("attempt_manual_upgrade"));
 
     public static final StreamCodec<FriendlyByteBuf, AttemptManualUpgrade> STREAM_CODEC = StreamCodec.composite(
-            ResourceKey.streamCodec(DragonAbility.REGISTRY), AttemptManualUpgrade::ability,
-            NeoForgeStreamCodecs.enumCodec(ExperiencePointsUpgrade.Type.class), AttemptManualUpgrade::upgradeType,
+            ByteBufCodecs.resourceKey(DragonAbility.REGISTRY), AttemptManualUpgrade::ability,
+            ByteBufCodecs.enumCodec(ExperiencePointsUpgrade.Type.class), AttemptManualUpgrade::upgradeType,
             AttemptManualUpgrade::new
     );
 

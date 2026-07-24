@@ -1,12 +1,13 @@
 package by.dragonsurvivalteam.dragonsurvival.network.dragon_soul_block;
 
+import by.dragonsurvivalteam.dragonsurvival.network.codec.ByteBufCodecs;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.server.tileentity.DragonSoulBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
+import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraftforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
@@ -15,7 +16,7 @@ public record RequestDragonSoulData(BlockPos position) implements CustomPacketPa
     public static final Type<RequestDragonSoulData> TYPE = new Type<>(DragonSurvival.res("request_dragon_soul_data"));
 
     public static final StreamCodec<FriendlyByteBuf, RequestDragonSoulData> STREAM_CODEC = StreamCodec.composite(
-            BlockPos.STREAM_CODEC, RequestDragonSoulData::position,
+            ByteBufCodecs.BLOCK_POS, RequestDragonSoulData::position,
             RequestDragonSoulData::new
     );
 

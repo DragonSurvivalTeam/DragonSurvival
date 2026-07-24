@@ -15,9 +15,9 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.codec.ByteBufCodecs;
+import by.dragonsurvivalteam.dragonsurvival.network.codec.ByteBufCodecs;
 import net.minecraft.network.protocol.game.ClientboundGameEventPacket;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceLocation;
@@ -97,14 +97,14 @@ public class GenericArrowEntity extends AbstractArrow implements IEntityWithComp
     }
 
     @Override
-    public void writeSpawnData(@NotNull final RegistryFriendlyByteBuf buffer) {
+    public void writeSpawnData(@NotNull final FriendlyByteBuf buffer) {
         ByteBufCodecs.fromCodecWithRegistries(ProjectileData.GeneralData.CODEC).encode(buffer, getGeneralData());
         ByteBufCodecs.fromCodecWithRegistries(ProjectileData.GenericArrowData.CODEC).encode(buffer, getTypeData());
         buffer.writeVarInt(projectileLevel);
     }
 
     @Override
-    public void readSpawnData(@NotNull final RegistryFriendlyByteBuf buffer) {
+    public void readSpawnData(@NotNull final FriendlyByteBuf buffer) {
         generalData = ByteBufCodecs.fromCodecWithRegistries(ProjectileData.GeneralData.CODEC).decode(buffer);
         typeData = ByteBufCodecs.fromCodecWithRegistries(ProjectileData.GenericArrowData.CODEC).decode(buffer);
         projectileLevel = buffer.readVarInt();

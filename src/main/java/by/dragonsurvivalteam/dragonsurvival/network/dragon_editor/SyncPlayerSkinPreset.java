@@ -6,9 +6,9 @@ import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.FriendlyByteBuf;
+import by.dragonsurvivalteam.dragonsurvival.network.codec.ByteBufCodecs;
+import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.player.Player;
@@ -19,9 +19,9 @@ import org.jetbrains.annotations.NotNull;
 public record SyncPlayerSkinPreset(int playerId, ResourceKey<DragonSpecies> dragonSpecies, CompoundTag preset) implements CustomPacketPayload {
     public static final Type<SyncPlayerSkinPreset> TYPE = new Type<>(DragonSurvival.res("sync_player_skin_preset"));
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, SyncPlayerSkinPreset> STREAM_CODEC = StreamCodec.composite(
+    public static final StreamCodec<FriendlyByteBuf, SyncPlayerSkinPreset> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.VAR_INT, SyncPlayerSkinPreset::playerId,
-            ResourceKey.streamCodec(DragonSpecies.REGISTRY), SyncPlayerSkinPreset::dragonSpecies,
+            ByteBufCodecs.resourceKey(DragonSpecies.REGISTRY), SyncPlayerSkinPreset::dragonSpecies,
             ByteBufCodecs.COMPOUND_TAG, SyncPlayerSkinPreset::preset,
             SyncPlayerSkinPreset::new
     );
