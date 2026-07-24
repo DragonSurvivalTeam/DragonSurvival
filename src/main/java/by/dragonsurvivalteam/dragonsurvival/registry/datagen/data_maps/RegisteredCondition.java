@@ -1,31 +1,65 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.datagen.data_maps;
 
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
+import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import com.google.gson.JsonObject;
 import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.common.conditions.ICondition;
+import net.minecraft.util.GsonHelper;
+import net.minecraftforge.common.crafting.conditions.ICondition;
+import net.minecraftforge.common.crafting.conditions.IConditionSerializer;
 import org.jetbrains.annotations.NotNull;
 
-// TODO :: Remove in 1.21.4
 public record RegisteredCondition<T>(ResourceKey<T> registryKey) implements ICondition {
-    public static final MapCodec<RegisteredCondition<?>> CODEC = RecordCodecBuilder.mapCodec(instance -> instance
-            .group(ResourceLocation.CODEC.fieldOf("registry").forGetter(condition -> condition.registryKey().registry()),
-                    ResourceLocation.CODEC.fieldOf("value").forGetter(condition -> condition.registryKey().location()))
-            .apply(instance, RegisteredCondition::new));
+    private static final ResourceLocation ID = DragonSurvival.res("registered");
 
     private RegisteredCondition(final ResourceLocation registryType, final ResourceLocation registryName) {
         this(ResourceKey.create(ResourceKey.createRegistryKey(registryType), registryName));
     }
 
     @Override
-    public boolean test(@NotNull final IContext context) {
-        return ((ContextExtension) context).dragonSurvival$getRegistryAccess().holder(registryKey).map(Holder::isBound).orElse(false);
+    public ResourceLocation getID() {
+        return ID;
     }
 
     @Override
-    public @NotNull MapCodec<? extends ICondition> codec() {
-        return CODEC;
+    public boolean test(@NotNull final IContext context) {
+        return context instanceof ContextExtension extension
+                && isRegistered(extension.dragonSurvival$getRegistryAccess(), registryKey);
+    }
+
+    private static <T> boolean isRegistered(final RegistryAccess access, final ResourceKey<T> valueKey) {
+        ResourceKey<? extends Registry<T>> registryKey = ResourceKey.createRegistryKey(valueKey.registry());
+        return access.registry(registryKey)
+                .flatMap(registry -> registry.getHolder(valueKey))
+                .map(Holder::isBound)
+                .orElse(false);
+    }
+
+    public static final class Serializer implements IConditionSerializer<RegisteredCondition<?>> {
+        public static final Serializer INSTANCE = new Serializer();
+
+        private Serializer() {}
+
+        @Override
+        public void write(final JsonObject json, final RegisteredCondition<?> value) {
+            json.addProperty("registry", value.registryKey().registry().toString());
+            json.addProperty("value", value.registryKey().location().toString());
+        }
+
+        @Override
+        public RegisteredCondition<?> read(final JsonObject json) {
+            return new RegisteredCondition<>(
+                    new ResourceLocation(GsonHelper.getAsString(json, "registry")),
+                    new ResourceLocation(GsonHelper.getAsString(json, "value"))
+            );
+        }
+
+        @Override
+        public ResourceLocation getID() {
+            return ID;
+        }
     }
 }

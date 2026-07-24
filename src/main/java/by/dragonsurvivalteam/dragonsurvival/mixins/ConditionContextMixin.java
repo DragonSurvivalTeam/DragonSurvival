@@ -2,7 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.mixins;
 
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.data_maps.ContextExtension;
 import net.minecraft.core.RegistryAccess;
-import net.minecraftforge.common.conditions.ConditionContext;
+import net.minecraftforge.common.crafting.conditions.ConditionContext;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 

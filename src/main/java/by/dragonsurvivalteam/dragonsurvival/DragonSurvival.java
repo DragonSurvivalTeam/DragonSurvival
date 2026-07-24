@@ -81,7 +81,7 @@ public class DragonSurvival {
         DSAdvancementTriggers.REGISTRY.register(bus);
         DSCommands.REGISTRY.register(bus);
         DSLootModifiers.REGISTRY.register(bus);
-        DSConditions.REGISTRY.register(bus);
+        DSConditions.register();
         NetworkHandler.register();
 
         MinecraftForge.EVENT_BUS.addListener(OnSelfHit::trigger);

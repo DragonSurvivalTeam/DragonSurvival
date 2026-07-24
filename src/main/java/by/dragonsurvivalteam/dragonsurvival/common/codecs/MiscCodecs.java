@@ -11,7 +11,6 @@ import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
 import net.minecraft.world.level.levelgen.blockpredicates.BlockPredicate;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.conditions.ConditionalOps;
 import org.jetbrains.annotations.NotNull;
 
 import java.math.BigDecimal;
