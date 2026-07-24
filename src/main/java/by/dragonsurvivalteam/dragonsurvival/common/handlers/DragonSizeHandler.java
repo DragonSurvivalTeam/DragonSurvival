@@ -65,7 +65,8 @@ public class DragonSizeHandler {
             handler.previousPose = overridePose(player);
         }
 
-        EntityDimensions newDimensions = calculateDimensions(handler, player, handler.previousPose);
+        Pose sizePose = Compat.hasModelSwapOrDoesNotUseModel(player) ? event.getPose() : handler.previousPose;
+        EntityDimensions newDimensions = calculateDimensions(handler, player, sizePose);
         event.setNewSize(new EntityDimensions(newDimensions.width(), newDimensions.height(), newDimensions.eyeHeight(), event.getOldSize().attachments(), event.getOldSize().fixed()));
     }
 
