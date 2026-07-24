@@ -9,7 +9,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.server.ServerLifecycleHooks;
+import net.minecraftforge.server.ServerLifecycleHooks;
 
 public class PrimordialAnchorBlockEntity extends BlockEntity {
     @Translation(key = "anchor_has_bloody_state", type = Translation.Type.CONFIGURATION, comments = "If enabled, the primordial anchor will become unusuable as long as the ender dragon is dead.")

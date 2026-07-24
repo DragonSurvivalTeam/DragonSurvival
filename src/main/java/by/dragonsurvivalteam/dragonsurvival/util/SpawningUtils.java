@@ -9,7 +9,7 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.event.EventHooks;
+import net.minecraftforge.event.EventHooks;
 
 public class SpawningUtils {
     private static BlockPos findRandomSpawnPosition(final Level level, final Vec3 worldPos, int attempts, float radius) {

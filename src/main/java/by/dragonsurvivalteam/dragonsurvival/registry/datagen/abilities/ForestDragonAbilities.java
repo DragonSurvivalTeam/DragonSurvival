@@ -81,7 +81,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.Tiers;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
 import net.minecraft.world.level.block.Blocks;
-import net.neoforged.neoforge.common.NeoForgeMod;
+import net.minecraftforge.common.ForgeMod;
 
 import java.util.List;
 import java.util.Optional;
@@ -522,7 +522,7 @@ public class ForestDragonAbilities {
                 // Disable when marked by the ender dragon
                 Optional.of(Condition.thisEntity(EntityCondition.isMarked(true)).build()),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
-                        List.of(new SpinEffect(1, Optional.of(HolderSet.direct(NeoForgeMod.WATER_TYPE)))),
+                        List.of(new SpinEffect(1, Optional.of(HolderSet.direct(ForgeMod.WATER_TYPE)))),
                         TargetingMode.ALLIES_AND_SELF
                 )), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(1))),
                 true,

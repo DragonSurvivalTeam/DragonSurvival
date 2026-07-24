@@ -37,8 +37,8 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.wrapper.InvWrapper;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.wrapper.InvWrapper;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -332,18 +332,18 @@ public final class SortingHandler {
         List<Item> list = new ArrayList<>();
 
         for (Object object : items) {
-            switch (object) {
-                case Item item -> list.add(item);
-                case Block block -> list.add(block.asItem());
-                case ItemStack stack -> list.add(stack.getItem());
-                case String string -> {
-                    Item item = BuiltInRegistries.ITEM.get(ResourceLocation.parse(string));
+            if (object instanceof Item item) {
+                list.add(item);
+            } else if (object instanceof Block block) {
+                list.add(block.asItem());
+            } else if (object instanceof ItemStack stack) {
+                list.add(stack.getItem());
+            } else if (object instanceof String string) {
+                Item item = BuiltInRegistries.ITEM.get(ResourceLocation.parse(string));
 
-                    if (item != Items.AIR) {
-                        list.add(item);
-                    }
+                if (item != Items.AIR) {
+                    list.add(item);
                 }
-                default -> { /* Nothing to do */ }
             }
         }
 

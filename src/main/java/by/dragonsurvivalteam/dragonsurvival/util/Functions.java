@@ -17,9 +17,9 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.fml.loading.FMLLoader;
-import net.neoforged.neoforge.common.Tags;
-import software.bernie.geckolib.util.RenderUtil;
+import net.minecraftforge.fml.loading.FMLLoader;
+import net.minecraftforge.common.Tags;
+import net.minecraft.util.Mth;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -159,7 +159,7 @@ public class Functions {
     public static double limitAngleDeltaSoft(double value, double center, double halfRange, double pullCoeff) {
         pullCoeff = Math.clamp(pullCoeff, 0, 1);
         double targetAngle = limitAngleDelta(value, center, halfRange);
-        return RenderUtil.lerpYaw(pullCoeff, value, targetAngle);
+        return Mth.rotLerp(pullCoeff, value, targetAngle);
     }
 
     /**
@@ -174,7 +174,7 @@ public class Functions {
     public static double lerpAngleAwayFrom(double t, double start, double end, double avoidAngle) {
         if (Math.abs(Mth.wrapDegrees(avoidAngle - end)) < 0.0001) {
             // You're trying to go to the same angle that you're trying to avoid - too bad!
-            return RenderUtil.lerpYaw(t, start, end);
+            return Mth.rotLerp(t, start, end);
         }
 
         start = Mth.wrapDegrees(start);

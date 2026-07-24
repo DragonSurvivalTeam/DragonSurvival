@@ -18,8 +18,8 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.resources.ResourceLocation;
-import net.neoforged.neoforge.client.gui.widget.ExtendedButton;
-import net.neoforged.neoforge.network.PacketDistributor;
+import net.minecraftforge.client.gui.widget.ExtendedButton;
+import net.minecraftforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;

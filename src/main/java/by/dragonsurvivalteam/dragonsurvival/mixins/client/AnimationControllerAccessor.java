@@ -3,7 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.mixins.client;
 import org.spongepowered.asm.mixin.Dynamic;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
-import software.bernie.geckolib.animation.AnimationController;
+import software.bernie.geckolib.core.animation.AnimationController;
 
 @Mixin(AnimationController.class)
 public interface AnimationControllerAccessor {

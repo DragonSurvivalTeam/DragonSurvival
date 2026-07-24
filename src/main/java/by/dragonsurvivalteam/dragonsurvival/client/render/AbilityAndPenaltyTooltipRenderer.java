@@ -26,7 +26,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector2ic;
-import software.bernie.geckolib.util.Color;
+import software.bernie.geckolib.core.object.Color;
 
 import java.util.ArrayList;
 import java.util.List;

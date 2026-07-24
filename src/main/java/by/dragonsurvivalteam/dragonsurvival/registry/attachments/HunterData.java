@@ -4,7 +4,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.HunterHandler;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.LivingEntity;
-import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.minecraftforge.common.util.INBTSerializable;
 import org.jetbrains.annotations.NotNull;
 
 public class HunterData implements INBTSerializable<CompoundTag> {

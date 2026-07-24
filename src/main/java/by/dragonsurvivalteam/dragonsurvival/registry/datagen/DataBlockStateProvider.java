@@ -21,16 +21,16 @@ import net.minecraft.world.level.block.VaultBlock;
 import net.minecraft.world.level.block.entity.vault.VaultState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DoorHingeSide;
-import net.neoforged.neoforge.client.model.generators.BlockModelBuilder;
-import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
-import net.neoforged.neoforge.client.model.generators.ConfiguredModel;
-import net.neoforged.neoforge.client.model.generators.ModelFile;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.minecraftforge.client.model.generators.BlockModelBuilder;
+import net.minecraftforge.client.model.generators.BlockStateProvider;
+import net.minecraftforge.client.model.generators.ConfiguredModel;
+import net.minecraftforge.client.model.generators.ModelFile;
+import net.minecraftforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
 
-import static net.neoforged.neoforge.client.model.generators.ModelProvider.BLOCK_FOLDER;
+import static net.minecraftforge.client.model.generators.ModelProvider.BLOCK_FOLDER;
 
 public class DataBlockStateProvider extends BlockStateProvider {
     public DataBlockStateProvider(final PackOutput output, final ExistingFileHelper existingFileHelper) {

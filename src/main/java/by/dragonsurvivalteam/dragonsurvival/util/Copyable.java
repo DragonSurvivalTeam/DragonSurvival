@@ -3,7 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.util;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.minecraftforge.common.util.INBTSerializable;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.InvocationTargetException;

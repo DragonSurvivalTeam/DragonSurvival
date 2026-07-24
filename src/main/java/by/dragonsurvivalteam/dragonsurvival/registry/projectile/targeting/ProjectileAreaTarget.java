@@ -21,7 +21,7 @@ import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.network.PacketDistributor;
+import net.minecraftforge.network.PacketDistributor;
 
 import java.util.Optional;
 

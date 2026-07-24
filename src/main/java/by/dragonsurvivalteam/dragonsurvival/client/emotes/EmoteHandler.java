@@ -9,12 +9,12 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.emotes.DragonEm
 import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
-import net.neoforged.neoforge.event.tick.PlayerTickEvent;
-import net.neoforged.neoforge.network.PacketDistributor;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.minecraftforge.event.entity.living.LivingIncomingDamageEvent;
+import net.minecraftforge.event.tick.PlayerTickEvent;
+import net.minecraftforge.network.PacketDistributor;
 
 import static net.minecraft.client.CameraType.THIRD_PERSON_BACK;
 

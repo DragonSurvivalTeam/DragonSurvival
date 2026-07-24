@@ -9,14 +9,14 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.bus.api.EventPriority;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.common.NeoForgeMod;
-import net.neoforged.neoforge.event.entity.living.LivingBreatheEvent;
-import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.network.PacketDistributor;
-import net.neoforged.neoforge.registries.NeoForgeRegistries;
+import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.minecraftforge.common.ForgeMod;
+import net.minecraftforge.event.entity.living.LivingBreatheEvent;
+import net.minecraftforge.fluids.FluidType;
+import net.minecraftforge.network.PacketDistributor;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
@@ -42,7 +42,7 @@ public class SwimData {
         ResourceKey<FluidType> key = key(fluid);
         float base;
 
-        if (key == NeoForgeMod.EMPTY_TYPE.getKey()) {
+        if (key == ForgeMod.EMPTY_TYPE.getKey()) {
             base = getMaxOxygen(player, previousFluid);
         } else {
             base = swimData.getOrDefault(key, Entity.TOTAL_AIR_SUPPLY);
@@ -109,11 +109,11 @@ public class SwimData {
     }
 
     public static boolean isAir(final FluidType fluid) {
-        return key(fluid) == NeoForgeMod.EMPTY_TYPE.getKey();
+        return key(fluid) == ForgeMod.EMPTY_TYPE.getKey();
     }
 
     public static @Nullable ResourceLocation getAirSprite(final FluidType fluid) {
-        ResourceLocation resource = NeoForgeRegistries.FLUID_TYPES.getKey(fluid);
+        ResourceLocation resource = ForgeRegistries.FLUID_TYPES.getKey(fluid);
 
         if (resource == null) {
             return null;
@@ -124,7 +124,7 @@ public class SwimData {
     }
 
     public static ResourceLocation getAirBurstSprite(final FluidType fluid) {
-        ResourceLocation resource = NeoForgeRegistries.FLUID_TYPES.getKey(fluid);
+        ResourceLocation resource = ForgeRegistries.FLUID_TYPES.getKey(fluid);
 
         if (resource == null) {
             return null;
@@ -135,6 +135,6 @@ public class SwimData {
     }
 
     public static @Nullable ResourceKey<FluidType> key(final FluidType fluid) {
-        return NeoForgeRegistries.FLUID_TYPES.getResourceKey(fluid).orElse(null);
+        return ForgeRegistries.FLUID_TYPES.getResourceKey(fluid).orElse(null);
     }
 }

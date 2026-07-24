@@ -7,9 +7,9 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.network.handling.IPayloadContext;
-import net.neoforged.neoforge.registries.NeoForgeRegistries;
+import net.minecraftforge.fluids.FluidType;
+import net.minecraftforge.network.handling.IPayloadContext;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
 public record SyncSwimDataEntry(int maxOxygen, Holder<FluidType> fluidType, boolean remove) implements CustomPacketPayload {
@@ -17,7 +17,7 @@ public record SyncSwimDataEntry(int maxOxygen, Holder<FluidType> fluidType, bool
 
     public static final StreamCodec<RegistryFriendlyByteBuf, SyncSwimDataEntry> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.INT, SyncSwimDataEntry::maxOxygen,
-            ByteBufCodecs.fromCodecWithRegistries(NeoForgeRegistries.FLUID_TYPES.holderByNameCodec()), SyncSwimDataEntry::fluidType,
+            ByteBufCodecs.fromCodecWithRegistries(ForgeRegistries.FLUID_TYPES.holderByNameCodec()), SyncSwimDataEntry::fluidType,
             ByteBufCodecs.BOOL, SyncSwimDataEntry::remove,
             SyncSwimDataEntry::new
     );

@@ -12,7 +12,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.common.NeoForgeMod;
+import net.minecraftforge.common.ForgeMod;
 
 import java.util.List;
 import java.util.Optional;
@@ -92,7 +92,7 @@ public class DragonBodies {
                 Modifier.constant(Attributes.GRAVITY, 0.1f, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL),
                 Modifier.constant(Attributes.JUMP_STRENGTH, 0.1f, AttributeModifier.Operation.ADD_VALUE),
                 Modifier.constant(Attributes.MOVEMENT_SPEED, 0.1f, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL),
-                Modifier.constant(NeoForgeMod.SWIM_SPEED, 0.5f, AttributeModifier.Operation.ADD_VALUE),
+                Modifier.constant(ForgeMod.SWIM_SPEED, 0.5f, AttributeModifier.Operation.ADD_VALUE),
                 Modifier.constant(DSAttributes.MANA, 2, AttributeModifier.Operation.ADD_VALUE),
                 Modifier.constant(DSAttributes.FLIGHT_SPEED, -0.2f, AttributeModifier.Operation.ADD_VALUE),
                 Modifier.constant(DSAttributes.FLIGHT_STAMINA_COST, -0.2f, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)
@@ -115,7 +115,7 @@ public class DragonBodies {
                 Modifier.constant(Attributes.ATTACK_KNOCKBACK, -0.5f, AttributeModifier.Operation.ADD_VALUE),
                 Modifier.constant(Attributes.MOVEMENT_SPEED, -0.3f, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL),
                 Modifier.constant(Attributes.SAFE_FALL_DISTANCE, 1, AttributeModifier.Operation.ADD_VALUE),
-                Modifier.constant(NeoForgeMod.SWIM_SPEED, 0.8f, AttributeModifier.Operation.ADD_VALUE),
+                Modifier.constant(ForgeMod.SWIM_SPEED, 0.8f, AttributeModifier.Operation.ADD_VALUE),
                 Modifier.constant(DSAttributes.MANA, 2, AttributeModifier.Operation.ADD_VALUE),
                 Modifier.constant(DSAttributes.FLIGHT_STAMINA_COST, -0.1f, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)
         ), true,
@@ -138,7 +138,7 @@ public class DragonBodies {
                 Modifier.constant(Attributes.JUMP_STRENGTH, 0.2f, AttributeModifier.Operation.ADD_VALUE),
                 Modifier.constant(Attributes.MOVEMENT_SPEED, 0.2f, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL),
                 Modifier.constant(Attributes.SAFE_FALL_DISTANCE, 2, AttributeModifier.Operation.ADD_VALUE),
-                Modifier.constant(NeoForgeMod.SWIM_SPEED, -0.2f, AttributeModifier.Operation.ADD_VALUE),
+                Modifier.constant(ForgeMod.SWIM_SPEED, -0.2f, AttributeModifier.Operation.ADD_VALUE),
                 Modifier.constant(DSAttributes.FLIGHT_SPEED, -0.2f, AttributeModifier.Operation.ADD_VALUE),
                 Modifier.constant(DSAttributes.FLIGHT_STAMINA_COST, -0.5f, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)
         ), true,
@@ -160,7 +160,7 @@ public class DragonBodies {
                 Modifier.constant(Attributes.KNOCKBACK_RESISTANCE, 0.15f, AttributeModifier.Operation.ADD_VALUE),
                 Modifier.constant(Attributes.MOVEMENT_SPEED, -0.15f, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL),
                 Modifier.constant(Attributes.SAFE_FALL_DISTANCE, 1, AttributeModifier.Operation.ADD_VALUE),
-                Modifier.constant(NeoForgeMod.SWIM_SPEED, -0.2f, AttributeModifier.Operation.ADD_VALUE),
+                Modifier.constant(ForgeMod.SWIM_SPEED, -0.2f, AttributeModifier.Operation.ADD_VALUE),
                 Modifier.constant(DSAttributes.FLIGHT_SPEED, 0.2f, AttributeModifier.Operation.ADD_VALUE),
                 Modifier.constant(DSAttributes.FLIGHT_STAMINA_COST, 1, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)
         ), false,

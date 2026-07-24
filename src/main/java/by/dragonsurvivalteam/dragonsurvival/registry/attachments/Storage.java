@@ -8,10 +8,10 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
-import net.neoforged.neoforge.attachment.AttachmentType;
-import net.neoforged.neoforge.common.util.INBTSerializable;
-import net.neoforged.neoforge.network.PacketDistributor;
-import net.neoforged.neoforge.registries.NeoForgeRegistries;
+import net.minecraftforge.attachment.AttachmentType;
+import net.minecraftforge.common.util.INBTSerializable;
+import net.minecraftforge.network.PacketDistributor;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -27,7 +27,7 @@ public abstract class Storage<T extends StorageEntry> implements INBTSerializabl
     @Nullable protected Map<ResourceLocation, T> storage;
 
     public void sync(final ServerPlayer player) {
-        player.getExistingData(type()).ifPresent(data -> PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new SyncData(player.getId(), NeoForgeRegistries.ATTACHMENT_TYPES.getKey(type()), serializeNBT(player.registryAccess()))));
+        player.getExistingData(type()).ifPresent(data -> PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new SyncData(player.getId(), ForgeRegistries.ATTACHMENT_TYPES.getKey(type()), serializeNBT(player.registryAccess()))));
     }
 
     public void tick(final Entity storageHolder) {

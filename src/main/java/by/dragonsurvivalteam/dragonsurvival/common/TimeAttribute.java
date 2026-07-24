@@ -7,7 +7,7 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.RangedAttribute;
 import net.minecraft.world.item.TooltipFlag;
-import net.neoforged.neoforge.common.extensions.IAttributeExtension;
+import net.minecraftforge.common.extensions.IAttributeExtension;
 import org.jetbrains.annotations.NotNull;
 
 public class TimeAttribute extends RangedAttribute {

@@ -25,8 +25,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
-import software.bernie.geckolib.animation.AnimationState;
-import software.bernie.geckolib.loading.math.MathParser;
+import software.bernie.geckolib.core.animation.AnimationState;
+import software.bernie.geckolib.core.molang.MolangParser;
 import software.bernie.geckolib.model.GeoModel;
 
 public class DragonModel extends GeoModel<DragonEntity> {
@@ -57,15 +57,15 @@ public class DragonModel extends GeoModel<DragonEntity> {
         float partialDeltaTick = Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(false);
 
         if (dragon.neckLocked) {
-            MathParser.setVariable("query.head_yaw", () -> 0);
-            MathParser.setVariable("query.head_pitch", () -> 0);
+            MolangParser.INSTANCE.setValue("query.head_yaw", () -> 0);
+            MolangParser.INSTANCE.setValue("query.head_pitch", () -> 0);
         } else {
-            MathParser.setVariable("query.head_yaw", () -> movement.headYaw);
-            MathParser.setVariable("query.head_pitch", () -> movement.headPitch);
+            MolangParser.INSTANCE.setValue("query.head_yaw", () -> movement.headYaw);
+            MolangParser.INSTANCE.setValue("query.head_pitch", () -> movement.headPitch);
         }
 
         double gravity = player.getAttributeValue(Attributes.GRAVITY);
-        MathParser.setVariable("query.gravity", () -> gravity);
+        MolangParser.INSTANCE.setValue("query.gravity", () -> gravity);
 
         double bodyYawAvg;
         double headYawAvg;
@@ -158,15 +158,15 @@ public class DragonModel extends GeoModel<DragonEntity> {
         }
 
         if (dragon.tailLocked) {
-            MathParser.setVariable("query.tail_motion_up", () -> 0);
-            MathParser.setVariable("query.body_yaw_change", () -> 0);
+            MolangParser.INSTANCE.setValue("query.tail_motion_up", () -> 0);
+            MolangParser.INSTANCE.setValue("query.body_yaw_change", () -> 0);
         } else {
-            MathParser.setVariable("query.body_yaw_change", () -> dragon.currentBodyYawChange);
-            MathParser.setVariable("query.tail_motion_up", () -> dragon.currentTailMotionUp);
+            MolangParser.INSTANCE.setValue("query.body_yaw_change", () -> dragon.currentBodyYawChange);
+            MolangParser.INSTANCE.setValue("query.tail_motion_up", () -> dragon.currentTailMotionUp);
         }
 
-        MathParser.setVariable("query.head_yaw_change", () -> dragon.currentHeadYawChange);
-        MathParser.setVariable("query.head_pitch_change", () -> dragon.currentHeadPitchChange);
+        MolangParser.INSTANCE.setValue("query.head_yaw_change", () -> dragon.currentHeadYawChange);
+        MolangParser.INSTANCE.setValue("query.head_pitch_change", () -> dragon.currentHeadPitchChange);
     }
 
     @Override

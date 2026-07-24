@@ -5,8 +5,8 @@ import by.dragonsurvivalteam.dragonsurvival.config.ConfigHandler;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
 import net.minecraft.gametest.framework.BeforeBatch;
 import net.minecraft.server.level.ServerLevel;
-import net.neoforged.neoforge.gametest.GameTestHolder;
-import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
+import net.minecraftforge.gametest.GameTestHolder;
+import net.minecraftforge.gametest.PrefixGameTestTemplate;
 
 @PrefixGameTestTemplate(false)
 @GameTestHolder(DragonSurvival.MODID)

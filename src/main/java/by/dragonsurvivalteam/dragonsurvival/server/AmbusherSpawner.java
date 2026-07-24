@@ -15,10 +15,10 @@ import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.NaturalSpawner;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.EventHooks;
-import net.neoforged.neoforge.event.level.ModifyCustomSpawnersEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.minecraftforge.event.EventHooks;
+import net.minecraftforge.event.level.ModifyCustomSpawnersEvent;
 import org.jetbrains.annotations.NotNull;
 
 @EventBusSubscriber // Initially coped from 'PatrolSpawner'

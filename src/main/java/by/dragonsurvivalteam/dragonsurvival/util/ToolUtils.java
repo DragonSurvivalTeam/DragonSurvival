@@ -21,8 +21,8 @@ import net.minecraft.world.item.component.Tool;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.common.ItemAbilities;
-import net.neoforged.neoforge.common.Tags;
+import net.minecraftforge.common.ItemAbilities;
+import net.minecraftforge.common.Tags;
 
 public class ToolUtils {
     @SuppressWarnings("BooleanMethodIsAlwaysInverted") // ignore

@@ -6,8 +6,8 @@ import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvide
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
-import net.neoforged.neoforge.network.handling.IPayloadContext;
+import net.minecraftforge.network.codec.NeoForgeStreamCodecs;
+import net.minecraftforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
 public record SyncLargeDragonDestruction(DragonStateHandler.LargeDragonDestruction largeDragonDestruction) implements CustomPacketPayload {

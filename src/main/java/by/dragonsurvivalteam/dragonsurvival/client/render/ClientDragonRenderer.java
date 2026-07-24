@@ -51,23 +51,23 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.client.event.ClientTickEvent;
-import net.neoforged.neoforge.client.event.InputEvent;
-import net.neoforged.neoforge.client.event.RenderBlockScreenEffectEvent;
-import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
-import net.neoforged.neoforge.client.event.RenderNameTagEvent;
-import net.neoforged.neoforge.client.event.RenderPlayerEvent;
-import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.common.util.TriState;
-import net.neoforged.neoforge.event.entity.EntityLeaveLevelEvent;
-import net.neoforged.neoforge.event.level.LevelEvent;
-import net.neoforged.neoforge.network.PacketDistributor;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.minecraftforge.client.event.ClientTickEvent;
+import net.minecraftforge.client.event.InputEvent;
+import net.minecraftforge.client.event.RenderBlockScreenEffectEvent;
+import net.minecraftforge.client.event.RenderLevelStageEvent;
+import net.minecraftforge.client.event.RenderNameTagEvent;
+import net.minecraftforge.client.event.RenderPlayerEvent;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.util.TriState;
+import net.minecraftforge.event.entity.EntityLeaveLevelEvent;
+import net.minecraftforge.event.level.LevelEvent;
+import net.minecraftforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
-import software.bernie.geckolib.util.RenderUtil;
+import net.minecraft.util.Mth;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -298,7 +298,7 @@ public class ClientDragonRenderer {
         if (dragonNameTags && player != Minecraft.getInstance().player) {
             //noinspection UnstableApiUsage -> intentional
             RenderNameTagEvent renderNameplateEvent = new RenderNameTagEvent(player, player.getDisplayName(), event.getRenderer(), event.getPoseStack(), event.getMultiBufferSource(), event.getPackedLight(), partialTick);
-            NeoForge.EVENT_BUS.post(renderNameplateEvent);
+            MinecraftForge.EVENT_BUS.post(renderNameplateEvent);
 
             if (renderNameplateEvent.canRender().isTrue() || renderNameplateEvent.canRender().isDefault() && ((LivingRendererAccessor) event.getRenderer()).dragonSurvival$callShouldShowName(player)) {
                 ((EntityRendererAccessor) event.getRenderer()).dragonSurvival$renderNameTag(player, renderNameplateEvent.getContent(), event.getPoseStack(), event.getMultiBufferSource(), event.getPackedLight(), partialTick);
@@ -599,7 +599,7 @@ public class ClientDragonRenderer {
                 if (isFirstPerson) {
                     bodyYaw = Functions.lerpAngleAwayFrom(realtimeDeltaTick * factor, bodyYaw, targetAngle, viewYRot + 180);
                 } else {
-                    bodyYaw = RenderUtil.lerpYaw(realtimeDeltaTick * factor, bodyYaw, targetAngle);
+                    bodyYaw = Mth.rotLerp(realtimeDeltaTick * factor, bodyYaw, targetAngle);
                 }
             } else if (hasPosDelta && !player.onGround()) {
                 // When moving without input and in the air, slowly align to the move vector
@@ -612,7 +612,7 @@ public class ClientDragonRenderer {
                 double deltaMagFactor = Math.min(1, (posDelta.horizontalDistance() - MOVE_DELTA_EPSILON) / MOVE_DELTA_FULL_EFFECT_MIN_MAG);
                 factor *= deltaMagFactor;
 
-                bodyYaw = RenderUtil.lerpYaw(realtimeDeltaTick * factor, bodyYaw, posDeltaAngle);
+                bodyYaw = Mth.rotLerp(realtimeDeltaTick * factor, bodyYaw, posDeltaAngle);
             }
 
             // Limit body angle based on view direction and PoV

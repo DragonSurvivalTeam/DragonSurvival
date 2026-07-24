@@ -8,7 +8,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.model.GeoModel;
-import software.bernie.geckolib.renderer.specialty.DynamicGeoEntityRenderer;
+import software.bernie.geckolib.renderer.DynamicGeoEntityRenderer;
 
 public class KnightRenderer extends DynamicGeoEntityRenderer<KnightEntity> {
     public KnightRenderer(final EntityRendererProvider.Context context, final GeoModel<KnightEntity> model) {

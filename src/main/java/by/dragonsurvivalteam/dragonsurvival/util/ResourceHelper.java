@@ -11,7 +11,7 @@ import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.RandomSource;
-import net.neoforged.neoforge.common.CommonHooks;
+import net.minecraftforge.common.CommonHooks;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;

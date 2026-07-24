@@ -9,10 +9,10 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.network.PacketDistributor;
-import net.neoforged.neoforge.network.handling.IPayloadContext;
-import net.neoforged.neoforge.registries.NeoForgeRegistries;
+import net.minecraftforge.fluids.FluidType;
+import net.minecraftforge.network.PacketDistributor;
+import net.minecraftforge.network.handling.IPayloadContext;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
@@ -23,7 +23,7 @@ public record SyncSpinStatus(int playerId, boolean hasSpin, Optional<HolderSet<F
     public static final StreamCodec<RegistryFriendlyByteBuf, SyncSpinStatus> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.VAR_INT, SyncSpinStatus::playerId,
             ByteBufCodecs.BOOL, SyncSpinStatus::hasSpin,
-            ByteBufCodecs.optional(ByteBufCodecs.holderSet(NeoForgeRegistries.Keys.FLUID_TYPES)), SyncSpinStatus::swimSpinFluid,
+            ByteBufCodecs.optional(ByteBufCodecs.holderSet(ForgeRegistries.Keys.FLUID_TYPES)), SyncSpinStatus::swimSpinFluid,
             SyncSpinStatus::new
     );
 

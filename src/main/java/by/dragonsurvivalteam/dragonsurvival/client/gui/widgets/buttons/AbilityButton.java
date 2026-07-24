@@ -16,8 +16,8 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.client.gui.widget.ExtendedButton;
-import net.neoforged.neoforge.network.PacketDistributor;
+import net.minecraftforge.client.gui.widget.ExtendedButton;
+import net.minecraftforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

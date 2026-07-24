@@ -21,11 +21,11 @@ import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.item.Tiers;
-import net.neoforged.fml.ModList;
-import net.neoforged.fml.loading.modscan.ModAnnotation;
-import net.neoforged.neoforge.common.Tags;
-import net.neoforged.neoforge.common.data.LanguageProvider;
-import net.neoforged.neoforgespi.language.ModFileScanData;
+import net.minecraftforge.fml.ModList;
+import net.minecraftforge.fml.loading.modscan.ModAnnotation;
+import net.minecraftforge.common.Tags;
+import net.minecraftforge.common.data.LanguageProvider;
+import net.minecraftforgespi.language.ModFileScanData;
 import org.apache.commons.lang3.text.WordUtils;
 import org.objectweb.asm.Type;
 

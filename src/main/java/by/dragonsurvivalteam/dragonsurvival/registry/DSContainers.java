@@ -8,12 +8,12 @@ import by.dragonsurvivalteam.dragonsurvival.server.containers.SourceOfMagicConta
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.inventory.MenuType;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
-import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
-import net.neoforged.neoforge.registries.DeferredHolder;
-import net.neoforged.neoforge.registries.DeferredRegister;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.minecraftforge.client.event.RegisterMenuScreensEvent;
+import net.minecraftforge.common.extensions.IMenuTypeExtension;
+import net.minecraftforge.registries.DeferredHolder;
+import net.minecraftforge.registries.DeferredRegister;
 
 @EventBusSubscriber
 public class DSContainers {

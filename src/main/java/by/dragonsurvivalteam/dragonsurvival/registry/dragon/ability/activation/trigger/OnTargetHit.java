@@ -11,7 +11,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
-import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
+import net.minecraftforge.event.entity.living.LivingDamageEvent;
 
 import java.util.Optional;
 

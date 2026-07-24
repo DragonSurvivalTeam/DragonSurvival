@@ -27,7 +27,7 @@ import org.joml.Vector3d;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.model.GeoModel;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
-import software.bernie.geckolib.util.Color;
+import software.bernie.geckolib.core.object.Color;
 
 import java.util.HashMap;
 import java.util.List;

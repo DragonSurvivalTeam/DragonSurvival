@@ -4,8 +4,8 @@ import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.AdvancedRandomSpread;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.levelgen.structure.placement.StructurePlacementType;
-import net.neoforged.neoforge.registries.DeferredHolder;
-import net.neoforged.neoforge.registries.DeferredRegister;
+import net.minecraftforge.registries.DeferredHolder;
+import net.minecraftforge.registries.DeferredRegister;
 
 public class DSStructurePlacementTypes {
     public static final DeferredRegister<StructurePlacementType<?>> REGISTRY = DeferredRegister.create(BuiltInRegistries.STRUCTURE_PLACEMENT, DragonSurvival.MODID);

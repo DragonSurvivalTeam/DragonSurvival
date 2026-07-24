@@ -1,7 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.util;
 
-import software.bernie.geckolib.animation.Animation;
-import software.bernie.geckolib.animation.RawAnimation;
+import software.bernie.geckolib.core.animation.Animation;
+import software.bernie.geckolib.core.animation.RawAnimation;
 
 import java.util.function.Function;
 

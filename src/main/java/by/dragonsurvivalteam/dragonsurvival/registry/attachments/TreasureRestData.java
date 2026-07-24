@@ -4,7 +4,7 @@ import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.minecraftforge.common.util.INBTSerializable;
 import org.jetbrains.annotations.NotNull;
 
 // No need to store the resting state if someone re-logs they shouldn't be considered sleeping

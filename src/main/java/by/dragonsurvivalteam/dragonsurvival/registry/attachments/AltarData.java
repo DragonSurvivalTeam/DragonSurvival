@@ -5,8 +5,8 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.neoforge.common.util.INBTSerializable;
-import net.neoforged.neoforge.network.PacketDistributor;
+import net.minecraftforge.common.util.INBTSerializable;
+import net.minecraftforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
 public class AltarData implements INBTSerializable<CompoundTag> {

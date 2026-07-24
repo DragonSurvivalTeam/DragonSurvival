@@ -14,8 +14,8 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.neoforge.common.NeoForgeMod;
-import net.neoforged.neoforge.fluids.FluidType;
+import net.minecraftforge.common.ForgeMod;
+import net.minecraftforge.fluids.FluidType;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -83,7 +83,7 @@ public abstract class GuiMixin {
         ResourceLocation replacementSprite;
         FluidType relevantFluid;
 
-        if (NeoForgeMod.EMPTY_TYPE.getKey() == SwimData.key(currentFluidType)) {
+        if (ForgeMod.EMPTY_TYPE.getKey() == SwimData.key(currentFluidType)) {
             relevantFluid = previousFluidType;
         } else {
             relevantFluid = currentFluidType;

@@ -15,7 +15,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import software.bernie.geckolib.animation.AnimationController;
+import software.bernie.geckolib.core.animation.AnimationController;
 
 import java.util.UUID;
 import java.util.function.Supplier;

@@ -56,21 +56,21 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.ModContainer;
-import net.neoforged.fml.common.Mod;
-import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
-import net.neoforged.neoforge.client.event.ClientTickEvent;
-import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
-import net.neoforged.neoforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
-import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
-import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
-import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
-import net.neoforged.neoforge.client.gui.ConfigurationScreen;
-import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
-import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
-import net.neoforged.neoforge.common.NeoForge;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.ModContainer;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.client.event.ClientTickEvent;
+import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
+import net.minecraftforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
+import net.minecraftforge.client.event.RegisterGuiLayersEvent;
+import net.minecraftforge.client.extensions.common.IClientItemExtensions;
+import net.minecraftforge.client.extensions.common.RegisterClientExtensionsEvent;
+import net.minecraftforge.client.gui.ConfigurationScreen;
+import net.minecraftforge.client.gui.IConfigScreenFactory;
+import net.minecraftforge.client.gui.VanillaGuiLayers;
+import net.minecraftforge.common.MinecraftForge;
 import org.jetbrains.annotations.NotNull;
 import software.bernie.geckolib.GeckoLibClient;
 
@@ -97,11 +97,11 @@ public class DragonSurvivalClient {
         bus.addListener(this::registerTooltips);
         bus.addListener(this::registerItemExtensions);
 
-        NeoForge.EVENT_BUS.addListener(this::incrementTimer);
-        NeoForge.EVENT_BUS.addListener(this::preventThirdPersonWhenSuffocating);
+        MinecraftForge.EVENT_BUS.addListener(this::incrementTimer);
+        MinecraftForge.EVENT_BUS.addListener(this::preventThirdPersonWhenSuffocating);
 
         if (ModID.CURIOS.isLoaded()) {
-            NeoForge.EVENT_BUS.addListener(CuriosButtonHandler::handleCurios);
+            MinecraftForge.EVENT_BUS.addListener(CuriosButtonHandler::handleCurios);
         }
     }
 

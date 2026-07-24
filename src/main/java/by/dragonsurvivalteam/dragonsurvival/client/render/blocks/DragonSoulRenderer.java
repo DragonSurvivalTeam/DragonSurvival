@@ -26,9 +26,9 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.AABB;
-import net.neoforged.neoforge.client.RenderTypeHelper;
-import net.neoforged.neoforge.client.model.data.ModelData;
-import net.neoforged.neoforge.network.PacketDistributor;
+import net.minecraftforge.client.RenderTypeHelper;
+import net.minecraftforge.client.model.data.ModelData;
+import net.minecraftforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
 public class DragonSoulRenderer implements BlockEntityRenderer<DragonSoulBlockEntity> {

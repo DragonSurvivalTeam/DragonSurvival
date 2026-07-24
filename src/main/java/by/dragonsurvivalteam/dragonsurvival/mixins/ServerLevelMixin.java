@@ -4,7 +4,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.handlers.DragonTreasureHandle
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.TreasureRestData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.neoforged.neoforge.event.entity.player.PlayerWakeUpEvent;
+import net.minecraftforge.event.entity.player.PlayerWakeUpEvent;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;

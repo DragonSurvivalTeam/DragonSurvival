@@ -5,7 +5,7 @@ import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigRange;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
-import net.neoforged.neoforge.common.ModConfigSpec;
+import net.minecraftforge.common.ModConfigSpec;
 
 public class ServerConfig {
     ServerConfig(final ModConfigSpec.Builder builder) {

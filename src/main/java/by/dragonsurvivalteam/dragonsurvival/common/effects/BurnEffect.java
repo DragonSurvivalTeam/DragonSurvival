@@ -15,7 +15,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.neoforged.neoforge.common.NeoForgeMod;
+import net.minecraftforge.common.ForgeMod;
 
 public class BurnEffect extends ModifiableMobEffect {
     public BurnEffect(final MobEffectCategory type, int color, boolean incurable) {
@@ -29,7 +29,7 @@ public class BurnEffect extends ModifiableMobEffect {
 
     @Override
     public boolean applyEffectTick(final LivingEntity entity, int amplifier) {
-        if (entity.fireImmune() || entity.isEyeInFluidType(NeoForgeMod.WATER_TYPE.value()) || entity.isInWaterRainOrBubble()) {
+        if (entity.fireImmune() || entity.isEyeInFluidType(ForgeMod.WATER_TYPE.value()) || entity.isInWaterRainOrBubble()) {
             return false;
         }
 

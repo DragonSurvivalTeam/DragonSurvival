@@ -22,8 +22,8 @@ import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.neoforge.event.RegisterCommandsEvent;
-import net.neoforged.neoforge.network.PacketDistributor;
+import net.minecraftforge.event.RegisterCommandsEvent;
+import net.minecraftforge.network.PacketDistributor;
 
 import java.util.Collection;
 import java.util.function.BiFunction;

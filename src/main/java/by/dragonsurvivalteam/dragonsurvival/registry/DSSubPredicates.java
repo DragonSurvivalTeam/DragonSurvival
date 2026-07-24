@@ -7,7 +7,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.predicates.EntityCheck
 import com.mojang.serialization.MapCodec;
 import net.minecraft.advancements.critereon.EntitySubPredicate;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.neoforged.neoforge.registries.DeferredRegister;
+import net.minecraftforge.registries.DeferredRegister;
 
 public class DSSubPredicates {
     // FIXME 1.22 :: these should probably be moved / adjusted to LootItemConditions

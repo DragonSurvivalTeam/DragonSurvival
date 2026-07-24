@@ -3,9 +3,9 @@ package by.dragonsurvivalteam.dragonsurvival.registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
-import net.neoforged.neoforge.common.util.DeferredSoundType;
-import net.neoforged.neoforge.registries.DeferredHolder;
-import net.neoforged.neoforge.registries.DeferredRegister;
+import net.minecraftforge.common.util.DeferredSoundType;
+import net.minecraftforge.registries.DeferredHolder;
+import net.minecraftforge.registries.DeferredRegister;
 
 import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 

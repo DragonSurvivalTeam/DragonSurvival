@@ -21,8 +21,8 @@ import net.minecraft.network.chat.contents.PlainTextContents;
 import net.minecraft.util.Mth;
 import net.minecraft.util.StringUtil;
 import net.minecraft.world.effect.MobEffectInstance;
-import net.neoforged.neoforge.client.ClientHooks;
-import net.neoforged.neoforge.client.event.ScreenEvent;
+import net.minecraftforge.client.ClientHooks;
+import net.minecraftforge.client.event.ScreenEvent;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -57,7 +57,7 @@ public class EffectRenderingInventoryScreenMixin {
         return original + dragonSurvival$providers.size();
     }
 
-    @Inject(method = "renderEffects", at = @At(value = "INVOKE", target = "Lnet/neoforged/neoforge/client/ClientHooks;onScreenPotionSize(Lnet/minecraft/client/gui/screens/Screen;IZI)Lnet/neoforged/neoforge/client/event/ScreenEvent$RenderInventoryMobEffects;", shift = At.Shift.BY, by = 2))
+    @Inject(method = "renderEffects", at = @At(value = "INVOKE", target = "Lnet/minecraftforge/client/ClientHooks;onScreenPotionSize(Lnet/minecraft/client/gui/screens/Screen;IZI)Lnet/minecraftforge/client/event/ScreenEvent$RenderInventoryMobEffects;", shift = At.Shift.BY, by = 2))
     private void dragonSurvival$storeEvent(final CallbackInfo callback, @Local final ScreenEvent.RenderInventoryMobEffects event, @Share("stored_event") final LocalRef<ScreenEvent.RenderInventoryMobEffects> storedEvent) {
         storedEvent.set(event);
     }

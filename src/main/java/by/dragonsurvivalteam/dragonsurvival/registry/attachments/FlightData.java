@@ -16,10 +16,10 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.neoforge.common.util.INBTSerializable;
-import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.network.PacketDistributor;
-import net.neoforged.neoforge.registries.NeoForgeRegistries;
+import net.minecraftforge.common.util.INBTSerializable;
+import net.minecraftforge.fluids.FluidType;
+import net.minecraftforge.network.PacketDistributor;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -52,7 +52,7 @@ public class FlightData implements INBTSerializable<CompoundTag> {
         tag.putInt(DURATION, duration);
 
         if (inFluid != null) {
-            RegistryCodecs.homogeneousList(NeoForgeRegistries.Keys.FLUID_TYPES).encodeStart(provider.createSerializationContext(NbtOps.INSTANCE), inFluid)
+            RegistryCodecs.homogeneousList(ForgeRegistries.Keys.FLUID_TYPES).encodeStart(provider.createSerializationContext(NbtOps.INSTANCE), inFluid)
                     .resultOrPartial(DragonSurvival.LOGGER::error).ifPresent(list -> tag.put(IN_FLUID, list));
         }
 
@@ -69,7 +69,7 @@ public class FlightData implements INBTSerializable<CompoundTag> {
         duration = tag.getInt(DURATION);
 
         if (tag.contains(IN_FLUID)) {
-            inFluid = RegistryCodecs.homogeneousList(NeoForgeRegistries.Keys.FLUID_TYPES).decode(provider.createSerializationContext(NbtOps.INSTANCE), tag.get(IN_FLUID))
+            inFluid = RegistryCodecs.homogeneousList(ForgeRegistries.Keys.FLUID_TYPES).decode(provider.createSerializationContext(NbtOps.INSTANCE), tag.get(IN_FLUID))
                     .resultOrPartial(DragonSurvival.LOGGER::error).map(Pair::getFirst).orElse(null);
         } else {
             inFluid = null;

@@ -14,7 +14,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
-import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
+import net.minecraftforge.event.entity.living.LivingDamageEvent;
 
 import java.util.Optional;
 

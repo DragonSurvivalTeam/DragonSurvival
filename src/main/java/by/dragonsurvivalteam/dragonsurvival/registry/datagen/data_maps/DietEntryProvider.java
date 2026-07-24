@@ -9,8 +9,8 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
-import net.neoforged.neoforge.common.Tags;
-import net.neoforged.neoforge.common.data.DataMapProvider;
+import net.minecraftforge.common.Tags;
+import net.minecraftforge.common.data.DataMapProvider;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;

@@ -47,9 +47,9 @@ import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.Tiers;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
-import net.neoforged.neoforge.common.DeferredSpawnEggItem;
-import net.neoforged.neoforge.common.EffectCures;
-import net.neoforged.neoforge.registries.DeferredRegister;
+import net.minecraftforge.common.DeferredSpawnEggItem;
+import net.minecraftforge.common.EffectCures;
+import net.minecraftforge.registries.DeferredRegister;
 import org.joml.Vector3f;
 
 import java.util.List;

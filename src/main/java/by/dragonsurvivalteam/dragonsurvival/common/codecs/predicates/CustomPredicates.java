@@ -21,8 +21,8 @@ import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.levelgen.blockpredicates.BlockPredicate;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.registries.NeoForgeRegistries;
+import net.minecraftforge.fluids.FluidType;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -42,7 +42,7 @@ public record CustomPredicates(
         Optional<LookingAtBlock> lookingAtBlock
 ) implements EntitySubPredicate {
     public static final MapCodec<CustomPredicates> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            RegistryCodecs.homogeneousList(NeoForgeRegistries.FLUID_TYPES.key()).optionalFieldOf("eye_in_fluid").forGetter(CustomPredicates::eyeInFluid),
+            RegistryCodecs.homogeneousList(ForgeRegistries.FLUID_TYPES.key()).optionalFieldOf("eye_in_fluid").forGetter(CustomPredicates::eyeInFluid),
             WeatherPredicate.CODEC.optionalFieldOf("weather_predicate").forGetter(CustomPredicates::weatherPredicate),
             MinMaxBounds.Ints.CODEC.optionalFieldOf("sun_light_level").forGetter(CustomPredicates::sunLightLevel),
             ResourceLocation.CODEC.optionalFieldOf("has_duration_effect").forGetter(CustomPredicates::hasDurationEffect),

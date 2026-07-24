@@ -4,9 +4,9 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSEntityTypeTa
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.phys.EntityHitResult;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.entity.ProjectileImpactEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.minecraftforge.event.entity.ProjectileImpactEvent;
 
 @EventBusSubscriber
 public class HunterProjectileImpactHandler {

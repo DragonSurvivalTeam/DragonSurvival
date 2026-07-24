@@ -24,11 +24,11 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
-import software.bernie.geckolib.animation.AnimatableManager;
-import software.bernie.geckolib.animation.AnimationController;
-import software.bernie.geckolib.animation.AnimationState;
-import software.bernie.geckolib.animation.PlayState;
-import software.bernie.geckolib.animation.RawAnimation;
+import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.AnimationState;
+import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.core.animation.RawAnimation;
 
 public class SpearmanEntity extends Hunter {
     @ConfigRange(min = 1)
@@ -170,7 +170,7 @@ public class SpearmanEntity extends Hunter {
                     }
 
                     leader.setPersistenceRequired();
-                    net.neoforged.neoforge.event.EventHooks.onLivingConvert(this, leader);
+                    net.minecraftforge.event.EventHooks.onLivingConvert(this, leader);
                     this.level().addFreshEntity(leader);
                     this.level().playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.AMETHYST_BLOCK_CHIME, this.getSoundSource(), 2.0F, 1.0F);
                     this.discard();

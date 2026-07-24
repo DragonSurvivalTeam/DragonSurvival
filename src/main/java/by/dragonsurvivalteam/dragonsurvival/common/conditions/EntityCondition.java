@@ -29,7 +29,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.material.Fluid;
-import net.neoforged.neoforge.fluids.FluidType;
+import net.minecraftforge.fluids.FluidType;
 
 public class EntityCondition {
     public static EntityPredicate defaultNaturalGrowthBlocker() {

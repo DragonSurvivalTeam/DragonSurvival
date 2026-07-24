@@ -18,7 +18,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.npc.VillagerProfession;
-import net.neoforged.neoforge.client.GlStateBackup;
+import net.minecraftforge.client.GlStateBackup;
 import org.joml.Matrix4f;
 
 public class PillageIconRenderer {

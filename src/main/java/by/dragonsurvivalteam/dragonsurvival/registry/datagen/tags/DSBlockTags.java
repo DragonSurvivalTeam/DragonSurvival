@@ -14,9 +14,9 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.neoforged.neoforge.common.Tags;
-import net.neoforged.neoforge.common.data.BlockTagsProvider;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.minecraftforge.common.Tags;
+import net.minecraftforge.common.data.BlockTagsProvider;
+import net.minecraftforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -76,17 +76,16 @@ public class DSBlockTags extends BlockTagsProvider {
         DSBlocks.REGISTRY.getEntries().forEach(holder -> {
             Block block = holder.value();
 
-            switch (block) {
-                case DragonAltarBlock ignored -> tag(DRAGON_ALTARS).add(block);
-                case TreasureBlock ignored -> {
-                    if (holder.get() instanceof ModCompat compat && compat.getCompatId() != null) {
-                        tag(DRAGON_TREASURES).addOptional(holder.getId());
-                    } else {
-                        tag(DRAGON_TREASURES).add(block);
-                    }
+            if (block instanceof DragonAltarBlock) {
+                tag(DRAGON_ALTARS).add(block);
+            } else if (block instanceof TreasureBlock) {
+                if (holder.get() instanceof ModCompat compat && compat.getCompatId() != null) {
+                    tag(DRAGON_TREASURES).addOptional(holder.getId());
+                } else {
+                    tag(DRAGON_TREASURES).add(block);
                 }
-                case SkeletonPieceBlock ignored -> tag(DRAGON_BONES).add(block);
-                default -> { /* Nothing to do */ }
+            } else if (block instanceof SkeletonPieceBlock) {
+                tag(DRAGON_BONES).add(block);
             }
         });
 

@@ -5,7 +5,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.neoforged.neoforge.common.conditions.ICondition;
+import net.minecraftforge.common.conditions.ICondition;
 import org.jetbrains.annotations.NotNull;
 
 // TODO :: Remove in 1.21.4

@@ -18,7 +18,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import java.util.function.Consumer;
 
 /**
- * The event {@link net.neoforged.neoforge.event.enchanting.GetEnchantmentLevelEvent} is not called for tooltips <br>
+ * The event {@link net.minecraftforge.event.enchanting.GetEnchantmentLevelEvent} is not called for tooltips <br>
  * So we need to add tooltips for permanent enchantments ourselves
  */
 @Mixin(ItemStack.class)

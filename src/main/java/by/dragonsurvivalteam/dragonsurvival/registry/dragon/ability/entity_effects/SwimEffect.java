@@ -9,9 +9,9 @@ import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
-import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.network.PacketDistributor;
-import net.neoforged.neoforge.registries.NeoForgeRegistries;
+import net.minecraftforge.fluids.FluidType;
+import net.minecraftforge.network.PacketDistributor;
+import net.minecraftforge.registries.ForgeRegistries;
 
 public record SwimEffect(LevelBasedValue maxOxygen, Holder<FluidType> fluidType) implements AbilityEntityEffect {
     public static final MapCodec<SwimEffect> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
@@ -19,7 +19,7 @@ public record SwimEffect(LevelBasedValue maxOxygen, Holder<FluidType> fluidType)
             //  so that a different speed can be applied to different fluids
             LevelBasedValue.CODEC.fieldOf("max_oxygen").forGetter(SwimEffect::maxOxygen),
             // TODO :: holderset?
-            NeoForgeRegistries.FLUID_TYPES.holderByNameCodec().fieldOf("fluid_type").forGetter(SwimEffect::fluidType)
+            ForgeRegistries.FLUID_TYPES.holderByNameCodec().fieldOf("fluid_type").forGetter(SwimEffect::fluidType)
     ).apply(instance, SwimEffect::new));
 
     @Override

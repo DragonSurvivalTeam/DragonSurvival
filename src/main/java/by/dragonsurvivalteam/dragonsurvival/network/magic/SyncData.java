@@ -9,10 +9,10 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
-import net.neoforged.neoforge.attachment.AttachmentType;
-import net.neoforged.neoforge.common.util.INBTSerializable;
-import net.neoforged.neoforge.network.handling.IPayloadContext;
-import net.neoforged.neoforge.registries.NeoForgeRegistries;
+import net.minecraftforge.attachment.AttachmentType;
+import net.minecraftforge.common.util.INBTSerializable;
+import net.minecraftforge.network.handling.IPayloadContext;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
 public record SyncData(int targetEntityId, ResourceLocation attachmentType, CompoundTag tag) implements CustomPacketPayload {
@@ -28,7 +28,7 @@ public record SyncData(int targetEntityId, ResourceLocation attachmentType, Comp
     public static void handleCommon(final SyncData packet, final IPayloadContext context) {
         context.enqueueWork(() -> {
             try {
-                AttachmentType<?> type = NeoForgeRegistries.ATTACHMENT_TYPES.get(packet.attachmentType());
+                AttachmentType<?> type = ForgeRegistries.ATTACHMENT_TYPES.get(packet.attachmentType());
 
                 if (type != null && context.player().level().getEntity(packet.targetEntityId()) instanceof Entity entity) {
                     //noinspection unchecked -> it's handled

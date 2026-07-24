@@ -7,19 +7,19 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.attachment.AttachmentType;
-import net.neoforged.neoforge.common.NeoForgeMod;
-import net.neoforged.neoforge.event.tick.EntityTickEvent;
-import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.registries.NeoForgeRegistries;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.minecraftforge.attachment.AttachmentType;
+import net.minecraftforge.common.ForgeMod;
+import net.minecraftforge.event.tick.EntityTickEvent;
+import net.minecraftforge.fluids.FluidType;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
 @EventBusSubscriber
 public class OxygenBonuses extends Storage<OxygenBonus.Instance> {
     public float getBonus(final ResourceKey<FluidType> fluidKey) {
-        Holder<FluidType> fluid = fluidKey != null ? NeoForgeRegistries.FLUID_TYPES.getHolderOrThrow(fluidKey) : NeoForgeMod.EMPTY_TYPE;
+        Holder<FluidType> fluid = fluidKey != null ? ForgeRegistries.FLUID_TYPES.getHolderOrThrow(fluidKey) : ForgeMod.EMPTY_TYPE;
         float bonus = OxygenBonus.NONE;
 
         float instanceBonus;

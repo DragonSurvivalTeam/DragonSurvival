@@ -25,12 +25,12 @@ import net.minecraft.world.item.ArrowItem;
 import net.minecraft.world.item.CrossbowItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ChargedProjectiles;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.common.damagesource.DamageContainer;
-import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
-import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
-import net.neoforged.neoforge.event.entity.player.ArrowLooseEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.minecraftforge.common.damagesource.DamageContainer;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.event.entity.living.LivingIncomingDamageEvent;
+import net.minecraftforge.event.entity.player.ArrowLooseEvent;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;

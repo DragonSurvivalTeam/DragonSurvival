@@ -8,10 +8,10 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.attachment.AttachmentType;
-import net.neoforged.neoforge.event.tick.EntityTickEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.minecraftforge.attachment.AttachmentType;
+import net.minecraftforge.event.tick.EntityTickEvent;
 import org.jetbrains.annotations.NotNull;
 
 @EventBusSubscriber // Only relevant for Players since the harvest events are only fired for them

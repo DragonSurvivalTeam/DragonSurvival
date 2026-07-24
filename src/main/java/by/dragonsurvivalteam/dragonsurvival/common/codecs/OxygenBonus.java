@@ -27,10 +27,10 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
-import net.neoforged.neoforge.attachment.AttachmentType;
-import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.network.PacketDistributor;
-import net.neoforged.neoforge.registries.NeoForgeRegistries;
+import net.minecraftforge.attachment.AttachmentType;
+import net.minecraftforge.fluids.FluidType;
+import net.minecraftforge.network.PacketDistributor;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -51,7 +51,7 @@ public class OxygenBonus extends DurationInstanceBase<OxygenBonuses, OxygenBonus
 
     public static final Codec<OxygenBonus> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             DurationInstanceBase.CODEC.fieldOf("base").forGetter(identity -> identity),
-            RegistryCodecs.homogeneousList(NeoForgeRegistries.Keys.FLUID_TYPES).optionalFieldOf("fluid_types").forGetter(OxygenBonus::fluidTypes),
+            RegistryCodecs.homogeneousList(ForgeRegistries.Keys.FLUID_TYPES).optionalFieldOf("fluid_types").forGetter(OxygenBonus::fluidTypes),
             LevelBasedValue.CODEC.fieldOf("oxygen_bonus").forGetter(OxygenBonus::oxygenBonus)
     ).apply(instance, OxygenBonus::new));
 

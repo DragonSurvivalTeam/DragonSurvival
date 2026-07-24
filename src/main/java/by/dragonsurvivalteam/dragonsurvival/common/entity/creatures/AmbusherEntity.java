@@ -32,11 +32,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
-import software.bernie.geckolib.animation.AnimatableManager;
-import software.bernie.geckolib.animation.AnimationController;
-import software.bernie.geckolib.animation.AnimationState;
-import software.bernie.geckolib.animation.PlayState;
-import software.bernie.geckolib.animation.RawAnimation;
+import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.AnimationState;
+import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.core.animation.RawAnimation;
 
 import static by.dragonsurvivalteam.dragonsurvival.client.DragonSurvivalClient.AMBUSHER_MODEL;
 
@@ -260,7 +260,7 @@ public class AmbusherEntity extends Hunter implements RangedAttackMob {
 
     @Override
     public @NotNull ItemStack getProjectile(@NotNull ItemStack pWeaponStack) {
-        return net.neoforged.neoforge.common.CommonHooks.getProjectile(this, pWeaponStack, new ItemStack(Items.ARROW, 1));
+        return net.minecraftforge.common.CommonHooks.getProjectile(this, pWeaponStack, new ItemStack(Items.ARROW, 1));
     }
 
     private void beginSummonReinforcements() {

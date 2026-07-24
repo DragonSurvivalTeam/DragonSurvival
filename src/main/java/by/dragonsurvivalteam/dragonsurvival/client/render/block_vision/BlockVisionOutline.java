@@ -10,7 +10,7 @@ import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.renderer.GameRenderer;
-import net.neoforged.neoforge.client.GlStateBackup;
+import net.minecraftforge.client.GlStateBackup;
 
 public class BlockVisionOutline {
     private static BufferBuilder buffer;

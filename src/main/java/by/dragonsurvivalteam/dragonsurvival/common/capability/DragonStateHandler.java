@@ -57,9 +57,9 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
-import net.neoforged.fml.loading.FMLLoader;
-import net.neoforged.neoforge.common.util.Lazy;
-import net.neoforged.neoforge.network.PacketDistributor;
+import net.minecraftforge.fml.loading.FMLLoader;
+import net.minecraftforge.common.util.Lazy;
+import net.minecraftforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

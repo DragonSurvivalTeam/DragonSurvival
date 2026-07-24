@@ -15,7 +15,7 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
-import net.neoforged.neoforge.client.GlStateBackup;
+import net.minecraftforge.client.GlStateBackup;
 import org.joml.Matrix4f;
 
 public class SmeltEffectIconRenderer {

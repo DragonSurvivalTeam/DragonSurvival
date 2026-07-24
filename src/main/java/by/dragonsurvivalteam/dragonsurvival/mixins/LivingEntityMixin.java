@@ -35,7 +35,7 @@ import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.common.NeoForgeMod;
+import net.minecraftforge.common.ForgeMod;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -259,7 +259,7 @@ public abstract class LivingEntityMixin extends Entity {
         }
 
         SwimData swimData = SwimData.getData(player);
-        boolean isLavaSwimming = swimData.canSwimIn(NeoForgeMod.LAVA_TYPE.getKey()) && isInLava();
+        boolean isLavaSwimming = swimData.canSwimIn(ForgeMod.LAVA_TYPE.getKey()) && isInLava();
 
         if (!isLavaSwimming && !isInWater() || !player.isAffectedByFluids() || player.canStandOnFluid(fluidState)) {
             return;

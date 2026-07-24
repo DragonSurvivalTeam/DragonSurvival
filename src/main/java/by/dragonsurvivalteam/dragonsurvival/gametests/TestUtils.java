@@ -15,8 +15,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.tick.PlayerTickEvent;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.tick.PlayerTickEvent;
 
 import java.lang.reflect.Field;
 
@@ -107,7 +107,7 @@ public class TestUtils {
 
     /** The mock player is not ticked, even if 'tick()' is explicitly called */
     public static void tick(final Player player) {
-        NeoForge.EVENT_BUS.post(new PlayerTickEvent.Pre(player));
-        NeoForge.EVENT_BUS.post(new PlayerTickEvent.Post(player));
+        MinecraftForge.EVENT_BUS.post(new PlayerTickEvent.Pre(player));
+        MinecraftForge.EVENT_BUS.post(new PlayerTickEvent.Post(player));
     }
 }

@@ -36,11 +36,11 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
-import net.neoforged.fml.ModList;
-import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
-import net.neoforged.neoforge.client.gui.widget.ExtendedButton;
-import net.neoforged.neoforge.network.PacketDistributor;
-import net.neoforged.neoforgespi.language.IModInfo;
+import net.minecraftforge.fml.ModList;
+import net.minecraftforge.client.gui.IConfigScreenFactory;
+import net.minecraftforge.client.gui.widget.ExtendedButton;
+import net.minecraftforge.network.PacketDistributor;
+import net.minecraftforgespi.language.IModInfo;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 

@@ -7,7 +7,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
-import net.neoforged.neoforge.common.util.Lazy;
+import net.minecraftforge.common.util.Lazy;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;

@@ -2,9 +2,9 @@ package by.dragonsurvivalteam.dragonsurvival.server.handlers;
 
 import by.dragonsurvivalteam.dragonsurvival.registry.DSBlocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.BlockEntityTypeAddBlocksEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.minecraftforge.event.BlockEntityTypeAddBlocksEvent;
 
 @EventBusSubscriber
 public class BlockEntityHandler {

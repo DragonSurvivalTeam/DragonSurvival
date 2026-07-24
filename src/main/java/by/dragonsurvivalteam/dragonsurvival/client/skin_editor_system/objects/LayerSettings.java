@@ -3,7 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.loader.DefaultPartLoader;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.minecraftforge.common.util.INBTSerializable;
 import org.jetbrains.annotations.NotNull;
 
 /** Entries within the 'saved_customizations.json' file */

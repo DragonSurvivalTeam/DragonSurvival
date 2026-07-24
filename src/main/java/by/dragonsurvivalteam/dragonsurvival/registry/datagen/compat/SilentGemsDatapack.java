@@ -12,7 +12,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.loot.LootTable;
-import net.neoforged.neoforge.registries.DeferredHolder;
+import net.minecraftforge.registries.DeferredHolder;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;

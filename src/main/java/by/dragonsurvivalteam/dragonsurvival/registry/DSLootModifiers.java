@@ -5,12 +5,12 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.loot.AddTableLootEx
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.loot.DragonHeartLootModifier;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.loot.DragonOreLootModifier;
 import com.mojang.serialization.MapCodec;
-import net.neoforged.neoforge.common.loot.IGlobalLootModifier;
-import net.neoforged.neoforge.registries.DeferredRegister;
-import net.neoforged.neoforge.registries.NeoForgeRegistries;
+import net.minecraftforge.common.loot.IGlobalLootModifier;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
 
 public class DSLootModifiers {
-    public static final DeferredRegister<MapCodec<? extends IGlobalLootModifier>> REGISTRY = DeferredRegister.create(NeoForgeRegistries.Keys.GLOBAL_LOOT_MODIFIER_SERIALIZERS, DragonSurvival.MODID);
+    public static final DeferredRegister<MapCodec<? extends IGlobalLootModifier>> REGISTRY = DeferredRegister.create(ForgeRegistries.Keys.GLOBAL_LOOT_MODIFIER_SERIALIZERS, DragonSurvival.MODID);
 
     static {
         REGISTRY.register("dragon_ore", DragonOreLootModifier.CODEC);

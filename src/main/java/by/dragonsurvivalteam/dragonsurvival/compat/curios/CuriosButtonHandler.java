@@ -9,7 +9,7 @@ import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.util.Tuple;
-import net.neoforged.neoforge.client.event.ScreenEvent;
+import net.minecraftforge.client.event.ScreenEvent;
 import org.lwjgl.glfw.GLFW;
 import top.theillusivec4.curios.client.CuriosClientConfig;
 import top.theillusivec4.curios.client.gui.CuriosButton;
@@ -34,7 +34,7 @@ public class CuriosButtonHandler {
     private static boolean hasError;
     private static Constructor<?> constructor;
 
-    /** Just a copy of {@link top.theillusivec4.curios.client.gui.GuiEventHandler#onInventoryGuiInit(net.neoforged.neoforge.client.event.ScreenEvent.Init.Post)} */
+    /** Just a copy of {@link top.theillusivec4.curios.client.gui.GuiEventHandler#onInventoryGuiInit(net.minecraftforge.client.event.ScreenEvent.Init.Post)} */
     public static void handleCurios(final ScreenEvent.Init.Post event) {
         if (hasError || !CuriosClientConfig.CLIENT.enableButton.get()) {
             return;

@@ -11,7 +11,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
-import net.neoforged.neoforge.attachment.AttachmentType;
+import net.minecraftforge.attachment.AttachmentType;
 
 import java.util.Optional;
 

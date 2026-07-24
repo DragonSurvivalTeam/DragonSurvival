@@ -1,9 +1,9 @@
 package by.dragonsurvivalteam.dragonsurvival.common.handlers;
 
 import by.dragonsurvivalteam.dragonsurvival.common.items.armor.PermanentEnchantmentItem;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.enchanting.GetEnchantmentLevelEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.minecraftforge.event.enchanting.GetEnchantmentLevelEvent;
 
 @EventBusSubscriber
 public class CraftingHandler {

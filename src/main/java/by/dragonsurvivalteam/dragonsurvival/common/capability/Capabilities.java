@@ -2,10 +2,10 @@ package by.dragonsurvivalteam.dragonsurvival.common.capability;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import net.minecraft.world.entity.EntityType;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.capabilities.EntityCapability;
-import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.minecraftforge.capabilities.EntityCapability;
+import net.minecraftforge.capabilities.RegisterCapabilitiesEvent;
 
 @EventBusSubscriber
 public class Capabilities {

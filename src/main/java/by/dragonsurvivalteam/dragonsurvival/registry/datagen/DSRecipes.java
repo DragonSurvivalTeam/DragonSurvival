@@ -21,8 +21,8 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
-import net.neoforged.neoforge.common.Tags;
-import net.neoforged.neoforge.common.conditions.ModLoadedCondition;
+import net.minecraftforge.common.Tags;
+import net.minecraftforge.common.conditions.ModLoadedCondition;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.CompletableFuture;

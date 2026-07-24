@@ -14,12 +14,12 @@ import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.client.event.EntityRenderersEvent;
-import net.neoforged.neoforge.common.SimpleTier;
-import net.neoforged.neoforge.registries.DeferredRegister;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.minecraftforge.client.event.EntityRenderersEvent;
+import net.minecraftforge.common.SimpleTier;
+import net.minecraftforge.registries.DeferredRegister;
 
 import java.util.EnumMap;
 import java.util.List;

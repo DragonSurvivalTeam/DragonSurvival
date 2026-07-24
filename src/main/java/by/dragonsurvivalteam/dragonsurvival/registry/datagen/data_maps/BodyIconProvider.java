@@ -6,7 +6,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.BuiltInDragonSpecies
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBodies;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
-import net.neoforged.neoforge.common.data.DataMapProvider;
+import net.minecraftforge.common.data.DataMapProvider;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;

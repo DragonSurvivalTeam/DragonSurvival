@@ -6,11 +6,11 @@ import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.Customizat
 import by.dragonsurvivalteam.dragonsurvival.util.json.GsonFactory;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.fml.loading.FMLPaths;
-import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.minecraftforge.fml.loading.FMLPaths;
+import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 
 import java.io.BufferedReader;
 import java.io.File;

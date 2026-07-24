@@ -3,7 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.common.effects;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
-import net.neoforged.neoforge.common.EffectCure;
+import net.minecraftforge.common.EffectCure;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Set;

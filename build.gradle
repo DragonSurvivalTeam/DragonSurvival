@@ -7,11 +7,11 @@ plugins {
     id 'org.spongepowered.mixin' version '0.7.+'
 }
 
-version = minecraft_version + "-" + new Date().format("dd.MM.yyyy")
+version = minecraft_version + "-v" + mod_version + "-" + new Date().format("dd.MM.yyyy")
 group = mod_group
 
 base {
-    archivesName = mod_id
+    archivesName = "DragonSurvival"
 }
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)

@@ -11,8 +11,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
-import net.neoforged.neoforge.common.util.Lazy;
-import net.neoforged.neoforge.event.level.BlockEvent;
+import net.minecraftforge.common.util.Lazy;
+import net.minecraftforge.event.level.BlockEvent;
 
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;

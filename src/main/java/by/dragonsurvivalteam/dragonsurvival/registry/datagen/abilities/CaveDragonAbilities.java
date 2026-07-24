@@ -80,8 +80,8 @@ import net.minecraft.world.item.enchantment.LevelBasedValue;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.storage.loot.predicates.AnyOfCondition;
-import net.neoforged.neoforge.common.NeoForgeMod;
-import net.neoforged.neoforge.common.Tags;
+import net.minecraftforge.common.ForgeMod;
+import net.minecraftforge.common.Tags;
 
 import java.util.List;
 import java.util.Optional;
@@ -198,7 +198,7 @@ public class CaveDragonAbilities {
                 ),
                 Optional.of(new ExperienceLevelUpgrade(4, LevelBasedValue.lookup(List.of(0f, 10f, 30f, 50f), LevelBasedValue.perLevel(15)))),
                 // Disable underwater
-                Optional.of(Condition.thisEntity(EntityCondition.isEyeInFluid(NeoForgeMod.WATER_TYPE)).or(Condition.thisEntity(EntityCondition.isInRainOrSnow())).build()),
+                Optional.of(Condition.thisEntity(EntityCondition.isEyeInFluid(ForgeMod.WATER_TYPE)).or(Condition.thisEntity(EntityCondition.isInRainOrSnow())).build()),
                 List.of(
                         new ActionContainer(new DragonBreathTarget(AbilityTargeting.entity(
                                 Condition.thisEntity(EntityCondition.isLiving()).build(),
@@ -249,7 +249,7 @@ public class CaveDragonAbilities {
                                 .optional()
                 ),
                 Optional.of(new ExperienceLevelUpgrade(4, LevelBasedValue.lookup(List.of(0f, 12f, 32f, 64f), LevelBasedValue.perLevel(15)))),
-                Optional.of(Condition.thisEntity(EntityCondition.isEyeInFluid(NeoForgeMod.WATER_TYPE)).or(Condition.thisEntity(EntityCondition.isInRainOrSnow())).build()),
+                Optional.of(Condition.thisEntity(EntityCondition.isEyeInFluid(ForgeMod.WATER_TYPE)).or(Condition.thisEntity(EntityCondition.isInRainOrSnow())).build()),
                 List.of(
                         new ActionContainer(new DragonBreathTarget(AbilityTargeting.entity(List.of(
                                 new SmeltItemEffect(Optional.empty(), Optional.of(LevelBasedValue.perLevel(4.0f)), true)
@@ -293,7 +293,7 @@ public class CaveDragonAbilities {
                 ),
                 Optional.of(new ExperienceLevelUpgrade(4, LevelBasedValue.lookup(List.of(0f, 20f, 40f, 45f), LevelBasedValue.perLevel(15)))),
                 // Disable underwater
-                Optional.of(Condition.thisEntity(EntityCondition.isEyeInFluid(NeoForgeMod.WATER_TYPE)).or(Condition.thisEntity(EntityCondition.isInRainOrSnow())).build()),
+                Optional.of(Condition.thisEntity(EntityCondition.isEyeInFluid(ForgeMod.WATER_TYPE)).or(Condition.thisEntity(EntityCondition.isInRainOrSnow())).build()),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         Condition.thisEntity(EntityCondition.isLiving()).build(),
                         List.of(new ProjectileEffect(
@@ -562,7 +562,7 @@ public class CaveDragonAbilities {
                 // Disable when marked by the ender dragon
                 Optional.of(Condition.thisEntity(EntityCondition.isMarked(true)).build()),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
-                        List.of(new SpinEffect(1, Optional.of(HolderSet.direct(NeoForgeMod.LAVA_TYPE)))),
+                        List.of(new SpinEffect(1, Optional.of(HolderSet.direct(ForgeMod.LAVA_TYPE)))),
                         TargetingMode.ALLIES_AND_SELF
                 )), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(1))),
                 true,
@@ -596,7 +596,7 @@ public class CaveDragonAbilities {
                 Optional.empty(),
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
-                        List.of(new SwimEffect(LevelBasedValue.perLevel(Functions.secondsToTicks(180), Functions.secondsToTicks(60)), NeoForgeMod.LAVA_TYPE)),
+                        List.of(new SwimEffect(LevelBasedValue.perLevel(Functions.secondsToTicks(180), Functions.secondsToTicks(60)), ForgeMod.LAVA_TYPE)),
                         TargetingMode.ALLIES_AND_SELF
                 )), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(1))),
                 false, // To prevent regaining oxygen

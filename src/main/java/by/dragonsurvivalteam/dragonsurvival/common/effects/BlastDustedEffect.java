@@ -20,10 +20,10 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.common.NeoForgeMod;
-import net.neoforged.neoforge.event.entity.living.MobEffectEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.minecraftforge.common.ForgeMod;
+import net.minecraftforge.event.entity.living.MobEffectEvent;
 import org.jetbrains.annotations.NotNull;
 
 @EventBusSubscriber
@@ -52,7 +52,7 @@ public class BlastDustedEffect extends ModifiableMobEffect {
             }
         }
 
-        if (entity.isEyeInFluidType(NeoForgeMod.WATER_TYPE.value()) || entity.isInWaterRainOrBubble()) {
+        if (entity.isEyeInFluidType(ForgeMod.WATER_TYPE.value()) || entity.isInWaterRainOrBubble()) {
             return false;
         }
 

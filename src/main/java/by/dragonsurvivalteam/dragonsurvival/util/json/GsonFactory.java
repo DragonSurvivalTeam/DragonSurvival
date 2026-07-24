@@ -3,7 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.util.json;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.minecraft.resources.ResourceLocation;
-import net.neoforged.neoforge.common.util.Lazy;
+import net.minecraftforge.common.util.Lazy;
 
 final public class GsonFactory {
     private static final Gson GSON = newBuilder().create();

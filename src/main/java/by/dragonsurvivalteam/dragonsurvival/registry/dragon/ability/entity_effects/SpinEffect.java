@@ -15,9 +15,9 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.network.PacketDistributor;
-import net.neoforged.neoforge.registries.NeoForgeRegistries;
+import net.minecraftforge.fluids.FluidType;
+import net.minecraftforge.network.PacketDistributor;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +30,7 @@ public record SpinEffect(int levelRequirement, Optional<HolderSet<FluidType>> fl
 
     public static final MapCodec<SpinEffect> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             Codec.INT.fieldOf("level_requirement").forGetter(SpinEffect::levelRequirement),
-            RegistryCodecs.homogeneousList(NeoForgeRegistries.Keys.FLUID_TYPES).optionalFieldOf("fluid_types").forGetter(SpinEffect::fluidTypes)
+            RegistryCodecs.homogeneousList(ForgeRegistries.Keys.FLUID_TYPES).optionalFieldOf("fluid_types").forGetter(SpinEffect::fluidTypes)
     ).apply(instance, SpinEffect::new));
 
     @Override

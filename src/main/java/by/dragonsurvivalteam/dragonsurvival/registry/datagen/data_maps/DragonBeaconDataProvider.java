@@ -10,7 +10,7 @@ import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.world.effect.MobEffects;
-import net.neoforged.neoforge.common.data.DataMapProvider;
+import net.minecraftforge.common.data.DataMapProvider;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.CompletableFuture;

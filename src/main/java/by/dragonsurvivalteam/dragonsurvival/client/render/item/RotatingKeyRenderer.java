@@ -9,7 +9,7 @@ import org.jetbrains.annotations.Nullable;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
-import software.bernie.geckolib.loading.math.MathParser;
+import software.bernie.geckolib.core.molang.MolangParser;
 import software.bernie.geckolib.renderer.GeoItemRenderer;
 
 public class RotatingKeyRenderer extends GeoItemRenderer<RotatingKeyItem> {
@@ -35,8 +35,8 @@ public class RotatingKeyRenderer extends GeoItemRenderer<RotatingKeyItem> {
 
         eulerAngles.mul(180 / (float) Math.PI);
 
-        MathParser.setVariable("query.x_rotation", () -> eulerAngles.x + 180);
-        MathParser.setVariable("query.y_rotation", () -> eulerAngles.y - animatable.playerHoldingItem.getYRot() - 90);
-        MathParser.setVariable("query.z_rotation", () -> eulerAngles.z);
+        MolangParser.INSTANCE.setValue("query.x_rotation", () -> eulerAngles.x + 180);
+        MolangParser.INSTANCE.setValue("query.y_rotation", () -> eulerAngles.y - animatable.playerHoldingItem.getYRot() - 90);
+        MolangParser.INSTANCE.setValue("query.z_rotation", () -> eulerAngles.z);
     }
 }

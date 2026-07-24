@@ -31,11 +31,11 @@ import by.dragonsurvivalteam.dragonsurvival.util.proxy.Proxy;
 import by.dragonsurvivalteam.dragonsurvival.util.proxy.ServerProxy;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.ModContainer;
-import net.neoforged.fml.common.Mod;
-import net.neoforged.fml.loading.FMLLoader;
-import net.neoforged.neoforge.common.NeoForge;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.ModContainer;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.loading.FMLLoader;
+import net.minecraftforge.common.MinecraftForge;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -77,10 +77,10 @@ public class DragonSurvival {
         DSLootModifiers.REGISTRY.register(bus);
         DSConditions.REGISTRY.register(bus);
 
-        NeoForge.EVENT_BUS.addListener(OnSelfHit::trigger);
-        NeoForge.EVENT_BUS.addListener(OnTargetHit::trigger);
-        NeoForge.EVENT_BUS.addListener(OnDeath::trigger);
-        NeoForge.EVENT_BUS.addListener(OnBlockBreak::trigger);
+        MinecraftForge.EVENT_BUS.addListener(OnSelfHit::trigger);
+        MinecraftForge.EVENT_BUS.addListener(OnTargetHit::trigger);
+        MinecraftForge.EVENT_BUS.addListener(OnDeath::trigger);
+        MinecraftForge.EVENT_BUS.addListener(OnBlockBreak::trigger);
     }
 
     /** Creates a {@link ResourceLocation} with the dragon survival namespace */

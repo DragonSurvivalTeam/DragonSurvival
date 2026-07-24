@@ -7,7 +7,7 @@ import by.dragonsurvivalteam.dragonsurvival.network.dragon_editor.SyncDragonSkin
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.neoforged.neoforge.network.handling.IPayloadContext;
+import net.minecraftforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
 public record RequestClientData() implements CustomPacketPayload {

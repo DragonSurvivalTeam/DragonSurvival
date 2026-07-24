@@ -1,12 +1,12 @@
 package by.dragonsurvivalteam.dragonsurvival.client.render.util;
 
 import by.dragonsurvivalteam.dragonsurvival.util.AnimationUtils;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.client.event.RenderFrameEvent;
-import software.bernie.geckolib.animatable.GeoAnimatable;
-import software.bernie.geckolib.animation.RawAnimation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.minecraftforge.client.event.RenderFrameEvent;
+import software.bernie.geckolib.core.animatable.GeoAnimatable;
+import software.bernie.geckolib.core.animation.RawAnimation;
 import software.bernie.geckolib.model.GeoModel;
 
 import java.util.concurrent.ConcurrentHashMap;

@@ -22,19 +22,19 @@ import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.ModContainer;
-import net.neoforged.fml.ModList;
-import net.neoforged.fml.ModLoadingContext;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.fml.config.ModConfig;
-import net.neoforged.fml.event.config.ModConfigEvent;
-import net.neoforged.fml.loading.FMLEnvironment;
-import net.neoforged.fml.loading.FMLLoader;
-import net.neoforged.fml.loading.modscan.ModAnnotation;
-import net.neoforged.neoforge.common.ModConfigSpec;
-import net.neoforged.neoforgespi.language.ModFileScanData;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModContainer;
+import net.minecraftforge.fml.ModList;
+import net.minecraftforge.fml.ModLoadingContext;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.event.config.ModConfigEvent;
+import net.minecraftforge.fml.loading.FMLEnvironment;
+import net.minecraftforge.fml.loading.FMLLoader;
+import net.minecraftforge.fml.loading.modscan.ModAnnotation;
+import net.minecraftforge.common.ModConfigSpec;
+import net.minecraftforgespi.language.ModFileScanData;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -475,7 +475,7 @@ public class ConfigHandler {
 
     /**
      * @param field        The class field which dictates the type to set
-     * @param value        The value (from {@link net.neoforged.neoforge.common.ModConfigSpec.ConfigValue}) which will be converted to the class field type
+     * @param value        The value (from {@link net.minecraftforge.common.ModConfigSpec.ConfigValue}) which will be converted to the class field type
      * @param registryType (Optional) The type of registry object (e.g. {@link Block})
      * @return The converted value for the field
      */

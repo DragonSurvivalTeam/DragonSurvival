@@ -7,7 +7,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
 
 public record OnDeath() implements ActivationTrigger<Void> {
     @Translation(comments = "On Death")

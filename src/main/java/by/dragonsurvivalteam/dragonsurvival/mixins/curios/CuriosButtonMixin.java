@@ -14,7 +14,7 @@ import top.theillusivec4.curios.client.gui.CuriosButton;
 
 @Mixin(CuriosButton.class)
 public abstract class CuriosButtonMixin {
-    @Inject(method = "lambda$new$0", at = @At(value = "INVOKE", target = "Lnet/neoforged/neoforge/network/PacketDistributor;sendToServer(Lnet/minecraft/network/protocol/common/custom/CustomPacketPayload;[Lnet/minecraft/network/protocol/common/custom/CustomPacketPayload;)V", ordinal = 1, shift = At.Shift.BEFORE))
+    @Inject(method = "lambda$new$0", at = @At(value = "INVOKE", target = "Lnet/minecraftforge/network/PacketDistributor;sendToServer(Lnet/minecraft/network/protocol/common/custom/CustomPacketPayload;[Lnet/minecraft/network/protocol/common/custom/CustomPacketPayload;)V", ordinal = 1, shift = At.Shift.BEFORE))
     private static void dragonSurvival$rememberParent(final AbstractContainerScreen<?> parent, final Button button, final CallbackInfo callback) {
         if (parent instanceof DragonInventoryScreen screen) {
             MouseHandler handler = Minecraft.getInstance().mouseHandler;

@@ -3,9 +3,9 @@ package by.dragonsurvivalteam.dragonsurvival.registry.attachments;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.OnAttackEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.minecraftforge.event.entity.living.LivingDamageEvent;
 
 import java.util.HashMap;
 import java.util.Map;

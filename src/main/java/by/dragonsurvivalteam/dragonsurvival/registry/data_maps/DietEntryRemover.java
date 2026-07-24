@@ -8,7 +8,7 @@ import com.mojang.serialization.Codec;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
-import net.neoforged.neoforge.registries.datamaps.DataMapValueRemover;
+import net.minecraftforge.registries.datamaps.DataMapValueRemover;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;

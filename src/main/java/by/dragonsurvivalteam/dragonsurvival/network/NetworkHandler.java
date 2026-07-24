@@ -74,11 +74,11 @@ import by.dragonsurvivalteam.dragonsurvival.network.syncing.SyncCooldown;
 import by.dragonsurvivalteam.dragonsurvival.network.syncing.SyncDragonSoulPlacement;
 import by.dragonsurvivalteam.dragonsurvival.network.syncing.SyncKey;
 import by.dragonsurvivalteam.dragonsurvival.network.syncing.SyncMana;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
-import net.neoforged.neoforge.network.handling.DirectionalPayloadHandler;
-import net.neoforged.neoforge.network.registration.PayloadRegistrar;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.minecraftforge.network.event.RegisterPayloadHandlersEvent;
+import net.minecraftforge.network.handling.DirectionalPayloadHandler;
+import net.minecraftforge.network.registration.PayloadRegistrar;
 
 @EventBusSubscriber
 public class NetworkHandler {

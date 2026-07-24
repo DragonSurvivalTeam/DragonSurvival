@@ -78,8 +78,8 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.Tiers;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
-import net.neoforged.neoforge.common.NeoForgeMod;
-import net.neoforged.neoforge.common.Tags;
+import net.minecraftforge.common.ForgeMod;
+import net.minecraftforge.common.Tags;
 
 import java.util.List;
 import java.util.Optional;
@@ -631,7 +631,7 @@ public class SeaDragonAbilities {
                 // Disable when marked by the ender dragon
                 Optional.of(Condition.thisEntity(EntityCondition.isMarked(true)).build()),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
-                        List.of(new SpinEffect(1, Optional.of(HolderSet.direct(NeoForgeMod.WATER_TYPE)))),
+                        List.of(new SpinEffect(1, Optional.of(HolderSet.direct(ForgeMod.WATER_TYPE)))),
                         TargetingMode.ALLIES_AND_SELF
                 )), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(1))),
                 true,
@@ -666,13 +666,13 @@ public class SeaDragonAbilities {
                 Optional.empty(),
                 List.of(
                         new ActionContainer(new SelfTarget(AbilityTargeting.entity(
-                                List.of(new SwimEffect(LevelBasedValue.constant(SwimData.UNLIMITED_OXYGEN), NeoForgeMod.WATER_TYPE)),
+                                List.of(new SwimEffect(LevelBasedValue.constant(SwimData.UNLIMITED_OXYGEN), ForgeMod.WATER_TYPE)),
                                 TargetingMode.ALL
                         )), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(1)),
                         new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                                 ModifierEffect.only(new ModifierWithDuration(
                                         DurationInstanceBase.create(DragonSurvival.res("amphibious")).removeAutomatically().hidden().build(),
-                                        List.of(Modifier.constant(NeoForgeMod.SWIM_SPEED, 1, AttributeModifier.Operation.ADD_VALUE))
+                                        List.of(Modifier.constant(ForgeMod.SWIM_SPEED, 1, AttributeModifier.Operation.ADD_VALUE))
                                 )),
                                 TargetingMode.ALL
                         )), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(1)),

@@ -8,7 +8,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.model.GeoModel;
-import software.bernie.geckolib.renderer.specialty.DynamicGeoEntityRenderer;
+import software.bernie.geckolib.renderer.DynamicGeoEntityRenderer;
 
 public class HoundRenderer extends DynamicGeoEntityRenderer<HoundEntity> {
     public HoundRenderer(EntityRendererProvider.Context renderManager, GeoModel<HoundEntity> model) {
