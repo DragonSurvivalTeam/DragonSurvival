@@ -18,7 +18,6 @@ import by.dragonsurvivalteam.dragonsurvival.util.AnimationUtils;
 import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import com.mojang.blaze3d.platform.Window;
-import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
@@ -28,7 +27,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.client.event.ClientTickEvent;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import org.jetbrains.annotations.NotNull;
 import software.bernie.geckolib.core.object.Color;
 
@@ -166,7 +166,11 @@ public class MagicHUD {
     }
 
     @SubscribeEvent
-    public static void tickDownError(ClientTickEvent.Pre event) {
+    public static void tickDownError(ClientTickEvent event) {
+        if (event.phase != TickEvent.Phase.START) {
+            return;
+        }
+
         errorTicks--;
 
         if (errorTicks <= 0) {
@@ -197,7 +201,7 @@ public class MagicHUD {
         colors[slot].color = Color.ofRGBA(red, green, blue, alpha);
     }
 
-    public static void render(@NotNull final GuiGraphics graphics, @NotNull final DeltaTracker tracker) {
+    public static void render(@NotNull final GuiGraphics graphics, final float partialTick) {
         if (Minecraft.getInstance().options.hideGui) {
             return;
         }
@@ -227,7 +231,7 @@ public class MagicHUD {
         }
 
         // Blinking speed
-        float delta = tracker.getGameTimeDeltaPartialTick(true) / 30;
+        float delta = partialTick / 30;
         deltaCounter += reverseCounter ? -delta : delta;
 
         if (deltaCounter > 1) {

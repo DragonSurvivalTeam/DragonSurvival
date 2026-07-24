@@ -34,7 +34,9 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.scores.PlayerTeam;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.client.event.RenderFrameEvent;
+import net.minecraft.client.Minecraft;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.TickEvent.RenderTickEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoEntity;
@@ -817,8 +819,10 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
     }
 
     @SubscribeEvent
-    public static void tickEntity(final RenderFrameEvent.Pre event) {
-        globalTickCount += event.getPartialTick().getRealtimeDeltaTicks();
+    public static void tickEntity(final RenderTickEvent event) {
+        if (event.phase == TickEvent.Phase.START) {
+            globalTickCount += Minecraft.getInstance().getDeltaFrameTime();
+        }
     }
 
     @Override

@@ -26,16 +26,19 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.t
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.trigger.OnDeath;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.trigger.OnSelfHit;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.trigger.OnTargetHit;
+import by.dragonsurvivalteam.dragonsurvival.client.DragonSurvivalClient;
 import by.dragonsurvivalteam.dragonsurvival.util.proxy.ClientProxy;
 import by.dragonsurvivalteam.dragonsurvival.util.proxy.Proxy;
 import by.dragonsurvivalteam.dragonsurvival.util.proxy.ServerProxy;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.ModContainer;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.loading.FMLLoader;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.FMLLoader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -44,13 +47,15 @@ public class DragonSurvival {
     public static final String DISCORD_URL = "https://discord.gg/8SsB8ar";
 
     /** See {@link MissingTextureAtlasSprite#MISSING_TEXTURE_LOCATION} */
-    public static final ResourceLocation MISSING_TEXTURE = ResourceLocation.withDefaultNamespace("missingno");
+    public static final ResourceLocation MISSING_TEXTURE = new ResourceLocation("missingno");
 
     public static final String MODID = "dragonsurvival";
     public static final Logger LOGGER = LogManager.getLogger("Dragon Survival");
     public static Proxy PROXY;
 
-    public DragonSurvival(final IEventBus bus, final ModContainer ignored) {
+    public DragonSurvival() {
+        IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
+
         PROXY = FMLLoader.getDist().isClient() ? new ClientProxy() : new ServerProxy();
         ConfigHandler.initConfig();
 
@@ -81,6 +86,8 @@ public class DragonSurvival {
         MinecraftForge.EVENT_BUS.addListener(OnTargetHit::trigger);
         MinecraftForge.EVENT_BUS.addListener(OnDeath::trigger);
         MinecraftForge.EVENT_BUS.addListener(OnBlockBreak::trigger);
+
+        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> new DragonSurvivalClient(bus));
     }
 
     /** Creates a {@link ResourceLocation} with the dragon survival namespace */
@@ -89,6 +96,6 @@ public class DragonSurvival {
     }
 
     public static ResourceLocation location(final String namespace, final String path) {
-        return ResourceLocation.fromNamespaceAndPath(namespace, path);
+        return new ResourceLocation(namespace, path);
     }
 }

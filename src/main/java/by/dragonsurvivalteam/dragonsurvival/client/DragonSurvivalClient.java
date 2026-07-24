@@ -1,7 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.client;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
-import by.dragonsurvivalteam.dragonsurvival.client.extensions.ShakeWhenUsedExtension;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.hud.DragonPenaltyHUD;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.hud.DragonSoulBar;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.hud.GrowthHUD;
@@ -44,7 +43,6 @@ import by.dragonsurvivalteam.dragonsurvival.compat.curios.CuriosButtonHandler;
 import by.dragonsurvivalteam.dragonsurvival.mixins.client.LocalPlayerAccessor;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSBlockEntities;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEntities;
-import by.dragonsurvivalteam.dragonsurvival.registry.DSItems;
 import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
@@ -55,29 +53,23 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
+import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.ModContainer;
-import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.client.event.ClientTickEvent;
 import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
 import net.minecraftforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
-import net.minecraftforge.client.event.RegisterGuiLayersEvent;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
-import net.minecraftforge.client.extensions.common.RegisterClientExtensionsEvent;
-import net.minecraftforge.client.gui.ConfigurationScreen;
-import net.minecraftforge.client.gui.IConfigScreenFactory;
-import net.minecraftforge.client.gui.VanillaGuiLayers;
 import net.minecraftforge.common.MinecraftForge;
 import org.jetbrains.annotations.NotNull;
-import software.bernie.geckolib.GeckoLibClient;
 
 import java.util.Collections;
 import java.util.Map;
 
-@Mod(value = DragonSurvival.MODID, dist = Dist.CLIENT)
 public class DragonSurvivalClient {
     private static final float TIMER_INCREMENT = 0.01f;
 
@@ -87,15 +79,11 @@ public class DragonSurvivalClient {
     public static DragonModel DRAGON_MODEL = new DragonModel();
     public static AmbusherModel AMBUSHER_MODEL = new AmbusherModel();
 
-    public DragonSurvivalClient(final IEventBus bus, final ModContainer container) {
-        container.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
-        GeckoLibClient.init();
-
+    public DragonSurvivalClient(final IEventBus bus) {
         bus.addListener(this::setup);
         bus.addListener(this::addReloadListeners);
         bus.addListener(this::registerGuiLayers);
         bus.addListener(this::registerTooltips);
-        bus.addListener(this::registerItemExtensions);
 
         MinecraftForge.EVENT_BUS.addListener(this::incrementTimer);
         MinecraftForge.EVENT_BUS.addListener(this::preventThirdPersonWhenSuffocating);
@@ -105,7 +93,11 @@ public class DragonSurvivalClient {
         }
     }
 
-    private void incrementTimer(final ClientTickEvent.Post event) {
+    private void incrementTimer(final ClientTickEvent event) {
+        if (event.phase != TickEvent.Phase.END) {
+            return;
+        }
+
         if (TIMER + TIMER_INCREMENT > Float.MAX_VALUE) {
             TIMER = 0;
         } else {
@@ -142,12 +134,17 @@ public class DragonSurvivalClient {
         event.registerReloadListener(new DefaultPartLoader());
     }
 
-    private void registerGuiLayers(final RegisterGuiLayersEvent event) {
-        event.registerAbove(VanillaGuiLayers.AIR_LEVEL, DragonPenaltyHUD.ID, DragonPenaltyHUD::render);
-        event.registerAbove(DragonPenaltyHUD.ID, MagicHUD.ID, MagicHUD::render);
-        event.registerAbove(MagicHUD.ID, GrowthHUD.ID, GrowthHUD::render);
-        event.registerAbove(GrowthHUD.ID, DragonSoulBar.ID, DragonSoulBar::render);
-        event.registerAbove(MagicHUD.ID, SpinHUD.ID, SpinHUD::render);
+    private void registerGuiLayers(final RegisterGuiOverlaysEvent event) {
+        event.registerAbove(VanillaGuiOverlay.AIR_LEVEL.id(), DragonPenaltyHUD.ID.getPath(),
+                (gui, graphics, partialTick, width, height) -> DragonPenaltyHUD.render(graphics, partialTick));
+        event.registerAbove(DragonPenaltyHUD.ID, MagicHUD.ID.getPath(),
+                (gui, graphics, partialTick, width, height) -> MagicHUD.render(graphics, partialTick));
+        event.registerAbove(MagicHUD.ID, GrowthHUD.ID.getPath(),
+                (gui, graphics, partialTick, width, height) -> GrowthHUD.render(graphics, partialTick));
+        event.registerAbove(GrowthHUD.ID, DragonSoulBar.ID.getPath(),
+                (gui, graphics, partialTick, width, height) -> DragonSoulBar.render(graphics, partialTick));
+        event.registerAbove(MagicHUD.ID, SpinHUD.ID.getPath(),
+                (gui, graphics, partialTick, width, height) -> SpinHUD.render(graphics, partialTick));
     }
 
     private void registerTooltips(final RegisterClientTooltipComponentFactoriesEvent event) {
@@ -155,7 +152,11 @@ public class DragonSurvivalClient {
         event.register(TimeComponent.class, ClientTimeComponent::new);
     }
 
-    private void preventThirdPersonWhenSuffocating(final ClientTickEvent.Post event) {
+    private void preventThirdPersonWhenSuffocating(final ClientTickEvent event) {
+        if (event.phase != TickEvent.Phase.END) {
+            return;
+        }
+
         Player player = DragonSurvival.PROXY.getLocalPlayer();
 
         if (!DragonStateProvider.isDragon(player)) {
@@ -167,71 +168,20 @@ public class DragonSurvivalClient {
         }
     }
 
-    private void registerItemExtensions(RegisterClientExtensionsEvent event) {
-        event.registerItem(new ShakeWhenUsedExtension(), DSItems.DRAGON_SOUL.value());
-
-        // --- Light dragon armor --- //
-
-        event.registerItem(new IClientItemExtensions() {
+    public static IClientItemExtensions createArmorExtension(final ArmorItem.Type type) {
+        return new IClientItemExtensions() {
             @Override
             public @NotNull HumanoidModel<?> getHumanoidArmorModel(@NotNull LivingEntity entity, @NotNull ItemStack stack, @NotNull EquipmentSlot slot, @NotNull HumanoidModel<?> defaultModel) {
-                return createModel(entity, defaultModel, true, false, false, false);
+                return createModel(entity, defaultModel,
+                        type == ArmorItem.Type.HELMET,
+                        type == ArmorItem.Type.CHESTPLATE,
+                        type == ArmorItem.Type.LEGGINGS,
+                        type == ArmorItem.Type.BOOTS);
             }
-        }, DSItems.LIGHT_DRAGON_HELMET.value());
-
-        event.registerItem(new IClientItemExtensions() {
-            @Override
-            public @NotNull HumanoidModel<?> getHumanoidArmorModel(@NotNull LivingEntity entity, @NotNull ItemStack stack, @NotNull EquipmentSlot slot, @NotNull HumanoidModel<?> defaultModel) {
-                return createModel(entity, defaultModel, false, true, false, false);
-            }
-        }, DSItems.LIGHT_DRAGON_CHESTPLATE.value());
-
-        event.registerItem(new IClientItemExtensions() {
-            @Override
-            public @NotNull HumanoidModel<?> getHumanoidArmorModel(@NotNull LivingEntity entity, @NotNull ItemStack stack, @NotNull EquipmentSlot slot, @NotNull HumanoidModel<?> defaultModel) {
-                return createModel(entity, defaultModel, false, false, true, false);
-            }
-        }, DSItems.LIGHT_DRAGON_LEGGINGS.value());
-
-        event.registerItem(new IClientItemExtensions() {
-            @Override
-            public @NotNull HumanoidModel<?> getHumanoidArmorModel(@NotNull LivingEntity entity, @NotNull ItemStack stack, @NotNull EquipmentSlot slot, @NotNull HumanoidModel<?> defaultModel) {
-                return createModel(entity, defaultModel, false, false, false, true);
-            }
-        }, DSItems.LIGHT_DRAGON_BOOTS.value());
-
-        // --- Dark dragon armor --- //
-
-        event.registerItem(new IClientItemExtensions() {
-            @Override
-            public @NotNull HumanoidModel<?> getHumanoidArmorModel(@NotNull LivingEntity entity, @NotNull ItemStack stack, @NotNull EquipmentSlot slot, @NotNull HumanoidModel<?> defaultModel) {
-                return createModel(entity, defaultModel, true, false, false, false);
-            }
-        }, DSItems.DARK_DRAGON_HELMET.value());
-
-        event.registerItem(new IClientItemExtensions() {
-            @Override
-            public @NotNull HumanoidModel<?> getHumanoidArmorModel(@NotNull LivingEntity entity, @NotNull ItemStack stack, @NotNull EquipmentSlot slot, @NotNull HumanoidModel<?> defaultModel) {
-                return createModel(entity, defaultModel, false, true, false, false);
-            }
-        }, DSItems.DARK_DRAGON_CHESTPLATE.value());
-
-        event.registerItem(new IClientItemExtensions() {
-            @Override
-            public @NotNull HumanoidModel<?> getHumanoidArmorModel(@NotNull LivingEntity entity, @NotNull ItemStack stack, @NotNull EquipmentSlot slot, @NotNull HumanoidModel<?> defaultModel) {
-                return createModel(entity, defaultModel, false, false, true, false);
-            }
-        }, DSItems.DARK_DRAGON_LEGGINGS.value());
-
-        event.registerItem(new IClientItemExtensions() {
-            @Override
-            public @NotNull HumanoidModel<?> getHumanoidArmorModel(@NotNull LivingEntity entity, @NotNull ItemStack stack, @NotNull EquipmentSlot slot, @NotNull HumanoidModel<?> defaultModel) {
-                return createModel(entity, defaultModel, false, false, false, true);
-            }
-        }, DSItems.DARK_DRAGON_BOOTS.value());
+        };
     }
 
-    private HumanoidModel<?> createModel(final LivingEntity entity, final HumanoidModel<?> defaultModel, boolean head, boolean body, boolean leggings, boolean boots) {
+    private static HumanoidModel<?> createModel(final LivingEntity entity, final HumanoidModel<?> defaultModel, boolean head, boolean body, boolean leggings, boolean boots) {
         HumanoidModel<?> model = new HumanoidModel<>(new ModelPart(Collections.emptyList(), Map.of(
                 "hat", empty(),
                 "head", head ? head().head : empty(),

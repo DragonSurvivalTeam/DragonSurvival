@@ -8,10 +8,10 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.RenderGuiOverlayEvent;
+import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.client.event.RenderGuiLayerEvent;
-import net.minecraftforge.client.gui.VanillaGuiLayers;
 
 @EventBusSubscriber(Dist.CLIENT)
 public class HUDHandler {
@@ -24,7 +24,7 @@ public class HUDHandler {
     public static Boolean vanillaExperienceBar = false;
 
     @SubscribeEvent
-    public static void onRenderOverlay(final RenderGuiLayerEvent.Pre event) {
+    public static void onRenderOverlay(final RenderGuiOverlayEvent.Pre event) {
         Minecraft minecraft = Minecraft.getInstance();
 
         if (minecraft.options.hideGui) {
@@ -33,21 +33,21 @@ public class HUDHandler {
 
         int screenWidth = event.getGuiGraphics().guiWidth();
         int screenHeight = event.getGuiGraphics().guiHeight();
-        ResourceLocation id = event.getName();
+        ResourceLocation id = event.getOverlay().id();
 
-        if (!DragonFoodHandler.dragonFoodHandlingIsDisabled() && !vanillaFoodLevel && id == VanillaGuiLayers.FOOD_LEVEL) {
+        if (!DragonFoodHandler.dragonFoodHandlingIsDisabled() && !vanillaFoodLevel && id.equals(VanillaGuiOverlay.FOOD_LEVEL.id())) {
             boolean wasRendered = FoodBar.render(event.getGuiGraphics(), screenWidth, screenHeight);
 
             if (wasRendered) {
                 event.setCanceled(true);
             }
-        } else if (!vanillaExperienceBar && id == VanillaGuiLayers.EXPERIENCE_BAR) {
+        } else if (!vanillaExperienceBar && id.equals(VanillaGuiOverlay.EXPERIENCE_BAR.id())) {
             boolean wasRendered = MagicHUD.renderExperienceBar(event.getGuiGraphics(), screenWidth);
 
             if (wasRendered) {
                 event.setCanceled(true);
             }
-        } else if (id == VanillaGuiLayers.AIR_LEVEL) {
+        } else if (id.equals(VanillaGuiOverlay.AIR_LEVEL.id())) {
             //noinspection DataFlowIssue -> player is present
             SwimData data = SwimData.getData(minecraft.player);
 

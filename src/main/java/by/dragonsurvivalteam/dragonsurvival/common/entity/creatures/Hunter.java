@@ -60,9 +60,9 @@ public abstract class Hunter extends PathfinderMob implements GeoEntity, Configu
     }
 
     @Override
-    protected void defineSynchedData(@NotNull final SynchedEntityData.Builder builder) {
-        super.defineSynchedData(builder);
-        builder.define(IS_AGGRO, false);
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        this.entityData.define(IS_AGGRO, false);
     }
 
     @Override

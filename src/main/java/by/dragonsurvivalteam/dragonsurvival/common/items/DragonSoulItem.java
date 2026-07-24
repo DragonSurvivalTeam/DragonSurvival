@@ -1,6 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.common.items;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.client.extensions.ShakeWhenUsedExtension;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
@@ -46,11 +47,13 @@ import net.minecraft.world.item.component.CustomModelData;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.network.PacketDistributor;
+import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 public class DragonSoulItem extends BlockItem {
     @ConfigRange(min = 0)
@@ -85,6 +88,11 @@ public class DragonSoulItem extends BlockItem {
 
     public DragonSoulItem(final Properties properties) {
         super(DSBlocks.DRAGON_SOUL.get(), properties);
+    }
+
+    @Override
+    public void initializeClient(@NotNull final Consumer<IClientItemExtensions> consumer) {
+        consumer.accept(new ShakeWhenUsedExtension());
     }
 
     @Override

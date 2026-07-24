@@ -299,15 +299,15 @@ public class AmbusherEntity extends Hunter implements RangedAttackMob {
     }
 
     @Override
-    protected void defineSynchedData(@NotNull final SynchedEntityData.Builder builder) {
-        super.defineSynchedData(builder);
-        builder.define(HAS_RELEASED_GRIFFIN, false);
-        builder.define(NEARBY_DRAGON_PLAYER, false);
-        builder.define(HAS_CALLED_REINFORCEMENTS, false);
-        builder.define(HAS_SUMMONED_REINFORCEMENTS, false);
-        builder.define(RANGED_ATTACK_TIMER, -1);
-        builder.define(AMBUSH_HORN_AND_RELOAD_TIMER, -1);
-        builder.define(GRIFFIN_RELEASE_RELOAD_TIMER, -1);
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        this.entityData.define(HAS_RELEASED_GRIFFIN, false);
+        this.entityData.define(NEARBY_DRAGON_PLAYER, false);
+        this.entityData.define(HAS_CALLED_REINFORCEMENTS, false);
+        this.entityData.define(HAS_SUMMONED_REINFORCEMENTS, false);
+        this.entityData.define(RANGED_ATTACK_TIMER, -1);
+        this.entityData.define(AMBUSH_HORN_AND_RELOAD_TIMER, -1);
+        this.entityData.define(GRIFFIN_RELEASE_RELOAD_TIMER, -1);
     }
 
     @Override

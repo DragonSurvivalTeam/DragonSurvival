@@ -147,9 +147,9 @@ public class LeaderEntity extends Villager implements GeoEntity, ConfigurableAtt
     }
 
     @Override
-    protected void defineSynchedData(@NotNull final SynchedEntityData.Builder builder) {
-        super.defineSynchedData(builder);
-        builder.define(RESTOCK_TIMER, TOTAL_RESTOCK_TIME);
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        this.entityData.define(RESTOCK_TIMER, TOTAL_RESTOCK_TIME);
     }
 
     private void setRestockTimer(int time) {

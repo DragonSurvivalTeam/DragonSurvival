@@ -1,10 +1,12 @@
 package by.dragonsurvivalteam.dragonsurvival.client.render.util;
 
 import by.dragonsurvivalteam.dragonsurvival.util.AnimationUtils;
+import net.minecraft.client.Minecraft;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.TickEvent.RenderTickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.client.event.RenderFrameEvent;
 import software.bernie.geckolib.core.animatable.GeoAnimatable;
 import software.bernie.geckolib.core.animation.RawAnimation;
 import software.bernie.geckolib.model.GeoModel;
@@ -18,10 +20,16 @@ public class AnimationTickTimer {
     protected final ConcurrentHashMap<String, Double> animationTimes = new ConcurrentHashMap<>();
 
     @SubscribeEvent
-    public static void onTick(final RenderFrameEvent.Pre event) {
+    public static void onTick(final RenderTickEvent event) {
+        if (event.phase != TickEvent.Phase.START) {
+            return;
+        }
+
+        float deltaTicks = Minecraft.getInstance().getDeltaFrameTime();
+
         for (AnimationTickTimer timer : TIMERS) {
             timer.animationTimes.keySet().forEach(key -> {
-                timer.animationTimes.computeIfPresent(key, (animation, tick) -> tick - event.getPartialTick().getRealtimeDeltaTicks());
+                timer.animationTimes.computeIfPresent(key, (animation, tick) -> tick - deltaTicks);
 
                 if (timer.animationTimes.get(key) <= 0) {
                     timer.animationTimes.remove(key);
@@ -41,7 +49,7 @@ public class AnimationTickTimer {
     public boolean isPresent(final RawAnimation animation) {
         assert(animation.getAnimationStages().size() == 1);
 
-        return animationTimes.containsKey(animation.getAnimationStages().getFirst().animationName());
+        return animationTimes.containsKey(animation.getAnimationStages().get(0).animationName());
     }
 
     public double getDuration(final String animation) {
@@ -51,7 +59,7 @@ public class AnimationTickTimer {
     public double getDuration(final RawAnimation animation) {
         assert(animation.getAnimationStages().size() == 1);
 
-        return getDuration(animation.getAnimationStages().getFirst().animationName());
+        return getDuration(animation.getAnimationStages().get(0).animationName());
     }
 
     // Needed specifically for keeping track of emote timings, which don't actually directly reference their animation names
@@ -78,6 +86,6 @@ public class AnimationTickTimer {
     public <A extends GeoAnimatable, T extends GeoModel<A>> void putAnimation(final T model, final A animatable, final RawAnimation animation) {
         assert (animation.getAnimationStages().size() == 1);
 
-        putAnimation(model, animatable, animation.getAnimationStages().getFirst().animationName());
+        putAnimation(model, animatable, animation.getAnimationStages().get(0).animationName());
     }
 }

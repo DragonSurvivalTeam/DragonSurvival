@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.common.items.armor;
 
+import by.dragonsurvivalteam.dragonsurvival.client.DragonSurvivalClient;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEnchantments;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEquipment;
@@ -10,7 +11,10 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
+import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.function.Consumer;
 
 public class LightDragonArmorItem extends ArmorItem implements PermanentEnchantmentItem {
     public ItemEnchantments getDefaultEnchantments() {
@@ -29,6 +33,11 @@ public class LightDragonArmorItem extends ArmorItem implements PermanentEnchantm
 
     public LightDragonArmorItem(Type pType, Properties pProperties) {
         super(DSEquipment.LIGHT_DRAGON_ARMOR_MATERIAL, pType, pProperties);
+    }
+
+    @Override
+    public void initializeClient(@NotNull final Consumer<IClientItemExtensions> consumer) {
+        consumer.accept(DragonSurvivalClient.createArmorExtension(getType()));
     }
 
     @Override

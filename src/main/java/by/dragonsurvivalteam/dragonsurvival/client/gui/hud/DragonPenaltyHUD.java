@@ -6,7 +6,6 @@ import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachmen
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.PenaltySupply;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty.DragonPenalty;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty.SupplyTrigger;
-import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.LocalPlayer;
@@ -18,7 +17,7 @@ import org.jetbrains.annotations.NotNull;
 public class DragonPenaltyHUD {
     public static final ResourceLocation ID = DragonSurvival.res("penalty_hud");
 
-    public static void render(@NotNull final GuiGraphics graphics, @NotNull final DeltaTracker tracker) {
+    public static void render(@NotNull final GuiGraphics graphics, final float partialTick) {
         if (Minecraft.getInstance().options.hideGui || !DragonPenalty.ENABLE_PENALTIES) {
             return;
         }

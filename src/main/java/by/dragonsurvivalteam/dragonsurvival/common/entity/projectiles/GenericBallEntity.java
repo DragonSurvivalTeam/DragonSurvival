@@ -250,9 +250,9 @@ public class GenericBallEntity extends AbstractHurtingProjectile implements GeoE
     }
 
     @Override
-    protected void defineSynchedData(@NotNull final SynchedEntityData.Builder builder) {
-        super.defineSynchedData(builder);
-        builder.define(LINGERING, false);
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        this.entityData.define(LINGERING, false);
     }
 
     @Override

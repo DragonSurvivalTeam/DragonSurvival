@@ -138,10 +138,10 @@ public class HoundEntity extends Hunter {
     }
 
     @Override
-    protected void defineSynchedData(@NotNull final SynchedEntityData.Builder builder) {
-        super.defineSynchedData(builder);
-        builder.define(VARIETY, 0);
-        builder.define(DID_SLOWDOWN_ATTACK, false);
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        this.entityData.define(VARIETY, 0);
+        this.entityData.define(DID_SLOWDOWN_ATTACK, false);
     }
 
     public int getVariety() {

@@ -11,7 +11,6 @@ import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigRange;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
-import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.Holder;
@@ -43,7 +42,7 @@ public class GrowthHUD {
     public static Integer growthYOffset = 0;
 
     /** Renders the growth icon above the experience bar when an item is selected which grants growth */
-    public static void render(@NotNull final GuiGraphics graphics, @NotNull final DeltaTracker tracker) {
+    public static void render(@NotNull final GuiGraphics graphics, final float partialTick) {
         Player player = Minecraft.getInstance().player;
 
         if (player == null || player.isSpectator()) {

@@ -7,7 +7,6 @@ import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSItems;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import com.mojang.blaze3d.platform.Window;
-import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
@@ -32,7 +31,7 @@ public class DragonSoulBar {
     private static final int WIDTH = 66;
     private static final int HEIGHT = 40;
 
-    public static void render(@NotNull final GuiGraphics graphics, @NotNull final DeltaTracker tracker) {
+    public static void render(@NotNull final GuiGraphics graphics, final float partialTick) {
         Player player =  Minecraft.getInstance().player;
 
         if (player == null || player.isSpectator()) {
