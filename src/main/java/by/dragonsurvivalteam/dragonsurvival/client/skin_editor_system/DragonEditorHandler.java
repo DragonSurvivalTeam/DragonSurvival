@@ -9,6 +9,7 @@ import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.Dr
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.LayerSettings;
 import by.dragonsurvivalteam.dragonsurvival.client.util.RenderingUtils;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
+import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import com.mojang.blaze3d.buffers.GpuBuffer;
 import com.mojang.blaze3d.buffers.Std140Builder;
 import com.mojang.blaze3d.buffers.Std140SizeCalculator;
@@ -77,7 +78,6 @@ public class DragonEditorHandler {
         RenderSystem.assertOnRenderThread();
 
         var textureSize = handler.body().value().textureSize();
-        RenderingUtils.RenderStateSnapshot state = RenderingUtils.captureRenderState(1);
         TextureTarget normalTarget = null;
         TextureTarget glowTarget = null;
 
@@ -128,8 +128,6 @@ public class DragonEditorHandler {
             if (normalTarget != null) {
                 normalTarget.destroyBuffers();
             }
-
-            RenderingUtils.restoreRenderState(state);
         }
     }
 
@@ -163,6 +161,20 @@ public class DragonEditorHandler {
             return true;
         });
         usedSkinTextures.clear();
+
+        Minecraft minecraft = Minecraft.getInstance();
+
+        if (minecraft.level == null) {
+            return;
+        }
+
+        for (Player player : minecraft.level.players()) {
+            DragonStateHandler handler = DragonStateProvider.getData(player);
+
+            if (handler.isDragon()) {
+                ensureSkinTexturesGenerated(player, handler);
+            }
+        }
     }
 
     private static void renderPartToTarget(
