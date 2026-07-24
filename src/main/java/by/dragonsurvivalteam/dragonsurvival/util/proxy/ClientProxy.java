@@ -164,7 +164,7 @@ public class ClientProxy implements Proxy {
     @Override
     public double getFakePlayerScale(final Player player) {
         if (player instanceof FakeClientPlayer fake && fake.useVisualScale) {
-            return fake.getScale();
+            return fake.dragonSurvival$getScale();
         }
 
         return Proxy.super.getFakePlayerScale(player);

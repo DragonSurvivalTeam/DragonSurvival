@@ -1,16 +1,13 @@
 package by.dragonsurvivalteam.dragonsurvival.common.codecs;
 
-import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.Holder;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.ai.attributes.Attribute;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Objects;
+import java.util.UUID;
 
 public enum ModifierType implements StringRepresentable {
     DRAGON_TYPE("type"),
@@ -23,17 +20,15 @@ public enum ModifierType implements StringRepresentable {
     private final String path;
 
     ModifierType(final String path) {
-        this.path = DragonSurvival.MODID + "/" + path + "/";
+        this.path = "dragonsurvival/" + path + "/";
     }
 
     public String path() {
         return path;
     }
 
-    public ResourceLocation randomId(final Holder<Attribute> attribute, final AttributeModifier.Operation operation, final RandomSource random) {
-        String attributeId = attribute.getRegisteredName().replace(":", ".");
-        int hash = Objects.hash(String.valueOf(random.nextInt(100_000)), operation.getSerializedName());
-        return DragonSurvival.res(path() + hash + "/" + attributeId);
+    public UUID randomId(final Holder<Attribute> attribute, final AttributeOperation operation, final RandomSource random) {
+        return new UUID(random.nextLong(), random.nextLong());
     }
 
     @Override

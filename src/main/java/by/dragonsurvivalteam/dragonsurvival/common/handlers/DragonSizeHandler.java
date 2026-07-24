@@ -5,12 +5,12 @@ import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvide
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
 import by.dragonsurvivalteam.dragonsurvival.compat.Compat;
 import by.dragonsurvivalteam.dragonsurvival.mixins.EntityAccessor;
+import by.dragonsurvivalteam.dragonsurvival.registry.DSAttributes;
 import by.dragonsurvivalteam.dragonsurvival.server.handlers.ServerFlightHandler;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.Pose;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -71,13 +71,13 @@ public class DragonSizeHandler {
     }
 
     public static double calculateDragonEyeHeight(final DragonStateHandler handler, final Player player) {
-        double scale = player.getAttributeValue(Attributes.SCALE);
+        double scale = player.getAttributeValue(DSAttributes.SCALE.get());
         double eyeHeight = handler.body().value().scalingProportions().eyeHeight();
         return applyPose(eyeHeight * scale, overridePose(player), handler.body().value().crouchHeightRatio());
     }
 
     public static EntityDimensions calculateDimensions(final DragonStateHandler handler, @Nullable final Player player, @Nullable final Pose overridePose) {
-        double scale = player != null ? player.getAttributeValue(Attributes.SCALE) : 1;
+        double scale = player != null ? player.getAttributeValue(DSAttributes.SCALE.get()) : 1;
         double height = handler.body().value().scalingProportions().height();
         double eyeHeight = handler.body().value().scalingProportions().eyeHeight();
         double width = handler.body().value().scalingProportions().width();

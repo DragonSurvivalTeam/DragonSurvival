@@ -1,5 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.datagen.abilities;
 
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.AttributeOperation;
+
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.DamageModification;
@@ -424,7 +426,7 @@ public class CaveDragonAbilities {
                         new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                                 ModifierEffect.only(new ModifierWithDuration(
                                         DurationInstanceBase.create(DragonSurvival.res("cave_magic")).removeAutomatically().hidden().build(),
-                                        List.of(Modifier.per(DSAttributes.MANA, 1, AttributeModifier.Operation.ADD_VALUE))
+                                        List.of(Modifier.per(DSAttributes.MANA, 1, AttributeOperation.ADD_VALUE))
                                 )),
                                 TargetingMode.ALLIES_AND_SELF
                         )), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(1)),
@@ -442,7 +444,7 @@ public class CaveDragonAbilities {
                                 ).build(),
                                 ModifierEffect.only(new ModifierWithDuration(
                                         DurationInstanceBase.create(DragonSurvival.res("good_mana_condition")).removeAutomatically().hidden().build(),
-                                        List.of(Modifier.per(DSAttributes.MANA_REGENERATION, 0.03f, AttributeModifier.Operation.ADD_VALUE))
+                                        List.of(Modifier.per(DSAttributes.MANA_REGENERATION, 0.03f, AttributeOperation.ADD_VALUE))
                                 )),
                                 TargetingMode.ALLIES_AND_SELF
                         )), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(1))
@@ -491,7 +493,7 @@ public class CaveDragonAbilities {
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         ModifierEffect.only(new ModifierWithDuration(
                                 DurationInstanceBase.create(DragonSurvival.res("contrast_shower")).removeAutomatically().hidden().build(),
-                                List.of(Modifier.per(DSAttributes.PENALTY_RESISTANCE_TIME, Functions.secondsToTicks(10), AttributeModifier.Operation.ADD_VALUE))
+                                List.of(Modifier.per(DSAttributes.PENALTY_RESISTANCE_TIME, Functions.secondsToTicks(10), AttributeOperation.ADD_VALUE))
                         )),
                         TargetingMode.ALLIES_AND_SELF
                 )), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(1))),

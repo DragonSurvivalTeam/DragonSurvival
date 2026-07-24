@@ -32,7 +32,7 @@ public class ManaHandler {
         }
 
         if (magic.getCurrentMana() < getMaxMana(player)) {
-            replenishMana(player, (float) player.getAttributeValue(DSAttributes.MANA_REGENERATION));
+            replenishMana(player, (float) player.getAttributeValue(DSAttributes.MANA_REGENERATION.get()));
         }
     }
 
@@ -50,7 +50,7 @@ public class ManaHandler {
     }
 
     public static float getMaxMana(final Player player) {
-        float mana = (float) player.getAttributeValue(DSAttributes.MANA);
+        float mana = (float) player.getAttributeValue(DSAttributes.MANA.get());
         mana += getBonusManaFromExperience(player);
         mana -= getReservedMana(player);
 

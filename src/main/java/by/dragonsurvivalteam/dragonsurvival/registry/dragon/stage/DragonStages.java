@@ -1,5 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage;
 
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.AttributeOperation;
+
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.GrowthItem;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscCodecs;
@@ -49,13 +51,13 @@ public class DragonStages {
                 Functions.hoursToTicks(3),
                 List.of(
                         /* Constant */
-                        Modifier.constant(Attributes.ATTACK_DAMAGE, 1, AttributeModifier.Operation.ADD_VALUE),
-                        Modifier.constant(Attributes.JUMP_STRENGTH, 0.025f, AttributeModifier.Operation.ADD_VALUE),
-                        Modifier.constant(Attributes.SAFE_FALL_DISTANCE, 0.25f, AttributeModifier.Operation.ADD_VALUE),
+                        Modifier.constant(Attributes.ATTACK_DAMAGE, 1, AttributeOperation.ADD_VALUE),
+                        Modifier.constant(Attributes.JUMP_STRENGTH, 0.025f, AttributeOperation.ADD_VALUE),
+                        Modifier.constant(Attributes.SAFE_FALL_DISTANCE, 0.25f, AttributeOperation.ADD_VALUE),
                         /* Per growth */
-                        Modifier.precisePerWithBase(Attributes.SCALE, -0.75f, 0.013f, AttributeModifier.Operation.ADD_VALUE),
-                        Modifier.perWithBase(Attributes.MAX_HEALTH, -6, 0.4f, AttributeModifier.Operation.ADD_VALUE),
-                        Modifier.perWithBase(DSAttributes.DRAGON_BREATH_RANGE, 1.5f, 0.05f, AttributeModifier.Operation.ADD_VALUE)
+                Modifier.precisePerWithBase(DSAttributes.SCALE, -0.75f, 0.013f, AttributeOperation.ADD_VALUE),
+                        Modifier.perWithBase(Attributes.MAX_HEALTH, -6, 0.4f, AttributeOperation.ADD_VALUE),
+                        Modifier.perWithBase(DSAttributes.DRAGON_BREATH_RANGE, 1.5f, 0.05f, AttributeOperation.ADD_VALUE)
                 ),
                 List.of(
                         GrowthItem.create(Functions.hoursToTicks(1), DSItems.ELDER_DRAGON_HEART.value()),
@@ -76,13 +78,13 @@ public class DragonStages {
                 Functions.hoursToTicks(6),
                 List.of(
                         /* Constant */
-                        Modifier.constant(Attributes.ATTACK_DAMAGE, 2, AttributeModifier.Operation.ADD_VALUE),
-                        Modifier.constant(Attributes.JUMP_STRENGTH, 0.05f, AttributeModifier.Operation.ADD_VALUE),
-                        Modifier.constant(Attributes.SAFE_FALL_DISTANCE, 0.5f, AttributeModifier.Operation.ADD_VALUE),
+                        Modifier.constant(Attributes.ATTACK_DAMAGE, 2, AttributeOperation.ADD_VALUE),
+                        Modifier.constant(Attributes.JUMP_STRENGTH, 0.05f, AttributeOperation.ADD_VALUE),
+                        Modifier.constant(Attributes.SAFE_FALL_DISTANCE, 0.5f, AttributeOperation.ADD_VALUE),
                         /* Per growth */
-                        Modifier.precisePerWithBase(Attributes.SCALE, -0.55f, 1.f / 30.f, AttributeModifier.Operation.ADD_VALUE),
-                        Modifier.per(Attributes.MAX_HEALTH, 2.f / 3.f, AttributeModifier.Operation.ADD_VALUE),
-                        Modifier.perWithBase(DSAttributes.DRAGON_BREATH_RANGE, 3.25f, 0.05f, AttributeModifier.Operation.ADD_VALUE)
+                Modifier.precisePerWithBase(DSAttributes.SCALE, -0.55f, 1.f / 30.f, AttributeOperation.ADD_VALUE),
+                        Modifier.per(Attributes.MAX_HEALTH, 2.f / 3.f, AttributeOperation.ADD_VALUE),
+                        Modifier.perWithBase(DSAttributes.DRAGON_BREATH_RANGE, 3.25f, 0.05f, AttributeOperation.ADD_VALUE)
                 ),
                 List.of(
                         GrowthItem.create(Functions.hoursToTicks(1), DSItems.ELDER_DRAGON_HEART.value()),
@@ -102,16 +104,16 @@ public class DragonStages {
                 Functions.hoursToTicks(24),
                 List.of(
                         /* Constant */
-                        Modifier.constant(Attributes.STEP_HEIGHT, 0.5f, AttributeModifier.Operation.ADD_VALUE),
-                        Modifier.constant(Attributes.ATTACK_DAMAGE, 3, AttributeModifier.Operation.ADD_VALUE),
-                        Modifier.constant(Attributes.JUMP_STRENGTH, 0.1f, AttributeModifier.Operation.ADD_VALUE),
-                        Modifier.constant(Attributes.SAFE_FALL_DISTANCE, 1, AttributeModifier.Operation.ADD_VALUE),
+                        Modifier.constant(Attributes.STEP_HEIGHT, 0.5f, AttributeOperation.ADD_VALUE),
+                        Modifier.constant(Attributes.ATTACK_DAMAGE, 3, AttributeOperation.ADD_VALUE),
+                        Modifier.constant(Attributes.JUMP_STRENGTH, 0.1f, AttributeOperation.ADD_VALUE),
+                        Modifier.constant(Attributes.SAFE_FALL_DISTANCE, 1, AttributeOperation.ADD_VALUE),
                         /* Per growth */
-                        Modifier.precisePerWithBase(Attributes.SCALE, -0.05f, 0.025f, AttributeModifier.Operation.ADD_VALUE),
-                        Modifier.perWithBase(Attributes.MAX_HEALTH, 10.0f, 0.5f, AttributeModifier.Operation.ADD_VALUE),
-                        Modifier.perWithBase(DSAttributes.DRAGON_BREATH_RANGE, 5.5f, 0.05f, AttributeModifier.Operation.ADD_VALUE),
-                        Modifier.per(Attributes.ENTITY_INTERACTION_RANGE, 0.05f, AttributeModifier.Operation.ADD_VALUE),
-                        Modifier.per(Attributes.BLOCK_INTERACTION_RANGE, 0.05f, AttributeModifier.Operation.ADD_VALUE)
+                Modifier.precisePerWithBase(DSAttributes.SCALE, -0.05f, 0.025f, AttributeOperation.ADD_VALUE),
+                        Modifier.perWithBase(Attributes.MAX_HEALTH, 10.0f, 0.5f, AttributeOperation.ADD_VALUE),
+                        Modifier.perWithBase(DSAttributes.DRAGON_BREATH_RANGE, 5.5f, 0.05f, AttributeOperation.ADD_VALUE),
+                        Modifier.per(Attributes.ENTITY_INTERACTION_RANGE, 0.05f, AttributeOperation.ADD_VALUE),
+                        Modifier.per(Attributes.BLOCK_INTERACTION_RANGE, 0.05f, AttributeOperation.ADD_VALUE)
                 ),
                 List.of(
                         GrowthItem.create(Functions.hoursToTicks(1), DSItems.ELDER_DRAGON_HEART.value()),

@@ -1,5 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.mixins.client;
 
+import by.dragonsurvivalteam.dragonsurvival.common.handlers.EntityScale;
+
 import by.dragonsurvivalteam.dragonsurvival.client.util.RenderingUtils;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.config.ClientConfig;
@@ -41,7 +43,7 @@ public abstract class GameRendererMixin {
     @ModifyArgs(method = "bobView", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/vertex/PoseStack;translate(FFF)V"))
     private void dragonSurvival$modifyBobViewTranslate(final Args args) {
         //noinspection DataFlowIssue -> player is present
-        float scale = Minecraft.getInstance().player.getScale();
+        float scale = EntityScale.get(Minecraft.getInstance().player);
 
         if (scale < 1) {
             args.set(0, (float) args.get(0) * scale);

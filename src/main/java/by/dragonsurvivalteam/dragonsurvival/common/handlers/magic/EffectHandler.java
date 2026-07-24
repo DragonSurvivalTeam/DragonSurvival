@@ -72,7 +72,7 @@ public class EffectHandler {
 
         if (player != null) {
             int droppedExperience = event.getDroppedExperience();
-            event.setDroppedExperience((int) (droppedExperience * player.getAttributeValue(DSAttributes.EXPERIENCE)));
+            event.setDroppedExperience((int) (droppedExperience * player.getAttributeValue(DSAttributes.EXPERIENCE.get())));
         }
     }
 

@@ -1,5 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.datagen.abilities;
 
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.AttributeOperation;
+
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.DamageModification;
@@ -386,7 +388,7 @@ public class ForestDragonAbilities {
                         new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                                 ModifierEffect.only(new ModifierWithDuration(
                                         DurationInstanceBase.create(DragonSurvival.res("forest_magic")).removeAutomatically().hidden().build(),
-                                        List.of(Modifier.per(DSAttributes.MANA, 1, AttributeModifier.Operation.ADD_VALUE))
+                                        List.of(Modifier.per(DSAttributes.MANA, 1, AttributeOperation.ADD_VALUE))
                                 )),
                                 TargetingMode.ALLIES_AND_SELF
                         )), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(1)),
@@ -397,7 +399,7 @@ public class ForestDragonAbilities {
                                         .or(Condition.thisEntity(EntityCondition.isInSunlight(10))).build(),
                                 ModifierEffect.only(new ModifierWithDuration(
                                         DurationInstanceBase.create(DragonSurvival.res("good_mana_condition")).removeAutomatically().hidden().build(),
-                                        List.of(Modifier.per(DSAttributes.MANA_REGENERATION, 0.01f, AttributeModifier.Operation.ADD_VALUE))
+                                        List.of(Modifier.per(DSAttributes.MANA_REGENERATION, 0.01f, AttributeOperation.ADD_VALUE))
                                 )),
                                 TargetingMode.ALLIES_AND_SELF
                         )), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(1))
@@ -446,7 +448,7 @@ public class ForestDragonAbilities {
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         ModifierEffect.only(new ModifierWithDuration(
                                 DurationInstanceBase.create(DragonSurvival.res("light_in_darkness")).removeAutomatically().hidden().build(),
-                                List.of(Modifier.per(DSAttributes.PENALTY_RESISTANCE_TIME, Functions.secondsToTicks(20), AttributeModifier.Operation.ADD_VALUE))
+                                List.of(Modifier.per(DSAttributes.PENALTY_RESISTANCE_TIME, Functions.secondsToTicks(20), AttributeOperation.ADD_VALUE))
                         )),
                         TargetingMode.ALLIES_AND_SELF
                 )), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(1))),
@@ -471,7 +473,7 @@ public class ForestDragonAbilities {
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         ModifierEffect.only(new ModifierWithDuration(
                                 DurationInstanceBase.create(DragonSurvival.res("cliffhanger")).removeAutomatically().hidden().build(),
-                                List.of(Modifier.perWithBase(Attributes.SAFE_FALL_DISTANCE, 5, 2, AttributeModifier.Operation.ADD_VALUE))
+                                List.of(Modifier.perWithBase(Attributes.SAFE_FALL_DISTANCE, 5, 2, AttributeOperation.ADD_VALUE))
                         )),
                         TargetingMode.ALLIES_AND_SELF
                 )), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(1))),

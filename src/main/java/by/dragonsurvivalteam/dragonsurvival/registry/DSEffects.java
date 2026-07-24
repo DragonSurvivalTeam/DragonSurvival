@@ -1,16 +1,20 @@
 package by.dragonsurvivalteam.dragonsurvival.registry;
 
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.AttributeOperation;
+
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.effects.*;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraftforge.registries.DeferredRegister;
+
+import java.nio.charset.StandardCharsets;
+import java.util.UUID;
 
 public class DSEffects {
     public static final DeferredRegister<MobEffect> REGISTRY = DeferredRegister.create(BuiltInRegistries.MOB_EFFECT, DragonSurvival.MODID);
@@ -24,8 +28,8 @@ public class DSEffects {
     @Translation(type = Translation.Type.EFFECT_DESCRIPTION, comments = "This net prevents you from escaping into the sky.")
     public static Holder<MobEffect> TRAPPED = REGISTRY.register("trapped",
             () -> new WingDisablingEffect(MobEffectCategory.HARMFUL, 0xdddddd, true)
-                    .addAttributeModifier(Attributes.MOVEMENT_SPEED, DragonSurvival.res("trapped_slow_movement"), -0.75, Operation.ADD_MULTIPLIED_TOTAL)
-                    .addAttributeModifier(Attributes.JUMP_STRENGTH, DragonSurvival.res("trapped_jump_strength"), -1, Operation.ADD_MULTIPLIED_TOTAL)
+                    .addAttributeModifier(Attributes.MOVEMENT_SPEED, legacyId("trapped_slow_movement"), -0.75, AttributeOperation.ADD_MULTIPLIED_TOTAL.legacy())
+                    .addAttributeModifier(Attributes.JUMP_STRENGTH, legacyId("trapped_jump_strength"), -1, AttributeOperation.ADD_MULTIPLIED_TOTAL.legacy())
     );
 
     /** Some effects are handled in {@link by.dragonsurvivalteam.dragonsurvival.client.handlers.ClientFlightHandler} */
@@ -57,7 +61,7 @@ public class DSEffects {
     @Translation(type = Translation.Type.EFFECT_DESCRIPTION, comments = "Grants additional armor points.")
     public static Holder<MobEffect> STURDY_SKIN = REGISTRY.register("sturdy_skin",
             () -> new ModifiableMobEffect(MobEffectCategory.BENEFICIAL, 0x0, false)
-                    .addAttributeModifier(Attributes.ARMOR, DragonSurvival.res("sturdy_skin"), 3, Operation.ADD_VALUE)
+                    .addAttributeModifier(Attributes.ARMOR, legacyId("sturdy_skin"), 3, AttributeOperation.ADD_VALUE.legacy())
     );
 
     @Translation(type = Translation.Type.EFFECT, comments = "Animal Peace")
@@ -67,7 +71,7 @@ public class DSEffects {
     @Translation(type = Translation.Type.EFFECT, comments = "Source of Magic")
     @Translation(type = Translation.Type.EFFECT_DESCRIPTION, comments = "Gives the dragon infinite mana to use magic.")
     public static Holder<MobEffect> SOURCE_OF_MAGIC = REGISTRY.register("source_of_magic", () -> new ModifiableMobEffect(MobEffectCategory.BENEFICIAL, 0x0, false)
-            .addAttributeModifier(DSAttributes.MANA_REGENERATION, DragonSurvival.res("source_of_magic"), 10, Operation.ADD_MULTIPLIED_BASE));
+            .addAttributeModifier(DSAttributes.MANA_REGENERATION.get(), legacyId("source_of_magic"), 10, AttributeOperation.ADD_MULTIPLIED_BASE.legacy()));
 
     @Translation(type = Translation.Type.EFFECT, comments = "Water Vision")
     @Translation(type = Translation.Type.EFFECT_DESCRIPTION, comments = "Improves underwater visibility.")
@@ -82,7 +86,7 @@ public class DSEffects {
     public static Holder<MobEffect> HUNTER = REGISTRY.register("hunter",
             () -> new ModifiableMobEffect(MobEffectCategory.BENEFICIAL, 0x0, false)
                     // Same value as vanilla speed effect
-                    .addAttributeModifier(Attributes.MOVEMENT_SPEED, DragonSurvival.res("hunter_speed_multiplier"), 0.2f, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)
+                    .addAttributeModifier(Attributes.MOVEMENT_SPEED, legacyId("hunter_speed_multiplier"), 0.2f, AttributeOperation.ADD_MULTIPLIED_TOTAL.legacy())
     );
 
     @Translation(type = Translation.Type.EFFECT, comments = "Burn")
@@ -120,4 +124,9 @@ public class DSEffects {
     @Translation(type = Translation.Type.EFFECT, comments = "Empowered Soul")
     @Translation(type = Translation.Type.EFFECT_DESCRIPTION, comments = "Your soul is empowered and you can freely switch your form whenever you want.")
     public static Holder<MobEffect> EMPOWERED_SOUL = REGISTRY.register("empowered_soul", () -> new ModifiableMobEffect(MobEffectCategory.BENEFICIAL, 0x0, false));
+
+    private static String legacyId(final String path) {
+        ResourceLocation id = DragonSurvival.res(path);
+        return UUID.nameUUIDFromBytes(id.toString().getBytes(StandardCharsets.UTF_8)).toString();
+    }
 }

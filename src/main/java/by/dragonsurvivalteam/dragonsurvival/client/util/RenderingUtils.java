@@ -1,5 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.client.util;
 
+import by.dragonsurvivalteam.dragonsurvival.common.handlers.EntityScale;
+
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
@@ -278,7 +280,7 @@ public class RenderingUtils {
             return original;
         }
 
-        float scale = Minecraft.getInstance().player.getScale();
+        float scale = EntityScale.get(Minecraft.getInstance().player);
 
         if (scale < 1) {
             // Some mods have issues if the near plane is too close (0.016 seems to work)

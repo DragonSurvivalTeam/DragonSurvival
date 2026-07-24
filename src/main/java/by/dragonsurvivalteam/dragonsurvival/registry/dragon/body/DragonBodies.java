@@ -1,5 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon.body;
 
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.AttributeOperation;
+
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Modifier;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAttributes;
@@ -69,7 +71,7 @@ public class DragonBodies {
 
     public static void registerBodies(final BootstrapContext<DragonBody> context) {
         context.register(CENTER, new DragonBody(true, Optional.empty(), List.of(
-                Modifier.constant(DSAttributes.FLIGHT_SPEED, 0.2f, AttributeModifier.Operation.ADD_VALUE)
+                Modifier.constant(DSAttributes.FLIGHT_SPEED, 0.2f, AttributeOperation.ADD_VALUE)
         ), false,
                 DragonBody.DEFAULT_MODEL,
                 new DragonBody.TextureSize(512, 512),
@@ -85,17 +87,17 @@ public class DragonBodies {
         ));
 
         context.register(EAST, new DragonBody(true, Optional.empty(), List.of(
-                Modifier.constant(Attributes.ARMOR, 2, AttributeModifier.Operation.ADD_VALUE),
-                Modifier.constant(Attributes.ATTACK_DAMAGE, -1, AttributeModifier.Operation.ADD_VALUE),
-                Modifier.constant(Attributes.ATTACK_KNOCKBACK, -1, AttributeModifier.Operation.ADD_VALUE),
-                Modifier.constant(Attributes.SAFE_FALL_DISTANCE, 2, AttributeModifier.Operation.ADD_VALUE),
-                Modifier.constant(Attributes.GRAVITY, 0.1f, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL),
-                Modifier.constant(Attributes.JUMP_STRENGTH, 0.1f, AttributeModifier.Operation.ADD_VALUE),
-                Modifier.constant(Attributes.MOVEMENT_SPEED, 0.1f, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL),
-                Modifier.constant(ForgeMod.SWIM_SPEED, 0.5f, AttributeModifier.Operation.ADD_VALUE),
-                Modifier.constant(DSAttributes.MANA, 2, AttributeModifier.Operation.ADD_VALUE),
-                Modifier.constant(DSAttributes.FLIGHT_SPEED, -0.2f, AttributeModifier.Operation.ADD_VALUE),
-                Modifier.constant(DSAttributes.FLIGHT_STAMINA_COST, -0.2f, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)
+                Modifier.constant(Attributes.ARMOR, 2, AttributeOperation.ADD_VALUE),
+                Modifier.constant(Attributes.ATTACK_DAMAGE, -1, AttributeOperation.ADD_VALUE),
+                Modifier.constant(Attributes.ATTACK_KNOCKBACK, -1, AttributeOperation.ADD_VALUE),
+                Modifier.constant(Attributes.SAFE_FALL_DISTANCE, 2, AttributeOperation.ADD_VALUE),
+                Modifier.constant(Attributes.GRAVITY, 0.1f, AttributeOperation.ADD_MULTIPLIED_TOTAL),
+                Modifier.constant(Attributes.JUMP_STRENGTH, 0.1f, AttributeOperation.ADD_VALUE),
+                Modifier.constant(Attributes.MOVEMENT_SPEED, 0.1f, AttributeOperation.ADD_MULTIPLIED_TOTAL),
+                Modifier.constant(ForgeMod.SWIM_SPEED, 0.5f, AttributeOperation.ADD_VALUE),
+                Modifier.constant(DSAttributes.MANA, 2, AttributeOperation.ADD_VALUE),
+                Modifier.constant(DSAttributes.FLIGHT_SPEED, -0.2f, AttributeOperation.ADD_VALUE),
+                Modifier.constant(DSAttributes.FLIGHT_STAMINA_COST, -0.2f, AttributeOperation.ADD_MULTIPLIED_TOTAL)
         ), true,
                 DragonBody.DEFAULT_MODEL,
                 new DragonBody.TextureSize(512, 512),
@@ -111,13 +113,13 @@ public class DragonBodies {
         ));
 
         context.register(NORTH, new DragonBody(true, Optional.empty(), List.of(
-                Modifier.constant(Attributes.ATTACK_DAMAGE, -0.2f, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL),
-                Modifier.constant(Attributes.ATTACK_KNOCKBACK, -0.5f, AttributeModifier.Operation.ADD_VALUE),
-                Modifier.constant(Attributes.MOVEMENT_SPEED, -0.3f, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL),
-                Modifier.constant(Attributes.SAFE_FALL_DISTANCE, 1, AttributeModifier.Operation.ADD_VALUE),
-                Modifier.constant(ForgeMod.SWIM_SPEED, 0.8f, AttributeModifier.Operation.ADD_VALUE),
-                Modifier.constant(DSAttributes.MANA, 2, AttributeModifier.Operation.ADD_VALUE),
-                Modifier.constant(DSAttributes.FLIGHT_STAMINA_COST, -0.1f, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)
+                Modifier.constant(Attributes.ATTACK_DAMAGE, -0.2f, AttributeOperation.ADD_MULTIPLIED_TOTAL),
+                Modifier.constant(Attributes.ATTACK_KNOCKBACK, -0.5f, AttributeOperation.ADD_VALUE),
+                Modifier.constant(Attributes.MOVEMENT_SPEED, -0.3f, AttributeOperation.ADD_MULTIPLIED_TOTAL),
+                Modifier.constant(Attributes.SAFE_FALL_DISTANCE, 1, AttributeOperation.ADD_VALUE),
+                Modifier.constant(ForgeMod.SWIM_SPEED, 0.8f, AttributeOperation.ADD_VALUE),
+                Modifier.constant(DSAttributes.MANA, 2, AttributeOperation.ADD_VALUE),
+                Modifier.constant(DSAttributes.FLIGHT_STAMINA_COST, -0.1f, AttributeOperation.ADD_MULTIPLIED_TOTAL)
         ), true,
                 DragonBody.DEFAULT_MODEL,
                 new DragonBody.TextureSize(512, 512),
@@ -133,14 +135,14 @@ public class DragonBodies {
         ));
 
         context.register(SOUTH, new DragonBody(true, Optional.empty(), List.of(
-                Modifier.constant(Attributes.ATTACK_DAMAGE, 0.5f, AttributeModifier.Operation.ADD_VALUE),
-                Modifier.constant(Attributes.GRAVITY, 0.2f, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL),
-                Modifier.constant(Attributes.JUMP_STRENGTH, 0.2f, AttributeModifier.Operation.ADD_VALUE),
-                Modifier.constant(Attributes.MOVEMENT_SPEED, 0.2f, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL),
-                Modifier.constant(Attributes.SAFE_FALL_DISTANCE, 2, AttributeModifier.Operation.ADD_VALUE),
-                Modifier.constant(ForgeMod.SWIM_SPEED, -0.2f, AttributeModifier.Operation.ADD_VALUE),
-                Modifier.constant(DSAttributes.FLIGHT_SPEED, -0.2f, AttributeModifier.Operation.ADD_VALUE),
-                Modifier.constant(DSAttributes.FLIGHT_STAMINA_COST, -0.5f, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)
+                Modifier.constant(Attributes.ATTACK_DAMAGE, 0.5f, AttributeOperation.ADD_VALUE),
+                Modifier.constant(Attributes.GRAVITY, 0.2f, AttributeOperation.ADD_MULTIPLIED_TOTAL),
+                Modifier.constant(Attributes.JUMP_STRENGTH, 0.2f, AttributeOperation.ADD_VALUE),
+                Modifier.constant(Attributes.MOVEMENT_SPEED, 0.2f, AttributeOperation.ADD_MULTIPLIED_TOTAL),
+                Modifier.constant(Attributes.SAFE_FALL_DISTANCE, 2, AttributeOperation.ADD_VALUE),
+                Modifier.constant(ForgeMod.SWIM_SPEED, -0.2f, AttributeOperation.ADD_VALUE),
+                Modifier.constant(DSAttributes.FLIGHT_SPEED, -0.2f, AttributeOperation.ADD_VALUE),
+                Modifier.constant(DSAttributes.FLIGHT_STAMINA_COST, -0.5f, AttributeOperation.ADD_MULTIPLIED_TOTAL)
         ), true,
                 DragonBody.DEFAULT_MODEL,
                 new DragonBody.TextureSize(512, 512),
@@ -156,13 +158,13 @@ public class DragonBodies {
         ));
 
         context.register(WEST, new DragonBody(true, Optional.empty(), List.of(
-                Modifier.constant(Attributes.ATTACK_KNOCKBACK, 0.5f, AttributeModifier.Operation.ADD_VALUE),
-                Modifier.constant(Attributes.KNOCKBACK_RESISTANCE, 0.15f, AttributeModifier.Operation.ADD_VALUE),
-                Modifier.constant(Attributes.MOVEMENT_SPEED, -0.15f, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL),
-                Modifier.constant(Attributes.SAFE_FALL_DISTANCE, 1, AttributeModifier.Operation.ADD_VALUE),
-                Modifier.constant(ForgeMod.SWIM_SPEED, -0.2f, AttributeModifier.Operation.ADD_VALUE),
-                Modifier.constant(DSAttributes.FLIGHT_SPEED, 0.2f, AttributeModifier.Operation.ADD_VALUE),
-                Modifier.constant(DSAttributes.FLIGHT_STAMINA_COST, 1, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)
+                Modifier.constant(Attributes.ATTACK_KNOCKBACK, 0.5f, AttributeOperation.ADD_VALUE),
+                Modifier.constant(Attributes.KNOCKBACK_RESISTANCE, 0.15f, AttributeOperation.ADD_VALUE),
+                Modifier.constant(Attributes.MOVEMENT_SPEED, -0.15f, AttributeOperation.ADD_MULTIPLIED_TOTAL),
+                Modifier.constant(Attributes.SAFE_FALL_DISTANCE, 1, AttributeOperation.ADD_VALUE),
+                Modifier.constant(ForgeMod.SWIM_SPEED, -0.2f, AttributeOperation.ADD_VALUE),
+                Modifier.constant(DSAttributes.FLIGHT_SPEED, 0.2f, AttributeOperation.ADD_VALUE),
+                Modifier.constant(DSAttributes.FLIGHT_STAMINA_COST, 1, AttributeOperation.ADD_MULTIPLIED_TOTAL)
         ), false,
                 DragonBody.DEFAULT_MODEL,
                 new DragonBody.TextureSize(512, 512),

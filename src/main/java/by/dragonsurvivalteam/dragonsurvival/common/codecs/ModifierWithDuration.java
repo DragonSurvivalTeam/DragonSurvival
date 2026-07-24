@@ -18,13 +18,13 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -39,6 +39,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 
 public class ModifierWithDuration extends DurationInstanceBase<ModifiersWithDuration, ModifierWithDuration.Instance> {
     public static final Codec<ModifierWithDuration> CODEC = RecordCodecBuilder.create(instance -> instance.group(
@@ -90,24 +91,24 @@ public class ModifierWithDuration extends DurationInstanceBase<ModifiersWithDura
 
     public static class Instance extends DurationInstance<ModifierWithDuration> implements AttributeModifierSupplier {
         public static final Codec<Instance> CODEC = RecordCodecBuilder.create(instance -> DurationInstance.codecStart(instance, () -> ModifierWithDuration.CODEC)
-                .and(Codec.compoundList(BuiltInRegistries.ATTRIBUTE.holderByNameCodec(), ResourceLocation.CODEC.listOf()).xmap(pairs -> {
-                            Map<Holder<Attribute>, List<ResourceLocation>> ids = new HashMap<>();
-                            pairs.forEach(pair -> pair.getSecond().forEach(id -> ids.computeIfAbsent(pair.getFirst(), key -> new ArrayList<>()).add(id)));
+                .and(Codec.compoundList(BuiltInRegistries.ATTRIBUTE.holderByNameCodec(), UUIDUtil.STRING_CODEC.listOf()).xmap(pairs -> {
+                            Map<Attribute, List<UUID>> ids = new HashMap<>();
+                            pairs.forEach(pair -> pair.getSecond().forEach(id -> ids.computeIfAbsent(pair.getFirst().value(), key -> new ArrayList<>()).add(id)));
                             return ids;
                         }, ids -> {
-                            List<Pair<Holder<Attribute>, List<ResourceLocation>>> pairs = new ArrayList<>();
-                            ids.forEach((attribute, value) -> pairs.add(new Pair<>(attribute, value)));
+                            List<Pair<Holder<Attribute>, List<UUID>>> pairs = new ArrayList<>();
+                            ids.forEach((attribute, value) -> pairs.add(new Pair<>(BuiltInRegistries.ATTRIBUTE.wrapAsHolder(attribute), value)));
                             return pairs;
                         }).fieldOf("ids").forGetter(Instance::getStoredIds)
                 ).apply(instance, Instance::new));
 
-        private final Map<Holder<Attribute>, List<ResourceLocation>> ids;
+        private final Map<Attribute, List<UUID>> ids;
 
         public Instance(final ModifierWithDuration baseData, final CommonData commonData, final int currentDuration) {
             this(baseData, commonData, currentDuration, new HashMap<>());
         }
 
-        public Instance(final ModifierWithDuration baseData, final CommonData commonData, final int currentDuration, final Map<Holder<Attribute>, List<ResourceLocation>> ids) {
+        public Instance(final ModifierWithDuration baseData, final CommonData commonData, final int currentDuration, final Map<Attribute, List<UUID>> ids) {
             super(baseData, commonData, currentDuration);
             this.ids = ids;
         }
@@ -158,12 +159,12 @@ public class ModifierWithDuration extends DurationInstanceBase<ModifiersWithDura
         }
 
         @Override
-        public void storeId(final Holder<Attribute> attribute, final ResourceLocation id) {
+        public void storeId(final Attribute attribute, final UUID id) {
             ids.computeIfAbsent(attribute, key -> new ArrayList<>()).add(id);
         }
 
         @Override
-        public Map<Holder<Attribute>, List<ResourceLocation>> getStoredIds() {
+        public Map<Attribute, List<UUID>> getStoredIds() {
             return ids;
         }
 

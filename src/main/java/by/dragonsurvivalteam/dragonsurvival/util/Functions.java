@@ -277,10 +277,10 @@ public class Functions {
         List<Double> multiplyTotal = new ArrayList<>();
 
         for (AttributeModifier modifier : attributeModifiers) {
-            switch (modifier.operation()) {
-                case ADD_VALUE -> addition.add(modifier.amount());
-                case ADD_MULTIPLIED_BASE -> multiplyBase.add(modifier.amount());
-                case ADD_MULTIPLIED_TOTAL -> multiplyTotal.add(modifier.amount());
+            switch (modifier.getOperation()) {
+                case ADDITION -> addition.add(modifier.getAmount());
+                case MULTIPLY_BASE -> multiplyBase.add(modifier.getAmount());
+                case MULTIPLY_TOTAL -> multiplyTotal.add(modifier.getAmount());
             }
         }
 
@@ -308,7 +308,7 @@ public class Functions {
             result *= 1 + amount;
         }
 
-        return instance.getAttribute().value().sanitizeValue(result);
+        return instance.getAttribute().sanitizeValue(result);
     }
 
     public static <T> MutableComponent translateHolderSet(final HolderSet<T> set, final Translation.Type type) {

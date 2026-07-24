@@ -1,5 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.client.render.entity;
 
+import by.dragonsurvivalteam.dragonsurvival.common.handlers.EntityScale;
+
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.EntityStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
@@ -45,7 +47,7 @@ public class PillageIconRenderer {
         GlStateBackup state = new GlStateBackup();
         RenderSystem.backupGlState(state);
 
-        float scale = 0.025f * livingEntity.getScale();
+        float scale = 0.025f * EntityScale.get(livingEntity);
         float x = -SIZE / 2f;
         float y = -SIZE / 2f - 4;
 

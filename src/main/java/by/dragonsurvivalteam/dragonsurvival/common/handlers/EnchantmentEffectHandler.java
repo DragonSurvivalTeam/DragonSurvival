@@ -156,7 +156,7 @@ public class EnchantmentEffectHandler {
                 }
             }
 
-            AttributeInstance armorIgnoreChance = attacker.getAttribute(DSAttributes.ARMOR_IGNORE_CHANCE);
+            AttributeInstance armorIgnoreChance = attacker.getAttribute(DSAttributes.ARMOR_IGNORE_CHANCE.get());
 
             if (armorIgnoreChance != null && target.getRandom().nextDouble() < armorIgnoreChance.getValue()) {
                 event.addReductionModifier(DamageContainer.Reduction.ARMOR, (container, reductionIn) -> 0);

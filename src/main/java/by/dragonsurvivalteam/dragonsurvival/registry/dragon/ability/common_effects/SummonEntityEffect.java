@@ -1,5 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.common_effects;
 
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.AttributeOperation;
+
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ModifierType;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.duration_instance.CommonData;
@@ -40,7 +42,6 @@ import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.random.SimpleWeightedRandomList;
@@ -112,8 +113,8 @@ public class SummonEntityEffect extends DurationInstanceBase<SummonedEntities, S
                 AttributeInstance instance = entity.getAttribute(attribute);
 
                 if (instance != null) {
-                    ResourceLocation id = ModifierType.CUSTOM.randomId(attribute, AttributeModifier.Operation.ADD_MULTIPLIED_BASE, entity.getRandom());
-                    instance.addPermanentModifier(new AttributeModifier(id, scale, AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
+                    UUID id = ModifierType.CUSTOM.randomId(attribute, AttributeOperation.ADD_MULTIPLIED_BASE, entity.getRandom());
+                    instance.addPermanentModifier(new AttributeModifier(id, attribute.getRegisteredName(), scale, AttributeOperation.ADD_MULTIPLIED_BASE.legacy()));
                 }
 
                 if (attribute == Attributes.MAX_HEALTH) {

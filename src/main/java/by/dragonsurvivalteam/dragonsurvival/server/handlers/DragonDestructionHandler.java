@@ -56,7 +56,7 @@ public class DragonDestructionHandler {
             return;
         }
 
-        int radius = (int) event.getPlayer().getAttributeValue(DSAttributes.BLOCK_BREAK_RADIUS);
+        int radius = (int) event.getPlayer().getAttributeValue(DSAttributes.BLOCK_BREAK_RADIUS.get());
 
         if (radius < 1) {
             return;

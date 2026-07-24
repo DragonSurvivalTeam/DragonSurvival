@@ -1,5 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.common.items;
 
+import by.dragonsurvivalteam.dragonsurvival.common.handlers.EntityScale;
+
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.extensions.ShakeWhenUsedExtension;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
@@ -190,7 +192,7 @@ public class DragonSoulItem extends BlockItem {
 
                 PenaltySupply.clear(player);
 
-                stack.set(DSDataComponents.DRAGON_SOUL, new DragonSoulData(currentDragonData, currentAbilityData, player.getScale()));
+                stack.set(DSDataComponents.DRAGON_SOUL, new DragonSoulData(currentDragonData, currentAbilityData, EntityScale.get(player)));
                 stack.set(DataComponents.CUSTOM_MODEL_DATA, new CustomModelData(getCustomModelData(level.registryAccess(), currentDragonData)));
             } else {
                 // Preserve spin/flight grant state
@@ -210,7 +212,7 @@ public class DragonSoulItem extends BlockItem {
             CompoundTag currentDragonData = handler.serializeNBT(level.registryAccess(), true);
             CompoundTag currentAbilityData = magicData.serializeNBTForCurrentSpecies(level.registryAccess());
 
-            stack.set(DSDataComponents.DRAGON_SOUL, new DragonSoulData(currentDragonData, currentAbilityData, player.getScale()));
+            stack.set(DSDataComponents.DRAGON_SOUL, new DragonSoulData(currentDragonData, currentAbilityData, EntityScale.get(player)));
             stack.set(DataComponents.CUSTOM_MODEL_DATA, new CustomModelData(getCustomModelData(level.registryAccess(), currentDragonData)));
             handler.revertToHumanForm(player, true);
         }

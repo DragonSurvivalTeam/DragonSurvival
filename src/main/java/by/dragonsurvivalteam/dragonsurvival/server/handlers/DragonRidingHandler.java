@@ -1,5 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.server.handlers;
 
+import by.dragonsurvivalteam.dragonsurvival.common.handlers.EntityScale;
+
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.config.OffsetConfig;
@@ -93,7 +95,7 @@ public class DragonRidingHandler {
             return DragonRideAttemptResult.OTHER;
         }
 
-        double scaleRatio = rider.getScale() / mount.getScale();
+        double scaleRatio = EntityScale.get(rider) / EntityScale.get(mount);
         boolean dragonIsTooSmallToRide = DragonStateProvider.isDragon(rider) ? scaleRatio >= DRAGON_RIDING_SCALE_RATIO : scaleRatio >= PLAYER_RIDING_SCALE_RATIO;
 
         if (dragonIsTooSmallToRide) {
@@ -130,7 +132,7 @@ public class DragonRidingHandler {
         } else {
             if (result == DragonRideAttemptResult.SELF_TOO_BIG) {
                 float ridingScaleRatio = DragonStateProvider.isDragon(self) ? DRAGON_RIDING_SCALE_RATIO : PLAYER_RIDING_SCALE_RATIO;
-                self.sendSystemMessage(Component.translatable(SELF_TOO_BIG, NumberFormat.getPercentInstance().format(ridingScaleRatio), String.format("%.2f", self.getScale()), String.format("%.2f", target.getScale())));
+                self.sendSystemMessage(Component.translatable(SELF_TOO_BIG, NumberFormat.getPercentInstance().format(ridingScaleRatio), String.format("%.2f", EntityScale.get(self)), String.format("%.2f", EntityScale.get(target))));
             } else if (result == DragonRideAttemptResult.NOT_CROUCHING) {
                 self.sendSystemMessage(Component.translatable(NOT_CROUCHING));
             }

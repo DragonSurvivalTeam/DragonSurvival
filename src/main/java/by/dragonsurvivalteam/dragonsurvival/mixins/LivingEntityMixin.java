@@ -65,7 +65,7 @@ public abstract class LivingEntityMixin extends Entity {
     /** Slightly apply lava swim speed to other entities as well (doesn't include up or down movement) */
     @ModifyArg(method = "travel", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;moveRelative(FLnet/minecraft/world/phys/Vec3;)V", ordinal = 1))
     private float dragonSurvival$modifyLavaSwimSpeed(float original) {
-        return (float) (original * getAttributeValue(DSAttributes.LAVA_SWIM_SPEED));
+        return (float) (original * getAttributeValue(DSAttributes.LAVA_SWIM_SPEED.get()));
     }
 
     @ModifyExpressionValue(method = "travel", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;hasEffect(Lnet/minecraft/core/Holder;)Z", ordinal = 2))
@@ -315,7 +315,7 @@ public abstract class LivingEntityMixin extends Entity {
                 speedModifier = 0.96f;
             }
 
-            swimSpeed *= (float) player.getAttributeValue(DSAttributes.LAVA_SWIM_SPEED);
+            swimSpeed *= (float) player.getAttributeValue(DSAttributes.LAVA_SWIM_SPEED.get());
             moveRelative(swimSpeed, travelVector);
             move(MoverType.SELF, getDeltaMovement());
             Vec3 newMovement = getDeltaMovement();

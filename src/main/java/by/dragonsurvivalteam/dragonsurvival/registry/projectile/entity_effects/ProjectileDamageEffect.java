@@ -35,7 +35,7 @@ public record ProjectileDamageEffect(Holder<DamageType> damageType, LevelBasedVa
 
         float damageAmount = amount().calculate(level);
         if (owner != null) {
-            damageAmount *= (float) owner.getAttributeValue(DSAttributes.DRAGON_ABILITY_DAMAGE);
+            damageAmount *= (float) owner.getAttributeValue(DSAttributes.DRAGON_ABILITY_DAMAGE.get());
         }
 
         target.hurt(new DamageSource(damageType, projectile, owner), damageAmount);
@@ -54,7 +54,7 @@ public record ProjectileDamageEffect(Holder<DamageType> damageType, LevelBasedVa
         float damage = amount.calculate(level);
         MutableComponent abilityDamage = Component.translatable(ABILITY_PROJECTILE_DAMAGE, translation.withColor(DSColors.GOLD), DSColors.dynamicValue(damage));
 
-        float additionalDamage = damage * (float) dragon.getAttributeValue(DSAttributes.DRAGON_ABILITY_DAMAGE) - damage;
+        float additionalDamage = damage * (float) dragon.getAttributeValue(DSAttributes.DRAGON_ABILITY_DAMAGE.get()) - damage;
         if (additionalDamage != 0) {
             abilityDamage.append(Component.translatable(LangKey.ABILITY_ADDITIONAL_DAMAGE, DSColors.dynamicValue(additionalDamage)));
         }

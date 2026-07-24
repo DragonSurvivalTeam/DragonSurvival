@@ -2,6 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.common.handlers;
 
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
+import by.dragonsurvivalteam.dragonsurvival.registry.DSAttributes;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.GrowthItem;
 import by.dragonsurvivalteam.dragonsurvival.mixins.EntityAccessor;
 import by.dragonsurvivalteam.dragonsurvival.network.player.SyncGrowthState;
@@ -13,7 +14,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EntityDimensions;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.border.WorldBorder;
@@ -154,8 +154,8 @@ public class DragonGrowthHandler {
     }
 
     public static boolean isGrowthAllowed(final Player player, final DragonStateHandler handler, final double desiredGrowth) {
-        float currentScale = player.getScale();
-        float newScale = handler.calculateScale(player.getAttribute(Attributes.SCALE), desiredGrowth);
+        float currentScale = EntityScale.get(player);
+        float newScale = handler.calculateScale(player.getAttribute(DSAttributes.SCALE.get()), desiredGrowth);
         float difference = newScale - currentScale;
 
         if (difference > 0) {

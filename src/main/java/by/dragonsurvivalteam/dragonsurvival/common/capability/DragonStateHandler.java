@@ -18,6 +18,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AltarData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ClawInventoryData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.HarvestBonuses;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
+import by.dragonsurvivalteam.dragonsurvival.registry.DSAttributes;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.PenaltySupply;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
@@ -49,7 +50,6 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.Item;
@@ -494,11 +494,11 @@ public class DragonStateHandler extends EntityStateHandler {
     public double getVisualScale(final Player player, float partialTick) {
         if (!DragonSurvival.PROXY.isOnRenderThread()) {
             Functions.logOrThrow("Visual scale update should only be used for rendering purposes!");
-            return player.getAttributeValue(Attributes.SCALE);
+            return player.getAttributeValue(DSAttributes.SCALE.get());
         }
 
         // Missing attribute would result in an unstable environment / experience
-        AttributeInstance instance = Objects.requireNonNull(player.getAttribute(Attributes.SCALE));
+        AttributeInstance instance = Objects.requireNonNull(player.getAttribute(DSAttributes.SCALE.get()));
         double partialVisualGrowth = Mth.lerp(partialTick, visualGrowthLastTick, visualGrowth);
 
         if (DragonSurvival.PROXY.isFakePlayer(player)) {
@@ -515,7 +515,7 @@ public class DragonStateHandler extends EntityStateHandler {
 
     public float calculateScale(final AttributeInstance scale, final double growth) {
         List<AttributeModifier> attributeModifiers = stage().value().filterModifiers(scale);
-        List<Modifier> modifiers = stage().value().modifiers().stream().filter(modifier -> modifier.attribute().is(Attributes.SCALE)).toList();
+        List<Modifier> modifiers = stage().value().modifiers().stream().filter(modifier -> modifier.attribute().value() == DSAttributes.SCALE.get()).toList();
 
         return (float) Functions.calculateAttributeValue(scale, growth - stage().value().growthRange().min(), attributeModifiers, modifiers);
     }

@@ -1,5 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.mixins.client;
 
+import by.dragonsurvivalteam.dragonsurvival.common.handlers.EntityScale;
+
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
@@ -44,7 +46,7 @@ public abstract class CameraMixin {
 
         // Check in 5 places: 1 in the center, 4 around the player
         for (int i = 0; i < 5; i++) {
-            float scale = Math.min(1, player.getScale());
+            float scale = Math.min(1, EntityScale.get(player));
             float cameraOffset = 0.1f * scale;
             float xOffset = i == 0 ? 0 : i == 1 ? cameraOffset : i == 2 ? -cameraOffset : 0;
             float zOffset = i == 0 ? 0 : i == 3 ? cameraOffset : i == 4 ? -cameraOffset : 0;
@@ -72,7 +74,7 @@ public abstract class CameraMixin {
     @ModifyVariable(method = "getMaxZoom", at = @At(value = "STORE"), ordinal = 5)
     private float dragonSurvival$modifyDistance(float distance) {
         //noinspection DataFlowIssue -> player is present
-        float scale = Minecraft.getInstance().player.getScale();
+        float scale = Minecraft.getInstance().EntityScale.get(player);
 
         if (scale < 1) {
             return distance * scale;
@@ -85,7 +87,7 @@ public abstract class CameraMixin {
     @ModifyArgs(method = "getMaxZoom", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/phys/Vec3;add(DDD)Lnet/minecraft/world/phys/Vec3;"))
     private void dragonSurvival$adjustCameraPosition(Args args) {
         //noinspection DataFlowIssue -> player is present
-        float scale = Math.min(1, Minecraft.getInstance().player.getScale());
+        float scale = Math.min(1, Minecraft.getInstance().EntityScale.get(player));
         args.set(0, (double) args.get(0) * scale);
         args.set(1, (double) args.get(1) * scale);
         args.set(2, (double) args.get(2) * scale);

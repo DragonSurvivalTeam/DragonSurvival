@@ -1,6 +1,5 @@
 package by.dragonsurvivalteam.dragonsurvival.mixins;
 
-import net.minecraft.core.Holder;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
@@ -12,5 +11,5 @@ import java.util.Map;
 @Mixin(AttributeMap.class)
 public interface AttributeMapAccessor {
     @Accessor("attributes")
-    Map<Holder<Attribute>, AttributeInstance> dragonSurvival$getAttributes();
+    Map<Attribute, AttributeInstance> dragonSurvival$getAttributes();
 }

@@ -287,7 +287,7 @@ public class ClientFlightHandler {
             if (!player.hasEffect(MobEffects.LEVITATION)) {
                 DragonStateProvider.getOptional(player).ifPresent(handler -> {
                     if (handler.isDragon()) {
-                        Double flightSpeedMultiplier = player.getAttributeValue(DSAttributes.FLIGHT_SPEED);
+                        Double flightSpeedMultiplier = player.getAttributeValue(DSAttributes.FLIGHT_SPEED.get());
 
                         Vec3 viewVector = player.getLookAngle();
                         double yaw = Math.toRadians(player.getYHeadRot() + 90);

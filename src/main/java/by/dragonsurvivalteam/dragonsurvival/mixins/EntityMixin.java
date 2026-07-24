@@ -1,5 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.mixins;
 
+import by.dragonsurvivalteam.dragonsurvival.common.handlers.EntityScale;
+
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
@@ -51,7 +53,7 @@ public abstract class EntityMixin {
             }
             Vec3 offset = DragonStateProvider.isDragon(passenger) ? handler.body().value().mountingOffsets().get().dragonOffset() : handler.body().value().mountingOffsets().get().humanOffset();
             Vec3 offsetPerScaleAboveOne = handler.body().value().mountingOffsets().get().scale();
-            float scale = player.getScale();
+            float scale = EntityScale.get(player);
             offset = offset.add(offsetPerScaleAboveOne.scale(scale - 1));
             original = original.add(offset);
             original = original.xRot((float) Math.toRadians(movement.prevXRot * 1.5)).zRot(-(float) Math.toRadians(movement.prevZRot * 90));

@@ -371,7 +371,7 @@ public class MagicHUD {
                             if (magic.isCasting()) {
                                 // No mana regeneration
                                 blit(graphics, manaSprites.empty(), x, y, 9, 1, 1, 1, 1);
-                            } else if (player.getAttributeValue(DSAttributes.MANA_REGENERATION) > player.getAttributeBaseValue(DSAttributes.MANA_REGENERATION)) {
+                            } else if (player.getAttributeValue(DSAttributes.MANA_REGENERATION.get()) > player.getAttributeBaseValue(DSAttributes.MANA_REGENERATION.get())) {
                                 // Fast mana regeneration
                                 blit(graphics, manaSprites.recovery(), x, y, 9, 1, red, green, blue);
                             } else {

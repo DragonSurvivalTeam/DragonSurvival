@@ -6,7 +6,7 @@
   "effects": {
     "minecraft:attributes": [
       {
-        "attribute": "minecraft:generic.scale",
+        "attribute": "minecraft:scale",
         "amount": {
           "type": "minecraft:lookup",
           "values": [

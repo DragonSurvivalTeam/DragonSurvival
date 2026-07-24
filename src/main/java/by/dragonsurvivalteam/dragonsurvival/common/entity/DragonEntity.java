@@ -10,6 +10,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.Anim
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.AnimationType;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.DragonFoodHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.DragonSizeHandler;
+import by.dragonsurvivalteam.dragonsurvival.common.handlers.EntityScale;
 import by.dragonsurvivalteam.dragonsurvival.compat.create.SkyhookRendererHelper;
 import by.dragonsurvivalteam.dragonsurvival.config.ClientConfig;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MovementData;
@@ -59,7 +60,7 @@ import java.util.stream.Stream;
 import static by.dragonsurvivalteam.dragonsurvival.client.DragonSurvivalClient.DRAGON_MODEL;
 
 @EventBusSubscriber
-public class DragonEntity extends LivingEntity implements GeoEntity {
+public class DragonEntity extends LivingEntity implements GeoEntity, EntityScale.Override {
     private static final int MAX_EMOTES = 4;
     private static final int CONTINUOUS_ANIMATION_SLOTS = 4;
 
@@ -472,18 +473,18 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
     }
 
     @Override
-    public float getScale() {
+    public float dragonSurvival$getScale() {
         Player player = getPlayer();
 
         if (player == null) {
-            return super.getScale();
+            return EntityScale.getAttributeValue(this);
         }
 
         if (player.level().isClientSide()) {
             return (float) DragonStateProvider.getData(player).getVisualScale(player, DragonSurvival.PROXY.getPartialTick());
         }
 
-        return player.getScale();
+        return EntityScale.get(player);
     }
 
     @Override

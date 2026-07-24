@@ -186,7 +186,7 @@ public class HunterOmenHandler {
             return;
         }
 
-        double multiplier = attacker.getAttributeValue(DSAttributes.HUNTER_FACTION_DAMAGE);
+        double multiplier = attacker.getAttributeValue(DSAttributes.HUNTER_FACTION_DAMAGE.get());
         double damage = event.getAmount() * multiplier;
 
         if (damage == 0) {

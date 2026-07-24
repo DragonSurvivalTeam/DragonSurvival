@@ -2,6 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.client.util;
 
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
+import by.dragonsurvivalteam.dragonsurvival.common.handlers.EntityScale;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
@@ -20,7 +21,7 @@ import software.bernie.geckolib.core.animation.AnimationController;
 import java.util.UUID;
 import java.util.function.Supplier;
 
-public class FakeClientPlayer extends AbstractClientPlayer {
+public class FakeClientPlayer extends AbstractClientPlayer implements EntityScale.Override {
     public final int number;
     public boolean useVisualScale;
 
@@ -38,9 +39,9 @@ public class FakeClientPlayer extends AbstractClientPlayer {
     }
 
     @Override
-    public float getScale() {
+    public float dragonSurvival$getScale() {
         if (scale == -1) {
-            return super.getScale();
+            return EntityScale.getAttributeValue(this);
         }
 
         return (float) scale;
