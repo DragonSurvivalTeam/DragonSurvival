@@ -1125,8 +1125,11 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
             double savedSize = data.getSavedDragonAge(data.speciesKey());
 
             if (!ServerConfig.saveGrowthStage || savedSize == DragonStateHandler.NO_GROWTH) {
-                data.setGrowth(minecraft.player, species.value().getStartingGrowth(minecraft.player.registryAccess()));
+                double startingGrowth = species.value().getStartingGrowth(minecraft.player.registryAccess());
+                data.setDesiredGrowth(minecraft.player, startingGrowth);
+                data.setGrowth(minecraft.player, startingGrowth);
             } else {
+                data.setGrowth(minecraft.player, savedSize);
                 data.setDesiredGrowth(minecraft.player, savedSize);
             }
 
