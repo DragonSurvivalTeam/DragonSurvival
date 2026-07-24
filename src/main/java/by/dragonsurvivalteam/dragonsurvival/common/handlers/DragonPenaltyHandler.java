@@ -103,7 +103,7 @@ public class DragonPenaltyHandler {
 
         DragonStateHandler data = DragonStateProvider.getData(player);
 
-        if (data.isDragon() && data.species().value().isItemBlacklisted(stack.getItem())) {
+        if (data.isDragon() && data.species().value().isItemBlacklisted(stack)) {
             event.setCanceled(true);
         }
 

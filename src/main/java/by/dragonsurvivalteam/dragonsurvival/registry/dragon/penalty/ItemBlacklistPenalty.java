@@ -6,6 +6,7 @@ import by.dragonsurvivalteam.dragonsurvival.compat.ModID;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ClawInventoryData;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.core.Holder;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -20,19 +21,29 @@ import top.theillusivec4.curios.api.CuriosApi;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
+@SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 public class ItemBlacklistPenalty implements PenaltyEffect {
     public static final MapCodec<ItemBlacklistPenalty> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            ResourceLocationWrapper.validatedCodec().listOf().fieldOf("items").forGetter(ItemBlacklistPenalty::items)
+            ResourceLocationWrapper.validatedCodec().listOf().optionalFieldOf("items", List.of()).forGetter(ItemBlacklistPenalty::items),
+            ItemPredicate.CODEC.optionalFieldOf("predicate").forGetter(ItemBlacklistPenalty::predicate)
     ).apply(instance, ItemBlacklistPenalty::new));
 
     private final List<String> items;
+    private final Optional<ItemPredicate> predicate;
     private Set<ResourceKey<Item>> blacklisted;
     private long lastUpdate;
 
+    public ItemBlacklistPenalty(final List<String> items, final Optional<ItemPredicate> predicate) {
+        this.items = items;
+        this.predicate = predicate;
+    }
+
     public ItemBlacklistPenalty(final List<String> items) {
         this.items = items;
+        this.predicate = Optional.empty();
     }
 
     @Override
@@ -51,7 +62,7 @@ public class ItemBlacklistPenalty implements PenaltyEffect {
                 continue;
             }
 
-            if (isBlacklisted(stack.getItem())) {
+            if (isBlacklisted(stack)) {
                 ItemStack removed = clawContainer.removeItem(slot, stack.getCount());
                 player.drop(removed, false);
             }
@@ -59,25 +70,24 @@ public class ItemBlacklistPenalty implements PenaltyEffect {
 
         ItemStack mainHandItem = player.getMainHandItem();
 
-        if (isBlacklisted(mainHandItem.getItem())) {
+        if (isBlacklisted(mainHandItem)) {
             player.getInventory().removeItem(mainHandItem);
             player.drop(mainHandItem, false);
         }
     }
 
-    public boolean isBlacklisted(final Item item) {
+    public boolean isBlacklisted(final ItemStack stack) {
         if (blacklisted == null || lastUpdate < DataReloadHandler.lastReload) {
             lastUpdate = System.currentTimeMillis();
             blacklisted = map(items);
         }
 
-        //noinspection deprecation -> ignore
-        return blacklisted.contains(item.builtInRegistryHolder().getKey());
+        return blacklisted.contains(stack.getItemHolder().getKey()) || predicate.isPresent() && predicate.get().test(stack);
     }
 
     private void dropAllItemsInList(final Player player, final NonNullList<ItemStack> items) {
         items.forEach(stack -> {
-            if (isBlacklisted(stack.getItem())) {
+            if (isBlacklisted(stack)) {
                 player.getInventory().removeItem(stack);
                 player.drop(stack, false);
             }
@@ -93,7 +103,7 @@ public class ItemBlacklistPenalty implements PenaltyEffect {
             IItemHandlerModifiable equipped = inventory.getEquippedCurios();
 
             for (int slot = 0; slot < equipped.getSlots(); slot++) {
-                if (isBlacklisted(equipped.getStackInSlot(slot).getItem())) {
+                if (isBlacklisted(equipped.getStackInSlot(slot))) {
                     ItemStack removed = equipped.extractItem(slot, 64, false);
 
                     if (!removed.isEmpty()) {
@@ -112,6 +122,10 @@ public class ItemBlacklistPenalty implements PenaltyEffect {
 
     public List<String> items() {
         return items;
+    }
+
+    public Optional<ItemPredicate> predicate() {
+        return predicate;
     }
 
     @Override
