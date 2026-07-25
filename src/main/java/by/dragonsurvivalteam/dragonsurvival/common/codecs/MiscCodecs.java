@@ -1,6 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.common.codecs;
 
 import by.dragonsurvivalteam.dragonsurvival.util.Expression;
+import com.google.gson.JsonElement;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -8,6 +9,7 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.advancements.critereon.MinMaxBounds;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.level.levelgen.blockpredicates.BlockPredicate;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
@@ -16,10 +18,14 @@ import org.jetbrains.annotations.NotNull;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.function.Function;
 
 public class MiscCodecs {
+    private static final Codec<MinMaxBounds.Doubles> DOUBLE_BOUNDS_CODEC = jsonCodec(MinMaxBounds.Doubles::fromJson, MinMaxBounds.Doubles::serializeToJson);
+    private static final Codec<EntityPredicate> ENTITY_PREDICATE_CODEC = jsonCodec(EntityPredicate::fromJson, EntityPredicate::serializeToJson);
+
     public static <E extends Enum<E>> Codec<E> enumCodec(Class<E> enumType) {
-        return Codec.STRING.validate(string -> {
+        return ExtraCodecs.validate(Codec.STRING, string -> {
             try {
                 Enum.valueOf(enumType, string);
                 return DataResult.success(string);
@@ -53,7 +59,7 @@ public class MiscCodecs {
     };
 
     public static Codec<Expression> expressionCodec(final String... variables) {
-        return Codec.STRING.validate(value -> {
+        return ExtraCodecs.validate(Codec.STRING, value -> {
             try {
                 Expression expression = new Expression(value);
 
@@ -83,19 +89,19 @@ public class MiscCodecs {
     }
 
     public static Codec<MinMaxBounds.Doubles> percentageBounds() {
-        return MinMaxBounds.Doubles.CODEC.validate(value -> {
+        return ExtraCodecs.validate(DOUBLE_BOUNDS_CODEC, value -> {
             boolean isValid = true;
 
-            if (value.min().isPresent()) {
-                double min = value.min().get();
+            if (value.getMin() != null) {
+                double min = value.getMin();
 
                 if (min < 0 || min > 1) {
                     isValid = false;
                 }
             }
 
-            if (value.max().isPresent()) {
-                double max = value.max().get();
+            if (value.getMax() != null) {
+                double max = value.getMax();
 
                 if (max < 0 || max > 1) {
                     isValid = false;
@@ -107,7 +113,7 @@ public class MiscCodecs {
     }
 
     public static Codec<Double> doubleRange(double min, double max) {
-        return Codec.DOUBLE.validate(value -> value >= min && value <= max
+        return ExtraCodecs.validate(Codec.DOUBLE, value -> value >= min && value <= max
                 ? DataResult.success(value)
                 : DataResult.error(() -> "Value must be within range [" + min + ";" + max + "]: " + value)
         );
@@ -117,7 +123,7 @@ public class MiscCodecs {
         public static final Codec<Bounds> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 Codec.DOUBLE.fieldOf("min").forGetter(Bounds::min),
                 Codec.DOUBLE.fieldOf("max").forGetter(Bounds::max)
-        ).apply(instance, instance.stable(Bounds::new)));
+        ).apply(instance, Bounds::new));
 
         public boolean matches(double value) {
             return min <= value && value <= max;
@@ -125,7 +131,7 @@ public class MiscCodecs {
     }
 
     public static Codec<Bounds> bounds() {
-        return Bounds.CODEC.validate(value -> {
+        return ExtraCodecs.validate(Bounds.CODEC, value -> {
             if (value.min() >= 1 && value.max() > value.min()) {
                 return DataResult.success(value);
             } else {
@@ -136,12 +142,12 @@ public class MiscCodecs {
 
     public record DestructionData(EntityPredicate entityPredicate, BlockPredicate blockPredicate, double crushingGrowth, double blockDestructionGrowth, double crushingDamageScalar) {
         public static final Codec<DestructionData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                EntityPredicate.CODEC.fieldOf("entity_predicate").forGetter(DestructionData::entityPredicate),
+                ENTITY_PREDICATE_CODEC.fieldOf("entity_predicate").forGetter(DestructionData::entityPredicate),
                 BlockPredicate.CODEC.fieldOf("block_predicate").forGetter(DestructionData::blockPredicate),
                 Codec.DOUBLE.fieldOf("crushing_growth").forGetter(DestructionData::crushingGrowth),
                 Codec.DOUBLE.fieldOf("block_destruction_growth").forGetter(DestructionData::blockDestructionGrowth),
                 Codec.DOUBLE.fieldOf("crushing_damage_scalar").forGetter(DestructionData::crushingDamageScalar)
-        ).apply(instance, instance.stable(DestructionData::new)));
+        ).apply(instance, DestructionData::new));
 
         public boolean isCrushingAllowed(double growth) {
             return growth >= crushingGrowth;
@@ -155,5 +161,24 @@ public class MiscCodecs {
         public boolean isDestructionAllowed(double growth) {
             return isCrushingAllowed(growth) || isBlockDestructionAllowed(growth);
         }
+    }
+
+    private static <T> Codec<T> jsonCodec(final Function<JsonElement, T> decoder, final Function<T, JsonElement> encoder) {
+        return ExtraCodecs.JSON.flatXmap(
+                json -> {
+                    try {
+                        return DataResult.success(decoder.apply(json));
+                    } catch (RuntimeException exception) {
+                        return DataResult.error(exception::getMessage);
+                    }
+                },
+                value -> {
+                    try {
+                        return DataResult.success(encoder.apply(value));
+                    } catch (RuntimeException exception) {
+                        return DataResult.error(exception::getMessage);
+                    }
+                }
+        );
     }
 }
