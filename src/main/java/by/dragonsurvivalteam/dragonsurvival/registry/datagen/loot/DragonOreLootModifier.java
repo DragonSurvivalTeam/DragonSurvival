@@ -10,7 +10,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSBlockTags;
 import by.dragonsurvivalteam.dragonsurvival.util.EnchantmentUtils;
 import com.google.common.base.Suppliers;
-import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.core.BlockPos;
@@ -54,7 +54,7 @@ public class DragonOreLootModifier extends LootModifier {
     @ConfigOption(side = ConfigSide.SERVER, category = {"drops", "ore"}, key = "dragon_ore_bone_chance")
     public static Double dragonOreBoneChance = 0.01;
 
-    public static final Supplier<MapCodec<DragonOreLootModifier>> CODEC = Suppliers.memoize(() -> RecordCodecBuilder.mapCodec(inst -> codecStart(inst).apply(inst, DragonOreLootModifier::new)));
+    public static final Supplier<Codec<DragonOreLootModifier>> CODEC = Suppliers.memoize(() -> RecordCodecBuilder.create(inst -> codecStart(inst).apply(inst, DragonOreLootModifier::new)));
 
     public DragonOreLootModifier(final LootItemCondition[] conditions) {
         super(conditions);
@@ -78,11 +78,11 @@ public class DragonOreLootModifier extends LootModifier {
                 return generatedLoot;
             }
 
-                fortuneLevel = EnchantmentUtils.getLevel(player.level(), Enchantments.BLOCK_FORTUNE, tool);
+            fortuneLevel = EnchantmentUtils.getLevel(player.level(), Enchantments.BLOCK_FORTUNE, tool);
         }
 
         BlockPos position = BlockPos.containing(origin);
-        int experience = state.getExpDrop(context.getLevel(), position, null, null, ItemStack.EMPTY);
+        int experience = state.getExpDrop(context.getLevel(), context.getRandom(), position, fortuneLevel, 0);
 
         if (experience > 0 || !requireExperienceDropForDragonOre) {
             DragonStateHandler handler = DragonStateProvider.getData(player);
@@ -94,19 +94,19 @@ public class DragonOreLootModifier extends LootModifier {
 
             if (handler.isDragon()) {
                 if (context.getRandom().nextDouble() < dragonOreDustChance) {
-                    generatedLoot.add(new ItemStack(DSItems.ELDER_DRAGON_DUST, fortuneRoll));
+                    generatedLoot.add(new ItemStack(DSItems.ELDER_DRAGON_DUST.get(), fortuneRoll));
                 }
 
                 if (context.getRandom().nextDouble() < dragonOreBoneChance) {
-                    generatedLoot.add(new ItemStack(DSItems.ELDER_DRAGON_BONE, fortuneRoll));
+                    generatedLoot.add(new ItemStack(DSItems.ELDER_DRAGON_BONE.get(), fortuneRoll));
                 }
             } else {
                 if (context.getRandom().nextDouble() < humanOreDustChance) {
-                    generatedLoot.add(new ItemStack(DSItems.ELDER_DRAGON_DUST, fortuneRoll));
+                    generatedLoot.add(new ItemStack(DSItems.ELDER_DRAGON_DUST.get(), fortuneRoll));
                 }
 
                 if (context.getRandom().nextDouble() < humanOreBoneChance) {
-                    generatedLoot.add(new ItemStack(DSItems.ELDER_DRAGON_BONE, fortuneRoll));
+                    generatedLoot.add(new ItemStack(DSItems.ELDER_DRAGON_BONE.get(), fortuneRoll));
                 }
             }
         }
@@ -115,7 +115,7 @@ public class DragonOreLootModifier extends LootModifier {
     }
 
     @Override
-    public @NotNull MapCodec<? extends IGlobalLootModifier> codec() {
+    public @NotNull Codec<? extends IGlobalLootModifier> codec() {
         return CODEC.get();
     }
 }

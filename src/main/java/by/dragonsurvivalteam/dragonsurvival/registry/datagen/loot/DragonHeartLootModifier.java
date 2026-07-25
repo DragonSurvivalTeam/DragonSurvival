@@ -9,7 +9,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSEntityTypeTags;
 import by.dragonsurvivalteam.dragonsurvival.util.EnchantmentUtils;
 import com.google.common.base.Suppliers;
-import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.tags.TagKey;
@@ -56,7 +56,7 @@ public class DragonHeartLootModifier extends LootModifier {
     @ConfigOption(side = ConfigSide.SERVER, category = "drops", key = "elder_dragon_heart_white_list")
     public static Boolean ELDER_DRAGON_HEART_WHITELIST = false;
 
-    public static final Supplier<MapCodec<DragonHeartLootModifier>> CODEC = Suppliers.memoize(() -> RecordCodecBuilder.mapCodec(inst -> codecStart(inst).apply(inst, DragonHeartLootModifier::new)));
+    public static final Supplier<Codec<DragonHeartLootModifier>> CODEC = Suppliers.memoize(() -> RecordCodecBuilder.create(inst -> codecStart(inst).apply(inst, DragonHeartLootModifier::new)));
 
     public DragonHeartLootModifier(final LootItemCondition[] conditions) {
         super(conditions);
@@ -96,26 +96,26 @@ public class DragonHeartLootModifier extends LootModifier {
         boolean canDropWeakDragonHeart = canDropHeart(health, 20, 50, DSEntityTypeTags.DROPS_WEAK_DRAGON_HEART, entity, WEAK_DRAGON_HEART_WHITELIST);
         boolean canDropElderDragonHeart = canDropHeart(health, 50, Float.MAX_VALUE, DSEntityTypeTags.DROPS_ELDER_DRAGON_HEART, entity, ELDER_DRAGON_HEART_WHITELIST);
 
-            int lootingLevel = EnchantmentUtils.getLevel(player, Enchantments.MOB_LOOTING);
+        int lootingLevel = EnchantmentUtils.getLevel(player, Enchantments.MOB_LOOTING);
 
         // TODO :: why divide by 4?
         if (canDropDragonHeartShard && context.getRandom().nextInt(100) <= DRAGON_HEART_SHARD_CHANCE * 100 + lootingLevel * (DRAGON_HEART_SHARD_CHANCE * 100 / 4)) {
-            generatedLoot.add(new ItemStack(DSItems.DRAGON_HEART_SHARD));
+            generatedLoot.add(new ItemStack(DSItems.DRAGON_HEART_SHARD.get()));
         }
 
         if (canDropWeakDragonHeart && context.getRandom().nextInt(100) <= WEAK_DRAGON_HEART_CHANCE * 100 + lootingLevel * (WEAK_DRAGON_HEART_CHANCE * 100 / 4)) {
-            generatedLoot.add(new ItemStack(DSItems.WEAK_DRAGON_HEART));
+            generatedLoot.add(new ItemStack(DSItems.WEAK_DRAGON_HEART.get()));
         }
 
         if (canDropElderDragonHeart && context.getRandom().nextInt(100) <= ELDER_DRAGON_HEART_CHANCE * 100 + lootingLevel * (ELDER_DRAGON_HEART_CHANCE * 100 / 4)) {
-            generatedLoot.add(new ItemStack(DSItems.ELDER_DRAGON_HEART));
+            generatedLoot.add(new ItemStack(DSItems.ELDER_DRAGON_HEART.get()));
         }
 
         return generatedLoot;
     }
 
     @Override
-    public @NotNull MapCodec<? extends IGlobalLootModifier> codec() {
+    public @NotNull Codec<? extends IGlobalLootModifier> codec() {
         return CODEC.get();
     }
 }
