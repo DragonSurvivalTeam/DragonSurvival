@@ -30,6 +30,14 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public class DSItemTags extends ItemTagsProvider {
+    private static final TagKey<Item> MELEE_WEAPON_TOOLS = commonKey("tools/melee_weapon");
+    private static final TagKey<Item> HIDDEN_FROM_RECIPE_VIEWERS = commonKey("hidden_from_recipe_viewers");
+    private static final TagKey<Item> CHEST_ARMOR_ENCHANTABLE = vanillaKey("enchantable/chest_armor");
+    private static final TagKey<Item> HEAD_ARMOR = vanillaKey("head_armor");
+    private static final TagKey<Item> CHEST_ARMOR = vanillaKey("chest_armor");
+    private static final TagKey<Item> FOOT_ARMOR = vanillaKey("foot_armor");
+    private static final TagKey<Item> LEG_ARMOR = vanillaKey("leg_armor");
+
     @Translation(comments = "Light Armor")
     public static final TagKey<Item> LIGHT_ARMOR = key("light_armor");
     @Translation(comments = "Dark Armor")
@@ -91,7 +99,7 @@ public class DSItemTags extends ItemTagsProvider {
 
         tag(CLAW_WEAPONS)
                 .addTag(ItemTags.SWORDS)
-                .addTag(Tags.Items.MELEE_WEAPON_TOOLS);
+                .addTag(MELEE_WEAPON_TOOLS);
 
         tag(LIGHT_SOURCE)
                 .addTag(Tags.Items.DUSTS_GLOWSTONE)
@@ -127,10 +135,10 @@ public class DSItemTags extends ItemTagsProvider {
 
         // Used in enchantments
         tag(key("enchantable/chest_armor_and_elytra"))
-                .addTag(ItemTags.CHEST_ARMOR_ENCHANTABLE)
+                .addTag(CHEST_ARMOR_ENCHANTABLE)
                 .add(Items.ELYTRA);
 
-        tag(Tags.Items.HIDDEN_FROM_RECIPE_VIEWERS)
+        tag(HIDDEN_FROM_RECIPE_VIEWERS)
                 .add(DSItems.MAGIC_STICK.get())
                 .add(DSItems.BOLAS.get())
                 .add(DSItems.HUNTING_NET.get())
@@ -146,7 +154,7 @@ public class DSItemTags extends ItemTagsProvider {
                 .add(DSItems.FOREST_BEACON.get())
                 .add(DSItems.SEA_BEACON.get());
 
-        copy(DSBlockTags.DRAGON_BONES, Tags.Items.HIDDEN_FROM_RECIPE_VIEWERS);
+        copy(DSBlockTags.DRAGON_BONES, HIDDEN_FROM_RECIPE_VIEWERS);
 
         copy(DSBlockTags.DRAGON_ALTARS, DRAGON_ALTARS);
         copy(DSBlockTags.DRAGON_TREASURES, DRAGON_TREASURES);
@@ -188,10 +196,10 @@ public class DSItemTags extends ItemTagsProvider {
 
             if (item instanceof ArmorItem armor) {
                 switch (armor.getEquipmentSlot()) {
-                    case HEAD -> tag(ItemTags.HEAD_ARMOR).add(item);
-                    case CHEST -> tag(ItemTags.CHEST_ARMOR).add(item);
-                    case FEET -> tag(ItemTags.FOOT_ARMOR).add(item);
-                    case LEGS -> tag(ItemTags.LEG_ARMOR).add(item);
+                    case HEAD -> tag(HEAD_ARMOR).add(item);
+                    case CHEST -> tag(CHEST_ARMOR).add(item);
+                    case FEET -> tag(FOOT_ARMOR).add(item);
+                    case LEGS -> tag(LEG_ARMOR).add(item);
                 }
             } else if (item instanceof SwordItem) {
                 tag(ItemTags.SWORDS).add(item);
@@ -201,6 +209,14 @@ public class DSItemTags extends ItemTagsProvider {
 
     public static TagKey<Item> key(@NotNull final String name) {
         return ItemTags.create(DragonSurvival.res(name));
+    }
+
+    private static TagKey<Item> commonKey(final String name) {
+        return ItemTags.create(new ResourceLocation("c", name));
+    }
+
+    private static TagKey<Item> vanillaKey(final String name) {
+        return ItemTags.create(new ResourceLocation(name));
     }
 
     @Override
