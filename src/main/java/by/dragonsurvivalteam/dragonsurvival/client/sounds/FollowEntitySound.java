@@ -9,7 +9,7 @@ public class FollowEntitySound extends AbstractTickableSoundInstance {
     private final Entity entity;
 
     public FollowEntitySound(SoundEvent event, SoundSource source, Entity entity) {
-        super(event, source, entity.getRandom());
+        super(event, source, entity.level().getRandom());
         looping = true;
         this.entity = entity;
         this.x = entity.getX();

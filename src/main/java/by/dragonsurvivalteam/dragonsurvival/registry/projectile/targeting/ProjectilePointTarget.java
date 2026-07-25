@@ -17,7 +17,7 @@ public record ProjectilePointTarget(GeneralData generalData) implements Projecti
     @Override
     public void apply(final Projectile projectile, int projectileLevel) {
         if (generalData.tickRate() != 0) {
-            if (projectile.level().getGameTime() % generalData.tickRate() != 0 || generalData.chance() < projectile.getRandom().nextDouble()) {
+            if (projectile.level().getGameTime() % generalData.tickRate() != 0 || generalData.chance() < projectile.level().getRandom().nextDouble()) {
                 return;
             }
         }

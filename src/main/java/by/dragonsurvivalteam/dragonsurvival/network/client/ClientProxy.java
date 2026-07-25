@@ -133,7 +133,7 @@ public class ClientProxy {
     }
 
     private static void spawnParticle(final ParticleOptions particle, final Entity entity, final Vec3 position, final float yaw, final float pitch, final float speed, final float spread) {
-        Vec3 velocity = calculateParticleVelocity((float) (yaw + spread * 2 * (entity.getRandom().nextDouble() * 2 - 1) * 2 * Math.PI), (float) (pitch + spread * (entity.getRandom().nextDouble() * 2 - 1) * 2.f * Math.PI), speed);
+        Vec3 velocity = calculateParticleVelocity((float) (yaw + spread * 2 * (entity.level().getRandom().nextDouble() * 2 - 1) * 2 * Math.PI), (float) (pitch + spread * (entity.level().getRandom().nextDouble() * 2 - 1) * 2.f * Math.PI), speed);
         velocity = velocity.add(entity.getDeltaMovement());
         entity.level().addParticle(particle, position.x, position.y, position.z, velocity.x, velocity.y, velocity.z);
     }
