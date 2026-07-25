@@ -49,6 +49,8 @@ import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Set;
+
 /** Mixture of vanilla implementation from {@link RespawnAnchorBlock} and {@link TheEndGatewayBlockEntity} */
 public class PrimordialAnchorBlock extends Block implements EntityBlock {
     @Translation(key = "primordial_anchor_gives_flight_grant_state", type = Translation.Type.CONFIGURATION, comments = "If enabled, the primordial anchor will give the flight grant state.")
@@ -96,12 +98,12 @@ public class PrimordialAnchorBlock extends Block implements EntityBlock {
     }
 
     @Override
-    protected boolean hasAnalogOutputSignal(@NotNull final BlockState state) {
+    public boolean hasAnalogOutputSignal(@NotNull final BlockState state) {
         return true;
     }
 
     @Override
-    protected int getAnalogOutputSignal(final BlockState blockState, @NotNull final Level level, @NotNull final BlockPos position) {
+    public int getAnalogOutputSignal(final BlockState blockState, @NotNull final Level level, @NotNull final BlockPos position) {
         return blockState.getValue(CHARGED) ? 15 : 0;
     }
 
@@ -152,7 +154,7 @@ public class PrimordialAnchorBlock extends Block implements EntityBlock {
         if (level instanceof ServerLevel serverLevel) {
             BlockPos teleportPosition = findOrCreateValidTeleportPos(serverLevel, position).above(5);
             Vec3 destination = teleportPosition.getCenter();
-            player.teleportTo(serverLevel, destination.x, destination.y, destination.z, player.getYRot(), player.getXRot());
+            player.teleportTo(serverLevel, destination.x, destination.y, destination.z, Set.of(), player.getYRot(), player.getXRot());
             handler.markedByEnderDragon = false;
             boolean flightWasActuallyGranted = false;
             boolean spinWasActuallyGranted = false;
@@ -180,7 +182,7 @@ public class PrimordialAnchorBlock extends Block implements EntityBlock {
     }
 
     @Override
-    protected boolean isPathfindable(@NotNull final BlockState state, @NotNull final PathComputationType type) {
+    public boolean isPathfindable(@NotNull final BlockState state, @NotNull final BlockGetter level, @NotNull final BlockPos position, @NotNull final PathComputationType type) {
         return false;
     }
 
@@ -299,7 +301,7 @@ public class PrimordialAnchorBlock extends Block implements EntityBlock {
         BlockState blockstate = state.setValue(CHARGED, false);
         level.setBlock(position, blockstate, 3);
         level.gameEvent(GameEvent.BLOCK_CHANGE, position, GameEvent.Context.of(player, blockstate));
-        level.playSound(player, (double) position.getX() + 0.5, (double) position.getY() + 0.5, (double) position.getZ() + 0.5, SoundEvents.RESPAWN_ANCHOR_DEPLETE, SoundSource.BLOCKS, 1, 1);
+        level.playSound(player, (double) position.getX() + 0.5, (double) position.getY() + 0.5, (double) position.getZ() + 0.5, SoundEvents.RESPAWN_ANCHOR_DEPLETE.value(), SoundSource.BLOCKS, 1, 1);
     }
 
     private void spawnParticles(final BlockPos position, final Level level, final SimpleParticleType particle) {
