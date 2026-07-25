@@ -8,18 +8,19 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import by.dragonsurvivalteam.dragonsurvival.util.DragonUtils;
+import com.mojang.authlib.GameProfile;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 
 import java.lang.reflect.Field;
+import java.util.UUID;
 
 public class TestUtils {
     public static final String AIR_CUBE_1X = "test_templates/1x1x1_air";
@@ -82,7 +83,22 @@ public class TestUtils {
     public static Player createPlayer(final GameTestHelper helper) {
         // FIXME :: 'helper.makeMockServerPlayerInLevel()' crashes instantly due to 'NetworkRegistry#checkPacket'
         //  'helper.makeMockPlayer()' doesn't create a 'ServerPlayer' but rather a mix of client and server elements
-        Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+        Player player = new Player(helper.getLevel(), BlockPos.ZERO, 0.0F, new GameProfile(UUID.randomUUID(), "test-mock-player")) {
+            @Override
+            public boolean isSpectator() {
+                return false;
+            }
+
+            @Override
+            public boolean isCreative() {
+                return false;
+            }
+
+            @Override
+            public boolean isLocalPlayer() {
+                return true;
+            }
+        };
         resetPlayer(helper, player);
         return player;
     }
