@@ -2,6 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.client.render.block_vision;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.render.BlockVisionHandler;
+import by.dragonsurvivalteam.dragonsurvival.client.util.RenderStateBackup;
 import by.dragonsurvivalteam.dragonsurvival.compat.ModID;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
@@ -29,7 +30,6 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.client.GlStateBackup;
 import net.minecraftforge.client.event.RegisterShadersEvent;
 import net.minecraftforge.client.model.data.ModelData;
 
@@ -40,7 +40,7 @@ import java.util.Objects;
 @EventBusSubscriber(value = Dist.CLIENT)
 public class BlockVisionShaderSimple {
     private static ShaderInstance shader;
-    private static GlStateBackup backup;
+    private static RenderStateBackup backup;
 
     /**
      * When Iris is installed using this single buffer works fine </br>
@@ -105,8 +105,7 @@ public class BlockVisionShaderSimple {
     }
 
     public static void beginBatch() {
-        backup = new GlStateBackup();
-        RenderSystem.backupGlState(backup);
+        backup = RenderStateBackup.capture();
 
         if (ModID.IRIS.isLoaded()) {
             irisBuffer = RenderSystem.renderThreadTesselator().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.BLOCK);
@@ -128,7 +127,7 @@ public class BlockVisionShaderSimple {
             }
         }
 
-        RenderSystem.restoreGlState(backup);
+        backup.restore();
         shader.clear();
 
         backup = null;

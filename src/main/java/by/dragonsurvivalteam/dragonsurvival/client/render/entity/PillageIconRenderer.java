@@ -3,6 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.client.render.entity;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.EntityScale;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.client.util.RenderStateBackup;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.EntityStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -20,7 +21,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.npc.VillagerProfession;
-import net.minecraftforge.client.GlStateBackup;
 import org.joml.Matrix4f;
 
 public class PillageIconRenderer {
@@ -44,8 +44,7 @@ public class PillageIconRenderer {
             return;
         }
 
-        GlStateBackup state = new GlStateBackup();
-        RenderSystem.backupGlState(state);
+        RenderStateBackup state = RenderStateBackup.capture();
 
         float scale = 0.025f * EntityScale.get(livingEntity);
         float x = -SIZE / 2f;
@@ -79,7 +78,7 @@ public class PillageIconRenderer {
         }
 
         pose.popPose();
-        RenderSystem.restoreGlState(state);
+        state.restore();
     }
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted") // ignore

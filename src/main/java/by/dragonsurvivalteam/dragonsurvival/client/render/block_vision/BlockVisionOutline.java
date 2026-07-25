@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.client.render.block_vision;
 
+import by.dragonsurvivalteam.dragonsurvival.client.util.RenderStateBackup;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.BufferUploader;
@@ -10,11 +11,10 @@ import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraftforge.client.GlStateBackup;
 
 public class BlockVisionOutline {
     private static BufferBuilder buffer;
-    private static GlStateBackup backup;
+    private static RenderStateBackup backup;
 
     public static void render(final PoseStack pose, final int colorARGB) {
         prepare();
@@ -42,8 +42,7 @@ public class BlockVisionOutline {
     }
 
     public static void beginBatch() {
-        backup = new GlStateBackup();
-        RenderSystem.backupGlState(backup);
+        backup = RenderStateBackup.capture();
         buffer = Tesselator.getInstance().begin(VertexFormat.Mode.DEBUG_LINES, DefaultVertexFormat.POSITION_COLOR);
     }
 
@@ -58,7 +57,7 @@ public class BlockVisionOutline {
             }
         }
 
-        RenderSystem.restoreGlState(backup);
+        backup.restore();
 
         backup = null;
         buffer = null;

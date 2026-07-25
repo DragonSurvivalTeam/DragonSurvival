@@ -6,6 +6,7 @@ import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.loader.Dra
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.DragonPart;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.DragonStageCustomization;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.LayerSettings;
+import by.dragonsurvivalteam.dragonsurvival.client.util.RenderStateBackup;
 import by.dragonsurvivalteam.dragonsurvival.client.util.RenderingUtils;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
@@ -29,7 +30,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.client.GlStateBackup;
 import net.minecraftforge.client.event.RegisterShadersEvent;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
@@ -54,8 +54,7 @@ public class DragonEditorHandler {
         DragonStateHandler handler = DragonStateProvider.getData(player);
         DragonBody.TextureSize textureSize = handler.body().value().textureSize();
 
-        GlStateBackup state = new GlStateBackup();
-        RenderSystem.backupGlState(state);
+        RenderStateBackup state = RenderStateBackup.capture();
         RenderSystem.backupProjectionMatrix();
 
         int currentFrameBuffer = GlStateManager.getBoundFramebuffer();
@@ -168,7 +167,7 @@ public class DragonEditorHandler {
                 normalTarget.destroyBuffers();
             }
 
-            RenderSystem.restoreGlState(state);
+            state.restore();
             RenderSystem.restoreProjectionMatrix();
             GlStateManager._glBindFramebuffer(GlConst.GL_FRAMEBUFFER, currentFrameBuffer);
             GlStateManager._viewport(currentViewportX, currentViewportY, currentViewportWidth, currentViewportHeight);

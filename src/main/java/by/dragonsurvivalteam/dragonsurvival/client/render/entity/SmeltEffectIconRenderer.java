@@ -3,6 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.client.render.entity;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AttachmentManager;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.client.util.RenderStateBackup;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
@@ -17,7 +18,6 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraftforge.client.GlStateBackup;
 import org.joml.Matrix4f;
 
 public class SmeltEffectIconRenderer {
@@ -64,8 +64,7 @@ public class SmeltEffectIconRenderer {
     }
 
     public static void renderIconAboveEntity(final Entity entity, final ResourceLocation icon, final PoseStack pose, final float widthPercentage) {
-        GlStateBackup state = new GlStateBackup();
-        RenderSystem.backupGlState(state);
+        RenderStateBackup state = RenderStateBackup.capture();
 
         float scale = 0.025f;
         float x = -WIDTH / 2f;
@@ -100,6 +99,6 @@ public class SmeltEffectIconRenderer {
         }
 
         pose.popPose();
-        RenderSystem.restoreGlState(state);
+        state.restore();
     }
 }

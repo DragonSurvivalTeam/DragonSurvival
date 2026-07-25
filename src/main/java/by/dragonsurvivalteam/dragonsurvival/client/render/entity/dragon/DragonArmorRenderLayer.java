@@ -2,6 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.client.render.entity.dragon;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.DragonSurvivalClient;
+import by.dragonsurvivalteam.dragonsurvival.client.util.RenderStateBackup;
 import by.dragonsurvivalteam.dragonsurvival.client.util.RenderingUtils;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
@@ -48,7 +49,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.client.GlStateBackup;
 import net.minecraftforge.client.event.RegisterShadersEvent;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
@@ -144,8 +144,7 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
     private static void generateArmorTexture(final Player player, final ResourceLocation imageResource) {
         DragonStateHandler handler = DragonStateProvider.getData(player);
         DragonBody.TextureSize textureSize = handler.body().value().textureSize();
-        GlStateBackup state = new GlStateBackup();
-        RenderSystem.backupGlState(state);
+        RenderStateBackup state = RenderStateBackup.capture();
         RenderSystem.backupProjectionMatrix();
 
         int framebuffer = GlStateManager.getBoundFramebuffer();
@@ -196,7 +195,7 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
                 target.destroyBuffers();
             }
 
-            RenderSystem.restoreGlState(state);
+            state.restore();
             RenderSystem.restoreProjectionMatrix();
             GlStateManager._glBindFramebuffer(GlConst.GL_FRAMEBUFFER, framebuffer);
             GlStateManager._viewport(viewportX, viewportY, viewportWidth, viewportHeight);
