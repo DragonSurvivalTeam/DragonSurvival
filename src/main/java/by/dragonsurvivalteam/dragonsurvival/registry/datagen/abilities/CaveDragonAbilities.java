@@ -83,7 +83,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.storage.loot.predicates.AnyOfCondition;
 import net.minecraftforge.common.ForgeMod;
-import net.minecraftforge.common.Tags;
 
 import java.util.List;
 import java.util.Optional;
@@ -213,7 +212,7 @@ public class CaveDragonAbilities {
                         ), LevelBasedValue.constant(1)), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(10)),
                         new ActionContainer(new DragonBreathTarget(AbilityTargeting.block(List.of(
                                 new FireEffect(LevelBasedValue.constant(0.05f)),
-                                new BlockBreakEffect(BlockCondition.blocks(Blocks.SNOW, Blocks.SHORT_GRASS), LevelBasedValue.constant(1), false),
+                                new BlockBreakEffect(BlockCondition.blocks(Blocks.SNOW, Blocks.GRASS), LevelBasedValue.constant(1), false),
                                 new BlockBreakEffect(BlockCondition.blocks(Blocks.SNOW_BLOCK, Blocks.POWDER_SNOW), LevelBasedValue.perLevel(0.05f), false)
                         )), LevelBasedValue.constant(1)), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(1)),
                         new ActionContainer(new SelfTarget(AbilityTargeting.entity(
@@ -438,7 +437,7 @@ public class CaveDragonAbilities {
                                         Condition.thisEntity(EntityCondition.isOnBlock(Blocks.FIRE)),
                                         Condition.thisEntity(EntityCondition.isInFluid(context.lookup(Registries.FLUID).getOrThrow(FluidTags.LAVA))),
                                         Condition.thisEntity(EntityCondition.isOnBlock(BlockTags.CAMPFIRES, BlockStateProperties.LIT, true)),
-                                        Condition.thisEntity(EntityCondition.isOnBlock(Tags.Blocks.PLAYER_WORKSTATIONS_FURNACES, BlockStateProperties.LIT, true)),
+                                Condition.thisEntity(EntityCondition.isOnBlock(Blocks.FURNACE, BlockStateProperties.LIT, true)),
                                         Condition.thisEntity(EntityCondition.isOnBlock(Blocks.SMOKER, BlockStateProperties.LIT, true)),
                                         Condition.thisEntity(EntityCondition.isOnBlock(Blocks.BLAST_FURNACE, BlockStateProperties.LIT, true))
                                 ).build(),
