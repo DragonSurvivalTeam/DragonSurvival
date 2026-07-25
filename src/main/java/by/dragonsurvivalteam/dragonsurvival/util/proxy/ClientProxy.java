@@ -25,6 +25,7 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
@@ -32,6 +33,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
+import net.minecraftforge.fml.LogicalSide;
+import net.minecraftforge.fml.util.thread.EffectiveSide;
+import net.minecraftforge.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.cache.GeckoLibCache;
 import software.bernie.geckolib.loading.object.BakedAnimations;
@@ -172,6 +176,14 @@ public class ClientProxy implements Proxy {
 
     @Override
     public @Nullable RegistryAccess getAccess() {
+        if (EffectiveSide.get() == LogicalSide.SERVER) {
+            MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+
+            if (server != null) {
+                return server.registryAccess();
+            }
+        }
+
         ClientLevel level = Minecraft.getInstance().level;
 
         if (level != null) {
