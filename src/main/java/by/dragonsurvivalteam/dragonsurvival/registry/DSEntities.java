@@ -12,24 +12,19 @@ import by.dragonsurvivalteam.dragonsurvival.common.entity.projectiles.Bolas;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.projectiles.GenericArrowEntity;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.projectiles.GenericBallEntity;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
-import com.google.common.collect.ImmutableSet;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobCategory;
-import net.minecraft.world.entity.SpawnPlacementTypes;
 import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.flag.FeatureFlagSet;
-import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraftforge.event.entity.SpawnPlacementRegisterEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
-import net.minecraftforge.event.entity.RegisterSpawnPlacementsEvent;
 import net.minecraftforge.registries.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 
@@ -42,7 +37,12 @@ public class DSEntities {
     @Translation(type = Translation.Type.ENTITY, comments = "Dragon")
     public static RegistryObject<EntityType<DragonEntity>> DRAGON = REGISTRY.register(
             "dummy_dragon",
-            () -> new EntityType<>(DragonEntity::new, MobCategory.MISC, true, false, false, false, ImmutableSet.of(), EntityDimensions.fixed(0.9f, 1.9f), 1.0f, 0, 0, FeatureFlagSet.of(FeatureFlags.VANILLA)));
+            () -> EntityType.Builder.of(DragonEntity::new, MobCategory.MISC)
+                    .noSummon()
+                    .sized(0.9F, 1.9F)
+                    .clientTrackingRange(0)
+                    .updateInterval(0)
+                    .build("dummy_dragon"));
 
     // --- Fake entities --- //
 
@@ -53,7 +53,6 @@ public class DSEntities {
             () -> EntityType.Builder.<Bolas>of((entity, level) ->
                             new Bolas(level), MobCategory.MISC)
                     .sized(0.5F, 0.5F)
-                    .eyeHeight(0.13F)
                     .clientTrackingRange(4)
                     .updateInterval(20)
                     .build("bolas"));
@@ -150,13 +149,13 @@ public class DSEntities {
 
     @SubscribeEvent
     @SuppressWarnings({"unchecked", "rawtypes", "deprecation"}) // ignore
-    public static void registerSpawn(final RegisterSpawnPlacementsEvent event) {
+    public static void registerSpawn(final SpawnPlacementRegisterEvent event) {
         SpawnPlacements.SpawnPredicate predicate = (entity, level, spawnType, position, random) -> level.canSeeSky(position) && level.getBlockState(position.below()).isSolid();
 
-        event.register(HUNTER_SPEARMAN.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, predicate, RegisterSpawnPlacementsEvent.Operation.REPLACE);
-        event.register(HUNTER_KNIGHT.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, predicate, RegisterSpawnPlacementsEvent.Operation.REPLACE);
-        event.register(HUNTER_AMBUSHER.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, predicate, RegisterSpawnPlacementsEvent.Operation.REPLACE);
-        event.register(HUNTER_HOUND.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, predicate, RegisterSpawnPlacementsEvent.Operation.REPLACE);
-        event.register(HUNTER_GRIFFIN.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, predicate, RegisterSpawnPlacementsEvent.Operation.REPLACE);
+        event.register(HUNTER_SPEARMAN.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, predicate, SpawnPlacementRegisterEvent.Operation.REPLACE);
+        event.register(HUNTER_KNIGHT.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, predicate, SpawnPlacementRegisterEvent.Operation.REPLACE);
+        event.register(HUNTER_AMBUSHER.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, predicate, SpawnPlacementRegisterEvent.Operation.REPLACE);
+        event.register(HUNTER_HOUND.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, predicate, SpawnPlacementRegisterEvent.Operation.REPLACE);
+        event.register(HUNTER_GRIFFIN.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, predicate, SpawnPlacementRegisterEvent.Operation.REPLACE);
     }
 }
