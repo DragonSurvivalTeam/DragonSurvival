@@ -453,187 +453,187 @@ public class DSBlocks {
     @Translation(type = Translation.Type.BLOCK, comments = "Stone Dragon Altar")
     public static final RegistryObject<Block> STONE_DRAGON_ALTAR = register(
             "stone_dragon_altar",
-            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.STONE))
+            () -> new DragonAltarBlock(Block.Properties.copy(Blocks.STONE))
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Sandstone Dragon Altar")
     public static final RegistryObject<Block> SANDSTONE_DRAGON_ALTAR = register(
             "sandstone_dragon_altar",
-            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.SANDSTONE))
+            () -> new DragonAltarBlock(Block.Properties.copy(Blocks.SANDSTONE))
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Red Sandstone Dragon Altar")
     public static final RegistryObject<Block> RED_SANDSTONE_DRAGON_ALTAR = register(
             "red_sandstone_dragon_altar",
-            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.RED_SANDSTONE))
+            () -> new DragonAltarBlock(Block.Properties.copy(Blocks.RED_SANDSTONE))
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Purpur Dragon Altar")
     public static final RegistryObject<Block> PURPUR_DRAGON_ALTAR = register(
             "purpur_dragon_altar",
-            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.PURPUR_BLOCK))
+            () -> new DragonAltarBlock(Block.Properties.copy(Blocks.PURPUR_BLOCK))
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Oak Dragon Altar")
     public static final RegistryObject<Block> OAK_DRAGON_ALTAR = register(
             "oak_dragon_altar",
-            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.OAK_PLANKS))
+            () -> new DragonAltarBlock(Block.Properties.copy(Blocks.OAK_PLANKS))
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Birch Dragon Altar")
     public static final RegistryObject<Block> BIRCH_DRAGON_ALTAR = register(
             "birch_dragon_altar",
-            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.BIRCH_PLANKS))
+            () -> new DragonAltarBlock(Block.Properties.copy(Blocks.BIRCH_PLANKS))
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Nether Brick Dragon Altar")
     public static final RegistryObject<Block> NETHER_BRICK_DRAGON_ALTAR = register(
             "nether_brick_dragon_altar",
-            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.NETHER_BRICKS))
+            () -> new DragonAltarBlock(Block.Properties.copy(Blocks.NETHER_BRICKS))
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Mossy Dragon Altar")
     public static final RegistryObject<Block> MOSSY_DRAGON_ALTAR = register(
             "mossy_dragon_altar",
-            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.MOSSY_COBBLESTONE))
+            () -> new DragonAltarBlock(Block.Properties.copy(Blocks.MOSSY_COBBLESTONE))
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Blackstone Dragon Altar")
     public static final RegistryObject<Block> BLACKSTONE_DRAGON_ALTAR = register(
             "blackstone_dragon_altar",
-            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.BLACKSTONE))
+            () -> new DragonAltarBlock(Block.Properties.copy(Blocks.BLACKSTONE))
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Pale Oak Dragon Altar") // FIXME :: unused
     public static final RegistryObject<Block> PALE_OAK_DRAGON_ALTAR = register(
             "pale_oak_dragon_altar",
-            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.OAK_PLANKS))
+            () -> new DragonAltarBlock(Block.Properties.copy(Blocks.OAK_PLANKS))
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Bone Dragon Altar")
     public static final RegistryObject<Block> BONE_DRAGON_ALTAR = register(
             "bone_dragon_altar",
-            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.BONE_BLOCK))
+            () -> new DragonAltarBlock(Block.Properties.copy(Blocks.BONE_BLOCK))
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Quartz Dragon Altar")
     public static final RegistryObject<Block> QUARTZ_DRAGON_ALTAR = register(
             "quartz_dragon_altar",
-            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.QUARTZ_BLOCK))
+            () -> new DragonAltarBlock(Block.Properties.copy(Blocks.QUARTZ_BLOCK))
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Ice Dragon Altar")
     public static final RegistryObject<Block> ICE_DRAGON_ALTAR = register(
             "ice_dragon_altar",
-            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.PACKED_ICE))
+            () -> new DragonAltarBlock(Block.Properties.copy(Blocks.PACKED_ICE))
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Netherrack Dragon Altar")
     public static final RegistryObject<Block> NETHERRACK_DRAGON_ALTAR = register(
             "netherrack_dragon_altar",
-            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.NETHERRACK))
+            () -> new DragonAltarBlock(Block.Properties.copy(Blocks.NETHERRACK))
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Obsidian Dragon Altar")
     public static final RegistryObject<Block> OBSIDIAN_DRAGON_ALTAR = register(
             "obsidian_dragon_altar",
-            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.OBSIDIAN))
+            () -> new DragonAltarBlock(Block.Properties.copy(Blocks.OBSIDIAN))
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Amethyst Dragon Altar")
     public static final RegistryObject<Block> AMETHYST_DRAGON_ALTAR = register(
             "amethyst_dragon_altar",
-            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.AMETHYST_BLOCK))
+            () -> new DragonAltarBlock(Block.Properties.copy(Blocks.AMETHYST_BLOCK))
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Mudbrick Dragon Altar")
     public static final RegistryObject<Block> MUDBRICK_DRAGON_ALTAR = register(
             "mudbrick_dragon_altar",
-            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.PACKED_MUD))
+            () -> new DragonAltarBlock(Block.Properties.copy(Blocks.PACKED_MUD))
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Prismarine Dragon Altar")
     public static final RegistryObject<Block> PRISMARINE_DRAGON_ALTAR = register(
             "prismarine_dragon_altar",
-            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.PRISMARINE_BRICKS))
+            () -> new DragonAltarBlock(Block.Properties.copy(Blocks.PRISMARINE_BRICKS))
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Red Nether Brick Dragon Altar")
     public static final RegistryObject<Block> RED_NETHER_BRICK_DRAGON_ALTAR = register(
             "red_nether_brick_dragon_altar",
-            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.RED_NETHER_BRICKS))
+            () -> new DragonAltarBlock(Block.Properties.copy(Blocks.RED_NETHER_BRICKS))
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Endstone Dragon Altar")
     public static final RegistryObject<Block> ENDSTONE_DRAGON_ALTAR = register(
             "endstone_dragon_altar",
-            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.END_STONE))
+            () -> new DragonAltarBlock(Block.Properties.copy(Blocks.END_STONE))
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Deepslate Dragon Altar")
     public static final RegistryObject<Block> DEEPSLATE_DRAGON_ALTAR = register(
             "deepslate_dragon_altar",
-            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.COBBLED_DEEPSLATE))
+            () -> new DragonAltarBlock(Block.Properties.copy(Blocks.COBBLED_DEEPSLATE))
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Tuff Dragon Altar")
     public static final RegistryObject<Block> TUFF_DRAGON_ALTAR = register(
             "tuff_dragon_altar",
-            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.TUFF))
+            () -> new DragonAltarBlock(Block.Properties.copy(Blocks.TUFF))
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Crimson Dragon Altar")
     public static final RegistryObject<Block> CRIMSON_DRAGON_ALTAR = register(
             "crimson_dragon_altar",
-            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.CRIMSON_PLANKS))
+            () -> new DragonAltarBlock(Block.Properties.copy(Blocks.CRIMSON_PLANKS))
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Warped Dragon Altar")
     public static final RegistryObject<Block> WARPED_DRAGON_ALTAR = register(
             "warped_dragon_altar",
-            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.WARPED_PLANKS))
+            () -> new DragonAltarBlock(Block.Properties.copy(Blocks.WARPED_PLANKS))
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Mangrove Dragon Altar")
     public static final RegistryObject<Block> MANGROVE_DRAGON_ALTAR = register(
             "mangrove_dragon_altar",
-            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.MANGROVE_PLANKS))
+            () -> new DragonAltarBlock(Block.Properties.copy(Blocks.MANGROVE_PLANKS))
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Bamboo Dragon Altar")
     public static final RegistryObject<Block> BAMBOO_DRAGON_ALTAR = register(
             "bamboo_dragon_altar",
-            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.BAMBOO_PLANKS).mapColor(MapColor.COLOR_YELLOW))
+            () -> new DragonAltarBlock(Block.Properties.copy(Blocks.BAMBOO_PLANKS).mapColor(MapColor.COLOR_YELLOW))
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Cherry Dragon Altar")
     public static final RegistryObject<Block> CHERRY_DRAGON_ALTAR = register(
             "cherry_dragon_altar",
-            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.CHERRY_PLANKS))
+            () -> new DragonAltarBlock(Block.Properties.copy(Blocks.CHERRY_PLANKS))
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Acacia Dragon Altar")
     public static final RegistryObject<Block> ACACIA_DRAGON_ALTAR = register(
             "acacia_dragon_altar",
-            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.ACACIA_PLANKS))
+            () -> new DragonAltarBlock(Block.Properties.copy(Blocks.ACACIA_PLANKS))
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Dark Oak Dragon Altar")
     public static final RegistryObject<Block> DARK_OAK_DRAGON_ALTAR = register(
             "dark_oak_dragon_altar",
-            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.DARK_OAK_PLANKS))
+            () -> new DragonAltarBlock(Block.Properties.copy(Blocks.DARK_OAK_PLANKS))
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Jungle Dragon Altar")
     public static final RegistryObject<Block> JUNGLE_DRAGON_ALTAR = register(
             "jungle_dragon_altar",
-            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.JUNGLE_PLANKS))
+            () -> new DragonAltarBlock(Block.Properties.copy(Blocks.JUNGLE_PLANKS))
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Spruce Dragon Altar")
     public static final RegistryObject<Block> SPRUCE_DRAGON_ALTAR = register(
             "spruce_dragon_altar",
-            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.SPRUCE_PLANKS))
+            () -> new DragonAltarBlock(Block.Properties.copy(Blocks.SPRUCE_PLANKS))
     );
 
     // --- Dragon Beacons --- //
