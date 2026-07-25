@@ -13,6 +13,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -69,12 +70,12 @@ public class ConfigUtils {
 
             return () -> {
                 Optional<HolderSet.Named<Item>> optional = BuiltInRegistries.ITEM.getTag(tag);
-                return optional.isPresent() ? optional.get() : HolderSet.empty();
+                return optional.isPresent() ? optional.get() : HolderSet.direct(List.of());
             };
         } else {
             return () -> {
-                Optional<Holder.Reference<Item>> optional = BuiltInRegistries.ITEM.getHolder(location);
-                return optional.isPresent() ? HolderSet.direct(optional.get()) : HolderSet.empty();
+                Optional<Holder.Reference<Item>> optional = BuiltInRegistries.ITEM.getHolder(ResourceKey.create(Registries.ITEM, location));
+                return optional.isPresent() ? HolderSet.direct(optional.get()) : HolderSet.direct(List.of());
             };
         }
     }

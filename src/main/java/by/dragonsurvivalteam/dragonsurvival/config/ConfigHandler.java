@@ -13,6 +13,7 @@ import com.electronwill.nightconfig.core.EnumGetMethod;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.effect.MobEffect;
@@ -23,8 +24,8 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -32,9 +33,8 @@ import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.config.ModConfigEvent;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.fml.loading.FMLLoader;
-import net.minecraftforge.fml.loading.modscan.ModAnnotation;
-import net.minecraftforge.common.ModConfigSpec;
-import net.minecraftforgespi.language.ModFileScanData;
+import net.minecraftforge.fml.loading.moddiscovery.ModAnnotation;
+import net.minecraftforge.forgespi.language.ModFileScanData;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -58,7 +58,7 @@ import java.util.regex.Pattern;
 
 /**
  * Parses the annotated classes to handle the config values <br>
- * Normally it's a one way setting from the {@link ModConfigSpec.ConfigValue} fields to the class fields <br>
+ * Normally it's a one way setting from the {@link ForgeConfigSpec.ConfigValue} fields to the class fields <br>
  * (The exception being {@link ConfigHandler#updateConfigValue(String, Object)})
  */
 @EventBusSubscriber
@@ -74,7 +74,7 @@ public class ConfigHandler {
     /** Contains all config keys per side (i.e. client or server) */
     private static final HashMap<ConfigSide, Set<String>> CONFIG_KEYS = new HashMap<>();
     /** Contains all config values */
-    private static final HashMap<String, ModConfigSpec.ConfigValue<?>> CONFIG_VALUES = new HashMap<>();
+    private static final HashMap<String, ForgeConfigSpec.ConfigValue<?>> CONFIG_VALUES = new HashMap<>();
     /** Mapping between from a registry entry like {@link Item} to its registry like {@link BuiltInRegistries#ITEM} */
     private static final HashMap<Class<?>, Registry<?>> REGISTRY_MAP = new HashMap<>();
 
@@ -99,7 +99,7 @@ public class ConfigHandler {
 
             targets.forEach(annotationData -> {
                 ModAnnotation.EnumHolder sidesValue = (ModAnnotation.EnumHolder) annotationData.annotationData().get("side");
-                Dist side = Objects.equals(sidesValue.value(), "CLIENT") ? Dist.CLIENT : Dist.DEDICATED_SERVER;
+                Dist side = Objects.equals(sidesValue.getValue(), "CLIENT") ? Dist.CLIENT : Dist.DEDICATED_SERVER;
 
                 if (side == FMLEnvironment.dist || side == Dist.DEDICATED_SERVER) {
                     try {
@@ -156,15 +156,15 @@ public class ConfigHandler {
             throw new IllegalStateException("Tried to add duplicate config keys: " + duplicateKeys);
         }
 
-        ModContainer modContainer = ModLoadingContext.get().getActiveContainer();
+        ModLoadingContext loadingContext = ModLoadingContext.get();
 
         if (FMLLoader.getDist().isClient()) {
-            Pair<ClientConfig, ModConfigSpec> clientConfig = new ModConfigSpec.Builder().configure(ClientConfig::new);
-            modContainer.registerConfig(ModConfig.Type.CLIENT, clientConfig.getRight());
+            Pair<ClientConfig, ForgeConfigSpec> clientConfig = new ForgeConfigSpec.Builder().configure(ClientConfig::new);
+            loadingContext.registerConfig(ModConfig.Type.CLIENT, clientConfig.getRight());
         }
 
-        Pair<ServerConfig, ModConfigSpec> serverConfig = new ModConfigSpec.Builder().configure(ServerConfig::new);
-        modContainer.registerConfig(ModConfig.Type.SERVER, serverConfig.getRight());
+        Pair<ServerConfig, ForgeConfigSpec> serverConfig = new ForgeConfigSpec.Builder().configure(ServerConfig::new);
+        loadingContext.registerConfig(ModConfig.Type.SERVER, serverConfig.getRight());
     }
 
     public static void resetConfigValues(final ConfigSide side) {
@@ -173,7 +173,7 @@ public class ConfigHandler {
 
     @SuppressWarnings({"rawtypes", "unchecked"}) // ignore
     public static void resetConfigValue(final String configKey) {
-        ModConfigSpec.ConfigValue configValue = CONFIG_VALUES.get(configKey);
+        ForgeConfigSpec.ConfigValue configValue = CONFIG_VALUES.get(configKey);
         configValue.set(configValue.getDefault());
 
         Field field = CONFIG_FIELDS.get(configKey);
@@ -195,7 +195,7 @@ public class ConfigHandler {
         return field;
     }
 
-    public static void createConfigEntries(final ModConfigSpec.Builder builder, final ConfigSide side) {
+    public static void createConfigEntries(final ForgeConfigSpec.Builder builder, final ConfigSide side) {
         for (String key : CONFIG_KEYS.getOrDefault(side, Set.of())) {
             ConfigOption configOption = CONFIG_OBJECTS.get(key);
             Field field = CONFIG_FIELDS.get(key);
@@ -225,7 +225,7 @@ public class ConfigHandler {
             }
 
             if (configOption.gameRestart()) {
-                builder.gameRestart();
+                builder.worldRestart();
             }
 
             try {
@@ -279,9 +279,8 @@ public class ConfigHandler {
                     //noinspection unchecked,rawtypes -> ignored
                     CONFIG_VALUES.put(key, builder.defineEnum(configOption.key(), (Enum) defaultValues, ((Enum<?>) defaultValues).getClass().getEnumConstants()));
                 } else if (defaultValues instanceof List<?> list) {
-                    // By default, lists are not allowed to be empty, so we define the range manually here.
-                    ModConfigSpec.Range<Integer> sizeRange = ModConfigSpec.Range.of(0, Integer.MAX_VALUE);
-                    ModConfigSpec.ConfigValue<List<?>> configList = null;
+                    // Dragon Survival allows empty config lists.
+                    ForgeConfigSpec.ConfigValue<?> configList = null;
 
                     boolean handledList = false;
 
@@ -294,7 +293,7 @@ public class ConfigHandler {
 
                             if (CustomConfig.class.isAssignableFrom(customConfigType)) {
                                 List<String> customList = list.stream().map(customConfig -> ((CustomConfig) customConfig).convert()).toList();
-                                configList = buildList(builder, configOption, sizeRange, customList, configValue -> CustomConfig.getInstance(customConfigType).validate(configValue));
+                                configList = buildList(builder, configOption, customList, configValue -> CustomConfig.getInstance(customConfigType).validate(configValue));
                                 handledList = true;
                             }
                         } catch (ClassNotFoundException exception) {
@@ -303,7 +302,7 @@ public class ConfigHandler {
                     }
 
                     if (!handledList) {
-                        configList = buildList(builder, configOption, sizeRange, list, configValue -> checkSpecific(configOption, configValue));
+                        configList = buildList(builder, configOption, list, configValue -> checkSpecific(configOption, configValue));
                     }
 
                     CONFIG_VALUES.put(key, configList);
@@ -313,7 +312,7 @@ public class ConfigHandler {
                     CONFIG_VALUES.put(key, builder.define(configOption.key(), value));
                 } else {
                     // This will likely run into a 'com.electronwill.nightconfig.core.io.WritingException: Unsupported value type' exception
-                    ModConfigSpec.ConfigValue<Object> value = builder.define(configOption.key(), defaultValues);
+                    ForgeConfigSpec.ConfigValue<Object> value = builder.define(configOption.key(), defaultValues);
                     CONFIG_VALUES.put(key, value);
                     DragonSurvival.LOGGER.warn("Potential issue found for configuration: [{}]", configOption.key());
                 }
@@ -327,11 +326,10 @@ public class ConfigHandler {
         }
     }
 
-    private static ModConfigSpec.ConfigValue<List<?>> buildList(final ModConfigSpec.Builder builder, final ConfigOption config, final ModConfigSpec.Range<Integer> sizeRange, final List<?> defaultValues, final Predicate<Object> validation) {
-        return builder.defineList(
+    private static ForgeConfigSpec.ConfigValue<?> buildList(final ForgeConfigSpec.Builder builder, final ConfigOption config, final List<?> defaultValues, final Predicate<Object> validation) {
+        return builder.defineListAllowEmpty(
                 List.of(config.key()),
                 () -> defaultValues,
-                () -> "",
                 configValue -> {
                     if (validation.test(configValue)) {
                         return true;
@@ -340,8 +338,7 @@ public class ConfigHandler {
                     // To figure out which entry in the list has problems
                     DragonSurvival.LOGGER.debug("Config entry [{}] of config [{}] was invalid", configValue, config.key());
                     return false;
-                },
-                sizeRange
+                }
         );
     }
 
@@ -446,7 +443,7 @@ public class ConfigHandler {
         }
 
         if (registry.containsKey(resourceLocation)) {
-            Optional<Holder.Reference<T>> optional = registry.getHolder(resourceLocation);
+            Optional<Holder.Reference<T>> optional = registry.getHolder(ResourceKey.create(registry.key(), resourceLocation));
 
             if (optional.isPresent() && optional.get().isBound()) {
                 return List.of(optional.get().value());
@@ -475,7 +472,7 @@ public class ConfigHandler {
 
     /**
      * @param field        The class field which dictates the type to set
-     * @param value        The value (from {@link net.minecraftforge.common.ModConfigSpec.ConfigValue}) which will be converted to the class field type
+     * @param value        The value (from {@link ForgeConfigSpec.ConfigValue}) which will be converted to the class field type
      * @param registryType (Optional) The type of registry object (e.g. {@link Block})
      * @return The converted value for the field
      */
@@ -571,7 +568,7 @@ public class ConfigHandler {
     }
 
     /**
-     * Update the {@link ModConfigSpec.ConfigValue} and class field with the new value <br>
+     * Update the {@link ForgeConfigSpec.ConfigValue} and class field with the new value <br>
      * (Currently only used for the ui when enabling / disabling claws e.g.)
      *
      * @param configKey The config key of the {@link ConfigOption}
@@ -579,7 +576,7 @@ public class ConfigHandler {
      */
     @SuppressWarnings({"rawtypes", "unchecked"})
     public static void updateConfigValue(final String configKey, final Object newValue) {
-        ModConfigSpec.ConfigValue valueHolder = CONFIG_VALUES.get(configKey);
+        ForgeConfigSpec.ConfigValue valueHolder = CONFIG_VALUES.get(configKey);
 
         if (valueHolder == null) {
             DragonSurvival.LOGGER.error("There is no known config for [{}]", configKey);
@@ -589,7 +586,7 @@ public class ConfigHandler {
 
         if (newValue != null) {
             Object convertedValue = convertToConfigValue(newValue);
-            boolean isValid = valueHolder.getSpec().test(convertedValue);
+            boolean isValid = isValidConfigValue(configKey, convertedValue);
 
             if (!isValid) {
                 DragonSurvival.LOGGER.error("Tried to set an invalid value [{}] for the config [{}]", convertedValue, configKey);
@@ -613,8 +610,40 @@ public class ConfigHandler {
         }
     }
 
+    private static boolean isValidConfigValue(final String configKey, final Object value) {
+        Object defaultValue = DEFAULT_CONFIG_VALUES.get(configKey);
+        ConfigOption config = CONFIG_OBJECTS.get(configKey);
+        Field field = CONFIG_FIELDS.get(configKey);
+
+        if (value == null || defaultValue == null || config == null || field == null) {
+            return false;
+        }
+
+        if (defaultValue instanceof Number && value instanceof Number number) {
+            ConfigRange range = field.getAnnotation(ConfigRange.class);
+
+            if (range == null) {
+                return true;
+            }
+
+            double numericValue = number.doubleValue();
+            return (Double.isNaN(range.min()) || numericValue >= range.min())
+                    && (Double.isNaN(range.max()) || numericValue <= range.max());
+        }
+
+        if (defaultValue instanceof Collection<?> && value instanceof Collection<?> collection) {
+            return collection.stream().allMatch(entry -> checkSpecific(config, entry));
+        }
+
+        if (defaultValue instanceof String && value instanceof String) {
+            return checkSpecific(config, value);
+        }
+
+        return defaultValue.getClass().isInstance(value);
+    }
+
     /**
-     * Get the relevant data that is supposed to be stored in the {@link ModConfigSpec.ConfigValue} field
+     * Get the relevant data that is supposed to be stored in the {@link ForgeConfigSpec.ConfigValue} field
      *
      * @return The result of {@link ConfigHandler#getRelevantConfigValue(Object)} (lists will convert their entries using that method)
      */
@@ -637,7 +666,7 @@ public class ConfigHandler {
     }
 
     /**
-     * Get the relevant data that is supposed to be stored in the {@link ModConfigSpec.ConfigValue} field <br>
+     * Get the relevant data that is supposed to be stored in the {@link ForgeConfigSpec.ConfigValue} field <br>
      *
      * @return Most likely a string or number value
      */
@@ -667,7 +696,7 @@ public class ConfigHandler {
     }
 
     /**
-     * Retrieves the current config value (from {@link ModConfigSpec.ConfigValue}) <br>
+     * Retrieves the current config value (from {@link ForgeConfigSpec.ConfigValue}) <br>
      * Said value will then be converted to match the class field <br>
      * See {@link ConfigHandler#convertToFieldValue(Field, Object, Class)} for more information
      */

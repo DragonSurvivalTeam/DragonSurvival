@@ -4,10 +4,10 @@ import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigRange;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
-import net.minecraftforge.common.ModConfigSpec;
+import net.minecraftforge.common.ForgeConfigSpec;
 
 public class ClientConfig {
-    ClientConfig(ModConfigSpec.Builder builder) {
+    ClientConfig(ForgeConfigSpec.Builder builder) {
         ConfigHandler.createConfigEntries(builder, ConfigSide.CLIENT);
     }
 

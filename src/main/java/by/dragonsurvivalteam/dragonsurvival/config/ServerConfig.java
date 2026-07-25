@@ -5,10 +5,10 @@ import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigRange;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
-import net.minecraftforge.common.ModConfigSpec;
+import net.minecraftforge.common.ForgeConfigSpec;
 
 public class ServerConfig {
-    ServerConfig(final ModConfigSpec.Builder builder) {
+    ServerConfig(final ForgeConfigSpec.Builder builder) {
         ConfigHandler.createConfigEntries(builder, ConfigSide.SERVER);
     }
 
