@@ -19,7 +19,7 @@
           "predicate": {
             "location": {
               "fluid": {
-                "fluids": "#minecraft:water"
+                "tag": "minecraft:water"
               }
             }
           }
@@ -30,7 +30,7 @@
           "predicate": {
             "stepping_on": {
               "block": {
-                "blocks": "#dragonsurvival:is_wet"
+                "tag": "dragonsurvival:is_wet"
               }
             }
           }
@@ -41,7 +41,7 @@
           "predicate": {
             "location": {
               "block": {
-                "blocks": "#dragonsurvival:is_wet"
+                "tag": "dragonsurvival:is_wet"
               }
             }
           }

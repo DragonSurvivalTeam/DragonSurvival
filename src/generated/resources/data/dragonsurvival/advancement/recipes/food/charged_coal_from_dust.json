@@ -5,7 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": "#c:dusts/redstone"
+            "tag": "c:dusts/redstone"
           }
         ]
       },
@@ -20,13 +20,14 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
-      "has_redstone_dust"
+      "has_redstone_dust",
+      "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
       "dragonsurvival:charged_coal_from_dust"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

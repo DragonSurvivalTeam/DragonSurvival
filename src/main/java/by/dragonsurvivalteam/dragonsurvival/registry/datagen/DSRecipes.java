@@ -2,7 +2,6 @@ package by.dragonsurvivalteam.dragonsurvival.registry.datagen;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.compat.ModID;
-import by.dragonsurvivalteam.dragonsurvival.mixins.Holder$ReferenceAccess;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSBlocks;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSItems;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSItemTags;
@@ -11,8 +10,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.MappedRegistry;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
@@ -22,12 +19,11 @@ import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.data.recipes.ShapelessRecipeBuilder;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.conditions.ICondition;
@@ -42,6 +38,28 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
 public class DSRecipes extends RecipeProvider {
+    public static final List<ProxyItem> PROXY_ITEMS = List.of(
+            new ProxyItem("regions_unexplored", "redstone_bulb"),
+            new ProxyItem(ModID.CREATE.value(), "bar_of_chocolate"),
+            new ProxyItem(ModID.BEE_ADDON.value(), "caramelized_nectar"),
+            new ProxyItem(ModID.SILENTGEMS.value(), "ruby"),
+            new ProxyItem(ModID.SILENTGEMS.value(), "carnelian"),
+            new ProxyItem(ModID.SILENTGEMS.value(), "topaz"),
+            new ProxyItem(ModID.SILENTGEMS.value(), "citrine"),
+            new ProxyItem(ModID.SILENTGEMS.value(), "heliodor"),
+            new ProxyItem(ModID.SILENTGEMS.value(), "moldavite"),
+            new ProxyItem(ModID.SILENTGEMS.value(), "peridot"),
+            new ProxyItem(ModID.SILENTGEMS.value(), "turquoise"),
+            new ProxyItem(ModID.SILENTGEMS.value(), "kyanite"),
+            new ProxyItem(ModID.SILENTGEMS.value(), "sapphire"),
+            new ProxyItem(ModID.SILENTGEMS.value(), "iolite"),
+            new ProxyItem(ModID.SILENTGEMS.value(), "alexandrite"),
+            new ProxyItem(ModID.SILENTGEMS.value(), "ammolite"),
+            new ProxyItem(ModID.SILENTGEMS.value(), "rose_quartz"),
+            new ProxyItem(ModID.SILENTGEMS.value(), "black_diamond"),
+            new ProxyItem(ModID.SILENTGEMS.value(), "white_diamond")
+    );
+
     private final PackOutput.PathProvider recipePath;
     private final PackOutput.PathProvider advancementPath;
 
@@ -77,16 +95,8 @@ public class DSRecipes extends RecipeProvider {
 
     @Override
     protected void buildRecipes(@NotNull final Consumer<FinishedRecipe> output) {
-        //noinspection unchecked -> ignore
-        MappedRegistry<Item> registry = (MappedRegistry<Item>) BuiltInRegistries.ITEM;
-        //noinspection deprecation -> workaround to create recipes with items from other mods (without having to resort to one-entry-tags)
-        registry.unfreeze();
-
         buildShaped(output);
         buildShapeless(output);
-
-        // We don't re-freeze the registry because it would complain about unregistered holders
-        // Since the data generation is over at this point it doesn't matter anyway
     }
 
     private void buildShaped(final Consumer<FinishedRecipe> output) {
@@ -127,9 +137,9 @@ public class DSRecipes extends RecipeProvider {
                 .pattern("RRR")
                 .pattern("CCR")
                 .pattern("CCR")
-                .define('R', proxyItem)
+                .define('R', proxyItem.tag())
                 .define('C', ItemTags.COALS)
-                .unlockedBy("has_redstone_bulb", has(proxyItem))
+                .unlockedBy("has_redstone_bulb", has(proxyItem.tag()))
                 .save(withConditions(output, new ModLoadedCondition("regions_unexplored")), DragonSurvival.res("charged_coal_from_bulb"));
     }
 
@@ -205,7 +215,7 @@ public class DSRecipes extends RecipeProvider {
 
         ShapelessRecipeBuilder
                 .shapeless(RecipeCategory.DECORATIONS, DSBlocks.CHOCOLATE_DRAGON_TREASURE.get())
-                .requires(barOfChocolate)
+                .requires(barOfChocolate.tag())
                 .requires(DSItems.ELDER_DRAGON_DUST.get())
                 .unlockedBy(getHasName(DSItems.ELDER_DRAGON_DUST.get()), has(DSItems.ELDER_DRAGON_DUST.get()))
                 .save(withConditions(output, new ModLoadedCondition(ModID.CREATE.value())));
@@ -214,7 +224,7 @@ public class DSRecipes extends RecipeProvider {
 
         ShapelessRecipeBuilder
                 .shapeless(RecipeCategory.DECORATIONS, DSBlocks.BEE_HONEY_TREASURE.get())
-                .requires(caramelized_nectar)
+                .requires(caramelized_nectar.tag())
                 .requires(DSItems.ELDER_DRAGON_DUST.get())
                 .unlockedBy(getHasName(DSItems.ELDER_DRAGON_DUST.get()), has(DSItems.ELDER_DRAGON_DUST.get()))
                 .save(withConditions(output, new ModLoadedCondition(ModID.BEE_ADDON.value())));
@@ -234,7 +244,7 @@ public class DSRecipes extends RecipeProvider {
 
         ShapelessRecipeBuilder
                 .shapeless(RecipeCategory.DECORATIONS, DSBlocks.RUBY_DRAGON_TREASURE.get())
-                .requires(ruby)
+                .requires(ruby.tag())
                 .requires(DSItems.ELDER_DRAGON_DUST.get())
                 .unlockedBy(getHasName(DSItems.ELDER_DRAGON_DUST.get()), has(DSItems.ELDER_DRAGON_DUST.get()))
                 .save(withConditions(output, new ModLoadedCondition(ModID.SILENTGEMS.value())));
@@ -243,7 +253,7 @@ public class DSRecipes extends RecipeProvider {
 
         ShapelessRecipeBuilder
                 .shapeless(RecipeCategory.DECORATIONS, DSBlocks.CARNELIAN_DRAGON_TREASURE.get())
-                .requires(carnelian)
+                .requires(carnelian.tag())
                 .requires(DSItems.ELDER_DRAGON_DUST.get())
                 .unlockedBy(getHasName(DSItems.ELDER_DRAGON_DUST.get()), has(DSItems.ELDER_DRAGON_DUST.get()))
                 .save(withConditions(output, new ModLoadedCondition(ModID.SILENTGEMS.value())));
@@ -252,7 +262,7 @@ public class DSRecipes extends RecipeProvider {
 
         ShapelessRecipeBuilder
                 .shapeless(RecipeCategory.DECORATIONS, DSBlocks.TOPAZ_DRAGON_TREASURE.get())
-                .requires(topaz)
+                .requires(topaz.tag())
                 .requires(DSItems.ELDER_DRAGON_DUST.get())
                 .unlockedBy(getHasName(DSItems.ELDER_DRAGON_DUST.get()), has(DSItems.ELDER_DRAGON_DUST.get()))
                 .save(withConditions(output, new ModLoadedCondition(ModID.SILENTGEMS.value())));
@@ -261,7 +271,7 @@ public class DSRecipes extends RecipeProvider {
 
         ShapelessRecipeBuilder
                 .shapeless(RecipeCategory.DECORATIONS, DSBlocks.CITRINE_DRAGON_TREASURE.get())
-                .requires(citrine)
+                .requires(citrine.tag())
                 .requires(DSItems.ELDER_DRAGON_DUST.get())
                 .unlockedBy(getHasName(DSItems.ELDER_DRAGON_DUST.get()), has(DSItems.ELDER_DRAGON_DUST.get()))
                 .save(withConditions(output, new ModLoadedCondition(ModID.SILENTGEMS.value())));
@@ -270,7 +280,7 @@ public class DSRecipes extends RecipeProvider {
 
         ShapelessRecipeBuilder
                 .shapeless(RecipeCategory.DECORATIONS, DSBlocks.HELIODOR_DRAGON_TREASURE.get())
-                .requires(heliodor)
+                .requires(heliodor.tag())
                 .requires(DSItems.ELDER_DRAGON_DUST.get())
                 .unlockedBy(getHasName(DSItems.ELDER_DRAGON_DUST.get()), has(DSItems.ELDER_DRAGON_DUST.get()))
                 .save(withConditions(output, new ModLoadedCondition(ModID.SILENTGEMS.value())));
@@ -279,7 +289,7 @@ public class DSRecipes extends RecipeProvider {
 
         ShapelessRecipeBuilder
                 .shapeless(RecipeCategory.DECORATIONS, DSBlocks.MOLDAVITE_DRAGON_TREASURE.get())
-                .requires(moldavite)
+                .requires(moldavite.tag())
                 .requires(DSItems.ELDER_DRAGON_DUST.get())
                 .unlockedBy(getHasName(DSItems.ELDER_DRAGON_DUST.get()), has(DSItems.ELDER_DRAGON_DUST.get()))
                 .save(withConditions(output, new ModLoadedCondition(ModID.SILENTGEMS.value())));
@@ -288,7 +298,7 @@ public class DSRecipes extends RecipeProvider {
 
         ShapelessRecipeBuilder
                 .shapeless(RecipeCategory.DECORATIONS, DSBlocks.PERIDOT_DRAGON_TREASURE.get())
-                .requires(peridot)
+                .requires(peridot.tag())
                 .requires(DSItems.ELDER_DRAGON_DUST.get())
                 .unlockedBy(getHasName(DSItems.ELDER_DRAGON_DUST.get()), has(DSItems.ELDER_DRAGON_DUST.get()))
                 .save(withConditions(output, new ModLoadedCondition(ModID.SILENTGEMS.value())));
@@ -297,7 +307,7 @@ public class DSRecipes extends RecipeProvider {
 
         ShapelessRecipeBuilder
                 .shapeless(RecipeCategory.DECORATIONS, DSBlocks.TURQUOISE_DRAGON_TREASURE.get())
-                .requires(turquoise)
+                .requires(turquoise.tag())
                 .requires(DSItems.ELDER_DRAGON_DUST.get())
                 .unlockedBy(getHasName(DSItems.ELDER_DRAGON_DUST.get()), has(DSItems.ELDER_DRAGON_DUST.get()))
                 .save(withConditions(output, new ModLoadedCondition(ModID.SILENTGEMS.value())));
@@ -306,7 +316,7 @@ public class DSRecipes extends RecipeProvider {
 
         ShapelessRecipeBuilder
                 .shapeless(RecipeCategory.DECORATIONS, DSBlocks.KYANITE_DRAGON_TREASURE.get())
-                .requires(kyanite)
+                .requires(kyanite.tag())
                 .requires(DSItems.ELDER_DRAGON_DUST.get())
                 .unlockedBy(getHasName(DSItems.ELDER_DRAGON_DUST.get()), has(DSItems.ELDER_DRAGON_DUST.get()))
                 .save(withConditions(output, new ModLoadedCondition(ModID.SILENTGEMS.value())));
@@ -315,7 +325,7 @@ public class DSRecipes extends RecipeProvider {
 
         ShapelessRecipeBuilder
                 .shapeless(RecipeCategory.DECORATIONS, DSBlocks.SAPPHIRE_DRAGON_TREASURE.get())
-                .requires(sapphire)
+                .requires(sapphire.tag())
                 .requires(DSItems.ELDER_DRAGON_DUST.get())
                 .unlockedBy(getHasName(DSItems.ELDER_DRAGON_DUST.get()), has(DSItems.ELDER_DRAGON_DUST.get()))
                 .save(withConditions(output, new ModLoadedCondition(ModID.SILENTGEMS.value())));
@@ -324,7 +334,7 @@ public class DSRecipes extends RecipeProvider {
 
         ShapelessRecipeBuilder
                 .shapeless(RecipeCategory.DECORATIONS, DSBlocks.IOLITE_DRAGON_TREASURE.get())
-                .requires(iolite)
+                .requires(iolite.tag())
                 .requires(DSItems.ELDER_DRAGON_DUST.get())
                 .unlockedBy(getHasName(DSItems.ELDER_DRAGON_DUST.get()), has(DSItems.ELDER_DRAGON_DUST.get()))
                 .save(withConditions(output, new ModLoadedCondition(ModID.SILENTGEMS.value())));
@@ -333,7 +343,7 @@ public class DSRecipes extends RecipeProvider {
 
         ShapelessRecipeBuilder
                 .shapeless(RecipeCategory.DECORATIONS, DSBlocks.ALEXANDRITE_DRAGON_TREASURE.get())
-                .requires(alexandrite)
+                .requires(alexandrite.tag())
                 .requires(DSItems.ELDER_DRAGON_DUST.get())
                 .unlockedBy(getHasName(DSItems.ELDER_DRAGON_DUST.get()), has(DSItems.ELDER_DRAGON_DUST.get()))
                 .save(withConditions(output, new ModLoadedCondition(ModID.SILENTGEMS.value())));
@@ -342,7 +352,7 @@ public class DSRecipes extends RecipeProvider {
 
         ShapelessRecipeBuilder
                 .shapeless(RecipeCategory.DECORATIONS, DSBlocks.AMMOLITE_DRAGON_TREASURE.get())
-                .requires(ammolite)
+                .requires(ammolite.tag())
                 .requires(DSItems.ELDER_DRAGON_DUST.get())
                 .unlockedBy(getHasName(DSItems.ELDER_DRAGON_DUST.get()), has(DSItems.ELDER_DRAGON_DUST.get()))
                 .save(withConditions(output, new ModLoadedCondition(ModID.SILENTGEMS.value())));
@@ -351,7 +361,7 @@ public class DSRecipes extends RecipeProvider {
 
         ShapelessRecipeBuilder
                 .shapeless(RecipeCategory.DECORATIONS, DSBlocks.ROSE_QUARTZ_DRAGON_TREASURE.get())
-                .requires(rose_quartz)
+                .requires(rose_quartz.tag())
                 .requires(DSItems.ELDER_DRAGON_DUST.get())
                 .unlockedBy(getHasName(DSItems.ELDER_DRAGON_DUST.get()), has(DSItems.ELDER_DRAGON_DUST.get()))
                 .save(withConditions(output, new ModLoadedCondition(ModID.SILENTGEMS.value())));
@@ -360,7 +370,7 @@ public class DSRecipes extends RecipeProvider {
 
         ShapelessRecipeBuilder
                 .shapeless(RecipeCategory.DECORATIONS, DSBlocks.BLACK_DIAMOND_DRAGON_TREASURE.get())
-                .requires(black_diamond)
+                .requires(black_diamond.tag())
                 .requires(DSItems.ELDER_DRAGON_DUST.get())
                 .unlockedBy(getHasName(DSItems.ELDER_DRAGON_DUST.get()), has(DSItems.ELDER_DRAGON_DUST.get()))
                 .save(withConditions(output, new ModLoadedCondition(ModID.SILENTGEMS.value())));
@@ -369,7 +379,7 @@ public class DSRecipes extends RecipeProvider {
 
         ShapelessRecipeBuilder
                 .shapeless(RecipeCategory.DECORATIONS, DSBlocks.WHITE_DIAMOND_DRAGON_TREASURE.get())
-                .requires(white_diamond)
+                .requires(white_diamond.tag())
                 .requires(DSItems.ELDER_DRAGON_DUST.get())
                 .unlockedBy(getHasName(DSItems.ELDER_DRAGON_DUST.get()), has(DSItems.ELDER_DRAGON_DUST.get()))
                 .save(withConditions(output, new ModLoadedCondition(ModID.SILENTGEMS.value())));
@@ -798,14 +808,13 @@ public class DSRecipes extends RecipeProvider {
                 .save(output);
     }
 
-    @SuppressWarnings("deprecation") // ignore
-    public record ProxyItem(String namespace, String path) implements ItemLike {
-        @Override
-        public @NotNull Item asItem() {
-            Item item = new Item(new Item.Properties());
-            ((Holder$ReferenceAccess) item.builtInRegistryHolder()).dragonSurvival$bindKey(ResourceKey.create(Registries.ITEM, DragonSurvival.location(namespace, path)));
-            ((Holder$ReferenceAccess) item.builtInRegistryHolder()).dragonSurvival$bindValue(item);
-            return item;
+    public record ProxyItem(String namespace, String path) {
+        public ResourceLocation id() {
+            return DragonSurvival.location(namespace, path);
+        }
+
+        public TagKey<Item> tag() {
+            return TagKey.create(Registries.ITEM, DragonSurvival.res("compat/" + namespace + "/" + path));
         }
     }
 

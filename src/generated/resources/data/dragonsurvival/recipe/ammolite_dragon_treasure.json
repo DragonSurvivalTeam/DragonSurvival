@@ -1,18 +1,18 @@
 {
-  "neoforge:conditions": [
-    {
-      "type": "neoforge:mod_loaded",
-      "modid": "silentgems"
-    }
-  ],
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
     {
-      "item": "silentgems:ammolite"
+      "tag": "dragonsurvival:compat/silentgems/ammolite"
     },
     {
       "item": "dragonsurvival:elder_dragon_dust"
+    }
+  ],
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "silentgems"
     }
   ],
   "result": {

@@ -20,13 +20,14 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
-      "has_oak_dragon_door"
+      "has_oak_dragon_door",
+      "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
       "dragonsurvival:small_oak_dragon_door"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

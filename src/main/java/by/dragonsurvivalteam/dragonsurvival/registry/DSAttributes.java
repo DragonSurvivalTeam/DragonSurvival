@@ -80,6 +80,10 @@ public class DSAttributes {
     @Translation(type = Translation.Type.ATTRIBUTE, comments = "Safe Fall Distance")
     public static final RegistryObject<Attribute> SAFE_FALL_DISTANCE = REGISTRY.register("safe_fall_distance", () -> new RangedAttribute(Translation.Type.ATTRIBUTE.wrap("safe_fall_distance"), 3, -1024, 1024).setSyncable(true));
 
+    /** Backport of the vanilla 1.21 jump strength attribute. */
+    @Translation(type = Translation.Type.ATTRIBUTE, comments = "Jump Strength")
+    public static final RegistryObject<Attribute> JUMP_STRENGTH = REGISTRY.register("jump_strength", () -> new RangedAttribute(Translation.Type.ATTRIBUTE.wrap("jump_strength"), 0.42, 0, 32).setSyncable(true));
+
     /** Backport of the vanilla 1.21 submerged mining speed attribute. */
     @Translation(type = Translation.Type.ATTRIBUTE, comments = "Submerged Mining Speed")
     public static final RegistryObject<Attribute> SUBMERGED_MINING_SPEED = REGISTRY.register("submerged_mining_speed", () -> new RangedAttribute(Translation.Type.ATTRIBUTE.wrap("submerged_mining_speed"), 0.2, 0, 20).setSyncable(true));
@@ -103,6 +107,7 @@ public class DSAttributes {
         event.getTypes().forEach(type -> {
             event.add(type, LAVA_SWIM_SPEED.get());
             event.add(type, SCALE.get());
+            event.add(type, JUMP_STRENGTH.get());
         });
     }
 }

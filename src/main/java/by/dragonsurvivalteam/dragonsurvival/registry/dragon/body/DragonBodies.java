@@ -92,7 +92,7 @@ public class DragonBodies {
                 Modifier.constant(Attributes.ATTACK_KNOCKBACK, -1, AttributeOperation.ADD_VALUE),
                 Modifier.constant(DSAttributes.SAFE_FALL_DISTANCE, 2, AttributeOperation.ADD_VALUE),
                 Modifier.constant(ForgeMod.ENTITY_GRAVITY, 0.1f, AttributeOperation.ADD_MULTIPLIED_TOTAL),
-                Modifier.constant(Attributes.JUMP_STRENGTH, 0.1f, AttributeOperation.ADD_VALUE),
+                Modifier.constant(DSAttributes.JUMP_STRENGTH, 0.1f, AttributeOperation.ADD_VALUE),
                 Modifier.constant(Attributes.MOVEMENT_SPEED, 0.1f, AttributeOperation.ADD_MULTIPLIED_TOTAL),
                 Modifier.constant(ForgeMod.SWIM_SPEED, 0.5f, AttributeOperation.ADD_VALUE),
                 Modifier.constant(DSAttributes.MANA, 2, AttributeOperation.ADD_VALUE),
@@ -137,7 +137,7 @@ public class DragonBodies {
         context.register(SOUTH, new DragonBody(true, Optional.empty(), List.of(
                 Modifier.constant(Attributes.ATTACK_DAMAGE, 0.5f, AttributeOperation.ADD_VALUE),
                 Modifier.constant(ForgeMod.ENTITY_GRAVITY, 0.2f, AttributeOperation.ADD_MULTIPLIED_TOTAL),
-                Modifier.constant(Attributes.JUMP_STRENGTH, 0.2f, AttributeOperation.ADD_VALUE),
+                Modifier.constant(DSAttributes.JUMP_STRENGTH, 0.2f, AttributeOperation.ADD_VALUE),
                 Modifier.constant(Attributes.MOVEMENT_SPEED, 0.2f, AttributeOperation.ADD_MULTIPLIED_TOTAL),
                 Modifier.constant(DSAttributes.SAFE_FALL_DISTANCE, 2, AttributeOperation.ADD_VALUE),
                 Modifier.constant(ForgeMod.SWIM_SPEED, -0.2f, AttributeOperation.ADD_VALUE),

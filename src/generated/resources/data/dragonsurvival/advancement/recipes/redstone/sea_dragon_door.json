@@ -11,7 +11,7 @@
       "conditions": {
         "items": [
           {
-            "items": "#dragonsurvival:wooden_dragon_doors"
+            "tag": "dragonsurvival:wooden_dragon_doors"
           }
         ]
       },
@@ -20,13 +20,14 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
-      "has_wooden_dragon_doors"
+      "has_wooden_dragon_doors",
+      "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
       "dragonsurvival:sea_dragon_door"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

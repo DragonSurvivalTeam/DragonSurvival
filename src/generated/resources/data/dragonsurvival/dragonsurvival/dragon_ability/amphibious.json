@@ -31,7 +31,7 @@
                   "modifiers": [
                     {
                       "amount": 1.0,
-                      "attribute": "neoforge:swim_speed",
+                      "attribute": "forge:swim_speed",
                       "operation": "add_value"
                     }
                   ]

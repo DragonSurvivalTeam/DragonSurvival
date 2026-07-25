@@ -1,17 +1,11 @@
 {
-  "neoforge:conditions": [
-    {
-      "type": "neoforge:mod_loaded",
-      "modid": "regions_unexplored"
-    }
-  ],
   "parent": "minecraft:recipes/root",
   "criteria": {
     "has_redstone_bulb": {
       "conditions": {
         "items": [
           {
-            "items": "regions_unexplored:redstone_bulb"
+            "tag": "dragonsurvival:compat/regions_unexplored/redstone_bulb"
           }
         ]
       },
@@ -26,13 +20,14 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
-      "has_redstone_bulb"
+      "has_redstone_bulb",
+      "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
       "dragonsurvival:charged_coal_from_bulb"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

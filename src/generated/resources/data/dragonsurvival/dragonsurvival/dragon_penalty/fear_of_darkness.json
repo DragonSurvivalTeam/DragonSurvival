@@ -28,7 +28,7 @@
           "predicate": {
             "equipment": {
               "mainhand": {
-                "items": "#dragonsurvival:light_source"
+                "tag": "dragonsurvival:light_source"
               }
             }
           }
@@ -39,7 +39,7 @@
           "predicate": {
             "equipment": {
               "offhand": {
-                "items": "#dragonsurvival:light_source"
+                "tag": "dragonsurvival:light_source"
               }
             }
           }

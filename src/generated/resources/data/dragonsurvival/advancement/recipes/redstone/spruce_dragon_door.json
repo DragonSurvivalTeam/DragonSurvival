@@ -20,13 +20,14 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
-      "has_spruce_door"
+      "has_spruce_door",
+      "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
       "dragonsurvival:spruce_dragon_door"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

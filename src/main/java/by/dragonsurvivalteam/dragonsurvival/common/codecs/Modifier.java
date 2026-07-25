@@ -20,7 +20,6 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.ForgeMod;
 
@@ -34,6 +33,7 @@ public record Modifier(Holder<Attribute> attribute, Either<LevelBasedValue, Prec
     private static final ResourceLocation GENERIC_SAFE_FALL_DISTANCE_ID = new ResourceLocation("minecraft", "generic.safe_fall_distance");
     private static final ResourceLocation SUBMERGED_MINING_SPEED_ID = new ResourceLocation("minecraft", "submerged_mining_speed");
     private static final ResourceLocation PLAYER_SUBMERGED_MINING_SPEED_ID = new ResourceLocation("minecraft", "player.submerged_mining_speed");
+    private static final ResourceLocation JUMP_STRENGTH_ID = new ResourceLocation("minecraft", "jump_strength");
     private static final ResourceLocation GENERIC_JUMP_STRENGTH_ID = new ResourceLocation("minecraft", "generic.jump_strength");
     private static final ResourceLocation GENERIC_GRAVITY_ID = new ResourceLocation("minecraft", "generic.gravity");
     private static final ResourceLocation GENERIC_STEP_HEIGHT_ID = new ResourceLocation("minecraft", "generic.step_height");
@@ -51,8 +51,8 @@ public record Modifier(Holder<Attribute> attribute, Either<LevelBasedValue, Prec
                 if (id.equals(SUBMERGED_MINING_SPEED_ID) || id.equals(PLAYER_SUBMERGED_MINING_SPEED_ID)) {
                     return DataResult.success(BuiltInRegistries.ATTRIBUTE.wrapAsHolder(DSAttributes.SUBMERGED_MINING_SPEED.get()));
                 }
-                if (id.equals(GENERIC_JUMP_STRENGTH_ID)) {
-                    return DataResult.success(BuiltInRegistries.ATTRIBUTE.wrapAsHolder(Attributes.JUMP_STRENGTH));
+                if (id.equals(JUMP_STRENGTH_ID) || id.equals(GENERIC_JUMP_STRENGTH_ID)) {
+                    return DataResult.success(BuiltInRegistries.ATTRIBUTE.wrapAsHolder(DSAttributes.JUMP_STRENGTH.get()));
                 }
                 if (id.equals(GENERIC_GRAVITY_ID)) {
                     return DataResult.success(BuiltInRegistries.ATTRIBUTE.wrapAsHolder(ForgeMod.ENTITY_GRAVITY.get()));
@@ -83,6 +83,9 @@ public record Modifier(Holder<Attribute> attribute, Either<LevelBasedValue, Prec
                 }
                 if (attribute.value() == DSAttributes.SUBMERGED_MINING_SPEED.get()) {
                     return SUBMERGED_MINING_SPEED_ID;
+                }
+                if (attribute.value() == DSAttributes.JUMP_STRENGTH.get()) {
+                    return JUMP_STRENGTH_ID;
                 }
                 return BuiltInRegistries.ATTRIBUTE.getKey(attribute.value());
             }

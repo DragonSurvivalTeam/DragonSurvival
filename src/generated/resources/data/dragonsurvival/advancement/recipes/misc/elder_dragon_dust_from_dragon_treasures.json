@@ -5,7 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": "#dragonsurvival:dragon_treasures"
+            "tag": "dragonsurvival:dragon_treasures"
           }
         ]
       },
@@ -20,13 +20,14 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
-      "has_dragon_treasures"
+      "has_dragon_treasures",
+      "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
       "dragonsurvival:elder_dragon_dust_from_dragon_treasures"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

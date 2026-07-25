@@ -16,7 +16,7 @@
                     "id": "dragonsurvival:diamond_vision",
                     "is_hidden": true
                   },
-                  "blocks": "#c:ores/diamond",
+                  "blocks": "#forge:ores/diamond",
                   "colors": [
                     "gold",
                     "dark_purple",
@@ -42,7 +42,7 @@
                     "id": "dragonsurvival:lapis_vision",
                     "is_hidden": true
                   },
-                  "blocks": "#c:ores/lapis",
+                  "blocks": "#forge:ores/lapis",
                   "colors": [
                     "blue"
                   ],
@@ -64,7 +64,7 @@
                     "id": "dragonsurvival:gold_vision",
                     "is_hidden": true
                   },
-                  "blocks": "#c:ores/gold",
+                  "blocks": "#forge:ores/gold",
                   "colors": [
                     "gold"
                   ],
@@ -86,7 +86,7 @@
                     "id": "dragonsurvival:redstone_vision",
                     "is_hidden": true
                   },
-                  "blocks": "#c:ores/redstone",
+                  "blocks": "#forge:ores/redstone",
                   "colors": [
                     "dark_red"
                   ],
@@ -108,7 +108,7 @@
                     "id": "dragonsurvival:coal_vision",
                     "is_hidden": true
                   },
-                  "blocks": "#c:ores/coal",
+                  "blocks": "#forge:ores/coal",
                   "colors": [
                     "black"
                   ],
@@ -130,7 +130,7 @@
                     "id": "dragonsurvival:emerald_vision",
                     "is_hidden": true
                   },
-                  "blocks": "#c:ores/emerald",
+                  "blocks": "#forge:ores/emerald",
                   "colors": [
                     "green"
                   ],
@@ -152,7 +152,7 @@
                     "id": "dragonsurvival:quartz_vision",
                     "is_hidden": true
                   },
-                  "blocks": "#c:ores/quartz",
+                  "blocks": "#forge:ores/quartz",
                   "colors": [
                     "dark_red",
                     "gray"
@@ -175,7 +175,7 @@
                     "id": "dragonsurvival:copper_vision",
                     "is_hidden": true
                   },
-                  "blocks": "#c:ores/copper",
+                  "blocks": "#forge:ores/copper",
                   "colors": [
                     "gold",
                     "dark_green"
@@ -198,7 +198,7 @@
                     "id": "dragonsurvival:netherite_vision",
                     "is_hidden": true
                   },
-                  "blocks": "#c:ores/netherite_scrap",
+                  "blocks": "#forge:ores/netherite_scrap",
                   "colors": [
                     "dark_aqua",
                     "black",
@@ -223,7 +223,7 @@
                     "id": "dragonsurvival:iron_vision",
                     "is_hidden": true
                   },
-                  "blocks": "#c:ores/iron",
+                  "blocks": "#forge:ores/iron",
                   "colors": [
                     "dark_gray",
                     "gray",

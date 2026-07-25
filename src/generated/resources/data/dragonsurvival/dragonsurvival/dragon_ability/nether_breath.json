@@ -63,7 +63,7 @@
                 "type": "minecraft:matching_blocks",
                 "blocks": [
                   "minecraft:snow",
-                  "minecraft:short_grass"
+                  "minecraft:grass"
                 ]
               }
             },

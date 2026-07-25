@@ -143,6 +143,11 @@ public abstract class LivingEntityMixin extends Entity {
         return (float) (original * getAttributeValue(DSAttributes.LAVA_SWIM_SPEED.get()));
     }
 
+    @ModifyConstant(method = "getJumpPower", constant = @Constant(floatValue = 0.42F))
+    private float dragonSurvival$useJumpStrengthAttribute(final float original) {
+        return (float) ((LivingEntity) (Object) this).getAttributeValue(DSAttributes.JUMP_STRENGTH.get());
+    }
+
     @ModifyExpressionValue(method = "travel", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;hasEffect(Lnet/minecraft/world/effect/MobEffect;)Z", ordinal = 2))
     private boolean dragonSurvival$disableLevitationWhenTrapped(final boolean hasLevitation) {
         if (hasEffect(DSEffects.TRAPPED.get())) {

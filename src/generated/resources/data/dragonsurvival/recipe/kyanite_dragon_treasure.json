@@ -1,18 +1,18 @@
 {
-  "neoforge:conditions": [
-    {
-      "type": "neoforge:mod_loaded",
-      "modid": "silentgems"
-    }
-  ],
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
     {
-      "item": "silentgems:kyanite"
+      "tag": "dragonsurvival:compat/silentgems/kyanite"
     },
     {
       "item": "dragonsurvival:elder_dragon_dust"
+    }
+  ],
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "silentgems"
     }
   ],
   "result": {

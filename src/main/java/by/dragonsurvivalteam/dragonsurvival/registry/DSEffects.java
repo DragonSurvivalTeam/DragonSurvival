@@ -29,7 +29,7 @@ public class DSEffects {
     public static RegistryObject<MobEffect> TRAPPED = REGISTRY.register("trapped",
             () -> new WingDisablingEffect(MobEffectCategory.HARMFUL, 0xdddddd, true)
                     .addAttributeModifier(Attributes.MOVEMENT_SPEED, legacyId("trapped_slow_movement"), -0.75, AttributeOperation.ADD_MULTIPLIED_TOTAL.legacy())
-                    .addAttributeModifier(Attributes.JUMP_STRENGTH, legacyId("trapped_jump_strength"), -1, AttributeOperation.ADD_MULTIPLIED_TOTAL.legacy())
+                    .addAttributeModifier(DSAttributes.JUMP_STRENGTH.get(), legacyId("trapped_jump_strength"), -1, AttributeOperation.ADD_MULTIPLIED_TOTAL.legacy())
     );
 
     /** Some effects are handled in {@link by.dragonsurvivalteam.dragonsurvival.client.handlers.ClientFlightHandler} */

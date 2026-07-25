@@ -20,13 +20,14 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
-      "has_elder_dragon_bone"
+      "has_elder_dragon_bone",
+      "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
       "dragonsurvival:stone_dragon_altar"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

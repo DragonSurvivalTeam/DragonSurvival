@@ -27,7 +27,7 @@
             "predicate": {
               "stepping_on": {
                 "block": {
-                  "blocks": "#dragonsurvival:speeds_up_sea_dragon"
+                  "tag": "dragonsurvival:speeds_up_sea_dragon"
                 }
               }
             }

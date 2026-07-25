@@ -20,13 +20,14 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
-      "has_elder_dragon_dust"
+      "has_elder_dragon_dust",
+      "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
       "dragonsurvival:emerald_dragon_treasure"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

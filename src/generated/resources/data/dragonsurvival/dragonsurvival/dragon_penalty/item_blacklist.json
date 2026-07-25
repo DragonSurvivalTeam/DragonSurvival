@@ -1,9 +1,9 @@
 {
   "effect": {
     "items": [
-      "#c:tools/shield",
-      "#c:tools/bow",
-      "#c:tools/crossbow",
+      "#forge:tools/shields",
+      "#forge:tools/bows",
+      "#forge:tools/crossbows",
       "minecraft:trident",
       "born_in_chaos_v1:staffof_magic_arrows",
       "mowziesmobs:wrought_axe",

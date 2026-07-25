@@ -70,7 +70,7 @@
                 "predicate": {
                   "stepping_on": {
                     "block": {
-                      "blocks": "#dragonsurvival:is_grassy"
+                      "tag": "dragonsurvival:is_grassy"
                     }
                   }
                 }
@@ -81,7 +81,7 @@
                 "predicate": {
                   "location": {
                     "block": {
-                      "blocks": "#dragonsurvival:is_grassy"
+                      "tag": "dragonsurvival:is_grassy"
                     }
                   }
                 }

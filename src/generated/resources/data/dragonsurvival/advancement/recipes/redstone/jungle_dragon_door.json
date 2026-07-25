@@ -20,13 +20,14 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
-      "has_jungle_door"
+      "has_jungle_door",
+      "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
       "dragonsurvival:jungle_dragon_door"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

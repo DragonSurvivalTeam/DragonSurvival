@@ -40,12 +40,12 @@
     },
     {
       "amount": 0.025,
-      "attribute": "minecraft:generic.jump_strength",
+      "attribute": "minecraft:jump_strength",
       "operation": "add_value"
     },
     {
       "amount": 0.25,
-      "attribute": "minecraft:generic.safe_fall_distance",
+      "attribute": "minecraft:safe_fall_distance",
       "operation": "add_value"
     },
     {

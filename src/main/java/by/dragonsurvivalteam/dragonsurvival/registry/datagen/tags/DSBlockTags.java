@@ -23,11 +23,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.concurrent.CompletableFuture;
 
 public class DSBlockTags extends BlockTagsProvider {
-    private static final TagKey<Block> SANDSTONE_BLOCKS = commonKey("sandstone/blocks");
-    private static final TagKey<Block> COBBLESTONES = commonKey("cobblestones");
-    private static final TagKey<Block> STONES = commonKey("stones");
-    private static final TagKey<Block> SANDS = commonKey("sands");
-
     @Translation(comments = "Enables Hunter Effect")
     public static final TagKey<Block> ENABLES_HUNTER_EFFECT = key("enables_hunter_effect");
     @Translation(comments = "Destructible by Large Dragons")
@@ -277,9 +272,9 @@ public class DSBlockTags extends BlockTagsProvider {
                 .addTag(BlockTags.BEACON_BASE_BLOCKS)
                 .addTag(BlockTags.BASE_STONE_NETHER)
                 .addTag(BlockTags.STONE_BRICKS)
-                .addTag(SANDSTONE_BLOCKS)
-                .addTag(COBBLESTONES)
-                .addTag(STONES)
+                .addTag(Tags.Blocks.SANDSTONE)
+                .addTag(Tags.Blocks.COBBLESTONE)
+                .addTag(Tags.Blocks.STONE)
                 .addTag(Tags.Blocks.ORES)
                 .addTag(IS_WARM);
 
@@ -287,8 +282,8 @@ public class DSBlockTags extends BlockTagsProvider {
                 .addTag(BlockTags.CORAL_BLOCKS)
                 .addTag(BlockTags.IMPERMEABLE) // Glass
                 .addTag(BlockTags.SAND)
-                .addTag(SANDSTONE_BLOCKS)
-                .addTag(SANDS)
+                .addTag(Tags.Blocks.SANDSTONE)
+                .addTag(Tags.Blocks.SAND)
                 .addTag(IS_WET)
                 .add(Blocks.DIRT_PATH)
                 .add(Blocks.SAND)
@@ -406,10 +401,6 @@ public class DSBlockTags extends BlockTagsProvider {
 
     private static TagKey<Block> key(@NotNull final String name) {
         return BlockTags.create(new ResourceLocation(DragonSurvival.MODID, name));
-    }
-
-    private static TagKey<Block> commonKey(final String name) {
-        return BlockTags.create(new ResourceLocation("c", name));
     }
 
     @Override

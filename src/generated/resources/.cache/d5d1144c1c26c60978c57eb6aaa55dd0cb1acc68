@@ -1,4 +1,4 @@
-// 1.21.1	2026-06-08T13:54:06.1354399	Dragon Survival Item models
+// 1.20.1	2026-07-25T15:03:01.2310167	Dragon Survival Item models
 a66a6309dc6b29797f46e2ca4ab14ef3a245a65f assets/dragonsurvival/models/item/acacia_dragon_altar.json
 3103bf7bf2acab8c6053dd037bfd4f26275aad26 assets/dragonsurvival/models/item/acacia_dragon_door.json
 4c7b8102022c425a86140eada246eaed8be93446 assets/dragonsurvival/models/item/activated_dragon_beacon.json
@@ -44,7 +44,6 @@ d0db2383e96909929194cc82698098b64b9679a7 assets/dragonsurvival/models/item/dark_
 920f8a3faa6df4fce976a2e8781f59fdb20e964a assets/dragonsurvival/models/item/dark_oak_dragon_altar.json
 f5e5dd42cecfc1954ce888101c9d6b25a4fb2c22 assets/dragonsurvival/models/item/dark_oak_dragon_door.json
 bb470b5b0e19b3ef3d4a3252126404e83461b202 assets/dragonsurvival/models/item/dark_upgrade.json
-ad800c3f6cd3ae95e89c806724be88942730972a assets/dragonsurvival/models/item/dark_vault.json
 9887c67586a8c49dcf31335e593eaecb4cc2fae5 assets/dragonsurvival/models/item/debris_dragon_treasure.json
 d220e78c55ab8d3dc2f1c12a69c7bf38ec00be9f assets/dragonsurvival/models/item/deepslate_dragon_altar.json
 68ba8a32bdb91aa36b6512fab79e54910b191cc9 assets/dragonsurvival/models/item/diamond_chorus.json
@@ -81,7 +80,6 @@ e1b732a3d3368222093d7a9b33a44cdae0c625e1 assets/dragonsurvival/models/item/helio
 c4dac9f4dc5f0acad726c8b68a3e90cca730c8fc assets/dragonsurvival/models/item/hot_dragon_rod.json
 63ec6c618a3a23eab4cab9c52d7d3250de9b516e assets/dragonsurvival/models/item/hound_spawn_egg.json
 1f7ba52dfe6ea126f515994b3c31e37eb559a8ad assets/dragonsurvival/models/item/human_pressure_plate.json
-1bac7c451d046e3e1b6b525f688941458fff4b06 assets/dragonsurvival/models/item/hunter_vault.json
 7b480ec6930a243d0c47889fc08e44684a0b96fa assets/dragonsurvival/models/item/ice_dragon_altar.json
 a9acf8a18e01d9f5759e8e9f8c6d40ddb7376757 assets/dragonsurvival/models/item/iolite_dragon_treasure.json
 2589fce3a038bf1d144d8185e2d975e4f5b1d9f5 assets/dragonsurvival/models/item/iron_dragon_door.json
@@ -98,7 +96,6 @@ f1c48092f36cbfb7e772d50022a51b53038bf42c assets/dragonsurvival/models/item/light
 bda4d9ca0d3f045370f5cdeb9fbdfd65be902469 assets/dragonsurvival/models/item/light_dragon_helmet.json
 d8b2495c4a84c7abbbd643189ab9d5fb806b3a81 assets/dragonsurvival/models/item/light_dragon_leggings.json
 36c4f08598729ca71e30547d31872d75663e4a62 assets/dragonsurvival/models/item/light_upgrade.json
-3dfeea6b711cad5d09438c0e7043d78ac56a19ce assets/dragonsurvival/models/item/light_vault.json
 45fa6a94ab69b361efb506c219d1064f6a1dde7a assets/dragonsurvival/models/item/luminous_ointment.json
 7de9ffe199028fdf113a53b6013ae545264dc1fe assets/dragonsurvival/models/item/magic_stick.json
 5e932859bc1fa16357909aae9a46e9d1ed2cf319 assets/dragonsurvival/models/item/mangrove_dragon_altar.json

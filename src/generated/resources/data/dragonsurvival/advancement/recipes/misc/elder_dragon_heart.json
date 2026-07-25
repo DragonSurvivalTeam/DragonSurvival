@@ -20,13 +20,14 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
-      "has_weak_dragon_heart"
+      "has_weak_dragon_heart",
+      "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
       "dragonsurvival:elder_dragon_heart"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

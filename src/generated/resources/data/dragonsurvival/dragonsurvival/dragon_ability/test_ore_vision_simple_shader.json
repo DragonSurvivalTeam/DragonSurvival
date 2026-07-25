@@ -59,7 +59,7 @@
                     "id": "dragonsurvival:diamond_vision_simple_shader",
                     "is_hidden": true
                   },
-                  "blocks": "#c:ores/diamond",
+                  "blocks": "#forge:ores/diamond",
                   "color_shift_rate": 0.3,
                   "colors": [
                     {

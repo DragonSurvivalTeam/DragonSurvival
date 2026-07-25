@@ -1,10 +1,4 @@
 {
-  "neoforge:conditions": [
-    {
-      "type": "neoforge:mod_loaded",
-      "modid": "regions_unexplored"
-    }
-  ],
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
@@ -12,9 +6,15 @@
       "tag": "minecraft:coals"
     },
     "R": {
-      "item": "regions_unexplored:redstone_bulb"
+      "tag": "dragonsurvival:compat/regions_unexplored/redstone_bulb"
     }
   },
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "regions_unexplored"
+    }
+  ],
   "pattern": [
     "RRR",
     "CCR",
@@ -23,5 +23,6 @@
   "result": {
     "count": 1,
     "id": "dragonsurvival:charged_coal"
-  }
+  },
+  "show_notification": true
 }

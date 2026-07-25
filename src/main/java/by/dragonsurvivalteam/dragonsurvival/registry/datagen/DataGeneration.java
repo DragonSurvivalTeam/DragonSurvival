@@ -50,6 +50,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.projectile.Projectiles;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
@@ -78,7 +79,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
-@EventBusSubscriber
+@EventBusSubscriber(modid = DragonSurvival.MODID, bus = EventBusSubscriber.Bus.MOD)
 public class DataGeneration {
 
     private static final String ANCIENT_STAGE_DATAPACK = "ancient_stage";
@@ -233,7 +234,7 @@ public class DataGeneration {
     }
 
     private static void addAncientStageDatapack(final DataGenerator generator, final CompletableFuture<HolderLookup.Provider> lookup) {
-        DataGenerator.PackGenerator datapack = getBuiltinDatapack(generator, ANCIENT_STAGE_DATAPACK);
+        BuiltinDatapackGenerator datapack = getBuiltinDatapack(generator, ANCIENT_STAGE_DATAPACK);
         datapack.addProvider(output -> PackMetadataGenerator.forFeaturePack(output, Component.translatable(ANCIENT_STAGE_DATAPACK_DESCRIPTION), FeatureFlagSet.of()));
 
         RegistrySetBuilder builder = new RegistrySetBuilder();
@@ -243,7 +244,7 @@ public class DataGeneration {
     }
 
     private static void addAncientStageDatapackNoCrushing(final DataGenerator generator, final CompletableFuture<HolderLookup.Provider> lookup) {
-        DataGenerator.PackGenerator datapack = getBuiltinDatapack(generator, ANCIENT_STAGE_DATAPACK_NO_CRUSHING);
+        BuiltinDatapackGenerator datapack = getBuiltinDatapack(generator, ANCIENT_STAGE_DATAPACK_NO_CRUSHING);
         datapack.addProvider(output -> PackMetadataGenerator.forFeaturePack(output, Component.translatable(ANCIENT_STAGE_DATAPACK_DESCRIPTION_NO_CRUSHING), FeatureFlagSet.of()));
 
         RegistrySetBuilder builder = new RegistrySetBuilder();
@@ -253,14 +254,14 @@ public class DataGeneration {
     }
 
     private static void addNoPenaltiesDatapack(final DataGenerator generator, final CompletableFuture<HolderLookup.Provider> lookup, ExistingFileHelper helper) {
-        DataGenerator.PackGenerator datapack = getBuiltinDatapack(generator, NO_PENALTIES_DATAPACK);
+        BuiltinDatapackGenerator datapack = getBuiltinDatapack(generator, NO_PENALTIES_DATAPACK);
         datapack.addProvider(output -> PackMetadataGenerator.forFeaturePack(output, Component.translatable(NO_PENALTIES_DATAPACK_DESCRIPTION), FeatureFlagSet.of()));
         datapack.addProvider(output -> new NoPenaltiesPenaltyProvider(output, DragonPenalty.REGISTRY, lookup, DragonSurvival.MODID, helper));
         datapack.addProvider(output -> new NoPenaltiesAbilityProvider(output, DragonAbility.REGISTRY, lookup, DragonSurvival.MODID, helper));
     }
 
     private static void addNoExperienceConversionDatapack(final DataGenerator generator, final CompletableFuture<HolderLookup.Provider> lookup) {
-        DataGenerator.PackGenerator datapack = getBuiltinDatapack(generator, NO_EXPERIENCE_CONVERSION_DATAPACK);
+        BuiltinDatapackGenerator datapack = getBuiltinDatapack(generator, NO_EXPERIENCE_CONVERSION_DATAPACK);
         datapack.addProvider(output -> PackMetadataGenerator.forFeaturePack(output, Component.translatable(NO_EXPERIENCE_CONVERSION_DATAPACK_DESCRIPTION), FeatureFlagSet.of()));
 
         RegistrySetBuilder builder = new RegistrySetBuilder()
@@ -270,7 +271,7 @@ public class DataGeneration {
     }
 
     private static void addUnlockWingsDatapack(final DataGenerator generator, final CompletableFuture<HolderLookup.Provider> lookup) {
-        DataGenerator.PackGenerator datapack = getBuiltinDatapack(generator, UNLOCK_WINGS_DATAPACK);
+        BuiltinDatapackGenerator datapack = getBuiltinDatapack(generator, UNLOCK_WINGS_DATAPACK);
         datapack.addProvider(output -> PackMetadataGenerator.forFeaturePack(output, Component.translatable(UNLOCK_WINGS_DATAPACK_DESCRIPTION), FeatureFlagSet.of()));
 
         RegistrySetBuilder builder = new RegistrySetBuilder()
@@ -282,20 +283,44 @@ public class DataGeneration {
     // --- Compatibility --- //
 
     private static void addSilentGemsLootTables(final DataGenerator generator, final CompletableFuture<HolderLookup.Provider> lookup) {
-        DataGenerator.PackGenerator datapack = getBuiltinDatapack(generator, SILENT_GEMS_DATAPACK);
+        BuiltinDatapackGenerator datapack = getBuiltinDatapack(generator, SILENT_GEMS_DATAPACK);
         datapack.addProvider(output -> PackMetadataGenerator.forFeaturePack(output, Component.translatable(SILENT_GEMS_DATAPACK_DESCRIPTION), FeatureFlagSet.of()));
         LootTableProvider.SubProviderEntry subProvider = new LootTableProvider.SubProviderEntry(() -> new SilentGemsDatapack(lookup.join()), LootContextParamSets.BLOCK);
         datapack.addProvider(output -> new SilentGemsDatapack.Provider(output, Collections.emptySet(), List.of(subProvider), lookup));
     }
 
     private static void addCreateLootTables(final DataGenerator generator, final CompletableFuture<HolderLookup.Provider> lookup) {
-        DataGenerator.PackGenerator datapack = getBuiltinDatapack(generator, CREATE_DATAPACK);
+        BuiltinDatapackGenerator datapack = getBuiltinDatapack(generator, CREATE_DATAPACK);
         datapack.addProvider(output -> PackMetadataGenerator.forFeaturePack(output, Component.translatable(CREATE_DATAPACK_DESCRIPTION), FeatureFlagSet.of()));
         LootTableProvider.SubProviderEntry subProvider = new LootTableProvider.SubProviderEntry(() -> new CreateDatapack(lookup.join()), LootContextParamSets.BLOCK);
         datapack.addProvider(output -> new CreateDatapack.Provider(output, Collections.emptySet(), List.of(subProvider), lookup));
     }
 
-    private static DataGenerator.PackGenerator getBuiltinDatapack(final DataGenerator generator, final String name) {
-        return generator.getBuiltinDatapack(true, "../../" + DragonSurvival.MODID + "/datapacks/" + name);
+    private static BuiltinDatapackGenerator getBuiltinDatapack(final DataGenerator generator, final String name) {
+        PackOutput output = new PackOutput(
+                generator.getPackOutput().getOutputFolder(PackOutput.Target.DATA_PACK)
+                        .resolve(DragonSurvival.MODID)
+                        .resolve("datapacks")
+                        .resolve(name)
+        );
+        return new BuiltinDatapackGenerator(generator, output, name);
+    }
+
+    private record BuiltinDatapackGenerator(DataGenerator generator, PackOutput output, String name) {
+        private <T extends DataProvider> void addProvider(final DataProvider.Factory<T> factory) {
+            generator.addProvider(true, new NamedDataProvider(name, factory.create(output)));
+        }
+    }
+
+    private record NamedDataProvider(String packName, DataProvider delegate) implements DataProvider {
+        @Override
+        public CompletableFuture<?> run(final CachedOutput cache) {
+            return delegate.run(cache);
+        }
+
+        @Override
+        public String getName() {
+            return packName + "/" + delegate.getName();
+        }
     }
 }

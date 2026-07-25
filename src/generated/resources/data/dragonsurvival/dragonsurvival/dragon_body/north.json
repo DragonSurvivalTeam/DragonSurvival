@@ -40,12 +40,12 @@
     },
     {
       "amount": 1.0,
-      "attribute": "minecraft:generic.safe_fall_distance",
+      "attribute": "minecraft:safe_fall_distance",
       "operation": "add_value"
     },
     {
       "amount": 0.8,
-      "attribute": "neoforge:swim_speed",
+      "attribute": "forge:swim_speed",
       "operation": "add_value"
     },
     {

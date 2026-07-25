@@ -17,9 +17,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.concurrent.CompletableFuture;
 
 public class DSEntityTypeTags extends EntityTypeTagsProvider {
-    private static final TagKey<EntityType<?>> BOATS = commonKey("boats");
-    private static final TagKey<EntityType<?>> MINECARTS = commonKey("minecarts");
-
     @Translation(comments = "Animal Avoid Blacklist for Dragons")
     public static final TagKey<EntityType<?>> ANIMAL_AVOID_BLACKLIST = key("animal_avoid_blacklist");
     @Translation(comments = "Vehicle Whitelist for Dragons")
@@ -62,8 +59,17 @@ public class DSEntityTypeTags extends EntityTypeTagsProvider {
                 .addOptional(new ResourceLocation("bee_queen_ds", "tamed_bee"));
 
         tag(VEHICLE_WHITELIST)
-                .addTag(BOATS)
-                .addTag(MINECARTS)
+                .add(
+                        EntityType.BOAT,
+                        EntityType.CHEST_BOAT,
+                        EntityType.MINECART,
+                        EntityType.CHEST_MINECART,
+                        EntityType.FURNACE_MINECART,
+                        EntityType.HOPPER_MINECART,
+                        EntityType.TNT_MINECART,
+                        EntityType.COMMAND_BLOCK_MINECART,
+                        EntityType.SPAWNER_MINECART
+                )
                 .addOptional(new ResourceLocation("littlelogistics", "seater_barge"))
                 .addOptional(new ResourceLocation("create", "seat"))
                 .addOptional(new ResourceLocation("create", "contraption"))
@@ -140,7 +146,4 @@ public class DSEntityTypeTags extends EntityTypeTagsProvider {
         return TagKey.create(Registries.ENTITY_TYPE, DragonSurvival.res(path));
     }
 
-    private static TagKey<EntityType<?>> commonKey(final String path) {
-        return TagKey.create(Registries.ENTITY_TYPE, new ResourceLocation("c", path));
-    }
 }

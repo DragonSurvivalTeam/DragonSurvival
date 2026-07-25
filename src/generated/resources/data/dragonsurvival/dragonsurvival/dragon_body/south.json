@@ -30,12 +30,12 @@
     },
     {
       "amount": 0.2,
-      "attribute": "minecraft:generic.gravity",
+      "attribute": "forge:entity_gravity",
       "operation": "add_multiplied_total"
     },
     {
       "amount": 0.2,
-      "attribute": "minecraft:generic.jump_strength",
+      "attribute": "minecraft:jump_strength",
       "operation": "add_value"
     },
     {
@@ -45,12 +45,12 @@
     },
     {
       "amount": 2.0,
-      "attribute": "minecraft:generic.safe_fall_distance",
+      "attribute": "minecraft:safe_fall_distance",
       "operation": "add_value"
     },
     {
       "amount": -0.2,
-      "attribute": "neoforge:swim_speed",
+      "attribute": "forge:swim_speed",
       "operation": "add_value"
     },
     {

@@ -70,7 +70,7 @@
                 "predicate": {
                   "stepping_on": {
                     "block": {
-                      "blocks": "#dragonsurvival:warm_blocks"
+                      "tag": "dragonsurvival:warm_blocks"
                     }
                   }
                 }
@@ -81,7 +81,7 @@
                 "predicate": {
                   "location": {
                     "block": {
-                      "blocks": "#dragonsurvival:warm_blocks"
+                      "tag": "dragonsurvival:warm_blocks"
                     }
                   }
                 }
@@ -92,7 +92,9 @@
                 "predicate": {
                   "stepping_on": {
                     "block": {
-                      "blocks": "minecraft:fire"
+                      "blocks": [
+                        "minecraft:fire"
+                      ]
                     }
                   }
                 }
@@ -103,7 +105,7 @@
                 "predicate": {
                   "location": {
                     "fluid": {
-                      "fluids": "#minecraft:lava"
+                      "tag": "minecraft:lava"
                     }
                   }
                 }
@@ -114,7 +116,23 @@
                 "predicate": {
                   "stepping_on": {
                     "block": {
-                      "blocks": "#minecraft:campfires",
+                      "state": {
+                        "lit": "true"
+                      },
+                      "tag": "minecraft:campfires"
+                    }
+                  }
+                }
+              },
+              {
+                "condition": "minecraft:entity_properties",
+                "entity": "this",
+                "predicate": {
+                  "stepping_on": {
+                    "block": {
+                      "blocks": [
+                        "minecraft:furnace"
+                      ],
                       "state": {
                         "lit": "true"
                       }
@@ -128,7 +146,9 @@
                 "predicate": {
                   "stepping_on": {
                     "block": {
-                      "blocks": "#c:player_workstations/furnaces",
+                      "blocks": [
+                        "minecraft:smoker"
+                      ],
                       "state": {
                         "lit": "true"
                       }
@@ -142,21 +162,9 @@
                 "predicate": {
                   "stepping_on": {
                     "block": {
-                      "blocks": "minecraft:smoker",
-                      "state": {
-                        "lit": "true"
-                      }
-                    }
-                  }
-                }
-              },
-              {
-                "condition": "minecraft:entity_properties",
-                "entity": "this",
-                "predicate": {
-                  "stepping_on": {
-                    "block": {
-                      "blocks": "minecraft:blast_furnace",
+                      "blocks": [
+                        "minecraft:blast_furnace"
+                      ],
                       "state": {
                         "lit": "true"
                       }

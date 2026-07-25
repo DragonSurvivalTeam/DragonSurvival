@@ -20,13 +20,14 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
-      "has_birch_door"
+      "has_birch_door",
+      "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
       "dragonsurvival:birch_dragon_door"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

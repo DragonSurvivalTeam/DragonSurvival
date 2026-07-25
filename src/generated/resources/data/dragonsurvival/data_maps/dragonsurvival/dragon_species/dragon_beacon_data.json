@@ -13,13 +13,6 @@
       }
     },
     "dragonsurvival:cave_dragon": {
-      "neoforge:conditions": [
-        {
-          "type": "dragonsurvival:registered",
-          "registry": "dragonsurvival:dragon_species",
-          "value": "dragonsurvival:cave_dragon"
-        }
-      ],
       "effects": [
         {
           "duration": 400,
@@ -34,19 +27,19 @@
           "effect": "dragonsurvival:empowered_soul"
         }
       ],
+      "neoforge:conditions": [
+        {
+          "type": "dragonsurvival:registered",
+          "registry": "dragonsurvival:dragon_species",
+          "value": "dragonsurvival:cave_dragon"
+        }
+      ],
       "payment_data": {
         "duration_multiplier": 30,
         "experience_cost": 60
       }
     },
     "dragonsurvival:forest_dragon": {
-      "neoforge:conditions": [
-        {
-          "type": "dragonsurvival:registered",
-          "registry": "dragonsurvival:dragon_species",
-          "value": "dragonsurvival:forest_dragon"
-        }
-      ],
       "effects": [
         {
           "duration": 400,
@@ -61,19 +54,19 @@
           "effect": "dragonsurvival:empowered_soul"
         }
       ],
+      "neoforge:conditions": [
+        {
+          "type": "dragonsurvival:registered",
+          "registry": "dragonsurvival:dragon_species",
+          "value": "dragonsurvival:forest_dragon"
+        }
+      ],
       "payment_data": {
         "duration_multiplier": 30,
         "experience_cost": 60
       }
     },
     "dragonsurvival:sea_dragon": {
-      "neoforge:conditions": [
-        {
-          "type": "dragonsurvival:registered",
-          "registry": "dragonsurvival:dragon_species",
-          "value": "dragonsurvival:sea_dragon"
-        }
-      ],
       "effects": [
         {
           "duration": 400,
@@ -86,6 +79,13 @@
         {
           "duration": 400,
           "effect": "dragonsurvival:empowered_soul"
+        }
+      ],
+      "neoforge:conditions": [
+        {
+          "type": "dragonsurvival:registered",
+          "registry": "dragonsurvival:dragon_species",
+          "value": "dragonsurvival:sea_dragon"
         }
       ],
       "payment_data": {

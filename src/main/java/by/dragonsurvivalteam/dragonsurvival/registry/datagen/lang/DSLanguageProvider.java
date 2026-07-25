@@ -25,6 +25,7 @@ import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.loading.moddiscovery.ModAnnotation;
 import net.minecraftforge.common.data.LanguageProvider;
 import net.minecraftforge.forgespi.language.ModFileScanData;
+import net.minecraftforge.registries.RegistryObject;
 import org.apache.commons.lang3.text.WordUtils;
 import org.objectweb.asm.Type;
 
@@ -181,6 +182,12 @@ public class DSLanguageProvider extends LanguageProvider {
                         Holder<?> holder = (Holder<?>) field.get(null);
                         //noinspection DataFlowIssue -> only a problem if we work with Holder$Direct which should not be the case here
                         add(type.wrap(holder.unwrapKey().orElseThrow().location().getPath()), format(comments));
+                        continue;
+                    }
+
+                    if (RegistryObject.class.isAssignableFrom(field.getType())) {
+                        RegistryObject<?> registryObject = (RegistryObject<?>) field.get(null);
+                        add(type.wrap(registryObject.getId().getPath()), format(comments));
                         continue;
                     }
 

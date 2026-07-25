@@ -20,7 +20,7 @@
                         "base": 7.0,
                         "per_level_above_first": 2.0
                       },
-                      "attribute": "minecraft:generic.safe_fall_distance",
+                      "attribute": "minecraft:safe_fall_distance",
                       "operation": "add_value"
                     }
                   ]

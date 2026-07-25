@@ -71,7 +71,7 @@
         "base": 0.101500005,
         "per_level_above_first": 0.0015
       },
-      "attribute": "minecraft:generic.jump_strength",
+      "attribute": "minecraft:jump_strength",
       "operation": "add_value"
     },
     {
@@ -80,7 +80,7 @@
         "base": 1.015,
         "per_level_above_first": 0.015
       },
-      "attribute": "minecraft:generic.safe_fall_distance",
+      "attribute": "minecraft:safe_fall_distance",
       "operation": "add_value"
     },
     {
@@ -98,7 +98,7 @@
         "base": 1.05,
         "per_level_above_first": 0.05
       },
-      "attribute": "minecraft:player.entity_interaction_range",
+      "attribute": "forge:entity_reach",
       "operation": "add_value"
     },
     {
@@ -107,7 +107,7 @@
         "base": 1.05,
         "per_level_above_first": 0.05
       },
-      "attribute": "minecraft:player.block_interaction_range",
+      "attribute": "forge:block_reach",
       "operation": "add_value"
     },
     {
@@ -116,7 +116,7 @@
         "base": 0.515,
         "per_level_above_first": 0.015
       },
-      "attribute": "minecraft:generic.step_height",
+      "attribute": "forge:step_height",
       "operation": "add_value"
     }
   ],

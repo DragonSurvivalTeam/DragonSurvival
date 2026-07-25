@@ -20,13 +20,14 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
-      "has_cave_dragon_door"
+      "has_cave_dragon_door",
+      "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
       "dragonsurvival:small_cave_dragon_door"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

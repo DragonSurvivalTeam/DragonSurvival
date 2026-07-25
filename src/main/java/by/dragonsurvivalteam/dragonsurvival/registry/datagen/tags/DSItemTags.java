@@ -5,6 +5,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.DietEntry;
 import by.dragonsurvivalteam.dragonsurvival.common.items.armor.DarkDragonArmorItem;
 import by.dragonsurvivalteam.dragonsurvival.common.items.armor.LightDragonArmorItem;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSItems;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.DSRecipes;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.data_maps.DietEntryProvider;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
@@ -30,9 +31,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public class DSItemTags extends ItemTagsProvider {
-    private static final TagKey<Item> MELEE_WEAPON_TOOLS = commonKey("tools/melee_weapon");
     private static final TagKey<Item> HIDDEN_FROM_RECIPE_VIEWERS = commonKey("hidden_from_recipe_viewers");
-    private static final TagKey<Item> CHEST_ARMOR_ENCHANTABLE = vanillaKey("enchantable/chest_armor");
     private static final TagKey<Item> HEAD_ARMOR = vanillaKey("head_armor");
     private static final TagKey<Item> CHEST_ARMOR = vanillaKey("chest_armor");
     private static final TagKey<Item> FOOT_ARMOR = vanillaKey("foot_armor");
@@ -87,6 +86,8 @@ public class DSItemTags extends ItemTagsProvider {
         addToVanillaTags();
         tagDragonSpeciesFood(provider);
 
+        DSRecipes.PROXY_ITEMS.forEach(proxy -> tag(proxy.tag()).addOptional(proxy.id()));
+
         DSItems.REGISTRY.getEntries().forEach(holder -> {
             Item item = holder.get();
 
@@ -99,7 +100,10 @@ public class DSItemTags extends ItemTagsProvider {
 
         tag(CLAW_WEAPONS)
                 .addTag(ItemTags.SWORDS)
-                .addTag(MELEE_WEAPON_TOOLS);
+                .addTag(ItemTags.AXES)
+                .addTag(ItemTags.PICKAXES)
+                .addTag(ItemTags.SHOVELS)
+                .addTag(ItemTags.HOES);
 
         tag(LIGHT_SOURCE)
                 .addTag(Tags.Items.DUSTS_GLOWSTONE)
@@ -135,7 +139,7 @@ public class DSItemTags extends ItemTagsProvider {
 
         // Used in enchantments
         tag(key("enchantable/chest_armor_and_elytra"))
-                .addTag(CHEST_ARMOR_ENCHANTABLE)
+                .addTag(Tags.Items.ARMORS_CHESTPLATES)
                 .add(Items.ELYTRA);
 
         tag(HIDDEN_FROM_RECIPE_VIEWERS)
