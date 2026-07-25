@@ -25,7 +25,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.phys.AABB;
 import net.minecraftforge.client.RenderTypeHelper;
 import net.minecraftforge.client.model.data.ModelData;
 import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
@@ -83,11 +82,6 @@ public class DragonSoulRenderer implements BlockEntityRenderer<DragonSoulBlockEn
         if (ENABLE_SOUL_BLOCK_INDICATOR) {
             renderBlock(soul.getBlockState(), pose, buffer, packedLight, packedOverlay);
         }
-    }
-
-    @Override
-    public @NotNull AABB getRenderBoundingBox(final DragonSoulBlockEntity soul) {
-        return AABB.ofSize(soul.getBlockPos().getCenter(), 6 * soul.getScale(), 6 * soul.getScale(), 6 * soul.getScale());
     }
 
     /** Copy from {@link net.minecraft.client.renderer.block.BlockRenderDispatcher#renderSingleBlock}, bypassing the check for the rendershape defined in the block */
