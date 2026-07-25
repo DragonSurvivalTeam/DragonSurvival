@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty;
 
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscCodecs;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
@@ -16,7 +17,7 @@ import net.minecraft.world.entity.Entity;
 
 public record DamagePenalty(Holder<DamageType> damageType, float damage) implements PenaltyEffect {
     public static final MapCodec<DamagePenalty> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            DamageType.CODEC.fieldOf("damage_type").forGetter(DamagePenalty::damageType),
+            MiscCodecs.DAMAGE_TYPE_HOLDER_CODEC.fieldOf("damage_type").forGetter(DamagePenalty::damageType),
             Codec.FLOAT.fieldOf("amount").forGetter(DamagePenalty::damage)
     ).apply(instance, DamagePenalty::new));
 

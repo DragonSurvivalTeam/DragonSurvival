@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.projectile.entity_effects;
 
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscCodecs;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAttributes;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
@@ -24,7 +25,7 @@ public record ProjectileDamageEffect(Holder<DamageType> damageType, LevelBasedVa
     private static final String ABILITY_PROJECTILE_DAMAGE = Translation.Type.GUI.wrap("projectile.damage_effect");
 
     public static final MapCodec<ProjectileDamageEffect> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            DamageType.CODEC.fieldOf("damage_type").forGetter(ProjectileDamageEffect::damageType),
+            MiscCodecs.DAMAGE_TYPE_HOLDER_CODEC.fieldOf("damage_type").forGetter(ProjectileDamageEffect::damageType),
             LevelBasedValue.CODEC.fieldOf("amount").forGetter(ProjectileDamageEffect::amount)
 
     ).apply(instance, ProjectileDamageEffect::new));

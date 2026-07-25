@@ -1,6 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects;
 
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscCodecs;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscCodecs;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.ClawToolHandler;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAttributes;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ClawInventoryData;
@@ -31,7 +32,7 @@ public record DamageEffect(Holder<DamageType> damageType, LevelBasedValue amount
     public static final Expression DEFAULT_EXPRESSION = new Expression("amount * scale");
 
     public static final MapCodec<DamageEffect> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            DamageType.CODEC.fieldOf("damage_type").forGetter(DamageEffect::damageType),
+            MiscCodecs.DAMAGE_TYPE_HOLDER_CODEC.fieldOf("damage_type").forGetter(DamageEffect::damageType),
             LevelBasedValue.CODEC.fieldOf("amount").forGetter(DamageEffect::amount),
             Attribute.CODEC.optionalFieldOf("scale", DSAttributes.DRAGON_ABILITY_DAMAGE).forGetter(DamageEffect::scale),
             MiscCodecs.expressionCodec("amount", "scale").optionalFieldOf("expression", DEFAULT_EXPRESSION).forGetter(DamageEffect::expression),

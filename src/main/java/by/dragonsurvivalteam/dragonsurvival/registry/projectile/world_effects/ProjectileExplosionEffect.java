@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.projectile.world_effects;
 
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscCodecs;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
 import com.mojang.serialization.Codec;
@@ -28,7 +29,7 @@ public record ProjectileExplosionEffect(
     private static final String POWER = Translation.Type.GUI.wrap("explosion_effect.power");
 
     public static final MapCodec<ProjectileExplosionEffect> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            DamageType.CODEC.fieldOf("damage_type").forGetter(ProjectileExplosionEffect::damageType),
+            MiscCodecs.DAMAGE_TYPE_HOLDER_CODEC.fieldOf("damage_type").forGetter(ProjectileExplosionEffect::damageType),
             LevelBasedValue.CODEC.fieldOf("explosion_power").forGetter(ProjectileExplosionEffect::explosionPower),
             Codec.BOOL.fieldOf("fire").forGetter(ProjectileExplosionEffect::fire),
             Codec.BOOL.fieldOf("break_blocks").forGetter(ProjectileExplosionEffect::breakBlocks),

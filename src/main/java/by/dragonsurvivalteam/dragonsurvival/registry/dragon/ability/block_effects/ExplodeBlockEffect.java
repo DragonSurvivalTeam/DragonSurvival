@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.block_effects;
 
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscCodecs;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
@@ -19,7 +20,7 @@ public record ExplodeBlockEffect(LevelBasedValue probability, LevelBasedValue po
             LevelBasedValue.CODEC.optionalFieldOf("probability", LevelBasedValue.constant(1)).forGetter(ExplodeBlockEffect::probability),
             LevelBasedValue.CODEC.fieldOf("power").forGetter(ExplodeBlockEffect::power),
             Codec.BOOL.optionalFieldOf("fire", true).forGetter(ExplodeBlockEffect::fire),
-            DamageType.CODEC.fieldOf("damage_type").forGetter(ExplodeBlockEffect::damageType)
+            MiscCodecs.DAMAGE_TYPE_HOLDER_CODEC.fieldOf("damage_type").forGetter(ExplodeBlockEffect::damageType)
         ).apply(instance, ExplodeBlockEffect::new)
     );
 

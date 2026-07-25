@@ -13,8 +13,11 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.advancements.critereon.MinMaxBounds;
 import net.minecraft.core.Holder;
+import net.minecraft.core.registries.Registries;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
+import net.minecraft.resources.RegistryFileCodec;
 import net.minecraft.util.ExtraCodecs;
+import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.level.storage.loot.Deserializers;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.levelgen.blockpredicates.BlockPredicate;
@@ -34,6 +37,7 @@ public class MiscCodecs {
     private static final Gson LOOT_CONDITION_GSON = Deserializers.createConditionSerializer().create();
     private static final Codec<MinMaxBounds.Doubles> DOUBLE_BOUNDS_CODEC = jsonCodec(MinMaxBounds.Doubles::fromJson, MinMaxBounds.Doubles::serializeToJson);
     public static final Codec<EntityPredicate> ENTITY_PREDICATE_CODEC = jsonCodec(EntityPredicate::fromJson, EntityPredicate::serializeToJson);
+    public static final Codec<Holder<DamageType>> DAMAGE_TYPE_HOLDER_CODEC = RegistryFileCodec.create(Registries.DAMAGE_TYPE, DamageType.CODEC);
     public static final Codec<LootItemCondition> LOOT_ITEM_CONDITION_CODEC = jsonCodec(
             json -> LOOT_CONDITION_GSON.fromJson(json, LootItemCondition.class),
             LOOT_CONDITION_GSON::toJsonTree
