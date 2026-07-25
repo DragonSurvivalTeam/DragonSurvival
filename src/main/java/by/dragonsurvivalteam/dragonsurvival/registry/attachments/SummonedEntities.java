@@ -17,7 +17,7 @@ import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.attachment.AttachmentType;
-import net.minecraftforge.event.entity.EntityInvulnerabilityCheckEvent;
+import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingChangeTargetEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
@@ -201,9 +201,9 @@ public class SummonedEntities extends Storage<SummonEntityEffect.Instance> {
     }
 
     @SubscribeEvent
-    public static void avoidDamagingAlly(final EntityInvulnerabilityCheckEvent event) {
+    public static void avoidDamagingAlly(final LivingAttackEvent event) {
         if (hasSummonRelationship(event.getEntity(), event.getSource().getEntity())) {
-            event.setInvulnerable(true);
+            event.setCanceled(true);
         }
     }
 

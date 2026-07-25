@@ -9,7 +9,7 @@ import net.minecraft.world.damagesource.DamageType;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.attachment.AttachmentType;
-import net.minecraftforge.event.entity.EntityInvulnerabilityCheckEvent;
+import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingIncomingDamageEvent;
 import net.minecraftforge.event.tick.EntityTickEvent;
 import org.jetbrains.annotations.NotNull;
@@ -58,15 +58,11 @@ public class DamageModifications extends Storage<DamageModification.Instance> {
     }
 
     @SubscribeEvent
-    public static void checkImmunity(final EntityInvulnerabilityCheckEvent event) {
-        if (event.isInvulnerable()) {
-            return;
-        }
-
+    public static void checkImmunity(final LivingAttackEvent event) {
         AttachmentManager.getExistingData(event.getEntity(), DSDataAttachments.DAMAGE_MODIFICATIONS).ifPresent(modifications -> {
             // Supply a dummy damage amount (since it doesn't matter for this check but allows re-using the same method)
             if (modifications.calculate(event.getSource().typeHolder(), 1) == 0) {
-                event.setInvulnerable(true);
+                event.setCanceled(true);
             }
         });
     }
