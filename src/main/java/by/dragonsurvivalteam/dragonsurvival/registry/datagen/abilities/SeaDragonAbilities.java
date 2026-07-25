@@ -187,7 +187,7 @@ public class SeaDragonAbilities {
                 List.of(new ActionContainer(new DragonBreathTarget(AbilityTargeting.entity(
                                 Condition.thisEntity(EntityCondition.isLiving()).build(),
                                 List.of(
-                                        new DamageEffect(context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.LIGHTNING_BREATH), LevelBasedValue.perLevel(1), DSAttributes.DRAGON_ABILITY_DAMAGE.getHolder().orElseThrow(), DamageEffect.DEFAULT_EXPRESSION, false),
+                                        new DamageEffect(context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.LIGHTNING_BREATH), LevelBasedValue.perLevel(1), DSAttributes.DRAGON_ABILITY_DAMAGE.get(), DamageEffect.DEFAULT_EXPRESSION, false),
                                         new PotionEffect(PotionData.create(DSEffects.CHARGED.get()).duration(30).probability(0.5f).build())
                                 ),
                                 TargetingMode.NON_ALLIES

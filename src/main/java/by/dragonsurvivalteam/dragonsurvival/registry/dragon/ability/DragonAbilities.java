@@ -54,7 +54,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.nbt.CompoundTag;
@@ -187,7 +186,7 @@ public class DragonAbilities {
                 Optional.empty(),
                 List.of(
                         new ActionContainer(new AreaTarget(AbilityTargeting.entity(List.of(
-                                new DamageEffect(context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DamageTypes.GENERIC), LevelBasedValue.perLevel(1), BuiltInRegistries.ATTRIBUTE.wrapAsHolder(Attributes.ATTACK_DAMAGE), new Expression("amount * scale * 10"), true)
+                                new DamageEffect(context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DamageTypes.GENERIC), LevelBasedValue.perLevel(1), Attributes.ATTACK_DAMAGE, new Expression("amount * scale * 10"), true)
                         ), TargetingMode.ENEMIES), LevelBasedValue.constant(5)), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(1))
                 ),
                 true,

@@ -204,7 +204,7 @@ public class CaveDragonAbilities {
                         new ActionContainer(new DragonBreathTarget(AbilityTargeting.entity(
                                 Condition.thisEntity(EntityCondition.isLiving()).build(),
                                 List.of(
-                                        new DamageEffect(context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.FIRE_BREATH), LevelBasedValue.perLevel(3), DSAttributes.DRAGON_ABILITY_DAMAGE.getHolder().orElseThrow(), DamageEffect.DEFAULT_EXPRESSION, false),
+                                        new DamageEffect(context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.FIRE_BREATH), LevelBasedValue.perLevel(3), DSAttributes.DRAGON_ABILITY_DAMAGE.get(), DamageEffect.DEFAULT_EXPRESSION, false),
                                         new IgniteEffect(LevelBasedValue.perLevel(Functions.secondsToTicks(5))),
                                         new PotionEffect(PotionData.create(DSEffects.BURN.get()).duration(10).probability(0.3f).build())
                                 ),
@@ -258,7 +258,7 @@ public class CaveDragonAbilities {
                         new ActionContainer(new DragonBreathTarget(AbilityTargeting.entity(
                                 Condition.thisEntity(EntityCondition.isLiving()).build(),
                                 List.of(
-                                        new DamageEffect(context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.FIRE_BREATH), LevelBasedValue.perLevel(0.5f), DSAttributes.DRAGON_ABILITY_DAMAGE.getHolder().orElseThrow(), DamageEffect.DEFAULT_EXPRESSION, false),
+                                        new DamageEffect(context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.FIRE_BREATH), LevelBasedValue.perLevel(0.5f), DSAttributes.DRAGON_ABILITY_DAMAGE.get(), DamageEffect.DEFAULT_EXPRESSION, false),
                                         new IgniteEffect(LevelBasedValue.perLevel(Functions.secondsToTicks(1)))
                                 ),
                                 TargetingMode.NON_ALLIES
