@@ -325,7 +325,7 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
         armorGenerationShader.apply();
 
         BufferBuilder buffer = RenderSystem.renderThreadTesselator().getBuilder();
-        buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.BLIT_SCREEN);
+        buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION);
         buffer.vertex(0.0F, 0.0F, 0.0F).endVertex();
         buffer.vertex(1.0F, 0.0F, 0.0F).endVertex();
         buffer.vertex(1.0F, 1.0F, 0.0F).endVertex();
@@ -515,11 +515,18 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
         return new ResourceLocation(model.getNamespace(), texture);
     }
 
-    @SubscribeEvent
     public static void registerShaders(final RegisterShadersEvent event) throws IOException {
         event.registerShader(
-            new ShaderInstance(event.getResourceProvider(), DragonSurvival.res("armor_generation"), DefaultVertexFormat.BLIT_SCREEN),
+            new ShaderInstance(event.getResourceProvider(), DragonSurvival.res("armor_generation"), DefaultVertexFormat.POSITION),
             instance -> armorGenerationShader = instance
         );
+    }
+
+    @EventBusSubscriber(value = Dist.CLIENT, bus = EventBusSubscriber.Bus.MOD)
+    public static class ModEvents {
+        @SubscribeEvent
+        public static void registerShaders(final RegisterShadersEvent event) throws IOException {
+            DragonArmorRenderLayer.registerShaders(event);
+        }
     }
 }

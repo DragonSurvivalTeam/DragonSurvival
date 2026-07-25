@@ -28,7 +28,7 @@ import net.minecraftforge.registries.DataPackRegistryEvent;
 import java.util.List;
 import java.util.Optional;
 
-@EventBusSubscriber
+@EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
 public record ProjectileData(GeneralData generalData, Either<GenericBallData, GenericArrowData> typeData) {
     public static final ResourceKey<Registry<ProjectileData>> REGISTRY = ResourceKey.createRegistryKey(DragonSurvival.res("projectile_data"));
 

@@ -33,7 +33,7 @@ import net.minecraftforge.registries.DataPackRegistryEvent;
 
 import java.util.Optional;
 
-@EventBusSubscriber
+@EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
 public record DragonPenalty(Optional<ResourceLocation> icon, Optional<LootItemCondition> condition, PenaltyEffect effect, PenaltyTrigger trigger) {
     @Translation(key = "enable_penalties", type = Translation.Type.CONFIGURATION, comments = "Enable / Disable the penalty system")
     @ConfigOption(side = ConfigSide.SERVER, category = "penalties", key = "enable_penalties")

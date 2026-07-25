@@ -61,20 +61,22 @@ public abstract class LocationPredicateMixin {
             return;
         }
 
+        List<String> biomes = dragonSurvival$biomes == null ? List.of() : dragonSurvival$biomes;
+        List<String> structures = dragonSurvival$structures == null ? List.of() : dragonSurvival$structures;
         BlockPos pos = BlockPos.containing(x, y, z);
-        if ((!dragonSurvival$biomes.isEmpty()
-                || !dragonSurvival$structures.isEmpty()
+        if ((!biomes.isEmpty()
+                || !structures.isEmpty()
                 || dragonSurvival$canSeeSky != null)
                 && !level.isLoaded(pos)) {
             callback.setReturnValue(false);
             return;
         }
 
-        if (!dragonSurvival$biomes.isEmpty() && !dragonSurvival$matchesBiome(level.getBiome(pos))) {
+        if (!biomes.isEmpty() && !dragonSurvival$matchesBiome(level.getBiome(pos), biomes)) {
             callback.setReturnValue(false);
             return;
         }
-        if (!dragonSurvival$structures.isEmpty() && !dragonSurvival$matchesStructure(level, pos)) {
+        if (!structures.isEmpty() && !dragonSurvival$matchesStructure(level, pos, structures)) {
             callback.setReturnValue(false);
             return;
         }
@@ -84,8 +86,8 @@ public abstract class LocationPredicateMixin {
     }
 
     @Unique
-    private boolean dragonSurvival$matchesBiome(final Holder<Biome> biome) {
-        for (String value : dragonSurvival$biomes) {
+    private boolean dragonSurvival$matchesBiome(final Holder<Biome> biome, final List<String> biomes) {
+        for (String value : biomes) {
             ResourceLocation id = new ResourceLocation(dragonSurvival$withoutTag(value));
             if (value.startsWith("#") && biome.is(TagKey.create(Registries.BIOME, id))) {
                 return true;
@@ -98,8 +100,8 @@ public abstract class LocationPredicateMixin {
     }
 
     @Unique
-    private boolean dragonSurvival$matchesStructure(final ServerLevel level, final BlockPos pos) {
-        for (String value : dragonSurvival$structures) {
+    private boolean dragonSurvival$matchesStructure(final ServerLevel level, final BlockPos pos, final List<String> structures) {
+        for (String value : structures) {
             ResourceLocation id = new ResourceLocation(dragonSurvival$withoutTag(value));
             boolean matches = value.startsWith("#")
                     ? level.structureManager()

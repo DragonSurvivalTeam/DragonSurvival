@@ -125,7 +125,7 @@ public class DragonEditorHandler {
                         skinGenerationShader.apply();
 
                         BufferBuilder bufferbuilder = RenderSystem.renderThreadTesselator().getBuilder();
-                        bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.BLIT_SCREEN);
+                        bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION);
                         bufferbuilder.vertex(0.0F, 0.0F, 0.0F).endVertex();
                         bufferbuilder.vertex(1.0F, 0.0F, 0.0F).endVertex();
                         bufferbuilder.vertex(1.0F, 1.0F, 0.0F).endVertex();
@@ -134,7 +134,7 @@ public class DragonEditorHandler {
 
                         if (settings.isGlowing && layer == SkinLayer.BASE) {
                             normalTarget.bindWrite(true);
-                            bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.BLIT_SCREEN);
+                            bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION);
                             bufferbuilder.vertex(0.0F, 0.0F, 0.0F).endVertex();
                             bufferbuilder.vertex(1.0F, 0.0F, 0.0F).endVertex();
                             bufferbuilder.vertex(1.0F, 1.0F, 0.0F).endVertex();
@@ -212,8 +212,15 @@ public class DragonEditorHandler {
         usedSkinTextures.clear();
     }
 
-    @SubscribeEvent
     public static void registerShaders(RegisterShadersEvent event) throws IOException {
-        event.registerShader(new ShaderInstance(event.getResourceProvider(), DragonSurvival.res("skin_generation"), DefaultVertexFormat.BLIT_SCREEN), instance -> skinGenerationShader = instance);
+        event.registerShader(new ShaderInstance(event.getResourceProvider(), DragonSurvival.res("skin_generation"), DefaultVertexFormat.POSITION), instance -> skinGenerationShader = instance);
+    }
+
+    @EventBusSubscriber(value = Dist.CLIENT, bus = EventBusSubscriber.Bus.MOD)
+    public static class ModEvents {
+        @SubscribeEvent
+        public static void registerShaders(final RegisterShadersEvent event) throws IOException {
+            DragonEditorHandler.registerShaders(event);
+        }
     }
 }

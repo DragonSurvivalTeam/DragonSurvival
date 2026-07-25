@@ -40,7 +40,7 @@ import org.joml.Matrix4f;
 import java.awt.Color;
 import java.io.IOException;
 
-@EventBusSubscriber(Dist.CLIENT)
+@EventBusSubscriber(value = Dist.CLIENT, bus = EventBusSubscriber.Bus.MOD)
 public class RenderingUtils {
     @Translation(key = "min_near_plane", type = Translation.Type.CONFIGURATION, comments = {
             "Lower values prevent x-ray through blocks when using a small entity scale",

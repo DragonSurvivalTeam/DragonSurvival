@@ -14,6 +14,7 @@ import net.minecraftforge.fml.loading.FMLLoader;
 import by.dragonsurvivalteam.dragonsurvival.common.serialization.INBTSerializable;
 import net.minecraftforge.common.util.Lazy;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.List;
@@ -27,6 +28,7 @@ public class SkinPreset implements INBTSerializable<CompoundTag> {
     private final Lazy<HashMap<ResourceKey<DragonStage>, Lazy<DragonStageCustomization>>> skins = Lazy.of(this::initialize);
     private ResourceKey<DragonSpecies> species;
     private ResourceLocation model = DragonBody.DEFAULT_MODEL;
+    private @Nullable HolderLookup.Provider registryProvider;
 
     public boolean isEmpty() {
         return skins.get().values().stream().allMatch(
@@ -87,14 +89,19 @@ public class SkinPreset implements INBTSerializable<CompoundTag> {
         }
 
         if (this.model == null) {
-            for (Holder<DragonStage> dragonStage : species.value().getStages(null)) {
+            for (Holder<DragonStage> dragonStage : species.value().getStages(registryProvider)) {
                 skins.get().put(dragonStage.unwrapKey().orElseThrow(), Lazy.of(DragonStageCustomization::new));
             }
         } else {
-            for (Holder<DragonStage> dragonStage : species.value().getStages(null)) {
+            for (Holder<DragonStage> dragonStage : species.value().getStages(registryProvider)) {
                 skins.get().put(dragonStage.unwrapKey().orElseThrow(), Lazy.of(() -> new DragonStageCustomization(dragonStage.unwrapKey().orElseThrow(), species.unwrapKey().orElseThrow(), this.model)));
             }
         }
+    }
+
+    public void initDefaults(@Nullable final HolderLookup.Provider provider, final Holder<DragonSpecies> species, final ResourceLocation model) {
+        registryProvider = provider;
+        initDefaults(species, model);
     }
 
     public HashMap<ResourceKey<DragonStage>, Lazy<DragonStageCustomization>> initialize() {
@@ -108,10 +115,10 @@ public class SkinPreset implements INBTSerializable<CompoundTag> {
 
         List<ResourceKey<DragonStage>> stageKeys;
         if (species != null) {
-            Optional<Holder.Reference<DragonSpecies>> speciesHolder = ResourceHelper.get(null, species);
-            stageKeys = speciesHolder.map(dragonSpeciesReference -> dragonSpeciesReference.value().getStages(null).stream().map(holder -> holder.unwrapKey().orElseThrow()).toList()).orElseGet(List::of);
+            Optional<Holder.Reference<DragonSpecies>> speciesHolder = ResourceHelper.get(registryProvider, species);
+            stageKeys = speciesHolder.map(dragonSpeciesReference -> dragonSpeciesReference.value().getStages(registryProvider).stream().map(holder -> holder.unwrapKey().orElseThrow()).toList()).orElseGet(List::of);
         } else {
-            stageKeys = ResourceHelper.keys(null, DragonStage.REGISTRY);
+            stageKeys = ResourceHelper.keys(registryProvider, DragonStage.REGISTRY);
         }
 
         for (ResourceKey<DragonStage> dragonStage : stageKeys) {
@@ -123,6 +130,7 @@ public class SkinPreset implements INBTSerializable<CompoundTag> {
 
     @Override
     public CompoundTag serializeNBT(@NotNull final HolderLookup.Provider provider) {
+        registryProvider = provider;
         CompoundTag tag = new CompoundTag();
         tag.putString(MODEL, model.toString());
 
@@ -150,6 +158,7 @@ public class SkinPreset implements INBTSerializable<CompoundTag> {
     // Special version of deserializeNBT to fix up broken data from an older version of the mod
     // The tag encoding of the species was broken and was just giving "minecraft:" as the species instead of what it should be
     public void deserializeNBT(@NotNull final HolderLookup.Provider provider, @NotNull final CompoundTag base, ResourceKey<DragonSpecies> species) {
+        registryProvider = provider;
         this.species = species;
         ResourceLocation.read(base.getString(MODEL)).result().ifPresent(model -> this.model = model);
 
@@ -175,6 +184,7 @@ public class SkinPreset implements INBTSerializable<CompoundTag> {
 
     @Override
     public void deserializeNBT(@NotNull final HolderLookup.Provider provider, @NotNull final CompoundTag base) {
+        registryProvider = provider;
         this.species = ResourceKey.create(DragonSpecies.REGISTRY, new ResourceLocation(base.getString(SPECIES)));
         ResourceLocation.read(base.getString(MODEL)).result().ifPresent(model -> this.model = model);
 

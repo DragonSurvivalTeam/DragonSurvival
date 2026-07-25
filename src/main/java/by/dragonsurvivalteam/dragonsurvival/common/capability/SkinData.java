@@ -29,6 +29,7 @@ public class SkinData implements INBTSerializable<CompoundTag> {
 
     public boolean renderCustomSkin;
     public boolean blankSkin;
+    private @Nullable HolderLookup.Provider registryProvider;
 
     public HashMap<ResourceKey<DragonSpecies>, SkinPreset> initialize() {
         if (FMLLoader.getDist().isDedicatedServer()) {
@@ -39,9 +40,9 @@ public class SkinData implements INBTSerializable<CompoundTag> {
 
         HashMap<ResourceKey<DragonSpecies>, SkinPreset> presets = new HashMap<>();
 
-        for (ResourceKey<DragonSpecies> dragonSpecies : ResourceHelper.keys(null, DragonSpecies.REGISTRY)) {
+        for (ResourceKey<DragonSpecies> dragonSpecies : ResourceHelper.keys(registryProvider, DragonSpecies.REGISTRY)) {
             SkinPreset preset = new SkinPreset();
-            preset.initDefaults(ResourceHelper.get(null, dragonSpecies).get(), null);
+            preset.initDefaults(registryProvider, ResourceHelper.get(registryProvider, dragonSpecies).get(), null);
             presets.put(dragonSpecies, preset);
         }
 
@@ -58,6 +59,7 @@ public class SkinData implements INBTSerializable<CompoundTag> {
 
     @Override
     public CompoundTag serializeNBT(@NotNull final HolderLookup.Provider provider) {
+        registryProvider = provider;
         CompoundTag tag = new CompoundTag();
         tag.putBoolean(RENDER_CUSTOM_SKIN, renderCustomSkin);
 
@@ -70,6 +72,7 @@ public class SkinData implements INBTSerializable<CompoundTag> {
 
     // Used when loading the dragon handler data to properly setup skin data on the client if the server sends empty skin data
     public void deserializeNBT(@NotNull final HolderLookup.Provider provider, final CompoundTag tag, @Nullable final Holder<DragonBody> currentBody) {
+        registryProvider = provider;
         renderCustomSkin = tag.getBoolean(RENDER_CUSTOM_SKIN);
 
         for (String key : tag.getAllKeys()) {
@@ -83,7 +86,7 @@ public class SkinData implements INBTSerializable<CompoundTag> {
                     Holder<DragonSpecies> speciesHolder = ResourceHelper.get(provider, dragonSpecies).get();
 
                     if (currentBody != null && speciesHolder.value().isValidForBody(currentBody)) {
-                        preset.initDefaults(speciesHolder, currentBody.value().model());
+                        preset.initDefaults(provider, speciesHolder, currentBody.value().model());
                     }
 
                     // Don't bother initializing defaults if the player isn't even a valid body type for the species in question
@@ -96,6 +99,7 @@ public class SkinData implements INBTSerializable<CompoundTag> {
 
     @Override
     public void deserializeNBT(@NotNull final HolderLookup.Provider provider, final CompoundTag tag) {
+        registryProvider = provider;
         renderCustomSkin = tag.getBoolean(RENDER_CUSTOM_SKIN);
 
         for (String key : tag.getAllKeys()) {

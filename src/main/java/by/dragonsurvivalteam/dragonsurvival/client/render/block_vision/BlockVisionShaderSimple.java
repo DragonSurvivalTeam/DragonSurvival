@@ -37,7 +37,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 
-@EventBusSubscriber(value = Dist.CLIENT)
+@EventBusSubscriber(value = Dist.CLIENT, bus = EventBusSubscriber.Bus.MOD)
 public class BlockVisionShaderSimple {
     private static ShaderInstance shader;
     private static RenderStateBackup backup;
