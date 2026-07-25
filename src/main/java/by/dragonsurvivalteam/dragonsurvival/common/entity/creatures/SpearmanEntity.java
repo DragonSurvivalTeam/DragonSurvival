@@ -162,7 +162,7 @@ public class SpearmanEntity extends Hunter {
                     // Copied from witch conversion code
                     Mob leader = DSEntities.HUNTER_LEADER.get().create(this.level());
                     leader.moveTo(this.getX(), this.getY(), this.getZ(), this.getYRot(), this.getXRot());
-                    leader.finalizeSpawn((ServerLevel) this.level(), this.level().getCurrentDifficultyAt(leader.blockPosition()), MobSpawnType.CONVERSION, null);
+                    leader.finalizeSpawn((ServerLevel) this.level(), this.level().getCurrentDifficultyAt(leader.blockPosition()), MobSpawnType.CONVERSION, null, null);
                     leader.setNoAi(this.isNoAi());
                     if (this.hasCustomName()) {
                         leader.setCustomName(this.getCustomName());
