@@ -60,11 +60,11 @@ public class DragonStages {
                         Modifier.perWithBase(DSAttributes.DRAGON_BREATH_RANGE, 1.5f, 0.05f, AttributeOperation.ADD_VALUE)
                 ),
                 List.of(
-                        GrowthItem.create(Functions.hoursToTicks(1), DSItems.ELDER_DRAGON_HEART.value()),
-                        GrowthItem.create(Functions.minutesToTicks(30), DSItems.WEAK_DRAGON_HEART.value()),
-                        GrowthItem.create(Functions.minutesToTicks(10), DSItems.DRAGON_HEART_SHARD.value()),
-                        GrowthItem.create(Functions.hoursToTicks(-1), DSItems.STAR_BONE.value()),
-                        GrowthItem.create(0, DSItems.STAR_HEART.value())
+                        GrowthItem.create(Functions.hoursToTicks(1), DSItems.ELDER_DRAGON_HEART.get()),
+                        GrowthItem.create(Functions.minutesToTicks(30), DSItems.WEAK_DRAGON_HEART.get()),
+                        GrowthItem.create(Functions.minutesToTicks(10), DSItems.DRAGON_HEART_SHARD.get()),
+                        GrowthItem.create(Functions.hoursToTicks(-1), DSItems.STAR_BONE.get()),
+                        GrowthItem.create(0, DSItems.STAR_HEART.get())
                 ),
                 Optional.of(EntityCondition.defaultNaturalGrowthBlocker()),
                 Optional.empty()
@@ -87,10 +87,10 @@ public class DragonStages {
                         Modifier.perWithBase(DSAttributes.DRAGON_BREATH_RANGE, 3.25f, 0.05f, AttributeOperation.ADD_VALUE)
                 ),
                 List.of(
-                        GrowthItem.create(Functions.hoursToTicks(1), DSItems.ELDER_DRAGON_HEART.value()),
-                        GrowthItem.create(Functions.minutesToTicks(30), DSItems.WEAK_DRAGON_HEART.value()),
-                        GrowthItem.create(Functions.hoursToTicks(-1), DSItems.STAR_BONE.value()),
-                        GrowthItem.create(0, DSItems.STAR_HEART.value())
+                        GrowthItem.create(Functions.hoursToTicks(1), DSItems.ELDER_DRAGON_HEART.get()),
+                        GrowthItem.create(Functions.minutesToTicks(30), DSItems.WEAK_DRAGON_HEART.get()),
+                        GrowthItem.create(Functions.hoursToTicks(-1), DSItems.STAR_BONE.get()),
+                        GrowthItem.create(0, DSItems.STAR_HEART.get())
                 ),
                 Optional.of(EntityCondition.defaultNaturalGrowthBlocker()),
                 Optional.empty()
@@ -116,9 +116,9 @@ public class DragonStages {
                         Modifier.per(Attributes.BLOCK_INTERACTION_RANGE, 0.05f, AttributeOperation.ADD_VALUE)
                 ),
                 List.of(
-                        GrowthItem.create(Functions.hoursToTicks(1), DSItems.ELDER_DRAGON_HEART.value()),
-                        GrowthItem.create(Functions.hoursToTicks(-1), DSItems.STAR_BONE.value()),
-                        GrowthItem.create(0, DSItems.STAR_HEART.value())
+                        GrowthItem.create(Functions.hoursToTicks(1), DSItems.ELDER_DRAGON_HEART.get()),
+                        GrowthItem.create(Functions.hoursToTicks(-1), DSItems.STAR_BONE.get()),
+                        GrowthItem.create(0, DSItems.STAR_HEART.get())
                 ),
                 Optional.of(EntityCondition.defaultNaturalGrowthBlocker()),
                 Optional.empty()

@@ -110,7 +110,7 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
 
         AdvancementHolder root = create(LangKey.ROOT)
                 .type(AdvancementType.GOAL)
-                .displayItem(DSItems.ELDER_DRAGON_BONE.value())
+                .displayItem(DSItems.ELDER_DRAGON_BONE.get())
                 .background(DragonSurvival.res("textures/block/stone_dragon_door_top.png"))
                 .noDescription()
                 .criteria("root", PlayerTrigger.TriggerInstance.tick())
@@ -120,7 +120,7 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
 
         AdvancementHolder beDragon = create(LangKey.BE_DRAGON)
                 .parent(root)
-                .displayItem(DSItems.STAR_BONE.value())
+                .displayItem(DSItems.STAR_BONE.get())
                 .criteria("be_dragon", beDragon())
                 .experienceReward(12)
                 .build(saver, helper);
@@ -129,14 +129,14 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
         AdvancementHolder collectDust = create(LangKey.COLLECT_DUST)
                 .parent(root)
                 .displayItem(Items.COAL_ORE)
-                .criteria("collect_elder_dragon_dust", InventoryChangeTrigger.TriggerInstance.hasItems(DSItems.ELDER_DRAGON_DUST.value()))
+                .criteria("collect_elder_dragon_dust", InventoryChangeTrigger.TriggerInstance.hasItems(DSItems.ELDER_DRAGON_DUST.get()))
                 .experienceReward(6)
                 .build(saver, helper);
         buildCollectDustChildren(collectDust);
 
         AdvancementHolder placeAltar = create(LangKey.PLACE_ALTAR)
                 .parent(root)
-                .displayItem(DSBlocks.STONE_DRAGON_ALTAR.value())
+                .displayItem(DSBlocks.STONE_DRAGON_ALTAR.get())
                 .criteria("place_dragon_altar", placeBlock(DSItemTags.DRAGON_ALTARS))
                 .experienceReward(6)
                 .build(saver, helper);
@@ -171,7 +171,7 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
 
         create(LangKey.DARK_STEAL_FROM_VILLAGER)
                 .parent(affectedByHunterOmen)
-                .displayItem(DSItems.PARTISAN.value())
+                .displayItem(DSItems.PARTISAN.get())
                 .showToast()
                 .announceChat()
                 .criteria("steal_from_villager", stealFromVillager())
@@ -179,20 +179,20 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
 
         AdvancementHolder collectKey = create(LangKey.DARK_COLLECT_KEY)
                 .parent(affectedByHunterOmen)
-                .displayItem(DSItems.DARK_KEY.value())
+                .displayItem(DSItems.DARK_KEY.get())
                 .showToast()
                 .announceChat()
-                .criteria("collect_dark_key", InventoryChangeTrigger.TriggerInstance.hasItems(DSItems.DARK_KEY.value()))
+                .criteria("collect_dark_key", InventoryChangeTrigger.TriggerInstance.hasItems(DSItems.DARK_KEY.get()))
                 .build(saver, helper);
 
         // --- Parent: dark/collect_key --- //
 
         AdvancementHolder openVault = create(LangKey.DARK_OPEN_VAULT)
                 .parent(collectKey)
-                .displayItem(DSBlocks.DARK_VAULT.value())
+                .displayItem(DSBlocks.DARK_VAULT.get())
                 .showToast()
                 .announceChat()
-                .criteria("open_dark_vault", itemUsedOnBlock(DSBlocks.DARK_VAULT.value(), DSItems.DARK_KEY.value()))
+                .criteria("open_dark_vault", itemUsedOnBlock(DSBlocks.DARK_VAULT.get(), DSItems.DARK_KEY.get()))
                 .experienceReward(10)
                 .build(saver, helper);
 
@@ -200,23 +200,23 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
 
         AdvancementHolder getArmorItem = create(LangKey.DARK_GET_ARMOR_ITEM)
                 .parent(openVault)
-                .displayItem(DSItems.DARK_DRAGON_HELMET.value())
+                .displayItem(DSItems.DARK_DRAGON_HELMET.get())
                 .showToast()
                 .announceChat()
-                .criteria("collect_dark_armor", InventoryChangeTrigger.TriggerInstance.hasItems(DSItems.DARK_DRAGON_HELMET.value(), DSItems.DARK_DRAGON_CHESTPLATE.value(), DSItems.DARK_DRAGON_LEGGINGS.value(), DSItems.DARK_DRAGON_BOOTS.value()))
+                .criteria("collect_dark_armor", InventoryChangeTrigger.TriggerInstance.hasItems(DSItems.DARK_DRAGON_HELMET.get(), DSItems.DARK_DRAGON_CHESTPLATE.get(), DSItems.DARK_DRAGON_LEGGINGS.get(), DSItems.DARK_DRAGON_BOOTS.get()))
                 .build(saver, helper);
 
         // --- Parent: dark/get_armor_item --- //
 
         create(LangKey.DARK_GET_ARMOR_SET)
                 .parent(getArmorItem)
-                .displayItem(DSItems.DARK_DRAGON_HELMET.value())
+                .displayItem(DSItems.DARK_DRAGON_HELMET.get())
                 .showToast()
                 .announceChat()
-                .criteria("collect_dark_armor_helmet", InventoryChangeTrigger.TriggerInstance.hasItems(DSItems.DARK_DRAGON_HELMET.value()))
-                .criteria("collect_dark_armor_chestplate", InventoryChangeTrigger.TriggerInstance.hasItems(DSItems.DARK_DRAGON_CHESTPLATE.value()))
-                .criteria("collect_dark_armor_leggings", InventoryChangeTrigger.TriggerInstance.hasItems(DSItems.DARK_DRAGON_LEGGINGS.value()))
-                .criteria("collect_dark_armor_boots", InventoryChangeTrigger.TriggerInstance.hasItems(DSItems.DARK_DRAGON_BOOTS.value()))
+                .criteria("collect_dark_armor_helmet", InventoryChangeTrigger.TriggerInstance.hasItems(DSItems.DARK_DRAGON_HELMET.get()))
+                .criteria("collect_dark_armor_chestplate", InventoryChangeTrigger.TriggerInstance.hasItems(DSItems.DARK_DRAGON_CHESTPLATE.get()))
+                .criteria("collect_dark_armor_leggings", InventoryChangeTrigger.TriggerInstance.hasItems(DSItems.DARK_DRAGON_LEGGINGS.get()))
+                .criteria("collect_dark_armor_boots", InventoryChangeTrigger.TriggerInstance.hasItems(DSItems.DARK_DRAGON_BOOTS.get()))
                 .build(saver, helper);
     }
 
@@ -225,8 +225,8 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
 
         AdvancementHolder dragonRiderWorkbench = create(LangKey.LIGHT_DRAGON_RIDER_WORKBENCH)
                 .parent(parent)
-                .displayItem(DSBlocks.DRAGON_RIDER_WORKBENCH.value())
-                .criteria("craft_dragon_rider_workbench", crafted(DSBlocks.DRAGON_RIDER_WORKBENCH.value()))
+                .displayItem(DSBlocks.DRAGON_RIDER_WORKBENCH.get())
+                .criteria("craft_dragon_rider_workbench", crafted(DSBlocks.DRAGON_RIDER_WORKBENCH.get()))
                 .experienceReward(6)
                 .build(saver, helper);
 
@@ -234,20 +234,20 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
 
         AdvancementHolder collectKey = create(LangKey.LIGHT_COLLECT_KEY)
                 .parent(dragonRiderWorkbench)
-                .displayItem(DSItems.LIGHT_KEY.value())
+                .displayItem(DSItems.LIGHT_KEY.get())
                 .showToast()
                 .announceChat()
-                .criteria("collect_light_key", InventoryChangeTrigger.TriggerInstance.hasItems(DSItems.LIGHT_KEY.value()))
+                .criteria("collect_light_key", InventoryChangeTrigger.TriggerInstance.hasItems(DSItems.LIGHT_KEY.get()))
                 .build(saver, helper);
 
         // --- Parent: light/collect_key --- //
 
         AdvancementHolder openVault = create(LangKey.LIGHT_OPEN_VAULT)
                 .parent(collectKey)
-                .displayItem(DSBlocks.LIGHT_VAULT.value())
+                .displayItem(DSBlocks.LIGHT_VAULT.get())
                 .showToast()
                 .announceChat()
-                .criteria("open_light_vault", itemUsedOnBlock(DSBlocks.LIGHT_VAULT.value(), DSItems.LIGHT_KEY.value()))
+                .criteria("open_light_vault", itemUsedOnBlock(DSBlocks.LIGHT_VAULT.get(), DSItems.LIGHT_KEY.get()))
                 .experienceReward(10)
                 .build(saver, helper);
 
@@ -255,23 +255,23 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
 
         AdvancementHolder getArmorItem = create(LangKey.LIGHT_GET_ARMOR_ITEM)
                 .parent(openVault)
-                .displayItem(DSItems.LIGHT_DRAGON_HELMET.value())
+                .displayItem(DSItems.LIGHT_DRAGON_HELMET.get())
                 .showToast()
                 .announceChat()
-                .criteria("collect_light_armor", InventoryChangeTrigger.TriggerInstance.hasItems(DSItems.LIGHT_DRAGON_HELMET.value(), DSItems.LIGHT_DRAGON_CHESTPLATE.value(), DSItems.LIGHT_DRAGON_LEGGINGS.value(), DSItems.LIGHT_DRAGON_BOOTS.value()))
+                .criteria("collect_light_armor", InventoryChangeTrigger.TriggerInstance.hasItems(DSItems.LIGHT_DRAGON_HELMET.get(), DSItems.LIGHT_DRAGON_CHESTPLATE.get(), DSItems.LIGHT_DRAGON_LEGGINGS.get(), DSItems.LIGHT_DRAGON_BOOTS.get()))
                 .build(saver, helper);
 
         // --- Parent: light/get_armor_item --- //
 
         create(LangKey.LIGHT_GET_ARMOR_SET)
                 .parent(getArmorItem)
-                .displayItem(DSItems.LIGHT_DRAGON_HELMET.value())
+                .displayItem(DSItems.LIGHT_DRAGON_HELMET.get())
                 .showToast()
                 .announceChat()
-                .criteria("collect_light_armor_helmet", InventoryChangeTrigger.TriggerInstance.hasItems(DSItems.LIGHT_DRAGON_HELMET.value()))
-                .criteria("collect_light_armor_chestplate", InventoryChangeTrigger.TriggerInstance.hasItems(DSItems.LIGHT_DRAGON_CHESTPLATE.value()))
-                .criteria("collect_light_armor_leggings", InventoryChangeTrigger.TriggerInstance.hasItems(DSItems.LIGHT_DRAGON_LEGGINGS.value()))
-                .criteria("collect_light_armor_boots", InventoryChangeTrigger.TriggerInstance.hasItems(DSItems.LIGHT_DRAGON_BOOTS.value()))
+                .criteria("collect_light_armor_helmet", InventoryChangeTrigger.TriggerInstance.hasItems(DSItems.LIGHT_DRAGON_HELMET.get()))
+                .criteria("collect_light_armor_chestplate", InventoryChangeTrigger.TriggerInstance.hasItems(DSItems.LIGHT_DRAGON_CHESTPLATE.get()))
+                .criteria("collect_light_armor_leggings", InventoryChangeTrigger.TriggerInstance.hasItems(DSItems.LIGHT_DRAGON_LEGGINGS.get()))
+                .criteria("collect_light_armor_boots", InventoryChangeTrigger.TriggerInstance.hasItems(DSItems.LIGHT_DRAGON_BOOTS.get()))
                 .build(saver, helper);
     }
 
@@ -280,10 +280,10 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
 
         AdvancementHolder promotion = create(LangKey.HUNTER_PROMOTION)
                 .parent(parent)
-                .displayItem(DSItems.SPEARMAN_PROMOTION.value())
+                .displayItem(DSItems.SPEARMAN_PROMOTION.get())
                 .showToast()
                 .announceChat()
-                .criteria("promote_spearman", itemInteract(DSEntities.HUNTER_SPEARMAN.value(), DSItems.SPEARMAN_PROMOTION.value()))
+                .criteria("promote_spearman", itemInteract(DSEntities.HUNTER_SPEARMAN.get(), DSItems.SPEARMAN_PROMOTION.get()))
                 .experienceReward(6)
                 .build(saver, helper);
 
@@ -291,20 +291,20 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
 
         AdvancementHolder collectKey = create(LangKey.HUNTER_COLLECT_KEY)
                 .parent(promotion)
-                .displayItem(DSItems.HUNTER_KEY.value())
+                .displayItem(DSItems.HUNTER_KEY.get())
                 .showToast()
                 .announceChat()
-                .criteria("collect_hunter_key", InventoryChangeTrigger.TriggerInstance.hasItems(DSItems.HUNTER_KEY.value()))
+                .criteria("collect_hunter_key", InventoryChangeTrigger.TriggerInstance.hasItems(DSItems.HUNTER_KEY.get()))
                 .build(saver, helper);
 
         // --- Parent: hunter/collect_key --- //
 
         AdvancementHolder openVault = create(LangKey.HUNTER_OPEN_VAULT)
                 .parent(collectKey)
-                .displayItem(DSBlocks.HUNTER_VAULT.value())
+                .displayItem(DSBlocks.HUNTER_VAULT.get())
                 .showToast()
                 .announceChat()
-                .criteria("open_hunter_vault", itemUsedOnBlock(DSBlocks.HUNTER_VAULT.value(), DSItems.HUNTER_KEY.value()))
+                .criteria("open_hunter_vault", itemUsedOnBlock(DSBlocks.HUNTER_VAULT.get(), DSItems.HUNTER_KEY.get()))
                 .experienceReward(10)
                 .build(saver, helper);
 
@@ -314,7 +314,7 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
 
         create(LangKey.HUNTER_FIRE_BOLAS)
                 .parent(openVault)
-                .displayItem(DSItems.BOLAS.value())
+                .displayItem(DSItems.BOLAS.get())
                 .criteria("fire_bolas", ShotCrossbowTrigger.TriggerInstance.shotCrossbow(
                         Optional.of(ItemPredicate.Builder.item().of(Tags.Items.TOOLS_CROSSBOW).withSubPredicate(
                                 ItemSubPredicates.ENCHANTMENTS, ItemEnchantmentsPredicate.enchantments(List.of(new EnchantmentPredicate(bolas, MinMaxBounds.Ints.atLeast(1))))
@@ -325,7 +325,7 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
     private void buildPlaceAltarChildren(final AdvancementHolder parent) {
         // --- Parent: place_altar --- //
 
-        ItemStack caveSoul = DSItems.DRAGON_SOUL.value().getDefaultInstance();
+        ItemStack caveSoul = DSItems.DRAGON_SOUL.get().getDefaultInstance();
         caveSoul.set(DataComponents.CUSTOM_MODEL_DATA, new CustomModelData(2));
 
         AdvancementHolder beCaveDragon = create(LangKey.CAVE_BE_DRAGON)
@@ -338,7 +338,7 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
                 .build(saver, helper);
         buildBeCaveDragonChildren(beCaveDragon);
 
-        ItemStack seaSoul = DSItems.DRAGON_SOUL.value().getDefaultInstance();
+        ItemStack seaSoul = DSItems.DRAGON_SOUL.get().getDefaultInstance();
         seaSoul.set(DataComponents.CUSTOM_MODEL_DATA, new CustomModelData(3));
 
         AdvancementHolder beSeaDragon = create(LangKey.SEA_BE_DRAGON)
@@ -351,7 +351,7 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
                 .build(saver, helper);
         buildBeSeaDragonChildren(beSeaDragon);
 
-        ItemStack forestSoul = DSItems.DRAGON_SOUL.value().getDefaultInstance();
+        ItemStack forestSoul = DSItems.DRAGON_SOUL.get().getDefaultInstance();
         forestSoul.set(DataComponents.CUSTOM_MODEL_DATA, new CustomModelData(1));
 
         AdvancementHolder beForestDragon = create(LangKey.FOREST_BE_DRAGON)
@@ -370,16 +370,16 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
 
         AdvancementHolder rockEater = create(LangKey.CAVE_ROCK_EATER)
                 .parent(parent)
-                .displayItem(DSItems.CHARGED_COAL.value())
-                .criteria("consume_charged_coal", consumeItem(DSItems.CHARGED_COAL.value()))
-                .criteria("consume_charged_soup", consumeItem(DSItems.CHARGED_SOUP.value()))
-                .criteria("consume_charred_meat", consumeItem(DSItems.CHARRED_MEAT.value()))
-                .criteria("consume_charred_seafood", consumeItem(DSItems.CHARRED_SEAFOOD.value()))
-                .criteria("consume_hot_dragon_rod", consumeItem(DSItems.HOT_DRAGON_ROD.value()))
-                .criteria("consume_explosive_copper", consumeItem(DSItems.EXPLOSIVE_COPPER.value()))
-                .criteria("consume_quartz_explosive_copper", consumeItem(DSItems.QUARTZ_EXPLOSIVE_COPPER.value()))
-                .criteria("consume_double_quartz", consumeItem(DSItems.DOUBLE_QUARTZ.value()))
-                .criteria("consume_cave_dragon_treat", consumeItem(DSItems.CAVE_DRAGON_TREAT.value()))
+                .displayItem(DSItems.CHARGED_COAL.get())
+                .criteria("consume_charged_coal", consumeItem(DSItems.CHARGED_COAL.get()))
+                .criteria("consume_charged_soup", consumeItem(DSItems.CHARGED_SOUP.get()))
+                .criteria("consume_charred_meat", consumeItem(DSItems.CHARRED_MEAT.get()))
+                .criteria("consume_charred_seafood", consumeItem(DSItems.CHARRED_SEAFOOD.get()))
+                .criteria("consume_hot_dragon_rod", consumeItem(DSItems.HOT_DRAGON_ROD.get()))
+                .criteria("consume_explosive_copper", consumeItem(DSItems.EXPLOSIVE_COPPER.get()))
+                .criteria("consume_quartz_explosive_copper", consumeItem(DSItems.QUARTZ_EXPLOSIVE_COPPER.get()))
+                .criteria("consume_double_quartz", consumeItem(DSItems.DOUBLE_QUARTZ.get()))
+                .criteria("consume_cave_dragon_treat", consumeItem(DSItems.CAVE_DRAGON_TREAT.get()))
                 .experienceReward(60)
                 .build(saver, helper);
 
@@ -394,7 +394,7 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
 
         create(LangKey.CAVE_WATER_SAFETY)
                 .parent(rockEater)
-                .displayItem(DSItems.CHARGED_SOUP.value())
+                .displayItem(DSItems.CHARGED_SOUP.get())
                 .criteria("swim_safely_in_lava", location(
                         Condition.dragonSpecies(registries.holderOrThrow(BuiltInDragonSpecies.CAVE_DRAGON))
                                 .located(isInFluid(FluidTags.WATER))
@@ -451,13 +451,13 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
 
         create(LangKey.SEA_FISH_EATER)
                 .parent(lootShipwreck)
-                .displayItem(DSItems.SEASONED_FISH.value())
+                .displayItem(DSItems.SEASONED_FISH.get())
                 .criteria("consume_kelp", consumeItem(Items.KELP))
-                .criteria("consume_seasoned_fish", consumeItem(DSItems.SEASONED_FISH.value()))
-                .criteria("consume_golden_coral_pufferfish", consumeItem(DSItems.GOLDEN_CORAL_PUFFERFISH.value()))
-                .criteria("consume_frozen_raw_fish", consumeItem(DSItems.FROZEN_RAW_FISH.value()))
-                .criteria("consume_golden_turtle_egg", consumeItem(DSItems.GOLDEN_TURTLE_EGG.value()))
-                .criteria("consume_sea_dragon_treat", consumeItem(DSItems.SEA_DRAGON_TREAT.value()))
+                .criteria("consume_seasoned_fish", consumeItem(DSItems.SEASONED_FISH.get()))
+                .criteria("consume_golden_coral_pufferfish", consumeItem(DSItems.GOLDEN_CORAL_PUFFERFISH.get()))
+                .criteria("consume_frozen_raw_fish", consumeItem(DSItems.FROZEN_RAW_FISH.get()))
+                .criteria("consume_golden_turtle_egg", consumeItem(DSItems.GOLDEN_TURTLE_EGG.get()))
+                .criteria("consume_sea_dragon_treat", consumeItem(DSItems.SEA_DRAGON_TREAT.get()))
                 .experienceReward(80)
                 .build(saver, helper);
 
@@ -506,7 +506,7 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
 
         create(LangKey.FOREST_PREVENT_DARKNESS_PENALTY)
                 .parent(standOnSweetBerries)
-                .displayItem(DSItems.LUMINOUS_OINTMENT.value())
+                .displayItem(DSItems.LUMINOUS_OINTMENT.get())
                 .criteria("be_safe_in_darkness", location(
                         Condition.dragonSpecies(registries.holderOrThrow(BuiltInDragonSpecies.FOREST_DRAGON))
                                 .located(light(MinMaxBounds.Ints.between(0, 3)))
@@ -519,14 +519,14 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
 
         AdvancementHolder meatEater = create(LangKey.FOREST_MEAT_EATER)
                 .parent(poisonousPotato)
-                .displayItem(DSItems.MEAT_WILD_BERRIES.value())
-                .criteria("consume_sweet_sour_rabbit", consumeItem(DSItems.SWEET_SOUR_RABBIT.value()))
-                .criteria("consume_luminous_ointment", consumeItem(DSItems.LUMINOUS_OINTMENT.value()))
-                .criteria("consume_diamond_chorus", consumeItem(DSItems.DIAMOND_CHORUS.value()))
-                .criteria("consume_smelly_meat_porridge", consumeItem(DSItems.SMELLY_MEAT_PORRIDGE.value()))
-                .criteria("consume_meat_wilderness", consumeItem(DSItems.MEAT_WILD_BERRIES.value()))
-                .criteria("consume_meat_chorus_mix", consumeItem(DSItems.MEAT_CHORUS_MIX.value()))
-                .criteria("consume_forest_dragon_treat", consumeItem(DSItems.FOREST_DRAGON_TREAT.value()))
+                .displayItem(DSItems.MEAT_WILD_BERRIES.get())
+                .criteria("consume_sweet_sour_rabbit", consumeItem(DSItems.SWEET_SOUR_RABBIT.get()))
+                .criteria("consume_luminous_ointment", consumeItem(DSItems.LUMINOUS_OINTMENT.get()))
+                .criteria("consume_diamond_chorus", consumeItem(DSItems.DIAMOND_CHORUS.get()))
+                .criteria("consume_smelly_meat_porridge", consumeItem(DSItems.SMELLY_MEAT_PORRIDGE.get()))
+                .criteria("consume_meat_wilderness", consumeItem(DSItems.MEAT_WILD_BERRIES.get()))
+                .criteria("consume_meat_chorus_mix", consumeItem(DSItems.MEAT_CHORUS_MIX.get()))
+                .criteria("consume_forest_dragon_treat", consumeItem(DSItems.FOREST_DRAGON_TREAT.get()))
                 .experienceReward(60)
                 .build(saver, helper);
 
@@ -534,7 +534,7 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
 
         create(LangKey.FOREST_TRANSPLANT_CHORUS_FRUIT)
                 .parent(meatEater)
-                .displayItem(DSItems.DIAMOND_CHORUS.value())
+                .displayItem(DSItems.DIAMOND_CHORUS.get())
                 .criteria("place_chorus_fruit", placeBlockAsDragon(
                         Condition.dragonSpecies(registries.holderOrThrow(BuiltInDragonSpecies.FOREST_DRAGON)).located(inDimension(Level.OVERWORLD)), Blocks.CHORUS_FLOWER
                 ))
@@ -547,7 +547,7 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
 
         AdvancementHolder stopNaturalGrowth = create(LangKey.STOP_NATURAL_GROWTH)
                 .parent(parent)
-                .displayItem(DSItems.STAR_HEART.value())
+                .displayItem(DSItems.STAR_HEART.get())
                 .showToast()
                 .announceChat()
                 .criteria("stop_natural_growth", stopNaturalGrowth())
@@ -558,7 +558,7 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
 
         create(LangKey.USE_DRAGON_SOUL)
                 .parent(stopNaturalGrowth)
-                .displayItem(DSItems.DRAGON_SOUL.value())
+                .displayItem(DSItems.DRAGON_SOUL.get())
                 .showToast()
                 .announceChat()
                 .criteria("use_dragon_soul", useDragonSoul())
@@ -571,7 +571,7 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
 
         AdvancementHolder beYoungDragon = create(LangKey.BE_YOUNG_DRAGON)
                 .parent(parent)
-                .displayItem(DSItems.DRAGON_HEART_SHARD.value())
+                .displayItem(DSItems.DRAGON_HEART_SHARD.get())
                 .showToast()
                 .announceChat()
                 .criteria("reach_young_stage", beDragon(DragonStages.young))
@@ -591,7 +591,7 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
         TagKey<Structure> dragonBones = TagKey.create(Registries.STRUCTURE, DragonSurvival.res("dragon_skeletons")); // FIXME :: use tag from data generation
         AdvancementHolder findBones = create(LangKey.FIND_BONES)
                 .parent(parent)
-                .displayItem(DSItems.STAR_BONE.value())
+                .displayItem(DSItems.STAR_BONE.get())
                 .showToast()
                 .announceChat()
                 .criteria("find_dragon_bones", PlayerTrigger.TriggerInstance.located(inStructure(dragonBones)))
@@ -602,11 +602,11 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
 
         AdvancementHolder useMemoryBlock = create(LangKey.USE_MEMORY_BLOCK)
                 .parent(parent)
-                .displayItem(DSBlocks.DRAGON_MEMORY_BLOCK.value())
+                .displayItem(DSBlocks.DRAGON_MEMORY_BLOCK.get())
                 .showToast()
                 .announceChat()
                 // TODO :: check for the other way as well (place memory block under a beacon)
-                .criteria("place_beacon_on_memory_block", itemUsedOnBlock(DSBlocks.DRAGON_MEMORY_BLOCK.value(), DSBlocks.DRAGON_BEACON.value()))
+                .criteria("place_beacon_on_memory_block", itemUsedOnBlock(DSBlocks.DRAGON_MEMORY_BLOCK.get(), DSBlocks.DRAGON_BEACON.get()))
                 .experienceReward(10)
                 .build(saver, helper);
 
@@ -647,7 +647,7 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
         TagKey<Structure> endTreasure = TagKey.create(Registries.STRUCTURE, DragonSurvival.res("treasure_end")); // FIXME :: use tag from data generation
         create(LangKey.FIND_END_STRUCTURES)
                 .parent(findEndPlatform)
-                .displayItem(DSItems.SPIN_GRANT_ITEM.value())
+                .displayItem(DSItems.SPIN_GRANT_ITEM.get())
                 .showToast()
                 .announceChat()
                 .criteria("find_end_structures", PlayerTrigger.TriggerInstance.located(inStructure(endTreasure)))
@@ -660,10 +660,10 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
 
         AdvancementHolder changeBeacon = create(LangKey.CHANGE_BEACON)
                 .parent(parent)
-                .displayItem(DSItems.BEACON_ACTIVATOR.value())
+                .displayItem(DSItems.BEACON_ACTIVATOR.get())
                 .showToast()
                 .announceChat()
-                .criteria("activate_beacon", itemUsedOnBlock(DSBlocks.DRAGON_BEACON.value(), DSItems.BEACON_ACTIVATOR.value()))
+                .criteria("activate_beacon", itemUsedOnBlock(DSBlocks.DRAGON_BEACON.get(), DSItems.BEACON_ACTIVATOR.get()))
                 .experienceReward(10)
                 .build(saver, helper);
 
@@ -671,7 +671,7 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
 
         create(LangKey.GET_ALL_BEACONS)
                 .parent(changeBeacon)
-                .displayItem(DSItems.ELDER_DRAGON_DUST.value())
+                .displayItem(DSItems.ELDER_DRAGON_DUST.get())
                 .showToast()
                 .announceChat()
                 .criteria("affected_by_peace", effectWithMinDuration(DSEffects.PEACE, Functions.secondsToTicks(20)))
@@ -697,7 +697,7 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
 
         create(LangKey.SLEEP_ON_MASSIVE_HOARD)
                 .parent(sleepOnHoard)
-                .displayItem(DSBlocks.GOLD_DRAGON_TREASURE.value())
+                .displayItem(DSBlocks.GOLD_DRAGON_TREASURE.get())
                 .showToast()
                 .announceChat()
                 .criteria("sleep_on_massive_treasure_hoard", sleepOnTreasure(240))
@@ -710,7 +710,7 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
 
         AdvancementHolder beAdultDragon = create(LangKey.BE_ADULT_DRAGON)
                 .parent(parent)
-                .displayItem(DSItems.WEAK_DRAGON_HEART.value())
+                .displayItem(DSItems.WEAK_DRAGON_HEART.get())
                 .showToast()
                 .announceChat()
                 .criteria("reach_adult_stage", beDragon(DragonStages.adult))
@@ -720,8 +720,8 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
 
         AdvancementHolder collectHeartFromMonster = create(LangKey.COLLECT_HEART_FROM_MONSTER)
                 .parent(beAdultDragon)
-                .displayItem(DSItems.ELDER_DRAGON_HEART.value())
-                .criteria("collect_elder_dragon_heart", InventoryChangeTrigger.TriggerInstance.hasItems(DSItems.ELDER_DRAGON_HEART.value()))
+                .displayItem(DSItems.ELDER_DRAGON_HEART.get())
+                .criteria("collect_elder_dragon_heart", InventoryChangeTrigger.TriggerInstance.hasItems(DSItems.ELDER_DRAGON_HEART.get()))
                 .experienceReward(6)
                 .build(saver, helper);
 
@@ -729,7 +729,7 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
 
         AdvancementHolder beOldCaveDragon = create(LangKey.CAVE_BE_OLD_DRAGON)
                 .parent(collectHeartFromMonster)
-                .displayItem(DSItems.CAVE_BEACON.value())
+                .displayItem(DSItems.CAVE_BEACON.get())
                 .showToast()
                 .announceChat()
                 .criteria("be_fully_grown_adult", beDragon(registries.holderOrThrow(BuiltInDragonSpecies.CAVE_DRAGON), registries.holderOrThrow(DragonStages.adult), 1))
@@ -740,7 +740,7 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
 
         create(LangKey.CAVE_MASTER_ALL_PASSIVES)
                 .parent(beOldCaveDragon)
-                .displayItem(DSBlocks.CAVE_SOURCE_OF_MAGIC.value())
+                .displayItem(DSBlocks.CAVE_SOURCE_OF_MAGIC.get())
                 .showToast()
                 .announceChat()
                 .criteria("master_burn", upgradeAbilityMax(registries.holderOrThrow(CaveDragonAbilities.BURN)))
@@ -752,7 +752,7 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
 
         AdvancementHolder beOldSeaDragon = create(LangKey.SEA_BE_OLD_DRAGON)
                 .parent(collectHeartFromMonster)
-                .displayItem(DSItems.SEA_BEACON.value())
+                .displayItem(DSItems.SEA_BEACON.get())
                 .showToast()
                 .announceChat()
                 .criteria("be_fully_grown_adult", beDragon(registries.holderOrThrow(BuiltInDragonSpecies.SEA_DRAGON), registries.holderOrThrow(DragonStages.adult), 1))
@@ -763,7 +763,7 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
 
         create(LangKey.SEA_MASTER_ALL_PASSIVES)
                 .parent(beOldSeaDragon)
-                .displayItem(DSBlocks.SEA_SOURCE_OF_MAGIC.value())
+                .displayItem(DSBlocks.SEA_SOURCE_OF_MAGIC.get())
                 .showToast()
                 .announceChat()
                 .criteria("master_spectral_impact", upgradeAbilityMax(registries.holderOrThrow(SeaDragonAbilities.SPECTRAL_IMPACT)))
@@ -775,7 +775,7 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
 
         AdvancementHolder beOldForestDragon = create(LangKey.FOREST_BE_OLD_DRAGON)
                 .parent(collectHeartFromMonster)
-                .displayItem(DSItems.FOREST_BEACON.value())
+                .displayItem(DSItems.FOREST_BEACON.get())
                 .showToast()
                 .announceChat()
                 .criteria("be_fully_grown_adult", beDragon(registries.holderOrThrow(BuiltInDragonSpecies.FOREST_DRAGON), registries.holderOrThrow(DragonStages.adult), 1))
@@ -786,7 +786,7 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
 
         create(LangKey.FOREST_MASTER_ALL_PASSIVES)
                 .parent(beOldForestDragon)
-                .displayItem(DSBlocks.FOREST_SOURCE_OF_MAGIC.value())
+                .displayItem(DSBlocks.FOREST_SOURCE_OF_MAGIC.get())
                 .showToast()
                 .announceChat()
                 .criteria("master_cliffhanger", upgradeAbilityMax(registries.holderOrThrow(ForestDragonAbilities.CLIFFHANGER)))

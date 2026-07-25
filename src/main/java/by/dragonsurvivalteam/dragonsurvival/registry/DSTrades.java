@@ -190,7 +190,7 @@ public class DSTrades {
 
     @SubscribeEvent
     public static void addCustomTrades(final VillagerTradesEvent event) {
-        if (event.getType() == DSTrades.DRAGON_RIDER_PROFESSION.value()) {
+        if (event.getType() == DSTrades.DRAGON_RIDER_PROFESSION.get()) {
             Int2ObjectMap<List<VillagerTrades.ItemListing>> trades = event.getTrades();
 
             trades.get(1).add(new EnchantBookForEmeralds(DSEnchantments.UNBREAKABLE_SPIRIT, 10));

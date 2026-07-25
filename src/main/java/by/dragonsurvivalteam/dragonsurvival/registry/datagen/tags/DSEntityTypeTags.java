@@ -108,12 +108,12 @@ public class DSEntityTypeTags extends EntityTypeTagsProvider {
         tag(HUNTER_FACTION)
                 .add(EntityType.VILLAGER)
                 .add(EntityType.IRON_GOLEM)
-                .add(DSEntities.HUNTER_AMBUSHER.value())
-                .add(DSEntities.HUNTER_GRIFFIN.value())
-                .add(DSEntities.HUNTER_HOUND.value())
-                .add(DSEntities.HUNTER_KNIGHT.value())
-                .add(DSEntities.HUNTER_LEADER.value())
-                .add(DSEntities.HUNTER_SPEARMAN.value());
+                .add(DSEntities.HUNTER_AMBUSHER.get())
+                .add(DSEntities.HUNTER_GRIFFIN.get())
+                .add(DSEntities.HUNTER_HOUND.get())
+                .add(DSEntities.HUNTER_KNIGHT.get())
+                .add(DSEntities.HUNTER_LEADER.get())
+                .add(DSEntities.HUNTER_SPEARMAN.get());
 
         tag(DRAGONS).add(EntityType.ENDER_DRAGON);
 

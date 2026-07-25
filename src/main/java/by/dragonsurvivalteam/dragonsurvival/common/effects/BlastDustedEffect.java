@@ -52,7 +52,7 @@ public class BlastDustedEffect extends ModifiableMobEffect {
             }
         }
 
-        if (entity.isEyeInFluidType(ForgeMod.WATER_TYPE.value()) || entity.isInWaterRainOrBubble()) {
+        if (entity.isEyeInFluidType(ForgeMod.WATER_TYPE.get()) || entity.isInWaterRainOrBubble()) {
             return false;
         }
 

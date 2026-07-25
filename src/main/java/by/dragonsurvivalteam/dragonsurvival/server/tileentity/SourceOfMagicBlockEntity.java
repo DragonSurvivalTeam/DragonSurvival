@@ -123,7 +123,7 @@ public class SourceOfMagicBlockEntity extends BlockEntity implements Container, 
         }
 
         if (!blockEntity.isEmpty() && blockEntity.ticks % 120 == 0) {
-            level.playLocalSound(position.getX(), position.getY(), position.getZ(), state.getBlock() == DSBlocks.CAVE_SOURCE_OF_MAGIC.value() ? SoundEvents.LAVA_AMBIENT : SoundEvents.WATER_AMBIENT, SoundSource.BLOCKS, 0.5f, 1f, true);
+            level.playLocalSound(position.getX(), position.getY(), position.getZ(), state.getBlock() == DSBlocks.CAVE_SOURCE_OF_MAGIC.get() ? SoundEvents.LAVA_AMBIENT : SoundEvents.WATER_AMBIENT, SoundSource.BLOCKS, 0.5f, 1f, true);
         }
 
         blockEntity.ticks += 1;

@@ -123,7 +123,7 @@ public record DietEntry(String items, Optional<FoodProperties> properties, Optio
         ).apply(instance, RetainEffects::new));
 
         public boolean retain(final MobEffectInstance effect) {
-            return switch (effect.getEffect().value().getCategory()) {
+            return switch (effect.getEffect().getCategory()) {
                 case BENEFICIAL -> beneficial;
                 case HARMFUL -> harmful;
                 case NEUTRAL -> neutral;

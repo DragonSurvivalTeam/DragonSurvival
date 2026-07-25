@@ -42,7 +42,7 @@ public class DSEquipment {
                     }),
                     30,
                     Holder.direct(SoundEvents.IRON_GOLEM_STEP),
-                    () -> Ingredient.of(DSItems.ELDER_DRAGON_HEART.value()),
+                    () -> Ingredient.of(DSItems.ELDER_DRAGON_HEART.get()),
                     List.of(new ArmorMaterial.Layer(res("light_dragon"))),
                     3,
                     0.1f
@@ -59,7 +59,7 @@ public class DSEquipment {
                     }),
                     30,
                     Holder.direct(SoundEvents.IRON_GOLEM_STEP),
-                    () -> Ingredient.of(DSItems.ELDER_DRAGON_HEART.value()),
+                    () -> Ingredient.of(DSItems.ELDER_DRAGON_HEART.get()),
                     List.of(new ArmorMaterial.Layer(res("dark_dragon"))),
                     3,
                     0.1f

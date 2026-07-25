@@ -204,11 +204,11 @@ public class AmbusherEntity extends Hunter implements RangedAttackMob {
         }
 
         if (getRangedAttackTimer() == CROSSBOW_RELOAD_CHARGE_SOUND_TIME) {
-            this.playSound(SoundEvents.CROSSBOW_LOADING_MIDDLE.value(), 1.0F, 1.0F);
+            this.playSound(SoundEvents.CROSSBOW_LOADING_MIDDLE, 1.0F, 1.0F);
         }
 
         if (getRangedAttackTimer() == CROSSBOW_RELOAD_ARROW_PLACE_SOUND_TIME) {
-            this.playSound(SoundEvents.CROSSBOW_LOADING_END.value(), 1.0F, 1.0F);
+            this.playSound(SoundEvents.CROSSBOW_LOADING_END, 1.0F, 1.0F);
         }
 
         if (getRangedAttackTimer() < ATTACK_INTERVAL && getRangedAttackTimer() >= 0) {
@@ -222,7 +222,7 @@ public class AmbusherEntity extends Hunter implements RangedAttackMob {
         }
 
         if (getAmbushHornTimer() == AMBUSH_ARROW_PLACE_SOUND_TIME) {
-            this.playSound(SoundEvents.CROSSBOW_LOADING_END.value(), 1.0F, 1.0F);
+            this.playSound(SoundEvents.CROSSBOW_LOADING_END, 1.0F, 1.0F);
         }
 
         if (getAmbushHornTimer() < AMBUSH_ANIM_DURATION && getAmbushHornTimer() >= 0) {

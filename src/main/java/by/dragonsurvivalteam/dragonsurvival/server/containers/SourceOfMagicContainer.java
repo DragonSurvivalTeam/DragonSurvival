@@ -18,7 +18,7 @@ public class SourceOfMagicContainer extends AbstractContainerMenu {
     public final SourceOfMagicBlockEntity blockEntity;
 
     public SourceOfMagicContainer(int windowId, final Inventory inventory, final FriendlyByteBuf buffer) {
-        super(DSContainers.SOURCE_OF_MAGIC_CONTAINER.value(), windowId);
+        super(DSContainers.SOURCE_OF_MAGIC_CONTAINER.get(), windowId);
         blockEntity = (SourceOfMagicBlockEntity) inventory.player.level().getBlockEntity(buffer.readBlockPos());
         int index = 0;
 

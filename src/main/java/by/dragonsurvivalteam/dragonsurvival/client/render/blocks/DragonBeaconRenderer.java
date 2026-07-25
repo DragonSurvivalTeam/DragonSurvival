@@ -35,7 +35,7 @@ public class DragonBeaconRenderer implements BlockEntityRenderer<DragonBeaconBlo
         double z = beacon.getBlockPos().getZ() + (0.25 + level.getRandom().nextInt(5) / 10d);
 
         boolean isActive = beacon.getBlockState().getValue(BlockStateProperties.LIT);
-        Item item = isActive ? DSItems.ACTIVATED_DRAGON_BEACON.value() : DSBlocks.DRAGON_BEACON.value().asItem();
+        Item item = isActive ? DSItems.ACTIVATED_DRAGON_BEACON.get() : DSBlocks.DRAGON_BEACON.get().asItem();
 
         if (!isPaused && isActive && beacon.tick % 5 == 0 && hasMemoryBlock) {
             double random = level.getRandom().nextDouble();

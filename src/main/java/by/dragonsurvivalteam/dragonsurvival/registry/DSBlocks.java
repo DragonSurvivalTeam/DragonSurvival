@@ -1236,7 +1236,7 @@ public class DSBlocks {
 
     private static <B extends Block> RegistryObject<B> register(final String name, final Supplier<B> supplier) {
         RegistryObject<B> holder = REGISTRY.register(name, supplier);
-        DSItems.REGISTRY.register(name, () -> new BlockItem(holder.value(), new Item.Properties()));
+        DSItems.REGISTRY.register(name, () -> new BlockItem(holder.get(), new Item.Properties()));
         return holder;
     }
 
@@ -1262,7 +1262,7 @@ public class DSBlocks {
                                 .sound(SoundType.BONE_BLOCK)));
 
                 RegistryObject<BlockItem> item = DSItems.REGISTRY.register(type.getSerializedName() + "_skin" + i,
-                        () -> new BlockItem(block.value(), new Item.Properties()));
+                () -> new BlockItem(block.get(), new Item.Properties()));
 
                 SKELETON_PIECES.put(type.getSerializedName(), new Pair<>(block, item));
             }

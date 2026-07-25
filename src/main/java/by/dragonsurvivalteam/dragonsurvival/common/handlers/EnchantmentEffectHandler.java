@@ -53,7 +53,7 @@ public class EnchantmentEffectHandler {
                 List<ItemStack> projectiles = new ArrayList<>();
 
                 for (ItemStack itemStack : ammo) {
-                    projectiles.add(itemStack.getItem() instanceof ArrowItem ? new ItemStack(DSItems.BOLAS.value()) : itemStack);
+                    projectiles.add(itemStack.getItem() instanceof ArrowItem ? new ItemStack(DSItems.BOLAS.get()) : itemStack);
                 }
 
                 event.getBow().set(DataComponents.CHARGED_PROJECTILES, ChargedProjectiles.of(projectiles));
@@ -105,7 +105,7 @@ public class EnchantmentEffectHandler {
 
         int amplifier = instance.getAmplifier();
 
-        if (instance.getEffect().value().getCategory().equals(MobEffectCategory.HARMFUL)) {
+        if (instance.getEffect().getCategory().equals(MobEffectCategory.HARMFUL)) {
             if (applier instanceof LivingEntity livingApplier && !instance.getEffect().is(DSEffectTags.OVERWHELMING_MIGHT_BLACKLIST)) {
                 amplifier += EnchantmentUtils.getLevel(livingApplier, DSEnchantments.OVERWHELMING_MIGHT);
             }

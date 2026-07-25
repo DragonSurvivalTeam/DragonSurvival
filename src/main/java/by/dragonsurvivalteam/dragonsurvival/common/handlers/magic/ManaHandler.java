@@ -41,7 +41,7 @@ public class ManaHandler {
     }
 
     public static boolean hasEnoughMana(final Player player, float manaCost) {
-        if (manaCost == 0 || player.hasEffect(DSEffects.SOURCE_OF_MAGIC.value()) || player.getAbilities().instabuild) {
+        if (manaCost == 0 || player.hasEffect(DSEffects.SOURCE_OF_MAGIC.get()) || player.getAbilities().instabuild) {
             return true;
         }
 
@@ -67,7 +67,7 @@ public class ManaHandler {
     }
 
     public static void consumeMana(final Player player, float manaCost) {
-        if (manaCost == 0 || player == null || player.getAbilities().instabuild || player.hasEffect(DSEffects.SOURCE_OF_MAGIC.value())) {
+        if (manaCost == 0 || player == null || player.getAbilities().instabuild || player.hasEffect(DSEffects.SOURCE_OF_MAGIC.get())) {
             return;
         }
 

@@ -42,11 +42,11 @@ public class DSCreativeTabs {
     );
 
     private static final CreativeModeTab.DisplayItemsGenerator BLOCK_ITEM_GENERATOR = (parameters, output) -> DSBlocks.REGISTRY.getEntries().forEach(entry -> {
-        if (entry.value() instanceof SkeletonPieceBlock) {
+            if (entry.get() instanceof SkeletonPieceBlock) {
             return;
         }
 
-        output.accept(entry.value());
+                output.accept(entry.get());
     });
 
     private static final CreativeModeTab.DisplayItemsGenerator ITEM_GENERATOR = (parameters, output) -> DSItems.REGISTRY.getEntries().forEach(entry -> {
@@ -54,11 +54,11 @@ public class DSCreativeTabs {
             return;
         }
 
-        if (entry.value() instanceof BlockItem blockItem && blockItem.getBlock() instanceof SkeletonPieceBlock) {
+            if (entry.get() instanceof BlockItem blockItem && blockItem.getBlock() instanceof SkeletonPieceBlock) {
             return;
         }
 
-        output.accept(entry.value());
+                output.accept(entry.get());
     });
 
     public static Holder<CreativeModeTab> DS_TAB = REGISTRY.register("dragon_survival", () -> CreativeModeTab.builder()

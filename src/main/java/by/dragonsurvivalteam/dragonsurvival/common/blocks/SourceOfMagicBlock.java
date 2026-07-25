@@ -502,15 +502,15 @@ public class SourceOfMagicBlock extends HorizontalDirectionalBlock implements Si
 
         boolean decrementStack = false;
 
-        if (item == DSItems.ELDER_DRAGON_DUST.value()) {
+        if (item == DSItems.ELDER_DRAGON_DUST.get()) {
             decrementStack = true;
-        } else if (item == DSItems.ELDER_DRAGON_BONE.value()) {
+        } else if (item == DSItems.ELDER_DRAGON_BONE.get()) {
             decrementStack = level.getRandom().nextInt(1) == 0;
-        } else if (item == DSItems.DRAGON_HEART_SHARD.value()) {
+        } else if (item == DSItems.DRAGON_HEART_SHARD.get()) {
             decrementStack = level.getRandom().nextInt(3) == 0;
-        } else if (item == DSItems.WEAK_DRAGON_HEART.value()) {
+        } else if (item == DSItems.WEAK_DRAGON_HEART.get()) {
             decrementStack = level.getRandom().nextInt(5) == 0;
-        } else if (item == DSItems.ELDER_DRAGON_HEART.value()) {
+        } else if (item == DSItems.ELDER_DRAGON_HEART.get()) {
             decrementStack = level.getRandom().nextInt(10) == 0;
         }
 

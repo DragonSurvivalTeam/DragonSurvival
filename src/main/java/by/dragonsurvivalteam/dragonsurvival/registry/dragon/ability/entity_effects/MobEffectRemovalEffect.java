@@ -65,7 +65,7 @@ public record MobEffectRemovalEffect(
                 if (maxAmount.isPresent() && effectsToRemove.size() >= maxAmount.get().calculate(ability.level())) {
                     break;
                 }
-                if (categories.isEmpty() || categories.get().contains(instance.getEffect().value().getCategory())) {
+                if (categories.isEmpty() || categories.get().contains(instance.getEffect().getCategory())) {
                     if (validEffects.isEmpty() || validEffects.get().contains(instance.getEffect())) {
                         if (maximumEffectLevel.isEmpty() || instance.getAmplifier() <= maximumEffectLevel.get().calculate(ability.level())) {
                             effectsToRemove.add(instance.getEffect());

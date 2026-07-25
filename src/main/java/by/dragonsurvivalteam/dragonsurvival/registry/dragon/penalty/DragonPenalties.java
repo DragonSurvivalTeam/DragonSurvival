@@ -119,7 +119,7 @@ public class DragonPenalties {
                         List.of(
                                 new SupplyTrigger.RecoveryItem(
                                         List.of(
-                                                ItemCondition.is(DSItems.FROZEN_RAW_FISH.value()),
+                                                ItemCondition.is(DSItems.FROZEN_RAW_FISH.get()),
                                                 ItemCondition.hasPotion(Potions.WATER)
                                         ),
                                         0.5f

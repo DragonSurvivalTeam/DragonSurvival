@@ -22,11 +22,11 @@ public class Bolas extends AbstractArrow {
     }
 
     public Bolas(double x, double y, double z, final Level level, final ItemStack pickup, @Nullable final ItemStack firedFrom) {
-        super(DSEntities.BOLAS_ENTITY.value(), x, y, z, level, pickup, firedFrom);
+        super(DSEntities.BOLAS_ENTITY.get(), x, y, z, level, pickup, firedFrom);
     }
 
     public Bolas(LivingEntity owner, Level level, ItemStack pickupItemStack, @Nullable ItemStack firedFromWeapon) {
-        super(DSEntities.BOLAS_ENTITY.value(), owner, level, pickupItemStack, firedFromWeapon);
+        super(DSEntities.BOLAS_ENTITY.get(), owner, level, pickupItemStack, firedFromWeapon);
     }
 
     @Override

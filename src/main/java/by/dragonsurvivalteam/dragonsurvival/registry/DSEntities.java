@@ -132,16 +132,16 @@ public class DSEntities {
 
     @SubscribeEvent
     public static void attributeCreationEvent(final EntityAttributeCreationEvent event) {
-        event.put(DRAGON.value(), LivingEntity.createLivingAttributes().build());
+        event.put(DRAGON.get(), LivingEntity.createLivingAttributes().build());
 
         // There is no reason to set values here since it will always be the default config values
         // We set the correct values on entity creation through 'finalizeSpawn' (this also means no restart is required)
-        event.put(HUNTER_HOUND.value(), hunterAttributes().build());
-        event.put(HUNTER_SPEARMAN.value(), hunterAttributes().build());
-        event.put(HUNTER_KNIGHT.value(), hunterAttributes().build());
-        event.put(HUNTER_AMBUSHER.value(), hunterAttributes().build());
-        event.put(HUNTER_GRIFFIN.value(), hunterAttributes().add(Attributes.FLYING_SPEED).build());
-        event.put(HUNTER_LEADER.value(), hunterAttributes().build());
+        event.put(HUNTER_HOUND.get(), hunterAttributes().build());
+        event.put(HUNTER_SPEARMAN.get(), hunterAttributes().build());
+        event.put(HUNTER_KNIGHT.get(), hunterAttributes().build());
+        event.put(HUNTER_AMBUSHER.get(), hunterAttributes().build());
+        event.put(HUNTER_GRIFFIN.get(), hunterAttributes().add(Attributes.FLYING_SPEED).build());
+        event.put(HUNTER_LEADER.get(), hunterAttributes().build());
     }
 
     private static AttributeSupplier.Builder hunterAttributes() {
@@ -153,10 +153,10 @@ public class DSEntities {
     public static void registerSpawn(final RegisterSpawnPlacementsEvent event) {
         SpawnPlacements.SpawnPredicate predicate = (entity, level, spawnType, position, random) -> level.canSeeSky(position) && level.getBlockState(position.below()).isSolid();
 
-        event.register(HUNTER_SPEARMAN.value(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, predicate, RegisterSpawnPlacementsEvent.Operation.REPLACE);
-        event.register(HUNTER_KNIGHT.value(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, predicate, RegisterSpawnPlacementsEvent.Operation.REPLACE);
-        event.register(HUNTER_AMBUSHER.value(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, predicate, RegisterSpawnPlacementsEvent.Operation.REPLACE);
-        event.register(HUNTER_HOUND.value(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, predicate, RegisterSpawnPlacementsEvent.Operation.REPLACE);
-        event.register(HUNTER_GRIFFIN.value(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, predicate, RegisterSpawnPlacementsEvent.Operation.REPLACE);
+        event.register(HUNTER_SPEARMAN.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, predicate, RegisterSpawnPlacementsEvent.Operation.REPLACE);
+        event.register(HUNTER_KNIGHT.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, predicate, RegisterSpawnPlacementsEvent.Operation.REPLACE);
+        event.register(HUNTER_AMBUSHER.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, predicate, RegisterSpawnPlacementsEvent.Operation.REPLACE);
+        event.register(HUNTER_HOUND.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, predicate, RegisterSpawnPlacementsEvent.Operation.REPLACE);
+        event.register(HUNTER_GRIFFIN.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, predicate, RegisterSpawnPlacementsEvent.Operation.REPLACE);
     }
 }

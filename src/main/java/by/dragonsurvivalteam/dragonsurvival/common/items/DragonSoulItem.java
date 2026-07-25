@@ -99,7 +99,7 @@ public class DragonSoulItem extends BlockItem {
 
     @Override
     public @NotNull InteractionResultHolder<ItemStack> use(@NotNull final Level level, @NotNull final Player player, @NotNull final InteractionHand hand) {
-        if (!player.hasEffect(DSEffects.EXHAUSTED_SOUL.value()) && (DragonStateProvider.isDragon(player) || DSDataComponents.DRAGON_SOUL.has(player.getItemInHand(hand)))) {
+        if (!player.hasEffect(DSEffects.EXHAUSTED_SOUL.get()) && (DragonStateProvider.isDragon(player) || DSDataComponents.DRAGON_SOUL.has(player.getItemInHand(hand)))) {
             player.startUsingItem(hand);
             return InteractionResultHolder.success(player.getItemInHand(hand));
         } else {
@@ -218,7 +218,7 @@ public class DragonSoulItem extends BlockItem {
         }
 
         if (!player.isCreative()) {
-            player.addEffect(new MobEffectInstance(DSEffects.EXHAUSTED_SOUL.value(), COOLDOWN, 0, false, true, true));
+            player.addEffect(new MobEffectInstance(DSEffects.EXHAUSTED_SOUL.get(), COOLDOWN, 0, false, true, true));
         }
 
         if (player instanceof ServerPlayer serverPlayer) {

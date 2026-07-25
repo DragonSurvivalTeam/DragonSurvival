@@ -31,7 +31,7 @@ public class BurnEffect extends ModifiableMobEffect {
 
     @Override
     public boolean applyEffectTick(final LivingEntity entity, int amplifier) {
-        if (entity.fireImmune() || entity.isEyeInFluidType(ForgeMod.WATER_TYPE.value()) || entity.isInWaterRainOrBubble()) {
+        if (entity.fireImmune() || entity.isEyeInFluidType(ForgeMod.WATER_TYPE.get()) || entity.isInWaterRainOrBubble()) {
             return false;
         }
 

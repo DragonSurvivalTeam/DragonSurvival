@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.At;
 public abstract class ItemCooldownsMixin {
     @ModifyReturnValue(method = "isOnCooldown", at = @At("RETURN"))
     private boolean dragonSurvival$overrideDragonSoulCheck(final boolean original, @Local(argsOnly = true) final Item item) {
-        if (item == DSItems.DRAGON_SOUL.value()) {
+        if (item == DSItems.DRAGON_SOUL.get()) {
             // We only use the item cooldown for the visuals
             return false;
         }

@@ -60,18 +60,18 @@ public class BlockLootTableSubProvider extends BlockLootSubProvider {
                     return createTreasureBlockLoot(block);
                 } else if (block instanceof SkeletonPieceBlock skeleton) {
                     return switch (skeleton.type()) {
-                        case SkeletonPieceBlock.Type.CHEST -> createSingleItemTable(DSItems.STAR_BONE.value(), UniformGenerator.between(3, 6));
-                        case SkeletonPieceBlock.Type.LEG_1, SkeletonPieceBlock.Type.NECK_2 -> createSingleItemTable(DSItems.STAR_BONE.value(), UniformGenerator.between(1, 3));
-                        case SkeletonPieceBlock.Type.LEG_2, SkeletonPieceBlock.Type.NECK_1 -> createSingleItemTable(DSItems.STAR_BONE.value(), UniformGenerator.between(1, 2));
-                        case SkeletonPieceBlock.Type.LEG_3 -> createSingleItemTable(DSItems.STAR_BONE.value(), ConstantValue.exactly(1));
-                        case SkeletonPieceBlock.Type.NECK_3 -> createSingleItemTable(DSItems.STAR_BONE.value(), UniformGenerator.between(1, 4));
-                        case SkeletonPieceBlock.Type.PELVIS -> createSingleItemTable(DSItems.STAR_BONE.value(), UniformGenerator.between(2, 4));
-                        case SkeletonPieceBlock.Type.SKULL_1, SkeletonPieceBlock.Type.SKULL_2 -> createSingleItemTable(DSItems.STAR_BONE.value(), UniformGenerator.between(1, 5));
-                        default -> createSingleItemTable(DSItems.STAR_BONE.value());
+                        case SkeletonPieceBlock.Type.CHEST -> createSingleItemTable(DSItems.STAR_BONE.get(), UniformGenerator.between(3, 6));
+                        case SkeletonPieceBlock.Type.LEG_1, SkeletonPieceBlock.Type.NECK_2 -> createSingleItemTable(DSItems.STAR_BONE.get(), UniformGenerator.between(1, 3));
+                        case SkeletonPieceBlock.Type.LEG_2, SkeletonPieceBlock.Type.NECK_1 -> createSingleItemTable(DSItems.STAR_BONE.get(), UniformGenerator.between(1, 2));
+                        case SkeletonPieceBlock.Type.LEG_3 -> createSingleItemTable(DSItems.STAR_BONE.get(), ConstantValue.exactly(1));
+                        case SkeletonPieceBlock.Type.NECK_3 -> createSingleItemTable(DSItems.STAR_BONE.get(), UniformGenerator.between(1, 4));
+                        case SkeletonPieceBlock.Type.PELVIS -> createSingleItemTable(DSItems.STAR_BONE.get(), UniformGenerator.between(2, 4));
+                        case SkeletonPieceBlock.Type.SKULL_1, SkeletonPieceBlock.Type.SKULL_2 -> createSingleItemTable(DSItems.STAR_BONE.get(), UniformGenerator.between(1, 5));
+                        default -> createSingleItemTable(DSItems.STAR_BONE.get());
                     };
                 } else if (block instanceof DragonBeacon) {
                     // We want all dragon beacons to drop empty dragon beacons instead
-                    return createSingleItemTable(DSBlocks.DRAGON_BEACON.value());
+                    return createSingleItemTable(DSBlocks.DRAGON_BEACON.get());
                 } else if (block instanceof VaultBlock || block instanceof PrimordialAnchorBlock) {
                     // Vaults and Primordial Anchors should not drop anything
                     return LootTable.lootTable();

@@ -61,6 +61,6 @@ public class HelmetBlock extends Block implements EntityBlock {
 
     @Override
     public @Nullable BlockEntity newBlockEntity(@NotNull BlockPos pPos, @NotNull BlockState pState) {
-        return DSBlockEntities.HELMET.value().create(pPos, pState);
+        return DSBlockEntities.HELMET.get().create(pPos, pState);
     }
 }

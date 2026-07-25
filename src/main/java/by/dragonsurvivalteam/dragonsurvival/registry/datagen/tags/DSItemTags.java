@@ -80,7 +80,7 @@ public class DSItemTags extends ItemTagsProvider {
         tagDragonSpeciesFood(provider);
 
         DSItems.REGISTRY.getEntries().forEach(holder -> {
-            Item item = holder.value();
+            Item item = holder.get();
 
             if (item instanceof LightDragonArmorItem) {
                 tag(LIGHT_ARMOR).add(item);
@@ -100,19 +100,19 @@ public class DSItemTags extends ItemTagsProvider {
                 .add(Items.GLOWSTONE);
 
         tag(ACTIVATES_DRAGON_BEACON)
-                .add(DSItems.BEACON_ACTIVATOR.value());
+                .add(DSItems.BEACON_ACTIVATOR.get());
 
         tag(UNCOMMON_ARMOR);
         tag(RARE_ARMOR);
         tag(EPIC_ARMOR);
 
         tag(CHARRED_FOOD)
-                .add(DSItems.CHARGED_COAL.value())
-                .add(DSItems.CHARGED_SOUP.value())
-                .add(DSItems.CHARRED_MEAT.value())
-                .add(DSItems.CHARRED_MUSHROOM.value())
-                .add(DSItems.CHARRED_SEAFOOD.value())
-                .add(DSItems.CHARRED_VEGETABLE.value());
+                .add(DSItems.CHARGED_COAL.get())
+                .add(DSItems.CHARGED_SOUP.get())
+                .add(DSItems.CHARRED_MEAT.get())
+                .add(DSItems.CHARRED_MUSHROOM.get())
+                .add(DSItems.CHARRED_SEAFOOD.get())
+                .add(DSItems.CHARRED_VEGETABLE.get());
 
         tag(COLD_ITEMS)
                 .add(Items.SNOWBALL)
@@ -131,20 +131,20 @@ public class DSItemTags extends ItemTagsProvider {
                 .add(Items.ELYTRA);
 
         tag(Tags.Items.HIDDEN_FROM_RECIPE_VIEWERS)
-                .add(DSItems.MAGIC_STICK.value())
-                .add(DSItems.BOLAS.value())
-                .add(DSItems.HUNTING_NET.value())
-                .add(DSItems.LIGHTNING_TEXTURE_ITEM.value())
-                .add(DSItems.FOREST_ICON.value())
-                .add(DSItems.CAVE_ICON.value())
-                .add(DSItems.SEA_ICON.value())
-                .add(DSItems.FOREST_FULL_ICON.value())
-                .add(DSItems.CAVE_FULL_ICON.value())
-                .add(DSItems.SEA_FULL_ICON.value())
-                .add(DSItems.ACTIVATED_DRAGON_BEACON.value())
-                .add(DSItems.CAVE_BEACON.value())
-                .add(DSItems.FOREST_BEACON.value())
-                .add(DSItems.SEA_BEACON.value());
+                .add(DSItems.MAGIC_STICK.get())
+                .add(DSItems.BOLAS.get())
+                .add(DSItems.HUNTING_NET.get())
+                .add(DSItems.LIGHTNING_TEXTURE_ITEM.get())
+                .add(DSItems.FOREST_ICON.get())
+                .add(DSItems.CAVE_ICON.get())
+                .add(DSItems.SEA_ICON.get())
+                .add(DSItems.FOREST_FULL_ICON.get())
+                .add(DSItems.CAVE_FULL_ICON.get())
+                .add(DSItems.SEA_FULL_ICON.get())
+                .add(DSItems.ACTIVATED_DRAGON_BEACON.get())
+                .add(DSItems.CAVE_BEACON.get())
+                .add(DSItems.FOREST_BEACON.get())
+                .add(DSItems.SEA_BEACON.get());
 
         copy(DSBlockTags.DRAGON_BONES, Tags.Items.HIDDEN_FROM_RECIPE_VIEWERS);
 
@@ -184,7 +184,7 @@ public class DSItemTags extends ItemTagsProvider {
 
     private void addToVanillaTags() {
         DSItems.REGISTRY.getEntries().forEach(holder -> {
-            Item item = holder.value();
+            Item item = holder.get();
 
             if (item instanceof ArmorItem armor) {
                 switch (armor.getEquipmentSlot()) {

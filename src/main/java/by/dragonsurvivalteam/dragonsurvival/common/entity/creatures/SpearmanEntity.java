@@ -157,7 +157,7 @@ public class SpearmanEntity extends Hunter {
         if (!this.isAlive()) {
             return super.mobInteract(pPlayer, pHand);
         } else {
-            if (itemstack.getItem() == DSItems.SPEARMAN_PROMOTION.value()) {
+            if (itemstack.getItem() == DSItems.SPEARMAN_PROMOTION.get()) {
                 if (!this.level().isClientSide) {
                     // Copied from witch conversion code
                     Mob leader = DSEntities.HUNTER_LEADER.get().create(this.level());

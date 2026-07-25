@@ -56,9 +56,9 @@ public class AncientDatapacks {
                         Modifier.perWithBase(Attributes.STEP_HEIGHT, 0.5f, 0.015f, AttributeOperation.ADD_VALUE)
                 ),
                 List.of(
-                        GrowthItem.create(Functions.hoursToTicks(1), DSItems.ELDER_DRAGON_HEART.value()),
-                        GrowthItem.create(Functions.hoursToTicks(-1), DSItems.STAR_BONE.value()),
-                        GrowthItem.create(0, DSItems.STAR_HEART.value())
+                        GrowthItem.create(Functions.hoursToTicks(1), DSItems.ELDER_DRAGON_HEART.get()),
+                        GrowthItem.create(Functions.hoursToTicks(-1), DSItems.STAR_BONE.get()),
+                        GrowthItem.create(0, DSItems.STAR_HEART.get())
                 ),
                 Optional.of(EntityCondition.defaultNaturalGrowthBlocker()),
                 Optional.of(new MiscCodecs.DestructionData(EntityPredicate.Builder.entity().build(), BlockPredicate.matchesTag(DSBlockTags.LARGE_DRAGON_DESTRUCTIBLE), 120, 120, 0.05))
