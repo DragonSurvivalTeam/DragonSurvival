@@ -23,7 +23,7 @@ public class ServerPlayerStatusSync {
 
         Player player = event.player;
 
-        if (!player.isAddedToLevel() || !player.isAlive()) {
+        if (!player.isAddedToWorld() || !player.isAlive()) {
             return;
         }
 

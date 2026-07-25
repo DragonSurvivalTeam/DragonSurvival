@@ -30,7 +30,7 @@ public record BonemealEffect(LevelBasedValue attempts, LevelBasedValue probabili
             BlockState state = dragon.serverLevel().getBlockState(position);
 
             if (state.getBlock() instanceof BonemealableBlock bonemealableBlock) {
-                if (!bonemealableBlock.isValidBonemealTarget(dragon.level(), position, state)) {
+                if (!bonemealableBlock.isValidBonemealTarget(dragon.level(), position, state, false)) {
                     return;
                 }
 

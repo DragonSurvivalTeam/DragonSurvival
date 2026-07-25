@@ -8,4 +8,7 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 public interface ServerPlayerGameModeAccess {
     @Accessor("gameTicks")
     int dragonSurvival$getGameTicks();
+
+    @Accessor("isDestroyingBlock")
+    boolean dragonSurvival$isDestroyingBlock();
 }

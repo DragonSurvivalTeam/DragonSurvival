@@ -20,7 +20,6 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface ProjectileEffect<T> {
     LootContextParamSet POSITION_CONTEXT = new LootContextParamSet.Builder()
@@ -63,7 +62,7 @@ public interface ProjectileEffect<T> {
                 .withParameter(LootContextParams.ORIGIN, origin)
                 .withParameter(LootContextParams.BLOCK_STATE, level.getBlockState(BlockPos.containing(origin)))
                 .create(POSITION_CONTEXT);
-        return new LootContext.Builder(parameters).create(Optional.empty());
+        return new LootContext.Builder(parameters).create(null);
     }
 
     static LootContext entityContext(final ServerLevel level, final Projectile projectile, final Entity target) {
@@ -72,7 +71,7 @@ public interface ProjectileEffect<T> {
                 .withParameter(LootContextParams.THIS_ENTITY, target)
                 .withParameter(LootContextParams.ORIGIN, target.position())
                 .create(ENTITY_CONTEXT);
-        return new LootContext.Builder(parameters).create(Optional.empty());
+        return new LootContext.Builder(parameters).create(null);
     }
 
     default boolean applyGeneric(final Projectile projectile, final Object target, final int level) {

@@ -10,5 +10,5 @@ import net.minecraftforge.registries.DeferredRegister;
 public class DSStructurePlacementTypes {
     public static final DeferredRegister<StructurePlacementType<?>> REGISTRY = DeferredRegister.create(Registries.STRUCTURE_PLACEMENT, DragonSurvival.MODID);
 
-    public static final RegistryObject<StructurePlacementType<AdvancedRandomSpread>> ADVANCED_RANDOM_SPREAD = REGISTRY.register("advanced_random_spread", () -> () -> AdvancedRandomSpread.CODEC);
+    public static final RegistryObject<StructurePlacementType<AdvancedRandomSpread>> ADVANCED_RANDOM_SPREAD = REGISTRY.register("advanced_random_spread", () -> () -> AdvancedRandomSpread.CODEC.codec());
 }

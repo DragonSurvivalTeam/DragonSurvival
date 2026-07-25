@@ -15,7 +15,6 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 
 import java.util.List;
-import java.util.Optional;
 
 public record ConditionUpgrade(List<LootItemCondition> conditions, boolean requirePrevious) implements UpgradeType<Void> {
     public static final MapCodec<ConditionUpgrade> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
@@ -64,7 +63,7 @@ public record ConditionUpgrade(List<LootItemCondition> conditions, boolean requi
                 .withParameter(LootContextParams.ORIGIN, dragon.position())
                 .withParameter(LootContextParams.TOOL, dragon.getMainHandItem())
                 .create(CONTEXT);
-        return new LootContext.Builder(parameters).create(Optional.empty());
+        return new LootContext.Builder(parameters).create(null);
     }
 
     @Override

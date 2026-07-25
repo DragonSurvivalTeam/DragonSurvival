@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.util.proxy;
 
+import by.dragonsurvivalteam.dragonsurvival.mixins.ServerPlayerGameModeAccess;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -22,7 +23,7 @@ public class ServerProxy implements Proxy {
     @Override
     public boolean isMining(final Player player) {
         if (player instanceof ServerPlayer serverPlayer) {
-            return serverPlayer.gameMode.isDestroyingBlock;
+            return ((ServerPlayerGameModeAccess) serverPlayer.gameMode).dragonSurvival$isDestroyingBlock();
         }
 
         return false;

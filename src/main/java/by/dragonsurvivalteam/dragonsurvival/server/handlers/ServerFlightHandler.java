@@ -211,7 +211,7 @@ public class ServerFlightHandler {
             float damage = (float) (lostSpeed * collisionDamageSpeedFactor - collisionDamageThreshold);
 
             if (damage > 0) {
-                player.playSound(player.getFallDamageSound((int) damage), 1, 1);
+                player.playSound(damage > 4 ? player.getFallSounds().big() : player.getFallSounds().small(), 1, 1);
                 player.hurt(player.damageSources().flyIntoWall(), damage);
                 FlightData.getData(player).areWingsSpread = false;
                 PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new SyncWingsSpread(player.getId(), false));

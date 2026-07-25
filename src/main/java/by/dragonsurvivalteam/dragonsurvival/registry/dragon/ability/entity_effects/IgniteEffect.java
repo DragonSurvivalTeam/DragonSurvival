@@ -14,7 +14,8 @@ public record IgniteEffect(LevelBasedValue igniteTicks) implements AbilityEntity
 
     @Override
     public void apply(final ServerPlayer dragon, final DragonAbilityInstance ability, final Entity target) {
-        target.igniteForTicks((int) igniteTicks().calculate(ability.level()));
+        int ticks = (int) igniteTicks().calculate(ability.level());
+        target.setRemainingFireTicks(Math.max(target.getRemainingFireTicks(), ticks));
     }
 
     @Override
