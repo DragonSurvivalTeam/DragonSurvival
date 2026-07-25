@@ -219,7 +219,7 @@ public class DragonStateHandler extends EntityStateHandler {
             return;
         }
 
-        if (!forceUpdate && oldGrowth == this.growth && oldStage != null && dragonStage.is(oldStage)) {
+        if (!forceUpdate && oldGrowth == this.growth && oldStage != null && dragonStage.value().equals(oldStage.value())) {
             // There is no need to refresh the dimensions / fudge the position in this case
             // the visual size is only for the client (rendering) and therefor doesn't cause position desync
             return;
@@ -670,7 +670,7 @@ public class DragonStateHandler extends EntityStateHandler {
         ResourceKey<DragonSpecies> species = ResourceHelper.decodeKey(provider, DragonSpecies.REGISTRY, tag, DRAGON_SPECIES);
 
         if (species != null) {
-            dragonSpecies = provider.holderOrThrow(species);
+            dragonSpecies = ResourceHelper.getOrThrow(provider, species);
         } else {
             dragonSpecies = null;
         }
@@ -678,7 +678,7 @@ public class DragonStateHandler extends EntityStateHandler {
         ResourceKey<DragonBody> body = ResourceHelper.decodeKey(provider, DragonBody.REGISTRY, tag, DRAGON_BODY);
 
         if (body != null) {
-            dragonBody = provider.holderOrThrow(body);
+            dragonBody = ResourceHelper.getOrThrow(provider, body);
         } else {
             dragonBody = null;
         }
@@ -686,7 +686,7 @@ public class DragonStateHandler extends EntityStateHandler {
         ResourceKey<DragonStage> stage = ResourceHelper.decodeKey(provider, DragonStage.REGISTRY, tag, DRAGON_STAGE);
 
         if (stage != null) {
-            dragonStage = provider.holderOrThrow(stage);
+            dragonStage = ResourceHelper.getOrThrow(provider, stage);
         } else {
             dragonStage = null;
         }

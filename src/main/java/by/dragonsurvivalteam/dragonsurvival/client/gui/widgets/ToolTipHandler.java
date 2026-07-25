@@ -132,7 +132,7 @@ public class ToolTipHandler {
         List<Component> dragonFoodTooltips = new ArrayList<>();
 
         provider.lookupOrThrow(DragonSpecies.REGISTRY).listElements().forEach(species -> {
-            if (playerSpecies != null && species.is(playerSpecies)) {
+            if (playerSpecies != null && species.value().equals(playerSpecies.value())) {
                 return;
             }
 

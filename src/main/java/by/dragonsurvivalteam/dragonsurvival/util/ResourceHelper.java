@@ -24,6 +24,10 @@ public class ResourceHelper {
         return getRegistry(provider, registryKey(key)).get(key);
     }
 
+    public static <T> Holder.Reference<T> getOrThrow(@Nullable final HolderLookup.Provider provider, final ResourceKey<T> key) {
+        return getRegistry(provider, registryKey(key)).getOrThrow(key);
+    }
+
     public static <T> List<Holder.Reference<T>> all(@Nullable final HolderLookup.Provider provider, final ResourceKey<Registry<T>> key) {
         return getRegistry(provider, key).listElements().toList();
     }

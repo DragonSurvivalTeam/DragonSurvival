@@ -76,7 +76,7 @@ public record SyncComplete(int playerId, CompoundTag data) implements CustomPack
             // 2. When the player reverts to human in the dragon altar screen
             // In both of these cases, we want to make sure to refresh the magic data and penalty supply if the server isn't set to save it
 
-            if (previousType == null || !previousType.is(handler.species())) {
+            if (previousType == null || !previousType.value().equals(handler.species().value())) {
                 PenaltySupply.clear(player);
                 handler.refreshMagicData(player, false);
             }

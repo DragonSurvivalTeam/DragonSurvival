@@ -293,7 +293,7 @@ public class DragonSkinsScreen extends Screen {
 
         if (!DragonSpecies.isBuiltIn(handler.speciesKey())) {
             // TODO :: maybe don't throw and find some alternative, in case cave species is removed?
-            handler.setSpecies(null, player.level().registryAccess().holderOrThrow(BuiltInDragonSpecies.CAVE_DRAGON));
+                handler.setSpecies(null, ResourceHelper.getOrThrow(player.level().registryAccess(), BuiltInDragonSpecies.CAVE_DRAGON));
         }
 
         if (!playerHandler.body().value().model().equals(DragonBody.DEFAULT_MODEL)) {
@@ -347,7 +347,7 @@ public class DragonSkinsScreen extends Screen {
             }
 
             boolean alreadyUsingDefaults = handler.getCurrentSkinPreset().isStageUsingDefaultSkin(dragonStage.unwrapKey().orElseThrow());
-            dragonStage = Objects.requireNonNull(player).level().registryAccess().holderOrThrow(Objects.requireNonNull(nextLevel));
+                dragonStage = ResourceHelper.getOrThrow(Objects.requireNonNull(player).level().registryAccess(), Objects.requireNonNull(nextLevel));
             handler.setStage(null, dragonStage);
             updateHandlerToUseCorrectSkinData();
             handler.getCurrentSkinPreset().setAllStagesToUseDefaultSkin(alreadyUsingDefaults);
@@ -369,7 +369,7 @@ public class DragonSkinsScreen extends Screen {
             }
 
             boolean alreadyUsingDefaults = handler.getCurrentSkinPreset().isStageUsingDefaultSkin(dragonStage.unwrapKey().orElseThrow());
-            dragonStage = Objects.requireNonNull(player).level().registryAccess().holderOrThrow(Objects.requireNonNull(nextLevel));
+                dragonStage = ResourceHelper.getOrThrow(Objects.requireNonNull(player).level().registryAccess(), Objects.requireNonNull(nextLevel));
             handler.setStage(null, dragonStage);
             updateHandlerToUseCorrectSkinData();
             handler.getCurrentSkinPreset().setAllStagesToUseDefaultSkin(alreadyUsingDefaults);
@@ -438,7 +438,7 @@ public class DragonSkinsScreen extends Screen {
                     continue;
                 }
 
-                Optional<Holder.Reference<DragonStage>> stage = player.level().registryAccess().holder(skin.first);
+        Optional<Holder.Reference<DragonStage>> stage = ResourceHelper.get(player.level().registryAccess(), skin.first);
 
                 if (stage.isEmpty()) {
                     continue;

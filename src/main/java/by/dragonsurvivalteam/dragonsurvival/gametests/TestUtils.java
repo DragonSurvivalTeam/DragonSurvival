@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.gametests;
 
+import by.dragonsurvivalteam.dragonsurvival.util.ResourceHelper;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.config.ConfigHandler;
@@ -61,17 +62,17 @@ public class TestUtils {
     public static void setToDragon(final GameTestHelper helper, final Player player, final ResourceKey<DragonSpecies> dragonSpecies, final ResourceKey<DragonBody> dragonBody, final ResourceKey<DragonStage> dragonStage) {
         DragonStateHandler data = DragonStateProvider.getData(player);
 
-        Holder<DragonSpecies> species = player.level().registryAccess().holderOrThrow(dragonSpecies);
+        Holder<DragonSpecies> species = ResourceHelper.getOrThrow(player.level().registryAccess(), dragonSpecies);
         data.setSpecies(player, species);
         helper.assertTrue(data.species().is(dragonSpecies), String.format("Dragon species was [%s] - expected [%s]", data.species(), species));
 
-        Holder<DragonBody> body = player.level().registryAccess().holderOrThrow(dragonBody);
+        Holder<DragonBody> body = ResourceHelper.getOrThrow(player.level().registryAccess(), dragonBody);
         data.setBody(player, body);
         helper.assertTrue(DragonUtils.isBody(data, body), String.format("Dragon type was [%s] - expected [%s]", data.body(), dragonBody));
 
-        Holder<DragonStage> stage = player.level().registryAccess().holderOrThrow(dragonStage);
+        Holder<DragonStage> stage = ResourceHelper.getOrThrow(player.level().registryAccess(), dragonStage);
         data.setStage(player, stage);
-        helper.assertTrue(data.stage().is(stage), String.format("Dragon stage was [%s] - expected [%s]", data.stage(), stage));
+        helper.assertTrue(data.stage().value().equals(stage.value()), String.format("Dragon stage was [%s] - expected [%s]", data.stage(), stage));
 
         helper.assertTrue(data.isDragon(), "Player is not a dragon - expected player to be a dragon");
 

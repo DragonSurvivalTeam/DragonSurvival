@@ -46,7 +46,7 @@ public class DragonUtils {
             return false;
         }
 
-        return playerBody.is(typeToCheck);
+        return playerBody.value().equals(typeToCheck.value());
     }
 
     public static boolean isSpecies(final DragonStateHandler handler, final ResourceKey<DragonSpecies> typeToCheck) {
