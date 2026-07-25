@@ -4,6 +4,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.predicates.CustomPredi
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.predicates.DragonPredicate;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.predicates.EntityCheckPredicate;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.predicates.NearbyEntityPredicate;
+import by.dragonsurvivalteam.dragonsurvival.mixins.EntityFlagsPredicateAccess;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import net.minecraft.advancements.critereon.BlockPredicate;
 import net.minecraft.advancements.critereon.EntityEquipmentPredicate;
@@ -51,67 +52,71 @@ public class EntityCondition {
     }
 
     public static EntityPredicate isOnBlock(final TagKey<Block> tag) {
-        return EntityPredicate.Builder.entity().steppingOn(LocationPredicate.Builder.location().setBlock(BlockPredicate.Builder.block().of(tag))).build();
+        return EntityPredicate.Builder.entity().steppingOn(LocationPredicate.Builder.location().setBlock(BlockPredicate.Builder.block().of(tag).build()).build()).build();
     }
 
     public static EntityPredicate isOnBlock(final Block... blocks) {
-        return EntityPredicate.Builder.entity().steppingOn(LocationPredicate.Builder.location().setBlock(BlockPredicate.Builder.block().of(blocks))).build();
+        return EntityPredicate.Builder.entity().steppingOn(LocationPredicate.Builder.location().setBlock(BlockPredicate.Builder.block().of(blocks).build()).build()).build();
     }
 
     public static EntityPredicate isOnBlock(final TagKey<Block> block, final Property<?> property, final String value) {
         return EntityPredicate.Builder.entity().steppingOn(LocationPredicate.Builder.location().setBlock(
-                BlockPredicate.Builder.block().of(block).setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(property, value))
-        )).build();
+                BlockPredicate.Builder.block().of(block).setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(property, value).build()).build()
+        ).build()).build();
     }
 
     public static EntityPredicate isOnBlock(final TagKey<Block> block, final Property<Integer> property, final int value) {
         return EntityPredicate.Builder.entity().steppingOn(LocationPredicate.Builder.location().setBlock(
-                BlockPredicate.Builder.block().of(block).setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(property, value))
-        )).build();
+                BlockPredicate.Builder.block().of(block).setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(property, value).build()).build()
+        ).build()).build();
     }
 
     public static EntityPredicate isOnBlock(final TagKey<Block> block, final Property<Boolean> property, final boolean value) {
         return EntityPredicate.Builder.entity().steppingOn(LocationPredicate.Builder.location().setBlock(
-                BlockPredicate.Builder.block().of(block).setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(property, value))
-        )).build();
+                BlockPredicate.Builder.block().of(block).setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(property, value).build()).build()
+        ).build()).build();
     }
 
     public static <T extends Comparable<T> & StringRepresentable> EntityPredicate isOnBlock(final TagKey<Block> block, final Property<T> property, final T value) {
         return EntityPredicate.Builder.entity().steppingOn(LocationPredicate.Builder.location().setBlock(
-                BlockPredicate.Builder.block().of(block).setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(property, value))
-        )).build();
+                BlockPredicate.Builder.block().of(block).setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(property, value).build()).build()
+        ).build()).build();
     }
 
     public static EntityPredicate isOnBlock(final Block block, final Property<?> property, final String value) {
         return EntityPredicate.Builder.entity().steppingOn(LocationPredicate.Builder.location().setBlock(
-                BlockPredicate.Builder.block().of(block).setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(property, value))
-        )).build();
+                BlockPredicate.Builder.block().of(block).setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(property, value).build()).build()
+        ).build()).build();
     }
 
     public static EntityPredicate isOnBlock(final Block block, final Property<Integer> property, final int value) {
         return EntityPredicate.Builder.entity().steppingOn(LocationPredicate.Builder.location().setBlock(
-                BlockPredicate.Builder.block().of(block).setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(property, value))
-        )).build();
+                BlockPredicate.Builder.block().of(block).setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(property, value).build()).build()
+        ).build()).build();
     }
 
     public static EntityPredicate isOnBlock(final Block block, final Property<Boolean> property, final boolean value) {
         return EntityPredicate.Builder.entity().steppingOn(LocationPredicate.Builder.location().setBlock(
-                BlockPredicate.Builder.block().of(block).setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(property, value))
-        )).build();
+                BlockPredicate.Builder.block().of(block).setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(property, value).build()).build()
+        ).build()).build();
     }
 
     public static <T extends Comparable<T> & StringRepresentable> EntityPredicate isOnBlock(final Block block, final Property<T> property, final T value) {
         return EntityPredicate.Builder.entity().steppingOn(LocationPredicate.Builder.location().setBlock(
-                BlockPredicate.Builder.block().of(block).setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(property, value))
-        )).build();
+                BlockPredicate.Builder.block().of(block).setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(property, value).build()).build()
+        ).build()).build();
     }
 
     public static EntityPredicate isInBlock(final TagKey<Block> tag) {
-        return EntityPredicate.Builder.entity().located(LocationPredicate.Builder.location().setBlock(BlockPredicate.Builder.block().of(tag))).build();
+        return EntityPredicate.Builder.entity().located(LocationPredicate.Builder.location().setBlock(BlockPredicate.Builder.block().of(tag).build()).build()).build();
     }
 
     public static EntityPredicate isInFluid(final HolderSet<Fluid> fluids) {
-        return EntityPredicate.Builder.entity().located(LocationPredicate.Builder.location().setFluid(FluidPredicate.Builder.fluid().of(fluids))).build();
+        if (!(fluids instanceof HolderSet.Named<Fluid> named)) {
+            throw new IllegalArgumentException("The 1.20.1 fluid predicate requires a named fluid tag");
+        }
+
+        return EntityPredicate.Builder.entity().located(LocationPredicate.Builder.location().setFluid(FluidPredicate.Builder.fluid().of(named.key()).build()).build()).build();
     }
 
     public static EntityPredicate isEyeInFluid(final Holder<FluidType> fluid) {
@@ -131,11 +136,13 @@ public class EntityCondition {
     }
 
     public static EntityPredicate isInLight(int lightLevel) {
-        return EntityPredicate.Builder.entity().located(LocationPredicate.Builder.location().setLight(LightPredicate.Builder.light().setComposite(MinMaxBounds.Ints.atLeast(lightLevel)))).build();
+        return EntityPredicate.Builder.entity().located(LocationPredicate.Builder.location().setLight(LightPredicate.Builder.light().setComposite(MinMaxBounds.Ints.atLeast(lightLevel)).build()).build()).build();
     }
 
     public static EntityPredicate isOnGround(boolean isOnGround) {
-        return EntityPredicate.Builder.entity().flags(EntityFlagsPredicate.Builder.flags().setOnGround(isOnGround)).build();
+        EntityFlagsPredicate flags = new EntityFlagsPredicate(null, null, null, null, null);
+        ((EntityFlagsPredicateAccess) flags).dragonsurvival$setOnGround(isOnGround);
+        return EntityPredicate.Builder.entity().flags(flags).build();
     }
 
     public static EntityPredicate isMarked(boolean isMarked) {
@@ -151,11 +158,11 @@ public class EntityCondition {
     }
 
     public static EntityPredicate isNearbyTo(int radius, final EntityType<?>... types) {
-        return EntityPredicate.Builder.entity().subPredicate(CustomPredicates.Builder.start().isNearbyEntity(NearbyEntityPredicate.of(radius, EntityType.BEE)).build()).build();
+        return EntityPredicate.Builder.entity().subPredicate(CustomPredicates.Builder.start().isNearbyEntity(NearbyEntityPredicate.of(radius, types)).build()).build();
     }
 
     public static EntityPredicate inDimension(final ResourceKey<Level> dimension) {
-        return EntityPredicate.Builder.entity().located(LocationPredicate.Builder.location().setDimension(dimension)).build();
+        return EntityPredicate.Builder.entity().located(LocationPredicate.Builder.location().setDimension(dimension).build()).build();
     }
 
     public static EntityPredicate hasEffect(final MobEffect... effects) {
@@ -172,13 +179,12 @@ public class EntityCondition {
         EntityEquipmentPredicate.Builder builder = EntityEquipmentPredicate.Builder.equipment();
 
         switch (equipmentSlot) {
-            case MAINHAND -> builder.mainhand(ItemPredicate.Builder.item().of(tag));
-            case OFFHAND -> builder.offhand(ItemPredicate.Builder.item().of(tag));
-            case FEET -> builder.feet(ItemPredicate.Builder.item().of(tag));
-            case LEGS -> builder.legs(ItemPredicate.Builder.item().of(tag));
-            case CHEST -> builder.chest(ItemPredicate.Builder.item().of(tag));
-            case HEAD -> builder.head(ItemPredicate.Builder.item().of(tag));
-            case BODY -> builder.body(ItemPredicate.Builder.item().of(tag));
+            case MAINHAND -> builder.mainhand(ItemPredicate.Builder.item().of(tag).build());
+            case OFFHAND -> builder.offhand(ItemPredicate.Builder.item().of(tag).build());
+            case FEET -> builder.feet(ItemPredicate.Builder.item().of(tag).build());
+            case LEGS -> builder.legs(ItemPredicate.Builder.item().of(tag).build());
+            case CHEST -> builder.chest(ItemPredicate.Builder.item().of(tag).build());
+            case HEAD -> builder.head(ItemPredicate.Builder.item().of(tag).build());
             default -> throw new IllegalArgumentException("Invalid equipment slot: " + equipmentSlot);
         }
 

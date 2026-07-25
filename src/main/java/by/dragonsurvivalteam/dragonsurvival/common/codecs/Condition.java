@@ -10,6 +10,7 @@ import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
@@ -27,13 +28,11 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemEntityPropertyC
 import net.minecraft.world.level.storage.loot.predicates.MatchTool;
 import net.minecraft.world.phys.Vec3;
 
-import java.util.Optional;
-
 public class Condition {
     private static final LootContextParamSet ABILITY_CONTEXT = new LootContextParamSet.Builder()
             .required(LootContextParams.THIS_ENTITY)
             .required(LootContextParams.ORIGIN)
-            .required(LootContextParams.ATTACKING_ENTITY)
+            .required(LootContextParams.KILLER_ENTITY)
             .build();
 
     private static final LootContextParamSet BLOCK_CONTEXT = new LootContextParamSet.Builder()
@@ -51,15 +50,15 @@ public class Condition {
     private static final LootContextParamSet PROJECTILE_CONTEXT = new LootContextParamSet.Builder()
             .required(LootContextParams.THIS_ENTITY)
             .required(LootContextParams.ORIGIN)
-            .required(LootContextParams.ATTACKING_ENTITY)
+            .required(LootContextParams.KILLER_ENTITY)
             .build();
 
     private static final LootContextParamSet DAMAGE_CONTEXT = new LootContextParamSet.Builder()
             .required(LootContextParams.THIS_ENTITY)
             .required(LootContextParams.ORIGIN)
             .required(LootContextParams.DAMAGE_SOURCE)
-            .optional(LootContextParams.ATTACKING_ENTITY)
-            .optional(LootContextParams.DIRECT_ATTACKING_ENTITY)
+            .optional(LootContextParams.KILLER_ENTITY)
+            .optional(LootContextParams.DIRECT_KILLER_ENTITY)
             .optional(LootContextParams.TOOL)
             .build();
 
@@ -68,7 +67,7 @@ public class Condition {
                 .withParameter(LootContextParams.THIS_ENTITY, entity)
                 .withParameter(LootContextParams.ORIGIN, entity.position())
                 .create(ENTITY_CONTEXT);
-        return new LootContext.Builder(parameters).create(Optional.empty());
+        return new LootContext.Builder(parameters).create((ResourceLocation) null);
     }
 
     public static LootContext penaltyContext(final ServerPlayer dragon) {
@@ -76,7 +75,7 @@ public class Condition {
                 .withParameter(LootContextParams.THIS_ENTITY, dragon)
                 .withParameter(LootContextParams.ORIGIN, dragon.position())
                 .create(ENTITY_CONTEXT);
-        return new LootContext.Builder(parameters).create(Optional.empty());
+        return new LootContext.Builder(parameters).create((ResourceLocation) null);
     }
 
     public static LootContext abilityContext(final ServerPlayer dragon) {
@@ -85,11 +84,11 @@ public class Condition {
 
     public static LootContext abilityContext(final ServerPlayer attacker, final Entity entity, final Vec3 origin) {
         LootParams parameters = new LootParams.Builder(attacker.serverLevel())
-                .withParameter(LootContextParams.ATTACKING_ENTITY, attacker)
+                .withParameter(LootContextParams.KILLER_ENTITY, attacker)
                 .withParameter(LootContextParams.THIS_ENTITY, entity)
                 .withParameter(LootContextParams.ORIGIN, origin)
                 .create(ABILITY_CONTEXT);
-        return new LootContext.Builder(parameters).create(Optional.empty());
+        return new LootContext.Builder(parameters).create((ResourceLocation) null);
     }
 
     public static LootContext blockContext(final ServerPlayer dragon, final BlockPos position) {
@@ -103,16 +102,16 @@ public class Condition {
                 .withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(position))
                 .withOptionalParameter(LootContextParams.BLOCK_ENTITY, dragon.serverLevel().getBlockEntity(position))
                 .create(BLOCK_CONTEXT);
-        return new LootContext.Builder(parameters).create(Optional.empty());
+        return new LootContext.Builder(parameters).create((ResourceLocation) null);
     }
 
     public static LootContext projectileContext(final ServerLevel level, final Projectile projectile, final Entity target) {
         LootParams parameters = new LootParams.Builder(level)
-                .withParameter(LootContextParams.ATTACKING_ENTITY, projectile)
+                .withParameter(LootContextParams.KILLER_ENTITY, projectile)
                 .withParameter(LootContextParams.THIS_ENTITY, target)
                 .withParameter(LootContextParams.ORIGIN, target.position())
                 .create(PROJECTILE_CONTEXT);
-        return new LootContext.Builder(parameters).create(Optional.empty());
+        return new LootContext.Builder(parameters).create((ResourceLocation) null);
     }
 
     public static LootContext damageContext(final ServerLevel level, final Entity entity, final DamageSource source, final ItemStack tool) {
@@ -121,10 +120,10 @@ public class Condition {
                 .withParameter(LootContextParams.ORIGIN, entity.position())
                 .withParameter(LootContextParams.DAMAGE_SOURCE, source)
                 .withOptionalParameter(LootContextParams.TOOL, tool)
-                .withOptionalParameter(LootContextParams.ATTACKING_ENTITY, source.getEntity())
-                .withOptionalParameter(LootContextParams.DIRECT_ATTACKING_ENTITY, source.getDirectEntity())
+                .withOptionalParameter(LootContextParams.KILLER_ENTITY, source.getEntity())
+                .withOptionalParameter(LootContextParams.DIRECT_KILLER_ENTITY, source.getDirectEntity())
                 .create(DAMAGE_CONTEXT);
-        return new LootContext.Builder(parameters).create(Optional.empty());
+        return new LootContext.Builder(parameters).create((ResourceLocation) null);
     }
 
     public static LootItemCondition.Builder thisEntity(final EntityPredicate predicate) {
@@ -136,7 +135,7 @@ public class Condition {
     }
 
     public static LootItemCondition.Builder tool(final ItemPredicate predicate) {
-        return () -> new MatchTool(Optional.of(predicate));
+        return () -> new MatchTool(predicate);
     }
 
     // Misc.

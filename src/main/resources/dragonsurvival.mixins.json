@@ -11,6 +11,7 @@
     "ConditionContextMixin",
     "EndPortalBlockMixin",
     "EntityAccessor",
+    "EntityFlagsPredicateMixin",
     "EntityMixin",
     "FireworkRocketItemMixin",
     "FileToIdConverterMixin",
