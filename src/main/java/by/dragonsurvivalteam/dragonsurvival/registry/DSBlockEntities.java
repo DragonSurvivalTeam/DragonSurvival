@@ -8,7 +8,7 @@ import by.dragonsurvivalteam.dragonsurvival.server.tileentity.SourceOfMagicBlock
 import by.dragonsurvivalteam.dragonsurvival.server.tileentity.SourceOfMagicPlaceholder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraftforge.registries.DeferredHolder;
+import net.minecraftforge.registries.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 
 import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
@@ -17,7 +17,7 @@ import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 public class DSBlockEntities {
     public static final DeferredRegister<BlockEntityType<?>> REGISTRY = DeferredRegister.create(BuiltInRegistries.BLOCK_ENTITY_TYPE, MODID);
 
-    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<SourceOfMagicBlockEntity>> SOURCE_OF_MAGIC_TILE_ENTITY = REGISTRY.register(
+    public static final RegistryObject<BlockEntityType<SourceOfMagicBlockEntity>> SOURCE_OF_MAGIC_TILE_ENTITY = REGISTRY.register(
             "dragon_nest", () -> BlockEntityType.Builder.of(
                             SourceOfMagicBlockEntity::new,
                             DSBlocks.CAVE_SOURCE_OF_MAGIC.get(),
@@ -26,7 +26,7 @@ public class DSBlockEntities {
                     .build(null)
     );
 
-    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<SourceOfMagicPlaceholder>> SOURCE_OF_MAGIC_PLACEHOLDER = REGISTRY.register(
+    public static final RegistryObject<BlockEntityType<SourceOfMagicPlaceholder>> SOURCE_OF_MAGIC_PLACEHOLDER = REGISTRY.register(
             "placeholder", () -> BlockEntityType.Builder.of(
                             SourceOfMagicPlaceholder::new,
                             DSBlocks.FOREST_SOURCE_OF_MAGIC.get(),
@@ -35,7 +35,7 @@ public class DSBlockEntities {
                     .build(null)
     );
 
-    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<HelmetBlockEntity>> HELMET = REGISTRY.register(
+    public static final RegistryObject<BlockEntityType<HelmetBlockEntity>> HELMET = REGISTRY.register(
             "knight_helmet", () -> BlockEntityType.Builder.of(
                             HelmetBlockEntity::new,
                             DSBlocks.GRAY_KNIGHT_HELMET.get(),
@@ -44,21 +44,21 @@ public class DSBlockEntities {
                     .build(null)
     );
 
-    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<DragonBeaconBlockEntity>> DRAGON_BEACON = REGISTRY.register(
+    public static final RegistryObject<BlockEntityType<DragonBeaconBlockEntity>> DRAGON_BEACON = REGISTRY.register(
             "dragon_beacon", () -> BlockEntityType.Builder.of(
                             DragonBeaconBlockEntity::new,
                             DSBlocks.DRAGON_BEACON.get())
                     .build(null)
     );
 
-    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<DragonSoulBlockEntity>> DRAGON_SOUL = REGISTRY.register(
+    public static final RegistryObject<BlockEntityType<DragonSoulBlockEntity>> DRAGON_SOUL = REGISTRY.register(
             "dragon_soul", () -> BlockEntityType.Builder.of(
                             DragonSoulBlockEntity::new,
                             DSBlocks.DRAGON_SOUL.get())
                     .build(null)
     );
 
-    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<PrimordialAnchorBlockEntity>> PRIMORDIAL_ANCHOR = REGISTRY.register(
+    public static final RegistryObject<BlockEntityType<PrimordialAnchorBlockEntity>> PRIMORDIAL_ANCHOR = REGISTRY.register(
             "primordial_anchor", () -> BlockEntityType.Builder.of(
                             PrimordialAnchorBlockEntity::new,
                             DSBlocks.PRIMORDIAL_ANCHOR.get())

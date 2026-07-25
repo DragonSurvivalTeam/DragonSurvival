@@ -12,7 +12,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.client.event.RegisterMenuScreensEvent;
 import net.minecraftforge.common.extensions.IMenuTypeExtension;
-import net.minecraftforge.registries.DeferredHolder;
+import net.minecraftforge.registries.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 
 @EventBusSubscriber
@@ -23,8 +23,8 @@ public class DSContainers {
             DragonSurvival.MODID
     );
 
-    public static final DeferredHolder<MenuType<?>, MenuType<SourceOfMagicContainer>> SOURCE_OF_MAGIC_CONTAINER = REGISTRY.register("dragon_nest", () -> IMenuTypeExtension.create(SourceOfMagicContainer::new));
-    public static final DeferredHolder<MenuType<?>, MenuType<DragonContainer>> DRAGON_CONTAINER = REGISTRY.register("dragon_container", () -> new MenuType<>(DragonContainer::new, FeatureFlags.DEFAULT_FLAGS));
+    public static final RegistryObject<MenuType<SourceOfMagicContainer>> SOURCE_OF_MAGIC_CONTAINER = REGISTRY.register("dragon_nest", () -> IMenuTypeExtension.create(SourceOfMagicContainer::new));
+    public static final RegistryObject<MenuType<DragonContainer>> DRAGON_CONTAINER = REGISTRY.register("dragon_container", () -> new MenuType<>(DragonContainer::new, FeatureFlags.DEFAULT_FLAGS));
 
     @SubscribeEvent
     public static void registerScreens(RegisterMenuScreensEvent event) {

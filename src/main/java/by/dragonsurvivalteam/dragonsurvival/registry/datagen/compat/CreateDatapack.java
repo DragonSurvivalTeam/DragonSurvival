@@ -12,7 +12,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.loot.LootTable;
-import net.minecraftforge.registries.DeferredHolder;
+import net.minecraftforge.registries.RegistryObject;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
@@ -38,7 +38,7 @@ public class CreateDatapack extends BlockLootSubProvider {
 
     @Override
     protected @NotNull Iterable<Block> getKnownBlocks() {
-        return DSBlocks.REGISTRY.getEntries().stream().map(DeferredHolder::get)
+        return DSBlocks.REGISTRY.getEntries().stream().map(RegistryObject::get)
                 .filter(block -> block instanceof ModCompat compat && ModID.CREATE.value().equals(compat.getCompatId()))
                 .collect(Collectors.toList());
     }

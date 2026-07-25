@@ -29,7 +29,7 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemBlockStatePrope
 import net.minecraft.world.level.storage.loot.predicates.LootItemEntityPropertyCondition;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
-import net.minecraftforge.registries.DeferredHolder;
+import net.minecraftforge.registries.RegistryObject;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -116,7 +116,7 @@ public class BlockLootTableSubProvider extends BlockLootSubProvider {
 
     @Override
     protected @NotNull Iterable<Block> getKnownBlocks() {
-        return DSBlocks.REGISTRY.getEntries().stream().map(DeferredHolder::get)
+        return DSBlocks.REGISTRY.getEntries().stream().map(RegistryObject::get)
                 .filter(block -> !(block instanceof ModCompat compat) || compat.getCompatId() == null)
                 .collect(Collectors.toList());
     }

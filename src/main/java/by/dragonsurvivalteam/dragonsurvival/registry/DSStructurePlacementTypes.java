@@ -4,11 +4,11 @@ import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.AdvancedRandomSpread;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.levelgen.structure.placement.StructurePlacementType;
-import net.minecraftforge.registries.DeferredHolder;
+import net.minecraftforge.registries.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 
 public class DSStructurePlacementTypes {
     public static final DeferredRegister<StructurePlacementType<?>> REGISTRY = DeferredRegister.create(BuiltInRegistries.STRUCTURE_PLACEMENT, DragonSurvival.MODID);
 
-    public static final DeferredHolder<StructurePlacementType<?>, StructurePlacementType<AdvancedRandomSpread>> ADVANCED_RANDOM_SPREAD = REGISTRY.register("advanced_random_spread", () -> () -> AdvancedRandomSpread.CODEC);
+    public static final RegistryObject<StructurePlacementType<AdvancedRandomSpread>> ADVANCED_RANDOM_SPREAD = REGISTRY.register("advanced_random_spread", () -> () -> AdvancedRandomSpread.CODEC);
 }
