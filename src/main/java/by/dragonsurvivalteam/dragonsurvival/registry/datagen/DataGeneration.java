@@ -7,6 +7,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.DSEnchantments;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.abilities.CaveDragonAbilities;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.abilities.ForestDragonAbilities;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.abilities.SeaDragonAbilities;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.advancements.DSAdvancements;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.compat.CreateDatapack;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.compat.SilentGemsDatapack;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.data_maps.BodyIconProvider;
@@ -179,8 +180,7 @@ public class DataGeneration {
         generator.addProvider(event.includeServer(), new BodyIconProvider(output, lookup));
 
         generator.addProvider(event.includeServer(), new DataBlockModelProvider(output, helper));
-        // TODO :: Re-add this when we update to 1.22
-//        generator.addProvider(event.includeServer(), new AdvancementProvider(output, lookup, helper, List.of(new DSAdvancements())));
+        generator.addProvider(event.includeServer(), new DSAdvancements(output));
 
         // Should run last due to doing weird registry things
         generator.addProvider(event.includeServer(), new DSRecipes(output, lookup));

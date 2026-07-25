@@ -55,6 +55,7 @@ minecraft {
         }
 
         data {
+            property 'dragonsurvival.sourceResources', file('src/main/resources').absolutePath
             args '--mod', mod_id, '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
         }
     }
