@@ -30,7 +30,7 @@ public interface ProjectileEffect<T> {
 
     LootContextParamSet ENTITY_CONTEXT = new LootContextParamSet.Builder()
             .required(LootContextParams.THIS_ENTITY)
-            .required(LootContextParams.ATTACKING_ENTITY)
+            .required(LootContextParams.DIRECT_KILLER_ENTITY)
             .required(LootContextParams.ORIGIN)
             .build();
 
@@ -67,7 +67,7 @@ public interface ProjectileEffect<T> {
 
     static LootContext entityContext(final ServerLevel level, final Projectile projectile, final Entity target) {
         LootParams parameters = new LootParams.Builder(level)
-                .withParameter(LootContextParams.ATTACKING_ENTITY, projectile)
+                .withParameter(LootContextParams.DIRECT_KILLER_ENTITY, projectile)
                 .withParameter(LootContextParams.THIS_ENTITY, target)
                 .withParameter(LootContextParams.ORIGIN, target.position())
                 .create(ENTITY_CONTEXT);
