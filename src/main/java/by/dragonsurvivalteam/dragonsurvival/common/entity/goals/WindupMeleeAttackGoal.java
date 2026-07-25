@@ -49,8 +49,12 @@ public class WindupMeleeAttackGoal extends MeleeAttackGoal {
         }
     }
 
+    protected boolean canPerformAttack(final LivingEntity target) {
+        return isTimeToAttack() && mob.isWithinMeleeAttackRange(target) && mob.getSensing().hasLineOfSight(target);
+    }
+
     @Override
-    protected void checkAndPerformAttack(@NotNull LivingEntity pTarget) {
+    protected void checkAndPerformAttack(@NotNull LivingEntity pTarget, double distanceSqr) {
         // No-op. The way the class hierarchy works I have to do this (throw out the old checkAndPerformAttack system and overlay the new one on top)
         // if I don't want to use a ton of access transformers.
     }
