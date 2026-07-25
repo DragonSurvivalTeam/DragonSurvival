@@ -1,6 +1,5 @@
 package by.dragonsurvivalteam.dragonsurvival.mixins.client;
 
-import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SwimData;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.ClientEffectProvider;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
@@ -9,19 +8,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.common.ForgeMod;
-import net.minecraftforge.fluids.FluidType;
-import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.List;
@@ -72,60 +63,4 @@ public abstract class GuiMixin {
         }
     }
 
-    @Unique private static @Nullable ResourceLocation dragonSurvival$getSpriteForAirBubble(boolean burst) {
-        Player player = Minecraft.getInstance().player;
-
-        //noinspection DataFlowIssue -> player is present
-        FluidType previousFluidType = SwimData.getData(player).previousFluid;
-        FluidType currentFluidType = player.getEyeInFluidType();
-
-        ResourceLocation replacementSprite;
-        FluidType relevantFluid;
-
-        if (ForgeMod.EMPTY_TYPE.getKey() == SwimData.key(currentFluidType)) {
-            relevantFluid = previousFluidType;
-        } else {
-            relevantFluid = currentFluidType;
-        }
-
-        if (burst) {
-            replacementSprite = SwimData.getAirBurstSprite(relevantFluid);
-        } else {
-            replacementSprite = SwimData.getAirSprite(relevantFluid);
-        }
-
-        if (replacementSprite == null) {
-            return null;
-        }
-
-        TextureAtlasSprite sprite = Minecraft.getInstance().getGuiSprites().getSprite(replacementSprite);
-
-        if (sprite.contents().name() != MissingTextureAtlasSprite.getLocation()) {
-            return replacementSprite;
-        }
-
-        return null;
-    }
-
-    @ModifyArg(method = "renderAirLevel", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;blitSprite(Lnet/minecraft/resources/ResourceLocation;IIII)V", ordinal = 0))
-    private ResourceLocation dragonSurvival$modifyAirSprite(ResourceLocation sprite) {
-        ResourceLocation replacementSprite = dragonSurvival$getSpriteForAirBubble(false);
-
-        if (replacementSprite != null) {
-            return replacementSprite;
-        } else {
-            return sprite;
-        }
-    }
-
-    @ModifyArg(method = "renderAirLevel", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;blitSprite(Lnet/minecraft/resources/ResourceLocation;IIII)V", ordinal = 1))
-    private ResourceLocation dragonSurvival$modifyAirBurstSprite(ResourceLocation sprite) {
-        ResourceLocation replacementSprite = dragonSurvival$getSpriteForAirBubble(true);
-
-        if (replacementSprite != null) {
-            return replacementSprite;
-        } else {
-            return sprite;
-        }
-    }
 }

@@ -3,6 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.client.util;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.EntityScale;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.mixins.client.GuiGraphicsAccess;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
@@ -226,6 +227,26 @@ public class RenderingUtils {
         float blue = FastColor.ARGB32.blue(color) / 255f;
 
         RenderSystem.setShaderColor(red, green, blue, alpha);
+    }
+
+    public static ResourceLocation guiSpriteTexture(final ResourceLocation sprite) {
+        if (sprite.equals(MissingTextureAtlasSprite.getLocation())) {
+            return sprite;
+        }
+
+        return sprite.withPrefix("textures/gui/sprites/").withSuffix(".png");
+    }
+
+    public static boolean hasGuiSprite(final ResourceLocation sprite) {
+        return Minecraft.getInstance().getResourceManager().getResource(guiSpriteTexture(sprite)).isPresent();
+    }
+
+    public static void blitGuiSprite(final GuiGraphics graphics, final ResourceLocation sprite, int x, int y, int z, int width, int height) {
+        blitGuiSprite(graphics, sprite, x, y, z, width, height, 1);
+    }
+
+    public static void blitGuiSprite(final GuiGraphics graphics, final ResourceLocation sprite, int x, int y, int z, int width, int height, float alpha) {
+        ((GuiGraphicsAccess) graphics).dragonSurvival$innerBlit(guiSpriteTexture(sprite), x, x + width, y, y + height, z, 0, 1, 0, 1, 1, 1, 1, alpha);
     }
 
     public static void drawGrowthCircle(final GuiGraphics guiGraphics, float x, float y, float radius, int sides, float lineWidthPercent, float percent, float targetPercent, Color innerColor, Color outlineColor, Color addColor, Color subtractColor) {

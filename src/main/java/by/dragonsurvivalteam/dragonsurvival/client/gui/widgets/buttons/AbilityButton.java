@@ -4,6 +4,7 @@ import net.minecraft.util.Mth;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.DragonAbilityScreen;
 import by.dragonsurvivalteam.dragonsurvival.client.render.AbilityAndPenaltyTooltipRenderer;
+import by.dragonsurvivalteam.dragonsurvival.client.util.RenderingUtils;
 import by.dragonsurvivalteam.dragonsurvival.mixins.client.ScreenAccessor;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncDisableAbility;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncSlotAssignment;
@@ -288,7 +289,7 @@ public class AbilityButton extends ExtendedButton {
     }
 
     private void blit(final GuiGraphics graphics, final ResourceLocation texture, int x, int y, int size) {
-        graphics.blit(x, y, 0, size, size, Minecraft.getInstance().getGuiSprites().getSprite(texture), 1, 1, 1, alpha);
+        RenderingUtils.blitGuiSprite(graphics, texture, x, y, 0, size, size, alpha);
     }
 
     /** If the player is dragging any button the buttons shouldn't show their description */

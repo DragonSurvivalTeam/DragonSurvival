@@ -5,6 +5,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscResources;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.ManaHandler;
+import by.dragonsurvivalteam.dragonsurvival.client.util.RenderingUtils;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigRange;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
@@ -300,7 +301,7 @@ public class MagicHUD {
                         graphics.blit(VANILLA_WIDGETS, xPos, posY - 2, -50, uOffset, 0, uWidth, 22, 256, 256);
                         graphics.setColor(1f, 1f, 1f, 1f);
 
-                        graphics.blitSprite(ability.getIcon(), posX + x * sizeX + 3, posY + 1, 0, 16, 16);
+                        RenderingUtils.blitGuiSprite(graphics, ability.getIcon(), posX + x * sizeX + 3, posY + 1, 0, 16, 16);
 
                         float skillCooldown = ability.value().activation().getCooldown(ability.level());
             float currentCooldown = ability.cooldown() - Minecraft.getInstance().getFrameTime();
@@ -424,7 +425,7 @@ public class MagicHUD {
                 graphics.blit(CAST_BAR_FILL, startX + 2, startY + 41, 0, 0, (int) (191 * percentage), 4, 191, 4);
                 graphics.setColor(1, 1, 1, 1);
 
-                graphics.blitSprite(ability.getIcon(), startX + 78, startY + 3, 0, 36, 36);
+                RenderingUtils.blitGuiSprite(graphics, ability.getIcon(), startX + 78, startY + 3, 0, 36, 36);
 
                 graphics.pose().popPose();
             }

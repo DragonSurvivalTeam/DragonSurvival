@@ -66,6 +66,7 @@
     "client.EntityRendererAccessor",
     "client.EntityRendererMixin",
     "client.FrustumAccess",
+    "client.ForgeGuiMixin",
     "client.GameRendererMixin",
     "client.GuiGraphicsAccess",
     "client.GuiMixin",

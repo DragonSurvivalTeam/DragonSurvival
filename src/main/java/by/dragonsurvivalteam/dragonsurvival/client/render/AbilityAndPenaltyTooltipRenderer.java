@@ -126,7 +126,7 @@ public class AbilityAndPenaltyTooltipRenderer {
 
                     if (isEffectHeader(text)) {
                         RenderingUtils.setShaderColor(DSColors.withAlpha(DSColors.GOLD, 1));
-                        graphics.blitSprite(EFFECT_HEADER, startPosition, textY - 4, maxLineWidth - 10, 9);
+                        RenderingUtils.blitGuiSprite(graphics, EFFECT_HEADER, startPosition, textY - 4, 0, maxLineWidth - 10, 9);
                         RenderSystem.setShaderColor(1, 1, 1, 1);
                     } else {
                         graphics.drawString(Minecraft.getInstance().font, text, startPosition, textY, DSColors.GRAY);
@@ -168,7 +168,7 @@ public class AbilityAndPenaltyTooltipRenderer {
             }
         }
 
-        graphics.blitSprite(icon, trueX + 5, trueY + 5, 16, 16);
+        RenderingUtils.blitGuiSprite(graphics, icon, trueX + 5, trueY + 5, 0, 16, 16);
     }
 
     private static boolean isEffectHeader(final FormattedCharSequence text) {
