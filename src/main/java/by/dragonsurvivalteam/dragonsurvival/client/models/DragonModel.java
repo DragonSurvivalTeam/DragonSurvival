@@ -26,7 +26,10 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.ForgeMod;
 import software.bernie.geckolib.core.molang.MolangParser;
+import software.bernie.geckolib.core.molang.MolangQueries;
 import software.bernie.geckolib.model.GeoModel;
+
+import java.util.List;
 
 public class DragonModel extends GeoModel<DragonEntity> {
     /** Factor to multiply the delta yaw and pitch by, needed for scaling for the animations */
@@ -35,10 +38,31 @@ public class DragonModel extends GeoModel<DragonEntity> {
     /** Factor to multiply the delta movement by, needed for scaling for the animations */
     private static final double DELTA_MOVEMENT_FACTOR = 10;
 
+    private static final List<String> REQUIRED_MOLANG_QUERIES = List.of(
+            MolangQueries.MOON_PHASE,
+            "query.body_yaw_change",
+            "query.gravity",
+            "query.head_pitch",
+            "query.head_pitch_change",
+            "query.head_yaw",
+            "query.head_yaw_change",
+            "query.look_angle_x",
+            "query.look_angle_y",
+            "query.player_level",
+            "query.tail_motion_up",
+            "query.x_rotation",
+            "query.y_rotation",
+            "query.z_rotation"
+    );
+
     // FIXME 'dragon_dragon'?
     private final ResourceLocation defaultTexture = DragonSurvival.res("textures/dragon_dragon/newborn.png");
 
     private ResourceLocation overrideTexture;
+
+    public DragonModel() {
+        REQUIRED_MOLANG_QUERIES.forEach(MolangParser.INSTANCE::getVariable);
+    }
 
     @Override
     public void applyMolangQueries(final DragonEntity dragon, double currentTick) {

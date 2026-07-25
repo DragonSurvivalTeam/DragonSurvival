@@ -151,12 +151,17 @@ public interface ByteBufCodecs {
         return new StreamCodec<>() {
             @Override
             public T decode(final ByteBuf buffer) {
-                return friendly(buffer).readWithCodec(NbtOps.INSTANCE, codec);
+                return codec.parse(NbtOps.INSTANCE, TAG.decode(buffer)).getOrThrow(false, message -> {
+                    throw new DecoderException("Failed to decode NBT payload: " + message);
+                });
             }
 
             @Override
             public void encode(final ByteBuf buffer, final T value) {
-                friendly(buffer).writeWithCodec(NbtOps.INSTANCE, codec, value);
+                Tag encoded = codec.encodeStart(NbtOps.INSTANCE, value).getOrThrow(false, message -> {
+                    throw new EncoderException("Failed to encode NBT payload: " + message);
+                });
+                TAG.encode(buffer, encoded);
             }
         };
     }
@@ -166,13 +171,18 @@ public interface ByteBufCodecs {
             @Override
             public T decode(final FriendlyByteBuf buffer) {
                 RegistryAccess access = requireRegistryAccess();
-                return buffer.readWithCodec(RegistryOps.create(NbtOps.INSTANCE, access), codec);
+                return codec.parse(RegistryOps.create(NbtOps.INSTANCE, access), TAG.decode(buffer)).getOrThrow(false, message -> {
+                    throw new DecoderException("Failed to decode registry NBT payload: " + message);
+                });
             }
 
             @Override
             public void encode(final FriendlyByteBuf buffer, final T value) {
                 RegistryAccess access = requireRegistryAccess();
-                buffer.writeWithCodec(RegistryOps.create(NbtOps.INSTANCE, access), codec, value);
+                Tag encoded = codec.encodeStart(RegistryOps.create(NbtOps.INSTANCE, access), value).getOrThrow(false, message -> {
+                    throw new EncoderException("Failed to encode registry NBT payload: " + message);
+                });
+                TAG.encode(buffer, encoded);
             }
         };
     }
