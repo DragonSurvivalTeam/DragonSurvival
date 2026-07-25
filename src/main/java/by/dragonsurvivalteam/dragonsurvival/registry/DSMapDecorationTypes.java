@@ -14,6 +14,6 @@ public class DSMapDecorationTypes {
     public static final DeferredRegister<MapDecorationType> REGISTRY = DeferredRegister.create(BuiltInRegistries.MAP_DECORATION_TYPE, MODID);
 
     public static final Holder<MapDecorationType> DRAGON_HUNTER = REGISTRY.register("dragon_hunter", () -> new MapDecorationType(
-            ResourceLocation.fromNamespaceAndPath(MODID, "dragon_hunter"), true, MapColor.COLOR_RED.col, true, true
+            new ResourceLocation(MODID, "dragon_hunter"), true, MapColor.COLOR_RED.col, true, true
     ));
 }

@@ -54,8 +54,8 @@ public class AltarTypeButton extends Button implements HoverDisableable {
     })
     private static final String HUMAN = Translation.Type.GUI.wrap("altar.info.human");
 
-    private static final ResourceLocation HUMAN_BANNER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/custom/altar/human/altar_icon.png");
-    private static final ResourceLocation LOCKED_BANNER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/altar/blocked_species.png");
+    private static final ResourceLocation HUMAN_BANNER = new ResourceLocation(MODID, "textures/gui/custom/altar/human/altar_icon.png");
+    private static final ResourceLocation LOCKED_BANNER = new ResourceLocation(MODID, "textures/gui/altar/blocked_species.png");
 
     public final @Nullable UnlockableBehavior.SpeciesEntry speciesEntry;
     private final DragonAltarScreen parent;

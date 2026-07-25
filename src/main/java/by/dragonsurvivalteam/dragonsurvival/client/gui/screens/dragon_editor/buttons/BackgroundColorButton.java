@@ -22,8 +22,8 @@ public class BackgroundColorButton extends ExtendedButton {
     @Translation(comments = "Change the background color")
     private static final String BACKGROUND_COLOR = Translation.Type.GUI.wrap("dragon_editor.background_color");
 
-    private static final ResourceLocation BACKGROUND_COLOR_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/editor/gui_color_main.png");
-    private static final ResourceLocation BACKGROUND_COLOR_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/editor/gui_color_hover.png");
+    private static final ResourceLocation BACKGROUND_COLOR_MAIN = new ResourceLocation(MODID, "textures/gui/editor/gui_color_main.png");
+    private static final ResourceLocation BACKGROUND_COLOR_HOVER = new ResourceLocation(MODID, "textures/gui/editor/gui_color_hover.png");
 
     private final DragonEditorScreen screen;
     private BackgroundColorSelectorComponent colorComponent;

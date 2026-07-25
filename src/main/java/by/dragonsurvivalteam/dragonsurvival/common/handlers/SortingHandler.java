@@ -339,7 +339,7 @@ public final class SortingHandler {
             } else if (object instanceof ItemStack stack) {
                 list.add(stack.getItem());
             } else if (object instanceof String string) {
-                Item item = BuiltInRegistries.ITEM.get(ResourceLocation.parse(string));
+                Item item = BuiltInRegistries.ITEM.get(new ResourceLocation(string));
 
                 if (item != Items.AIR) {
                     list.add(item);

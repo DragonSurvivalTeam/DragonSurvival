@@ -55,20 +55,20 @@ public class DSEntityTypeTags extends EntityTypeTagsProvider {
                 .add(EntityType.WOLF)
                 .add(EntityType.HOGLIN)
                 .add(EntityType.BEE)
-                .addOptional(ResourceLocation.fromNamespaceAndPath("cobblemon", "pokemon"))
-                .addOptional(ResourceLocation.fromNamespaceAndPath("bee_queen_ds", "bee_guard"))
-                .addOptional(ResourceLocation.fromNamespaceAndPath("bee_queen_ds", "tamed_bee"));
+                .addOptional(new ResourceLocation("cobblemon", "pokemon"))
+                .addOptional(new ResourceLocation("bee_queen_ds", "bee_guard"))
+                .addOptional(new ResourceLocation("bee_queen_ds", "tamed_bee"));
 
         tag(VEHICLE_WHITELIST)
                 .addTag(Tags.EntityTypes.BOATS)
                 .addTag(Tags.EntityTypes.MINECARTS)
-                .addOptional(ResourceLocation.fromNamespaceAndPath("littlelogistics", "seater_barge"))
-                .addOptional(ResourceLocation.fromNamespaceAndPath("create", "seat"))
-                .addOptional(ResourceLocation.fromNamespaceAndPath("create", "contraption"))
-                .addOptional(ResourceLocation.fromNamespaceAndPath("create", "gantry_contraption"))
-                .addOptional(ResourceLocation.fromNamespaceAndPath("create", "stationary_contraption"))
-                .addOptional(ResourceLocation.fromNamespaceAndPath("hexerei", "broom"))
-                .addOptional(ResourceLocation.fromNamespaceAndPath("botania", "player_mover"));
+                .addOptional(new ResourceLocation("littlelogistics", "seater_barge"))
+                .addOptional(new ResourceLocation("create", "seat"))
+                .addOptional(new ResourceLocation("create", "contraption"))
+                .addOptional(new ResourceLocation("create", "gantry_contraption"))
+                .addOptional(new ResourceLocation("create", "stationary_contraption"))
+                .addOptional(new ResourceLocation("hexerei", "broom"))
+                .addOptional(new ResourceLocation("botania", "player_mover"));
 
         tag(CHARGED_SPREAD_BLACKLIST)
                 .add(EntityType.ARMOR_STAND)
@@ -77,8 +77,8 @@ public class DSEntityTypeTags extends EntityTypeTagsProvider {
                 .add(EntityType.GUARDIAN)
                 .add(EntityType.ELDER_GUARDIAN)
                 .add(EntityType.ENDERMAN)
-                .addOptional(ResourceLocation.fromNamespaceAndPath("upgrade_aquatic", "thrasher"))
-                .addOptional(ResourceLocation.fromNamespaceAndPath("upgrade_aquatic", "great_thrasher"));
+                .addOptional(new ResourceLocation("upgrade_aquatic", "thrasher"))
+                .addOptional(new ResourceLocation("upgrade_aquatic", "great_thrasher"));
 
         tag(HUNTER_TARGETS)
                 .add(EntityType.EVOKER)
@@ -102,7 +102,7 @@ public class DSEntityTypeTags extends EntityTypeTagsProvider {
                 .add(EntityType.WITCH)
                 .add(EntityType.WITHER_SKELETON)
                 .add(EntityType.WITHER)
-                .addOptionalTag(ResourceLocation.fromNamespaceAndPath("zombiemobs", "zombie_animals"));
+                .addOptionalTag(new ResourceLocation("zombiemobs", "zombie_animals"));
 
         // Used in 'curse_of_kindness' enchantment
         tag(HUNTER_FACTION)

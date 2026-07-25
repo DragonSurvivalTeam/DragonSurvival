@@ -29,7 +29,7 @@ public class SpinHUD {
 
     public static final ResourceLocation ID = DragonSurvival.res("spin_cooldown");
 
-    private static final ResourceLocation SPIN_COOLDOWN = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/spin_cooldown.png");
+    private static final ResourceLocation SPIN_COOLDOWN = new ResourceLocation(DragonSurvival.MODID, "textures/gui/spin_cooldown.png");
 
     public static void render(@NotNull final GuiGraphics graphics, final float partialTick) {
         Player player =  Minecraft.getInstance().player;

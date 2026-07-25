@@ -121,7 +121,7 @@ public class DSItemTags extends ItemTagsProvider {
                 .add(Items.SNOW)
                 .add(Items.SNOW_BLOCK)
                 .add(Items.POWDER_SNOW_BUCKET)
-                .addOptional(ResourceLocation.fromNamespaceAndPath("immersive_weathering", "icicle"));
+                .addOptional(new ResourceLocation("immersive_weathering", "icicle"));
 
         tag(PRIMORDIAL_ANCHOR_FUEL).add(Items.ENDER_PEARL);
 
@@ -174,9 +174,9 @@ public class DSItemTags extends ItemTagsProvider {
 
             for (DietEntry entry : diet) {
                 if (entry.items().startsWith("#")) {
-                    tag(dragonFood).addOptionalTag(ResourceLocation.parse(entry.items().substring(1)));
+                    tag(dragonFood).addOptionalTag(new ResourceLocation(entry.items().substring(1)));
                 } else {
-                    tag(dragonFood).addOptional(ResourceLocation.parse(entry.items()));
+                    tag(dragonFood).addOptional(new ResourceLocation(entry.items()));
                 }
             }
         });

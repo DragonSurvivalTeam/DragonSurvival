@@ -82,16 +82,16 @@ public class DragonSpeciesScreen extends Screen {
     @Translation(comments = "This species has no special diet.")
     private static final String NO_DIET = Translation.Type.GUI.wrap("dragon_species_screen.no_diet");
 
-    private static final ResourceLocation BACKGROUND_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/species/species_background.png");
-    private static final ResourceLocation RIDING_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/species/riding_hover.png");
-    private static final ResourceLocation RIDING_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/species/riding_main.png");
-    private static final ResourceLocation WINGS_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/species/wing_hover.png");
-    private static final ResourceLocation WINGS_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/species/wing_main.png");
+    private static final ResourceLocation BACKGROUND_MAIN = new ResourceLocation(MODID, "textures/gui/species/species_background.png");
+    private static final ResourceLocation RIDING_HOVER = new ResourceLocation(MODID, "textures/gui/species/riding_hover.png");
+    private static final ResourceLocation RIDING_MAIN = new ResourceLocation(MODID, "textures/gui/species/riding_main.png");
+    private static final ResourceLocation WINGS_HOVER = new ResourceLocation(MODID, "textures/gui/species/wing_hover.png");
+    private static final ResourceLocation WINGS_MAIN = new ResourceLocation(MODID, "textures/gui/species/wing_main.png");
 
-    private static final ResourceLocation PENALTIES_LEFT_ARROW_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/species/penalties_left_arrow_hover.png");
-    private static final ResourceLocation PENALTIES_LEFT_ARROW_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/species/penalties_left_arrow_main.png");
-    private static final ResourceLocation PENALTIES_RIGHT_ARROW_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/species/penalties_right_arrow_hover.png");
-    private static final ResourceLocation PENALTIES_RIGHT_ARROW_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/species/penalties_right_arrow_main.png");
+    private static final ResourceLocation PENALTIES_LEFT_ARROW_HOVER = new ResourceLocation(MODID, "textures/gui/species/penalties_left_arrow_hover.png");
+    private static final ResourceLocation PENALTIES_LEFT_ARROW_MAIN = new ResourceLocation(MODID, "textures/gui/species/penalties_left_arrow_main.png");
+    private static final ResourceLocation PENALTIES_RIGHT_ARROW_HOVER = new ResourceLocation(MODID, "textures/gui/species/penalties_right_arrow_hover.png");
+    private static final ResourceLocation PENALTIES_RIGHT_ARROW_MAIN = new ResourceLocation(MODID, "textures/gui/species/penalties_right_arrow_main.png");
 
     public Holder<DragonSpecies> species;
     private Holder<DragonStage> stage;

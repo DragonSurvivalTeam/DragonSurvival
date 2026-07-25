@@ -120,7 +120,7 @@ public class DragonSkins {
         ResourceLocation resource;
 
         try {
-            resource = ResourceLocation.fromNamespaceAndPath(MODID, resourceName.toLowerCase(Locale.ENGLISH));
+            resource = new ResourceLocation(MODID, resourceName.toLowerCase(Locale.ENGLISH));
         } catch (ResourceLocationException exception) {
             DragonSurvival.LOGGER.error(exception);
             return null;

@@ -137,57 +137,57 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
 
     public static final DragonStateHandler HANDLER = new DragonStateHandler();
 
-    private static final ResourceLocation BACKGROUND_TEXTURE = ResourceLocation.withDefaultNamespace("textures/block/black_concrete.png");
+    private static final ResourceLocation BACKGROUND_TEXTURE = new ResourceLocation("textures/block/black_concrete.png");
 
-    private static final ResourceLocation COPY_ALL_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/editor/copy_off.png");
-    private static final ResourceLocation COPY_ALL_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/editor/copy_on.png");
+    private static final ResourceLocation COPY_ALL_MAIN = new ResourceLocation(MODID, "textures/gui/editor/copy_off.png");
+    private static final ResourceLocation COPY_ALL_HOVER = new ResourceLocation(MODID, "textures/gui/editor/copy_on.png");
 
-    private static final ResourceLocation INFO_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/editor/info_main.png");
-    private static final ResourceLocation INFO_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/editor/info_hover.png");
+    private static final ResourceLocation INFO_MAIN = new ResourceLocation(MODID, "textures/gui/editor/info_main.png");
+    private static final ResourceLocation INFO_HOVER = new ResourceLocation(MODID, "textures/gui/editor/info_hover.png");
 
-    private static final ResourceLocation ALTERNATIVE_ON = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/editor/alternative_on.png");
-    private static final ResourceLocation ALTERNATIVE_OFF = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/editor/alternative_off.png");
+    private static final ResourceLocation ALTERNATIVE_ON = new ResourceLocation(MODID, "textures/gui/editor/alternative_on.png");
+    private static final ResourceLocation ALTERNATIVE_OFF = new ResourceLocation(MODID, "textures/gui/editor/alternative_off.png");
 
-    private static final ResourceLocation CONFIRM_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/editor/accept_background_hover.png");
-    private static final ResourceLocation CONFIRM_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/editor/accept_background_main.png");
+    private static final ResourceLocation CONFIRM_HOVER = new ResourceLocation(MODID, "textures/gui/editor/accept_background_hover.png");
+    private static final ResourceLocation CONFIRM_MAIN = new ResourceLocation(MODID, "textures/gui/editor/accept_background_main.png");
 
-    private static final ResourceLocation CANCEL_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/editor/cancel_background_hover.png");
-    private static final ResourceLocation CANCEL_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/editor/cancel_background_main.png");
+    private static final ResourceLocation CANCEL_HOVER = new ResourceLocation(MODID, "textures/gui/editor/cancel_background_hover.png");
+    private static final ResourceLocation CANCEL_MAIN = new ResourceLocation(MODID, "textures/gui/editor/cancel_background_main.png");
 
-    private static final ResourceLocation SHOW_UI_ON = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/editor/gui_on.png");
-    private static final ResourceLocation SHOW_UI_OFF = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/editor/gui_off.png");
+    private static final ResourceLocation SHOW_UI_ON = new ResourceLocation(MODID, "textures/gui/editor/gui_on.png");
+    private static final ResourceLocation SHOW_UI_OFF = new ResourceLocation(MODID, "textures/gui/editor/gui_off.png");
 
-    private static final ResourceLocation RESET_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/editor/reset_main.png");
-    private static final ResourceLocation RESET_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/editor/reset_hover.png");
+    private static final ResourceLocation RESET_MAIN = new ResourceLocation(MODID, "textures/gui/editor/reset_main.png");
+    private static final ResourceLocation RESET_HOVER = new ResourceLocation(MODID, "textures/gui/editor/reset_hover.png");
 
-    private static final ResourceLocation ANIMATION_NAME_BACKGROUND = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/editor/animation_name_background.png");
+    private static final ResourceLocation ANIMATION_NAME_BACKGROUND = new ResourceLocation(MODID, "textures/gui/editor/animation_name_background.png");
 
-    private static final ResourceLocation SMALL_LEFT_ARROW_HOVER = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/editor/small_left_arrow_hover.png");
-    private static final ResourceLocation SMALL_LEFT_ARROW_MAIN = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/editor/small_left_arrow_main.png");
-    private static final ResourceLocation SMALL_RIGHT_ARROW_HOVER = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/editor/small_right_arrow_hover.png");
-    private static final ResourceLocation SMALL_RIGHT_ARROW_MAIN = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/editor/small_right_arrow_main.png");
+    private static final ResourceLocation SMALL_LEFT_ARROW_HOVER = new ResourceLocation(DragonSurvival.MODID, "textures/gui/editor/small_left_arrow_hover.png");
+    private static final ResourceLocation SMALL_LEFT_ARROW_MAIN = new ResourceLocation(DragonSurvival.MODID, "textures/gui/editor/small_left_arrow_main.png");
+    private static final ResourceLocation SMALL_RIGHT_ARROW_HOVER = new ResourceLocation(DragonSurvival.MODID, "textures/gui/editor/small_right_arrow_hover.png");
+    private static final ResourceLocation SMALL_RIGHT_ARROW_MAIN = new ResourceLocation(DragonSurvival.MODID, "textures/gui/editor/small_right_arrow_main.png");
 
-    private static final ResourceLocation LEFT_ARROW_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/editor/left_arrow_hover.png");
-    private static final ResourceLocation LEFT_ARROW_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/editor/left_arrow_main.png");
-    private static final ResourceLocation RIGHT_ARROW_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/editor/right_arrow_hover.png");
-    private static final ResourceLocation RIGHT_ARROW_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/editor/right_arrow_main.png");
+    private static final ResourceLocation LEFT_ARROW_HOVER = new ResourceLocation(MODID, "textures/gui/editor/left_arrow_hover.png");
+    private static final ResourceLocation LEFT_ARROW_MAIN = new ResourceLocation(MODID, "textures/gui/editor/left_arrow_main.png");
+    private static final ResourceLocation RIGHT_ARROW_HOVER = new ResourceLocation(MODID, "textures/gui/editor/right_arrow_hover.png");
+    private static final ResourceLocation RIGHT_ARROW_MAIN = new ResourceLocation(MODID, "textures/gui/editor/right_arrow_main.png");
 
-    private static final ResourceLocation REDO_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/editor/redo_main.png");
-    private static final ResourceLocation REDO_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/editor/redo_hover.png");
-    private static final ResourceLocation UNDO_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/editor/undo_main.png");
-    private static final ResourceLocation UNDO_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/editor/undo_hover.png");
+    private static final ResourceLocation REDO_MAIN = new ResourceLocation(MODID, "textures/gui/editor/redo_main.png");
+    private static final ResourceLocation REDO_HOVER = new ResourceLocation(MODID, "textures/gui/editor/redo_hover.png");
+    private static final ResourceLocation UNDO_MAIN = new ResourceLocation(MODID, "textures/gui/editor/undo_main.png");
+    private static final ResourceLocation UNDO_HOVER = new ResourceLocation(MODID, "textures/gui/editor/undo_hover.png");
 
-    private static final ResourceLocation RANDOM_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/editor/random_hover.png");
-    private static final ResourceLocation RANDOM_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/editor/random_main.png");
+    private static final ResourceLocation RANDOM_HOVER = new ResourceLocation(MODID, "textures/gui/editor/random_hover.png");
+    private static final ResourceLocation RANDOM_MAIN = new ResourceLocation(MODID, "textures/gui/editor/random_main.png");
 
-    private static final ResourceLocation SAVE_SLOT_BACKGROUND = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/editor/slot_background.png");
+    private static final ResourceLocation SAVE_SLOT_BACKGROUND = new ResourceLocation(MODID, "textures/gui/editor/slot_background.png");
 
-    private static final ResourceLocation SLOT_LOAD_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/editor/slot_load_hover.png");
-    private static final ResourceLocation SLOT_LOAD_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/editor/slot_load_main.png");
-    private static final ResourceLocation SLOT_SAVE_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/editor/slot_save_hover.png");
-    private static final ResourceLocation SLOT_SAVE_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/editor/slot_save_main.png");
-    private static final ResourceLocation SLOT_INFO_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/editor/slot_info_hover.png");
-    private static final ResourceLocation SLOT_INFO_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/editor/slot_info_main.png");
+    private static final ResourceLocation SLOT_LOAD_HOVER = new ResourceLocation(MODID, "textures/gui/editor/slot_load_hover.png");
+    private static final ResourceLocation SLOT_LOAD_MAIN = new ResourceLocation(MODID, "textures/gui/editor/slot_load_main.png");
+    private static final ResourceLocation SLOT_SAVE_HOVER = new ResourceLocation(MODID, "textures/gui/editor/slot_save_hover.png");
+    private static final ResourceLocation SLOT_SAVE_MAIN = new ResourceLocation(MODID, "textures/gui/editor/slot_save_main.png");
+    private static final ResourceLocation SLOT_INFO_HOVER = new ResourceLocation(MODID, "textures/gui/editor/slot_info_hover.png");
+    private static final ResourceLocation SLOT_INFO_MAIN = new ResourceLocation(MODID, "textures/gui/editor/slot_info_main.png");
 
     public int guiTop;
     public boolean confirmation;

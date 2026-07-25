@@ -243,7 +243,7 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
         ArmorTrim trim = stack.get(DataComponents.TRIM);
 
         if (trim != null) {
-            ResourceLocation trimLocation = ResourceLocation.fromNamespaceAndPath(
+            ResourceLocation trimLocation = new ResourceLocation(
                 handler.getModel().getNamespace(),
                 "textures/armor/" + handler.getModel().getPath() + "/armor_trims/" + trim.pattern().value().assetId().getPath() + ".png"
             );
@@ -333,7 +333,7 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
     }
 
     private static float[] extractTrimBaseHSB(final ArmorTrim trim) {
-        ResourceLocation paletteResource = ResourceLocation.withDefaultNamespace("textures/trims/color_palettes/" + trim.material().value().assetName() + ".png");
+        ResourceLocation paletteResource = new ResourceLocation("textures/trims/color_palettes/" + trim.material().value().assetName() + ".png");
         NativeImage colorPalette = RenderingUtils.getImageFromResource(paletteResource);
 
         if (colorPalette != null) {
@@ -375,7 +375,7 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
     }
 
     private static ResourceLocation getArmorMaskResourceLocation(final ResourceLocation model, final EquipmentSlot slot) {
-        return ResourceLocation.fromNamespaceAndPath(model.getNamespace(), "textures/armor/" + model.getPath() + "/armor_trims/masks/" + slot.getName() + "_mask.png");
+        return new ResourceLocation(model.getNamespace(), "textures/armor/" + model.getPath() + "/armor_trims/masks/" + slot.getName() + "_mask.png");
     }
 
     private static boolean hasResource(final ResourceLocation resource) {
@@ -473,7 +473,7 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
                 texture += "_undyed";
             }
 
-            ResourceLocation resource = ResourceLocation.fromNamespaceAndPath(handler.getModel().getNamespace(), texture + ".png");
+            ResourceLocation resource = new ResourceLocation(handler.getModel().getNamespace(), texture + ".png");
 
             if (Minecraft.getInstance().getResourceManager().getResource(resource).isPresent()) {
                 return resource;
@@ -495,7 +495,7 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
                 prefix = "default";
             }
 
-            return ResourceLocation.fromNamespaceAndPath(handler.getModel().getNamespace(), "textures/armor/" + handler.getModel().getPath() + "/" + prefix + "_" + equipmentSlot.getName() + ".png");
+            return new ResourceLocation(handler.getModel().getNamespace(), "textures/armor/" + handler.getModel().getPath() + "/" + prefix + "_" + equipmentSlot.getName() + ".png");
         }
 
         // Since this is just an empty image it should be applicable to all models
@@ -510,7 +510,7 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
         //noinspection deprecation,DataFlowIssue -> ignore deprecated / key is present
         ResourceLocation itemResource = item.builtInRegistryHolder().getKey().location();
         String texture = "textures/armor/" + model.getPath() + "/" + itemResource.getNamespace() + "/" + itemResource.getPath() + ".png";
-        return ResourceLocation.fromNamespaceAndPath(model.getNamespace(), texture);
+        return new ResourceLocation(model.getNamespace(), texture);
     }
 
     @SubscribeEvent

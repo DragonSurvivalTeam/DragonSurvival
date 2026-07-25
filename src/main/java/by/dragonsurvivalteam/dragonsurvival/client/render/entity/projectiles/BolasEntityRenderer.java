@@ -20,7 +20,7 @@ public class BolasEntityRenderer extends EntityRenderer<Bolas> {
 
     // This class is purely for rendering the bolas projectile. The bolas rendered on top of the target when it is trapped is handled elsewhere: renderBolas & renderTrap inside of ClientEvents.java, and thirdPersonPreRender in ClientDragonRender.java
 
-    private static final ResourceLocation BOLAS_TEXTURE = ResourceLocation.fromNamespaceAndPath(MODID, "textures/item/dragon_hunting_mesh.png");
+    private static final ResourceLocation BOLAS_TEXTURE = new ResourceLocation(MODID, "textures/item/dragon_hunting_mesh.png");
 
     public BolasEntityRenderer(Context p_174198_) {
         super(p_174198_);

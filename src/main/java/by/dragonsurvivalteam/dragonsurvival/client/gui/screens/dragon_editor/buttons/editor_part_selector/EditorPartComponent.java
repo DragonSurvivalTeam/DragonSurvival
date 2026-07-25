@@ -19,11 +19,11 @@ import java.util.Locale;
 import java.util.Map;
 
 public class EditorPartComponent implements ScrollableComponent {
-    private static final ResourceLocation DROPDOWN_BUTTON_BACKGROUND = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/editor/part_name_background.png");
-    private static final ResourceLocation SMALL_LEFT_ARROW_HOVER = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/editor/small_left_arrow_hover.png");
-    private static final ResourceLocation SMALL_LEFT_ARROW_MAIN = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/editor/small_left_arrow_main.png");
-    private static final ResourceLocation SMALL_RIGHT_ARROW_HOVER = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/editor/small_right_arrow_hover.png");
-    private static final ResourceLocation SMALL_RIGHT_ARROW_MAIN = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/editor/small_right_arrow_main.png");
+    private static final ResourceLocation DROPDOWN_BUTTON_BACKGROUND = new ResourceLocation(DragonSurvival.MODID, "textures/gui/editor/part_name_background.png");
+    private static final ResourceLocation SMALL_LEFT_ARROW_HOVER = new ResourceLocation(DragonSurvival.MODID, "textures/gui/editor/small_left_arrow_hover.png");
+    private static final ResourceLocation SMALL_LEFT_ARROW_MAIN = new ResourceLocation(DragonSurvival.MODID, "textures/gui/editor/small_left_arrow_main.png");
+    private static final ResourceLocation SMALL_RIGHT_ARROW_HOVER = new ResourceLocation(DragonSurvival.MODID, "textures/gui/editor/small_right_arrow_hover.png");
+    private static final ResourceLocation SMALL_RIGHT_ARROW_MAIN = new ResourceLocation(DragonSurvival.MODID, "textures/gui/editor/small_right_arrow_main.png");
 
     private final DragonEditorScreen screen;
     private final HoverButton partButton;

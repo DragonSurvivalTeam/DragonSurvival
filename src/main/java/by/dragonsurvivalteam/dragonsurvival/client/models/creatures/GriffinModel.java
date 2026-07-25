@@ -9,16 +9,16 @@ import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 public class GriffinModel extends GeoModel<GriffinEntity> {
     @Override
     public ResourceLocation getModelResource(GriffinEntity animatable) {
-        return ResourceLocation.fromNamespaceAndPath(MODID, "geo/hunter_griffin.geo.json");
+        return new ResourceLocation(MODID, "geo/hunter_griffin.geo.json");
     }
 
     @Override
     public ResourceLocation getTextureResource(GriffinEntity animatable) {
-        return ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/hunters/griffins/hunter_griffin_1.png");
+        return new ResourceLocation(MODID, "textures/entity/hunters/griffins/hunter_griffin_1.png");
     }
 
     @Override
     public ResourceLocation getAnimationResource(GriffinEntity animatable) {
-        return ResourceLocation.fromNamespaceAndPath(MODID, "animations/hunter_griffin.animation.json");
+        return new ResourceLocation(MODID, "animations/hunter_griffin.animation.json");
     }
 }

@@ -14,7 +14,7 @@ import java.lang.reflect.Type;
 public class ResourceLocationAdapter implements JsonSerializer<ResourceLocation>, JsonDeserializer<ResourceLocation> {
     @Override
     public ResourceLocation deserialize(JsonElement json, Type type, JsonDeserializationContext context) throws JsonParseException {
-        ResourceLocation location = ResourceLocation.parse(json.getAsString());
+        ResourceLocation location = new ResourceLocation(json.getAsString());
 
         if (location.getNamespace().equals(ResourceLocation.DEFAULT_NAMESPACE)) {
             // Can occur when migrating the save file from the non-registry entries

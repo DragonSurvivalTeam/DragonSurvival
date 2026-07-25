@@ -620,7 +620,7 @@ public class MagicData implements INBTSerializable<CompoundTag> {
             CompoundTag storedHotbar = tag.getCompound(HOTBARS);
             storedHotbar.getAllKeys().forEach(abilityLocation -> {
                 int slot = storedHotbar.getInt(abilityLocation);
-                ResourceKey<DragonAbility> key = ResourceKey.create(DragonAbility.REGISTRY, ResourceLocation.parse(abilityLocation));
+                ResourceKey<DragonAbility> key = ResourceKey.create(DragonAbility.REGISTRY, new ResourceLocation(abilityLocation));
 
                 if (provider.holder(key).isEmpty()) {
                     return;
@@ -669,7 +669,7 @@ public class MagicData implements INBTSerializable<CompoundTag> {
 
         if (tag.contains(ABILITIES)) {
             for (String speciesLocation : tag.getCompound(ABILITIES).getAllKeys()) {
-                ResourceKey<DragonSpecies> speciesKey = ResourceKey.create(DragonSpecies.REGISTRY, ResourceLocation.parse(speciesLocation));
+                ResourceKey<DragonSpecies> speciesKey = ResourceKey.create(DragonSpecies.REGISTRY, new ResourceLocation(speciesLocation));
 
                 if (provider.holder(speciesKey).isEmpty()) {
                     continue;
@@ -693,7 +693,7 @@ public class MagicData implements INBTSerializable<CompoundTag> {
 
         if (tag.contains(HOTBARS)) {
             for (String speciesLocation : tag.getCompound(HOTBARS).getAllKeys()) {
-                ResourceKey<DragonSpecies> speciesKey = ResourceKey.create(DragonSpecies.REGISTRY, ResourceLocation.parse(speciesLocation));
+                ResourceKey<DragonSpecies> speciesKey = ResourceKey.create(DragonSpecies.REGISTRY, new ResourceLocation(speciesLocation));
 
                 if (provider.holder(speciesKey).isEmpty()) {
                     continue;
@@ -704,7 +704,7 @@ public class MagicData implements INBTSerializable<CompoundTag> {
 
                 for (String abilityLocation : storedHotbar.getAllKeys()) {
                     int slot = storedHotbar.getInt(abilityLocation);
-                    ResourceKey<DragonAbility> key = ResourceKey.create(DragonAbility.REGISTRY, ResourceLocation.parse(abilityLocation));
+                    ResourceKey<DragonAbility> key = ResourceKey.create(DragonAbility.REGISTRY, new ResourceLocation(abilityLocation));
 
                     if (provider.holder(key).isEmpty()) {
                         continue;
@@ -722,7 +722,7 @@ public class MagicData implements INBTSerializable<CompoundTag> {
         renderAbilities = tag.getBoolean(RENDER_ABILITIES);
 
         if (tag.contains(CURRENT_SPECIES)) {
-            currentSpecies = ResourceKey.create(DragonSpecies.REGISTRY, ResourceLocation.parse(tag.getString(CURRENT_SPECIES)));
+            currentSpecies = ResourceKey.create(DragonSpecies.REGISTRY, new ResourceLocation(tag.getString(CURRENT_SPECIES)));
 
             if (provider.holder(currentSpecies).isEmpty()) {
                 DragonSurvival.LOGGER.warn("Failed to load current species for magic data! Did you remove a species from this save? Defaulting to cave dragon");

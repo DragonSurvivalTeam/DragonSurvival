@@ -14,17 +14,17 @@ import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 public class AmbusherModel extends GeoModel<AmbusherEntity> {
     @Override
     public ResourceLocation getModelResource(AmbusherEntity animatable) {
-        return ResourceLocation.fromNamespaceAndPath(MODID, "geo/hunter_ambusher.geo.json");
+        return new ResourceLocation(MODID, "geo/hunter_ambusher.geo.json");
     }
 
     @Override
     public ResourceLocation getTextureResource(AmbusherEntity animatable) {
-        return ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/hunters/ambusher_on_horse.png");
+        return new ResourceLocation(MODID, "textures/entity/hunters/ambusher_on_horse.png");
     }
 
     @Override
     public ResourceLocation getAnimationResource(AmbusherEntity animatable) {
-        return ResourceLocation.fromNamespaceAndPath(MODID, "animations/hunter_ambusher.animation.json");
+        return new ResourceLocation(MODID, "animations/hunter_ambusher.animation.json");
     }
 
     @Override

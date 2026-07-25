@@ -24,10 +24,10 @@ import org.jetbrains.annotations.Nullable;
 import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 
 public class AbilityButton extends ExtendedButton {
-    public static final ResourceLocation ACTIVE_BACKGROUND = ResourceLocation.fromNamespaceAndPath(MODID, "ability_screen/skill_main");
-    public static final ResourceLocation PASSIVE_BACKGROUND = ResourceLocation.fromNamespaceAndPath(MODID, "ability_screen/skill_main");
-    public static final ResourceLocation DISABLED_BACKGROUND = ResourceLocation.fromNamespaceAndPath(MODID, "ability_screen/skill_disabled");
-    public static final ResourceLocation AUTO_UPGRADE_ORNAMENTATION = ResourceLocation.fromNamespaceAndPath(MODID, "ability_screen/skill_autoupgrade");
+    public static final ResourceLocation ACTIVE_BACKGROUND = new ResourceLocation(MODID, "ability_screen/skill_main");
+    public static final ResourceLocation PASSIVE_BACKGROUND = new ResourceLocation(MODID, "ability_screen/skill_main");
+    public static final ResourceLocation DISABLED_BACKGROUND = new ResourceLocation(MODID, "ability_screen/skill_disabled");
+    public static final ResourceLocation AUTO_UPGRADE_ORNAMENTATION = new ResourceLocation(MODID, "ability_screen/skill_autoupgrade");
 
     private static final int SIZE = 34;
     private static final int ORNAMENTATION_SIZE = 38;

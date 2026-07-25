@@ -31,11 +31,11 @@ public class EmoteComponent {
     @Translation(comments = "Set Keybind")
     private static final String UNBOUND = Translation.Type.GUI.wrap("emotes.unbound");
 
-    private static final ResourceLocation PLAY_OFF = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/emote/play_off.png");
-    private static final ResourceLocation PLAY_ON = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/emote/play_on.png");
+    private static final ResourceLocation PLAY_OFF = new ResourceLocation(DragonSurvival.MODID, "textures/gui/emote/play_off.png");
+    private static final ResourceLocation PLAY_ON = new ResourceLocation(DragonSurvival.MODID, "textures/gui/emote/play_on.png");
 
-    private static final ResourceLocation KEYBIND_OFF = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/emote/keybind_off.png");
-    private static final ResourceLocation KEYBIND_ON = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/emote/keybind_on.png");
+    private static final ResourceLocation KEYBIND_OFF = new ResourceLocation(DragonSurvival.MODID, "textures/gui/emote/keybind_off.png");
+    private static final ResourceLocation KEYBIND_ON = new ResourceLocation(DragonSurvival.MODID, "textures/gui/emote/keybind_on.png");
 
     private final ExtendedButton isPlayingButton;
     private final ExtendedButton keybindingButton;

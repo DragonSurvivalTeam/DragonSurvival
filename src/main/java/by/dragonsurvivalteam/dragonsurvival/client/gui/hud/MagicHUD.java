@@ -84,10 +84,10 @@ public class MagicHUD {
     public static final ResourceLocation ID = DragonSurvival.res("magic_hud");
 
     // 1.20.6 moved a bunch of widgets around, so to keep compatibility with older versions, we need to use the old widgets texture
-    public static final ResourceLocation WIDGET_TEXTURES = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/widgets.png");
+    public static final ResourceLocation WIDGET_TEXTURES = new ResourceLocation(MODID, "textures/gui/widgets.png");
 
-    private static final ResourceLocation VANILLA_WIDGETS = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/pre-1.20.1-widgets.png");
-    private static final ResourceLocation CAST_BAR_FILL = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/cast_bar_fill.png");
+    private static final ResourceLocation VANILLA_WIDGETS = new ResourceLocation(MODID, "textures/gui/pre-1.20.1-widgets.png");
+    private static final ResourceLocation CAST_BAR_FILL = new ResourceLocation(MODID, "textures/gui/cast_bar_fill.png");
 
     public static class OutlineColorData {
         private Color color;

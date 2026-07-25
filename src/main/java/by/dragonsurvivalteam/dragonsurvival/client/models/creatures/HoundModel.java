@@ -9,7 +9,7 @@ import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 public class HoundModel extends GeoModel<HoundEntity> {
     @Override
     public ResourceLocation getModelResource(HoundEntity animatable) {
-        return ResourceLocation.fromNamespaceAndPath(MODID, "geo/hunter_hound.geo.json");
+        return new ResourceLocation(MODID, "geo/hunter_hound.geo.json");
     }
 
     @Override
@@ -25,11 +25,11 @@ public class HoundModel extends GeoModel<HoundEntity> {
             case 7 -> "hound_8";
             default -> "hound_hector";
         };
-        return ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/hunters/hounds/" + houndName + ".png");
+        return new ResourceLocation(MODID, "textures/entity/hunters/hounds/" + houndName + ".png");
     }
 
     @Override
     public ResourceLocation getAnimationResource(HoundEntity animatable) {
-        return ResourceLocation.fromNamespaceAndPath(MODID, "animations/hunter_hound.animation.json");
+        return new ResourceLocation(MODID, "animations/hunter_hound.animation.json");
     }
 }

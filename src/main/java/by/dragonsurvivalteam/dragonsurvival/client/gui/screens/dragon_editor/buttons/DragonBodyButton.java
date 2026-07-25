@@ -29,8 +29,8 @@ public class DragonBodyButton extends ExtendedButton implements HoverDisableable
     @Translation(comments = "This body type has not been unlocked yet.")
     private static final String NOT_UNLOCKED = Translation.Type.GUI.wrap("dragon_body_button.not_unlocked");
 
-    private static final ResourceLocation SELECTED_BACKGROUND = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/icon_skin_on.png");
-    private static final ResourceLocation DESELECTED_BACKGROUND = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/icon_skin_off.png");
+    private static final ResourceLocation SELECTED_BACKGROUND = new ResourceLocation(DragonSurvival.MODID, "textures/gui/skin/icon_skin_on.png");
+    private static final ResourceLocation DESELECTED_BACKGROUND = new ResourceLocation(DragonSurvival.MODID, "textures/gui/skin/icon_skin_off.png");
 
     public static final int HOVERED = 1;
     public static final int SELECTED = 2;

@@ -400,7 +400,7 @@ public class DSBlockTags extends BlockTagsProvider {
     }
 
     private static TagKey<Block> key(@NotNull final String name) {
-        return BlockTags.create(ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, name));
+        return BlockTags.create(new ResourceLocation(DragonSurvival.MODID, name));
     }
 
     @Override

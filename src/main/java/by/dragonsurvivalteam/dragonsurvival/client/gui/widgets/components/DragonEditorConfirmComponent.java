@@ -32,9 +32,9 @@ public class DragonEditorConfirmComponent extends AbstractContainerEventHandler 
     @Translation(comments = "\n§4Your ability progress will be lost!§r§f Use the Dragon Soul to avoid this.\n\nWould you still like to continue?")
     private final static String CONFIRM_LOSE_ABILITIES = Translation.Type.GUI.wrap("dragon_editor.confirm.abilities");
 
-    private static final ResourceLocation WARNING_MAIN = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/editor/warning_main.png");
-    private static final ResourceLocation WARNING_ACCEPT = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/editor/warning_accept.png");
-    private static final ResourceLocation WARNING_CANCEL = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/editor/warning_cancel.png");
+    private static final ResourceLocation WARNING_MAIN = new ResourceLocation(DragonSurvival.MODID, "textures/gui/editor/warning_main.png");
+    private static final ResourceLocation WARNING_ACCEPT = new ResourceLocation(DragonSurvival.MODID, "textures/gui/editor/warning_accept.png");
+    private static final ResourceLocation WARNING_CANCEL = new ResourceLocation(DragonSurvival.MODID, "textures/gui/editor/warning_cancel.png");
 
     private final AbstractWidget confirmButton;
     private final AbstractWidget cancelButton;

@@ -14,17 +14,17 @@ import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 public class SpearmanModel extends GeoModel<SpearmanEntity> {
     @Override
     public ResourceLocation getModelResource(SpearmanEntity object) {
-        return ResourceLocation.fromNamespaceAndPath(MODID, "geo/hunter_spearman.geo.json");
+        return new ResourceLocation(MODID, "geo/hunter_spearman.geo.json");
     }
 
     @Override
     public ResourceLocation getTextureResource(SpearmanEntity object) {
-        return ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/hunters/spearman.png");
+        return new ResourceLocation(MODID, "textures/entity/hunters/spearman.png");
     }
 
     @Override
     public ResourceLocation getAnimationResource(SpearmanEntity animatable) {
-        return ResourceLocation.fromNamespaceAndPath(MODID, "animations/hunter_spearman.animation.json");
+        return new ResourceLocation(MODID, "animations/hunter_spearman.animation.json");
     }
 
     @Override

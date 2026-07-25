@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.function.Function;
 
 public class DragonEditorSlotButton extends Button {
-    private static final ResourceLocation SLOT_NUMBER_BACKGROUND = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/editor/slot_number_background.png");
+    private static final ResourceLocation SLOT_NUMBER_BACKGROUND = new ResourceLocation(DragonSurvival.MODID, "textures/gui/editor/slot_number_background.png");
 
     private final DragonEditorScreen screen;
     private final Function<Integer, Integer> setDragonSlotAction;

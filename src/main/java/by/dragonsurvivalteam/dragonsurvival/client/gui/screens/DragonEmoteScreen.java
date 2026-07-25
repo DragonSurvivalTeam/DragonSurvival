@@ -76,22 +76,22 @@ public class DragonEmoteScreen extends Screen {
     private int guiLeft;
     private int guiTop;
 
-    private static final ResourceLocation BACKGROUND_MAIN = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/emote/emote_main.png");
+    private static final ResourceLocation BACKGROUND_MAIN = new ResourceLocation(DragonSurvival.MODID, "textures/gui/emote/emote_main.png");
 
-    private static final ResourceLocation DISCORD_HOVER = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/emote/discord_hover.png");
-    private static final ResourceLocation DISCORD_MAIN = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/emote/discord_main.png");
+    private static final ResourceLocation DISCORD_HOVER = new ResourceLocation(DragonSurvival.MODID, "textures/gui/emote/discord_hover.png");
+    private static final ResourceLocation DISCORD_MAIN = new ResourceLocation(DragonSurvival.MODID, "textures/gui/emote/discord_main.png");
 
-    private static final ResourceLocation RESET_ALL_KEYBINDS_HOVER = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/emote/reset_all_keybinds_hover.png");
-    private static final ResourceLocation RESET_ALL_KEYBINDS_MAIN = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/emote/reset_all_keybinds_main.png");
+    private static final ResourceLocation RESET_ALL_KEYBINDS_HOVER = new ResourceLocation(DragonSurvival.MODID, "textures/gui/emote/reset_all_keybinds_hover.png");
+    private static final ResourceLocation RESET_ALL_KEYBINDS_MAIN = new ResourceLocation(DragonSurvival.MODID, "textures/gui/emote/reset_all_keybinds_main.png");
 
-    private static final ResourceLocation RESET_EMOTES_HOVER = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/emote/reset_emotes_hover.png");
-    private static final ResourceLocation RESET_EMOTES_MAIN = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/emote/reset_emotes_main.png");
+    private static final ResourceLocation RESET_EMOTES_HOVER = new ResourceLocation(DragonSurvival.MODID, "textures/gui/emote/reset_emotes_hover.png");
+    private static final ResourceLocation RESET_EMOTES_MAIN = new ResourceLocation(DragonSurvival.MODID, "textures/gui/emote/reset_emotes_main.png");
 
-    private static final ResourceLocation WIKI_HOVER = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/emote/wiki_hover.png");
-    private static final ResourceLocation WIKI_MAIN = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/emote/wiki_main.png");
+    private static final ResourceLocation WIKI_HOVER = new ResourceLocation(DragonSurvival.MODID, "textures/gui/emote/wiki_hover.png");
+    private static final ResourceLocation WIKI_MAIN = new ResourceLocation(DragonSurvival.MODID, "textures/gui/emote/wiki_main.png");
 
-    private static final ResourceLocation INFO_HOVER = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/emote/info_hover.png");
-    private static final ResourceLocation INFO_MAIN = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/emote/info_main.png");
+    private static final ResourceLocation INFO_HOVER = new ResourceLocation(DragonSurvival.MODID, "textures/gui/emote/info_hover.png");
+    private static final ResourceLocation INFO_MAIN = new ResourceLocation(DragonSurvival.MODID, "textures/gui/emote/info_main.png");
 
     public DragonEmoteScreen() {
         super(Component.empty());

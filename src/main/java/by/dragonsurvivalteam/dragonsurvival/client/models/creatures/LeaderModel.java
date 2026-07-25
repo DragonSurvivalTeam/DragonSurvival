@@ -14,17 +14,17 @@ import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 public class LeaderModel extends GeoModel<LeaderEntity> {
     @Override
     public ResourceLocation getModelResource(LeaderEntity object) {
-        return ResourceLocation.fromNamespaceAndPath(MODID, "geo/hunter_leader.geo.json");
+        return new ResourceLocation(MODID, "geo/hunter_leader.geo.json");
     }
 
     @Override
     public ResourceLocation getTextureResource(LeaderEntity object) {
-        return ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/hunters/leader.png");
+        return new ResourceLocation(MODID, "textures/entity/hunters/leader.png");
     }
 
     @Override
     public ResourceLocation getAnimationResource(LeaderEntity animatable) {
-        return ResourceLocation.fromNamespaceAndPath(MODID, "animations/hunter_leader.animation.json");
+        return new ResourceLocation(MODID, "animations/hunter_leader.animation.json");
     }
 
     @Override

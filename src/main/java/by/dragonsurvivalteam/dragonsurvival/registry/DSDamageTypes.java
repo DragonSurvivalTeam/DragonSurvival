@@ -138,6 +138,6 @@ public class DSDamageTypes {
     }
 
     private static ResourceKey<DamageType> key(final String name) {
-        return ResourceKey.create(Registries.DAMAGE_TYPE, ResourceLocation.fromNamespaceAndPath(MODID, name));
+        return ResourceKey.create(Registries.DAMAGE_TYPE, new ResourceLocation(MODID, name));
     }
 }

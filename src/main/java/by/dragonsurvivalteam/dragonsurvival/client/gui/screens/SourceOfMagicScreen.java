@@ -28,16 +28,16 @@ public class SourceOfMagicScreen extends AbstractContainerScreen<SourceOfMagicCo
     @Translation(comments = "■ This source of magic can be charged with with the following items:")
     private static final String HELP = Translation.Type.GUI.wrap("source_of_magic.help");
 
-    private static final ResourceLocation BACKGROUND = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/source_of_magic/source_of_magic_ui.png");
+    private static final ResourceLocation BACKGROUND = new ResourceLocation(MODID, "textures/gui/source_of_magic/source_of_magic_ui.png");
 
-    private static final ResourceLocation CAVE_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/source_of_magic/cave_source_of_magic_0.png");
-    private static final ResourceLocation CAVE_FILLED = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/source_of_magic/cave_source_of_magic_1.png");
+    private static final ResourceLocation CAVE_MAIN = new ResourceLocation(MODID, "textures/gui/source_of_magic/cave_source_of_magic_0.png");
+    private static final ResourceLocation CAVE_FILLED = new ResourceLocation(MODID, "textures/gui/source_of_magic/cave_source_of_magic_1.png");
 
-    private static final ResourceLocation FOREST_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/source_of_magic/forest_source_of_magic_0.png");
-    private static final ResourceLocation FOREST_FILLED = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/source_of_magic/forest_source_of_magic_1.png");
+    private static final ResourceLocation FOREST_MAIN = new ResourceLocation(MODID, "textures/gui/source_of_magic/forest_source_of_magic_0.png");
+    private static final ResourceLocation FOREST_FILLED = new ResourceLocation(MODID, "textures/gui/source_of_magic/forest_source_of_magic_1.png");
 
-    private static final ResourceLocation SEA_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/source_of_magic/sea_source_of_magic_0.png");
-    private static final ResourceLocation SEA_FILLED = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/source_of_magic/sea_source_of_magic_1.png");
+    private static final ResourceLocation SEA_MAIN = new ResourceLocation(MODID, "textures/gui/source_of_magic/sea_source_of_magic_0.png");
+    private static final ResourceLocation SEA_FILLED = new ResourceLocation(MODID, "textures/gui/source_of_magic/sea_source_of_magic_1.png");
 
     private static final int MAX_SHOWN = 5;
 

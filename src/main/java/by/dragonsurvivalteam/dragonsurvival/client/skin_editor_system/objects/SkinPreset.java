@@ -175,7 +175,7 @@ public class SkinPreset implements INBTSerializable<CompoundTag> {
 
     @Override
     public void deserializeNBT(@NotNull final HolderLookup.Provider provider, @NotNull final CompoundTag base) {
-        this.species = ResourceKey.create(DragonSpecies.REGISTRY, ResourceLocation.parse(base.getString(SPECIES)));
+        this.species = ResourceKey.create(DragonSpecies.REGISTRY, new ResourceLocation(base.getString(SPECIES)));
         ResourceLocation.read(base.getString(MODEL)).ifSuccess(model -> this.model = model);
 
         List<ResourceKey<DragonStage>> stageKeys;

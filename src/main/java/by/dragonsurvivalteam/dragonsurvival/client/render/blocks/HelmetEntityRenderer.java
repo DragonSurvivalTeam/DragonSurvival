@@ -28,9 +28,9 @@ import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 
 public class HelmetEntityRenderer implements BlockEntityRenderer<HelmetBlockEntity> {
     private static final Map<Block, ResourceLocation> TEXTURE_BY_TYPE = Util.make(Maps.newHashMap(), resourceLocationHashMap -> {
-        resourceLocationHashMap.put(DSBlocks.GRAY_KNIGHT_HELMET.get(), ResourceLocation.fromNamespaceAndPath(MODID, "textures/block/gray_knight_helmet.png"));
-        resourceLocationHashMap.put(DSBlocks.GOLDEN_KNIGHT_HELMET.get(), ResourceLocation.fromNamespaceAndPath(MODID, "textures/block/golden_knight_helmet.png"));
-        resourceLocationHashMap.put(DSBlocks.BLACK_KNIGHT_HELMET.get(), ResourceLocation.fromNamespaceAndPath(MODID, "textures/block/black_knight_helmet.png"));
+        resourceLocationHashMap.put(DSBlocks.GRAY_KNIGHT_HELMET.get(), new ResourceLocation(MODID, "textures/block/gray_knight_helmet.png"));
+        resourceLocationHashMap.put(DSBlocks.GOLDEN_KNIGHT_HELMET.get(), new ResourceLocation(MODID, "textures/block/golden_knight_helmet.png"));
+        resourceLocationHashMap.put(DSBlocks.BLACK_KNIGHT_HELMET.get(), new ResourceLocation(MODID, "textures/block/black_knight_helmet.png"));
     });
     static SkullModel humanoidHeadModel = new SkullModel(Minecraft.getInstance().getEntityModels().bakeLayer(ModelLayers.PLAYER_HEAD));
 

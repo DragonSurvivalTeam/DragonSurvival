@@ -83,20 +83,20 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
     @Translation(comments = "Dragon Survival")
     private static final String TITLE = Translation.Type.GUI.wrap("altar.title");
 
-    private static final ResourceLocation BACKGROUND_TEXTURE = ResourceLocation.withDefaultNamespace("textures/block/black_concrete.png");
+    private static final ResourceLocation BACKGROUND_TEXTURE = new ResourceLocation("textures/block/black_concrete.png");
 
     private final DragonStateHandler handler1 = new DragonStateHandler();
     private final DragonStateHandler handler2 = new DragonStateHandler();
     private final String[] animations = {"sit", "idle", "fly", "swim", "run", "dig", "vibing_sitting", "shy_sitting", "rocking_on_back"};
     private final List<ScrollableComponent> scrollableComponents = new ArrayList<>();
 
-    private static final ResourceLocation ALTAR_ARROW_LEFT_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/altar/arrow_left_hover.png");
-    private static final ResourceLocation ALTAR_ARROW_LEFT_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/altar/arrow_left_main.png");
-    private static final ResourceLocation ALTAR_ARROW_RIGHT_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/altar/arrow_right_hover.png");
-    private static final ResourceLocation ALTAR_ARROW_RIGHT_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/altar/arrow_right_main.png");
+    private static final ResourceLocation ALTAR_ARROW_LEFT_HOVER = new ResourceLocation(MODID, "textures/gui/altar/arrow_left_hover.png");
+    private static final ResourceLocation ALTAR_ARROW_LEFT_MAIN = new ResourceLocation(MODID, "textures/gui/altar/arrow_left_main.png");
+    private static final ResourceLocation ALTAR_ARROW_RIGHT_HOVER = new ResourceLocation(MODID, "textures/gui/altar/arrow_right_hover.png");
+    private static final ResourceLocation ALTAR_ARROW_RIGHT_MAIN = new ResourceLocation(MODID, "textures/gui/altar/arrow_right_main.png");
 
-    private static final ResourceLocation INFO_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/altar/info_hover.png");
-    private static final ResourceLocation INFO_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/altar/info_main.png");
+    private static final ResourceLocation INFO_HOVER = new ResourceLocation(MODID, "textures/gui/altar/info_hover.png");
+    private static final ResourceLocation INFO_MAIN = new ResourceLocation(MODID, "textures/gui/altar/info_main.png");
 
     private final List<UnlockableBehavior.SpeciesEntry> entries;
 

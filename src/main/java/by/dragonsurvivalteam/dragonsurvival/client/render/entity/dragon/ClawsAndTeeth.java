@@ -26,7 +26,7 @@ public class ClawsAndTeeth {
             return null;
         }
 
-        return ResourceLocation.fromNamespaceAndPath(model.getNamespace(), texturePath + "dragon_claws.png");
+        return new ResourceLocation(model.getNamespace(), texturePath + "dragon_claws.png");
     }
 
     public static @Nullable ResourceLocation constructTeethTexture(final Player player) {
@@ -41,7 +41,7 @@ public class ClawsAndTeeth {
             return null;
         }
 
-        return ResourceLocation.fromNamespaceAndPath(model.getNamespace(), texturePath + "dragon_teeth.png");
+        return new ResourceLocation(model.getNamespace(), texturePath + "dragon_teeth.png");
     }
 
     private static String getMaterial(String texture, ItemStack clawItem) {

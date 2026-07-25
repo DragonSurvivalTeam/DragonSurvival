@@ -24,7 +24,7 @@ public class JEIPlugin implements IModPlugin {
 
     @Override
     public @NotNull ResourceLocation getPluginUid() {
-        return ResourceLocation.fromNamespaceAndPath(MODID, "fix");
+        return new ResourceLocation(MODID, "fix");
     }
 
     @Override

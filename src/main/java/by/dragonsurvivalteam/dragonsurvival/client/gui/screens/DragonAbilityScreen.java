@@ -54,15 +54,15 @@ public class DragonAbilityScreen extends Screen {
     })
     private static final String HELP_ABILITY_ASSIGNMENT = Translation.Type.GUI.wrap("help.ability_assignment");
 
-    private static final ResourceLocation BACKGROUND_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/ability_screen/background_main.png");
-    private static final ResourceLocation BACKGROUND_SIDE = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/ability_screen/background_side.png");
-    private static final ResourceLocation EXP_EMPTY = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/ability_screen/exp_empty.png");
-    private static final ResourceLocation EXP_FULL = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/ability_screen/exp_full.png");
-    private static final ResourceLocation LEFT_PANEL_ARROW_CLICK = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/ability_screen/addition_arrow_left_click.png");
-    private static final ResourceLocation LEFT_PANEL_ARROW_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/ability_screen/addition_arrow_left_hover.png");
-    private static final ResourceLocation LEFT_PANEL_ARROW_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/ability_screen/addition_arrow_left_main.png");
-    private static final ResourceLocation INFO_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/ability_screen/info_hover.png");
-    private static final ResourceLocation INFO_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/ability_screen/info_main.png");
+    private static final ResourceLocation BACKGROUND_MAIN = new ResourceLocation(MODID, "textures/gui/ability_screen/background_main.png");
+    private static final ResourceLocation BACKGROUND_SIDE = new ResourceLocation(MODID, "textures/gui/ability_screen/background_side.png");
+    private static final ResourceLocation EXP_EMPTY = new ResourceLocation(MODID, "textures/gui/ability_screen/exp_empty.png");
+    private static final ResourceLocation EXP_FULL = new ResourceLocation(MODID, "textures/gui/ability_screen/exp_full.png");
+    private static final ResourceLocation LEFT_PANEL_ARROW_CLICK = new ResourceLocation(MODID, "textures/gui/ability_screen/addition_arrow_left_click.png");
+    private static final ResourceLocation LEFT_PANEL_ARROW_HOVER = new ResourceLocation(MODID, "textures/gui/ability_screen/addition_arrow_left_hover.png");
+    private static final ResourceLocation LEFT_PANEL_ARROW_MAIN = new ResourceLocation(MODID, "textures/gui/ability_screen/addition_arrow_left_main.png");
+    private static final ResourceLocation INFO_HOVER = new ResourceLocation(MODID, "textures/gui/ability_screen/info_hover.png");
+    private static final ResourceLocation INFO_MAIN = new ResourceLocation(MODID, "textures/gui/ability_screen/info_main.png");
 
     public LevelButton lastHoveredLevelButton;
 

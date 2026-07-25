@@ -89,7 +89,7 @@ public class DSEnchantments {
     public static ResourceKey<Enchantment> CURSE_OF_KINDNESS = register("curse_of_kindness");
 
     private static ResourceKey<Enchantment> register(String key) {
-        return ResourceKey.create(Registries.ENCHANTMENT, ResourceLocation.fromNamespaceAndPath(MODID, key));
+        return ResourceKey.create(Registries.ENCHANTMENT, new ResourceLocation(MODID, key));
     }
 
     // TODO :: currently only has enchantments which are needed for further data generation (e.g. for advancements)

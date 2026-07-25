@@ -84,11 +84,11 @@ public class CustomizationFileHandler {
             }
 
             if (nbt.contains(DRAGON_SPECIES)) {
-                this.dragonSpecies = ResourceKey.create(DragonSpecies.REGISTRY, ResourceLocation.parse(nbt.getString(DRAGON_SPECIES)));
+                this.dragonSpecies = ResourceKey.create(DragonSpecies.REGISTRY, new ResourceLocation(nbt.getString(DRAGON_SPECIES)));
             }
 
             if (nbt.contains(DRAGON_MODEL)) {
-                this.dragonModel = ResourceLocation.parse(nbt.getString(DRAGON_MODEL));
+                this.dragonModel = new ResourceLocation(nbt.getString(DRAGON_MODEL));
             }
         }
 

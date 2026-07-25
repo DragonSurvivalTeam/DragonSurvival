@@ -71,27 +71,27 @@ public class DragonInventoryScreen extends EffectRenderingInventoryScreen<Dragon
     })
     private static final String HELP_CLAWS = Translation.Type.GUI.wrap("help.claws");
 
-    private static final ResourceLocation BACKGROUND = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/inventory/dragon_inventory.png");
-    private static final ResourceLocation CLAWS_TEXTURE = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/inventory/dragon_claws.png");
+    private static final ResourceLocation BACKGROUND = new ResourceLocation(MODID, "textures/gui/inventory/dragon_inventory.png");
+    private static final ResourceLocation CLAWS_TEXTURE = new ResourceLocation(MODID, "textures/gui/inventory/dragon_claws.png");
 
-    private static final ResourceLocation CLAW_ARROW_CLICK = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/inventory/claw_arrow_left_click.png");
-    private static final ResourceLocation CLAW_ARROW_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/inventory/claw_arrow_left_hover.png");
-    private static final ResourceLocation CLAW_ARROW_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/inventory/claw_arrow_left_main.png");
+    private static final ResourceLocation CLAW_ARROW_CLICK = new ResourceLocation(MODID, "textures/gui/inventory/claw_arrow_left_click.png");
+    private static final ResourceLocation CLAW_ARROW_HOVER = new ResourceLocation(MODID, "textures/gui/inventory/claw_arrow_left_hover.png");
+    private static final ResourceLocation CLAW_ARROW_MAIN = new ResourceLocation(MODID, "textures/gui/inventory/claw_arrow_left_main.png");
 
-    private static final ResourceLocation CLAW_DISPLAY_ON = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/inventory/claw_display_on.png");
-    private static final ResourceLocation CLAW_DISPLAY_OFF = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/inventory/claw_display_off.png");
+    private static final ResourceLocation CLAW_DISPLAY_ON = new ResourceLocation(MODID, "textures/gui/inventory/claw_display_on.png");
+    private static final ResourceLocation CLAW_DISPLAY_OFF = new ResourceLocation(MODID, "textures/gui/inventory/claw_display_off.png");
 
-    private static final ResourceLocation INFO_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/inventory/info_hover.png");
-    private static final ResourceLocation INFO_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/inventory/info_main.png");
+    private static final ResourceLocation INFO_HOVER = new ResourceLocation(MODID, "textures/gui/inventory/info_hover.png");
+    private static final ResourceLocation INFO_MAIN = new ResourceLocation(MODID, "textures/gui/inventory/info_main.png");
 
-    private static final ResourceLocation CONFIG_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/inventory/config_hover.png");
-    private static final ResourceLocation CONFIG_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/inventory/config_main.png");
+    private static final ResourceLocation CONFIG_HOVER = new ResourceLocation(MODID, "textures/gui/inventory/config_hover.png");
+    private static final ResourceLocation CONFIG_MAIN = new ResourceLocation(MODID, "textures/gui/inventory/config_main.png");
 
-    private static final ResourceLocation VANILLA_INVENTORY_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/inventory/vanilla_inventory_hover.png");
-    private static final ResourceLocation VANILLA_INVENTORY_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/inventory/vanilla_inventory_main.png");
+    private static final ResourceLocation VANILLA_INVENTORY_HOVER = new ResourceLocation(MODID, "textures/gui/inventory/vanilla_inventory_hover.png");
+    private static final ResourceLocation VANILLA_INVENTORY_MAIN = new ResourceLocation(MODID, "textures/gui/inventory/vanilla_inventory_main.png");
 
-    private static final ResourceLocation SORT_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/inventory/sort_hover.png");
-    private static final ResourceLocation SORT_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/inventory/sort_main.png");
+    private static final ResourceLocation SORT_HOVER = new ResourceLocation(MODID, "textures/gui/inventory/sort_hover.png");
+    private static final ResourceLocation SORT_MAIN = new ResourceLocation(MODID, "textures/gui/inventory/sort_main.png");
 
     public static double mouseX = -1;
     public static double mouseY = -1;

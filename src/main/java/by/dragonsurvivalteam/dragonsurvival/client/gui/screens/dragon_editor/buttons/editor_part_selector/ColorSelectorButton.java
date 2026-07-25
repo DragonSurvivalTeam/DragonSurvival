@@ -29,8 +29,8 @@ public class ColorSelectorButton extends ExtendedButton {
     private final boolean opensRight;
     private final boolean opensUp;
 
-    private static final ResourceLocation BUTTON_HUE_UNCHANGED = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/editor/hue_unchanged.png");
-    private static final ResourceLocation BUTTON_HUE_CHANGED = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/editor/hue_changed.png");
+    private static final ResourceLocation BUTTON_HUE_UNCHANGED = new ResourceLocation(DragonSurvival.MODID, "textures/gui/editor/hue_unchanged.png");
+    private static final ResourceLocation BUTTON_HUE_CHANGED = new ResourceLocation(DragonSurvival.MODID, "textures/gui/editor/hue_changed.png");
 
     public ColorSelectorButton(DragonEditorScreen screen, SkinLayer layer, int x, int y, int xSize, int ySize, boolean opensRight, boolean opensUp) {
         super(x, y, xSize, ySize, Component.empty(), action -> { /* Nothing to do */ });

@@ -27,7 +27,7 @@ public class DragonSoulBar {
 
     public static final ResourceLocation ID = DragonSurvival.res("dragon_soul_bar");
 
-    private static final ResourceLocation DRAGON_SOUL_BAR = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/dragon_soul_bar.png");
+    private static final ResourceLocation DRAGON_SOUL_BAR = new ResourceLocation(DragonSurvival.MODID, "textures/gui/dragon_soul_bar.png");
     private static final int WIDTH = 66;
     private static final int HEIGHT = 40;
 

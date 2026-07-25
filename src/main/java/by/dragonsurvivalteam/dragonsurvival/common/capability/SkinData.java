@@ -73,7 +73,7 @@ public class SkinData implements INBTSerializable<CompoundTag> {
         renderCustomSkin = tag.getBoolean(RENDER_CUSTOM_SKIN);
 
         for (String key : tag.getAllKeys()) {
-            ResourceKey<DragonSpecies> dragonSpecies = ResourceKey.create(DragonSpecies.REGISTRY, ResourceLocation.parse(key));
+            ResourceKey<DragonSpecies> dragonSpecies = ResourceKey.create(DragonSpecies.REGISTRY, new ResourceLocation(key));
 
             if (provider.lookup(DragonSpecies.REGISTRY).flatMap(lookup -> lookup.get(dragonSpecies)).isPresent()) {
                 SkinPreset preset = new SkinPreset();
@@ -99,7 +99,7 @@ public class SkinData implements INBTSerializable<CompoundTag> {
         renderCustomSkin = tag.getBoolean(RENDER_CUSTOM_SKIN);
 
         for (String key : tag.getAllKeys()) {
-            ResourceKey<DragonSpecies> dragonSpecies = ResourceKey.create(DragonSpecies.REGISTRY, ResourceLocation.parse(key));
+            ResourceKey<DragonSpecies> dragonSpecies = ResourceKey.create(DragonSpecies.REGISTRY, new ResourceLocation(key));
 
             if (provider.lookup(DragonSpecies.REGISTRY).flatMap(lookup -> lookup.get(dragonSpecies)).isPresent()) {
                 SkinPreset preset = new SkinPreset();

@@ -71,8 +71,8 @@ public class ToolTipHandler {
     @Translation(comments = "Press 'SHIFT' for more info")
     private static final String PRESS_SHIFT = Translation.Type.GUI.wrap("tooltip.shift");
 
-    private static final ResourceLocation TOOLTIP_BLINKING = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/magic_tips_1.png");
-    private static final ResourceLocation TOOLTIP = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/magic_tips_0.png");
+    private static final ResourceLocation TOOLTIP_BLINKING = new ResourceLocation(DragonSurvival.MODID, "textures/gui/magic_tips_1.png");
+    private static final ResourceLocation TOOLTIP = new ResourceLocation(DragonSurvival.MODID, "textures/gui/magic_tips_0.png");
 
     private static boolean isBlinking;
     private static int tick;

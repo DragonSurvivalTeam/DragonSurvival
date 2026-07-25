@@ -20,7 +20,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class DragonHelmet<T extends Entity> extends EntityModel<T> {
     // This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
-    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath("dragonsurvival", "dragon_helmet"), "main");
+    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation("dragonsurvival", "dragon_helmet"), "main");
     public final ModelPart head;
 
     public DragonHelmet(ModelPart root) {

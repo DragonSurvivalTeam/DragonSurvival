@@ -14,6 +14,6 @@ public class GenericArrowRenderer extends ArrowRenderer<GenericArrowEntity> {
     @Override
     public @NotNull ResourceLocation getTextureLocation(@NotNull final GenericArrowEntity arrow) {
         ResourceLocation resource = arrow.getResource();
-        return ResourceLocation.fromNamespaceAndPath(resource.getNamespace(), "textures/entity/projectiles/" + resource.getPath() + ".png");
+        return new ResourceLocation(resource.getNamespace(), "textures/entity/projectiles/" + resource.getPath() + ".png");
     }
 }

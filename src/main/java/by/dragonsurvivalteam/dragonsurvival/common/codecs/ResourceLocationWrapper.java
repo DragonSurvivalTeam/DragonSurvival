@@ -38,7 +38,7 @@ public class ResourceLocationWrapper {
 
     public static <T> Set<ResourceLocation> getEntries(final String location, final Registry<T> registry) {
         if (location.startsWith("#")) {
-            Optional<HolderSet.Named<T>> optional = registry.getTag(TagKey.create(registry.key(), ResourceLocation.parse(location.substring(1))));
+            Optional<HolderSet.Named<T>> optional = registry.getTag(TagKey.create(registry.key(), new ResourceLocation(location.substring(1))));
             //noinspection DataFlowIssue -> key is expected to be present
             return optional.map(entries -> entries.stream().map(entry -> entry.getKey().location()).collect(Collectors.toSet())).orElse(Set.of());
         } else {
@@ -129,11 +129,11 @@ public class ResourceLocationWrapper {
      */
     public static <T> Triple<TagKey<T>, ResourceKey<T>, Set<ResourceKey<T>>> convert(final String resource, final Registry<T> registry) {
         if (resource.startsWith("#")) {
-            return Triple.of(TagKey.create(registry.key(), ResourceLocation.parse(resource.substring(1))), null, null);
+            return Triple.of(TagKey.create(registry.key(), new ResourceLocation(resource.substring(1))), null, null);
         }
 
         if (ResourceLocation.tryParse(resource) != null) {
-            return Triple.of(null, ResourceKey.create(registry.key(), ResourceLocation.parse(resource)), null);
+            return Triple.of(null, ResourceKey.create(registry.key(), new ResourceLocation(resource)), null);
         }
 
         return Triple.of(null, null, map(resource, registry));
