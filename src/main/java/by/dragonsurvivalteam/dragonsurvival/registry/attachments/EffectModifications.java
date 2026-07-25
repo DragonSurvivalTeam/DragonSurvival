@@ -2,6 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.registry.attachments;
 
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.EffectModification;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -30,7 +31,7 @@ public class EffectModifications extends Storage<EffectModification.Instance> {
         int duration = effect.getDuration();
 
         for (EffectModification.Instance instance : all()) {
-            if (instance.baseData().effects().contains(effect.getEffect())) {
+            if (instance.baseData().effects().contains(BuiltInRegistries.MOB_EFFECT.wrapAsHolder(effect.getEffect()))) {
                 duration = instance.calculateDuration(duration);
             }
         }
@@ -42,7 +43,7 @@ public class EffectModifications extends Storage<EffectModification.Instance> {
         int amplifier = effect.getAmplifier();
 
         for (EffectModification.Instance instance : all()) {
-            if (instance.baseData().effects().contains(effect.getEffect())) {
+            if (instance.baseData().effects().contains(BuiltInRegistries.MOB_EFFECT.wrapAsHolder(effect.getEffect()))) {
                 amplifier = instance.calculateAmplifier(amplifier);
             }
         }

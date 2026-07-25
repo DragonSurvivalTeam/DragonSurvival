@@ -60,7 +60,7 @@ public class DragonBeaconBlockEntity extends BlockEntity {
                 amplifier += data.paymentData().amplifierModification();
             }
 
-            player.addEffect(new MobEffectInstance(effect.effect(), duration, amplifier, !paidExperience, true));
+            player.addEffect(new MobEffectInstance(effect.effect().value(), duration, amplifier, !paidExperience, true));
         });
 
         return true;

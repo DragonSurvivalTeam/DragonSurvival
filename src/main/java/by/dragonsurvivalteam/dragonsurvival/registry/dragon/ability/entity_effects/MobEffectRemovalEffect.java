@@ -9,6 +9,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.RegistryCodecs;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
@@ -60,13 +61,13 @@ public record MobEffectRemovalEffect(
     @Override
     public void apply(ServerPlayer dragon, DragonAbilityInstance ability, Entity target) {
         if (target instanceof LivingEntity livingEntity) {
-            ArrayList<Holder<MobEffect>> effectsToRemove = new ArrayList<>();
+            ArrayList<MobEffect> effectsToRemove = new ArrayList<>();
             for (MobEffectInstance instance : livingEntity.getActiveEffects()) {
                 if (maxAmount.isPresent() && effectsToRemove.size() >= maxAmount.get().calculate(ability.level())) {
                     break;
                 }
                 if (categories.isEmpty() || categories.get().contains(instance.getEffect().getCategory())) {
-                    if (validEffects.isEmpty() || validEffects.get().contains(instance.getEffect())) {
+                    if (validEffects.isEmpty() || validEffects.get().contains(BuiltInRegistries.MOB_EFFECT.wrapAsHolder(instance.getEffect()))) {
                         if (maximumEffectLevel.isEmpty() || instance.getAmplifier() <= maximumEffectLevel.get().calculate(ability.level())) {
                             effectsToRemove.add(instance.getEffect());
                         }

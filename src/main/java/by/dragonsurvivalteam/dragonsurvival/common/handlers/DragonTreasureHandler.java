@@ -15,6 +15,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.util.BlockPosHelper;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffects;
@@ -66,7 +67,7 @@ public class DragonTreasureHandler {
             "(amplifier is calculated with +1, the +1 is subtracted for the final result)"
     })
     @ConfigOption(side = ConfigSide.SERVER, category = "treasure", key = "effects_on_sleep")
-    public static List<EffectConfig> EFFECTS_ON_SLEEP = List.of(EffectConfig.create(MobEffects.REGENERATION, 200, 0, 0.5, 0.01));
+    public static List<EffectConfig> EFFECTS_ON_SLEEP = List.of(EffectConfig.create(BuiltInRegistries.MOB_EFFECT.wrapAsHolder(MobEffects.REGENERATION), 200, 0, 0.5, 0.01));
 
     @SubscribeEvent
     public static void update(final TickEvent.PlayerTickEvent event) {

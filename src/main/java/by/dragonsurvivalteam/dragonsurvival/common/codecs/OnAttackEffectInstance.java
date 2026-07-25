@@ -10,7 +10,7 @@ public record OnAttackEffectInstance(HolderSet<MobEffect> effects, int amplifier
     public void apply(final Entity entity) {
         if (entity instanceof LivingEntity livingEntity) {
             effects.forEach(effect -> {
-                MobEffectInstance currentInstance = livingEntity.getEffect(effect);
+                MobEffectInstance currentInstance = livingEntity.getEffect(effect.value());
                 if (currentInstance != null && (currentInstance.getAmplifier() >= amplifier && currentInstance.getDuration() >= duration)) {
                     // Don't do anything if the current effect is at least equally strong and has at least the same duration
                     // For all other cases this new effect will either override the current instance or be added as hidden effect
@@ -19,7 +19,7 @@ public record OnAttackEffectInstance(HolderSet<MobEffect> effects, int amplifier
                 }
 
                 if (livingEntity.getRandom().nextDouble() < probability) {
-                    livingEntity.addEffect(new MobEffectInstance(effect, duration, amplifier));
+                    livingEntity.addEffect(new MobEffectInstance(effect.value(), duration, amplifier));
                 }
             });
         }

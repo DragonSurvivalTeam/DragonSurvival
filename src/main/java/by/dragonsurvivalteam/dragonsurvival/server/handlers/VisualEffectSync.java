@@ -4,6 +4,7 @@ import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncVisualEffectAdded;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncVisualEffectRemoval;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
 import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -24,13 +25,13 @@ import java.util.List;
 @EventBusSubscriber
 public class VisualEffectSync {
     private static final List<Holder<MobEffect>> VISUAL_EFFECTS = List.of(
-            DSEffects.DRAIN.get(),
-            DSEffects.CHARGED.get(),
-            DSEffects.BURN.get(),
-            DSEffects.BLOOD_SIPHON.get(),
-            DSEffects.REGENERATION_DELAY.get(),
-            DSEffects.TRAPPED.get(),
-            DSEffects.HUNTER.get()
+            BuiltInRegistries.MOB_EFFECT.wrapAsHolder(DSEffects.DRAIN.get()),
+            BuiltInRegistries.MOB_EFFECT.wrapAsHolder(DSEffects.CHARGED.get()),
+            BuiltInRegistries.MOB_EFFECT.wrapAsHolder(DSEffects.BURN.get()),
+            BuiltInRegistries.MOB_EFFECT.wrapAsHolder(DSEffects.BLOOD_SIPHON.get()),
+            BuiltInRegistries.MOB_EFFECT.wrapAsHolder(DSEffects.REGENERATION_DELAY.get()),
+            BuiltInRegistries.MOB_EFFECT.wrapAsHolder(DSEffects.TRAPPED.get()),
+            BuiltInRegistries.MOB_EFFECT.wrapAsHolder(DSEffects.HUNTER.get())
     );
 
     @SubscribeEvent
@@ -43,7 +44,7 @@ public class VisualEffectSync {
 
         MobEffectInstance instance = event.getEffectInstance();
 
-        if (!VISUAL_EFFECTS.contains(instance.getEffect())) {
+        if (!VISUAL_EFFECTS.contains(BuiltInRegistries.MOB_EFFECT.wrapAsHolder(instance.getEffect()))) {
             return;
         }
 
@@ -67,10 +68,10 @@ public class VisualEffectSync {
             return;
         }
 
-        if (!VISUAL_EFFECTS.contains(instance.getEffect())) {
+        if (!VISUAL_EFFECTS.contains(BuiltInRegistries.MOB_EFFECT.wrapAsHolder(instance.getEffect()))) {
             return;
         }
 
-        PacketDistributor.sendToPlayersTrackingEntity(entity, new SyncVisualEffectRemoval(entity.getId(), instance.getEffect()));
+        PacketDistributor.sendToPlayersTrackingEntity(entity, new SyncVisualEffectRemoval(entity.getId(), BuiltInRegistries.MOB_EFFECT.wrapAsHolder(instance.getEffect())));
     }
 }
