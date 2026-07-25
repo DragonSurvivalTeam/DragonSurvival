@@ -10,7 +10,6 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSEntityTypeTa
 import by.dragonsurvivalteam.dragonsurvival.util.EnchantmentUtils;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -27,10 +26,10 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.MapItem;
-import net.minecraft.world.item.component.MapDecorations;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.saveddata.maps.MapDecoration;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -82,7 +81,7 @@ public class HunterOmenHandler {
             trades.add(offer.getResult().copy());
         }
 
-        int looting = player != null ? EnchantmentUtils.getLevel(player, Enchantments.LOOTING) : 0;
+        int looting = player != null ? EnchantmentUtils.getLevel(player, Enchantments.MOB_LOOTING) : 0;
         int rolls = Math.min(looting + 1, trades.size());
         List<ItemStack> loot = new ArrayList<>();
 
@@ -98,18 +97,22 @@ public class HunterOmenHandler {
         // Have the cartographer drop a hunter's castle map if the player kills them (but not from stealing)
         if (level instanceof ServerLevel serverLevel && villager.getVillagerData().getProfession() == VillagerProfession.CARTOGRAPHER) {
             for (ItemStack stack : loot) {
-                if (stack.getItem() != Items.MAP) {
+                if (stack.getItem() != Items.FILLED_MAP) {
                     continue;
                 }
 
-                MapDecorations decorations = stack.get(DataComponents.MAP_DECORATIONS);
-
-                if (decorations == null) {
+                if (!stack.hasCustomHoverName() || !stack.getHoverName().equals(Component.translatable(LangKey.ITEM_KINGDOM_EXPLORER_MAP))) {
                     continue;
                 }
 
-                for (MapDecorations.Entry entry : decorations.decorations().values()) {
-                    if (entry.type() == DSMapDecorationTypes.DRAGON_HUNTER) {
+                MapItemSavedData data = MapItem.getSavedData(stack, serverLevel);
+
+                if (data == null) {
+                    continue;
+                }
+
+                for (MapDecoration decoration : data.getDecorations()) {
+                    if (decoration.getType() == DSMapDecorationTypes.DRAGON_HUNTER) {
                         // Map is already part of the loot
                         return loot;
                     }
@@ -123,7 +126,7 @@ public class HunterOmenHandler {
             }
 
             ItemStack map = MapItem.create(serverLevel, castlePosition.getX(), castlePosition.getZ(), (byte) 2, true, true);
-            map.set(DataComponents.ITEM_NAME, Component.translatable(LangKey.ITEM_KINGDOM_EXPLORER_MAP));
+            map.setHoverName(Component.translatable(LangKey.ITEM_KINGDOM_EXPLORER_MAP));
 
             MapItem.renderBiomePreviewMap(serverLevel, map);
             MapItemSavedData.addTargetDecoration(map, castlePosition, "+", DSMapDecorationTypes.DRAGON_HUNTER);

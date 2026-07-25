@@ -18,9 +18,17 @@ public class EnchantmentUtils {
         return value == null ? 0 : EnchantmentHelper.getEnchantmentLevel(value, entity);
     }
 
+    public static int getLevel(@NotNull final LivingEntity entity, @NotNull final Enchantment enchantment) {
+        return EnchantmentHelper.getEnchantmentLevel(enchantment, entity);
+    }
+
     public static int getLevel(@NotNull final Level level, @NotNull final ResourceKey<Enchantment> enchantment, @NotNull final ItemStack stack) {
         Enchantment value = get(enchantment);
         return value == null ? 0 : stack.getEnchantmentLevel(value);
+    }
+
+    public static int getLevel(@NotNull final Level level, @NotNull final Enchantment enchantment, @NotNull final ItemStack stack) {
+        return stack.getEnchantmentLevel(enchantment);
     }
 
     public static @Nullable Enchantment get(final ResourceKey<Enchantment> enchantment) {

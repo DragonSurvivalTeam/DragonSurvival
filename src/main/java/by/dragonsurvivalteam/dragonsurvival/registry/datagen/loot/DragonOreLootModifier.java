@@ -78,7 +78,7 @@ public class DragonOreLootModifier extends LootModifier {
                 return generatedLoot;
             }
 
-            fortuneLevel = EnchantmentUtils.getLevel(player.level(), Enchantments.FORTUNE, tool);
+                fortuneLevel = EnchantmentUtils.getLevel(player.level(), Enchantments.BLOCK_FORTUNE, tool);
         }
 
         BlockPos position = BlockPos.containing(origin);

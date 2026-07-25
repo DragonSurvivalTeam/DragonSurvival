@@ -10,7 +10,6 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
@@ -30,10 +29,9 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.MapItem;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentInstance;
-import net.minecraft.world.item.trading.ItemCost;
 import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.level.levelgen.structure.Structure;
-import net.minecraft.world.level.saveddata.maps.MapDecorationType;
+import net.minecraft.world.level.saveddata.maps.MapDecoration;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -44,7 +42,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.Optional;
 
 @EventBusSubscriber
 public class DSTrades {
@@ -66,23 +63,23 @@ public class DSTrades {
                     SoundEvents.VILLAGER_WORK_ARMORER));
 
     public static class ItemTrade implements VillagerTrades.ItemListing {
-        private final ItemCost item;
+        private final ItemStack item;
         private final ItemStack result;
         private final int maxUses;
         private final float priceMultiplier;
         private final int xp;
 
         public ItemTrade(final ItemStack item, final ItemStack result, int maxUses, int xp) {
-            this.item = new ItemCost(item.getItem(), item.getCount());
-            this.result = result;
+            this.item = item.copy();
+            this.result = result.copy();
             this.maxUses = maxUses;
             this.priceMultiplier = 0;
             this.xp = xp;
         }
 
         public ItemTrade(final ItemStack item, final ItemStack result, int maxUses, float priceMultiplier, int xp) {
-            this.item = new ItemCost(item.getItem(), item.getCount());
-            this.result = result;
+            this.item = item.copy();
+            this.result = result.copy();
             this.maxUses = maxUses;
             this.priceMultiplier = priceMultiplier;
             this.xp = xp;
@@ -90,7 +87,7 @@ public class DSTrades {
 
         @Override
         public @Nullable MerchantOffer getOffer(@NotNull final Entity entity, @NotNull final RandomSource random) {
-            return new MerchantOffer(item, Optional.empty(), result, maxUses, xp, priceMultiplier);
+            return new MerchantOffer(item.copy(), result.copy(), maxUses, xp, priceMultiplier);
         }
     }
 
@@ -99,11 +96,11 @@ public class DSTrades {
         private final int emeraldCost;
         private final TagKey<Structure> destination;
         private final String displayName;
-        private final Holder<MapDecorationType> destinationType;
+        private final MapDecoration.Type destinationType;
         private final int maxUses;
         private final int villagerXp;
 
-        public TreasureMapForEmeralds(int pEmeraldCost, TagKey<Structure> pDestination, String pDisplayName, Holder<MapDecorationType> pDestinationType, int pMaxUses, int pVillagerXp) {
+        public TreasureMapForEmeralds(int pEmeraldCost, TagKey<Structure> pDestination, String pDisplayName, MapDecoration.Type pDestinationType, int pMaxUses, int pVillagerXp) {
             this.emeraldCost = pEmeraldCost;
             this.destination = pDestination;
             this.displayName = pDisplayName;
@@ -123,9 +120,9 @@ public class DSTrades {
                     ItemStack itemstack = MapItem.create(serverlevel, blockpos.getX(), blockpos.getZ(), (byte) 2, true, true);
                     MapItem.renderBiomePreviewMap(serverlevel, itemstack);
                     MapItemSavedData.addTargetDecoration(itemstack, blockpos, "+", this.destinationType);
-                    itemstack.set(DataComponents.ITEM_NAME, Component.translatable(this.displayName));
+                    itemstack.setHoverName(Component.translatable(this.displayName));
 
-                    return new MerchantOffer(new ItemCost(Items.EMERALD, this.emeraldCost), Optional.of(new ItemCost(Items.COMPASS)), itemstack, this.maxUses, this.villagerXp, 0.2F);
+                    return new MerchantOffer(new ItemStack(Items.EMERALD, this.emeraldCost), new ItemStack(Items.COMPASS), itemstack, this.maxUses, this.villagerXp, 0.2F);
                 } else {
                     return null;
                 }
@@ -157,7 +154,7 @@ public class DSTrades {
 
             if (enchantment == null) {
                 DragonSurvival.LOGGER.warn("Enchantment [{}] is not present - cannot create proper trade offer", this.enchantment.location());
-                return new MerchantOffer(new ItemCost(Items.EMERALD, 1), Optional.empty(), Items.BOOK.getDefaultInstance(), 1, 0, 1);
+                return new MerchantOffer(new ItemStack(Items.EMERALD), Items.BOOK.getDefaultInstance(), 1, 0, 1);
             }
 
             int minLevel = Math.max(enchantment.getMinLevel(), this.minLevel);
@@ -175,7 +172,27 @@ public class DSTrades {
                 cost = 64;
             }
 
-            return new MerchantOffer(new ItemCost(Items.EMERALD, cost), Optional.of(new ItemCost(Items.BOOK)), book, 12, this.villagerXp, 0.2f);
+            return new MerchantOffer(new ItemStack(Items.EMERALD, cost), new ItemStack(Items.BOOK), book, 12, this.villagerXp, 0.2f);
+        }
+    }
+
+    static class EnchantBookFromTagForEmeralds implements VillagerTrades.ItemListing {
+        private final int villagerXp;
+        private final TagKey<Enchantment> enchantments;
+
+        EnchantBookFromTagForEmeralds(final int villagerXp, final TagKey<Enchantment> enchantments) {
+            this.villagerXp = villagerXp;
+            this.enchantments = enchantments;
+        }
+
+        @Override
+        public @Nullable MerchantOffer getOffer(@NotNull final Entity trader, @NotNull final RandomSource random) {
+            return trader.level().registryAccess().registryOrThrow(Registries.ENCHANTMENT)
+                    .getTag(enchantments)
+                    .flatMap(tag -> tag.getRandomElement(random))
+                    .flatMap(Holder::unwrapKey)
+                    .map(key -> new EnchantBookForEmeralds(key, villagerXp).getOffer(trader, random))
+                    .orElse(null);
         }
     }
 
@@ -196,28 +213,28 @@ public class DSTrades {
             trades.get(2).add(new EnchantBookForEmeralds(DSEnchantments.COMBAT_RECOVERY, 20));
             trades.get(3).add(new EnchantBookForEmeralds(DSEnchantments.AERODYNAMIC_MASTERY, 20));
             trades.get(4).add(new EnchantBookForEmeralds(DSEnchantments.SACRED_SCALES, 20));
-            trades.get(5).add(new ItemTrade(new ItemStack(Items.EMERALD, 32), new ItemStack(DSItems.LIGHT_KEY, 1), 12, 35));
+            trades.get(5).add(new ItemTrade(new ItemStack(Items.EMERALD, 32), new ItemStack(DSItems.LIGHT_KEY.get(), 1), 12, 35));
 
             // Declare the leader trades in here, since this event only fires once and if we do it statically it might try to initialize in cases where we don't actually have a minecraft instance yet.
             final List<ItemListing> LEADER_TRADES_LEVEL_1 = Lists.newArrayList(
-                    new ItemTrade(new ItemStack(DSItems.DRAGON_HEART_SHARD, 1), new ItemStack(Items.EMERALD, 1), 16, 1, 5),
-                    new ItemTrade(new ItemStack(Items.EMERALD, 12), new ItemStack(DSItems.PARTISAN, 1), 1, 1, 5)
+                    new ItemTrade(new ItemStack(DSItems.DRAGON_HEART_SHARD.get(), 1), new ItemStack(Items.EMERALD, 1), 16, 1, 5),
+                    new ItemTrade(new ItemStack(Items.EMERALD, 12), new ItemStack(DSItems.PARTISAN.get(), 1), 1, 1, 5)
             );
 
             final List<ItemListing> LEADER_TRADES_LEVEL_2 = Lists.newArrayList(
-                    new ItemTrade(new ItemStack(DSItems.WEAK_DRAGON_HEART, 1), new ItemStack(Items.EMERALD, 1), 16, 1, 10)
+                    new ItemTrade(new ItemStack(DSItems.WEAK_DRAGON_HEART.get(), 1), new ItemStack(Items.EMERALD, 1), 16, 1, 10)
             );
 
             final List<ItemListing> LEADER_TRADES_LEVEL_3 = Lists.newArrayList(
-                    new ItemTrade(new ItemStack(Items.EMERALD, 32), new ItemStack(DSItems.HUNTER_KEY, 1), 16, 1, 35)
+                    new ItemTrade(new ItemStack(Items.EMERALD, 32), new ItemStack(DSItems.HUNTER_KEY.get(), 1), 16, 1, 35)
             );
 
             final List<ItemListing> LEADER_TRADES_LEVEL_4 = Lists.newArrayList(
-                    new ItemTrade(new ItemStack(DSItems.ELDER_DRAGON_HEART, 1), new ItemStack(Items.EMERALD, 12), 12, 1, 25)
+                    new ItemTrade(new ItemStack(DSItems.ELDER_DRAGON_HEART.get(), 1), new ItemStack(Items.EMERALD, 12), 12, 1, 25)
             );
 
             final List<ItemListing> LEADER_TRADES_LEVEL_5 = Lists.newArrayList(
-                    new VillagerTrades.EnchantBookForEmeralds(15, LEADER_BOOKS)
+                    new EnchantBookFromTagForEmeralds(15, LEADER_BOOKS)
             );
 
             LEADER_TRADES.put(1, LEADER_TRADES_LEVEL_1.toArray(new VillagerTrades.ItemListing[0]));
