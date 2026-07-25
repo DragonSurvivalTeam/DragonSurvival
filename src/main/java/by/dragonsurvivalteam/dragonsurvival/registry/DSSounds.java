@@ -3,7 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraftforge.common.util.DeferredSoundType;
+import net.minecraftforge.common.util.ForgeSoundType;
 import net.minecraftforge.registries.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 
@@ -33,9 +33,9 @@ public class DSSounds {
     public static RegistryObject<SoundEvent> TREASURE_GEM_BREAK = REGISTRY.register("treasure_gem_break", () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(MODID, "treasure_gem_break")));
     public static RegistryObject<SoundEvent> TREASURE_GEM_HIT = REGISTRY.register("treasure_gem_hit", () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(MODID, "treasure_gem_hit")));
 
-    public static DeferredSoundType TREASURE_GEM = new DeferredSoundType(1f, 1f, TREASURE_GEM_BREAK, TREASURE_GEM_HIT, TREASURE_GEM_HIT, TREASURE_GEM_HIT, TREASURE_GEM_HIT);
+    public static ForgeSoundType TREASURE_GEM = new ForgeSoundType(1f, 1f, TREASURE_GEM_BREAK, TREASURE_GEM_HIT, TREASURE_GEM_HIT, TREASURE_GEM_HIT, TREASURE_GEM_HIT);
     public static RegistryObject<SoundEvent> TREASURE_METAL_BREAK = REGISTRY.register("treasure_metal_break", () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(MODID, "treasure_metal_break")));
     public static RegistryObject<SoundEvent> TREASURE_METAL_HIT = REGISTRY.register("treasure_metal_hit", () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(MODID, "treasure_metal_hit")));
 
-    public static DeferredSoundType TREASURE_METAL = new DeferredSoundType(1f, 1f, TREASURE_METAL_BREAK, TREASURE_METAL_HIT, TREASURE_METAL_HIT, TREASURE_METAL_HIT, TREASURE_METAL_HIT);
+    public static ForgeSoundType TREASURE_METAL = new ForgeSoundType(1f, 1f, TREASURE_METAL_BREAK, TREASURE_METAL_HIT, TREASURE_METAL_HIT, TREASURE_METAL_HIT, TREASURE_METAL_HIT);
 }
