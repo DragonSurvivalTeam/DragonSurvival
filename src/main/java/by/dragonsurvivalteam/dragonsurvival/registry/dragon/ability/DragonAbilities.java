@@ -54,6 +54,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.nbt.CompoundTag;
@@ -143,11 +144,11 @@ public class DragonAbilities {
                                                 .range(LevelBasedValue.constant(36))
                                                 .displayType(BlockVision.DisplayType.SIMPLE_SHADER)
                                                 .colorEntries(List.of(
-                                                        BlockVision.color(TextColor.parseColor("#0040FF").getOrThrow(), 0.7f),
-                                                        BlockVision.color(TextColor.parseColor("#4030E0").getOrThrow(), 0.3f),
-                                                        BlockVision.color(TextColor.parseColor("#8020C0").getOrThrow(), 0.7f),
-                                                        BlockVision.color(TextColor.parseColor("#C010A0").getOrThrow(), 0.3f),
-                                                        BlockVision.color(TextColor.parseColor("#FF0080").getOrThrow(), 0.7f)
+                                                        BlockVision.color(TextColor.parseColor("#0040FF"), 0.7f),
+                                                        BlockVision.color(TextColor.parseColor("#4030E0"), 0.3f),
+                                                        BlockVision.color(TextColor.parseColor("#8020C0"), 0.7f),
+                                                        BlockVision.color(TextColor.parseColor("#C010A0"), 0.3f),
+                                                        BlockVision.color(TextColor.parseColor("#FF0080"), 0.7f)
                                                 ))
                                                 .colorShiftRate(0.3)
                                                 .build()
@@ -186,7 +187,7 @@ public class DragonAbilities {
                 Optional.empty(),
                 List.of(
                         new ActionContainer(new AreaTarget(AbilityTargeting.entity(List.of(
-                                new DamageEffect(context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DamageTypes.GENERIC), LevelBasedValue.perLevel(1), Attributes.ATTACK_DAMAGE, new Expression("amount * scale * 10"), true)
+                                new DamageEffect(context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DamageTypes.GENERIC), LevelBasedValue.perLevel(1), BuiltInRegistries.ATTRIBUTE.wrapAsHolder(Attributes.ATTACK_DAMAGE), new Expression("amount * scale * 10"), true)
                         ), TargetingMode.ENEMIES), LevelBasedValue.constant(5)), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(1))
                 ),
                 true,
@@ -308,7 +309,7 @@ public class DragonAbilities {
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(5))),
                         Notification.DEFAULT,
                         true,
-                        Sound.create().end(SoundEvents.PLAYER_TELEPORT).optional(),
+                        Sound.create().end(SoundEvents.CHORUS_FRUIT_TELEPORT).optional(),
                         Animations.create()
                                 .startAndCharging(SimpleAbilityAnimation.create(AnimationKey.CAST_MAGIC_ALT, AnimationLayer.BASE).transitionLength(5).build())
                                 .end(SimpleAbilityAnimation.create(AnimationKey.MAGIC_ALT, AnimationLayer.BASE).build())
@@ -347,7 +348,7 @@ public class DragonAbilities {
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(5))),
                         Notification.DEFAULT,
                         true,
-                        Sound.create().end(SoundEvents.PLAYER_TELEPORT).optional(),
+                        Sound.create().end(SoundEvents.CHORUS_FRUIT_TELEPORT).optional(),
                         Animations.create()
                                 .startAndCharging(SimpleAbilityAnimation.create(AnimationKey.CAST_MAGIC_ALT, AnimationLayer.BASE).transitionLength(5).build())
                                 .end(SimpleAbilityAnimation.create(AnimationKey.MAGIC_ALT, AnimationLayer.BASE).build())
