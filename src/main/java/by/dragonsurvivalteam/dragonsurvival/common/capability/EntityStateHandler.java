@@ -1,5 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.common.capability;
 
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AttachmentManager;
+
 import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncData;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
@@ -22,7 +24,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.common.util.INBTSerializable;
+import by.dragonsurvivalteam.dragonsurvival.common.serialization.INBTSerializable;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
@@ -62,7 +64,7 @@ public class EntityStateHandler implements INBTSerializable<CompoundTag> {
             return false;
         }
 
-        EntityStateHandler handler = target.getExistingData(DSDataAttachments.ENTITY_HANDLER).orElse(null);
+        EntityStateHandler handler = AttachmentManager.getExistingData(target, DSDataAttachments.ENTITY_HANDLER).orElse(null);
 
         if (handler == null) {
             // No data = no cooldown was set so far
@@ -87,7 +89,7 @@ public class EntityStateHandler implements INBTSerializable<CompoundTag> {
 
     @SubscribeEvent
     public static void onTrackingStart(final PlayerEvent.StartTracking event) {
-        EntityStateHandler handler = event.getTarget().getExistingData(DSDataAttachments.ENTITY_HANDLER).orElse(null);
+        EntityStateHandler handler = AttachmentManager.getExistingData(event.getTarget(), DSDataAttachments.ENTITY_HANDLER).orElse(null);
 
         if (handler == null || handler.pillageCooldown == 0) {
             return;

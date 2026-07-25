@@ -1,5 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.network.magic;
 
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AttachmentManager;
+
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Glow;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
@@ -25,7 +27,7 @@ public record SyncGlowInstance(int entityId, Glow.Instance instance, boolean isR
     public static void handleClient(final SyncGlowInstance packet, final PayloadContext context) {
         context.enqueueWork(() -> {
             if (context.player().level().getEntity(packet.entityId()) instanceof Entity entity) {
-                GlowData data = entity.getData(DSDataAttachments.GLOW);
+                GlowData data = AttachmentManager.getData(entity, DSDataAttachments.GLOW);
 
                 if (packet.isRemoval()) {
                     data.remove(entity, packet.instance());

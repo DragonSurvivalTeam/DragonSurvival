@@ -1,5 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.common.structures;
 
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AttachmentManager;
+
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.EndPlatform;
@@ -58,7 +60,7 @@ public class EndPlatformHandler {
         }
 
         ResourceLocation platform = data.structure();
-        PlacedEndPlatforms platforms = level.getData(DSDataAttachments.PLACED_END_PLATFORMS);
+        PlacedEndPlatforms platforms = AttachmentManager.getData(level, DSDataAttachments.PLACED_END_PLATFORMS);
 
         if (platforms.wasPlaced(platform)) {
             createNormalPlatform(level, position.below());

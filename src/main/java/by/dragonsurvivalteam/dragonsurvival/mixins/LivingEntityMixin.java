@@ -1,5 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.mixins;
 
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AttachmentManager;
+
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.DragonFoodHandler;
@@ -215,7 +217,7 @@ public abstract class LivingEntityMixin extends Entity {
             newInstance = EnchantmentEffectHandler.modifyEffect(affected, instance, applier);
         }
 
-        EffectModifications data = self.getExistingData(DSDataAttachments.EFFECT_MODIFICATIONS).orElse(null);
+        EffectModifications data = AttachmentManager.getExistingData(self, DSDataAttachments.EFFECT_MODIFICATIONS).orElse(null);
 
         if (data != null) {
             newInstance = data.modifyEffect(newInstance);

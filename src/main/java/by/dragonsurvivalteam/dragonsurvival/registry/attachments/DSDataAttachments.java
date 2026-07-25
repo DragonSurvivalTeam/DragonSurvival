@@ -4,17 +4,22 @@ import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.EntityStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.server.handlers.LightningHandler;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraftforge.attachment.AttachmentType;
-import net.minecraftforge.registries.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.IForgeRegistry;
+import net.minecraftforge.registries.RegistryBuilder;
+import net.minecraftforge.registries.RegistryObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 public class DSDataAttachments {
-    public static final DeferredRegister<AttachmentType<?>> REGISTRY = DeferredRegister.create(ForgeRegistries.Keys.ATTACHMENT_TYPES, DragonSurvival.MODID);
+    public static final ResourceLocation REGISTRY_NAME = DragonSurvival.res("attachment_type");
+    public static final DeferredRegister<AttachmentType<?>> REGISTRY = DeferredRegister.create(REGISTRY_NAME, DragonSurvival.MODID);
+    public static final Supplier<IForgeRegistry<AttachmentType<?>>> ATTACHMENT_TYPES = REGISTRY.makeRegistry(RegistryBuilder::new);
 
     public static final RegistryObject<AttachmentType<EntityStateHandler>> ENTITY_HANDLER = REGISTRY.register("entity_handler", () -> AttachmentType.serializable(EntityStateHandler::new).build());
     public static final RegistryObject<AttachmentType<DragonStateHandler>> DRAGON_HANDLER = REGISTRY.register("dragon_handler", () -> AttachmentType.serializable(DragonStateHandler::new).copyOnDeath().build());
@@ -57,7 +62,7 @@ public class DSDataAttachments {
         List<Storage<? extends T>> storages = new ArrayList<>();
 
         REGISTRY.getEntries().forEach(entry -> {
-            if (entity.getExistingData(entry.get()).orElse(null) instanceof Storage<?> storage) {
+            if (AttachmentManager.getExistingData(entity, entry.get()).orElse(null) instanceof Storage<?> storage) {
                 if (storage.isEmpty()) {
                     return;
                 }
@@ -77,7 +82,7 @@ public class DSDataAttachments {
         List<Storage<?>> storages = new ArrayList<>();
 
         REGISTRY.getEntries().forEach(entry -> {
-            if (entity.getExistingData(entry.get()).orElse(null) instanceof Storage<?> storage) {
+            if (AttachmentManager.getExistingData(entity, entry.get()).orElse(null) instanceof Storage<?> storage) {
                 if (storage.isEmpty()) {
                     return;
                 }

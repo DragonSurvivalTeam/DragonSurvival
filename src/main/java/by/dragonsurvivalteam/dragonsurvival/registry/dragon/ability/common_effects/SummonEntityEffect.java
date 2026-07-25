@@ -1,5 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.common_effects;
 
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AttachmentManager;
+
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.AttributeOperation;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
@@ -157,7 +159,7 @@ public class SummonEntityEffect extends DurationInstanceBase<SummonedEntities, S
     }
 
     private void collectPosition(final ServerPlayer dragon, final DragonAbilityInstance ability, final BlockPos spawnPosition) {
-        SummonedEntities summonData = dragon.getData(DSDataAttachments.SUMMONED_ENTITIES);
+        SummonedEntities summonData = AttachmentManager.getData(dragon, DSDataAttachments.SUMMONED_ENTITIES);
         Instance instance = summonData.get(id());
 
         if (instance != null && instance.hasEntities()) {
@@ -223,7 +225,7 @@ public class SummonEntityEffect extends DurationInstanceBase<SummonedEntities, S
 
     @Override
     public AttachmentType<SummonedEntities> type() {
-        return DSDataAttachments.SUMMONED_ENTITIES.value();
+        return DSDataAttachments.SUMMONED_ENTITIES.get();
     }
 
     public Either<SimpleWeightedRandomList<EntityType<?>>, HolderSet<EntityType<?>>> entities() {
@@ -311,7 +313,7 @@ public class SummonEntityEffect extends DurationInstanceBase<SummonedEntities, S
                 return false;
             }
 
-            SummonedEntities summonData = storageHolder.getData(DSDataAttachments.SUMMONED_ENTITIES);
+            SummonedEntities summonData = AttachmentManager.getData(storageHolder, DSDataAttachments.SUMMONED_ENTITIES);
             BlockPos spawnPosition = null;
 
             while (!positions.isEmpty()) {
@@ -388,7 +390,7 @@ public class SummonEntityEffect extends DurationInstanceBase<SummonedEntities, S
                 entity.load(entityTag);
             }
 
-            SummonData summon = entity.getData(DSDataAttachments.SUMMON);
+            SummonData summon = AttachmentManager.getData(entity, DSDataAttachments.SUMMON);
             summon.setOwnerUUID(storageHolder);
             summon.isAllied = baseData().isAllied();
             summon.attackBehaviour = summonData.attackBehaviour;
@@ -446,7 +448,7 @@ public class SummonEntityEffect extends DurationInstanceBase<SummonedEntities, S
 
                     if (summonedEntity != null) {
                         // Since the entry is already removed from the storage we don't need any behaviour based on the owner
-                        summonedEntity.getData(DSDataAttachments.SUMMON).setOwnerUUID(null);
+                        AttachmentManager.getData(summonedEntity, DSDataAttachments.SUMMON).setOwnerUUID(null);
                         summonedEntity.discard();
                         break;
                     }

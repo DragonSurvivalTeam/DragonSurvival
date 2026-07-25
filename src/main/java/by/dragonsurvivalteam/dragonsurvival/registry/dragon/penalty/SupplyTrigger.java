@@ -1,5 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty;
 
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AttachmentManager;
+
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.DSItemPredicate;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAttributes;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
@@ -62,7 +64,7 @@ public record SupplyTrigger(
     }
 
     public boolean matches(final ServerPlayer dragon, boolean conditionMatched) {
-        PenaltySupply supply = dragon.getData(DSDataAttachments.PENALTY_SUPPLY);
+        PenaltySupply supply = AttachmentManager.getData(dragon, DSDataAttachments.PENALTY_SUPPLY);
         supply.tick(supplyType);
 
         if (conditionMatched) {

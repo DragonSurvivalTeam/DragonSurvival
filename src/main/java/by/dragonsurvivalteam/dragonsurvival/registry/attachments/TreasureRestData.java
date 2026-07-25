@@ -4,7 +4,7 @@ import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.common.util.INBTSerializable;
+import by.dragonsurvivalteam.dragonsurvival.common.serialization.INBTSerializable;
 import org.jetbrains.annotations.NotNull;
 
 // No need to store the resting state if someone re-logs they shouldn't be considered sleeping
@@ -36,7 +36,7 @@ public class TreasureRestData implements INBTSerializable<CompoundTag> {
     }
 
     public static TreasureRestData getData(final Player player) {
-        return player.getData(DSDataAttachments.TREASURE_REST);
+        return AttachmentManager.getData(player, DSDataAttachments.TREASURE_REST);
     }
 
     @Override

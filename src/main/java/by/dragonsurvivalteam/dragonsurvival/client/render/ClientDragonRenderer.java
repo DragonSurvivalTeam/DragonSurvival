@@ -1,5 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.client.render;
 
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AttachmentManager;
+
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.render.entity.dragon.DragonRenderer;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
@@ -493,7 +495,7 @@ public class ClientDragonRenderer {
         }
 
         //noinspection DataFlowIssue -> player is present
-        Minecraft.getInstance().player.getExistingData(DSDataAttachments.DAMAGE_MODIFICATIONS).ifPresent(data -> {
+        AttachmentManager.getExistingData(Minecraft.getInstance().player, DSDataAttachments.DAMAGE_MODIFICATIONS).ifPresent(data -> {
             if (data.isFireImmune()) {
                 event.setCanceled(true);
             }

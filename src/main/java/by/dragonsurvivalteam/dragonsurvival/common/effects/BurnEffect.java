@@ -1,5 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.common.effects;
 
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AttachmentManager;
+
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.EntityStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.EffectHandler;
@@ -33,7 +35,7 @@ public class BurnEffect extends ModifiableMobEffect {
             return false;
         }
 
-        EntityStateHandler data = entity.getData(DSDataAttachments.ENTITY_HANDLER);
+        EntityStateHandler data = AttachmentManager.getData(entity, DSDataAttachments.ENTITY_HANDLER);
 
         if (data.lastPos == null) {
             data.lastPos = entity.position();

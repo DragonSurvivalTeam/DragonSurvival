@@ -1,5 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.mixins;
 
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AttachmentManager;
+
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LightningBolt;
@@ -13,7 +15,7 @@ public class LightningBoltMixin {
     @Inject(method = "spawnFire", at = @At("HEAD"), cancellable = true)
     private void preventFireFromSpawningFromDataAttachment(int extraIgnitions, CallbackInfo ci) {
         Entity entity = (Entity) (Object) this;
-        if (!entity.getData(DSDataAttachments.LIGHTNING_BOLT).spawnsFire) {
+        if (!AttachmentManager.getData(entity, DSDataAttachments.LIGHTNING_BOLT).spawnsFire) {
             ci.cancel();
         }
     }

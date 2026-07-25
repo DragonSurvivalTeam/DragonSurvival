@@ -112,7 +112,7 @@ public class HarvestBonus extends DurationInstanceBase<HarvestBonuses, HarvestBo
 
     @Override
     public AttachmentType<HarvestBonuses> type() {
-        return DSDataAttachments.HARVEST_BONUSES.value();
+        return DSDataAttachments.HARVEST_BONUSES.get();
     }
 
     public Optional<HolderSet<Block>> blocks() {

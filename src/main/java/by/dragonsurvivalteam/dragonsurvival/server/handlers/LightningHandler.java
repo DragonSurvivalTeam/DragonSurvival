@@ -1,5 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.server.handlers;
 
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AttachmentManager;
+
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -12,7 +14,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.common.util.INBTSerializable;
+import by.dragonsurvivalteam.dragonsurvival.common.serialization.INBTSerializable;
 import net.minecraftforge.event.entity.EntityStruckByLightningEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnknownNullability;
@@ -59,7 +61,7 @@ public class LightningHandler implements INBTSerializable<CompoundTag> {
     public static void handleLightningBolt(final EntityStruckByLightningEvent event) {
         LightningBolt bolt = event.getLightning();
         Entity target = event.getEntity();
-        LightningHandler handler = bolt.getData(DSDataAttachments.LIGHTNING_BOLT);
+        LightningHandler handler = AttachmentManager.getData(bolt, DSDataAttachments.LIGHTNING_BOLT);
 
         if (handler.ignoresItemsAndExperience) {
             if (target instanceof ItemEntity || target instanceof ExperienceOrb) {

@@ -20,11 +20,11 @@ public class ModifiersWithDuration extends Storage<ModifierWithDuration.Instance
     public static void tickData(final EntityTickEvent.Post event) {
         // Attribute modifiers are only relevant for living entities
         if (event.getEntity() instanceof LivingEntity livingEntity) {
-            livingEntity.getExistingData(DSDataAttachments.MODIFIERS_WITH_DURATION).ifPresent(data -> {
+            AttachmentManager.getExistingData(livingEntity, DSDataAttachments.MODIFIERS_WITH_DURATION).ifPresent(data -> {
                 data.tick(event.getEntity());
 
                 if (data.isEmpty()) {
-                    livingEntity.removeData(DSDataAttachments.MODIFIERS_WITH_DURATION);
+                    AttachmentManager.removeData(livingEntity, DSDataAttachments.MODIFIERS_WITH_DURATION);
                 }
             });
         }

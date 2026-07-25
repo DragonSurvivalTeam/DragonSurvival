@@ -1,5 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.network.magic;
 
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AttachmentManager;
+
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import io.netty.buffer.ByteBuf;
@@ -22,7 +24,7 @@ public record SyncHunterStacksRemoval(int entityId) implements CustomPacketPaylo
             Entity entity = context.player().level().getEntity(packet.entityId());
 
             if (entity != null) {
-                entity.getData(DSDataAttachments.HUNTER).clearHunterStacks();
+                AttachmentManager.getData(entity, DSDataAttachments.HUNTER).clearHunterStacks();
             }
         });
     }

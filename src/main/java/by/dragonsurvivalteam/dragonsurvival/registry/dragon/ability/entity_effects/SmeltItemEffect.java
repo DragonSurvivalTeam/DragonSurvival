@@ -1,5 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects;
 
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AttachmentManager;
+
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ItemData;
@@ -62,7 +64,7 @@ public record SmeltItemEffect(Optional<DSItemPredicate> itemPredicate, Optional<
         }
 
         if (progress.isPresent()) {
-            ItemData data = itemEntity.getData(DSDataAttachments.ITEM);
+            ItemData data = AttachmentManager.getData(itemEntity, DSDataAttachments.ITEM);
             data.smeltingProgress += progress.get().calculate(ability.level());
             data.smeltingTime = recipe.getCookingTime() * stack.getCount();
 

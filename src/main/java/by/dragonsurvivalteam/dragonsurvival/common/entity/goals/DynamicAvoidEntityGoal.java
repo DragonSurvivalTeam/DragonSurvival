@@ -1,5 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.common.entity.goals;
 
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AttachmentManager;
+
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.FearData;
 import net.minecraft.core.BlockPos;
@@ -73,7 +75,7 @@ public class DynamicAvoidEntityGoal extends Goal {
         }
 
         if (toAvoid != null) {
-            return toAvoid.getExistingData(DSDataAttachments.FEAR).map(fear -> fear.getData(mob).distance() != FearData.NO_FEAR).orElse(false);
+            return AttachmentManager.getExistingData(toAvoid, DSDataAttachments.FEAR).map(fear -> fear.getData(mob).distance() != FearData.NO_FEAR).orElse(false);
         }
 
         return true;
@@ -102,7 +104,7 @@ public class DynamicAvoidEntityGoal extends Goal {
         double closestDistanceTo = Integer.MAX_VALUE;
 
         for (Player player : mob.level().players()) {
-            FearData fear = player.getExistingData(DSDataAttachments.FEAR).orElse(null);
+            FearData fear = AttachmentManager.getExistingData(player, DSDataAttachments.FEAR).orElse(null);
 
             if (fear == null) {
                 continue;

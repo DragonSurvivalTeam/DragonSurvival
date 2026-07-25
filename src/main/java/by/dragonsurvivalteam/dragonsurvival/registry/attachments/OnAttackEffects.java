@@ -15,7 +15,7 @@ public class OnAttackEffects {
     private final Map<String, OnAttackEffectInstance> effectsToApply = new HashMap<>();
 
     public static OnAttackEffects getData(final Entity entity) {
-        return entity.getData(DSDataAttachments.ON_ATTACK_EFFECTS);
+        return AttachmentManager.getData(entity, DSDataAttachments.ON_ATTACK_EFFECTS);
     }
 
     public void addEffect(final String id, final OnAttackEffectInstance effect) {

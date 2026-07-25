@@ -9,6 +9,8 @@ import by.dragonsurvivalteam.dragonsurvival.common.handlers.DragonSizeHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.HunterHandler;
 import by.dragonsurvivalteam.dragonsurvival.compat.Compat;
 import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AttachmentManager;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AttachmentStorage;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DamageModifications;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.HunterData;
@@ -20,6 +22,7 @@ import by.dragonsurvivalteam.dragonsurvival.server.handlers.DragonRidingHandler;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.sugar.Local;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
@@ -28,16 +31,38 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.tick.EntityTickEvent;
+import net.minecraftforge.attachment.AttachmentType;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import java.util.IdentityHashMap;
+import java.util.Map;
+
 @Mixin(Entity.class)
-public abstract class EntityMixin {
+public abstract class EntityMixin implements AttachmentStorage {
     @Shadow private EntityDimensions dimensions;
+    @Unique
+    private final Map<AttachmentType<?>, Object> dragonSurvival$attachments = new IdentityHashMap<>();
+
+    @Override
+    public Map<AttachmentType<?>, Object> dragonSurvival$getAttachments() {
+        return dragonSurvival$attachments;
+    }
+
+    @Inject(method = "saveWithoutId", at = @At("RETURN"))
+    private void dragonSurvival$saveAttachments(final CompoundTag tag, final CallbackInfoReturnable<CompoundTag> callback) {
+        AttachmentManager.writeEntityAttachments((Entity) (Object) this, tag);
+    }
+
+    @Inject(method = "load", at = @At("TAIL"))
+    private void dragonSurvival$loadAttachments(final CompoundTag tag, final CallbackInfo callback) {
+        AttachmentManager.readEntityAttachments((Entity) (Object) this, tag);
+    }
 
     @Inject(method = "tick", at = @At("TAIL"))
     private void dragonSurvival$postEntityTick(final CallbackInfo callback) {
@@ -182,7 +207,7 @@ public abstract class EntityMixin {
         }
 
         Entity self = (Entity) (Object) this;
-        return self.getExistingData(DSDataAttachments.DAMAGE_MODIFICATIONS)
+        return AttachmentManager.getExistingData(self, DSDataAttachments.DAMAGE_MODIFICATIONS)
                 .map(DamageModifications::isFireImmune)
                 .orElse(false);
     }
@@ -205,7 +230,7 @@ public abstract class EntityMixin {
     private Vec3 dragonSurvival$handleSummonStay(final Vec3 deltaMovement) {
         Entity self = (Entity) (Object) this;
 
-        if (self.getExistingData(DSDataAttachments.SUMMON).map(data -> data.movementBehaviour == SummonedEntities.MovementBehaviour.STAY).orElse(false)) {
+        if (AttachmentManager.getExistingData(self, DSDataAttachments.SUMMON).map(data -> data.movementBehaviour == SummonedEntities.MovementBehaviour.STAY).orElse(false)) {
             return Vec3.ZERO;
         }
 

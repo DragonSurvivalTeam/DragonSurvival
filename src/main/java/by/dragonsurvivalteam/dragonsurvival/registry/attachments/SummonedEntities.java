@@ -70,7 +70,7 @@ public class SummonedEntities extends Storage<SummonEntityEffect.Instance> {
             return false;
         }
 
-        return entity.getExistingData(DSDataAttachments.SUMMON).map(data -> {
+        return AttachmentManager.getExistingData(entity, DSDataAttachments.SUMMON).map(data -> {
             if (!data.isAllied) {
                 return false;
             }
@@ -79,7 +79,7 @@ public class SummonedEntities extends Storage<SummonEntityEffect.Instance> {
                 return true;
             }
 
-            SummonData targetData = target.getExistingData(DSDataAttachments.SUMMON).orElse(null);
+            SummonData targetData = AttachmentManager.getExistingData(target, DSDataAttachments.SUMMON).orElse(null);
 
             if (targetData == null || !targetData.isAllied) {
                 return false;
@@ -98,7 +98,7 @@ public class SummonedEntities extends Storage<SummonEntityEffect.Instance> {
     @SubscribeEvent
     public static void tickData(final EntityTickEvent.Post event) {
         if (event.getEntity() instanceof Player player) {
-            player.getExistingData(DSDataAttachments.SUMMONED_ENTITIES).ifPresent(data -> {
+            AttachmentManager.getExistingData(player, DSDataAttachments.SUMMONED_ENTITIES).ifPresent(data -> {
                 if (player instanceof ServerPlayer serverPlayer) {
                     boolean requiresSync = false;
 
@@ -116,7 +116,7 @@ public class SummonedEntities extends Storage<SummonEntityEffect.Instance> {
                 data.tick(player);
 
                 if (data.isEmpty()) {
-                    player.removeData(DSDataAttachments.SUMMONED_ENTITIES);
+                    AttachmentManager.removeData(player, DSDataAttachments.SUMMONED_ENTITIES);
                 }
             });
         }
@@ -128,7 +128,7 @@ public class SummonedEntities extends Storage<SummonEntityEffect.Instance> {
             return;
         }
 
-        event.getEntity().getExistingData(DSDataAttachments.SUMMONED_ENTITIES).ifPresent(data -> {
+        AttachmentManager.getExistingData(event.getEntity(), DSDataAttachments.SUMMONED_ENTITIES).ifPresent(data -> {
             SummonEntityEffect.Instance instance = data.getInstance(event.getTarget());
 
             if (instance == null) {
@@ -150,15 +150,15 @@ public class SummonedEntities extends Storage<SummonEntityEffect.Instance> {
         }
 
         if (event.getEntity() instanceof Player player) {
-            player.getExistingData(DSDataAttachments.SUMMONED_ENTITIES).ifPresent(data -> data.clear(player));
+            AttachmentManager.getExistingData(player, DSDataAttachments.SUMMONED_ENTITIES).ifPresent(data -> data.clear(player));
             return;
         }
 
-        event.getEntity().getExistingData(DSDataAttachments.SUMMON).ifPresent(data -> {
+        AttachmentManager.getExistingData(event.getEntity(), DSDataAttachments.SUMMON).ifPresent(data -> {
             Entity owner = data.getOwner(serverLevel);
 
             if (owner != null) {
-                SummonedEntities summonData = owner.getData(DSDataAttachments.SUMMONED_ENTITIES);
+                SummonedEntities summonData = AttachmentManager.getData(owner, DSDataAttachments.SUMMONED_ENTITIES);
                 SummonEntityEffect.Instance instance = summonData.getInstance(event.getEntity());
 
                 if (instance == null) {
@@ -171,7 +171,7 @@ public class SummonedEntities extends Storage<SummonEntityEffect.Instance> {
                 }
 
                 if (summonData.isEmpty()) {
-                    owner.removeData(DSDataAttachments.SUMMONED_ENTITIES);
+                    AttachmentManager.removeData(owner, DSDataAttachments.SUMMONED_ENTITIES);
                 }
             }
         });
@@ -180,7 +180,7 @@ public class SummonedEntities extends Storage<SummonEntityEffect.Instance> {
     @SubscribeEvent
     public static void removeSummons(final PlayerEvent.PlayerLoggedOutEvent event) {
         // Since we cannot tick the duration of the entities we need to remove them once the player leaves
-        event.getEntity().getExistingData(DSDataAttachments.SUMMONED_ENTITIES).ifPresent(data -> data.clear(event.getEntity()));
+        AttachmentManager.getExistingData(event.getEntity(), DSDataAttachments.SUMMONED_ENTITIES).ifPresent(data -> data.clear(event.getEntity()));
     }
 
     @SubscribeEvent // Prevents summoned entities from targeting their owner or other allied summons
@@ -189,7 +189,7 @@ public class SummonedEntities extends Storage<SummonEntityEffect.Instance> {
             return;
         }
 
-        if (event.getEntity().getExistingData(DSDataAttachments.SUMMON).map(data -> data.attackBehaviour == AttackBehaviour.PASSIVE).orElse(false)) {
+        if (AttachmentManager.getExistingData(event.getEntity(), DSDataAttachments.SUMMON).map(data -> data.attackBehaviour == AttackBehaviour.PASSIVE).orElse(false)) {
             event.setNewAboutToBeSetTarget(null);
             return;
         }
@@ -215,7 +215,7 @@ public class SummonedEntities extends Storage<SummonEntityEffect.Instance> {
             return;
         }
 
-        entity.getExistingData(DSDataAttachments.SUMMON).ifPresent(data -> {
+        AttachmentManager.getExistingData(entity, DSDataAttachments.SUMMON).ifPresent(data -> {
             if (data.isAllied && data.getOwner(entity.level()) instanceof Player player) {
                 event.getEntity().setLastHurtByPlayer(player);
             }
@@ -228,7 +228,7 @@ public class SummonedEntities extends Storage<SummonEntityEffect.Instance> {
             return;
         }
 
-        event.getEntity().getExistingData(DSDataAttachments.SUMMON).ifPresent(data -> {
+        AttachmentManager.getExistingData(event.getEntity(), DSDataAttachments.SUMMON).ifPresent(data -> {
             if (data.getOwner(event.getEntity().level()) != null) {
                 event.setCanceled(true);
             }
@@ -241,7 +241,7 @@ public class SummonedEntities extends Storage<SummonEntityEffect.Instance> {
             return;
         }
 
-        event.getEntity().getExistingData(DSDataAttachments.SUMMON).ifPresent(data -> {
+        AttachmentManager.getExistingData(event.getEntity(), DSDataAttachments.SUMMON).ifPresent(data -> {
             if (data.getOwner(event.getEntity().level()) != null) {
                 event.setCanceled(true);
             }

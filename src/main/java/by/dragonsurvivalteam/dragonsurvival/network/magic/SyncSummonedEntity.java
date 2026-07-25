@@ -1,5 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.network.magic;
 
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AttachmentManager;
+
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SummonedEntities;
@@ -22,7 +24,7 @@ public record SyncSummonedEntity(SummonEntityEffect.Instance instance, boolean i
 
     public static void handleClient(final SyncSummonedEntity packet, final PayloadContext context) {
         context.enqueueWork(() -> {
-            SummonedEntities data = context.player().getData(DSDataAttachments.SUMMONED_ENTITIES);
+            SummonedEntities data = AttachmentManager.getData(context.player(), DSDataAttachments.SUMMONED_ENTITIES);
 
             if (packet.isRemoval()) {
                 data.remove(context.player(), packet.instance());

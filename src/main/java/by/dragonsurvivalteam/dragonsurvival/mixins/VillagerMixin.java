@@ -6,6 +6,7 @@ import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAdvancementTriggers;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AttachmentManager;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.network.chat.Component;
@@ -59,7 +60,7 @@ public abstract class VillagerMixin extends AbstractVillager {
                 return;
             }
 
-            EntityStateHandler handler = getData(DSDataAttachments.ENTITY_HANDLER);
+            EntityStateHandler handler = AttachmentManager.getData(this, DSDataAttachments.ENTITY_HANDLER);
 
             if (handler.pillageCooldown == 0) {
                 // To level up trades for players which are stealing
@@ -99,7 +100,7 @@ public abstract class VillagerMixin extends AbstractVillager {
 
     @Inject(method = "tick", at = @At("TAIL"))
     private void dragonSurvival$tickPillagedTimer(final CallbackInfo callback) {
-        getExistingData(DSDataAttachments.ENTITY_HANDLER).ifPresent(handler -> handler.pillageCooldown = Math.max(0, handler.pillageCooldown - 1));
+        AttachmentManager.getExistingData(this, DSDataAttachments.ENTITY_HANDLER).ifPresent(handler -> handler.pillageCooldown = Math.max(0, handler.pillageCooldown - 1));
     }
 
     @Inject(method = "customServerAiStep", at = @At("TAIL"))

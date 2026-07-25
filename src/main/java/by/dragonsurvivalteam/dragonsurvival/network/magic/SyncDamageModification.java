@@ -1,5 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.network.magic;
 
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AttachmentManager;
+
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.DamageModification;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
@@ -25,7 +27,7 @@ public record SyncDamageModification(int playerId, DamageModification.Instance d
     public static void handleClient(final SyncDamageModification packet, final PayloadContext context) {
         context.enqueueWork(() -> {
             if (context.player().level().getEntity(packet.playerId()) instanceof Player player) {
-                DamageModifications data = player.getData(DSDataAttachments.DAMAGE_MODIFICATIONS);
+                DamageModifications data = AttachmentManager.getData(player, DSDataAttachments.DAMAGE_MODIFICATIONS);
 
                 if (packet.remove()) {
                     data.remove(player, packet.damageModification());

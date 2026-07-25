@@ -52,7 +52,7 @@ public class EffectModifications extends Storage<EffectModification.Instance> {
 
     @SubscribeEvent
     public static void shouldApplyEffect(final MobEffectEvent.Applicable event) {
-        event.getEntity().getExistingData(DSDataAttachments.EFFECT_MODIFICATIONS).ifPresent(data -> {
+        AttachmentManager.getExistingData(event.getEntity(), DSDataAttachments.EFFECT_MODIFICATIONS).ifPresent(data -> {
             int duration = data.calculateDuration(event.getEffectInstance());
 
             if (duration <= 0 && duration != MobEffectInstance.INFINITE_DURATION) {
@@ -70,11 +70,11 @@ public class EffectModifications extends Storage<EffectModification.Instance> {
     public static void tickData(final EntityTickEvent.Post event) {
         // Effects are only applied to living entities
         if (event.getEntity() instanceof LivingEntity) {
-            event.getEntity().getExistingData(DSDataAttachments.EFFECT_MODIFICATIONS).ifPresent(data -> {
+            AttachmentManager.getExistingData(event.getEntity(), DSDataAttachments.EFFECT_MODIFICATIONS).ifPresent(data -> {
                 data.tick(event.getEntity());
 
                 if (data.isEmpty()) {
-                    event.getEntity().removeData(DSDataAttachments.EFFECT_MODIFICATIONS);
+                    AttachmentManager.removeData(event.getEntity(), DSDataAttachments.EFFECT_MODIFICATIONS);
                 }
             });
         }

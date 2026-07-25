@@ -1,5 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.common.handlers.magic;
 
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AttachmentManager;
+
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.compat.ModID;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
@@ -81,7 +83,7 @@ public class HunterHandler { // FIXME :: disable shadows in EntityRenderDispatch
         MobEffectInstance hunterEffect = entity.getEffect(DSEffects.HUNTER);
 
         if (hunterEffect != null) {
-            HunterData data = entity.getData(DSDataAttachments.HUNTER);
+            HunterData data = AttachmentManager.getData(entity, DSDataAttachments.HUNTER);
             int modification;
 
             if (/* Below feet*/ isHunterRelevant(entity.getBlockStateOn()) || /* Within block */ isHunterRelevant(entity.getInBlockState())) {
@@ -118,7 +120,7 @@ public class HunterHandler { // FIXME :: disable shadows in EntityRenderDispatch
 
     @SubscribeEvent
     public static void modifyVisibility(final LivingEvent.LivingVisibilityEvent event) {
-        event.getEntity().getExistingData(DSDataAttachments.HUNTER).ifPresent(data -> {
+        AttachmentManager.getExistingData(event.getEntity(), DSDataAttachments.HUNTER).ifPresent(data -> {
             if (data.hasHunterStacks()) {
                 // Even if this is set to 0, the min. radius will be set to 4 (2x2) in TargetingConditions#test
                 event.modifyVisibility(1 - (double) data.getHunterStacks() / getMaxStacks());
@@ -132,7 +134,7 @@ public class HunterHandler { // FIXME :: disable shadows in EntityRenderDispatch
         }
 
         if (entity instanceof Player) {
-            PlayerData data = entity.getData(DSDataAttachments.PLAYER_DATA);
+            PlayerData data = AttachmentManager.getData(entity, DSDataAttachments.PLAYER_DATA);
 
             if (data.sentHunterInfoMessage) {
                 return;
@@ -171,7 +173,7 @@ public class HunterHandler { // FIXME :: disable shadows in EntityRenderDispatch
             return;
         }
 
-        HunterData data = attacker.getData(DSDataAttachments.HUNTER);
+        HunterData data = AttachmentManager.getData(attacker, DSDataAttachments.HUNTER);
         float multiplier = (float) (1 + hunterEffect.getAmplifier() * DAMAGE_PER_LEVEL);
         multiplier = multiplier * ((float) data.getHunterStacks() / getMaxStacks());
 
@@ -199,7 +201,7 @@ public class HunterHandler { // FIXME :: disable shadows in EntityRenderDispatch
             return packedColor;
         }
 
-        HunterData data = entity.getExistingData(DSDataAttachments.HUNTER).orElse(null);
+        HunterData data = AttachmentManager.getExistingData(entity, DSDataAttachments.HUNTER).orElse(null);
 
         if (data == null || !data.hasHunterStacks()) {
             return packedColor;
@@ -215,7 +217,7 @@ public class HunterHandler { // FIXME :: disable shadows in EntityRenderDispatch
             return color;
         }
 
-        HunterData data = entity.getExistingData(DSDataAttachments.HUNTER).orElse(null);
+        HunterData data = AttachmentManager.getExistingData(entity, DSDataAttachments.HUNTER).orElse(null);
 
         if (data == null || !data.hasHunterStacks()) {
             return color;
@@ -231,7 +233,7 @@ public class HunterHandler { // FIXME :: disable shadows in EntityRenderDispatch
     }
 
     public static float calculateAlphaAsFloat(final Entity entity) {
-        HunterData data = entity.getExistingData(DSDataAttachments.HUNTER).orElse(null);
+        HunterData data = AttachmentManager.getExistingData(entity, DSDataAttachments.HUNTER).orElse(null);
 
         if (data == null) {
             return HunterHandler.UNMODIFIED;
@@ -254,7 +256,7 @@ public class HunterHandler { // FIXME :: disable shadows in EntityRenderDispatch
     }
 
     private static void clearHunterStacks(final LivingEntity entity) {
-        entity.getData(DSDataAttachments.HUNTER).clearHunterStacks();
+        AttachmentManager.getData(entity, DSDataAttachments.HUNTER).clearHunterStacks();
 
         if (!entity.level().isClientSide()) {
             PacketDistributor.sendToPlayersTrackingEntityAndSelf(entity, new SyncHunterStacksRemoval(entity.getId()));

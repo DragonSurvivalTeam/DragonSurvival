@@ -1,5 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.network.syncing;
 
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AttachmentManager;
+
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import io.netty.buffer.ByteBuf;
@@ -18,7 +20,7 @@ public record SyncDragonSoulPlacement(boolean isEnabled) implements CustomPacket
     );
 
     public static void handleServer(final SyncDragonSoulPlacement packet, final PayloadContext context) {
-        context.enqueueWork(() -> context.player().getData(DSDataAttachments.PLAYER_DATA).enabledDragonSoulPlacement = packet.isEnabled());
+        context.enqueueWork(() -> AttachmentManager.getData(context.player(), DSDataAttachments.PLAYER_DATA).enabledDragonSoulPlacement = packet.isEnabled());
     }
 
     @Override

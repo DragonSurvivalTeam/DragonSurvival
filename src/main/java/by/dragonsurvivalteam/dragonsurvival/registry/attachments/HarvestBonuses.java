@@ -69,7 +69,7 @@ public class HarvestBonuses extends Storage<HarvestBonus.Instance> {
      * @return Whether the player has any harvest bonus that allows them to harvest the block
      */
     public static boolean canHarvest(final Player player, final BlockState state, final ItemStack tool) {
-        int bonus = player.getExistingData(DSDataAttachments.HARVEST_BONUSES).map(data -> data.getHarvestBonus(state)).orElse(HarvestBonus.NO_BONUS_VALUE);
+        int bonus = AttachmentManager.getExistingData(player, DSDataAttachments.HARVEST_BONUSES).map(data -> data.getHarvestBonus(state)).orElse(HarvestBonus.NO_BONUS_VALUE);
 
         if (bonus == 0) {
             // Only early-exit on no change - still consider negative "bonus"
@@ -88,11 +88,11 @@ public class HarvestBonuses extends Storage<HarvestBonus.Instance> {
     @SubscribeEvent
     public static void tickData(final EntityTickEvent.Post event) {
         if (event.getEntity() instanceof Player player) {
-            player.getExistingData(DSDataAttachments.HARVEST_BONUSES).ifPresent(storage -> {
+            AttachmentManager.getExistingData(player, DSDataAttachments.HARVEST_BONUSES).ifPresent(storage -> {
                 storage.tick(event.getEntity());
 
                 if (storage.isEmpty()) {
-                    player.removeData(DSDataAttachments.HARVEST_BONUSES);
+                    AttachmentManager.removeData(player, DSDataAttachments.HARVEST_BONUSES);
                 }
             });
         }

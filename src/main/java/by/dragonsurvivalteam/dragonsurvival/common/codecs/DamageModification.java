@@ -111,7 +111,7 @@ public class DamageModification extends DurationInstanceBase<DamageModifications
 
     @Override
     public AttachmentType<DamageModifications> type() {
-        return DSDataAttachments.DAMAGE_MODIFICATIONS.value();
+        return DSDataAttachments.DAMAGE_MODIFICATIONS.get();
     }
 
     public HolderSet<DamageType> damageTypes() {

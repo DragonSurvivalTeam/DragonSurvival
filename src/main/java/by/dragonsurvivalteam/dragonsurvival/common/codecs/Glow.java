@@ -53,7 +53,7 @@ public class Glow extends DurationInstanceBase<GlowData, Glow.Instance> {
 
     @Override
     public AttachmentType<GlowData> type() {
-        return DSDataAttachments.GLOW.value();
+        return DSDataAttachments.GLOW.get();
     }
 
     public TextColor color() {

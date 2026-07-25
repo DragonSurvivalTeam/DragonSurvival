@@ -1,5 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons;
 
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AttachmentManager;
+
 import by.dragonsurvivalteam.dragonsurvival.client.gui.hud.MagicHUD;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.DragonAbilityScreen;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.DragonEmoteScreen;
@@ -90,7 +92,7 @@ public class TabButton extends Button {
 
     public static void addTabButtonsToScreen(final Screen screen, int offsetX, int offsetY, final TabButtonType selectedButton) {
         //noinspection DataFlowIssue -> player is present
-        boolean ignoreAbilityTab = Minecraft.getInstance().player.getData(DSDataAttachments.MAGIC).getAbilities().isEmpty();
+        boolean ignoreAbilityTab = AttachmentManager.getData(Minecraft.getInstance().player, DSDataAttachments.MAGIC).getAbilities().isEmpty();
         boolean ignoreSkins = DragonStateProvider.getData(Minecraft.getInstance().player).body().value().noDragonModelRendering();
         boolean ignoreEmote = DragonStateProvider.getData(Minecraft.getInstance().player).body().value().noDragonModelRendering();
         int visibleTabIndex = 0;

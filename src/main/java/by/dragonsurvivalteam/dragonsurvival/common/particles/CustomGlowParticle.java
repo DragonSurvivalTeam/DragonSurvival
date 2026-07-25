@@ -1,5 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.common.particles;
 
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AttachmentManager;
+
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.BlockVisionData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
@@ -61,7 +63,7 @@ public class CustomGlowParticle extends GlowParticle {
             List<Integer> colors = List.of();
 
             //noinspection DataFlowIssue -> player is present
-            BlockVisionData vision = player.getExistingData(DSDataAttachments.BLOCK_VISION).orElse(null);
+            BlockVisionData vision = AttachmentManager.getExistingData(player, DSDataAttachments.BLOCK_VISION).orElse(null);
 
             if (vision != null) {
                 colors = vision.getColors(BuiltInRegistries.BLOCK.byId((int) blockId));

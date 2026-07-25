@@ -2,7 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.registry.attachments;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraftforge.common.util.INBTSerializable;
+import by.dragonsurvivalteam.dragonsurvival.common.serialization.INBTSerializable;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;

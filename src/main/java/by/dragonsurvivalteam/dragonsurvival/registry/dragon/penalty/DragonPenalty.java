@@ -1,5 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty;
 
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AttachmentManager;
+
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscCodecs;
@@ -59,7 +61,7 @@ public record DragonPenalty(Optional<ResourceLocation> icon, Optional<LootItemCo
             return;
         }
 
-        PenaltySupply supply = dragon.getData(DSDataAttachments.PENALTY_SUPPLY);
+        PenaltySupply supply = AttachmentManager.getData(dragon, DSDataAttachments.PENALTY_SUPPLY);
 
         if (trigger instanceof SupplyTrigger supplyTrigger) {
             AttributeInstance resistance = dragon.getAttribute(supplyTrigger.attributeToUseAsBase());
@@ -89,7 +91,7 @@ public record DragonPenalty(Optional<ResourceLocation> icon, Optional<LootItemCo
     }
 
     public void remove(final ServerPlayer dragon) {
-        PenaltySupply supply = dragon.getData(DSDataAttachments.PENALTY_SUPPLY);
+        PenaltySupply supply = AttachmentManager.getData(dragon, DSDataAttachments.PENALTY_SUPPLY);
 
         if (trigger instanceof SupplyTrigger supplyTrigger) {
             supply.remove(supplyTrigger.supplyType());

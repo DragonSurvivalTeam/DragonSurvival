@@ -1,5 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.mixins.client;
 
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AttachmentManager;
+
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.DragonSurvivalClient;
 import by.dragonsurvivalteam.dragonsurvival.client.render.ClientDragonRenderer;
@@ -42,7 +44,7 @@ public abstract class LevelRendererMixin {
             return teamColor;
         }
 
-        int color = entity.getExistingData(DSDataAttachments.GLOW).map(GlowData::getColor).orElse(teamColor);
+        int color = AttachmentManager.getExistingData(entity, DSDataAttachments.GLOW).map(GlowData::getColor).orElse(teamColor);
 
         if (color == GlowData.NO_COLOR) {
             return teamColor;

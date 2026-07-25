@@ -1,5 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.common.effects;
 
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AttachmentManager;
+
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.EntityStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.EffectHandler;
@@ -129,8 +131,8 @@ public class ChargedEffect extends ModifiableMobEffect {
             }
 
             if (target != source && !target.getType().is(DSEntityTypeTags.CHARGED_SPREAD_BLACKLIST)) {
-                EntityStateHandler sourceData = source.getData(DSDataAttachments.ENTITY_HANDLER);
-                EntityStateHandler targetData = target.getData(DSDataAttachments.ENTITY_HANDLER);
+                EntityStateHandler sourceData = AttachmentManager.getData(source, DSDataAttachments.ENTITY_HANDLER);
+                EntityStateHandler targetData = AttachmentManager.getData(target, DSDataAttachments.ENTITY_HANDLER);
 
                 targetData.chainCount = sourceData.chainCount + 1;
 

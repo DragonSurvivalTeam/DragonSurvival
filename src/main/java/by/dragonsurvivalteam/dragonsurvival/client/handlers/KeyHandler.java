@@ -1,5 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.client.handlers;
 
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AttachmentManager;
+
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.input.Keybind;
@@ -98,7 +100,7 @@ public class KeyHandler {
             return;
         }
 
-        PlayerData data = Minecraft.getInstance().player.getData(DSDataAttachments.PLAYER_DATA);
+        PlayerData data = AttachmentManager.getData(Minecraft.getInstance().player, DSDataAttachments.PLAYER_DATA);
 
         if (data.updateKey(input.getName(), isDown)) {
             PacketDistributor.sendToServer(new SyncKey(input.getName(), isDown));
@@ -110,7 +112,7 @@ public class KeyHandler {
             return;
         }
 
-        data.getFirst().getExistingData(DSDataAttachments.SUMMONED_ENTITIES).ifPresent(summonData -> {
+        AttachmentManager.getExistingData(data.getFirst(), DSDataAttachments.SUMMONED_ENTITIES).ifPresent(summonData -> {
             if (Screen.hasShiftDown()) {
                 summonData.movementBehaviour = Functions.cycleEnum(summonData.movementBehaviour);
                 data.getFirst().displayClientMessage(cycledEnum(summonData.movementBehaviour), true);
@@ -128,7 +130,7 @@ public class KeyHandler {
             return;
         }
 
-        PlayerData playerData = data.getFirst().getData(DSDataAttachments.PLAYER_DATA);
+        PlayerData playerData = AttachmentManager.getData(data.getFirst(), DSDataAttachments.PLAYER_DATA);
         playerData.enabledDragonSoulPlacement = !playerData.enabledDragonSoulPlacement;
         String message = playerData.enabledDragonSoulPlacement ? DRAGON_SOUL_PLACEMENT_ENABLED : DRAGON_SOUL_PLACEMENT_DISABLED;
         data.getFirst().displayClientMessage(Component.translatable(message), true);

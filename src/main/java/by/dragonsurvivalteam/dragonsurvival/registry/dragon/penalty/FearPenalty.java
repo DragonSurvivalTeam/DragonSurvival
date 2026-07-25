@@ -1,5 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty;
 
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AttachmentManager;
+
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Fear;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.duration_instance.CommonData;
@@ -20,7 +22,7 @@ public record FearPenalty(List<Fear> fears) implements PenaltyEffect {
 
     @Override
     public void apply(final ServerPlayer player, final Holder<DragonPenalty> penalty) {
-        FearData data = player.getData(DSDataAttachments.FEAR);
+        FearData data = AttachmentManager.getData(player, DSDataAttachments.FEAR);
         int growth = (int) DragonStateProvider.getData(player).getGrowth();
 
         fears.forEach(fear -> {

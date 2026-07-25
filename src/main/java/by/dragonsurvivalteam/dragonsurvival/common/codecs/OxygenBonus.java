@@ -96,7 +96,7 @@ public class OxygenBonus extends DurationInstanceBase<OxygenBonuses, OxygenBonus
 
     @Override
     public AttachmentType<OxygenBonuses> type() {
-        return DSDataAttachments.OXYGEN_BONUSES.value();
+        return DSDataAttachments.OXYGEN_BONUSES.get();
     }
 
     public Optional<HolderSet<FluidType>> fluidTypes() {

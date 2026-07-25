@@ -158,7 +158,7 @@ public class BlockVision extends DurationInstanceBase<BlockVisionData, BlockVisi
 
     @Override
     public AttachmentType<BlockVisionData> type() {
-        return DSDataAttachments.BLOCK_VISION.value();
+        return DSDataAttachments.BLOCK_VISION.get();
     }
 
     public static class Instance extends DurationInstance<BlockVision> {

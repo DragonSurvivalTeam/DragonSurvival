@@ -38,11 +38,11 @@ public class OxygenBonuses extends Storage<OxygenBonus.Instance> {
     @SubscribeEvent
     public static void tickData(final EntityTickEvent.Post event) {
         if (event.getEntity() instanceof Player player) {
-            player.getExistingData(DSDataAttachments.OXYGEN_BONUSES).ifPresent(storage -> {
+            AttachmentManager.getExistingData(player, DSDataAttachments.OXYGEN_BONUSES).ifPresent(storage -> {
                 storage.tick(player);
 
                 if (storage.isEmpty()) {
-                    player.removeData(DSDataAttachments.OXYGEN_BONUSES);
+                    AttachmentManager.removeData(player, DSDataAttachments.OXYGEN_BONUSES);
                 }
             });
         }

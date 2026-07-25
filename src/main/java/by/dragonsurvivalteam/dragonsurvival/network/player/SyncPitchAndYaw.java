@@ -1,5 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.network.player;
 
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AttachmentManager;
+
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MovementData;
@@ -27,7 +29,7 @@ public record SyncPitchAndYaw(int playerId, double headYaw, double headPitch, do
     public static void handleClient(final SyncPitchAndYaw packet, final PayloadContext context) {
         context.enqueueWork(() -> {
             if (context.player().level().getEntity(packet.playerId()) instanceof Player player) {
-                MovementData movementData = player.getData(DSDataAttachments.MOVEMENT);
+                MovementData movementData = AttachmentManager.getData(player, DSDataAttachments.MOVEMENT);
                 movementData.headYaw = packet.headYaw();
                 movementData.headPitch = packet.headPitch();
                 movementData.bodyYaw = packet.bodyYaw();
@@ -38,7 +40,7 @@ public record SyncPitchAndYaw(int playerId, double headYaw, double headPitch, do
     public static void handleServer(final SyncPitchAndYaw packet, final PayloadContext context) {
         context.enqueueWork(() -> {
             if (context.player().level().getEntity(packet.playerId()) instanceof Player player) {
-                MovementData movementData = player.getData(DSDataAttachments.MOVEMENT);
+                MovementData movementData = AttachmentManager.getData(player, DSDataAttachments.MOVEMENT);
                 movementData.headYaw = packet.headYaw();
                 movementData.headPitch = packet.headPitch();
                 movementData.bodyYaw = packet.bodyYaw();

@@ -14,7 +14,6 @@ import net.minecraftforge.attachment.AttachmentType;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.tick.EntityTickEvent;
 import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -36,11 +35,11 @@ public class GlowData extends Storage<Glow.Instance> {
 
     @SubscribeEvent
     public static void tickData(final EntityTickEvent.Post event) {
-        event.getEntity().getExistingData(DSDataAttachments.GLOW).ifPresent(storage -> {
+        AttachmentManager.getExistingData(event.getEntity(), DSDataAttachments.GLOW).ifPresent(storage -> {
             storage.tick(event.getEntity());
 
             if (storage.isEmpty()) {
-                event.getEntity().removeData(DSDataAttachments.GLOW);
+                AttachmentManager.removeData(event.getEntity(), DSDataAttachments.GLOW);
             }
         });
     }
@@ -49,8 +48,8 @@ public class GlowData extends Storage<Glow.Instance> {
     public static void shareData(final PlayerEvent.StartTracking event) {
         Entity target = event.getTarget();
 
-        target.getExistingData(DSDataAttachments.GLOW).ifPresent(data -> {
-            PacketDistributor.sendToPlayersTrackingEntity(target, new SyncData(target.getId(), ForgeRegistries.ATTACHMENT_TYPES.getKey(data.type()), data.serializeNBT(target.registryAccess())));
+        AttachmentManager.getExistingData(target, DSDataAttachments.GLOW).ifPresent(data -> {
+            PacketDistributor.sendToPlayersTrackingEntity(target, new SyncData(target.getId(), DSDataAttachments.ATTACHMENT_TYPES.get().getKey(data.type()), data.serializeNBT(target.registryAccess())));
         });
     }
 

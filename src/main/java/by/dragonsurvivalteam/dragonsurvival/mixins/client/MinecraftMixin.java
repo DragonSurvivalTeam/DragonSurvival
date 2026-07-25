@@ -1,5 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.mixins.client;
 
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AttachmentManager;
+
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.GlowData;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
@@ -20,6 +22,6 @@ public abstract class MinecraftMixin {
             return true;
         }
 
-        return entity.getExistingData(DSDataAttachments.GLOW).map(glow -> glow.getColor() != GlowData.NO_COLOR).orElse(false);
+        return AttachmentManager.getExistingData(entity, DSDataAttachments.GLOW).map(glow -> glow.getColor() != GlowData.NO_COLOR).orElse(false);
     }
 }

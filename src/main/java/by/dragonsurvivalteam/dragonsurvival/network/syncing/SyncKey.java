@@ -1,5 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.network.syncing;
 
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AttachmentManager;
+
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
@@ -25,7 +27,7 @@ public record SyncKey(String key, boolean isDown) implements CustomPacketPayload
 
     public static void handleServer(final SyncKey packet, final PayloadContext context) {
         context.enqueueWork(() -> {
-            boolean hasChanged = context.player().getData(DSDataAttachments.PLAYER_DATA).updateKey(packet.key(), packet.isDown());
+            boolean hasChanged = AttachmentManager.getData(context.player(), DSDataAttachments.PLAYER_DATA).updateKey(packet.key(), packet.isDown());
 
             if (!hasChanged) {
                 return;

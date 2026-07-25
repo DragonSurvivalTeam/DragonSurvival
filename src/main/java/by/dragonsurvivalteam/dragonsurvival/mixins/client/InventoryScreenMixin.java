@@ -1,5 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.mixins.client;
 
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AttachmentManager;
+
 import by.dragonsurvivalteam.dragonsurvival.client.render.ClientDragonRenderer;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
@@ -107,10 +109,10 @@ public abstract class InventoryScreenMixin extends EffectRenderingInventoryScree
             Player player = dragon.getPlayer();
 
             if (player != null) {
-                player.getExistingData(DSDataAttachments.HUNTER).ifPresent(HunterData::disableTransparency);
+                AttachmentManager.getExistingData(player, DSDataAttachments.HUNTER).ifPresent(HunterData::disableTransparency);
             }
         } else {
-            entity.getExistingData(DSDataAttachments.HUNTER).ifPresent(HunterData::disableTransparency);
+            AttachmentManager.getExistingData(entity, DSDataAttachments.HUNTER).ifPresent(HunterData::disableTransparency);
         }
     }
 
@@ -120,10 +122,10 @@ public abstract class InventoryScreenMixin extends EffectRenderingInventoryScree
             Player player = dragon.getPlayer();
 
             if (player != null) {
-                player.getExistingData(DSDataAttachments.HUNTER).ifPresent(HunterData::enableTransparency);
+                AttachmentManager.getExistingData(player, DSDataAttachments.HUNTER).ifPresent(HunterData::enableTransparency);
             }
         } else {
-            entity.getExistingData(DSDataAttachments.HUNTER).ifPresent(HunterData::enableTransparency);
+            AttachmentManager.getExistingData(entity, DSDataAttachments.HUNTER).ifPresent(HunterData::enableTransparency);
         }
     }
 }

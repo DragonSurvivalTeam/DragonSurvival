@@ -1,5 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.network.magic;
 
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AttachmentManager;
+
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.block_vision.BlockVision;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.BlockVisionData;
@@ -25,7 +27,7 @@ public record SyncBlockVision(int playerId, BlockVision.Instance blockVisionInst
     public static void handleClient(final SyncBlockVision packet, final PayloadContext context) {
         context.enqueueWork(() -> {
             if (context.player().level().getEntity(packet.playerId()) instanceof Player player) {
-                BlockVisionData data = player.getData(DSDataAttachments.BLOCK_VISION);
+                BlockVisionData data = AttachmentManager.getData(player, DSDataAttachments.BLOCK_VISION);
 
                 if (packet.isRemoval()) {
                     data.remove(player, packet.blockVisionInstance());

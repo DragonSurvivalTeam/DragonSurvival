@@ -1,5 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty;
 
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AttachmentManager;
+
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ModifierWithDuration;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.duration_instance.CommonData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
@@ -18,7 +20,7 @@ public record ModifierPenalty(List<ModifierWithDuration> modifiers) implements P
 
     @Override
     public void apply(final ServerPlayer player, final Holder<DragonPenalty> penalty) {
-        ModifiersWithDuration modifiers = player.getData(DSDataAttachments.MODIFIERS_WITH_DURATION);
+        ModifiersWithDuration modifiers = AttachmentManager.getData(player, DSDataAttachments.MODIFIERS_WITH_DURATION);
 
         for (ModifierWithDuration modifier : this.modifiers) {
             ModifierWithDuration.Instance instance = modifiers.get(modifier.id());

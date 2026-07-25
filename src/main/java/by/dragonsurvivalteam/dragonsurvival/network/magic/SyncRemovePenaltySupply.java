@@ -1,5 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.network.magic;
 
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AttachmentManager;
+
 import by.dragonsurvivalteam.dragonsurvival.network.codec.ByteBufCodecs;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
@@ -21,7 +23,7 @@ public record SyncRemovePenaltySupply(ResourceLocation id) implements CustomPack
 
     public static void handleClient(final SyncRemovePenaltySupply packet, final PayloadContext context) {
         context.enqueueWork(() -> {
-            PenaltySupply penaltySupply = context.player().getData(DSDataAttachments.PENALTY_SUPPLY);
+            PenaltySupply penaltySupply = AttachmentManager.getData(context.player(), DSDataAttachments.PENALTY_SUPPLY);
             penaltySupply.remove(packet.id());
         });
     }

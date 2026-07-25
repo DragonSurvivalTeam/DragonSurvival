@@ -1,5 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.server.handlers;
 
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AttachmentManager;
+
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
@@ -62,16 +64,16 @@ public class PlayerLoginHandler {
         }
 
         // Clear the state from the previous session
-        player.getData(DSDataAttachments.PLAYER_DATA).clearKeys();
-        PacketDistributor.sendToPlayer(player, new SyncData(player.getId(), DSDataAttachments.PLAYER_DATA.getId(), player.getData(DSDataAttachments.PLAYER_DATA).serializeNBT(player.registryAccess())));
+        AttachmentManager.getData(player, DSDataAttachments.PLAYER_DATA).clearKeys();
+        PacketDistributor.sendToPlayer(player, new SyncData(player.getId(), DSDataAttachments.PLAYER_DATA.getId(), AttachmentManager.getData(player, DSDataAttachments.PLAYER_DATA).serializeNBT(player.registryAccess())));
 
         DragonStateHandler handler = DragonStateProvider.getData(player);
 
         // Remove any existing penalty supplies that may no longer be relevant (due to datapack changes)
-        player.getExistingData(DSDataAttachments.PENALTY_SUPPLY).ifPresent(data -> {
+        AttachmentManager.getExistingData(player, DSDataAttachments.PENALTY_SUPPLY).ifPresent(data -> {
             if (!handler.isDragon()) {
                 // In case the species was removed
-                player.removeData(DSDataAttachments.PENALTY_SUPPLY);
+                AttachmentManager.removeData(player, DSDataAttachments.PENALTY_SUPPLY);
                 return;
             }
 
@@ -149,7 +151,7 @@ public class PlayerLoginHandler {
         DragonStateHandler handler = DragonStateProvider.getData(serverPlayer);
         PacketDistributor.sendToPlayersTrackingEntityAndSelf(serverPlayer, new SyncComplete(serverPlayer.getId(), handler.serializeNBT(serverPlayer.registryAccess())));
 
-        serverPlayer.getExistingData(DSDataAttachments.FLIGHT).ifPresent(data ->
+        AttachmentManager.getExistingData(serverPlayer, DSDataAttachments.FLIGHT).ifPresent(data ->
                 PacketDistributor.sendToPlayersTrackingEntityAndSelf(serverPlayer, new SyncData(serverPlayer.getId(), DSDataAttachments.FLIGHT.getId(), data.serializeNBT(serverPlayer.registryAccess())))
         );
     }
@@ -161,9 +163,9 @@ public class PlayerLoginHandler {
             PacketDistributor.sendToPlayer(target, new SyncComplete(source.getId(), handler.serializeNBT(source.registryAccess())));
 
             // Make sure to sync the FLIGHT data, otherwise the flight animation will be displayed incorrectly when tracking begins
-            syncFrom.getExistingData(DSDataAttachments.FLIGHT).ifPresent(data -> data.sync(source, target));
+            AttachmentManager.getExistingData(syncFrom, DSDataAttachments.FLIGHT).ifPresent(data -> data.sync(source, target));
             // Same for MOVEMENT data
-            syncFrom.getExistingData(DSDataAttachments.MOVEMENT).ifPresent(data -> data.sync(source, target));
+            AttachmentManager.getExistingData(syncFrom, DSDataAttachments.MOVEMENT).ifPresent(data -> data.sync(source, target));
         }
     }
 
@@ -185,12 +187,12 @@ public class PlayerLoginHandler {
     }
 
     private static void syncDataAttachments(final ServerPlayer player) {
-        player.getExistingData(DSDataAttachments.PENALTY_SUPPLY).ifPresent(data -> data.sync(player));
-        player.getExistingData(DSDataAttachments.ALTAR).ifPresent(data -> data.sync(player));
-        player.getExistingData(DSDataAttachments.CLAW_INVENTORY).ifPresent(data -> data.sync(player));
-        player.getExistingData(DSDataAttachments.FLIGHT).ifPresent(data -> data.sync(player));
-        player.getExistingData(DSDataAttachments.SWIM).ifPresent(data -> data.sync(player));
-        player.getExistingData(DSDataAttachments.MOVEMENT).ifPresent(data -> data.sync(player));
+        AttachmentManager.getExistingData(player, DSDataAttachments.PENALTY_SUPPLY).ifPresent(data -> data.sync(player));
+        AttachmentManager.getExistingData(player, DSDataAttachments.ALTAR).ifPresent(data -> data.sync(player));
+        AttachmentManager.getExistingData(player, DSDataAttachments.CLAW_INVENTORY).ifPresent(data -> data.sync(player));
+        AttachmentManager.getExistingData(player, DSDataAttachments.FLIGHT).ifPresent(data -> data.sync(player));
+        AttachmentManager.getExistingData(player, DSDataAttachments.SWIM).ifPresent(data -> data.sync(player));
+        AttachmentManager.getExistingData(player, DSDataAttachments.MOVEMENT).ifPresent(data -> data.sync(player));
         DSDataAttachments.getStorages(player).forEach(storage -> storage.sync(player));
     }
 }

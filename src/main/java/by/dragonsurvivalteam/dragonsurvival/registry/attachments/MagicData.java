@@ -41,7 +41,7 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.common.util.INBTSerializable;
+import by.dragonsurvivalteam.dragonsurvival.common.serialization.INBTSerializable;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.TickEvent;
@@ -75,7 +75,7 @@ public class MagicData implements INBTSerializable<CompoundTag> {
     private int tickTimer;
 
     public static MagicData getData(final Player player) {
-        return player.getData(DSDataAttachments.MAGIC);
+        return AttachmentManager.getData(player, DSDataAttachments.MAGIC);
     }
 
     public float getCurrentMana() {
@@ -171,7 +171,7 @@ public class MagicData implements INBTSerializable<CompoundTag> {
             return;
         }
 
-        Optional<MagicData> optional = player.getExistingData(DSDataAttachments.MAGIC);
+        Optional<MagicData> optional = AttachmentManager.getExistingData(player, DSDataAttachments.MAGIC);
 
         if (optional.isEmpty()) {
             return;

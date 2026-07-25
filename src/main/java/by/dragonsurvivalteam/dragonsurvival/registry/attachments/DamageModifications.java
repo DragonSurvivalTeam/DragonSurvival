@@ -48,11 +48,11 @@ public class DamageModifications extends Storage<DamageModification.Instance> {
             return;
         }
 
-        event.getEntity().getExistingData(DSDataAttachments.DAMAGE_MODIFICATIONS).ifPresent(data -> {
+        AttachmentManager.getExistingData(event.getEntity(), DSDataAttachments.DAMAGE_MODIFICATIONS).ifPresent(data -> {
             data.tick(event.getEntity());
 
             if (data.isEmpty()) {
-                event.getEntity().removeData(DSDataAttachments.DAMAGE_MODIFICATIONS);
+                AttachmentManager.removeData(event.getEntity(), DSDataAttachments.DAMAGE_MODIFICATIONS);
             }
         });
     }
@@ -63,7 +63,7 @@ public class DamageModifications extends Storage<DamageModification.Instance> {
             return;
         }
 
-        event.getEntity().getExistingData(DSDataAttachments.DAMAGE_MODIFICATIONS).ifPresent(modifications -> {
+        AttachmentManager.getExistingData(event.getEntity(), DSDataAttachments.DAMAGE_MODIFICATIONS).ifPresent(modifications -> {
             // Supply a dummy damage amount (since it doesn't matter for this check but allows re-using the same method)
             if (modifications.calculate(event.getSource().typeHolder(), 1) == 0) {
                 event.setInvulnerable(true);
@@ -73,7 +73,7 @@ public class DamageModifications extends Storage<DamageModification.Instance> {
 
     @SubscribeEvent
     public static void reduceDamage(final LivingIncomingDamageEvent event) {
-        event.getEntity().getExistingData(DSDataAttachments.DAMAGE_MODIFICATIONS).ifPresent(modifications -> {
+        AttachmentManager.getExistingData(event.getEntity(), DSDataAttachments.DAMAGE_MODIFICATIONS).ifPresent(modifications -> {
             event.setAmount(modifications.calculate(event.getSource().typeHolder(), event.getAmount()));
         });
     }

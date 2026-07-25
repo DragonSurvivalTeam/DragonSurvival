@@ -7,7 +7,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.common.util.INBTSerializable;
+import by.dragonsurvivalteam.dragonsurvival.common.serialization.INBTSerializable;
 import net.minecraftforge.event.tick.EntityTickEvent;
 import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
@@ -30,7 +30,7 @@ public class ItemData implements INBTSerializable<CompoundTag> {
             return;
         }
 
-        event.getEntity().getExistingData(DSDataAttachments.ITEM).ifPresent(data -> {
+        AttachmentManager.getExistingData(event.getEntity(), DSDataAttachments.ITEM).ifPresent(data -> {
             if (data.smeltingTime == 0) {
                 return;
             }

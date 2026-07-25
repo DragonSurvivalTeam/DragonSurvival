@@ -1,5 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.common.handlers.magic;
 
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AttachmentManager;
+
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
@@ -243,7 +245,7 @@ public class ClawToolHandler {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST) // To set the base speed as early as possible
     public static void modifyBreakSpeed(final PlayerEvent.BreakSpeed event) {
-        event.getEntity().getExistingData(DSDataAttachments.HARVEST_BONUSES).ifPresent(bonuses -> {
+        AttachmentManager.getExistingData(event.getEntity(), DSDataAttachments.HARVEST_BONUSES).ifPresent(bonuses -> {
             float baseSpeed = bonuses.getBaseSpeed(event.getState());
 
             if (baseSpeed > event.getNewSpeed()) {

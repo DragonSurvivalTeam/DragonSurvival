@@ -130,11 +130,11 @@ public class BlockVisionData extends Storage<BlockVision.Instance> {
     @SubscribeEvent
     public static void tickData(final EntityTickEvent.Post event) {
         if (event.getEntity() instanceof Player player) {
-            player.getExistingData(DSDataAttachments.BLOCK_VISION).ifPresent(storage -> {
+            AttachmentManager.getExistingData(player, DSDataAttachments.BLOCK_VISION).ifPresent(storage -> {
                 storage.tick(player);
 
                 if (storage.isEmpty()) {
-                    player.removeData(DSDataAttachments.BLOCK_VISION);
+                    AttachmentManager.removeData(player, DSDataAttachments.BLOCK_VISION);
                 }
             });
         }
@@ -152,6 +152,6 @@ public class BlockVisionData extends Storage<BlockVision.Instance> {
 
     @Override
     public AttachmentType<?> type() {
-        return DSDataAttachments.BLOCK_VISION.value();
+        return DSDataAttachments.BLOCK_VISION.get();
     }
 }

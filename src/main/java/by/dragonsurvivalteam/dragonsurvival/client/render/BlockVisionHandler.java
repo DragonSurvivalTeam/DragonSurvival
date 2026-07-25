@@ -1,5 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.client.render;
 
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AttachmentManager;
+
 import by.dragonsurvivalteam.dragonsurvival.client.render.block_vision.BlockVisionOutline;
 import by.dragonsurvivalteam.dragonsurvival.client.render.block_vision.BlockVisionParticle;
 import by.dragonsurvivalteam.dragonsurvival.client.render.block_vision.BlockVisionShaderSimple;
@@ -78,7 +80,7 @@ public class BlockVisionHandler {
         }
 
         LocalPlayer player = Objects.requireNonNull(Minecraft.getInstance().player);
-        vision = player.getExistingData(DSDataAttachments.BLOCK_VISION).orElse(null);
+        vision = AttachmentManager.getExistingData(player, DSDataAttachments.BLOCK_VISION).orElse(null);
 
         if (vision == null || vision.isEmpty()) {
             clear();

@@ -1,5 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.common.capability;
 
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AttachmentManager;
+
 import by.dragonsurvivalteam.dragonsurvival.client.util.FakeClientPlayer;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import net.minecraft.world.entity.Entity;
@@ -23,7 +25,7 @@ public class DragonStateProvider implements ICapabilityProvider<Player, Void, Dr
             return fakeData;
         }
 
-        return player.getData(DSDataAttachments.DRAGON_HANDLER);
+        return AttachmentManager.getData(player, DSDataAttachments.DRAGON_HANDLER);
     }
 
     public static Optional<DragonStateHandler> getOptional(@Nullable final Entity entity) {

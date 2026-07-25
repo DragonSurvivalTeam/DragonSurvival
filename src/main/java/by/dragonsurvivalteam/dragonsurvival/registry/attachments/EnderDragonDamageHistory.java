@@ -5,7 +5,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.util.INBTSerializable;
+import by.dragonsurvivalteam.dragonsurvival.common.serialization.INBTSerializable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnknownNullability;
 
@@ -18,7 +18,7 @@ public class EnderDragonDamageHistory implements INBTSerializable<CompoundTag> {
     private final Map<UUID, Float> damageHistory = new HashMap<>();
 
     public static EnderDragonDamageHistory getData(EnderDragon dragon) {
-        return dragon.getData(DSDataAttachments.ENDER_DRAGON_DAMAGE_HISTORY);
+        return AttachmentManager.getData(dragon, DSDataAttachments.ENDER_DRAGON_DAMAGE_HISTORY);
     }
 
     public void addDamage(UUID uuid, float damage) {

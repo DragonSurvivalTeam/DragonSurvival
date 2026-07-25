@@ -39,14 +39,14 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.entity.IEntityWithComplexSpawn;
+import net.minecraftforge.entity.IEntityAdditionalSpawnData;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Optional;
 
-public class GenericArrowEntity extends AbstractArrow implements IEntityWithComplexSpawn {
+public class GenericArrowEntity extends AbstractArrow implements IEntityAdditionalSpawnData {
     private ProjectileData.GeneralData generalData;
     private ProjectileData.GenericArrowData typeData;
     private int projectileLevel;

@@ -36,7 +36,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.Lazy;
-import net.minecraftforge.entity.IEntityWithComplexSpawn;
+import net.minecraftforge.entity.IEntityAdditionalSpawnData;
 import org.jetbrains.annotations.NotNull;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
@@ -50,7 +50,7 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 import java.util.List;
 import java.util.Optional;
 
-public class GenericBallEntity extends AbstractHurtingProjectile implements GeoEntity, IEntityWithComplexSpawn {
+public class GenericBallEntity extends AbstractHurtingProjectile implements GeoEntity, IEntityAdditionalSpawnData {
     private static final EntityDataAccessor<Boolean> LINGERING = SynchedEntityData.defineId(GenericBallEntity.class, EntityDataSerializers.BOOLEAN);
 
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);

@@ -1,5 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.client.gui.hud;
 
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AttachmentManager;
+
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
@@ -33,7 +35,7 @@ public class DragonPenaltyHUD {
             return;
         }
 
-        PenaltySupply supply = player.getExistingData(DSDataAttachments.PENALTY_SUPPLY).orElse(null);
+        PenaltySupply supply = AttachmentManager.getExistingData(player, DSDataAttachments.PENALTY_SUPPLY).orElse(null);
 
         if (supply == null) {
             return;

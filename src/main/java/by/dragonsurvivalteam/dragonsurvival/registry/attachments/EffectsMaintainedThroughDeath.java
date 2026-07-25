@@ -6,7 +6,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.common.util.INBTSerializable;
+import by.dragonsurvivalteam.dragonsurvival.common.serialization.INBTSerializable;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnknownNullability;
@@ -19,7 +19,7 @@ public class EffectsMaintainedThroughDeath implements INBTSerializable<CompoundT
     private final List<MobEffectInstance> effectsToReapplyOnDeath = new ArrayList<>();
 
     public static EffectsMaintainedThroughDeath getData(final Player player) {
-        return player.getData(DSDataAttachments.EFFECTS_MAINTAINED_THROUGH_DEATH);
+        return AttachmentManager.getData(player, DSDataAttachments.EFFECTS_MAINTAINED_THROUGH_DEATH);
     }
 
     public void addEffect(final MobEffectInstance effect) {

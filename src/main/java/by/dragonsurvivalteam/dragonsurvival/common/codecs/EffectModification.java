@@ -122,7 +122,7 @@ public class EffectModification extends DurationInstanceBase<EffectModifications
 
     @Override
     public AttachmentType<EffectModifications> type() {
-        return DSDataAttachments.EFFECT_MODIFICATIONS.value();
+        return DSDataAttachments.EFFECT_MODIFICATIONS.get();
     }
 
     public HolderSet<MobEffect> effects() {

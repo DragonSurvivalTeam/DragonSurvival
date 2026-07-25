@@ -2,6 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.common.codecs.duration_instance;
 
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.Storage;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.StorageEntry;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AttachmentManager;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilities;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import com.mojang.serialization.Codec;
@@ -49,7 +50,7 @@ public class DurationInstanceBase<B extends Storage<I>, I extends DurationInstan
     public void apply(final ServerPlayer dragon, final DragonAbilityInstance ability, final Entity target) {
         int newDuration = (int) duration.calculate(ability.level());
 
-        B data = target.getData(type());
+        B data = AttachmentManager.getData(target, type());
         I instance = data.get(id);
 
         if (instance != null && instance.appliedAbilityLevel() == ability.level() && instance.currentDuration() == newDuration) {
@@ -63,7 +64,7 @@ public class DurationInstanceBase<B extends Storage<I>, I extends DurationInstan
     }
 
     public void remove(final Entity target) {
-        B data = target.getData(type());
+        B data = AttachmentManager.getData(target, type());
         data.remove(target, data.get(id));
     }
 

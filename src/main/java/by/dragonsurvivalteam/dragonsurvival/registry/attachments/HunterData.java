@@ -5,7 +5,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.HunterHandler;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraftforge.common.util.INBTSerializable;
+import by.dragonsurvivalteam.dragonsurvival.common.serialization.INBTSerializable;
 import org.jetbrains.annotations.NotNull;
 
 public class HunterData implements INBTSerializable<CompoundTag> {
@@ -15,7 +15,7 @@ public class HunterData implements INBTSerializable<CompoundTag> {
     private boolean transparencyDisabled;
 
     public static boolean hasTransparency(final LivingEntity entity) {
-        HunterData data = entity.getExistingData(DSDataAttachments.HUNTER).orElse(null);
+        HunterData data = AttachmentManager.getExistingData(entity, DSDataAttachments.HUNTER).orElse(null);
 
         if (data == null) {
             return false;
@@ -25,7 +25,7 @@ public class HunterData implements INBTSerializable<CompoundTag> {
     }
 
     public static boolean hasMaxHunterStacks(final LivingEntity entity) {
-        HunterData data = entity.getExistingData(DSDataAttachments.HUNTER).orElse(null);
+        HunterData data = AttachmentManager.getExistingData(entity, DSDataAttachments.HUNTER).orElse(null);
 
         if (data == null) {
             return false;

@@ -6,7 +6,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.util.INBTSerializable;
+import by.dragonsurvivalteam.dragonsurvival.common.serialization.INBTSerializable;
 import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnknownNullability;
@@ -84,7 +84,7 @@ public class MovementData implements INBTSerializable<CompoundTag> {
     }
 
     public static MovementData getData(final Entity entity) {
-        return entity.getData(DSDataAttachments.MOVEMENT);
+        return AttachmentManager.getData(entity, DSDataAttachments.MOVEMENT);
     }
 
     public void sync(final ServerPlayer player) {

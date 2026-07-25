@@ -1,5 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty;
 
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AttachmentManager;
+
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.DamageModification;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.duration_instance.CommonData;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.duration_instance.DurationInstance;
@@ -21,7 +23,7 @@ public record DamageModificationPenalty(DamageModification modification, int dur
 
     @Override
     public void apply(final ServerPlayer player, final Holder<DragonPenalty> penalty) {
-        DamageModifications modifications = player.getData(DSDataAttachments.DAMAGE_MODIFICATIONS);
+        DamageModifications modifications = AttachmentManager.getData(player, DSDataAttachments.DAMAGE_MODIFICATIONS);
         DamageModification.Instance instance = modifications.get(modification.id());
 
         if (instance != null && instance.currentDuration() == duration) {

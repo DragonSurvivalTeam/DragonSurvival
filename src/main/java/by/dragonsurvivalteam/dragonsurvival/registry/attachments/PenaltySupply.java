@@ -20,7 +20,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.common.util.INBTSerializable;
+import by.dragonsurvivalteam.dragonsurvival.common.serialization.INBTSerializable;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
@@ -169,14 +169,14 @@ public class PenaltySupply implements INBTSerializable<CompoundTag> {
     }
 
     public static void clear(final Player player) {
-        player.getExistingData(DSDataAttachments.PENALTY_SUPPLY).ifPresent(data -> {
+        AttachmentManager.getExistingData(player, DSDataAttachments.PENALTY_SUPPLY).ifPresent(data -> {
             data.supplyData.clear();
 
             if (player instanceof ServerPlayer serverPlayer) {
                 data.sync(serverPlayer);
             }
 
-            player.removeData(DSDataAttachments.PENALTY_SUPPLY);
+            AttachmentManager.removeData(player, DSDataAttachments.PENALTY_SUPPLY);
         });
     }
 
@@ -186,7 +186,7 @@ public class PenaltySupply implements INBTSerializable<CompoundTag> {
             return;
         }
 
-        player.getExistingData(DSDataAttachments.PENALTY_SUPPLY).ifPresent(data -> data.replenishSupplyFromItemStack(player, event.getItem()));
+        AttachmentManager.getExistingData(player, DSDataAttachments.PENALTY_SUPPLY).ifPresent(data -> data.replenishSupplyFromItemStack(player, event.getItem()));
     }
 
     private void replenishSupplyFromItemStack(final ServerPlayer player, final ItemStack stack) {

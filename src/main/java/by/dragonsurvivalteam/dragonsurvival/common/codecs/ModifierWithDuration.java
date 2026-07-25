@@ -82,7 +82,7 @@ public class ModifierWithDuration extends DurationInstanceBase<ModifiersWithDura
 
     @Override
     public AttachmentType<ModifiersWithDuration> type() {
-        return DSDataAttachments.MODIFIERS_WITH_DURATION.value();
+        return DSDataAttachments.MODIFIERS_WITH_DURATION.get();
     }
 
     public List<Modifier> modifiers() {

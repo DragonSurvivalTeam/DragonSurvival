@@ -1,5 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.network.magic;
 
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AttachmentManager;
+
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.PenaltySupply;
@@ -31,7 +33,7 @@ public record SyncAddPenaltySupply(
 
     public static void handleClient(final SyncAddPenaltySupply packet, final PayloadContext context) {
         context.enqueueWork(() -> {
-            PenaltySupply penaltySupply = context.player().getData(DSDataAttachments.PENALTY_SUPPLY);
+            PenaltySupply penaltySupply = AttachmentManager.getData(context.player(), DSDataAttachments.PENALTY_SUPPLY);
             penaltySupply.initialize(packet.id(), packet.maximumSupply(), packet.reductionRateMultiplier(), packet.regenerationRate(), packet.currentSupply(), /* Not relevant to the client */ 0);
         });
     }

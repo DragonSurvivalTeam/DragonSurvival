@@ -9,9 +9,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraftforge.attachment.AttachmentType;
-import net.minecraftforge.common.util.INBTSerializable;
+import by.dragonsurvivalteam.dragonsurvival.common.serialization.INBTSerializable;
 import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -27,7 +26,7 @@ public abstract class Storage<T extends StorageEntry> implements INBTSerializabl
     @Nullable protected Map<ResourceLocation, T> storage;
 
     public void sync(final ServerPlayer player) {
-        player.getExistingData(type()).ifPresent(data -> PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new SyncData(player.getId(), ForgeRegistries.ATTACHMENT_TYPES.getKey(type()), serializeNBT(player.registryAccess()))));
+        AttachmentManager.getExistingData(player, type()).ifPresent(data -> PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new SyncData(player.getId(), DSDataAttachments.ATTACHMENT_TYPES.get().getKey(type()), serializeNBT(player.registryAccess()))));
     }
 
     public void tick(final Entity storageHolder) {
@@ -102,7 +101,7 @@ public abstract class Storage<T extends StorageEntry> implements INBTSerializabl
         cleared.forEach(entry -> entry.onRemovalFromStorage(storageHolder));
 
         invalidateCache();
-        storageHolder.removeData(type());
+        AttachmentManager.removeData(storageHolder, type());
     }
 
     public int size() {

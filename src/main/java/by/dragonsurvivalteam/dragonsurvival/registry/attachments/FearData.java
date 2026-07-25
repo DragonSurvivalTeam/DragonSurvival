@@ -55,11 +55,11 @@ public class FearData extends Storage<Fear.Instance> {
     @SubscribeEvent
     public static void tickData(final EntityTickEvent.Post event) {
         if (event.getEntity() instanceof Player player) {
-            player.getExistingData(DSDataAttachments.FEAR).ifPresent(storage -> {
+            AttachmentManager.getExistingData(player, DSDataAttachments.FEAR).ifPresent(storage -> {
                 storage.tick(player);
 
                 if (storage.isEmpty()) {
-                    player.removeData(storage.type());
+                    AttachmentManager.removeData(player, storage.type());
                 }
             });
         }
@@ -77,6 +77,6 @@ public class FearData extends Storage<Fear.Instance> {
 
     @Override
     public AttachmentType<?> type() {
-        return DSDataAttachments.FEAR.value();
+        return DSDataAttachments.FEAR.get();
     }
 }

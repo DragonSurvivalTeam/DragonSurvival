@@ -1,5 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.network.magic;
 
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AttachmentManager;
+
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.HarvestBonus;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
@@ -25,7 +27,7 @@ public record SyncHarvestBonus(int playerId, HarvestBonus.Instance harvestBonusI
     public static void handleClient(final SyncHarvestBonus packet, final PayloadContext context) {
         context.enqueueWork(() -> {
             if (context.player().level().getEntity(packet.playerId()) instanceof Player player) {
-                HarvestBonuses data = player.getData(DSDataAttachments.HARVEST_BONUSES);
+                HarvestBonuses data = AttachmentManager.getData(player, DSDataAttachments.HARVEST_BONUSES);
 
                 if (packet.remove()) {
                     data.remove(player, packet.harvestBonusInstance());

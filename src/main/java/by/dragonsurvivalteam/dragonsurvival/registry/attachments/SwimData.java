@@ -52,7 +52,7 @@ public class SwimData {
             return UNLIMITED_OXYGEN;
         }
 
-        float bonus = player.getExistingData(DSDataAttachments.OXYGEN_BONUSES).map(data -> data.getBonus(key)).orElse(OxygenBonus.NONE);
+        float bonus = AttachmentManager.getExistingData(player, DSDataAttachments.OXYGEN_BONUSES).map(data -> data.getBonus(key)).orElse(OxygenBonus.NONE);
 
         if (bonus == SwimData.UNLIMITED_OXYGEN) {
             return UNLIMITED_OXYGEN;
@@ -77,7 +77,7 @@ public class SwimData {
 
     // TODO :: remove?
     public static SwimData getData(final Player player) {
-        return player.getData(DSDataAttachments.SWIM);
+        return AttachmentManager.getData(player, DSDataAttachments.SWIM);
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)

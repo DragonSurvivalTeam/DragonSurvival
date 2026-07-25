@@ -1,5 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.projectile.world_effects;
 
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AttachmentManager;
+
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.server.handlers.LightningHandler;
 import com.mojang.serialization.MapCodec;
@@ -23,7 +25,7 @@ public record ProjectileLightningWorldEffect(LightningHandler.Data data) impleme
             bolt.setCause(serverPlayer);
         }
 
-        bolt.setData(DSDataAttachments.LIGHTNING_BOLT, LightningHandler.fromData(data));
+        AttachmentManager.setData(bolt, DSDataAttachments.LIGHTNING_BOLT, LightningHandler.fromData(data));
         projectile.level().addFreshEntity(bolt);
     }
 

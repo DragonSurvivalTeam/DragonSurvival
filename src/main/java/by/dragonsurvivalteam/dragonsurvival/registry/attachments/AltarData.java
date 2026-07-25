@@ -5,7 +5,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.common.util.INBTSerializable;
+import by.dragonsurvivalteam.dragonsurvival.common.serialization.INBTSerializable;
 import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
@@ -22,7 +22,7 @@ public class AltarData implements INBTSerializable<CompoundTag> {
     }
 
     public static AltarData getData(final Player player) {
-        return player.getData(DSDataAttachments.ALTAR);
+        return AttachmentManager.getData(player, DSDataAttachments.ALTAR);
     }
 
     @Override

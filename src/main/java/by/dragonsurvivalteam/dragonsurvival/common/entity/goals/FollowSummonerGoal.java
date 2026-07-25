@@ -1,5 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.common.entity.goals;
 
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AttachmentManager;
+
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SummonedEntities;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
@@ -44,7 +46,7 @@ public class FollowSummonerGoal extends Goal {
 
     @Override
     public boolean canUse() {
-        LivingEntity owner = mob.getData(DSDataAttachments.SUMMON).getOwner(mob.level());
+        LivingEntity owner = AttachmentManager.getData(mob, DSDataAttachments.SUMMON).getOwner(mob.level());
 
         if (shouldFollow(owner, startDistance)) {
             this.owner = owner;
@@ -98,7 +100,7 @@ public class FollowSummonerGoal extends Goal {
     }
 
     private boolean shouldFollow(@Nullable final LivingEntity owner, float distance) {
-        if (mob.getData(DSDataAttachments.SUMMON).movementBehaviour != SummonedEntities.MovementBehaviour.FOLLOW) {
+        if (AttachmentManager.getData(mob, DSDataAttachments.SUMMON).movementBehaviour != SummonedEntities.MovementBehaviour.FOLLOW) {
             return false;
         }
 

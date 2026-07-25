@@ -1,5 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.network.magic;
 
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AttachmentManager;
+
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ModifierWithDuration;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
@@ -25,7 +27,7 @@ public record SyncModifierWithDuration(int playerId, ModifierWithDuration.Instan
     public static void handleClient(final SyncModifierWithDuration packet, final PayloadContext context) {
         context.enqueueWork(() -> {
             if (context.player().level().getEntity(packet.playerId()) instanceof Player player) {
-                ModifiersWithDuration data = player.getData(DSDataAttachments.MODIFIERS_WITH_DURATION);
+                ModifiersWithDuration data = AttachmentManager.getData(player, DSDataAttachments.MODIFIERS_WITH_DURATION);
 
                 if (packet.remove()) {
                     // The stored server and client ids (used to remove the effects) may be different

@@ -22,7 +22,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.util.INBTSerializable;
+import by.dragonsurvivalteam.dragonsurvival.common.serialization.INBTSerializable;
 import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
@@ -241,7 +241,7 @@ public class ClawInventoryData implements INBTSerializable<CompoundTag> {
     }
 
     public static ClawInventoryData getData(final Player player) {
-        return player.getData(DSDataAttachments.CLAW_INVENTORY);
+        return AttachmentManager.getData(player, DSDataAttachments.CLAW_INVENTORY);
     }
 
     @Override

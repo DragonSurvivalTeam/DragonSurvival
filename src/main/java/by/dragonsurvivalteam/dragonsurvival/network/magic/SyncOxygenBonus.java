@@ -1,5 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.network.magic;
 
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AttachmentManager;
+
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.OxygenBonus;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
@@ -25,7 +27,7 @@ public record SyncOxygenBonus(int playerId, OxygenBonus.Instance oxygenBonusInst
     public static void handleClient(final SyncOxygenBonus packet, final PayloadContext context) {
         context.enqueueWork(() -> {
             if (context.player().level().getEntity(packet.playerId()) instanceof Player player) {
-                OxygenBonuses data = player.getData(DSDataAttachments.OXYGEN_BONUSES);
+                OxygenBonuses data = AttachmentManager.getData(player, DSDataAttachments.OXYGEN_BONUSES);
 
                 if (packet.isRemoval()) {
                     data.remove(player, packet.oxygenBonusInstance());

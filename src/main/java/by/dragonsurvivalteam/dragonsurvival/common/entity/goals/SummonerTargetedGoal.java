@@ -1,5 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.common.entity.goals;
 
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AttachmentManager;
+
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SummonData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SummonedEntities;
@@ -30,7 +32,7 @@ public class SummonerTargetedGoal extends TargetGoal {
 
     @Override
     public boolean canUse() {
-        SummonData data = mob.getData(DSDataAttachments.SUMMON);
+        SummonData data = AttachmentManager.getData(mob, DSDataAttachments.SUMMON);
         LivingEntity owner = data.getOwner(mob.level());
 
         if (owner == null || data.attackBehaviour != SummonedEntities.AttackBehaviour.DEFENSIVE) {
@@ -69,7 +71,7 @@ public class SummonerTargetedGoal extends TargetGoal {
 
     @Override
     public void start() {
-        SummonData data = mob.getData(DSDataAttachments.SUMMON);
+        SummonData data = AttachmentManager.getData(mob, DSDataAttachments.SUMMON);
         LivingEntity owner = data.getOwner(mob.level());
 
         if (owner == null) {

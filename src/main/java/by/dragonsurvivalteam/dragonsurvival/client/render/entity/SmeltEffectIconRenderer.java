@@ -1,5 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.client.render.entity;
 
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AttachmentManager;
+
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -38,7 +40,7 @@ public class SmeltEffectIconRenderer {
             return;
         }
 
-        item.getExistingData(DSDataAttachments.ITEM).ifPresent(data -> {
+        AttachmentManager.getExistingData(item, DSDataAttachments.ITEM).ifPresent(data -> {
             double progress = data.smeltingProgress;
 
             if (progress == 0 || progress >= data.smeltingTime) {

@@ -1,5 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.common.handlers;
 
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AttachmentManager;
+
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
 import by.dragonsurvivalteam.dragonsurvival.network.status.SyncPlayerJump;
@@ -34,11 +36,11 @@ public class DragonBonusHandler {
 
         // Don't consider the player jumping if they have wings spread; otherwise you end up with strange behavior once you finally touch the ground after flying
         if (entity instanceof ServerPlayer serverPlayer) {
-            if (!serverPlayer.getData(DSDataAttachments.FLIGHT).areWingsSpread) {
+            if (!AttachmentManager.getData(serverPlayer, DSDataAttachments.FLIGHT).areWingsSpread) {
                 PacketDistributor.sendToPlayersTrackingEntity(serverPlayer, new SyncPlayerJump(entity.getId(), true));
             }
         } else if (entity instanceof Player player) {
-            if (!player.getData(DSDataAttachments.FLIGHT).areWingsSpread) {
+            if (!AttachmentManager.getData(player, DSDataAttachments.FLIGHT).areWingsSpread) {
                 DragonEntity.DRAGONS_JUMPING.put(player.getId(), true);
             }
         }
@@ -53,7 +55,7 @@ public class DragonBonusHandler {
         // TODO :: also handle experience? would need a hook in 'CommonHooks#handleBlockDrops' to store some context and then modify the experience orb in 'ExperienceOrb#award'
         // TODO :: remove check for dragon?
         if (event.getBreaker().fireImmune() && DragonStateProvider.isDragon(event.getBreaker()) && event.getBreaker().isInLava()) {
-            event.getDrops().forEach(drop -> drop.getData(DSDataAttachments.ITEM).isFireImmune = true);
+            event.getDrops().forEach(drop -> AttachmentManager.getData(drop, DSDataAttachments.ITEM).isFireImmune = true);
         }
     }
 }

@@ -1,5 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.network.magic;
 
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AttachmentManager;
+
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.EffectModification;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
@@ -25,7 +27,7 @@ public record SyncEffectModification(int playerId, EffectModification.Instance m
     public static void handleClient(final SyncEffectModification packet, final PayloadContext context) {
         context.enqueueWork(() -> {
             if (context.player().level().getEntity(packet.playerId()) instanceof Player player) {
-                EffectModifications data = player.getData(DSDataAttachments.EFFECT_MODIFICATIONS);
+                EffectModifications data = AttachmentManager.getData(player, DSDataAttachments.EFFECT_MODIFICATIONS);
 
                 if (packet.remove()) {
                     data.remove(player, packet.modifierInstance());

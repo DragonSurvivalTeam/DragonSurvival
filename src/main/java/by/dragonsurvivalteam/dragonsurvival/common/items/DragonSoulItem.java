@@ -1,5 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.common.items;
 
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AttachmentManager;
+
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.EntityScale;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
@@ -113,7 +115,7 @@ public class DragonSoulItem extends BlockItem {
 
         Player player = context.getPlayer();
 
-        if (player != null && (!player.isCrouching() || !player.getData(DSDataAttachments.PLAYER_DATA).enabledDragonSoulPlacement)) {
+        if (player != null && (!player.isCrouching() || !AttachmentManager.getData(player, DSDataAttachments.PLAYER_DATA).enabledDragonSoulPlacement)) {
             return InteractionResult.PASS;
         }
 

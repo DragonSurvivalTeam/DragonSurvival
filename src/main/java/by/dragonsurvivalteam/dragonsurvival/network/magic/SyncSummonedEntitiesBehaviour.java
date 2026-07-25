@@ -1,5 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.network.magic;
 
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AttachmentManager;
+
 import by.dragonsurvivalteam.dragonsurvival.network.codec.ByteBufCodecs;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
@@ -27,7 +29,7 @@ public record SyncSummonedEntitiesBehaviour(SummonedEntities.AttackBehaviour att
 
     public static void handleServer(final SyncSummonedEntitiesBehaviour packet, final PayloadContext context) {
         context.enqueueWork(() -> {
-            SummonedEntities summonData = context.player().getData(DSDataAttachments.SUMMONED_ENTITIES);
+            SummonedEntities summonData = AttachmentManager.getData(context.player(), DSDataAttachments.SUMMONED_ENTITIES);
             summonData.attackBehaviour = packet.attackBehaviour();
             summonData.movementBehaviour = packet.movementBehaviour();
 
@@ -40,7 +42,7 @@ public record SyncSummonedEntitiesBehaviour(SummonedEntities.AttackBehaviour att
                             continue;
                         }
 
-                        SummonData data = entity.getData(DSDataAttachments.SUMMON);
+                        SummonData data = AttachmentManager.getData(entity, DSDataAttachments.SUMMON);
                         data.attackBehaviour = packet.attackBehaviour();
                         data.movementBehaviour = packet.movementBehaviour();
 
