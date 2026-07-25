@@ -8,10 +8,9 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.data.loot.LootTableProvider;
-import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraftforge.registries.RegistryObject;
 import org.jetbrains.annotations.NotNull;
 
@@ -24,7 +23,7 @@ import java.util.stream.Collectors;
 // TODO :: Can probably have a generic parent where we only set the compat id here and check that within the parent
 public class SilentGemsDatapack extends BlockLootSubProvider {
     public SilentGemsDatapack(HolderLookup.Provider provider) {
-        super(Collections.emptySet(), FeatureFlags.REGISTRY.allFlags(), provider);
+        super(Collections.emptySet(), FeatureFlags.REGISTRY.allFlags());
     }
 
     @Override
@@ -44,13 +43,8 @@ public class SilentGemsDatapack extends BlockLootSubProvider {
     }
 
     public static class Provider extends LootTableProvider {
-        public Provider(final PackOutput output, final Set<ResourceKey<LootTable>> requiredTables, final List<SubProviderEntry> subProviders, final CompletableFuture<HolderLookup.Provider> registries) {
-            super(output, requiredTables, subProviders, registries);
-        }
-
-        @Override
-        public final @NotNull String getName() {
-            return "Compatibility Loot Tables: Silent Gems";
+        public Provider(final PackOutput output, final Set<ResourceLocation> requiredTables, final List<SubProviderEntry> subProviders, final CompletableFuture<HolderLookup.Provider> registries) {
+            super(output, requiredTables, subProviders);
         }
     }
 }
