@@ -25,7 +25,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.event.tick.PlayerTickEvent;
+import net.minecraftforge.event.TickEvent;
 import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
 
 @EventBusSubscriber
@@ -105,8 +105,8 @@ public class PlayerLoginHandler {
     }
 
     @SubscribeEvent
-    public static void startWithDragonChoice(PlayerTickEvent.Post event) {
-        if (!(event.getEntity() instanceof ServerPlayer serverPlayer) || serverPlayer.isDeadOrDying()) {
+    public static void startWithDragonChoice(TickEvent.PlayerTickEvent event) {
+        if (event.phase != TickEvent.Phase.END || !(event.player instanceof ServerPlayer serverPlayer) || serverPlayer.isDeadOrDying()) {
             return;
         }
 

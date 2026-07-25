@@ -13,13 +13,17 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.event.tick.PlayerTickEvent;
+import net.minecraftforge.event.TickEvent;
 
 @EventBusSubscriber
 public class ManaHandler {
     @SubscribeEvent
-    public static void playerTick(final PlayerTickEvent.Post event) {
-        Player player = event.getEntity();
+    public static void playerTick(final TickEvent.PlayerTickEvent event) {
+        if (event.phase != TickEvent.Phase.END) {
+            return;
+        }
+
+        Player player = event.player;
 
         if (!DragonStateProvider.isDragon(player)) {
             return;
@@ -37,7 +41,7 @@ public class ManaHandler {
     }
 
     public static boolean hasEnoughMana(final Player player, float manaCost) {
-        if (manaCost == 0 || player.hasEffect(DSEffects.SOURCE_OF_MAGIC) || player.hasInfiniteMaterials()) {
+        if (manaCost == 0 || player.hasEffect(DSEffects.SOURCE_OF_MAGIC.value()) || player.getAbilities().instabuild) {
             return true;
         }
 
@@ -63,7 +67,7 @@ public class ManaHandler {
     }
 
     public static void consumeMana(final Player player, float manaCost) {
-        if (manaCost == 0 || player == null || player.hasInfiniteMaterials() || player.hasEffect(DSEffects.SOURCE_OF_MAGIC)) {
+        if (manaCost == 0 || player == null || player.getAbilities().instabuild || player.hasEffect(DSEffects.SOURCE_OF_MAGIC.value())) {
             return;
         }
 

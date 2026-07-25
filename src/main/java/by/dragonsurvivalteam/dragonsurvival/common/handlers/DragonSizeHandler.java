@@ -23,7 +23,7 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.EntityLeaveLevelEvent;
-import net.minecraftforge.event.tick.PlayerTickEvent;
+import net.minecraftforge.event.TickEvent;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -219,8 +219,12 @@ public class DragonSizeHandler {
     }
 
     @SubscribeEvent
-    public static void handleLerpGrowthAndPose(final PlayerTickEvent.Pre event) {
-        Player player = event.getEntity();
+    public static void handleLerpGrowthAndPose(final TickEvent.PlayerTickEvent event) {
+        if (event.phase != TickEvent.Phase.START) {
+            return;
+        }
+
+        Player player = event.player;
         DragonStateHandler data = DragonStateProvider.getData(player);
 
         boolean isDragon = data.isDragon(); // TODO :: remove and handle it when reverted to human
@@ -233,7 +237,7 @@ public class DragonSizeHandler {
             data.lerpGrowth(player);
 
             // Required for smooth transitions of the pose (e.g. sneaking)
-            DragonSizeHandler.overridePose(event.getEntity());
+            DragonSizeHandler.overridePose(player);
         }
     }
 

@@ -18,7 +18,7 @@ import net.minecraft.world.phys.Vec2;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.event.level.BlockEvent;
-import net.minecraftforge.event.tick.PlayerTickEvent;
+import net.minecraftforge.event.TickEvent;
 
 /** See {@link by.dragonsurvivalteam.dragonsurvival.client.handlers.DragonDestructionHandler} for client-specific handling */
 @EventBusSubscriber
@@ -26,22 +26,23 @@ public class DragonDestructionHandler {
     private static int crushTickCounter;
     private static boolean isBreakingMultipleBlocks;
 
-    private static void checkAndDestroyCollidingBlocks(final DragonStateHandler data, final PlayerTickEvent event, final AABB boundingBox) {
+    private static void checkAndDestroyCollidingBlocks(final DragonStateHandler data, final TickEvent.PlayerTickEvent event, final AABB boundingBox) {
         MiscCodecs.DestructionData destructionData = data.stage().value().destructionData().orElse(null);
 
         if (destructionData == null || !destructionData.isBlockDestructionAllowed(data.getGrowth())) {
             return;
         }
 
+        ServerPlayer player = (ServerPlayer) event.player;
         BlockPosHelper.betweenClosedCeil(boundingBox).forEach(position -> {
-            if (!destructionData.blockPredicate().test((ServerLevel) event.getEntity().level(), position)) {
+            if (!destructionData.blockPredicate().test((ServerLevel) player.level(), position)) {
                 return;
             }
 
-            if (event.getEntity().getRandom().nextDouble() > ServerConfig.blockDestructionRemoval) {
-                event.getEntity().level().destroyBlock(position, false);
+            if (player.getRandom().nextDouble() > ServerConfig.blockDestructionRemoval) {
+                player.level().destroyBlock(position, false);
             } else {
-                event.getEntity().level().removeBlock(position, false);
+                player.level().removeBlock(position, false);
             }
         });
     }
@@ -84,8 +85,8 @@ public class DragonDestructionHandler {
     }
 
     @SubscribeEvent
-    public static void checkAndDestroyCollidingBlocksAndCrushedEntities(final PlayerTickEvent.Post event) {
-        if (!(event.getEntity() instanceof ServerPlayer player) || player.isCrouching()) {
+    public static void checkAndDestroyCollidingBlocksAndCrushedEntities(final TickEvent.PlayerTickEvent event) {
+        if (event.phase != TickEvent.Phase.END || !(event.player instanceof ServerPlayer player) || player.isCrouching()) {
             return;
         }
 

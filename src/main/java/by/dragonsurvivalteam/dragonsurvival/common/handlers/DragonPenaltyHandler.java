@@ -18,13 +18,13 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.event.ItemStackedOnOtherEvent;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
-import net.minecraftforge.event.tick.PlayerTickEvent;
+import net.minecraftforge.event.TickEvent;
 
 @EventBusSubscriber
 public class DragonPenaltyHandler {
     @SubscribeEvent
-    public static void applyPenalties(final PlayerTickEvent.Post event) {
-        if (!(event.getEntity() instanceof ServerPlayer serverPlayer)) {
+    public static void applyPenalties(final TickEvent.PlayerTickEvent event) {
+        if (event.phase != TickEvent.Phase.END || !(event.player instanceof ServerPlayer serverPlayer)) {
             return;
         }
 

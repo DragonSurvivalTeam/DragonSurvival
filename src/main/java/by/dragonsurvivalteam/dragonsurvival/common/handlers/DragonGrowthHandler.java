@@ -22,7 +22,7 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.event.tick.PlayerTickEvent;
+import net.minecraftforge.event.TickEvent;
 import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
 
 @EventBusSubscriber
@@ -116,8 +116,8 @@ public class DragonGrowthHandler {
     }
 
     @SubscribeEvent
-    public static void onPlayerUpdate(final PlayerTickEvent.Pre event) {
-        if (!(event.getEntity() instanceof ServerPlayer player)) {
+    public static void onPlayerUpdate(final TickEvent.PlayerTickEvent event) {
+        if (event.phase != TickEvent.Phase.START || !(event.player instanceof ServerPlayer player)) {
             return;
         }
 

@@ -33,7 +33,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.event.entity.player.PlayerFlyableFallEvent;
-import net.minecraftforge.event.tick.PlayerTickEvent;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.fluids.FluidType;
 import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
 
@@ -171,8 +171,12 @@ public class ServerFlightHandler {
     }
 
     @SubscribeEvent
-    public static void handleEarlyFlightLogic(final PlayerTickEvent.Pre event) {
-        Player player = event.getEntity();
+    public static void handleEarlyFlightLogic(final TickEvent.PlayerTickEvent event) {
+        if (event.phase != TickEvent.Phase.START) {
+            return;
+        }
+
+        Player player = event.player;
         DragonStateHandler handler = DragonStateProvider.getData(player);
 
         // Handle this on both the client and server so that the fall damage sound effects are correctly handled
@@ -190,12 +194,12 @@ public class ServerFlightHandler {
     }
 
     @SubscribeEvent
-    public static void handleWallCollisionsWhenFlying(PlayerTickEvent.Post event) {
-        if (event.getEntity().level().isClientSide()) {
+    public static void handleWallCollisionsWhenFlying(TickEvent.PlayerTickEvent event) {
+        if (event.phase != TickEvent.Phase.END || event.player.level().isClientSide()) {
             return;
         }
 
-        Player player = event.getEntity();
+        Player player = event.player;
 
         // This collision code is from Elytra flying. See isFallFlying() section in LivingEntity#travel()
         if (player.horizontalCollision && isGliding(player) && enableCollisionDamage) {
@@ -214,8 +218,12 @@ public class ServerFlightHandler {
     }
 
     @SubscribeEvent
-    public static void playerFlightAttacks(PlayerTickEvent.Pre event) {
-        Player player = event.getEntity();
+    public static void playerFlightAttacks(TickEvent.PlayerTickEvent event) {
+        if (event.phase != TickEvent.Phase.START) {
+            return;
+        }
+
+        Player player = event.player;
         DragonStateHandler handler = DragonStateProvider.getData(player);
 
         if (!handler.isDragon()) {
@@ -306,8 +314,12 @@ public class ServerFlightHandler {
     }
 
     @SubscribeEvent
-    public static void playerFoodExhaustion(PlayerTickEvent.Post playerTickEvent) {
-        Player player = playerTickEvent.getEntity();
+    public static void playerFoodExhaustion(TickEvent.PlayerTickEvent playerTickEvent) {
+        if (playerTickEvent.phase != TickEvent.Phase.END) {
+            return;
+        }
+
+        Player player = playerTickEvent.player;
 
         DragonStateProvider.getOptional(player).ifPresent(dragonStateHandler -> {
             if (dragonStateHandler.isDragon()) {

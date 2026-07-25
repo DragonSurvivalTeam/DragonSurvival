@@ -7,7 +7,7 @@ import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.event.tick.PlayerTickEvent;
+import net.minecraftforge.event.TickEvent;
 import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
 
 @EventBusSubscriber // Failsafe in case the data gets out of sync
@@ -16,12 +16,12 @@ public class ServerPlayerStatusSync {
     private static final int SYNC_RATE = Functions.secondsToTicks(600);
 
     @SubscribeEvent
-    public static void onServerTick(final PlayerTickEvent.Post event) {
-        if (event.getEntity().level().isClientSide()) {
+    public static void onServerTick(final TickEvent.PlayerTickEvent event) {
+        if (event.phase != TickEvent.Phase.END || event.player.level().isClientSide()) {
             return;
         }
 
-        Player player = event.getEntity();
+        Player player = event.player;
 
         if (!player.isAddedToLevel() || !player.isAlive()) {
             return;

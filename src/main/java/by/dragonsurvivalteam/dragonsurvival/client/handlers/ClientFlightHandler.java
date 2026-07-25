@@ -42,7 +42,7 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.client.event.CalculateDetachedCameraDistanceEvent;
 import net.minecraftforge.client.event.ClientTickEvent;
 import net.minecraftforge.client.event.ViewportEvent;
-import net.minecraftforge.event.tick.PlayerTickEvent;
+import net.minecraftforge.event.TickEvent;
 import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
@@ -250,8 +250,12 @@ public class ClientFlightHandler {
     }
 
     @SubscribeEvent
-    public static void flightParticles(PlayerTickEvent.Post event) {
-        Player player = event.getEntity();
+    public static void flightParticles(TickEvent.PlayerTickEvent event) {
+        if (event.phase != TickEvent.Phase.END) {
+            return;
+        }
+
+        Player player = event.player;
         FlightData spin = FlightData.getData(player);
 
         if (!DragonStateProvider.isDragon(player) || spin.duration <= 0) {

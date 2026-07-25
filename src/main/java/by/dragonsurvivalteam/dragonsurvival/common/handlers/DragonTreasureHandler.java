@@ -24,7 +24,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.event.entity.living.LivingIncomingDamageEvent;
-import net.minecraftforge.event.tick.PlayerTickEvent;
+import net.minecraftforge.event.TickEvent;
 import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
 
 import java.util.List;
@@ -69,8 +69,12 @@ public class DragonTreasureHandler {
     public static List<EffectConfig> EFFECTS_ON_SLEEP = List.of(EffectConfig.create(MobEffects.REGENERATION, 200, 0, 0.5, 0.01));
 
     @SubscribeEvent
-    public static void update(final PlayerTickEvent.Post event) {
-        Player player = event.getEntity();
+    public static void update(final TickEvent.PlayerTickEvent event) {
+        if (event.phase != TickEvent.Phase.END) {
+            return;
+        }
+
+        Player player = event.player;
         DragonStateHandler handler = DragonStateProvider.getData(player);
 
         if (!handler.isDragon()) {

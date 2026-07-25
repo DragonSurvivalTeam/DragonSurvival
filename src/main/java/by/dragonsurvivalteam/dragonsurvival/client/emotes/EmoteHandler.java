@@ -13,7 +13,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.event.entity.living.LivingIncomingDamageEvent;
-import net.minecraftforge.event.tick.PlayerTickEvent;
+import net.minecraftforge.event.TickEvent;
 import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
 
 import static net.minecraft.client.CameraType.THIRD_PERSON_BACK;
@@ -23,12 +23,12 @@ public class EmoteHandler {
     private static final double EMOTE_MOVEMENT_EPSILON = 0.01;
 
     @SubscribeEvent
-    public static void playerTick(final PlayerTickEvent.Post event) {
-        if (!event.getEntity().level().isClientSide()) {
+    public static void playerTick(final TickEvent.PlayerTickEvent event) {
+        if (event.phase != TickEvent.Phase.END || !event.player.level().isClientSide()) {
             return;
         }
 
-        Player player = event.getEntity();
+        Player player = event.player;
         DragonEntity dragon = ClientDragonRenderer.getDragon(player);
 
         if (dragon == null) {

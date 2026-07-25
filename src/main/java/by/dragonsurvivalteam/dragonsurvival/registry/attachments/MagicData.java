@@ -44,7 +44,7 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.event.tick.PlayerTickEvent;
+import net.minecraftforge.event.TickEvent;
 import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -160,26 +160,28 @@ public class MagicData implements INBTSerializable<CompoundTag> {
     }
 
     @SubscribeEvent
-    public static void tickAbilities(final PlayerTickEvent.Post event) {
-        if (event.getEntity().isSpectator()) {
+    public static void tickAbilities(final TickEvent.PlayerTickEvent event) {
+        if (event.phase != TickEvent.Phase.END || event.player.isSpectator()) {
             return;
         }
 
-        if (!DragonStateProvider.isDragon(event.getEntity())) {
+        Player player = event.player;
+
+        if (!DragonStateProvider.isDragon(player)) {
             return;
         }
 
-        Optional<MagicData> optional = event.getEntity().getExistingData(DSDataAttachments.MAGIC);
+        Optional<MagicData> optional = player.getExistingData(DSDataAttachments.MAGIC);
 
         if (optional.isEmpty()) {
             return;
         }
 
         MagicData magic = optional.get();
-        InputData experienceLevels = InputData.experienceLevels(event.getEntity().experienceLevel);
+        InputData experienceLevels = InputData.experienceLevels(player.experienceLevel);
 
         for (DragonAbilityInstance ability : magic.getAbilities().values()) {
-            if (event.getEntity() instanceof ServerPlayer serverPlayer) {
+            if (player instanceof ServerPlayer serverPlayer) {
                 ability.value().upgrade().ifPresent(upgrade -> {
                     // Handle input type 'Void' (e.g. condition based)
                     upgrade.attempt(serverPlayer, ability, null);
@@ -201,7 +203,7 @@ public class MagicData implements INBTSerializable<CompoundTag> {
                 DSAdvancementTriggers.UPGRADE_ABILITY.get().trigger(serverPlayer, ability.key(), ability.level());
             }
 
-            ability.tickCooldown(event.getEntity());
+            ability.tickCooldown(player);
             ability.triggered = false;
 
             if (ability.value().activation() instanceof PassiveActivation passive && !(passive.trigger() instanceof ConstantTrigger)) {
@@ -209,10 +211,10 @@ public class MagicData implements INBTSerializable<CompoundTag> {
                 continue;
             }
 
-            ability.tick(event.getEntity());
+            ability.tick(player);
         }
 
-        if (event.getEntity().level().isClientSide() && magic.isCasting()) {
+        if (player.level().isClientSide() && magic.isCasting()) {
             if (magic.castTimer == 0) {
                 magic.tickTimer++;
             }

@@ -9,22 +9,27 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.event.tick.PlayerTickEvent;
+import net.minecraftforge.event.TickEvent;
 
 @EventBusSubscriber
 public class SourceOfMagicHandler {
     @SubscribeEvent // SourceOfMagicBlock#entityInside cannot clear the counter if the entity is not inside
-    public static void handleTimer(final PlayerTickEvent.Post event) {
-        DragonStateHandler handler = DragonStateProvider.getData(event.getEntity());
+    public static void handleTimer(final TickEvent.PlayerTickEvent event) {
+        if (event.phase != TickEvent.Phase.END) {
+            return;
+        }
+
+        Player player = event.player;
+        DragonStateHandler handler = DragonStateProvider.getData(player);
 
         if (!handler.isDragon()) {
             return;
         }
 
-        MovementData movement = MovementData.getData(event.getEntity());
-        handler.isOnMagicSource = isOnMagicSource(event.getEntity(), handler);
+        MovementData movement = MovementData.getData(player);
+        handler.isOnMagicSource = isOnMagicSource(player, handler);
 
-        if (handler.isOnMagicSource && !movement.isMoving() && !movement.dig && !event.getEntity().isCrouching()) {
+        if (handler.isOnMagicSource && !movement.isMoving() && !movement.dig && !player.isCrouching()) {
             handler.magicSource++;
         } else {
             handler.magicSource = 0;
