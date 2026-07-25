@@ -46,7 +46,7 @@ public class AnimationUtils {
         return getRealtimeDeltaTicks() * MS_PER_TICK / 1000f;
     }
 
-    private static float getRealtimeDeltaTicks() {
+    public static float getRealtimeDeltaTicks() {
         float deltaTicks = Minecraft.getInstance().getTimer().tickDelta;
         return deltaTicks > 7.f ? 0.5f : deltaTicks;
     }

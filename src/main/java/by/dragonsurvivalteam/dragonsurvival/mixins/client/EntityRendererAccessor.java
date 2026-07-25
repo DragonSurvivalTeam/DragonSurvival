@@ -15,5 +15,5 @@ public interface EntityRendererAccessor {
     void dragonSurvival$setShadowRadius(float radius);
 
     @Invoker("renderNameTag")
-    void dragonSurvival$renderNameTag(Entity pEntity, Component pDisplayName, PoseStack pPoseStack, MultiBufferSource pBuffer, int pPackedLight, float pPartialTick);
+    void dragonSurvival$renderNameTag(Entity pEntity, Component pDisplayName, PoseStack pPoseStack, MultiBufferSource pBuffer, int pPackedLight);
 }

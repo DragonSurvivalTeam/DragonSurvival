@@ -31,6 +31,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.Di
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.DragonBreathTarget;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.LookingAtTarget;
 import by.dragonsurvivalteam.dragonsurvival.server.handlers.ServerFlightHandler;
+import by.dragonsurvivalteam.dragonsurvival.util.AnimationUtils;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -302,14 +303,14 @@ public class ClientDragonRenderer {
             RenderNameTagEvent renderNameplateEvent = new RenderNameTagEvent(player, player.getDisplayName(), event.getRenderer(), event.getPoseStack(), event.getMultiBufferSource(), event.getPackedLight(), partialTick);
             MinecraftForge.EVENT_BUS.post(renderNameplateEvent);
 
-            if (renderNameplateEvent.canRender().isTrue() || renderNameplateEvent.canRender().isDefault() && ((LivingRendererAccessor) event.getRenderer()).dragonSurvival$callShouldShowName(player)) {
-                ((EntityRendererAccessor) event.getRenderer()).dragonSurvival$renderNameTag(player, renderNameplateEvent.getContent(), event.getPoseStack(), event.getMultiBufferSource(), event.getPackedLight(), partialTick);
+            if (renderNameplateEvent.getResult() == Event.Result.ALLOW || renderNameplateEvent.getResult() == Event.Result.DEFAULT && ((LivingRendererAccessor) event.getRenderer()).dragonSurvival$callShouldShowName(player)) {
+                ((EntityRendererAccessor) event.getRenderer()).dragonSurvival$renderNameTag(player, renderNameplateEvent.getContent(), event.getPoseStack(), event.getMultiBufferSource(), event.getPackedLight());
             }
         }
 
         if (player != Minecraft.getInstance().player || !Minecraft.getInstance().options.getCameraType().isFirstPerson() || !ServerFlightHandler.isGliding(player) || renderFirstPersonFlight) {
             if (!dragon.isInInventory) {
-                ClientDragonRenderer.setDragonMovementData(player, Minecraft.getInstance().getTimer().getRealtimeDeltaTicks());
+                ClientDragonRenderer.setDragonMovementData(player, AnimationUtils.getRealtimeDeltaTicks());
             }
 
             MovementData movement = MovementData.getData(player);
