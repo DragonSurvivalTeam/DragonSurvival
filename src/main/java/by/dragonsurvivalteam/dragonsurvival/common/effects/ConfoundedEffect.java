@@ -33,7 +33,7 @@ public class ConfoundedEffect extends ModifiableMobEffect {
     }
 
     @SubscribeEvent
-    public static void reflectDamage(LivingDamageEvent.Post damageEvent) {
+    public static void reflectDamage(LivingDamageEvent damageEvent) {
         LivingEntity victim = damageEvent.getEntity();
         Entity damageSource = damageEvent.getSource().getEntity();
         if (damageSource instanceof LivingEntity livingSource) {
@@ -44,7 +44,7 @@ public class ConfoundedEffect extends ModifiableMobEffect {
                     effectApplier = ((AdditionalEffectData) livingSource.getEffect(DSEffects.CONFOUNDED.get())).dragonSurvival$getApplier(serverLevel);
                 }
 
-                livingSource.hurt(new DamageSource(DSDamageTypes.get(victim.level(), DSDamageTypes.MIRROR_CURSE), effectApplier), damageEvent.getNewDamage());
+                livingSource.hurt(new DamageSource(DSDamageTypes.get(victim.level(), DSDamageTypes.MIRROR_CURSE), effectApplier), damageEvent.getAmount());
             }
         }
     }

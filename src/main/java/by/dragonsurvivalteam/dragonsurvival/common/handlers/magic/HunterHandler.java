@@ -25,6 +25,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.MobEffectEvent;
 import net.minecraftforge.event.tick.EntityTickEvent;
@@ -110,10 +111,10 @@ public class HunterHandler { // FIXME :: disable shadows in EntityRenderDispatch
     }
 
     @SubscribeEvent
-    public static void removeHunterEffect(final LivingDamageEvent.Post event) {
+    public static void removeHunterEffect(final LivingDamageEvent event) {
         MobEffectInstance hunterEffect = event.getEntity().getEffect(DSEffects.HUNTER.get());
 
-        if (hunterEffect != null && event.getNewDamage() > hunterEffect.getAmplifier()) {
+        if (hunterEffect != null && event.getAmount() > hunterEffect.getAmplifier()) {
             event.getEntity().removeEffect(DSEffects.HUNTER.get());
         }
     }
@@ -162,7 +163,7 @@ public class HunterHandler { // FIXME :: disable shadows in EntityRenderDispatch
     }
 
     @SubscribeEvent // Does not use the critical event since projectiles owned by the player don't trigger it
-    public static void handleCriticalBonus(final LivingDamageEvent.Pre event) {
+    public static void handleCriticalBonus(final LivingHurtEvent event) {
         if (!(event.getSource().getEntity() instanceof LivingEntity attacker)) {
             return;
         }
@@ -177,7 +178,7 @@ public class HunterHandler { // FIXME :: disable shadows in EntityRenderDispatch
         float multiplier = (float) (1 + hunterEffect.getAmplifier() * DAMAGE_PER_LEVEL);
         multiplier = multiplier * ((float) data.getHunterStacks() / getMaxStacks());
 
-        event.setNewDamage(event.getNewDamage() * (1 + multiplier));
+        event.setAmount(event.getAmount() * (1 + multiplier));
         attacker.removeEffect(DSEffects.HUNTER.get());
     }
 

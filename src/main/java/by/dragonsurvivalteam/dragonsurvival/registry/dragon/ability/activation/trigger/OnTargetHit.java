@@ -23,7 +23,7 @@ public record OnTargetHit(Optional<LootItemCondition> condition) implements Acti
             LootItemCondition.DIRECT_CODEC.optionalFieldOf("condition").forGetter(OnTargetHit::condition)
     ).apply(instance, OnTargetHit::new));
 
-    public static void trigger(final LivingDamageEvent.Post event) {
+    public static void trigger(final LivingDamageEvent event) {
         if (event.getSource().getEntity() instanceof ServerPlayer player) {
             DragonStateHandler handler = DragonStateProvider.getData(player);
 

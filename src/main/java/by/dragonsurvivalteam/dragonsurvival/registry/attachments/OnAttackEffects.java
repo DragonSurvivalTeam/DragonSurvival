@@ -27,7 +27,7 @@ public class OnAttackEffects {
     }
 
     @SubscribeEvent
-    public static void applyOnAttackEffects(final LivingDamageEvent.Post event) {
+    public static void applyOnAttackEffects(final LivingDamageEvent event) {
         if (!(event.getSource().getEntity() instanceof Player attacker)) {
             return;
         }

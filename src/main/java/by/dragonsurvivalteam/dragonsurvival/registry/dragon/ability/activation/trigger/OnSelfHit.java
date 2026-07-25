@@ -26,7 +26,7 @@ public record OnSelfHit(Optional<LootItemCondition> condition) implements Activa
             LootItemCondition.DIRECT_CODEC.optionalFieldOf("condition").forGetter(OnSelfHit::condition)
     ).apply(instance, OnSelfHit::new));
 
-    public static void trigger(final LivingDamageEvent.Post event) {
+    public static void trigger(final LivingDamageEvent event) {
         if (event.getEntity() instanceof ServerPlayer player) {
             DragonStateHandler handler = DragonStateProvider.getData(player);
 

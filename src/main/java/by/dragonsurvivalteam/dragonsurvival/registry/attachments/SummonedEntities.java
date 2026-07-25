@@ -208,7 +208,7 @@ public class SummonedEntities extends Storage<SummonEntityEffect.Instance> {
     }
 
     @SubscribeEvent
-    public static void markPlayerDamage(final LivingDamageEvent.Post event) {
+    public static void markPlayerDamage(final LivingDamageEvent event) {
         Entity entity = event.getSource().getEntity();
 
         if (entity == null) {
