@@ -1,16 +1,16 @@
 package by.dragonsurvivalteam.dragonsurvival.client.render.block_vision;
 
 import by.dragonsurvivalteam.dragonsurvival.client.render.BlockVisionHandler;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.SpawnParticles;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.block_vision.BlockVision;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSParticles;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.enchantment.effects.SpawnParticlesEffect;
 
 public class BlockVisionParticle {
     // TODO :: make it configurable?
-    private static final SpawnParticlesEffect.PositionSource PARTICLE_POSITION = SpawnParticlesEffect.inBoundingBox();
+    private static final SpawnParticles.PositionSource PARTICLE_POSITION = SpawnParticles.inBoundingBox();
 
     public static void spawnParticle(final BlockVisionHandler.Data data, final Player player) {
         if (Minecraft.getInstance().isPaused()) {
