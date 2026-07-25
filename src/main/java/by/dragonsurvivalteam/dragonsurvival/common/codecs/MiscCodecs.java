@@ -12,6 +12,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.advancements.critereon.MinMaxBounds;
+import net.minecraft.core.Holder;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.level.storage.loot.Deserializers;
@@ -107,25 +108,36 @@ public class MiscCodecs {
             final String typeField,
             final Function<T, ? extends MapCodec<? extends T>> codec
     ) {
-        Supplier<Codec<T>> dispatchCodec = () -> Objects.requireNonNull(
+        return lazyCodec(() -> Objects.requireNonNull(
                 registry.get(),
                 "Registry for " + typeField + " has not been created yet"
-        ).getCodec().dispatch(typeField, codec, MapCodec::codec);
+        ).getCodec().dispatch(typeField, codec, MapCodec::codec));
+    }
 
+    public static <T> Codec<Holder<T>> forgeRegistryHolderCodec(final Supplier<IForgeRegistry<T>> registry) {
+        return lazyCodec(() -> Objects.requireNonNull(registry.get(), "Forge registry has not been created yet")
+                .getCodec()
+                .xmap(
+                        value -> registry.get().getHolder(value).orElseThrow(),
+                        Holder::value
+                ));
+    }
+
+    private static <T> Codec<T> lazyCodec(final Supplier<Codec<T>> codec) {
         return new Codec<>() {
             @Override
             public <U> DataResult<Pair<T, U>> decode(final DynamicOps<U> ops, final U input) {
-                return dispatchCodec.get().decode(ops, input);
+                return codec.get().decode(ops, input);
             }
 
             @Override
             public <U> DataResult<U> encode(final T input, final DynamicOps<U> ops, final U prefix) {
-                return dispatchCodec.get().encode(input, ops, prefix);
+                return codec.get().encode(input, ops, prefix);
             }
 
             @Override
             public String toString() {
-                return "RegistryDispatch[" + typeField + "]";
+                return "Lazy[" + codec + "]";
             }
         };
     }

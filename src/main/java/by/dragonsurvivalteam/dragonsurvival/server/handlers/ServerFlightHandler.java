@@ -35,6 +35,7 @@ import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.event.entity.player.PlayerFlyableFallEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.fluids.FluidType;
+import net.minecraftforge.registries.ForgeRegistries;
 import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
 
 import java.util.List;
@@ -313,7 +314,7 @@ public class ServerFlightHandler {
             return false;
         }
 
-        return data.inFluid.contains(player.level().registryAccess().holderOrThrow(key));
+        return data.inFluid.contains(ForgeRegistries.FLUID_TYPES.get().getHolder(key).orElseThrow());
     }
 
     @SubscribeEvent

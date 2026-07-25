@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects;
 
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscCodecs;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncSwimDataEntry;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SwimData;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
@@ -19,7 +20,7 @@ public record SwimEffect(LevelBasedValue maxOxygen, Holder<FluidType> fluidType)
             //  so that a different speed can be applied to different fluids
             LevelBasedValue.CODEC.fieldOf("max_oxygen").forGetter(SwimEffect::maxOxygen),
             // TODO :: holderset?
-            ForgeRegistries.FLUID_TYPES.holderByNameCodec().fieldOf("fluid_type").forGetter(SwimEffect::fluidType)
+            MiscCodecs.forgeRegistryHolderCodec(ForgeRegistries.FLUID_TYPES).fieldOf("fluid_type").forGetter(SwimEffect::fluidType)
     ).apply(instance, SwimEffect::new));
 
     @Override

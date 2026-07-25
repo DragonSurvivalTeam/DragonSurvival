@@ -19,7 +19,9 @@ import org.jetbrains.annotations.NotNull;
 @EventBusSubscriber
 public class OxygenBonuses extends Storage<OxygenBonus.Instance> {
     public float getBonus(final ResourceKey<FluidType> fluidKey) {
-        Holder<FluidType> fluid = fluidKey != null ? ForgeRegistries.FLUID_TYPES.getHolderOrThrow(fluidKey) : ForgeMod.EMPTY_TYPE;
+        Holder<FluidType> fluid = ForgeRegistries.FLUID_TYPES.get()
+                .getHolder(fluidKey != null ? fluidKey : ForgeMod.EMPTY_TYPE.getKey())
+                .orElseThrow();
         float bonus = OxygenBonus.NONE;
 
         float instanceBonus;

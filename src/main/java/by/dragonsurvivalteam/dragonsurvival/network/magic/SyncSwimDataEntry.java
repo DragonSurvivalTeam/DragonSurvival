@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.network.magic;
 
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscCodecs;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SwimData;
 import net.minecraft.core.Holder;
@@ -17,7 +18,7 @@ public record SyncSwimDataEntry(int maxOxygen, Holder<FluidType> fluidType, bool
 
     public static final StreamCodec<FriendlyByteBuf, SyncSwimDataEntry> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.INT, SyncSwimDataEntry::maxOxygen,
-            ByteBufCodecs.fromCodecWithRegistries(ForgeRegistries.FLUID_TYPES.holderByNameCodec()), SyncSwimDataEntry::fluidType,
+            ByteBufCodecs.fromCodecWithRegistries(MiscCodecs.forgeRegistryHolderCodec(ForgeRegistries.FLUID_TYPES)), SyncSwimDataEntry::fluidType,
             ByteBufCodecs.BOOL, SyncSwimDataEntry::remove,
             SyncSwimDataEntry::new
     );

@@ -71,7 +71,7 @@ public class SwimData {
 
     public void sync(final ServerPlayer player) {
         swimData.forEach((fluid, oxygen) -> {
-            PacketDistributor.sendToPlayer(player, new SyncSwimDataEntry(oxygen, player.level().registryAccess().holderOrThrow(fluid), false));
+            PacketDistributor.sendToPlayer(player, new SyncSwimDataEntry(oxygen, ForgeRegistries.FLUID_TYPES.get().getHolder(fluid).orElseThrow(), false));
         });
     }
 
@@ -113,7 +113,7 @@ public class SwimData {
     }
 
     public static @Nullable ResourceLocation getAirSprite(final FluidType fluid) {
-        ResourceLocation resource = ForgeRegistries.FLUID_TYPES.getKey(fluid);
+        ResourceLocation resource = ForgeRegistries.FLUID_TYPES.get().getKey(fluid);
 
         if (resource == null) {
             return null;
@@ -124,7 +124,7 @@ public class SwimData {
     }
 
     public static ResourceLocation getAirBurstSprite(final FluidType fluid) {
-        ResourceLocation resource = ForgeRegistries.FLUID_TYPES.getKey(fluid);
+        ResourceLocation resource = ForgeRegistries.FLUID_TYPES.get().getKey(fluid);
 
         if (resource == null) {
             return null;
@@ -135,6 +135,6 @@ public class SwimData {
     }
 
     public static @Nullable ResourceKey<FluidType> key(final FluidType fluid) {
-        return ForgeRegistries.FLUID_TYPES.getResourceKey(fluid).orElse(null);
+        return ForgeRegistries.FLUID_TYPES.get().getResourceKey(fluid).orElse(null);
     }
 }
