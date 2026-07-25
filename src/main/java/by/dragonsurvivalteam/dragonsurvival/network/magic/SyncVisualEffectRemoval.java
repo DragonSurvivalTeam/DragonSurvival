@@ -24,8 +24,8 @@ public record SyncVisualEffectRemoval(int entityId, Holder<MobEffect> effect) im
     public static void handleClient(final SyncVisualEffectRemoval packet, final PayloadContext context) {
         context.enqueueWork(() -> {
             if (context.player().level().getEntity(packet.entityId()) instanceof LivingEntity entity) {
-                if (entity.hasEffect(packet.effect())) {
-                    entity.removeEffect(packet.effect());
+                if (entity.hasEffect(packet.effect().value())) {
+                    entity.removeEffect(packet.effect().value());
                 }
             }
         });

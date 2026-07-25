@@ -51,7 +51,7 @@ public class VisionHandler {
         Player player = DragonSurvival.PROXY.getLocalPlayer();
 
         if (player != null) {
-            return player.hasEffect(DSEffects.LAVA_VISION);
+            return player.hasEffect(DSEffects.LAVA_VISION.get());
         }
 
         return false;
@@ -61,7 +61,7 @@ public class VisionHandler {
         Player player = DragonSurvival.PROXY.getLocalPlayer();
 
         if (player != null) {
-            return player.hasEffect(DSEffects.WATER_VISION);
+            return player.hasEffect(DSEffects.WATER_VISION.get());
         }
 
         return false;

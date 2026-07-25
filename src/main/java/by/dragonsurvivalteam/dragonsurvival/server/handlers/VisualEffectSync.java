@@ -24,13 +24,13 @@ import java.util.List;
 @EventBusSubscriber
 public class VisualEffectSync {
     private static final List<Holder<MobEffect>> VISUAL_EFFECTS = List.of(
-            DSEffects.DRAIN,
-            DSEffects.CHARGED,
-            DSEffects.BURN,
-            DSEffects.BLOOD_SIPHON,
-            DSEffects.REGENERATION_DELAY,
-            DSEffects.TRAPPED,
-            DSEffects.HUNTER
+            DSEffects.DRAIN.get(),
+            DSEffects.CHARGED.get(),
+            DSEffects.BURN.get(),
+            DSEffects.BLOOD_SIPHON.get(),
+            DSEffects.REGENERATION_DELAY.get(),
+            DSEffects.TRAPPED.get(),
+            DSEffects.HUNTER.get()
     );
 
     @SubscribeEvent

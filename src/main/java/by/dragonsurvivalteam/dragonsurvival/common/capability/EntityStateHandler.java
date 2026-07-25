@@ -56,7 +56,7 @@ public class EntityStateHandler implements INBTSerializable<CompoundTag> {
     }
 
     public static boolean canPillage(final Entity target, final Player player) {
-        if (!player.hasEffect(DSEffects.HUNTER_OMEN)) {
+        if (!player.hasEffect(DSEffects.HUNTER_OMEN.get())) {
             return false;
         }
 

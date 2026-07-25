@@ -188,13 +188,13 @@ public class SeaDragonAbilities {
                                 Condition.thisEntity(EntityCondition.isLiving()).build(),
                                 List.of(
                                         new DamageEffect(context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.LIGHTNING_BREATH), LevelBasedValue.perLevel(1), DSAttributes.DRAGON_ABILITY_DAMAGE, DamageEffect.DEFAULT_EXPRESSION, false),
-                                        new PotionEffect(PotionData.create(DSEffects.CHARGED).duration(30).probability(0.5f).build())
+                                        new PotionEffect(PotionData.create(DSEffects.CHARGED.get()).duration(30).probability(0.5f).build())
                                 ),
                                 TargetingMode.NON_ALLIES
                         ), LevelBasedValue.constant(1)), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(10)),
                         new ActionContainer(new DragonBreathTarget(AbilityTargeting.block(
                                 List.of(new AreaCloudEffect(
-                                        PotionData.create(DSEffects.CHARGED).duration(30).build(),
+                                        PotionData.create(DSEffects.CHARGED.get()).duration(30).build(),
                                         LevelBasedValue.constant(Functions.secondsToTicks(2)),
                                         LevelBasedValue.constant(0.3f),
                                         Optional.empty(),
@@ -274,7 +274,7 @@ public class SeaDragonAbilities {
                 Optional.of(Condition.thisEntity(EntityCondition.isOnGround(false))
                         .and(Condition.thisEntity(EntityCondition.isInFluid(context.lookup(Registries.FLUID).getOrThrow(FluidTags.WATER))).invert()).build()),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
-                        PotionEffect.only(PotionData.create(DSEffects.WATER_VISION).durationPer(30).build()),
+                        PotionEffect.only(PotionData.create(DSEffects.WATER_VISION.get()).durationPer(30).build()),
                         TargetingMode.ALLIES_AND_SELF
                 )), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(1))),
                 true,

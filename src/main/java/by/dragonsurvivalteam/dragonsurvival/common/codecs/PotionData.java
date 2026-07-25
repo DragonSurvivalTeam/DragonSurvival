@@ -146,6 +146,10 @@ public record PotionData(
         return new Builder(effects);
     }
 
+    public static Builder create(final MobEffect... effects) {
+        return new Builder(HolderSet.direct(BuiltInRegistries.MOB_EFFECT::wrapAsHolder, effects));
+    }
+
     public static Builder create(final HolderSet<MobEffect> effects) {
         return new Builder(effects);
     }

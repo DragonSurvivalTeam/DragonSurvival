@@ -368,7 +368,7 @@ public class DragonAbilityInstance {
     }
 
     public static boolean hasAbilityDisablingEffect(Player player) {
-        return player != null && player.hasEffect(DSEffects.MAGIC_DISABLED);
+        return player != null && player.hasEffect(DSEffects.MAGIC_DISABLED.get());
     }
 
     public boolean isDisabled(boolean isManual, Player player) {

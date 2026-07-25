@@ -37,11 +37,11 @@ public class ConfoundedEffect extends ModifiableMobEffect {
         LivingEntity victim = damageEvent.getEntity();
         Entity damageSource = damageEvent.getSource().getEntity();
         if (damageSource instanceof LivingEntity livingSource) {
-            if (livingSource.hasEffect(DSEffects.CONFOUNDED) && !damageEvent.getSource().is(DSDamageTypes.MIRROR_CURSE)) {
+            if (livingSource.hasEffect(DSEffects.CONFOUNDED.get()) && !damageEvent.getSource().is(DSDamageTypes.MIRROR_CURSE)) {
                 Entity effectApplier = null;
                 if (victim.level() instanceof ServerLevel serverLevel) {
                     //noinspection DataFlowIssue
-                    effectApplier = ((AdditionalEffectData) livingSource.getEffect(DSEffects.CONFOUNDED)).dragonSurvival$getApplier(serverLevel);
+                    effectApplier = ((AdditionalEffectData) livingSource.getEffect(DSEffects.CONFOUNDED.get())).dragonSurvival$getApplier(serverLevel);
                 }
 
                 livingSource.hurt(new DamageSource(DSDamageTypes.get(victim.level(), DSDamageTypes.MIRROR_CURSE), effectApplier), damageEvent.getNewDamage());

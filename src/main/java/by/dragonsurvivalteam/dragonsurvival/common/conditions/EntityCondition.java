@@ -158,15 +158,14 @@ public class EntityCondition {
         return EntityPredicate.Builder.entity().located(LocationPredicate.Builder.location().setDimension(dimension)).build();
     }
 
-    @SafeVarargs
-    public static EntityPredicate hasEffect(final Holder<MobEffect>... effects) {
-        MobEffectsPredicate.Builder builder = MobEffectsPredicate.Builder.effects();
+    public static EntityPredicate hasEffect(final MobEffect... effects) {
+        MobEffectsPredicate predicate = MobEffectsPredicate.effects();
 
-        for (Holder<MobEffect> effect : effects) {
-            builder.and(effect);
+        for (MobEffect effect : effects) {
+            predicate.and(effect);
         }
 
-        return EntityPredicate.Builder.entity().effects(builder).build();
+        return EntityPredicate.Builder.entity().effects(predicate).build();
     }
 
     public static EntityPredicate isItemEquipped(final EquipmentSlot equipmentSlot, final TagKey<Item> tag) {

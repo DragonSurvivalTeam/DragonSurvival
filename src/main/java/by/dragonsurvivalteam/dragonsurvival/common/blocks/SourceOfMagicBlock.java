@@ -407,13 +407,13 @@ public class SourceOfMagicBlock extends HorizontalDirectionalBlock implements Si
             if (handler.magicSource > REQUIRED_SOURCE_OF_MAGIC_TICKS) {
                 handler.magicSource = 0;
 
-                MobEffectInstance instance = player.getEffect(DSEffects.SOURCE_OF_MAGIC);
+                MobEffectInstance instance = player.getEffect(DSEffects.SOURCE_OF_MAGIC.get());
                 int duration = source.getCurrentDuration();
 
                 if (instance == null) {
-                    player.addEffect(new MobEffectInstance(DSEffects.SOURCE_OF_MAGIC, duration, 0, true, false));
+                    player.addEffect(new MobEffectInstance(DSEffects.SOURCE_OF_MAGIC.get(), duration, 0, true, false));
                 } else if (instance.getDuration() < MAX_DURATION) {
-                    player.addEffect(new MobEffectInstance(DSEffects.SOURCE_OF_MAGIC, Math.min(MAX_DURATION, instance.getDuration() + duration), 0, true, false));
+                    player.addEffect(new MobEffectInstance(DSEffects.SOURCE_OF_MAGIC.get(), Math.min(MAX_DURATION, instance.getDuration() + duration), 0, true, false));
                 } else {
                     return;
                 }

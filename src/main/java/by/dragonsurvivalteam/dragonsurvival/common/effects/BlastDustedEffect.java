@@ -67,7 +67,7 @@ public class BlastDustedEffect extends ModifiableMobEffect {
 
         if (damageSource.is(DamageTypeTags.IS_FIRE)) {
             explode(entity, amplifier);
-            entity.removeEffect(DSEffects.BLAST_DUSTED);
+            entity.removeEffect(DSEffects.BLAST_DUSTED.get());
         }
     }
 
@@ -75,7 +75,7 @@ public class BlastDustedEffect extends ModifiableMobEffect {
         Entity effectApplier = null;
 
         if (entity.level() instanceof ServerLevel serverLevel) {
-            AdditionalEffectData effectInstance = (AdditionalEffectData) entity.getEffect(DSEffects.BLAST_DUSTED);
+            AdditionalEffectData effectInstance = (AdditionalEffectData) entity.getEffect(DSEffects.BLAST_DUSTED.get());
             if (effectInstance != null) {
                 effectApplier = effectInstance.dragonSurvival$getApplier(serverLevel);
             }
@@ -90,7 +90,7 @@ public class BlastDustedEffect extends ModifiableMobEffect {
 
     @SubscribeEvent
     public static void onEffectRemoved(final MobEffectEvent.Remove event) {
-        if (event.getEffect() != DSEffects.BLAST_DUSTED) {
+        if (event.getEffect() != DSEffects.BLAST_DUSTED.get()) {
             return;
         }
 
@@ -111,7 +111,7 @@ public class BlastDustedEffect extends ModifiableMobEffect {
             return;
         }
 
-        if (event.getEffectInstance() != null && event.getEffectInstance().is(DSEffects.BLAST_DUSTED)) {
+        if (event.getEffectInstance() != null && event.getEffectInstance().getEffect() == DSEffects.BLAST_DUSTED.get()) {
             explode(event.getEntity(), event.getEffectInstance().getAmplifier());
         }
     }

@@ -5,7 +5,6 @@ import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
 import by.dragonsurvivalteam.dragonsurvival.util.AdditionalEffectData;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.sugar.Local;
-import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.Tag;
@@ -30,7 +29,7 @@ import java.util.UUID;
 public abstract class MobEffectInstanceMixin implements AdditionalEffectData {
     @Unique private static final String dragonSurvival$APPLIER = "applier";
 
-    @Shadow @Final private Holder<MobEffect> effect;
+    @Shadow @Final private MobEffect effect;
     @Shadow private int duration;
 
     @Unique @Nullable private Entity dragonSurvival$applier;
@@ -85,7 +84,7 @@ public abstract class MobEffectInstanceMixin implements AdditionalEffectData {
 
     @Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/effect/MobEffectInstance;tickDownDuration()I"))
     private void dragonSurvival$storeEntity(final LivingEntity entity, final Runnable onExpirationRunnable, final CallbackInfoReturnable<Boolean> callback) {
-        if (entity instanceof Player player && effect.is(DSEffects.SOURCE_OF_MAGIC)) {
+        if (entity instanceof Player player && effect == DSEffects.SOURCE_OF_MAGIC.get()) {
             if (dragonSurvival$entity == null) {
                 dragonSurvival$entity = new ThreadLocal<>();
             }
@@ -96,7 +95,7 @@ public abstract class MobEffectInstanceMixin implements AdditionalEffectData {
 
     @Inject(method = "tickDownDuration", at = @At("HEAD"), cancellable = true)
     private void dragonSurvival$retainDuration(final CallbackInfoReturnable<Integer> callback) {
-        if (dragonSurvival$entity != null && effect.is(DSEffects.SOURCE_OF_MAGIC)) {
+        if (dragonSurvival$entity != null && effect == DSEffects.SOURCE_OF_MAGIC.get()) {
             Player player = dragonSurvival$entity.get();
 
             if (player != null && DragonStateProvider.getData(player).isOnMagicSource) {

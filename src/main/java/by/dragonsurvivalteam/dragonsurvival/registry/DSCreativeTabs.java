@@ -3,7 +3,6 @@ package by.dragonsurvivalteam.dragonsurvival.registry;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.blocks.SkeletonPieceBlock;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
-import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.BlockItem;
@@ -11,6 +10,7 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.RegistryObject;
 
 import java.util.Arrays;
 import java.util.List;
@@ -21,7 +21,7 @@ public class DSCreativeTabs {
 
     public static final DeferredRegister<CreativeModeTab> REGISTRY = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, DragonSurvival.MODID);
 
-    private static final List<Holder<Item>> HIDDEN = Arrays.asList(
+    private static final List<RegistryObject<Item>> HIDDEN = Arrays.asList(
             // Test items
             DSItems.MAGIC_STICK,
             // Dummy items
@@ -61,8 +61,8 @@ public class DSCreativeTabs {
                 output.accept(entry.get());
     });
 
-    public static Holder<CreativeModeTab> DS_TAB = REGISTRY.register("dragon_survival", () -> CreativeModeTab.builder()
-            .icon(() -> new ItemStack(DSItems.ELDER_DRAGON_BONE))
+    public static RegistryObject<CreativeModeTab> DS_TAB = REGISTRY.register("dragon_survival", () -> CreativeModeTab.builder()
+            .icon(() -> new ItemStack(DSItems.ELDER_DRAGON_BONE.get()))
             .title(Component.translatable(CREATIVE_TAB))
             .displayItems(BLOCK_ITEM_GENERATOR)
             .displayItems(ITEM_GENERATOR)

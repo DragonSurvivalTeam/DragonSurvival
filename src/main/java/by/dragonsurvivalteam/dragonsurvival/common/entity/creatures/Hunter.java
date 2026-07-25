@@ -52,7 +52,7 @@ public abstract class Hunter extends PathfinderMob implements GeoEntity, Configu
 
         // The Hunter.class in the constructor refers to the mobs that are ignored when the mob is hurt by them (we don't want hunters attacking each other!)
         this.targetSelector.addGoal(1, new HurtByTargetGoalExtended(this, Hunter.class).setHeeders(Hunter.class).setAlertOthers());
-        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, 0, true, false, living -> living.hasEffect(DSEffects.HUNTER_OMEN)));
+        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, 0, true, false, living -> living.hasEffect(DSEffects.HUNTER_OMEN.get())));
         this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, Monster.class, 0, false, false, living -> living.getType().is(DSEntityTypeTags.HUNTER_TARGETS)));
         this.goalSelector.addGoal(0, new FloatGoal(this));
         this.goalSelector.addGoal(5, new LookAtPlayerGoal(this, Player.class, 8));

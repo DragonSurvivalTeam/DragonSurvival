@@ -46,14 +46,14 @@ public abstract class VillagerMixin extends AbstractVillager {
 
     @Inject(method = "mobInteract", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/trading/MerchantOffers;isEmpty()Z", shift = At.Shift.BY, by = 2))
     private void dragonSurvival$displayPillageInfo(final Player player, final InteractionHand hand, final CallbackInfoReturnable<InteractionResult> callback, @Local boolean hasNoOffers) {
-        if (hasNoOffers && player.hasEffect(DSEffects.HUNTER_OMEN)) {
+        if (hasNoOffers && player.hasEffect(DSEffects.HUNTER_OMEN.get())) {
             player.displayClientMessage(Component.translatable(EntityStateHandler.CANNOT_PILLAGE), true);
         }
     }
 
     @Inject(method = "startTrading", at = @At("HEAD"), cancellable = true)
     private void dragonSurvival$preventTradingWithMarkedPlayers(final Player player, final CallbackInfo callback) {
-        if (player.hasEffect(DSEffects.HUNTER_OMEN)) {
+        if (player.hasEffect(DSEffects.HUNTER_OMEN.get())) {
             if (EntityStateHandler.cannotPillageProfession((Villager) (Object) this)) {
                 player.displayClientMessage(Component.translatable(EntityStateHandler.CANNOT_PILLAGE), true);
                 callback.cancel();

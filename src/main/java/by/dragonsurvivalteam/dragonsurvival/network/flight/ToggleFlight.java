@@ -52,7 +52,7 @@ public record ToggleFlight(Activation activation, Result result) implements Cust
                     return Result.NO_HUNGER;
                 }
 
-                if (player.hasEffect(DSEffects.TRAPPED) || player.hasEffect(DSEffects.BROKEN_WINGS)) {
+                if (player.hasEffect(DSEffects.TRAPPED.get()) || player.hasEffect(DSEffects.BROKEN_WINGS.get())) {
                     return Result.WINGS_BLOCKED;
                 }
 

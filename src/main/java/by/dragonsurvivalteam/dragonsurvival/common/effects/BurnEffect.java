@@ -63,7 +63,7 @@ public class BurnEffect extends ModifiableMobEffect {
 
                 if (entity.level() instanceof ServerLevel serverLevel) {
                     //noinspection DataFlowIssue -> effect cannot be null here
-                    effectApplier = ((AdditionalEffectData) entity.getEffect(DSEffects.BURN)).dragonSurvival$getApplier(serverLevel);
+                    effectApplier = ((AdditionalEffectData) entity.getEffect(DSEffects.BURN.get())).dragonSurvival$getApplier(serverLevel);
                 }
 
                 entity.hurt(new DamageSource(DSDamageTypes.get(entity.level(), DSDamageTypes.BURN), effectApplier), damage);

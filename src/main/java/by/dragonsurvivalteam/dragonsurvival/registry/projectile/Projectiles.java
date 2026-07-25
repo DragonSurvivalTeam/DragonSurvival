@@ -118,7 +118,7 @@ public class Projectiles {
                                                         Optional.of(Condition.thisEntity(EntityCondition.isLiving()).build())
                                                 ),
                                                 new ProjectileTargeting.ConditionalEffect(
-                                                        new ProjectilePotionEffect(PotionData.create(DSEffects.CHARGED).duration(5).probability(0.5f).build()),
+                                                        new ProjectilePotionEffect(PotionData.create(DSEffects.CHARGED.get()).duration(5).probability(0.5f).build()),
                                                         Optional.of(Condition.thisEntity(EntityCondition.isLiving()).build())
                                                 )
                                         ), 5, 1),
@@ -187,7 +187,7 @@ public class Projectiles {
                                                         Optional.of(Condition.thisEntity(EntityCondition.isLiving()).build())
                                                 ),
                                                 new ProjectileTargeting.ConditionalEffect(
-                                                        new ProjectilePotionEffect(PotionData.create(DSEffects.CHARGED).duration(5).probability(0.5f).build()),
+                                                        new ProjectilePotionEffect(PotionData.create(DSEffects.CHARGED.get()).duration(5).probability(0.5f).build()),
                                                         Optional.of(Condition.thisEntity(EntityCondition.isLiving()).build())
                                                 )
                                         ), 5, 1),

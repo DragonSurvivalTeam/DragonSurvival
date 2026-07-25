@@ -68,7 +68,7 @@ public class HunterOmenHandler {
             return false;
         }
 
-        return !player.isCreative() && player.canBeSeenByAnyone() && player.hasEffect(DSEffects.HUNTER_OMEN);
+        return !player.isCreative() && player.canBeSeenByAnyone() && player.hasEffect(DSEffects.HUNTER_OMEN.get());
     }
 
     public static List<ItemStack> generateVillagerLoot(final AbstractVillager genericVillager, final Level level, @Nullable final Player player, boolean wasKilled) {
@@ -154,17 +154,17 @@ public class HunterOmenHandler {
     }
 
     private static void applyHunterOmenFromKilling(final Player player) {
-        MobEffectInstance instance = player.getEffect(DSEffects.HUNTER_OMEN);
+        MobEffectInstance instance = player.getEffect(DSEffects.HUNTER_OMEN.get());
         int duration = instance != null ? instance.getDuration() : 0;
 
         // Double the duration unless it would add more than 30 minutes to the timer, but add a minimum of 12 minutes
-        player.addEffect(new MobEffectInstance(DSEffects.HUNTER_OMEN, Math.max(Functions.minutesToTicks(12), Math.min(duration * 2, Functions.minutesToTicks(30))), 0, false, false, true));
+        player.addEffect(new MobEffectInstance(DSEffects.HUNTER_OMEN.get(), Math.max(Functions.minutesToTicks(12), Math.min(duration * 2, Functions.minutesToTicks(30))), 0, false, false, true));
     }
 
     @SubscribeEvent
     public static void voidsHunterOmen(final MobEffectEvent.Added event) {
         if (event.getEffectInstance().getEffect() == MobEffects.HERO_OF_THE_VILLAGE) {
-            event.getEntity().removeEffect(DSEffects.HUNTER_OMEN);
+            event.getEntity().removeEffect(DSEffects.HUNTER_OMEN.get());
         }
     }
 
@@ -173,7 +173,7 @@ public class HunterOmenHandler {
         Entity entity = event.getEntity();
 
         if (entity instanceof IronGolem golem) {
-            golem.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(golem, Player.class, 0, true, false, livingEntity -> livingEntity.hasEffect(DSEffects.HUNTER_OMEN)));
+            golem.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(golem, Player.class, 0, true, false, livingEntity -> livingEntity.hasEffect(DSEffects.HUNTER_OMEN.get())));
         }
     }
 
@@ -194,7 +194,7 @@ public class HunterOmenHandler {
             return;
         }
 
-        MobEffectInstance effect = attacker.getEffect(DSEffects.HUNTER_OMEN);
+        MobEffectInstance effect = attacker.getEffect(DSEffects.HUNTER_OMEN.get());
         int duration = 0;
 
         if (effect != null) {
@@ -202,7 +202,7 @@ public class HunterOmenHandler {
         }
 
         if (EnchantmentUtils.getLevel(attacker, DSEnchantments.CURSE_OF_KINDNESS) < 1) {
-            attacker.addEffect(new MobEffectInstance(DSEffects.HUNTER_OMEN, duration + Functions.secondsToTicks(30), 0, false, false, true));
+            attacker.addEffect(new MobEffectInstance(DSEffects.HUNTER_OMEN.get(), duration + Functions.secondsToTicks(30), 0, false, false, true));
         }
     }
 }

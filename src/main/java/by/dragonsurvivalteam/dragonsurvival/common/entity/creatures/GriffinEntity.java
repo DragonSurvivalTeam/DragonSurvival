@@ -225,7 +225,7 @@ public class GriffinEntity extends Hunter {
                 target.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 100, 0));
             } else if (getCurrentAttack() == GriffinAttackTypes.SLASH_WINGS) {
                 if (DragonStateProvider.isDragon(target)) {
-                    target.addEffect(new MobEffectInstance(DSEffects.BROKEN_WINGS, 100, 0));
+                    target.addEffect(new MobEffectInstance(DSEffects.BROKEN_WINGS.get(), 100, 0));
                 }
             }
         }

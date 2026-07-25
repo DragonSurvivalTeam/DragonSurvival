@@ -46,7 +46,7 @@ public class BolasOnPlayerRenderer {
     }
 
     public static void renderBolas(final LivingEntity entity, final PoseStack pose, final MultiBufferSource bufferSource, final int packedLight) {
-        if (!entity.hasEffect(DSEffects.TRAPPED)) {
+        if (!entity.hasEffect(DSEffects.TRAPPED.get())) {
             return;
         }
 

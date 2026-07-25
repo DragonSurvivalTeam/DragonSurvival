@@ -87,7 +87,7 @@ public class DragonPenalties {
                         Condition.thisEntity(EntityCondition.isInRainOrSnow()),
                         Condition.thisEntity(EntityCondition.isOnBlock(DSBlockTags.IS_WET)),
                         Condition.thisEntity(EntityCondition.isInBlock(DSBlockTags.IS_WET))
-                ).and(Condition.thisEntity(EntityCondition.hasEffect(DSEffects.FIRE)).invert()).build()),
+                ).and(Condition.thisEntity(EntityCondition.hasEffect(DSEffects.FIRE.get())).invert()).build()),
                 new DamagePenalty(context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.RAIN_BURN), 1),
                 new SupplyTrigger(DragonSurvival.res("rain_supply"), DSAttributes.PENALTY_RESISTANCE_TIME, Functions.secondsToTicks(2), 1, 0.013f, List.of(), false, Optional.of(ParticleTypes.SMOKE))
         ));
@@ -95,7 +95,7 @@ public class DragonPenalties {
         context.register(WATER_WEAKNESS, new DragonPenalty(
                 Optional.of(DragonSurvival.res("penalties/cave/water_weakness")),
                 Optional.of(Condition.thisEntity(EntityCondition.isInFluid(context.lookup(Registries.FLUID).getOrThrow(FluidTags.WATER)))
-                        .and(Condition.thisEntity(EntityCondition.hasEffect(DSEffects.FIRE)).invert()).build()),
+                        .and(Condition.thisEntity(EntityCondition.hasEffect(DSEffects.FIRE.get())).invert()).build()),
                 new DamagePenalty(context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.WATER_BURN), 1),
                 new InstantTrigger(10)
         ));
@@ -103,7 +103,7 @@ public class DragonPenalties {
         context.register(THIN_SKIN, new DragonPenalty(
                 Optional.of(DragonSurvival.res("penalties/sea/thin_skin")),
                 Optional.of(AnyOfCondition.anyOf(
-                        Condition.thisEntity(EntityCondition.hasEffect(DSEffects.PEACE)),
+                        Condition.thisEntity(EntityCondition.hasEffect(DSEffects.PEACE.get())),
                         Condition.thisEntity(EntityCondition.isInFluid(context.lookup(Registries.FLUID).getOrThrow(FluidTags.WATER))),
                         Condition.thisEntity(EntityCondition.isOnBlock(DSBlockTags.IS_WET)),
                         Condition.thisEntity(EntityCondition.isInBlock(DSBlockTags.IS_WET)),
@@ -140,13 +140,13 @@ public class DragonPenalties {
         context.register(FEAR_OF_DARKNESS, new DragonPenalty(
                 Optional.of(DragonSurvival.res("penalties/forest/fear_of_darkness")),
                 Optional.of(AnyOfCondition.anyOf(
-                        Condition.thisEntity(EntityCondition.hasEffect(DSEffects.MAGIC)),
+                        Condition.thisEntity(EntityCondition.hasEffect(DSEffects.MAGIC.get())),
                         Condition.thisEntity(EntityCondition.hasEffect(MobEffects.GLOWING)),
                         Condition.thisEntity(EntityCondition.isItemEquipped(EquipmentSlot.MAINHAND, DSItemTags.LIGHT_SOURCE)),
                         Condition.thisEntity(EntityCondition.isItemEquipped(EquipmentSlot.OFFHAND, DSItemTags.LIGHT_SOURCE)),
                         Condition.thisEntity(EntityCondition.isInLight(3))
                 ).invert().build()),
-                new MobEffectPenalty(PotionData.create(DSEffects.STRESS).duration(10).showParticles().build()),
+                new MobEffectPenalty(PotionData.create(DSEffects.STRESS.get()).duration(10).showParticles().build()),
                 new SupplyTrigger(DragonSurvival.res("stress_supply"), DSAttributes.PENALTY_RESISTANCE_TIME, Functions.secondsToTicks(2), 1, 0.013f, List.of(), false, Optional.empty())
         ));
 
@@ -176,7 +176,7 @@ public class DragonPenalties {
 
         context.register(FEAR, new DragonPenalty(
                 Optional.of(DragonSurvival.res("penalties/general/fear")),
-                Optional.of(Condition.thisEntity(EntityCondition.hasEffect(DSEffects.ANIMAL_PEACE)).invert().build()),
+                Optional.of(Condition.thisEntity(EntityCondition.hasEffect(DSEffects.ANIMAL_PEACE.get())).invert().build()),
                 new FearPenalty(List.of(new Fear(
                         DurationInstanceBase.create(DragonSurvival.res("animals")).removeAutomatically().hidden().build(),
                         Optional.of(

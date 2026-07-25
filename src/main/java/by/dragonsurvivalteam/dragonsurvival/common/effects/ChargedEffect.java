@@ -109,7 +109,7 @@ public class ChargedEffect extends ModifiableMobEffect {
 
     public static void chargedEffectChain(final LivingEntity source, float damage) {
         List<LivingEntity> secondaryTargets = source.level().getNearbyEntities(LivingEntity.class, TargetingConditions.forCombat(), source, source.getBoundingBox().inflate(spreadRadius));
-        secondaryTargets.sort((c1, c2) -> Boolean.compare(c1.hasEffect(DSEffects.CHARGED), c2.hasEffect(DSEffects.CHARGED))); // Prioritize non-charged entities
+        secondaryTargets.sort((c1, c2) -> Boolean.compare(c1.hasEffect(DSEffects.CHARGED.get()), c2.hasEffect(DSEffects.CHARGED.get()))); // Prioritize non-charged entities
 
         if (secondaryTargets.size() > maxChainTargets) {
             secondaryTargets = secondaryTargets.subList(0, maxChainTargets);
@@ -120,7 +120,7 @@ public class ChargedEffect extends ModifiableMobEffect {
 
             if (source.level() instanceof ServerLevel serverLevel) {
                 //noinspection DataFlowIssue -> effect cannot be null here
-                effectApplier = ((AdditionalEffectData) source.getEffect(DSEffects.CHARGED)).dragonSurvival$getApplier(serverLevel);
+                effectApplier = ((AdditionalEffectData) source.getEffect(DSEffects.CHARGED.get())).dragonSurvival$getApplier(serverLevel);
             }
 
             target.hurt(new DamageSource(DSDamageTypes.get(target.level(), DSDamageTypes.ELECTRIC), effectApplier), damage);
@@ -137,7 +137,7 @@ public class ChargedEffect extends ModifiableMobEffect {
                 targetData.chainCount = sourceData.chainCount + 1;
 
                 if ((targetData.chainCount < maxChain || maxChain == INFINITE_CHAINS) && Functions.chance(target.getRandom(), 40)) {
-                    target.addEffect(new MobEffectInstance(DSEffects.CHARGED, Functions.secondsToTicks(10), 0, false, false), effectApplier);
+                    target.addEffect(new MobEffectInstance(DSEffects.CHARGED.get(), Functions.secondsToTicks(10), 0, false, false), effectApplier);
                 }
             }
         }

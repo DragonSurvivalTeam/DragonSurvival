@@ -23,7 +23,7 @@ public class DragonBonusHandler {
     public static void onJump(final LivingEvent.LivingJumpEvent event) {
         LivingEntity entity = event.getEntity();
 
-        if (entity.getEffect(DSEffects.TRAPPED) != null) {
+        if (entity.getEffect(DSEffects.TRAPPED.get()) != null) {
             Vec3 deltaMovement = entity.getDeltaMovement();
             entity.setDeltaMovement(deltaMovement.x, deltaMovement.y < 0 ? deltaMovement.y : 0, deltaMovement.z);
             entity.setJumping(false);

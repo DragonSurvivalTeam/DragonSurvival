@@ -40,6 +40,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.event.village.VillagerTradesEvent;
 import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.RegistryObject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -51,16 +52,16 @@ public class DSTrades {
     public static final DeferredRegister<PoiType> POI_REGISTRY = DeferredRegister.create(Registries.POINT_OF_INTEREST_TYPE, DragonSurvival.MODID);
     public static final DeferredRegister<VillagerProfession> PROFESSION_REGISTRY = DeferredRegister.create(Registries.VILLAGER_PROFESSION, DragonSurvival.MODID);
 
-    public static final Holder<PoiType> DRAGON_RIDER_POI = POI_REGISTRY.register(
+    public static final RegistryObject<PoiType> DRAGON_RIDER_POI = POI_REGISTRY.register(
             "dragon_rider_poi",
             () -> new PoiType(ImmutableSet.copyOf(DSBlocks.DRAGON_RIDER_WORKBENCH.get().getStateDefinition().getPossibleStates()), 1, 1));
 
     @Translation(type = Translation.Type.VILLAGER_PROFESSION, comments = {"Dragon Rider"})
-    public static final Holder<VillagerProfession> DRAGON_RIDER_PROFESSION = PROFESSION_REGISTRY.register(
+    public static final RegistryObject<VillagerProfession> DRAGON_RIDER_PROFESSION = PROFESSION_REGISTRY.register(
             "dragon_rider",
             () -> new VillagerProfession("dragon_rider",
-                    holder -> holder.value() == DRAGON_RIDER_POI.value(),
-                    poiTypeHolder -> poiTypeHolder.value() == DRAGON_RIDER_POI.value(),
+                    holder -> holder.value() == DRAGON_RIDER_POI.get(),
+                    poiTypeHolder -> poiTypeHolder.value() == DRAGON_RIDER_POI.get(),
                     ImmutableSet.of(),
                     ImmutableSet.of(),
                     SoundEvents.VILLAGER_WORK_ARMORER));

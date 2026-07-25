@@ -33,12 +33,11 @@ public record DragonBeaconData(List<Effect> effects, PaymentData paymentData) {
         ).apply(instance, Effect::new));
     }
 
-    @SafeVarargs
-    public static List<Effect> createEffects(final int duration, final int amplifier, final Holder<MobEffect>... effects) {
+    public static List<Effect> createEffects(final int duration, final int amplifier, final MobEffect... effects) {
         List<Effect> instances = new ArrayList<>();
 
-        for (Holder<MobEffect> effect : effects) {
-            instances.add(new Effect(effect, duration, amplifier));
+        for (MobEffect effect : effects) {
+            instances.add(new Effect(BuiltInRegistries.MOB_EFFECT.wrapAsHolder(effect), duration, amplifier));
         }
 
         return instances;

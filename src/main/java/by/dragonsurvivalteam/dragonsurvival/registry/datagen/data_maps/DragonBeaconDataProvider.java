@@ -24,19 +24,19 @@ public class DragonBeaconDataProvider extends DataMapProvider {
     protected void gather(HolderLookup.@NotNull Provider provider) {
         builder(DSDataMaps.DRAGON_BEACON_DATA)
                 .add(BuiltInDragonSpecies.CAVE_DRAGON, new DragonBeaconData(
-                        DragonBeaconData.createEffects(Functions.secondsToTicks(20), 0, DSEffects.FIRE, DSEffects.STURDY_SKIN, DSEffects.EMPOWERED_SOUL),
+                        DragonBeaconData.createEffects(Functions.secondsToTicks(20), 0, DSEffects.FIRE.get(), DSEffects.STURDY_SKIN.get(), DSEffects.EMPOWERED_SOUL.get()),
                         new DragonBeaconData.PaymentData(60, 30, 0)
                 ), false, DSConditions.CAVE_DRAGON_LOADED)
                 .add(BuiltInDragonSpecies.FOREST_DRAGON, new DragonBeaconData(
-                        DragonBeaconData.createEffects(Functions.secondsToTicks(20), 0, DSEffects.MAGIC, DSEffects.ANIMAL_PEACE, DSEffects.EMPOWERED_SOUL),
+                        DragonBeaconData.createEffects(Functions.secondsToTicks(20), 0, DSEffects.MAGIC.get(), DSEffects.ANIMAL_PEACE.get(), DSEffects.EMPOWERED_SOUL.get()),
                         new DragonBeaconData.PaymentData(60, 30, 0)
                 ), false, DSConditions.FOREST_DRAGON_LOADED)
                 .add(BuiltInDragonSpecies.SEA_DRAGON, new DragonBeaconData(
-                        DragonBeaconData.createEffects(Functions.secondsToTicks(20), 0, DSEffects.PEACE, MobEffects.DIG_SPEED, DSEffects.EMPOWERED_SOUL),
+                        DragonBeaconData.createEffects(Functions.secondsToTicks(20), 0, DSEffects.PEACE.get(), MobEffects.DIG_SPEED, DSEffects.EMPOWERED_SOUL.get()),
                         new DragonBeaconData.PaymentData(60, 30, 0)
                 ), false, DSConditions.SEA_DRAGON_LOADED)
                 .add(DSDragonSpeciesTags.ALL, new DragonBeaconData(
-                        DragonBeaconData.createEffects(Functions.secondsToTicks(20), 0, DSEffects.EMPOWERED_SOUL),
+                        DragonBeaconData.createEffects(Functions.secondsToTicks(20), 0, DSEffects.EMPOWERED_SOUL.get()),
                         new DragonBeaconData.PaymentData(60, 30, 0)
                 ), false);
     }

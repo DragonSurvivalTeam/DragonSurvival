@@ -67,7 +67,7 @@ public class EnchantmentEffectHandler {
             return;
         }
 
-        if (!victim.hasEffect(DSEffects.HUNTER_OMEN)) {
+        if (!victim.hasEffect(DSEffects.HUNTER_OMEN.get())) {
             return;
         }
 
@@ -133,7 +133,7 @@ public class EnchantmentEffectHandler {
     @SubscribeEvent
     public static void livingHurt(final LivingIncomingDamageEvent event) {
         if (event.getEntity() instanceof LivingEntity target && event.getSource().getEntity() instanceof LivingEntity attacker) {
-            MobEffectInstance siphon = target.getEffect(DSEffects.BLOOD_SIPHON);
+            MobEffectInstance siphon = target.getEffect(DSEffects.BLOOD_SIPHON.get());
 
             if (siphon != null) {
                 float percentage = 0.01f * (siphon.getAmplifier() + 1);

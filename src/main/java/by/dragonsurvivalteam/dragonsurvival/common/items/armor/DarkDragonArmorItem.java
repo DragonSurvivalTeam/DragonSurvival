@@ -46,7 +46,7 @@ public class DarkDragonArmorItem extends ArmorItem implements PermanentEnchantme
             return false;
         }
 
-        if (entity.hasEffect(DSEffects.ANIMAL_PEACE)) {
+        if (entity.hasEffect(DSEffects.ANIMAL_PEACE.get())) {
             return false;
         }
 

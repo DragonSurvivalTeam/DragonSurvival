@@ -163,7 +163,7 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
                 .displayItem(head)
                 .showToast()
                 .announceChat()
-                .criteria("affected_by_hunter_omen", effectWithMinDuration(DSEffects.HUNTER_OMEN, 300))
+                .criteria("affected_by_hunter_omen", effectWithMinDuration(DSEffects.HUNTER_OMEN.get(), 300))
                 .experienceReward(6)
                 .build(saver, helper);
 
@@ -398,7 +398,7 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
                 .criteria("swim_safely_in_lava", location(
                         Condition.dragonSpecies(registries.holderOrThrow(BuiltInDragonSpecies.CAVE_DRAGON))
                                 .located(isInFluid(FluidTags.WATER))
-                                .effects(MobEffectsPredicate.Builder.effects().and(DSEffects.FIRE))
+                                .effects(MobEffectsPredicate.effects().and(DSEffects.FIRE.get()))
                 ))
                 .experienceReward(40)
                 .build(saver, helper);
@@ -420,7 +420,7 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
                 .criteria("explore_nether_lava_sea", location(
                         Condition.dragonSpecies(registries.holderOrThrow(BuiltInDragonSpecies.CAVE_DRAGON))
                                 .located(inDimension(Level.NETHER).setFluid(fluid(FluidTags.LAVA)))
-                                .effects(hasEffect(DSEffects.LAVA_VISION))
+                                .effects(hasEffect(DSEffects.LAVA_VISION.get()))
                 ))
                 .experienceReward(20)
                 .build(saver, helper);
@@ -479,7 +479,7 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
                 .displayItem(Items.CAULDRON)
                 .criteria("be_safe_in_nether", location(
                         Condition.dragonSpecies(registries.holderOrThrow(BuiltInDragonSpecies.SEA_DRAGON))
-                                .effects(hasEffect(DSEffects.PEACE))
+                                .effects(hasEffect(DSEffects.PEACE.get()))
                                 .located(inDimension(Level.NETHER))
                 ))
                 .build(saver, helper);
@@ -510,7 +510,7 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
                 .criteria("be_safe_in_darkness", location(
                         Condition.dragonSpecies(registries.holderOrThrow(BuiltInDragonSpecies.FOREST_DRAGON))
                                 .located(light(MinMaxBounds.Ints.between(0, 3)))
-                                .effects(MobEffectsPredicate.Builder.effects().and(DSEffects.MAGIC))
+                                .effects(MobEffectsPredicate.effects().and(DSEffects.MAGIC.get()))
                 ))
                 .experienceReward(40)
                 .build(saver, helper);
@@ -674,9 +674,9 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
                 .displayItem(DSItems.ELDER_DRAGON_DUST.get())
                 .showToast()
                 .announceChat()
-                .criteria("affected_by_peace", effectWithMinDuration(DSEffects.PEACE, Functions.secondsToTicks(20)))
-                .criteria("affected_by_fire", effectWithMinDuration(DSEffects.FIRE, Functions.secondsToTicks(20)))
-                .criteria("affected_by_magic", effectWithMinDuration(DSEffects.MAGIC, Functions.secondsToTicks(20)))
+                .criteria("affected_by_peace", effectWithMinDuration(DSEffects.PEACE.get(), Functions.secondsToTicks(20)))
+                .criteria("affected_by_fire", effectWithMinDuration(DSEffects.FIRE.get(), Functions.secondsToTicks(20)))
+                .criteria("affected_by_magic", effectWithMinDuration(DSEffects.MAGIC.get(), Functions.secondsToTicks(20)))
                 .build(saver, helper);
     }
 
@@ -816,15 +816,14 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
         return LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS, predicate).build();
     }
 
-    @SafeVarargs
-    private MobEffectsPredicate.Builder hasEffect(final Holder<MobEffect>... effects) {
-        MobEffectsPredicate.Builder builder = MobEffectsPredicate.Builder.effects();
+    private MobEffectsPredicate hasEffect(final MobEffect... effects) {
+        MobEffectsPredicate predicate = MobEffectsPredicate.effects();
 
-        for (Holder<MobEffect> effect : effects) {
-            builder.and(effect);
+        for (MobEffect effect : effects) {
+            predicate.and(effect);
         }
 
-        return builder;
+        return predicate;
     }
 
     private LocationPredicate.Builder inDimension(final ResourceKey<Level> dimension) {
@@ -909,8 +908,8 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
         return ItemUsedOnLocationTrigger.TriggerInstance.itemUsedOnBlock(LocationPredicate.Builder.location().setBlock(BlockPredicate.Builder.block().of(block)), ItemPredicate.Builder.item().of(items));
     }
 
-    public Criterion<EffectsChangedTrigger.TriggerInstance> effectWithMinDuration(final Holder<MobEffect> effect, int minDuration) {
-        return EffectsChangedTrigger.TriggerInstance.hasEffects(MobEffectsPredicate.Builder.effects().and(effect, new MobEffectsPredicate.MobEffectInstancePredicate(MinMaxBounds.Ints.ANY, MinMaxBounds.Ints.atLeast(minDuration), Optional.empty(), Optional.empty())));
+    public Criterion<EffectsChangedTrigger.TriggerInstance> effectWithMinDuration(final MobEffect effect, int minDuration) {
+        return EffectsChangedTrigger.TriggerInstance.hasEffects(MobEffectsPredicate.effects().and(effect, new MobEffectsPredicate.MobEffectInstancePredicate(MinMaxBounds.Ints.ANY, MinMaxBounds.Ints.atLeast(minDuration), Optional.empty(), Optional.empty())));
     }
 
     public Criterion<PlayerInteractTrigger.TriggerInstance> itemInteract(final EntityType<?> type, final ItemLike... items) {

@@ -30,7 +30,7 @@ public record SyncVisualEffectAdded(int entityId, MobEffectInstance effect) impl
                     entity.addEffect(packet.effect());
 
                     // Client does not trigger the "effect added" event
-                    if (packet.effect().getEffect().is(DSEffects.HUNTER)) {
+                    if (packet.effect().getEffect() == DSEffects.HUNTER.get()) {
                         HunterHandler.informUser(entity);
                     }
                 }

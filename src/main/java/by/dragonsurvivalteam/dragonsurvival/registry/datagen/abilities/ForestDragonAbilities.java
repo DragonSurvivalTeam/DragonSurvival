@@ -188,13 +188,13 @@ public class ForestDragonAbilities {
                 ),
                 Optional.of(new ExperienceLevelUpgrade(4, LevelBasedValue.lookup(List.of(0f, 10f, 30f, 50f), LevelBasedValue.perLevel(15)))),
                 // Disable when affected by the 'STRESS' effect
-                Optional.of(Condition.thisEntity(EntityCondition.hasEffect(DSEffects.STRESS)).build()),
+                Optional.of(Condition.thisEntity(EntityCondition.hasEffect(DSEffects.STRESS.get())).build()),
                 List.of(
                         new ActionContainer(new DragonBreathTarget(AbilityTargeting.entity(
                                 Condition.thisEntity(EntityCondition.isLiving()).build(),
                                 List.of(
                                         new DamageEffect(context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.FOREST_BREATH), LevelBasedValue.perLevel(2), DSAttributes.DRAGON_ABILITY_DAMAGE, DamageEffect.DEFAULT_EXPRESSION, false),
-                                        new PotionEffect(PotionData.create(DSEffects.DRAIN).duration(10).probability(0.3f).build())
+                                        new PotionEffect(PotionData.create(DSEffects.DRAIN.get()).duration(10).probability(0.3f).build())
                                 ),
                                 TargetingMode.NON_ALLIES
                         ), LevelBasedValue.constant(1)), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(10)),
@@ -234,7 +234,7 @@ public class ForestDragonAbilities {
                 ),
                 Optional.of(new ExperienceLevelUpgrade(2, LevelBasedValue.lookup(List.of(0f, 24f), LevelBasedValue.perLevel(15)))),
                 // Disable when affected by the 'STRESS' effect
-                Optional.of(Condition.thisEntity(EntityCondition.hasEffect(DSEffects.STRESS)).build()),
+                Optional.of(Condition.thisEntity(EntityCondition.hasEffect(DSEffects.STRESS.get())).build()),
                 List.of(
                         new ActionContainer(new DragonBreathTarget(AbilityTargeting.entity(
                                 List.of(new ItemConversionEffect(
@@ -361,7 +361,7 @@ public class ForestDragonAbilities {
                 Optional.of(Condition.thisEntity(EntityCondition.isOnGround(false)).build()),
                 List.of(new ActionContainer(new AreaTarget(AbilityTargeting.entity(
                         List.of(
-                                new PotionEffect(PotionData.create(DSEffects.HUNTER).amplifierPer(1).durationPer(30).build()),
+                                new PotionEffect(PotionData.create(DSEffects.HUNTER.get()).amplifierPer(1).durationPer(30).build()),
                                 new ParticleEffect(
                                         new SpawnParticles(ParticleTypes.DRAGON_BREATH, SpawnParticles.inBoundingBox(), SpawnParticles.inBoundingBox(), SpawnParticles.fixedVelocity(ConstantFloat.of(0.1f)), SpawnParticles.fixedVelocity(ConstantFloat.of(0.1f)), ConstantFloat.of(0.1f)),
                                         LevelBasedValue.constant(20)

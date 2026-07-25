@@ -47,7 +47,7 @@ public class DrainEffect extends ModifiableMobEffect {
 
         if (entity.level() instanceof ServerLevel serverLevel) {
             //noinspection DataFlowIssue -> effect cannot be null here
-            effectApplier = ((AdditionalEffectData) entity.getEffect(DSEffects.DRAIN)).dragonSurvival$getApplier(serverLevel);
+            effectApplier = ((AdditionalEffectData) entity.getEffect(DSEffects.DRAIN.get())).dragonSurvival$getApplier(serverLevel);
         }
 
         entity.hurt(new DamageSource(DSDamageTypes.get(entity.level(), DSDamageTypes.DRAIN), effectApplier), damage);

@@ -80,7 +80,7 @@ public class HunterHandler { // FIXME :: disable shadows in EntityRenderDispatch
             return;
         }
 
-        MobEffectInstance hunterEffect = entity.getEffect(DSEffects.HUNTER);
+        MobEffectInstance hunterEffect = entity.getEffect(DSEffects.HUNTER.get());
 
         if (hunterEffect != null) {
             HunterData data = AttachmentManager.getData(entity, DSDataAttachments.HUNTER);
@@ -111,10 +111,10 @@ public class HunterHandler { // FIXME :: disable shadows in EntityRenderDispatch
 
     @SubscribeEvent
     public static void removeHunterEffect(final LivingDamageEvent.Post event) {
-        MobEffectInstance hunterEffect = event.getEntity().getEffect(DSEffects.HUNTER);
+        MobEffectInstance hunterEffect = event.getEntity().getEffect(DSEffects.HUNTER.get());
 
         if (hunterEffect != null && event.getNewDamage() > hunterEffect.getAmplifier()) {
-            event.getEntity().removeEffect(DSEffects.HUNTER);
+            event.getEntity().removeEffect(DSEffects.HUNTER.get());
         }
     }
 
@@ -147,7 +147,7 @@ public class HunterHandler { // FIXME :: disable shadows in EntityRenderDispatch
 
     @SubscribeEvent
     public static void clearHunterStacks(final MobEffectEvent.Remove event) {
-        if (event.getEffect().is(DSEffects.HUNTER)) {
+        if (event.getEffect() == DSEffects.HUNTER.get()) {
             clearHunterStacks(event.getEntity());
         }
     }
@@ -156,7 +156,7 @@ public class HunterHandler { // FIXME :: disable shadows in EntityRenderDispatch
     public static void clearHunterStacks(final MobEffectEvent.Expired event) {
         MobEffectInstance instance = event.getEffectInstance();
 
-        if (instance != null && instance.getEffect().is(DSEffects.HUNTER)) {
+        if (instance != null && instance.getEffect() == DSEffects.HUNTER.get()) {
             clearHunterStacks(event.getEntity());
         }
     }
@@ -167,7 +167,7 @@ public class HunterHandler { // FIXME :: disable shadows in EntityRenderDispatch
             return;
         }
 
-        MobEffectInstance hunterEffect = attacker.getEffect(DSEffects.HUNTER);
+        MobEffectInstance hunterEffect = attacker.getEffect(DSEffects.HUNTER.get());
 
         if (hunterEffect == null) {
             return;
@@ -178,7 +178,7 @@ public class HunterHandler { // FIXME :: disable shadows in EntityRenderDispatch
         multiplier = multiplier * ((float) data.getHunterStacks() / getMaxStacks());
 
         event.setNewDamage(event.getNewDamage() * (1 + multiplier));
-        attacker.removeEffect(DSEffects.HUNTER);
+        attacker.removeEffect(DSEffects.HUNTER.get());
     }
 
     public static int getMaxStacks() {

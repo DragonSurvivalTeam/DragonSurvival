@@ -144,9 +144,9 @@ public abstract class LivingEntityMixin extends Entity {
         return (float) (original * getAttributeValue(DSAttributes.LAVA_SWIM_SPEED.get()));
     }
 
-    @ModifyExpressionValue(method = "travel", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;hasEffect(Lnet/minecraft/core/Holder;)Z", ordinal = 2))
+    @ModifyExpressionValue(method = "travel", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;hasEffect(Lnet/minecraft/world/effect/MobEffect;)Z", ordinal = 2))
     private boolean dragonSurvival$disableLevitationWhenTrapped(final boolean hasLevitation) {
-        if (hasEffect(DSEffects.TRAPPED)) {
+        if (hasEffect(DSEffects.TRAPPED.get())) {
             return false;
         }
 
@@ -420,7 +420,7 @@ public abstract class LivingEntityMixin extends Entity {
     public abstract double getAttributeValue(Holder<Attribute> attribute);
 
     @Shadow
-    public abstract boolean hasEffect(final Holder<MobEffect> effect);
+    public abstract boolean hasEffect(final MobEffect effect);
 
     @Shadow
     protected abstract float getWaterSlowDown();

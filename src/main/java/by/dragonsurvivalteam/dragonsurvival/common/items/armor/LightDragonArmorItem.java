@@ -46,7 +46,7 @@ public class LightDragonArmorItem extends ArmorItem implements PermanentEnchantm
             return false;
         }
 
-        if (entity.hasEffect(DSEffects.HUNTER_OMEN)) {
+        if (entity.hasEffect(DSEffects.HUNTER_OMEN.get())) {
             return false;
         }
 
