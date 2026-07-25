@@ -22,10 +22,10 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.item.Tiers;
 import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.loading.modscan.ModAnnotation;
+import net.minecraftforge.fml.loading.moddiscovery.ModAnnotation;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.LanguageProvider;
-import net.minecraftforgespi.language.ModFileScanData;
+import net.minecraftforge.forgespi.language.ModFileScanData;
 import org.apache.commons.lang3.text.WordUtils;
 import org.objectweb.asm.Type;
 
