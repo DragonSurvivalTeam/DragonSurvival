@@ -52,7 +52,7 @@ public record ProjectileDamageEffect(Holder<DamageType> damageType, LevelBasedVa
         //noinspection DataFlowIssue -> key is present
         MutableComponent translation = Component.translatable(Translation.Type.DAMAGE_TYPE.wrap(damageType.unwrapKey().orElseThrow().location()));
         float damage = amount.calculate(level);
-        MutableComponent abilityDamage = Component.translatable(ABILITY_PROJECTILE_DAMAGE, translation.withColor(DSColors.GOLD), DSColors.dynamicValue(damage));
+        MutableComponent abilityDamage = Component.translatable(ABILITY_PROJECTILE_DAMAGE, DSColors.withColor(translation, DSColors.GOLD), DSColors.dynamicValue(damage));
 
         float additionalDamage = damage * (float) dragon.getAttributeValue(DSAttributes.DRAGON_ABILITY_DAMAGE.get()) - damage;
         if (additionalDamage != 0) {

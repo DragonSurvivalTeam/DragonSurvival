@@ -1185,6 +1185,6 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
     }
 
     private Tooltip createSlotInfoTooltip() {
-        return Tooltip.create(Component.translatable(SAVING_INFO, Component.literal(CustomizationFileHandler.DIRECTORY + "/" + CustomizationFileHandler.FILE_NAME.apply(selectedSaveSlot)).withColor(DSColors.GOLD)));
+        return Tooltip.create(Component.translatable(SAVING_INFO, DSColors.withColor(CustomizationFileHandler.DIRECTORY + "/" + CustomizationFileHandler.FILE_NAME.apply(selectedSaveSlot), DSColors.GOLD)));
     }
 }

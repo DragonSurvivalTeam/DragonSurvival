@@ -170,7 +170,7 @@ public class DragonAbilityScreen extends Screen {
                 color = experienceModification > 0 ? DSColors.GREEN : DSColors.DARK_RED;
             }
 
-            Component expectedLevel = Component.literal(String.valueOf(newLevel)).withColor(color);
+            Component expectedLevel = DSColors.withColor(newLevel, color);
             int expLevelXPos = ((rightBarX + leftBarX) / 2 + 48 - minecraft.font.width(expectedLevel) / 2) - 1;
             int expLevelYPos = barYPos - 1;
             graphics.drawString(minecraft.font, expectedLevel, expLevelXPos, expLevelYPos, 0, false);

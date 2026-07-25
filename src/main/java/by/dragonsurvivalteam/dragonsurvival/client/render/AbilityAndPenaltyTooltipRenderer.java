@@ -228,7 +228,7 @@ public class AbilityAndPenaltyTooltipRenderer {
 
             if (upgradeDescription.getContents() != PlainTextContents.EMPTY) {
                 rawDescription = FormattedText.composite(rawDescription, Component.empty().append("\n\n"));
-                rawDescription = FormattedText.composite(rawDescription, upgradeDescription.withColor(Color.GREEN.getColor()));
+                rawDescription = FormattedText.composite(rawDescription, DSColors.withColor(upgradeDescription, Color.GREEN.getColor()));
             }
         }
 

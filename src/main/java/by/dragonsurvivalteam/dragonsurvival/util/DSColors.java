@@ -3,6 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.util;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.util.ColorRGBA;
 import net.minecraft.util.FastColor;
@@ -64,10 +65,10 @@ public class DSColors {
 
     public static MutableComponent withColor(final Object value, int color) {
         if (value instanceof MutableComponent mutable) {
-            return mutable.withColor(color);
+            return mutable.withStyle(Style.EMPTY.withColor(color));
         }
 
-        return Component.literal(String.valueOf(value)).withColor(color);
+        return Component.literal(String.valueOf(value)).withStyle(Style.EMPTY.withColor(color));
     }
 
     public static int withoutAlpha(int rgba) {

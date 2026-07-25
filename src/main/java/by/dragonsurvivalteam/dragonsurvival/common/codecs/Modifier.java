@@ -139,7 +139,7 @@ public record Modifier(Holder<Attribute> attribute, Either<LevelBasedValue, Prec
         MutableComponent name;
 
         if (fancy) {
-            name = Component.literal("§6■ ").append(Component.translatable(attribute.value().getDescriptionId()).withColor(DSColors.GOLD)).append(Component.literal("§6: "));
+            name = Component.literal("§6■ ").append(DSColors.withColor(Component.translatable(attribute.value().getDescriptionId()), DSColors.GOLD)).append(Component.literal("§6: "));
         } else {
             name = Component.literal("- ").append(Component.translatable(attribute.value().getDescriptionId())).append(Component.literal(": "));
         }
