@@ -28,7 +28,6 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.BuiltInDragonSpecies
 import by.dragonsurvivalteam.dragonsurvival.util.BlockPosHelper;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import it.unimi.dsi.fastutil.Pair;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
@@ -36,19 +35,14 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Item.Properties;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.Rarity;
-import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.Tiers;
-import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
@@ -254,22 +248,22 @@ public class DSItems {
 
     @Translation(type = Translation.Type.ITEM, comments = "Light Helmet")
     public static final RegistryObject<Item> LIGHT_DRAGON_HELMET = REGISTRY.register("light_dragon_helmet", () -> new LightDragonArmorItem(
-            ArmorItem.Type.HELMET, new Item.Properties().durability(ArmorItem.Type.HELMET.getDurability(100)).rarity(Rarity.EPIC).fireResistant())
+            ArmorItem.Type.HELMET, new Item.Properties().rarity(Rarity.EPIC).fireResistant())
     );
 
     @Translation(type = Translation.Type.ITEM, comments = "Light Chestplate")
     public static final RegistryObject<Item> LIGHT_DRAGON_CHESTPLATE = REGISTRY.register("light_dragon_chestplate", () -> new LightDragonArmorItem(
-            ArmorItem.Type.CHESTPLATE, new Item.Properties().durability(ArmorItem.Type.CHESTPLATE.getDurability(100)).rarity(Rarity.EPIC).fireResistant())
+            ArmorItem.Type.CHESTPLATE, new Item.Properties().rarity(Rarity.EPIC).fireResistant())
     );
 
     @Translation(type = Translation.Type.ITEM, comments = "Light Leggings")
     public static final RegistryObject<Item> LIGHT_DRAGON_LEGGINGS = REGISTRY.register("light_dragon_leggings", () -> new LightDragonArmorItem(
-            ArmorItem.Type.LEGGINGS, new Item.Properties().durability(ArmorItem.Type.LEGGINGS.getDurability(100)).rarity(Rarity.EPIC).fireResistant())
+            ArmorItem.Type.LEGGINGS, new Item.Properties().rarity(Rarity.EPIC).fireResistant())
     );
 
     @Translation(type = Translation.Type.ITEM, comments = "Light Boots")
     public static final RegistryObject<Item> LIGHT_DRAGON_BOOTS = REGISTRY.register("light_dragon_boots", () -> new LightDragonArmorItem(
-            ArmorItem.Type.BOOTS, new Item.Properties().durability(ArmorItem.Type.BOOTS.getDurability(100)).rarity(Rarity.EPIC).fireResistant())
+            ArmorItem.Type.BOOTS, new Item.Properties().rarity(Rarity.EPIC).fireResistant())
     );
 
     @Translation(type = Translation.Type.ITEM, comments = "Dark Upgrade")
@@ -278,22 +272,22 @@ public class DSItems {
 
     @Translation(type = Translation.Type.ITEM, comments = "Dark Helmet")
     public static final RegistryObject<Item> DARK_DRAGON_HELMET = REGISTRY.register("dark_dragon_helmet", () -> new DarkDragonArmorItem(
-            ArmorItem.Type.HELMET, new Item.Properties().durability(ArmorItem.Type.HELMET.getDurability(100)).rarity(Rarity.EPIC).fireResistant())
+            ArmorItem.Type.HELMET, new Item.Properties().rarity(Rarity.EPIC).fireResistant())
     );
 
     @Translation(type = Translation.Type.ITEM, comments = "Dark Chestplate")
     public static final RegistryObject<Item> DARK_DRAGON_CHESTPLATE = REGISTRY.register("dark_dragon_chestplate", () -> new DarkDragonArmorItem(
-            ArmorItem.Type.CHESTPLATE, new Item.Properties().durability(ArmorItem.Type.CHESTPLATE.getDurability(100)).rarity(Rarity.EPIC).fireResistant())
+            ArmorItem.Type.CHESTPLATE, new Item.Properties().rarity(Rarity.EPIC).fireResistant())
     );
 
     @Translation(type = Translation.Type.ITEM, comments = "Dark Leggings")
     public static final RegistryObject<Item> DARK_DRAGON_LEGGINGS = REGISTRY.register("dark_dragon_leggings", () -> new DarkDragonArmorItem(
-            ArmorItem.Type.LEGGINGS, new Item.Properties().durability(ArmorItem.Type.LEGGINGS.getDurability(100)).rarity(Rarity.EPIC).fireResistant())
+            ArmorItem.Type.LEGGINGS, new Item.Properties().rarity(Rarity.EPIC).fireResistant())
     );
 
     @Translation(type = Translation.Type.ITEM, comments = "Dark Boots")
     public static final RegistryObject<Item> DARK_DRAGON_BOOTS = REGISTRY.register("dark_dragon_boots", () -> new DarkDragonArmorItem(
-            ArmorItem.Type.BOOTS, new Item.Properties().durability(ArmorItem.Type.BOOTS.getDurability(100)).rarity(Rarity.EPIC).fireResistant())
+            ArmorItem.Type.BOOTS, new Item.Properties().rarity(Rarity.EPIC).fireResistant())
     );
 
     // --- Weapons --- //
@@ -302,7 +296,10 @@ public class DSItems {
     @Translation(type = Translation.Type.DESCRIPTION, comments = "■§7 The sword of the dragon hunters. Slow, but strong. Can be found in the hunters treasury.")
     public static final RegistryObject<Item> DRAGON_HUNTER_SWORD = register("dragon_hunter_sword", location -> new DragonHunterWeapon(
             DSEquipment.DRAGON_HUNTER,
-            new Item.Properties().rarity(Rarity.EPIC).fireResistant().attributes(SwordItem.createAttributes(Tiers.NETHERITE, 4, -2.8F)),
+            4,
+            -2.8f,
+            false,
+            new Item.Properties().rarity(Rarity.EPIC).fireResistant(),
             location.getPath(),
             List.of(Pair.of(DSEnchantments.DRAGONSBANE, 3))
     ));
@@ -310,41 +307,17 @@ public class DSItems {
     @Translation(type = Translation.Type.ITEM, comments = "Iron Partisan")
     @Translation(type = Translation.Type.DESCRIPTION, comments = "■§7 A long shafted weapon designed to take out enemies at a distance. Especially good against flying dragons.")
     public static final RegistryObject<Item> PARTISAN = register("hunter_partisan", location -> new DragonHunterWeapon(
-            Tiers.IRON, new Item.Properties().component(
-            DataComponents.ATTRIBUTE_MODIFIERS,
-            ItemAttributeModifiers.builder()
-                    .add(Attributes.ATTACK_DAMAGE, new AttributeModifier(Item.BASE_ATTACK_DAMAGE_ID, 6, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
-                    .add(Attributes.ATTACK_SPEED, new AttributeModifier(Item.BASE_ATTACK_SPEED_ID, -2.6f, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
-                    .add(Attributes.BLOCK_INTERACTION_RANGE, new AttributeModifier(DragonSurvival.res("partisan_block_reach"), 1f, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
-                    .add(Attributes.ENTITY_INTERACTION_RANGE, new AttributeModifier(DragonSurvival.res("partisan_attack_reach"), 1f, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
-                    .build()
-    ), location.getPath(), List.of()));
+            Tiers.IRON, 4, -2.6f, true, new Item.Properties(), location.getPath(), List.of()));
 
     @Translation(type = Translation.Type.ITEM, comments = "Diamond Partisan")
     @Translation(type = Translation.Type.DESCRIPTION, comments = "■§7 A long shafted weapon designed to take out enemies at a distance. Especially good against flying dragons.")
     public static final RegistryObject<Item> HUNTER_PARTISAN_DIAMOND = register("hunter_partisan_diamond", location -> new DragonHunterWeapon(
-            Tiers.DIAMOND, new Item.Properties().component(
-            DataComponents.ATTRIBUTE_MODIFIERS,
-            ItemAttributeModifiers.builder()
-                    .add(Attributes.ATTACK_DAMAGE, new AttributeModifier(Item.BASE_ATTACK_DAMAGE_ID, 7, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
-                    .add(Attributes.ATTACK_SPEED, new AttributeModifier(Item.BASE_ATTACK_SPEED_ID, -2.6f, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
-                    .add(Attributes.BLOCK_INTERACTION_RANGE, new AttributeModifier(DragonSurvival.res("partisan_block_reach"), 1f, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
-                    .add(Attributes.ENTITY_INTERACTION_RANGE, new AttributeModifier(DragonSurvival.res("partisan_attack_reach"), 1f, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
-                    .build()
-    ), location.getPath(), List.of(Pair.of(DSEnchantments.DRAGONSBANE, 3))));
+            Tiers.DIAMOND, 4, -2.6f, true, new Item.Properties(), location.getPath(), List.of(Pair.of(DSEnchantments.DRAGONSBANE, 3))));
 
     @Translation(type = Translation.Type.ITEM, comments = "Netherite Partisan")
     @Translation(type = Translation.Type.DESCRIPTION, comments = "■§7 A long shafted weapon designed to take out enemies at a distance. Especially good against flying dragons.")
     public static final RegistryObject<Item> HUNTER_PARTISAN_NETHERITE = register("hunter_partisan_netherite", location -> new DragonHunterWeapon(
-            Tiers.NETHERITE, new Item.Properties().component(
-            DataComponents.ATTRIBUTE_MODIFIERS,
-            ItemAttributeModifiers.builder()
-                    .add(Attributes.ATTACK_DAMAGE, new AttributeModifier(Item.BASE_ATTACK_DAMAGE_ID, 8, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
-                    .add(Attributes.ATTACK_SPEED, new AttributeModifier(Item.BASE_ATTACK_SPEED_ID, -2.6f, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
-                    .add(Attributes.BLOCK_INTERACTION_RANGE, new AttributeModifier(DragonSurvival.res("partisan_block_reach"), 1f, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
-                    .add(Attributes.ENTITY_INTERACTION_RANGE, new AttributeModifier(DragonSurvival.res("partisan_attack_reach"), 1f, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
-                    .build()
-    ), location.getPath(), List.of(Pair.of(DSEnchantments.DRAGONSBANE, 3))));
+            Tiers.NETHERITE, 4, -2.6f, true, new Item.Properties(), location.getPath(), List.of(Pair.of(DSEnchantments.DRAGONSBANE, 3))));
 
     // --- Block items --- //
 

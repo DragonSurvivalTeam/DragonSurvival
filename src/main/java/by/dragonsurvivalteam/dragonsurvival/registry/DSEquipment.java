@@ -4,9 +4,7 @@ import by.dragonsurvivalteam.dragonsurvival.client.models.aligned_armor.DragonBo
 import by.dragonsurvivalteam.dragonsurvival.client.models.aligned_armor.DragonChestplate;
 import by.dragonsurvivalteam.dragonsurvival.client.models.aligned_armor.DragonHelmet;
 import by.dragonsurvivalteam.dragonsurvival.client.models.aligned_armor.DragonLeggings;
-import net.minecraft.Util;
-import net.minecraft.core.Holder;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.item.ArmorItem;
@@ -15,64 +13,82 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.common.ForgeTier;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.client.event.EntityRenderersEvent;
-import net.minecraftforge.common.SimpleTier;
-import net.minecraftforge.registries.DeferredRegister;
 
-import java.util.EnumMap;
-import java.util.List;
+import java.util.function.Supplier;
 
 import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
-import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.res;
 
 @EventBusSubscriber(Dist.CLIENT)
 public class DSEquipment {
-    public static final DeferredRegister<ArmorMaterial> REGISTRY = DeferredRegister.create(BuiltInRegistries.ARMOR_MATERIAL, MODID);
+    public static final ArmorMaterial LIGHT_DRAGON_ARMOR_MATERIAL = new DragonArmorMaterial("light_dragon");
+    public static final ArmorMaterial DARK_DRAGON_ARMOR_MATERIAL = new DragonArmorMaterial("dark_dragon");
 
-    public static final Holder<ArmorMaterial> LIGHT_DRAGON_ARMOR_MATERIAL =
-            REGISTRY.register("light_dragon", () -> new ArmorMaterial(
-                    Util.make(new EnumMap<>(ArmorItem.Type.class), map -> {
-                        map.put(ArmorItem.Type.BOOTS, 3);
-                        map.put(ArmorItem.Type.LEGGINGS, 6);
-                        map.put(ArmorItem.Type.CHESTPLATE, 8);
-                        map.put(ArmorItem.Type.HELMET, 3);
-                        map.put(ArmorItem.Type.BODY, 11);
-                    }),
-                    30,
-                    Holder.direct(SoundEvents.IRON_GOLEM_STEP),
-                    () -> Ingredient.of(DSItems.ELDER_DRAGON_HEART.get()),
-                    List.of(new ArmorMaterial.Layer(res("light_dragon"))),
-                    3,
-                    0.1f
-            ));
-
-    public static final Holder<ArmorMaterial> DARK_DRAGON_ARMOR_MATERIAL =
-            REGISTRY.register("dark_dragon", () -> new ArmorMaterial(
-                    Util.make(new EnumMap<>(ArmorItem.Type.class), map -> {
-                        map.put(ArmorItem.Type.BOOTS, 3);
-                        map.put(ArmorItem.Type.LEGGINGS, 6);
-                        map.put(ArmorItem.Type.CHESTPLATE, 8);
-                        map.put(ArmorItem.Type.HELMET, 3);
-                        map.put(ArmorItem.Type.BODY, 11);
-                    }),
-                    30,
-                    Holder.direct(SoundEvents.IRON_GOLEM_STEP),
-                    () -> Ingredient.of(DSItems.ELDER_DRAGON_HEART.get()),
-                    List.of(new ArmorMaterial.Layer(res("dark_dragon"))),
-                    3,
-                    0.1f
-            ));
-
-    public static final Tier DRAGON_HUNTER = new SimpleTier(
-            BlockTags.INCORRECT_FOR_NETHERITE_TOOL,
+    public static final Tier DRAGON_HUNTER = new ForgeTier(
+            4,
             2031,
             9,
             5,
             15,
+            BlockTags.NEEDS_DIAMOND_TOOL,
             () -> Ingredient.of(Items.NETHERITE_INGOT)
     );
+
+    private record DragonArmorMaterial(String path) implements ArmorMaterial {
+        private static final int DURABILITY_MULTIPLIER = 100;
+
+        @Override
+        public int getDurabilityForType(final ArmorItem.Type type) {
+            return switch (type) {
+                case BOOTS -> 13;
+                case LEGGINGS -> 15;
+                case CHESTPLATE -> 16;
+                case HELMET -> 11;
+            } * DURABILITY_MULTIPLIER;
+        }
+
+        @Override
+        public int getDefenseForType(final ArmorItem.Type type) {
+            return switch (type) {
+                case BOOTS, HELMET -> 3;
+                case LEGGINGS -> 6;
+                case CHESTPLATE -> 8;
+            };
+        }
+
+        @Override
+        public int getEnchantmentValue() {
+            return 30;
+        }
+
+        @Override
+        public SoundEvent getEquipSound() {
+            return SoundEvents.IRON_GOLEM_STEP;
+        }
+
+        @Override
+        public Ingredient getRepairIngredient() {
+            return Ingredient.of(DSItems.ELDER_DRAGON_HEART.get());
+        }
+
+        @Override
+        public String getName() {
+            return MODID + ":" + path;
+        }
+
+        @Override
+        public float getToughness() {
+            return 3;
+        }
+
+        @Override
+        public float getKnockbackResistance() {
+            return 0.1f;
+        }
+    }
 
     @SubscribeEvent
     public static void registerLayerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event) {
