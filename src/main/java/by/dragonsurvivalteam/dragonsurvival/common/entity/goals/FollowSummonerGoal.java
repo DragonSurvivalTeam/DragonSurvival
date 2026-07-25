@@ -21,6 +21,8 @@ import java.util.EnumSet;
 
 /** This goal should only be attached to the entity if it is an ally since that flag isn't checked within this goal */
 public class FollowSummonerGoal extends Goal {
+    private static final int TELEPORT_WHEN_DISTANCE_IS_SQ = 144;
+
     private final Mob mob;
     private final PathNavigation navigation;
     private final double speedModifier;
@@ -82,7 +84,7 @@ public class FollowSummonerGoal extends Goal {
     @Override
     public void tick() {
         //noinspection DataFlowIssue -> owner should not be null
-        boolean shouldTeleport = mob.distanceToSqr(owner) >= TamableAnimal.TELEPORT_WHEN_DISTANCE_IS_SQ * 2;
+        boolean shouldTeleport = mob.distanceToSqr(owner) >= TELEPORT_WHEN_DISTANCE_IS_SQ * 2;
 
         if (!shouldTeleport) {
             mob.getLookControl().setLookAt(owner, 10, mob.getMaxHeadXRot());
@@ -143,7 +145,9 @@ public class FollowSummonerGoal extends Goal {
 
     /** Copied from {@link TamableAnimal#canTeleportTo(BlockPos)} */
     private boolean canTeleportTo(final BlockPos position) {
-        BlockPathTypes pathtype = WalkNodeEvaluator.getPathTypeStatic(mob, position);
+        BlockPathTypes pathtype = new WalkNodeEvaluator().getBlockPathType(
+            mob.level(), position.getX(), position.getY(), position.getZ(), mob
+        );
 
         if (pathtype != BlockPathTypes.WALKABLE) {
             return false;
