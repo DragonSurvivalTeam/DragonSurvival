@@ -12,6 +12,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.EffectRenderingInventoryScreen;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.Rect2i;
@@ -21,7 +22,7 @@ import net.minecraft.network.chat.contents.PlainTextContents;
 import net.minecraft.util.Mth;
 import net.minecraft.util.StringUtil;
 import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraftforge.client.ClientHooks;
+import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.event.ScreenEvent;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -35,7 +36,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Mixin(EffectRenderingInventoryScreen.class)
-public class EffectRenderingInventoryScreenMixin {
+public class EffectRenderingInventoryScreenMixin implements EffectRenderingInventoryScreenAccessor {
     @Unique private List<ClientEffectProvider> dragonSurvival$providers = List.of();
 
     /** Interacted with through {@link EffectRenderingInventoryScreenAccessor} */
@@ -57,7 +58,7 @@ public class EffectRenderingInventoryScreenMixin {
         return original + dragonSurvival$providers.size();
     }
 
-    @Inject(method = "renderEffects", at = @At(value = "INVOKE", target = "Lnet/minecraftforge/client/ClientHooks;onScreenPotionSize(Lnet/minecraft/client/gui/screens/Screen;IZI)Lnet/minecraftforge/client/event/ScreenEvent$RenderInventoryMobEffects;", shift = At.Shift.BY, by = 2))
+    @Inject(method = "renderEffects", at = @At(value = "INVOKE", target = "Lnet/minecraftforge/client/ForgeHooksClient;onScreenPotionSize(Lnet/minecraft/client/gui/screens/Screen;IZI)Lnet/minecraftforge/client/event/ScreenEvent$RenderInventoryMobEffects;", shift = At.Shift.BY, by = 2, remap = false))
     private void dragonSurvival$storeEvent(final CallbackInfo callback, @Local final ScreenEvent.RenderInventoryMobEffects event, @Share("stored_event") final LocalRef<ScreenEvent.RenderInventoryMobEffects> storedEvent) {
         storedEvent.set(event);
     }
@@ -69,7 +70,7 @@ public class EffectRenderingInventoryScreenMixin {
 
         for (ClientEffectProvider provider : providers) {
             dragonSurvival$areasBlockedByModifierUIForJEI.add(new Rect2i(renderX, topPos, width, 32));
-            graphics.blitSprite(isCompact ? EffectRenderingInventoryScreenAccessor.dragonSurvival$getEffectBackgroundSmallSprite() : EffectRenderingInventoryScreenAccessor.dragonSurvival$getEffectBackgroundLargeSprite(), renderX, topPos, width, 32);
+            graphics.blit(AbstractContainerScreen.INVENTORY_LOCATION, renderX, topPos, 0, isCompact ? 198 : 166, width, 32);
             graphics.blit(provider.clientData().texture(), renderX + (isCompact ? 6 : 7), topPos + 7, 0, 0, 0, 18, 18, 18, 18);
             topPos += yOffset;
         }
@@ -81,20 +82,19 @@ public class EffectRenderingInventoryScreenMixin {
 
         for (ClientEffectProvider provider : providers) {
             graphics.drawString(((ScreenAccessor) self).dragonSurvival$getFont(), provider.clientData().name(), renderX + 10 + 18, topPos + 6, DSColors.WHITE);
-            //noinspection DataFlowIssue -> level is present
-            Component duration = dragonSurvival$formatDuration(provider, Minecraft.getInstance().level.tickRateManager().tickrate());
+            Component duration = dragonSurvival$formatDuration(provider);
             graphics.drawString(((ScreenAccessor) self).dragonSurvival$getFont(), duration, renderX + 10 + 18, topPos + 6 + 10, 8355711);
             topPos += yOffset;
         }
     }
 
     // Duration text is added because the width-difference looks weird otherwise when a tooltip description is present
-    @Unique private static Component dragonSurvival$formatDuration(final ClientEffectProvider effect, float ticksPerSecond) {
+    @Unique private static Component dragonSurvival$formatDuration(final ClientEffectProvider effect) {
         if (effect.isInfiniteDuration()) {
             return Component.translatable(LangKey.DURATION, DSColors.dynamicValue(Component.translatable("effect.duration.infinite")));
         } else {
             int duration = Mth.floor((float) effect.currentDuration());
-            return Component.translatable(LangKey.DURATION, DSColors.dynamicValue(StringUtil.formatTickDuration(duration, ticksPerSecond)));
+            return Component.translatable(LangKey.DURATION, DSColors.dynamicValue(StringUtil.formatTickDuration(duration)));
         }
     }
 
@@ -115,7 +115,7 @@ public class EffectRenderingInventoryScreenMixin {
             ScreenEvent.RenderInventoryMobEffects event = storedEvent.get();
 
             if (event == null) {
-                event = ClientHooks.onScreenPotionSize(self, width, isCompact, offset);
+                event = ForgeHooksClient.onScreenPotionSize(self, width, isCompact, offset);
             }
 
             if (event.isCanceled()) {
@@ -135,7 +135,7 @@ public class EffectRenderingInventoryScreenMixin {
                 yOffset = 33;
             }
 
-            int renderedElements = mobEffects.stream().filter(ClientHooks::shouldRenderEffect).sorted().toList().size();
+            int renderedElements = mobEffects.stream().filter(ForgeHooksClient::shouldRenderEffect).sorted().toList().size();
             int initialYOffset = yOffset * renderedElements;
 
             dragonSurvival$renderAbilityBackgroundsAndIcons(graphics, offset, yOffset, initialYOffset, dragonSurvival$providers, isCompact);
@@ -168,8 +168,7 @@ public class EffectRenderingInventoryScreenMixin {
                         tooltip.append(Component.literal("\n")).append(Component.translatable(LangKey.APPLIED_BY, DSColors.dynamicValue(hovered.clientData().effectSource())));
                     }
 
-                    //noinspection DataFlowIssue -> level is present
-                    tooltip.append(Component.literal("\n")).append(dragonSurvival$formatDuration(hovered, Minecraft.getInstance().level.tickRateManager().tickrate()));
+                    tooltip.append(Component.literal("\n")).append(dragonSurvival$formatDuration(hovered));
                     Component description = hovered.getDescription();
 
                     if (description.getContents() != PlainTextContents.EMPTY) {
@@ -182,5 +181,10 @@ public class EffectRenderingInventoryScreenMixin {
                 }
             }
         }
+    }
+
+    @Override
+    public List<Rect2i> dragonSurvival$areasBlockedByModifierUIForJEI() {
+        return dragonSurvival$areasBlockedByModifierUIForJEI;
     }
 }

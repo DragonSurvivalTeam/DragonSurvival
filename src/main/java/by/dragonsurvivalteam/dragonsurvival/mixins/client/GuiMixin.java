@@ -8,6 +8,7 @@ import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
@@ -42,7 +43,6 @@ public abstract class GuiMixin {
     // TODO :: Do we care to determine if effects are beneficial or not? In this UI vanilla puts harmful effects below beneficial ones instead of beside them
     @Inject(method = "renderEffects", at = @At(value = "INVOKE", target = "Ljava/util/List;forEach(Ljava/util/function/Consumer;)V"))
     private void dragonSurvival$renderAbilityEffects(final GuiGraphics graphics, final CallbackInfo callback, @Local(ordinal = 0) int renderedCount) {
-        Gui self = (Gui) (Object) this;
         int effectCount = renderedCount;
 
         for (ClientEffectProvider provider : dragonSurvival$providers) {
@@ -55,7 +55,7 @@ public abstract class GuiMixin {
 
             effectCount++;
             xPos -= 25 * effectCount;
-            graphics.blitSprite(((GuiAccessor) self).dragonSurvival$getEffectBackgroundSprite(), xPos, yPos, 24, 24);
+            graphics.blit(AbstractContainerScreen.INVENTORY_LOCATION, xPos, yPos, 141, 166, 24, 24);
 
             float alpha = 1;
 
