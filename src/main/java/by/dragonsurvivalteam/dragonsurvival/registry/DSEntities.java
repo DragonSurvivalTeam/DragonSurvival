@@ -13,7 +13,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.entity.projectiles.GenericArr
 import by.dragonsurvivalteam.dragonsurvival.common.entity.projectiles.GenericBallEntity;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import com.google.common.collect.ImmutableSet;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -35,7 +35,7 @@ import net.minecraftforge.registries.DeferredRegister;
 
 @EventBusSubscriber
 public class DSEntities {
-    public static final DeferredRegister<EntityType<?>> REGISTRY = DeferredRegister.create(BuiltInRegistries.ENTITY_TYPE, DragonSurvival.MODID);
+    public static final DeferredRegister<EntityType<?>> REGISTRY = DeferredRegister.create(Registries.ENTITY_TYPE, DragonSurvival.MODID);
 
     // --- Player --- //
 

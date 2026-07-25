@@ -20,7 +20,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSDragonSpecie
 import by.dragonsurvivalteam.dragonsurvival.util.CompoundTagBuilder;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FastColor;
@@ -53,7 +53,7 @@ import java.util.function.Supplier;
 import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 
 public class DSBlocks {
-    public static final DeferredRegister<Block> REGISTRY = DeferredRegister.create(BuiltInRegistries.BLOCK, MODID);
+    public static final DeferredRegister<Block> REGISTRY = DeferredRegister.create(Registries.BLOCK, MODID);
     // TODO :: why are these stored in a map if the map is unused
     public static final HashMap<String, Pair<RegistryObject<SkeletonPieceBlock>, RegistryObject<BlockItem>>> SKELETON_PIECES = new HashMap<>();
 

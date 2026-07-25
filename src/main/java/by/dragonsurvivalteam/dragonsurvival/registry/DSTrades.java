@@ -11,7 +11,6 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
@@ -49,8 +48,8 @@ import java.util.Optional;
 
 @EventBusSubscriber
 public class DSTrades {
-    public static final DeferredRegister<PoiType> POI_REGISTRY = DeferredRegister.create(BuiltInRegistries.POINT_OF_INTEREST_TYPE, DragonSurvival.MODID);
-    public static final DeferredRegister<VillagerProfession> PROFESSION_REGISTRY = DeferredRegister.create(BuiltInRegistries.VILLAGER_PROFESSION, DragonSurvival.MODID);
+    public static final DeferredRegister<PoiType> POI_REGISTRY = DeferredRegister.create(Registries.POINT_OF_INTEREST_TYPE, DragonSurvival.MODID);
+    public static final DeferredRegister<VillagerProfession> PROFESSION_REGISTRY = DeferredRegister.create(Registries.VILLAGER_PROFESSION, DragonSurvival.MODID);
 
     public static final Holder<PoiType> DRAGON_RIDER_POI = POI_REGISTRY.register(
             "dragon_rider_poi",

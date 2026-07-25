@@ -31,7 +31,7 @@ import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -59,7 +59,7 @@ import java.util.function.Consumer;
 
 @SuppressWarnings("unused")
 public class DSItems {
-    public static final DeferredRegister<Item> REGISTRY = DeferredRegister.create(BuiltInRegistries.ITEM, DragonSurvival.MODID);
+    public static final DeferredRegister<Item> REGISTRY = DeferredRegister.create(Registries.ITEM, DragonSurvival.MODID);
     private static final Consumer<LivingEntity> REMOVE_EFFECTS_CURED_BY_MILK = entity -> entity.removeEffectsCuredBy(EffectCures.MILK);
 
     // --- Growth --- //

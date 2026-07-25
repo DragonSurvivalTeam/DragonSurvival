@@ -1,6 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.registry;
 
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraftforge.common.util.DeferredSoundType;
@@ -10,7 +10,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 
 public class DSSounds {
-    public static final DeferredRegister<SoundEvent> REGISTRY = DeferredRegister.create(BuiltInRegistries.SOUND_EVENT, MODID);
+    public static final DeferredRegister<SoundEvent> REGISTRY = DeferredRegister.create(Registries.SOUND_EVENT, MODID);
     public static RegistryObject<SoundEvent> BONK = REGISTRY.register("bonk", () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(MODID, "bonk")));
 
     public static RegistryObject<SoundEvent> ACTIVATE_BEACON = REGISTRY.register("activate_beacon", () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(MODID, "activate_beacon")));

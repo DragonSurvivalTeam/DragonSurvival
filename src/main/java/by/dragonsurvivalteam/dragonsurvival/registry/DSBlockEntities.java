@@ -6,7 +6,7 @@ import by.dragonsurvivalteam.dragonsurvival.server.tileentity.HelmetBlockEntity;
 import by.dragonsurvivalteam.dragonsurvival.server.tileentity.PrimordialAnchorBlockEntity;
 import by.dragonsurvivalteam.dragonsurvival.server.tileentity.SourceOfMagicBlockEntity;
 import by.dragonsurvivalteam.dragonsurvival.server.tileentity.SourceOfMagicPlaceholder;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.registries.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
@@ -15,7 +15,7 @@ import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 
 @SuppressWarnings("DataFlowIssue") // null parameter in 'build' does not cause issues
 public class DSBlockEntities {
-    public static final DeferredRegister<BlockEntityType<?>> REGISTRY = DeferredRegister.create(BuiltInRegistries.BLOCK_ENTITY_TYPE, MODID);
+    public static final DeferredRegister<BlockEntityType<?>> REGISTRY = DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, MODID);
 
     public static final RegistryObject<BlockEntityType<SourceOfMagicBlockEntity>> SOURCE_OF_MAGIC_TILE_ENTITY = REGISTRY.register(
             "dragon_nest", () -> BlockEntityType.Builder.of(

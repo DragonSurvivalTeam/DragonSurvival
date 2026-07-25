@@ -5,7 +5,7 @@ import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.DragonInventorySc
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.SourceOfMagicScreen;
 import by.dragonsurvivalteam.dragonsurvival.server.containers.DragonContainer;
 import by.dragonsurvivalteam.dragonsurvival.server.containers.SourceOfMagicContainer;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -19,7 +19,7 @@ import net.minecraftforge.registries.DeferredRegister;
 public class DSContainers {
 
     public static final DeferredRegister<MenuType<?>> REGISTRY = DeferredRegister.create(
-            BuiltInRegistries.MENU,
+            Registries.MENU,
             DragonSurvival.MODID
     );
 
