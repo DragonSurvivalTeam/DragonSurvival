@@ -1,4 +1,4 @@
-package net.minecraftforge.attachment;
+package by.dragonsurvivalteam.dragonsurvival.common.compat.attachments;
 
 import by.dragonsurvivalteam.dragonsurvival.common.serialization.INBTSerializable;
 import net.minecraft.core.HolderLookup;

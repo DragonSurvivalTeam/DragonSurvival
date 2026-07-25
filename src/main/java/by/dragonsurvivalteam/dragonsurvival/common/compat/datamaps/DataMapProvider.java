@@ -1,4 +1,4 @@
-package net.minecraftforge.common.data;
+package by.dragonsurvivalteam.dragonsurvival.common.compat.datamaps;
 
 import by.dragonsurvivalteam.dragonsurvival.registry.data_maps.DataMapReloadListener;
 import com.google.gson.JsonArray;
@@ -19,9 +19,6 @@ import net.minecraft.resources.RegistryOps;
 import net.minecraft.tags.TagKey;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.conditions.ICondition;
-import net.minecraftforge.registries.datamaps.AdvancedDataMapType;
-import net.minecraftforge.registries.datamaps.DataMapType;
-import net.minecraftforge.registries.datamaps.DataMapValueRemover;
 
 import java.nio.file.Path;
 import java.util.ArrayList;

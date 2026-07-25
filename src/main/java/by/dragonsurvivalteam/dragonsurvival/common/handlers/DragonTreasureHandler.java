@@ -24,7 +24,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.event.entity.living.LivingIncomingDamageEvent;
+import by.dragonsurvivalteam.dragonsurvival.common.compat.event.LivingIncomingDamageEvent;
 import net.minecraftforge.event.TickEvent;
 import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
 

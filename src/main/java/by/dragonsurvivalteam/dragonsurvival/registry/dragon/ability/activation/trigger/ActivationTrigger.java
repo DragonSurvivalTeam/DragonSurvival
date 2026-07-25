@@ -7,27 +7,22 @@ import com.mojang.serialization.MapCodec;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.registries.NewRegistryEvent;
 import net.minecraftforge.registries.RegisterEvent;
 import net.minecraftforge.registries.RegistryBuilder;
 
 
-@EventBusSubscriber(modid = DragonSurvival.MODID, bus = EventBusSubscriber.Bus.MOD)
 public interface ActivationTrigger<T> {
     ResourceKey<Registry<MapCodec<? extends ActivationTrigger<?>>>> REGISTRY_KEY = ResourceKey.createRegistryKey(DragonSurvival.res("activation_trigger"));
     MiscCodecs.RegistryHolder<MapCodec<? extends ActivationTrigger<?>>> REGISTRY = new MiscCodecs.RegistryHolder<>();
 
     Codec<ActivationTrigger<?>> CODEC = MiscCodecs.registryDispatchCodec(REGISTRY, "trigger_type", ActivationTrigger::codec);
 
-    @SubscribeEvent
-    static void register(final NewRegistryEvent event) {
+    public static void register(final NewRegistryEvent event) {
         event.create(new RegistryBuilder<MapCodec<? extends ActivationTrigger<?>>>().setName(REGISTRY_KEY.location()), REGISTRY::set);
     }
 
-    @SubscribeEvent
-    static void registerEntries(final RegisterEvent event) {
+    public static void registerEntries(final RegisterEvent event) {
         if (event.getRegistryKey().equals(REGISTRY_KEY)) {
             event.register(REGISTRY_KEY, DragonSurvival.res("constant"), () -> ConstantTrigger.CODEC);
             event.register(REGISTRY_KEY, DragonSurvival.res("on_self_hit"), () -> OnSelfHit.CODEC);

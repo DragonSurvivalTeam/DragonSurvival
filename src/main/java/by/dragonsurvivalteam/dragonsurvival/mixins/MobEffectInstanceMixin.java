@@ -63,9 +63,9 @@ public abstract class MobEffectInstanceMixin implements AdditionalEffectData {
     }
 
     @ModifyReturnValue(method = "save", at = @At("RETURN"))
-    private Tag dragonSurvival$saveAdditionalData(final Tag tag) {
-        if (dragonSurvival$applierUUID != null && tag instanceof CompoundTag compound) {
-            compound.putUUID(dragonSurvival$APPLIER, dragonSurvival$applierUUID);
+    private CompoundTag dragonSurvival$saveAdditionalData(final CompoundTag tag) {
+        if (dragonSurvival$applierUUID != null) {
+            tag.putUUID(dragonSurvival$APPLIER, dragonSurvival$applierUUID);
         }
 
         return tag;

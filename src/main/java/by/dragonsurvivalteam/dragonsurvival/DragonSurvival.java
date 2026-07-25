@@ -10,6 +10,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.DSCommands;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSConditions;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSContainers;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSCreativeTabs;
+import by.dragonsurvivalteam.dragonsurvival.registry.DSCustomRegistries;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEnchantments;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEntities;
@@ -78,6 +79,7 @@ public class DragonSurvival {
         DSAdvancementTriggers.REGISTRY.register(bus);
         DSCommands.REGISTRY.register(bus);
         DSLootModifiers.REGISTRY.register(bus);
+        DSCustomRegistries.register(bus);
         DSConditions.register();
         NetworkHandler.register();
 

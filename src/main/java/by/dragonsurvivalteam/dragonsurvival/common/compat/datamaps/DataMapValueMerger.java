@@ -1,4 +1,4 @@
-package net.minecraftforge.registries.datamaps;
+package by.dragonsurvivalteam.dragonsurvival.common.compat.datamaps;
 
 import com.mojang.datafixers.util.Either;
 import net.minecraft.core.Registry;

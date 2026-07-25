@@ -17,8 +17,6 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
 import net.minecraftforge.registries.NewRegistryEvent;
 import net.minecraftforge.registries.RegisterEvent;
@@ -27,20 +25,17 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
-@EventBusSubscriber(modid = DragonSurvival.MODID, bus = EventBusSubscriber.Bus.MOD)
 public interface Activation {
     ResourceKey<Registry<MapCodec<? extends Activation>>> REGISTRY_KEY = ResourceKey.createRegistryKey(DragonSurvival.res("activation"));
     MiscCodecs.RegistryHolder<MapCodec<? extends Activation>> REGISTRY = new MiscCodecs.RegistryHolder<>();
 
     Codec<Activation> CODEC = MiscCodecs.registryDispatchCodec(REGISTRY, "activation_type", Activation::codec);
 
-    @SubscribeEvent
-    static void register(final NewRegistryEvent event) {
+    public static void register(final NewRegistryEvent event) {
         event.create(new RegistryBuilder<MapCodec<? extends Activation>>().setName(REGISTRY_KEY.location()), REGISTRY::set);
     }
 
-    @SubscribeEvent
-    static void registerEntries(final RegisterEvent event) {
+    public static void registerEntries(final RegisterEvent event) {
         if (event.getRegistryKey().equals(REGISTRY_KEY)) {
             event.register(REGISTRY_KEY, DragonSurvival.res("passive"), () -> PassiveActivation.CODEC);
             event.register(REGISTRY_KEY, DragonSurvival.res("simple"), () -> SimpleActivation.CODEC);

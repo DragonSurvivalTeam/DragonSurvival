@@ -9,7 +9,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
-import net.minecraftforge.common.data.DataMapProvider;
+import by.dragonsurvivalteam.dragonsurvival.common.compat.datamaps.DataMapProvider;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;

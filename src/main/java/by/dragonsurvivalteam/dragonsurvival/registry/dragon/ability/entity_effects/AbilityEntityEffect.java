@@ -15,15 +15,12 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.registries.NewRegistryEvent;
 import net.minecraftforge.registries.RegisterEvent;
 import net.minecraftforge.registries.RegistryBuilder;
 
 import java.util.List;
 
-@EventBusSubscriber(modid = DragonSurvival.MODID, bus = EventBusSubscriber.Bus.MOD)
 public interface AbilityEntityEffect {
     ResourceKey<Registry<MapCodec<? extends AbilityEntityEffect>>> REGISTRY_KEY = ResourceKey.createRegistryKey(DragonSurvival.res("ability_entity_effect"));
     MiscCodecs.RegistryHolder<MapCodec<? extends AbilityEntityEffect>> REGISTRY = new MiscCodecs.RegistryHolder<>();
@@ -55,13 +52,11 @@ public interface AbilityEntityEffect {
 
     default List<ResourceLocation> getEffectIDs() { return List.of(); }
 
-    @SubscribeEvent
-    static void register(final NewRegistryEvent event) {
+    public static void register(final NewRegistryEvent event) {
         event.create(new RegistryBuilder<MapCodec<? extends AbilityEntityEffect>>().setName(REGISTRY_KEY.location()), REGISTRY::set);
     }
 
-    @SubscribeEvent
-    static void registerEntries(final RegisterEvent event) {
+    public static void registerEntries(final RegisterEvent event) {
         if (event.getRegistryKey().equals(REGISTRY_KEY)) {
             event.register(REGISTRY_KEY, DragonSurvival.res("damage"), () -> DamageEffect.CODEC);
             event.register(REGISTRY_KEY, DragonSurvival.res("modifier"), () -> ModifierEffect.CODEC);

@@ -22,10 +22,10 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.util.profiling.ProfilerFiller;
-import net.minecraftforge.registries.datamaps.AdvancedDataMapType;
-import net.minecraftforge.registries.datamaps.DataMapType;
-import net.minecraftforge.registries.datamaps.DataMapValueMerger;
-import net.minecraftforge.registries.datamaps.DataMapValueRemover;
+import by.dragonsurvivalteam.dragonsurvival.common.compat.datamaps.AdvancedDataMapType;
+import by.dragonsurvivalteam.dragonsurvival.common.compat.datamaps.DataMapType;
+import by.dragonsurvivalteam.dragonsurvival.common.compat.datamaps.DataMapValueMerger;
+import by.dragonsurvivalteam.dragonsurvival.common.compat.datamaps.DataMapValueRemover;
 
 import java.io.Reader;
 import java.util.ArrayList;

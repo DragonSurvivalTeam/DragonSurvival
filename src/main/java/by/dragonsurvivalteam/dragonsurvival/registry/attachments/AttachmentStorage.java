@@ -1,6 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.attachments;
 
-import net.minecraftforge.attachment.AttachmentType;
+import by.dragonsurvivalteam.dragonsurvival.common.compat.attachments.AttachmentType;
 
 import java.util.Map;
 

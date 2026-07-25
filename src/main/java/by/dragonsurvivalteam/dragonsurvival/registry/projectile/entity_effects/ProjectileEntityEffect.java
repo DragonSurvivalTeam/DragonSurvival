@@ -8,14 +8,11 @@ import com.mojang.serialization.MapCodec;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.Entity;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.registries.NewRegistryEvent;
 import net.minecraftforge.registries.RegisterEvent;
 import net.minecraftforge.registries.RegistryBuilder;
 
 
-@EventBusSubscriber(modid = DragonSurvival.MODID, bus = EventBusSubscriber.Bus.MOD)
 public interface ProjectileEntityEffect extends ProjectileEffect<Entity> {
     ResourceKey<Registry<MapCodec<? extends ProjectileEntityEffect>>> REGISTRY_KEY = ResourceKey.createRegistryKey(DragonSurvival.res("projectile_entity_effect"));
     MiscCodecs.RegistryHolder<MapCodec<? extends ProjectileEntityEffect>> REGISTRY = new MiscCodecs.RegistryHolder<>();
@@ -24,13 +21,11 @@ public interface ProjectileEntityEffect extends ProjectileEffect<Entity> {
 
     MapCodec<? extends ProjectileEntityEffect> codec();
 
-    @SubscribeEvent
-    static void register(final NewRegistryEvent event) {
+    public static void register(final NewRegistryEvent event) {
         event.create(new RegistryBuilder<MapCodec<? extends ProjectileEntityEffect>>().setName(REGISTRY_KEY.location()), REGISTRY::set);
     }
 
-    @SubscribeEvent
-    static void registerEntries(final RegisterEvent event) {
+    public static void registerEntries(final RegisterEvent event) {
         if (event.getRegistryKey().equals(REGISTRY_KEY)) {
             event.register(REGISTRY_KEY, DragonSurvival.res("damage"), () -> ProjectileDamageEffect.CODEC);
             event.register(REGISTRY_KEY, DragonSurvival.res("potion"), () -> ProjectilePotionEffect.CODEC);

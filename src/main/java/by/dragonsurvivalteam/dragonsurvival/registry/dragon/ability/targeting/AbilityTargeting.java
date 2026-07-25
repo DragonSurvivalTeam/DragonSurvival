@@ -24,8 +24,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.registries.NewRegistryEvent;
 import net.minecraftforge.registries.RegisterEvent;
 import net.minecraftforge.registries.RegistryBuilder;
@@ -35,7 +33,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-@EventBusSubscriber(modid = DragonSurvival.MODID, bus = EventBusSubscriber.Bus.MOD)
 public interface AbilityTargeting {
     String EFFECT_HEADER = "#HEADER#";
     NumberFormat FORMAT = Functions.getFormat(2);
@@ -103,13 +100,11 @@ public interface AbilityTargeting {
         return instance.group(Codec.either(BlockTargeting.CODEC, EntityTargeting.CODEC).fieldOf("applied_effects").forGetter(AbilityTargeting::target));
     }
 
-    @SubscribeEvent
-    static void register(final NewRegistryEvent event) {
+    public static void register(final NewRegistryEvent event) {
         event.create(new RegistryBuilder<MapCodec<? extends AbilityTargeting>>().setName(REGISTRY_KEY.location()), REGISTRY::set);
     }
 
-    @SubscribeEvent
-    static void registerEntries(final RegisterEvent event) {
+    public static void registerEntries(final RegisterEvent event) {
         if (event.getRegistryKey().equals(REGISTRY_KEY)) {
             event.register(REGISTRY_KEY, DragonSurvival.res("area"), () -> AreaTarget.CODEC);
             event.register(REGISTRY_KEY, DragonSurvival.res("dragon_breath"), () -> DragonBreathTarget.CODEC);

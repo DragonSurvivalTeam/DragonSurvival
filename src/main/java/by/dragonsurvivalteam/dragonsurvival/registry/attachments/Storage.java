@@ -8,7 +8,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
-import net.minecraftforge.attachment.AttachmentType;
+import by.dragonsurvivalteam.dragonsurvival.common.compat.attachments.AttachmentType;
 import by.dragonsurvivalteam.dragonsurvival.common.serialization.INBTSerializable;
 import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;

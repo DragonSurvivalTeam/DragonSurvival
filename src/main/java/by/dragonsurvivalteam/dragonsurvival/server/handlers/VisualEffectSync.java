@@ -12,6 +12,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.event.entity.living.MobEffectEvent;
+import net.minecraftforge.registries.RegistryObject;
 import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
 
 import java.util.List;
@@ -24,14 +25,14 @@ import java.util.List;
  */
 @EventBusSubscriber
 public class VisualEffectSync {
-    private static final List<Holder<MobEffect>> VISUAL_EFFECTS = List.of(
-            BuiltInRegistries.MOB_EFFECT.wrapAsHolder(DSEffects.DRAIN.get()),
-            BuiltInRegistries.MOB_EFFECT.wrapAsHolder(DSEffects.CHARGED.get()),
-            BuiltInRegistries.MOB_EFFECT.wrapAsHolder(DSEffects.BURN.get()),
-            BuiltInRegistries.MOB_EFFECT.wrapAsHolder(DSEffects.BLOOD_SIPHON.get()),
-            BuiltInRegistries.MOB_EFFECT.wrapAsHolder(DSEffects.REGENERATION_DELAY.get()),
-            BuiltInRegistries.MOB_EFFECT.wrapAsHolder(DSEffects.TRAPPED.get()),
-            BuiltInRegistries.MOB_EFFECT.wrapAsHolder(DSEffects.HUNTER.get())
+    private static final List<RegistryObject<MobEffect>> VISUAL_EFFECTS = List.of(
+            DSEffects.DRAIN,
+            DSEffects.CHARGED,
+            DSEffects.BURN,
+            DSEffects.BLOOD_SIPHON,
+            DSEffects.REGENERATION_DELAY,
+            DSEffects.TRAPPED,
+            DSEffects.HUNTER
     );
 
     @SubscribeEvent
@@ -44,7 +45,7 @@ public class VisualEffectSync {
 
         MobEffectInstance instance = event.getEffectInstance();
 
-        if (!VISUAL_EFFECTS.contains(BuiltInRegistries.MOB_EFFECT.wrapAsHolder(instance.getEffect()))) {
+        if (!isVisualEffect(instance.getEffect())) {
             return;
         }
 
@@ -68,10 +69,14 @@ public class VisualEffectSync {
             return;
         }
 
-        if (!VISUAL_EFFECTS.contains(BuiltInRegistries.MOB_EFFECT.wrapAsHolder(instance.getEffect()))) {
+        if (!isVisualEffect(instance.getEffect())) {
             return;
         }
 
         PacketDistributor.sendToPlayersTrackingEntity(entity, new SyncVisualEffectRemoval(entity.getId(), BuiltInRegistries.MOB_EFFECT.wrapAsHolder(instance.getEffect())));
+    }
+
+    private static boolean isVisualEffect(final MobEffect effect) {
+        return VISUAL_EFFECTS.stream().anyMatch(registryObject -> registryObject.get() == effect);
     }
 }

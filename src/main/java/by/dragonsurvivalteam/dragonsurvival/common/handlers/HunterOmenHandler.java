@@ -35,7 +35,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
-import net.minecraftforge.event.entity.living.LivingIncomingDamageEvent;
+import by.dragonsurvivalteam.dragonsurvival.common.compat.event.LivingIncomingDamageEvent;
 import net.minecraftforge.event.entity.living.MobEffectEvent;
 import org.jetbrains.annotations.Nullable;
 

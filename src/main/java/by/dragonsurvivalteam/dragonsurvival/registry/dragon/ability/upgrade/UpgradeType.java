@@ -13,8 +13,6 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.ExtraCodecs;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
 import net.minecraftforge.registries.NewRegistryEvent;
 import net.minecraftforge.registries.RegisterEvent;
@@ -27,7 +25,6 @@ import java.util.Optional;
 import java.util.function.Predicate;
 
 /** The type cannot be a parameterized type because the parameter from the input cannot be validated to match (due to type erasure) */
-@EventBusSubscriber(modid = DragonSurvival.MODID, bus = EventBusSubscriber.Bus.MOD)
 public interface UpgradeType<T> {
     ResourceKey<Registry<MapCodec<? extends UpgradeType<?>>>> REGISTRY_KEY = ResourceKey.createRegistryKey(DragonSurvival.res("upgrade_type"));
     MiscCodecs.RegistryHolder<MapCodec<? extends UpgradeType<?>>> REGISTRY = new MiscCodecs.RegistryHolder<>();
@@ -36,13 +33,11 @@ public interface UpgradeType<T> {
 
     Predicate<Optional<UpgradeType<?>>> IS_MANUAL = optional -> optional.isPresent() && optional.get() instanceof ExperiencePointsUpgrade;
 
-    @SubscribeEvent
-    static void register(final NewRegistryEvent event) {
+    public static void register(final NewRegistryEvent event) {
         event.create(new RegistryBuilder<MapCodec<? extends UpgradeType<?>>>().setName(REGISTRY_KEY.location()), REGISTRY::set);
     }
 
-    @SubscribeEvent
-    static void registerEntries(final RegisterEvent event) {
+    public static void registerEntries(final RegisterEvent event) {
         if (event.getRegistryKey().equals(REGISTRY_KEY)) {
             event.register(REGISTRY_KEY, DragonSurvival.res("experience_points"), () -> ExperiencePointsUpgrade.CODEC);
             event.register(REGISTRY_KEY, DragonSurvival.res("experience_levels"), () -> ExperienceLevelUpgrade.CODEC);

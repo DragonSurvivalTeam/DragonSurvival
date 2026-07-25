@@ -12,7 +12,7 @@ import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
 import by.dragonsurvivalteam.dragonsurvival.network.compat.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
-import net.minecraftforge.attachment.AttachmentType;
+import by.dragonsurvivalteam.dragonsurvival.common.compat.attachments.AttachmentType;
 import by.dragonsurvivalteam.dragonsurvival.network.compat.PayloadContext;
 import org.jetbrains.annotations.NotNull;
 

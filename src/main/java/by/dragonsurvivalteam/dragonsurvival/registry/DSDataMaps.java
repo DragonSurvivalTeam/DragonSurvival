@@ -29,9 +29,9 @@ import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.OnDatapackSyncEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.registries.datamaps.AdvancedDataMapType;
-import net.minecraftforge.registries.datamaps.DataMapType;
-import net.minecraftforge.registries.datamaps.DataMapValueMerger;
+import by.dragonsurvivalteam.dragonsurvival.common.compat.datamaps.AdvancedDataMapType;
+import by.dragonsurvivalteam.dragonsurvival.common.compat.datamaps.DataMapType;
+import by.dragonsurvivalteam.dragonsurvival.common.compat.datamaps.DataMapValueMerger;
 
 import java.util.HashMap;
 import java.util.List;

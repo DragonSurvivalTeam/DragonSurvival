@@ -5,7 +5,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ClawInventoryDa
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.ComponentSerialization;
+import by.dragonsurvivalteam.dragonsurvival.common.compat.chat.ComponentSerialization;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.ResourceLocation;
 

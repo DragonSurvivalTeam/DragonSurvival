@@ -8,10 +8,10 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.attachment.AttachmentType;
+import by.dragonsurvivalteam.dragonsurvival.common.compat.attachments.AttachmentType;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
-import net.minecraftforge.event.entity.living.LivingIncomingDamageEvent;
-import net.minecraftforge.event.tick.EntityTickEvent;
+import by.dragonsurvivalteam.dragonsurvival.common.compat.event.LivingIncomingDamageEvent;
+import by.dragonsurvivalteam.dragonsurvival.common.compat.event.EntityTickEvent;
 import org.jetbrains.annotations.NotNull;
 
 @EventBusSubscriber

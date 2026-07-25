@@ -18,9 +18,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
-import org.spongepowered.asm.mixin.injection.ModifyArgs;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
 @Mixin(GameRenderer.class)
 public abstract class GameRendererMixin {
@@ -40,15 +38,20 @@ public abstract class GameRendererMixin {
     }
 
     /** Adjust intensity of the bobbing animation while walking based on the current scale */
-    @ModifyArgs(method = "bobView", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/vertex/PoseStack;translate(FFF)V"))
-    private void dragonSurvival$modifyBobViewTranslate(final Args args) {
+    @ModifyArg(method = "bobView", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/vertex/PoseStack;translate(FFF)V"), index = 0)
+    private float dragonSurvival$modifyBobViewTranslateX(final float original) {
+        return dragonSurvival$scaleBobViewTranslation(original);
+    }
+
+    @ModifyArg(method = "bobView", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/vertex/PoseStack;translate(FFF)V"), index = 1)
+    private float dragonSurvival$modifyBobViewTranslateY(final float original) {
+        return dragonSurvival$scaleBobViewTranslation(original);
+    }
+
+    private float dragonSurvival$scaleBobViewTranslation(final float original) {
         //noinspection DataFlowIssue -> player is present
         float scale = EntityScale.get(Minecraft.getInstance().player);
-
-        if (scale < 1) {
-            args.set(0, (float) args.get(0) * scale);
-            args.set(1, (float) args.get(1) * scale);
-        }
+        return scale < 1 ? original * scale : original;
     }
 
     /** Prevent the hurt animation from playing when setting the health (due to {@link LocalPlayer#hurtTo(float)}) */

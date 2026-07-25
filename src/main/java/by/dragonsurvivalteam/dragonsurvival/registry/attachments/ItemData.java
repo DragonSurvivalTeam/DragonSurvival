@@ -8,7 +8,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import by.dragonsurvivalteam.dragonsurvival.common.serialization.INBTSerializable;
-import net.minecraftforge.event.tick.EntityTickEvent;
+import by.dragonsurvivalteam.dragonsurvival.common.compat.event.EntityTickEvent;
 import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 

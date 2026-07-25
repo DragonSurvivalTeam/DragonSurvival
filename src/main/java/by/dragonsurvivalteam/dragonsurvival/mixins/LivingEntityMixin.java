@@ -23,7 +23,6 @@ import com.llamalad7.mixinextras.sugar.Share;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.llamalad7.mixinextras.sugar.ref.LocalFloatRef;
 import com.llamalad7.mixinextras.sugar.ref.LocalRef;
-import net.minecraft.core.Holder;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffect;
@@ -44,8 +43,8 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.damagesource.DamageContainer;
-import net.minecraftforge.event.entity.living.LivingIncomingDamageEvent;
+import by.dragonsurvivalteam.dragonsurvival.common.compat.damage.DamageContainer;
+import by.dragonsurvivalteam.dragonsurvival.common.compat.event.LivingIncomingDamageEvent;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -440,6 +439,4 @@ public abstract class LivingEntityMixin extends Entity {
     @Shadow
     public abstract boolean shouldDiscardFriction();
 
-    @Shadow
-    public abstract @Nullable MobEffectInstance getEffect(Holder<MobEffect> effect);
 }

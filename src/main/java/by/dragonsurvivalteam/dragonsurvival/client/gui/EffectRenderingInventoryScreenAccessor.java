@@ -1,4 +1,4 @@
-package by.dragonsurvivalteam.dragonsurvival.mixins.client;
+package by.dragonsurvivalteam.dragonsurvival.client.gui;
 
 import net.minecraft.client.renderer.Rect2i;
 

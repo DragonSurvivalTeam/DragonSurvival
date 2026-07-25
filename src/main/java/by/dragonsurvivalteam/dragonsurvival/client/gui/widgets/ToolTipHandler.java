@@ -28,7 +28,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
-import net.minecraft.network.chat.contents.PlainTextContents;
+import by.dragonsurvivalteam.dragonsurvival.common.compat.chat.PlainTextContents;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.EnchantedBookItem;

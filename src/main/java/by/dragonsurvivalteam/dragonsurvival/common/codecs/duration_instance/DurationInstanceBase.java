@@ -13,7 +13,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.LevelBasedValue;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
-import net.minecraftforge.attachment.AttachmentType;
+import by.dragonsurvivalteam.dragonsurvival.common.compat.attachments.AttachmentType;
 
 import java.util.Optional;
 

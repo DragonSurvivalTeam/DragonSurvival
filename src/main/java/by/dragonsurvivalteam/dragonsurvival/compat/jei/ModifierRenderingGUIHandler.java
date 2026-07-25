@@ -1,6 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.compat.jei;
 
-import by.dragonsurvivalteam.dragonsurvival.mixins.client.EffectRenderingInventoryScreenAccessor;
+import by.dragonsurvivalteam.dragonsurvival.client.gui.EffectRenderingInventoryScreenAccessor;
 import mezz.jei.api.gui.handlers.IGlobalGuiHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.EffectRenderingInventoryScreen;

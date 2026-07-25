@@ -35,12 +35,12 @@ public class ClientCastingHandler {
     };
 
     @SubscribeEvent
-    private static void handleMouseInput(final InputEvent.MouseButton.Pre event) {
+    public static void handleMouseInput(final InputEvent.MouseButton.Pre event) {
         handleCastingInput(InputConstants.Type.MOUSE.getOrCreate(event.getButton()), event.getAction());
     }
 
     @SubscribeEvent
-    private static void handleKeyInput(final InputEvent.Key event) {
+    public static void handleKeyInput(final InputEvent.Key event) {
         handleCastingInput(InputConstants.getKey(event.getKey(), event.getScanCode()), event.getAction());
     }
 

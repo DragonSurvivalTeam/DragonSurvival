@@ -4,7 +4,6 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.predicates.CustomPredi
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.predicates.DragonPredicate;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.predicates.EntityCheckPredicate;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.predicates.NearbyEntityPredicate;
-import by.dragonsurvivalteam.dragonsurvival.mixins.EntityFlagsPredicateAccess;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import net.minecraft.advancements.critereon.BlockPredicate;
 import net.minecraft.advancements.critereon.EntityEquipmentPredicate;

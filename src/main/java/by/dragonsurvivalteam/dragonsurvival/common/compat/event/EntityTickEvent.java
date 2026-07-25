@@ -1,4 +1,4 @@
-package net.minecraftforge.event.tick;
+package by.dragonsurvivalteam.dragonsurvival.common.compat.event;
 
 import net.minecraft.world.entity.Entity;
 import net.minecraftforge.eventbus.api.Event;

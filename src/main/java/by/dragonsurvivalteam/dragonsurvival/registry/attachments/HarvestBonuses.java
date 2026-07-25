@@ -10,8 +10,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.attachment.AttachmentType;
-import net.minecraftforge.event.tick.EntityTickEvent;
+import by.dragonsurvivalteam.dragonsurvival.common.compat.attachments.AttachmentType;
+import by.dragonsurvivalteam.dragonsurvival.common.compat.event.EntityTickEvent;
 import org.jetbrains.annotations.NotNull;
 
 @EventBusSubscriber // Only relevant for Players since the harvest events are only fired for them

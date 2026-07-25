@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.mixins;
 
+import by.dragonsurvivalteam.dragonsurvival.common.conditions.EntityFlagsPredicateAccess;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.advancements.critereon.EntityFlagsPredicate;

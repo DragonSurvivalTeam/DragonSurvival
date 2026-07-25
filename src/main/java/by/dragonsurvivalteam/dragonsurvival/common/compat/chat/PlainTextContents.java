@@ -1,4 +1,4 @@
-package net.minecraft.network.chat.contents;
+package by.dragonsurvivalteam.dragonsurvival.common.compat.chat;
 
 import net.minecraft.network.chat.ComponentContents;
 

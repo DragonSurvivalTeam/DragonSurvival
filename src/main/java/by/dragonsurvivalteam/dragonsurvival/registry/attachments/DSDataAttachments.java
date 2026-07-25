@@ -6,7 +6,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.capability.EntityStateHandler
 import by.dragonsurvivalteam.dragonsurvival.server.handlers.LightningHandler;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
-import net.minecraftforge.attachment.AttachmentType;
+import by.dragonsurvivalteam.dragonsurvival.common.compat.attachments.AttachmentType;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.RegistryBuilder;

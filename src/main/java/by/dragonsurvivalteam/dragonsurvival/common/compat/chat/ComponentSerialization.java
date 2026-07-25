@@ -1,4 +1,4 @@
-package net.minecraft.network.chat;
+package by.dragonsurvivalteam.dragonsurvival.common.compat.chat;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
@@ -6,6 +6,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.Dynamic;
 import com.mojang.serialization.JsonOps;
+import net.minecraft.network.chat.Component;
 
 public final class ComponentSerialization {
     public static final Codec<Component> CODEC = Codec.PASSTHROUGH.comapFlatMap(dynamic -> {

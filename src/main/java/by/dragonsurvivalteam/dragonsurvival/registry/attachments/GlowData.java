@@ -10,9 +10,9 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.Entity;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.attachment.AttachmentType;
+import by.dragonsurvivalteam.dragonsurvival.common.compat.attachments.AttachmentType;
 import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.event.tick.EntityTickEvent;
+import by.dragonsurvivalteam.dragonsurvival.common.compat.event.EntityTickEvent;
 import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 

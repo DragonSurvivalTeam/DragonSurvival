@@ -12,7 +12,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.event.entity.living.LivingIncomingDamageEvent;
+import by.dragonsurvivalteam.dragonsurvival.common.compat.event.LivingIncomingDamageEvent;
 import net.minecraftforge.event.TickEvent;
 import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
 

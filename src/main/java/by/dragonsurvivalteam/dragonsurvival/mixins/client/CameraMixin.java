@@ -24,9 +24,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
-import org.spongepowered.asm.mixin.injection.ModifyArgs;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
 @Mixin(Camera.class)
 public abstract class CameraMixin {
@@ -94,15 +92,29 @@ public abstract class CameraMixin {
     }
 
     // We need to adjust the distance at which blocks are checked for collision to prevent the camera from thinking it is blocked
-    @ModifyArgs(method = "getMaxZoom", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/phys/Vec3;add(DDD)Lnet/minecraft/world/phys/Vec3;"))
-    private void dragonSurvival$adjustCameraPosition(Args args) {
+    @ModifyArg(method = "getMaxZoom", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/phys/Vec3;add(DDD)Lnet/minecraft/world/phys/Vec3;"), index = 0)
+    private double dragonSurvival$adjustCameraPositionX(final double original) {
+        return dragonSurvival$scaleCameraOffset(original);
+    }
+
+    @ModifyArg(method = "getMaxZoom", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/phys/Vec3;add(DDD)Lnet/minecraft/world/phys/Vec3;"), index = 1)
+    private double dragonSurvival$adjustCameraPositionY(final double original) {
+        return dragonSurvival$scaleCameraOffset(original);
+    }
+
+    @ModifyArg(method = "getMaxZoom", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/phys/Vec3;add(DDD)Lnet/minecraft/world/phys/Vec3;"), index = 2)
+    private double dragonSurvival$adjustCameraPositionZ(final double original) {
+        return dragonSurvival$scaleCameraOffset(original);
+    }
+
+    private double dragonSurvival$scaleCameraOffset(final double original) {
         Player player = Minecraft.getInstance().player;
 
         if (player != null && this.entity == player) {
             float scale = Math.min(1, EntityScale.get(player));
-            args.set(0, (double) args.get(0) * scale);
-            args.set(1, (double) args.get(1) * scale);
-            args.set(2, (double) args.get(2) * scale);
+            return original * scale;
         }
+
+        return original;
     }
 }

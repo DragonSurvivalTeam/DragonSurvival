@@ -1,4 +1,4 @@
-package net.minecraftforge.common.damagesource;
+package by.dragonsurvivalteam.dragonsurvival.common.compat.damage;
 
 import net.minecraft.world.damagesource.DamageSource;
 

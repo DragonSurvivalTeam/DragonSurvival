@@ -1,9 +1,10 @@
-package net.minecraftforge.event.entity.living;
+package by.dragonsurvivalteam.dragonsurvival.common.compat.event;
 
+import by.dragonsurvivalteam.dragonsurvival.common.compat.damage.DamageContainer;
+import by.dragonsurvivalteam.dragonsurvival.common.compat.damage.IReductionFunction;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraftforge.common.damagesource.DamageContainer;
-import net.minecraftforge.common.damagesource.IReductionFunction;
+import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.eventbus.api.Cancelable;
 
 /**

@@ -11,7 +11,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStages;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceKey;
-import net.minecraftforge.common.data.DataMapProvider;
+import by.dragonsurvivalteam.dragonsurvival.common.compat.datamaps.DataMapProvider;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;

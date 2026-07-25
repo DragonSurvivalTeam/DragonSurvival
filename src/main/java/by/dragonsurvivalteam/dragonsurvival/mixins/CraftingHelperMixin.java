@@ -14,7 +14,6 @@ public abstract class CraftingHelperMixin {
     private static void dragonSurvival$copyResultId(
             final JsonObject json,
             final boolean readNbt,
-            final boolean disallowsAirInRecipe,
             final CallbackInfoReturnable<ItemStack> callback
     ) {
         if (json.has("id") && !json.has("item")) {

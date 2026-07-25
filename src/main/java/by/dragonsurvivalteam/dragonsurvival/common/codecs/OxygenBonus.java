@@ -28,7 +28,7 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.LevelBasedValue;
-import net.minecraftforge.attachment.AttachmentType;
+import by.dragonsurvivalteam.dragonsurvival.common.compat.attachments.AttachmentType;
 import net.minecraftforge.fluids.FluidType;
 import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
 import net.minecraftforge.registries.ForgeRegistries;
