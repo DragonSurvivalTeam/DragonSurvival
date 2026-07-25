@@ -26,6 +26,8 @@ import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.tick.EntityTickEvent;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -36,6 +38,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(Entity.class)
 public abstract class EntityMixin {
     @Shadow private EntityDimensions dimensions;
+
+    @Inject(method = "tick", at = @At("TAIL"))
+    private void dragonSurvival$postEntityTick(final CallbackInfo callback) {
+        MinecraftForge.EVENT_BUS.post(new EntityTickEvent.Post((Entity) (Object) this));
+    }
 
     /** Correctly position the passenger when riding a player dragon */
     @ModifyReturnValue(method = "getPassengerAttachmentPoint", at = @At("RETURN"))

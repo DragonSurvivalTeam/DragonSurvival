@@ -54,7 +54,6 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.client.event.ClientTickEvent;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.RenderBlockScreenEffectEvent;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
@@ -62,6 +61,7 @@ import net.minecraftforge.client.event.RenderNameTagEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.TriState;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityLeaveLevelEvent;
 import net.minecraftforge.event.level.LevelEvent;
 import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
@@ -455,7 +455,11 @@ public class ClientDragonRenderer {
     }
 
     @SubscribeEvent
-    public static void updateFirstPersonDataAndSendMovementData(final ClientTickEvent.Post event) {
+    public static void updateFirstPersonDataAndSendMovementData(final TickEvent.ClientTickEvent event) {
+        if (event.phase != TickEvent.Phase.END) {
+            return;
+        }
+
         LocalPlayer player = Minecraft.getInstance().player;
 
         if (!DragonStateProvider.isDragon(player)) {

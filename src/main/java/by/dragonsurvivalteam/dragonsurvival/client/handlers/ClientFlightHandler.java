@@ -40,7 +40,6 @@ import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.client.event.CalculateDetachedCameraDistanceEvent;
-import net.minecraftforge.client.event.ClientTickEvent;
 import net.minecraftforge.client.event.ViewportEvent;
 import net.minecraftforge.event.TickEvent;
 import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
@@ -283,7 +282,11 @@ public class ClientFlightHandler {
 
     /** Controls acceleration */
     @SubscribeEvent
-    public static void flightControl(final ClientTickEvent.Pre event) {
+    public static void flightControl(final TickEvent.ClientTickEvent event) {
+        if (event.phase != TickEvent.Phase.START) {
+            return;
+        }
+
         Minecraft minecraft = Minecraft.getInstance();
         LocalPlayer player = minecraft.player;
 
@@ -562,7 +565,11 @@ public class ClientFlightHandler {
     }
 
     @SubscribeEvent
-    public static void onClientTick(final ClientTickEvent.Post event) {
+    public static void onClientTick(final TickEvent.ClientTickEvent event) {
+        if (event.phase != TickEvent.Phase.END) {
+            return;
+        }
+
         LocalPlayer player = Minecraft.getInstance().player;
 
         if (player == null) {
