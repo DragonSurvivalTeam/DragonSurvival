@@ -303,7 +303,7 @@ public class DragonDoor extends Block implements SimpleWaterloggedBlock {
     }
 
     @Override
-    public @NotNull BlockState playerWillDestroy(final Level level, @NotNull final BlockPos position, @NotNull final BlockState state, @NotNull final Player player) {
+    public void playerWillDestroy(final Level level, @NotNull final BlockPos position, @NotNull final BlockState state, @NotNull final Player player) {
         if (!level.isClientSide()) {
             Part part = state.getValue(PART);
 
@@ -326,7 +326,7 @@ public class DragonDoor extends Block implements SimpleWaterloggedBlock {
             }
         }
 
-        return super.playerWillDestroy(level, position, state, player);
+        super.playerWillDestroy(level, position, state, player);
     }
 
     @Override
