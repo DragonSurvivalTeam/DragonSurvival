@@ -355,7 +355,7 @@ public final class SortingHandler {
             return 0;
         }
 
-        return properties.nutrition();
+        return properties.getNutrition();
     }
 
     private static int foodNutritionCompare(final ItemStack first, final ItemStack second) {
@@ -367,7 +367,7 @@ public final class SortingHandler {
             return 0;
         }
 
-        return properties.saturation();
+        return properties.getSaturationModifier();
     }
 
     private static int foodSaturationCompare(final ItemStack first, final ItemStack second) {

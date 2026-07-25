@@ -24,7 +24,7 @@ import java.util.function.Supplier;
 public record DietEntry(String items, Optional<FoodProperties> properties, Optional<Either<Boolean, RetainEffects>> retainEffects) {
     public static final Codec<DietEntry> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             ResourceLocationWrapper.validatedCodec().fieldOf("items").forGetter(DietEntry::items),
-            FoodProperties.DIRECT_CODEC.optionalFieldOf("properties").forGetter(DietEntry::properties),
+            FoodPropertiesCompat.DIRECT_CODEC.optionalFieldOf("properties").forGetter(DietEntry::properties),
             Codec.either(Codec.BOOL, RetainEffects.CODEC).optionalFieldOf("retain_effects").forGetter(DietEntry::retainEffects)
     ).apply(instance, DietEntry::new));
 
@@ -43,13 +43,13 @@ public record DietEntry(String items, Optional<FoodProperties> properties, Optio
                         return;
                     }
 
-                    List<FoodProperties.PossibleEffect> effects = new ArrayList<>(properties.effects());
+                    List<FoodPropertiesCompat.PossibleEffect> effects = new ArrayList<>(FoodPropertiesCompat.effects(properties));
 
                     if (entry.retainEffects().isPresent() && entry.properties().isPresent()) {
                         FoodProperties original = item.getDefaultInstance().getFoodProperties(null);
 
                         if (original != null) {
-                            for (FoodProperties.PossibleEffect effect : original.effects()) {
+                            for (FoodPropertiesCompat.PossibleEffect effect : FoodPropertiesCompat.effects(original)) {
                                 if (entry.retainEffects().get().map(Function.identity(), check -> check.retain(effect.effect()))) {
                                     effects.add(effect);
                                 }
@@ -63,12 +63,12 @@ public record DietEntry(String items, Optional<FoodProperties> properties, Optio
                         effects.clear();
                     }
 
-                    properties = new FoodProperties(
-                            properties.nutrition(),
-                            properties.saturation(),
-                            properties.canAlwaysEat(),
-                            properties.eatSeconds(),
-                            properties.usingConvertsTo(),
+                    properties = FoodPropertiesCompat.create(
+                            FoodPropertiesCompat.nutrition(properties),
+                            FoodPropertiesCompat.saturation(properties),
+                            FoodPropertiesCompat.canAlwaysEat(properties),
+                            FoodPropertiesCompat.eatSeconds(properties),
+                            FoodPropertiesCompat.usingConvertsTo(properties),
                             effects
                     );
 
@@ -150,7 +150,7 @@ public record DietEntry(String items, Optional<FoodProperties> properties, Optio
         private boolean canAlwaysEat;
         private float seconds = DEFAULT_EAT_SECONDS;
 
-        private final List<FoodProperties.PossibleEffect> effects = new ArrayList<>();
+        private final List<FoodPropertiesCompat.PossibleEffect> effects = new ArrayList<>();
         private Optional<ItemStack> convertsTo = Optional.empty();
 
         public Builder(final String items) {
@@ -188,7 +188,7 @@ public record DietEntry(String items, Optional<FoodProperties> properties, Optio
         }
 
         public Builder effect(final Supplier<MobEffectInstance> effect, final float probability) {
-            this.effects.add(new FoodProperties.PossibleEffect(effect, probability));
+            this.effects.add(new FoodPropertiesCompat.PossibleEffect(effect, probability));
             this.customProperties = true;
             return this;
         }
@@ -226,7 +226,7 @@ public record DietEntry(String items, Optional<FoodProperties> properties, Optio
 
         public DietEntry build() {
             if (customProperties && properties.isEmpty()) {
-                properties = Optional.of(new FoodProperties(nutriton, saturation, canAlwaysEat, seconds, convertsTo, effects));
+                properties = Optional.of(FoodPropertiesCompat.create(nutriton, saturation, canAlwaysEat, seconds, convertsTo, effects));
             }
 
             Either<Boolean, RetainEffects> retainEffects;

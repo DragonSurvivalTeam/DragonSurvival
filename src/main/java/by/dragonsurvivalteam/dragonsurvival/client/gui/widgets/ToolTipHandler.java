@@ -4,6 +4,7 @@ import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic.HelpButton;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.FoodPropertiesCompat;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.DragonAbilityHolder;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
@@ -179,8 +180,8 @@ public class ToolTipHandler {
         String saturationIcon = species.value().miscResources().foodTooltip().saturationIcon();
 
         // 1 Icon = 2 points (e.g. 10 nutrition icons for a maximum food level of 20)
-        String nutrition = String.format("%.1f", properties.nutrition() / 2f);
-        String saturation = String.format("%.1f", properties.saturation() / 2f);
+        String nutrition = String.format("%.1f", FoodPropertiesCompat.nutrition(properties) / 2f);
+        String saturation = String.format("%.1f", FoodPropertiesCompat.saturation(properties) / 2f);
         int color = species.value().miscResources().foodTooltip().color().map(TextColor::getValue).orElse(species.value().miscResources().primaryColor().getValue());
 
         MutableComponent nutritionComponent = Component.literal(nutrition + " ").withStyle(Style.EMPTY.withColor(color));

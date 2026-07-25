@@ -2,6 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.common.handlers;
 
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.FoodPropertiesCompat;
 import by.dragonsurvivalteam.dragonsurvival.compat.ModID;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigRange;
@@ -74,7 +75,7 @@ public class DragonFoodHandler {
         FoodProperties properties = getDragonFoodProperties(DragonStateProvider.getData(entity).species(), stack, null);
 
         if (properties != null) {
-            return properties.eatDurationTicks();
+            return FoodPropertiesCompat.eatDurationTicks(properties);
         } else {
             return original;
         }
