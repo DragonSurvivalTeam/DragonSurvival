@@ -102,7 +102,10 @@ public class ToolTipHandler {
 
     @SubscribeEvent
     public static void addDragonFoodTooltip(final ItemTooltipEvent event) {
-        HolderLookup.Provider provider = event.getContext().registries();
+        Minecraft minecraft = Minecraft.getInstance();
+        HolderLookup.Provider provider = event.getEntity() != null
+            ? event.getEntity().level().registryAccess()
+            : minecraft.level != null ? minecraft.level.registryAccess() : null;
 
         if (provider == null || TOOLTIP_STYLE == TooltipStyle.NONE) {
             return;
