@@ -8,13 +8,14 @@ import by.dragonsurvivalteam.dragonsurvival.network.status.SyncPlayerJump;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.event.entity.living.LivingEvent;
-import net.minecraftforge.event.level.BlockDropsEvent;
 import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
 
 @EventBusSubscriber
@@ -46,16 +47,15 @@ public class DragonBonusHandler {
         }
     }
 
-    @SubscribeEvent
-    public static void addFireProtectionToDragonDrops(final BlockDropsEvent event) {
-        if (event.getBreaker() == null) {
+    public static void addFireProtectionToDragonDrop(final Entity breaker, final ItemEntity drop) {
+        if (breaker == null) {
             return;
         }
 
         // TODO :: also handle experience? would need a hook in 'CommonHooks#handleBlockDrops' to store some context and then modify the experience orb in 'ExperienceOrb#award'
         // TODO :: remove check for dragon?
-        if (event.getBreaker().fireImmune() && DragonStateProvider.isDragon(event.getBreaker()) && event.getBreaker().isInLava()) {
-            event.getDrops().forEach(drop -> AttachmentManager.getData(drop, DSDataAttachments.ITEM).isFireImmune = true);
+        if (breaker.fireImmune() && DragonStateProvider.isDragon(breaker) && breaker.isInLava()) {
+            AttachmentManager.getData(drop, DSDataAttachments.ITEM).isFireImmune = true;
         }
     }
 }
