@@ -10,10 +10,14 @@ import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvide
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.StageResources;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.blaze3d.vertex.VertexFormat;
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
@@ -22,9 +26,26 @@ import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
 import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
 
+import java.util.function.Function;
+
 // TODO :: geckolib has an 'AutoGlowingGeoLayer' class, could that help here?
 // FIXME :: glow layer doesn't like translucency much (it goes dark once the alpha changes)
 public class DragonGlowLayerRenderer extends GeoRenderLayer<DragonEntity> {
+    private static final Function<ResourceLocation, RenderType> LIGHTNING_EYES = Util.memoize(texture -> RenderType.create(
+            "eyes",
+            DefaultVertexFormat.NEW_ENTITY,
+            VertexFormat.Mode.QUADS,
+            1536,
+            false,
+            true,
+            RenderType.CompositeState.builder()
+                    .setShaderState(RenderStateShard.RENDERTYPE_EYES_SHADER)
+                    .setTextureState(new RenderStateShard.TextureStateShard(texture, false, false))
+                    .setTransparencyState(RenderStateShard.LIGHTNING_TRANSPARENCY)
+                    .setWriteMaskState(RenderStateShard.COLOR_WRITE)
+                    .createCompositeState(false)
+    ));
+
     private final GeoEntityRenderer<DragonEntity> renderer;
 
     public DragonGlowLayerRenderer(final GeoEntityRenderer<DragonEntity> renderer) {
@@ -80,7 +101,7 @@ public class DragonGlowLayerRenderer extends GeoRenderLayer<DragonEntity> {
 
         if (hasGlowTexture) {
             DragonEditorHandler.markSkinTextureUsed(glowTexture);
-            RenderType type = RenderType.EYES.apply(glowTexture, RenderType.LIGHTNING_TRANSPARENCY);
+            RenderType type = LIGHTNING_EYES.apply(glowTexture);
             dragonRenderer.actuallyRender(poseStack, animatable, bakedModel, type, bufferSource, bufferSource.getBuffer(type), true, partialTick, packedLight, OverlayTexture.NO_OVERLAY, renderer.getRenderColor(animatable, partialTick, packedLight).getColor());
         }
     }
