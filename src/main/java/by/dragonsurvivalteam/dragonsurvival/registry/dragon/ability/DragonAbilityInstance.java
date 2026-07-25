@@ -267,7 +267,7 @@ public class DragonAbilityInstance {
 
         // Passive abilities keep their cooldown since some effects can affect creative mode gameplay in a confusing way
         // (e.g. a revival effect - since the player does not actively cast it, it may seem like there is a bug)
-        if (dragon.hasInfiniteMaterials() && !this.isPassive()) {
+        if (dragon.getAbilities().instabuild && !this.isPassive()) {
             cooldown = NO_COOLDOWN;
         } else {
             cooldown = ability.value().activation().getCooldown(level);
@@ -278,7 +278,7 @@ public class DragonAbilityInstance {
     public void tickCooldown(final Player player) {
         // Passive abilities keep their cooldown since some effects can affect creative mode gameplay in a confusing way
         // (e.g. a revival effect - since the player does not actively cast it, it may seem like there is a bug)
-        if (player.hasInfiniteMaterials() && !this.isPassive()) {
+        if (player.getAbilities().instabuild && !this.isPassive()) {
             cooldown = NO_COOLDOWN;
         } else {
             cooldown = Math.max(NO_COOLDOWN, cooldown - 1);

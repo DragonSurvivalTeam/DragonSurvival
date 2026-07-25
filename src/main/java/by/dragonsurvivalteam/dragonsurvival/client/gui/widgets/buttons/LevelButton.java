@@ -67,7 +67,7 @@ public class LevelButton extends ClickHoverButton {
     public int getExperienceModification() {
         LocalPlayer player = Objects.requireNonNull(Minecraft.getInstance().player);
 
-        if (player.hasInfiniteMaterials()) {
+        if (player.getAbilities().instabuild) {
             return 0;
         }
 

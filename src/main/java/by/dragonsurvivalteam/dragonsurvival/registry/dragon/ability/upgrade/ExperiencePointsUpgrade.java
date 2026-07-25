@@ -32,7 +32,7 @@ public record ExperiencePointsUpgrade(int maxLevel, LevelBasedValue experienceCo
             return false;
         }
 
-        if (!dragon.hasInfiniteMaterials()) {
+        if (!dragon.getAbilities().instabuild) {
             int experiencePoints = getExperience(ability, type);
 
             if (experiencePoints != 0) {
@@ -62,7 +62,7 @@ public record ExperiencePointsUpgrade(int maxLevel, LevelBasedValue experienceCo
 
     public boolean canModifyLevel(final Player player, final DragonAbilityInstance ability, final Type type) {
         return switch (type) {
-            case UPGRADE -> ability.level() < maxLevel() && (player.hasInfiniteMaterials() || ExperienceUtils.getTotalExperience(player) >= Math.abs(getExperience(ability, type)));
+            case UPGRADE -> ability.level() < maxLevel() && (player.getAbilities().instabuild || ExperienceUtils.getTotalExperience(player) >= Math.abs(getExperience(ability, type)));
             // If upgrading from the previous level to this one costs no experience
             // It will automatically upgrade - therefor it makes no sense to be able to downgrade
             case DOWNGRADE -> ability.level() > minLevel() && getExperience(ability, type) != 0;

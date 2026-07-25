@@ -73,10 +73,10 @@ public class DragonBeacon extends Block implements SimpleWaterloggedBlock, Entit
 
         int playerExperience = ExperienceUtils.getTotalExperience(player);
 
-        if ((player.hasInfiniteMaterials() || playerExperience >= beacon.getExperienceCost())) {
+        if ((player.getAbilities().instabuild || playerExperience >= beacon.getExperienceCost())) {
             // The client does not retain the block entity data - not worth to sync it
             if (!player.level().isClientSide() && beacon.applyEffects(player, true)) {
-                if (!player.hasInfiniteMaterials()) {
+            if (!player.getAbilities().instabuild) {
                     player.giveExperiencePoints(-beacon.getExperienceCost());
                 }
 
