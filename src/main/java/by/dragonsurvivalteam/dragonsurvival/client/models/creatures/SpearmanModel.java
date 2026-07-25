@@ -28,11 +28,11 @@ public class SpearmanModel extends GeoModel<SpearmanEntity> {
     }
 
     @Override
-    public void applyMolangQueries(final AnimationState<SpearmanEntity> animationState, double currentTick) {
-        super.applyMolangQueries(animationState, currentTick);
-
+    public void handleAnimations(final SpearmanEntity animatable, long instanceId, final AnimationState<SpearmanEntity> animationState) {
         EntityModelData entityData = animationState.getData(DataTickets.ENTITY_MODEL_DATA);
         MolangParser.INSTANCE.setValue("query.look_angle_x", () -> entityData.headPitch() * Mth.DEG_TO_RAD);
         MolangParser.INSTANCE.setValue("query.look_angle_y", () -> entityData.netHeadYaw() * Mth.DEG_TO_RAD);
+
+        super.handleAnimations(animatable, instanceId, animationState);
     }
 }

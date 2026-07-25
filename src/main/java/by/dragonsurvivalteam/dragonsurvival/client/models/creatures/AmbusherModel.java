@@ -28,11 +28,11 @@ public class AmbusherModel extends GeoModel<AmbusherEntity> {
     }
 
     @Override
-    public void applyMolangQueries(final AnimationState<AmbusherEntity> animationState, double currentTick) {
-        super.applyMolangQueries(animationState, currentTick);
-
+    public void handleAnimations(final AmbusherEntity animatable, long instanceId, final AnimationState<AmbusherEntity> animationState) {
         EntityModelData entityData = animationState.getData(DataTickets.ENTITY_MODEL_DATA);
         MolangParser.INSTANCE.setValue("query.look_angle_x", () -> entityData.headPitch() * Mth.DEG_TO_RAD);
         MolangParser.INSTANCE.setValue("query.look_angle_y", () -> entityData.netHeadYaw() * Mth.DEG_TO_RAD);
+
+        super.handleAnimations(animatable, instanceId, animationState);
     }
 }

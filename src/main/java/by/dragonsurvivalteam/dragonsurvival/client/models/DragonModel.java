@@ -25,7 +25,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.ForgeMod;
-import software.bernie.geckolib.core.animation.AnimationState;
 import software.bernie.geckolib.core.molang.MolangParser;
 import software.bernie.geckolib.model.GeoModel;
 
@@ -42,10 +41,9 @@ public class DragonModel extends GeoModel<DragonEntity> {
     private ResourceLocation overrideTexture;
 
     @Override
-    public void applyMolangQueries(final AnimationState<DragonEntity> animationState, double currentTick) {
-        super.applyMolangQueries(animationState, currentTick);
+    public void applyMolangQueries(final DragonEntity dragon, double currentTick) {
+        super.applyMolangQueries(dragon, currentTick);
 
-        DragonEntity dragon = animationState.getAnimatable();
         Player player = dragon.getPlayer();
 
         if (player == null) {

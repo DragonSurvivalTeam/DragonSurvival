@@ -28,11 +28,11 @@ public class LeaderModel extends GeoModel<LeaderEntity> {
     }
 
     @Override
-    public void applyMolangQueries(final AnimationState<LeaderEntity> animationState, double currentTick) {
-        super.applyMolangQueries(animationState, currentTick);
-
+    public void handleAnimations(final LeaderEntity animatable, long instanceId, final AnimationState<LeaderEntity> animationState) {
         EntityModelData entityData = animationState.getData(DataTickets.ENTITY_MODEL_DATA);
         MolangParser.INSTANCE.setValue("query.look_angle_x", () -> entityData.headPitch() * Mth.DEG_TO_RAD);
         MolangParser.INSTANCE.setValue("query.look_angle_y", () -> entityData.netHeadYaw() * Mth.DEG_TO_RAD);
+
+        super.handleAnimations(animatable, instanceId, animationState);
     }
 }
