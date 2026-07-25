@@ -3,6 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.server.containers;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSContainers;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ClawInventoryData;
 import by.dragonsurvivalteam.dragonsurvival.server.containers.slots.ClawToolSlot;
+import by.dragonsurvivalteam.dragonsurvival.server.containers.slots.DragonArmorSlot;
 import by.dragonsurvivalteam.dragonsurvival.util.ToolUtils;
 import net.minecraft.network.protocol.game.ClientboundContainerSetSlotPacket;
 import net.minecraft.resources.ResourceLocation;
@@ -10,10 +11,10 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.EquipmentSlot.Type;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ArmorSlot;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.inventory.InventoryMenu;
@@ -23,7 +24,6 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import org.jetbrains.annotations.NotNull;
 
@@ -85,7 +85,7 @@ public class DragonContainer extends AbstractContainerMenu {
         addDataSlots(dataStatus);
 
         for (int i = 0; i < 4; i++) {
-            addSlot(new ArmorSlot(inventory, player, VALID_EQUIPMENT_SLOTS[i], 39 - i, 8, 8 + i * 18, ARMOR_SLOT_TEXTURES[i]));
+            addSlot(new DragonArmorSlot(inventory, player, VALID_EQUIPMENT_SLOTS[i], 39 - i, 8, 8 + i * 18, ARMOR_SLOT_TEXTURES[i]));
         }
 
         // Inventory slots
@@ -143,7 +143,7 @@ public class DragonContainer extends AbstractContainerMenu {
             ItemStack slotItemStack = slot.getItem();
             itemStack = slotItemStack.copy();
 
-            EquipmentSlot equipmentSlot = player.getEquipmentSlotForItem(itemStack);
+            EquipmentSlot equipmentSlot = Mob.getEquipmentSlotForItem(itemStack);
 
             if (index == craftingResultIndex) { // Index 45
                 // Move item from the crafting slot into the inventory / hotbar
@@ -153,7 +153,7 @@ public class DragonContainer extends AbstractContainerMenu {
                 }
 
                 slot.onQuickCraft(slotItemStack, itemStack);
-            } else if (equipmentSlot.getType() == Type.HUMANOID_ARMOR && !slots.get(3 - equipmentSlot.getIndex()).hasItem()) {
+            } else if (equipmentSlot.getType() == Type.ARMOR && !slots.get(3 - equipmentSlot.getIndex()).hasItem()) {
                 // Move the item into the relevant armor equipment slot (0 to 4) (if the slot is free)
                 int i = 3 - equipmentSlot.getIndex();
 
@@ -212,7 +212,7 @@ public class DragonContainer extends AbstractContainerMenu {
             }
 
             if (slotItemStack.isEmpty()) {
-                slot.setByPlayer(ItemStack.EMPTY, itemStack);
+                slot.setByPlayer(ItemStack.EMPTY);
             } else {
                 slot.setChanged();
             }
@@ -247,13 +247,13 @@ public class DragonContainer extends AbstractContainerMenu {
     public void slotsChanged(@NotNull final Container inventory) {
         if (player instanceof ServerPlayer serverPlayer) {
             ItemStack itemStack = ItemStack.EMPTY;
-            Optional<RecipeHolder<CraftingRecipe>> recipeOptional = serverPlayer.serverLevel().getRecipeManager().getRecipeFor(RecipeType.CRAFTING, craftMatrix.asCraftInput(), serverPlayer.level());
+            Optional<CraftingRecipe> recipeOptional = serverPlayer.serverLevel().getRecipeManager().getRecipeFor(RecipeType.CRAFTING, craftMatrix, serverPlayer.level());
 
             if (recipeOptional.isPresent()) {
-                RecipeHolder<CraftingRecipe> recipe = recipeOptional.get();
+                CraftingRecipe recipe = recipeOptional.get();
 
                 if (craftResult.setRecipeUsed(player.level(), serverPlayer, recipe)) {
-                    itemStack = recipe.value().assemble(craftMatrix.asCraftInput(), serverPlayer.level().registryAccess());
+                    itemStack = recipe.assemble(craftMatrix, serverPlayer.level().registryAccess());
                 }
             }
 

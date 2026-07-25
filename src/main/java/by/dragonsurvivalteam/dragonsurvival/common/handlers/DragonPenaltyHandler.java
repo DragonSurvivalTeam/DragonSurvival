@@ -7,10 +7,10 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty.DragonPenalt
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty.HitByProjectileTrigger;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty.ItemUsedTrigger;
 import by.dragonsurvivalteam.dragonsurvival.server.containers.slots.ClawToolSlot;
+import by.dragonsurvivalteam.dragonsurvival.server.containers.slots.DragonArmorSlot;
 import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.ArmorSlot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -96,8 +96,12 @@ public class DragonPenaltyHandler {
             return;
         }
 
+        boolean playerArmorSlot = event.getSlot().container == player.getInventory()
+                && event.getSlot().getContainerSlot() >= 36
+                && event.getSlot().getContainerSlot() <= 39;
+
         // Will have to see what type of slots modded inventories may use
-        if (!(event.getSlot() instanceof ArmorSlot) && !(event.getSlot() instanceof ClawToolSlot)) {
+        if (!(event.getSlot() instanceof DragonArmorSlot) && !playerArmorSlot && !(event.getSlot() instanceof ClawToolSlot)) {
             return;
         }
 

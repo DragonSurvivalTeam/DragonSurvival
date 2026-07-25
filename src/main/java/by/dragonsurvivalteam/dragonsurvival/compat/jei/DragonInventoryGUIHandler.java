@@ -9,13 +9,12 @@ import mezz.jei.api.recipe.transfer.IRecipeTransferInfo;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.crafting.CraftingRecipe;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Optional;
 
-public class DragonInventoryGUIHandler implements IRecipeTransferInfo<DragonContainer, RecipeHolder<CraftingRecipe>>, IGuiContainerHandler<DragonInventoryScreen> {
+public class DragonInventoryGUIHandler implements IRecipeTransferInfo<DragonContainer, CraftingRecipe>, IGuiContainerHandler<DragonInventoryScreen> {
     @Override
     public @NotNull Class<? extends DragonContainer> getContainerClass() {
         return DragonContainer.class;
@@ -27,23 +26,23 @@ public class DragonInventoryGUIHandler implements IRecipeTransferInfo<DragonCont
     }
 
     @Override
-    public @NotNull RecipeType<RecipeHolder<CraftingRecipe>> getRecipeType() {
+    public @NotNull RecipeType<CraftingRecipe> getRecipeType() {
         return RecipeTypes.CRAFTING;
     }
 
 
     @Override
-    public boolean canHandle(@NotNull DragonContainer container, @NotNull RecipeHolder<CraftingRecipe> recipe) {
+    public boolean canHandle(@NotNull DragonContainer container, @NotNull CraftingRecipe recipe) {
         return true;
     }
 
     @Override
-    public @NotNull List<Slot> getRecipeSlots(@NotNull DragonContainer container, @NotNull RecipeHolder<CraftingRecipe> recipe) {
+    public @NotNull List<Slot> getRecipeSlots(@NotNull DragonContainer container, @NotNull CraftingRecipe recipe) {
         return container.craftingSlots;
     }
 
     @Override
-    public @NotNull List<Slot> getInventorySlots(@NotNull DragonContainer container, @NotNull RecipeHolder<CraftingRecipe> recipe) {
+    public @NotNull List<Slot> getInventorySlots(@NotNull DragonContainer container, @NotNull CraftingRecipe recipe) {
         return container.inventorySlots;
     }
 }

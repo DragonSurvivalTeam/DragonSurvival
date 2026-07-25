@@ -13,13 +13,12 @@ import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.item.crafting.SmeltingRecipe;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.LevelBasedValue;
 import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
@@ -56,21 +55,21 @@ public record SmeltItemEffect(Optional<ItemPredicate> itemPredicate, Optional<Le
             return;
         }
 
-        RecipeHolder<SmeltingRecipe> recipe = dragon.level().getRecipeManager().getRecipeFor(RecipeType.SMELTING, new SingleRecipeInput(stack), dragon.level()).orElse(null);
+        SmeltingRecipe recipe = dragon.level().getRecipeManager().getRecipeFor(RecipeType.SMELTING, new SimpleContainer(stack), dragon.level()).orElse(null);
 
-        if (recipe == null || recipe.value().getResultItem(dragon.registryAccess()).isEmpty()) {
+        if (recipe == null || recipe.getResultItem(dragon.serverLevel().registryAccess()).isEmpty()) {
             return;
         }
 
         if (progress.isPresent()) {
             ItemData data = itemEntity.getData(DSDataAttachments.ITEM);
             data.smeltingProgress += progress.get().calculate(ability.level());
-            data.smeltingTime = recipe.value().getCookingTime() * stack.getCount();
+            data.smeltingTime = recipe.getCookingTime() * stack.getCount();
 
             // There may be some race conditions with the progress reset packet sent from 'ItemData'
             // But for that you'd have to wait until it is almost ready to send the packet and then time the breath to it
             // Causing both packets to potentially switch in order when the client receives them - in general probably unlikely to happen
-            PacketDistributor.sendToPlayersNear(dragon.serverLevel(), null, itemEntity.getX(), itemEntity.getY(), itemEntity.getZ(), 16, new SyncData(itemEntity.getId(), DSDataAttachments.ITEM.getId(), data.serializeNBT(dragon.registryAccess())));
+            PacketDistributor.sendToPlayersNear(dragon.serverLevel(), null, itemEntity.getX(), itemEntity.getY(), itemEntity.getZ(), 16, new SyncData(itemEntity.getId(), DSDataAttachments.ITEM.getId(), data.serializeNBT(dragon.serverLevel().registryAccess())));
 
             if (data.smeltingProgress < data.smeltingTime) {
                 return;
@@ -79,14 +78,15 @@ public record SmeltItemEffect(Optional<ItemPredicate> itemPredicate, Optional<Le
             data.smeltingProgress = 0;
         }
 
-        ItemStack result = recipe.value().getResultItem(dragon.registryAccess());
-        itemEntity.setItem(result.copyWithCount(result.getCount() * stack.getCount()));
+        ItemStack result = recipe.getResultItem(dragon.serverLevel().registryAccess()).copy();
+        result.setCount(result.getCount() * stack.getCount());
+        itemEntity.setItem(result);
 
         if (!dropsExperience) {
             return;
         }
 
-        float experience = recipe.value().getExperience() * stack.getCount();
+        float experience = recipe.getExperience() * stack.getCount();
 
         if (experience > 0) {
             dragon.giveExperiencePoints((int) experience);
