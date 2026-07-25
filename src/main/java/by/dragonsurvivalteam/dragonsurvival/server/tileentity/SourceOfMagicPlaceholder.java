@@ -2,7 +2,6 @@ package by.dragonsurvivalteam.dragonsurvival.server.tileentity;
 
 import by.dragonsurvivalteam.dragonsurvival.registry.DSBlockEntities;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -16,14 +15,14 @@ public class SourceOfMagicPlaceholder extends BlockEntity {
     }
 
     @Override
-    public void loadAdditional(@NotNull final CompoundTag tag, @NotNull final HolderLookup.Provider provider) {
-        super.loadAdditional(tag, provider);
+    public void load(@NotNull final CompoundTag tag) {
+        super.load(tag);
         rootPos = BlockPos.of(tag.getLong("root"));
     }
 
     @Override
-    protected void saveAdditional(@NotNull final CompoundTag tag, @NotNull final HolderLookup.Provider provider) {
-        super.saveAdditional(tag, provider);
+    protected void saveAdditional(@NotNull final CompoundTag tag) {
+        super.saveAdditional(tag);
         tag.putLong("root", rootPos.asLong());
     }
 }

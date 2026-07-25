@@ -5,7 +5,6 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.DragonBeaconData;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSBlockEntities;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSBlocks;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.resources.RegistryOps;
@@ -86,22 +85,22 @@ public class DragonBeaconBlockEntity extends BlockEntity {
     }
 
     @Override
-    public void loadAdditional(@NotNull final CompoundTag tag, @NotNull final HolderLookup.Provider provider) {
-        super.loadAdditional(tag, provider);
+    public void load(@NotNull final CompoundTag tag) {
+        super.load(tag);
 
         if (tag.contains(DRAGON_BEACON_DATA)) {
-            DragonBeaconData.CODEC.decode(RegistryOps.create(NbtOps.INSTANCE, provider), tag.getCompound(DRAGON_BEACON_DATA))
+            DragonBeaconData.CODEC.decode(RegistryOps.create(NbtOps.INSTANCE, DragonSurvival.PROXY.getAccess()), tag.getCompound(DRAGON_BEACON_DATA))
                     .resultOrPartial(DragonSurvival.LOGGER::error)
                     .ifPresent(data -> this.data = data.getFirst());
         }
     }
 
     @Override
-    public void saveAdditional(@NotNull final CompoundTag tag, @NotNull final HolderLookup.Provider provider) {
-        super.saveAdditional(tag, provider);
+    protected void saveAdditional(@NotNull final CompoundTag tag) {
+        super.saveAdditional(tag);
 
         if (data != null) {
-            DragonBeaconData.CODEC.encodeStart(RegistryOps.create(NbtOps.INSTANCE, provider), data)
+            DragonBeaconData.CODEC.encodeStart(RegistryOps.create(NbtOps.INSTANCE, DragonSurvival.PROXY.getAccess()), data)
                     .resultOrPartial(DragonSurvival.LOGGER::error)
                     .ifPresent(compound -> tag.put(DRAGON_BEACON_DATA, compound));
         }

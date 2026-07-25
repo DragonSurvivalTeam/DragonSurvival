@@ -162,13 +162,14 @@ public class SourceOfMagicBlockEntity extends BlockEntity implements Container, 
     }
 
     @Override
-    public void loadAdditional(@NotNull final CompoundTag tag, @NotNull final HolderLookup.Provider provider) {
-        super.loadAdditional(tag, provider);
+    public void load(@NotNull final CompoundTag tag) {
+        super.load(tag);
 
         inputItem = NonNullList.withSize(getContainerSize(), ItemStack.EMPTY);
-        ContainerHelper.loadAllItems(tag, inputItem, provider);
+        ContainerHelper.loadAllItems(tag, inputItem);
 
         if (tag.contains(SOURCE_OF_MAGIC_DATA)) {
+            HolderLookup.Provider provider = DragonSurvival.PROXY.getAccess();
             SourceOfMagicData.CODEC.decode(RegistryOps.create(NbtOps.INSTANCE, provider), tag.getCompound(SOURCE_OF_MAGIC_DATA))
                     .resultOrPartial(DragonSurvival.LOGGER::error)
                     .ifPresent(data -> {
@@ -180,17 +181,17 @@ public class SourceOfMagicBlockEntity extends BlockEntity implements Container, 
     }
 
     @Override // Make sure client receives the data when re-joining the world
-    public @NotNull CompoundTag getUpdateTag(@NotNull final HolderLookup.Provider registries) {
-        CompoundTag tag = super.getUpdateTag(registries);
-        saveAdditional(tag, registries);
+    public @NotNull CompoundTag getUpdateTag() {
+        CompoundTag tag = super.getUpdateTag();
+        saveAdditional(tag);
         return tag;
     }
 
     @Override
-    public void saveAdditional(@NotNull final CompoundTag tag, @NotNull final HolderLookup.Provider provider) {
-        super.saveAdditional(tag, provider);
+    protected void saveAdditional(@NotNull final CompoundTag tag) {
+        super.saveAdditional(tag);
 
-        ContainerHelper.saveAllItems(tag, inputItem, provider);
+        ContainerHelper.saveAllItems(tag, inputItem);
         List<SourceOfMagicData.Consumable> consumables = getConsumables();
         List<ResourceKey<DragonSpecies>> applicableSpecies = new ArrayList<>();
 
@@ -199,6 +200,7 @@ public class SourceOfMagicBlockEntity extends BlockEntity implements Container, 
         }
 
         SourceOfMagicData sourceOfMagicData = new SourceOfMagicData(consumables, applicableSpecies);
+        HolderLookup.Provider provider = DragonSurvival.PROXY.getAccess();
         SourceOfMagicData.CODEC.encodeStart(RegistryOps.create(NbtOps.INSTANCE, provider), sourceOfMagicData)
                 .resultOrPartial(DragonSurvival.LOGGER::error)
                 .ifPresent(compound -> tag.put(SOURCE_OF_MAGIC_DATA, compound));
