@@ -82,7 +82,7 @@ public class TreasureBlock extends FallingBlock implements SimpleWaterloggedBloc
     }
 
     @Override
-    public boolean isPathfindable(@NotNull BlockState state, PathComputationType pPathComputationType) {
+    public boolean isPathfindable(@NotNull BlockState state, @NotNull BlockGetter level, @NotNull BlockPos position, PathComputationType pPathComputationType) {
         return switch (pPathComputationType) {
             case LAND -> state.getValue(LAYERS) < 5;
             case WATER, AIR -> false;

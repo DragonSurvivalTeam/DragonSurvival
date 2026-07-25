@@ -30,7 +30,7 @@ public class HelmetBlock extends Block implements EntityBlock {
     }
 
     @Override
-    public boolean isPathfindable(@NotNull BlockState pState, @NotNull PathComputationType pPathComputationType) {
+    public boolean isPathfindable(@NotNull BlockState pState, @NotNull BlockGetter level, @NotNull BlockPos position, @NotNull PathComputationType pPathComputationType) {
         return false;
     }
 

@@ -130,7 +130,7 @@ public class SmallDragonDoor extends Block implements SimpleWaterloggedBlock {
     }
 
     @Override
-    public boolean isPathfindable(@NotNull final BlockState state, final PathComputationType type) {
+    public boolean isPathfindable(@NotNull final BlockState state, @NotNull final BlockGetter level, @NotNull final BlockPos position, final PathComputationType type) {
         return switch (type) {
             case LAND, AIR -> state.getValue(OPEN);
             default -> false;
