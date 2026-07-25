@@ -8,8 +8,8 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.BufferUploader;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.MeshData;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.Minecraft;
@@ -100,7 +100,7 @@ public class BlockVisionShaderSimple {
         rand.setSeed(seed);
 
         for (BakedQuad quad : model) {
-            buffer.putBulkData(lastPose, quad, red / 255f, green / 255f, blue / 255f, alpha / 255f, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
+            buffer.putBulkData(lastPose, quad, red / 255f, green / 255f, blue / 255f, alpha / 255f, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, true);
         }
     }
 
@@ -108,7 +108,8 @@ public class BlockVisionShaderSimple {
         backup = RenderStateBackup.capture();
 
         if (ModID.IRIS.isLoaded()) {
-            irisBuffer = RenderSystem.renderThreadTesselator().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.BLOCK);
+            irisBuffer = Tesselator.getInstance().getBuilder();
+            irisBuffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.BLOCK);
         }
     }
 
@@ -120,10 +121,10 @@ public class BlockVisionShaderSimple {
         source.endBatch(BlockVisionRenderTypes.blockVisionTranslucent());
 
         if (irisBuffer != null) {
-            MeshData meshData = irisBuffer.build();
+            BufferBuilder.RenderedBuffer renderedBuffer = irisBuffer.endOrDiscardIfEmpty();
 
-            if (meshData != null) {
-                BufferUploader.draw(meshData);
+            if (renderedBuffer != null) {
+                BufferUploader.draw(renderedBuffer);
             }
         }
 

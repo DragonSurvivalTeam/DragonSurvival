@@ -9,7 +9,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.BufferUploader;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.MeshData;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
@@ -85,14 +84,15 @@ public class SmeltEffectIconRenderer {
         RenderSystem.setShaderTexture(0, icon);
         RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
 
-        BufferBuilder buffer = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
-        buffer.addVertex(matrix, x, y + HEIGHT, 0).setUv(0, 1).setColor(1, 1, 1, 1f);
+        BufferBuilder buffer = Tesselator.getInstance().getBuilder();
+        buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
+        buffer.vertex(matrix, x, y + HEIGHT, 0).uv(0, 1).color(1, 1, 1, 1f).endVertex();
         // Need to use the percentage for the uv here, otherwise the left side of the icon will have some rendering issues
-        buffer.addVertex(matrix, x + WIDTH * widthPercentage, y + HEIGHT, 0).setUv(widthPercentage, 1).setColor(1, 1, 1, 1f);
-        buffer.addVertex(matrix, x + WIDTH * widthPercentage, y, 0).setUv(widthPercentage, 0).setColor(1, 1, 1, 1f);
-        buffer.addVertex(matrix, x, y, 0).setUv(0, 0).setColor(1, 1, 1, 1f);
+        buffer.vertex(matrix, x + WIDTH * widthPercentage, y + HEIGHT, 0).uv(widthPercentage, 1).color(1, 1, 1, 1f).endVertex();
+        buffer.vertex(matrix, x + WIDTH * widthPercentage, y, 0).uv(widthPercentage, 0).color(1, 1, 1, 1f).endVertex();
+        buffer.vertex(matrix, x, y, 0).uv(0, 0).color(1, 1, 1, 1f).endVertex();
 
-        MeshData data = buffer.build();
+        BufferBuilder.RenderedBuffer data = buffer.endOrDiscardIfEmpty();
 
         if (data != null) {
             BufferUploader.drawWithShader(data);

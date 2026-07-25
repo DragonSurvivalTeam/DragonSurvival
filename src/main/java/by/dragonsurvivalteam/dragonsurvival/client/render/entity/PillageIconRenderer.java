@@ -10,7 +10,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.BufferUploader;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.MeshData;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
@@ -65,13 +64,14 @@ public class PillageIconRenderer {
         RenderSystem.setShaderTexture(0, ICON);
         RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
 
-        BufferBuilder buffer = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
-        buffer.addVertex(matrix, x, y + SIZE, 0).setUv(0, 1).setColor(1, 1, 1, 1f);
-        buffer.addVertex(matrix, x + SIZE, y + SIZE, 0).setUv(1, 1).setColor(1, 1, 1, 1f);
-        buffer.addVertex(matrix, x + SIZE, y, 0).setUv(1, 0).setColor(1, 1, 1, 1f);
-        buffer.addVertex(matrix, x, y, 0).setUv(0, 0).setColor(1, 1, 1, 1f);
+        BufferBuilder buffer = Tesselator.getInstance().getBuilder();
+        buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
+        buffer.vertex(matrix, x, y + SIZE, 0).uv(0, 1).color(1, 1, 1, 1f).endVertex();
+        buffer.vertex(matrix, x + SIZE, y + SIZE, 0).uv(1, 1).color(1, 1, 1, 1f).endVertex();
+        buffer.vertex(matrix, x + SIZE, y, 0).uv(1, 0).color(1, 1, 1, 1f).endVertex();
+        buffer.vertex(matrix, x, y, 0).uv(0, 0).color(1, 1, 1, 1f).endVertex();
 
-        MeshData data = buffer.build();
+        BufferBuilder.RenderedBuffer data = buffer.endOrDiscardIfEmpty();
 
         if (data != null) {
             BufferUploader.drawWithShader(data);
