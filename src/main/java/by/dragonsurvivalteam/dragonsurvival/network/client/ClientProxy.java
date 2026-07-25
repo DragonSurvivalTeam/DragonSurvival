@@ -89,7 +89,8 @@ public class ClientProxy {
     }
 
     public static void handleBreathParticles(final SyncBreathParticles packet, final Player receiver) {
-        if (!(receiver.level().getEntity(packet.playerId()) instanceof Entity entity)) {
+        Entity entity = receiver.level().getEntity(packet.playerId());
+        if (entity == null) {
             return;
         }
 

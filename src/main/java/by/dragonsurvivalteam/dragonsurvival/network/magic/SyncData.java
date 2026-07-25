@@ -30,8 +30,9 @@ public record SyncData(int targetEntityId, ResourceLocation attachmentType, Comp
         context.enqueueWork(() -> {
             try {
                 AttachmentType<?> type = DSDataAttachments.ATTACHMENT_TYPES.get().getValue(packet.attachmentType());
+                Entity entity = context.player().level().getEntity(packet.targetEntityId());
 
-                if (type != null && context.player().level().getEntity(packet.targetEntityId()) instanceof Entity entity) {
+                if (type != null && entity != null) {
                     //noinspection unchecked -> it's handled
                     INBTSerializable<CompoundTag> data = (INBTSerializable<CompoundTag>) AttachmentManager.getData(entity, type);
                     data.deserializeNBT(context.player().level().registryAccess(), packet.tag());

@@ -26,7 +26,8 @@ public record SyncGlowInstance(int entityId, Glow.Instance instance, boolean isR
 
     public static void handleClient(final SyncGlowInstance packet, final PayloadContext context) {
         context.enqueueWork(() -> {
-            if (context.player().level().getEntity(packet.entityId()) instanceof Entity entity) {
+            Entity entity = context.player().level().getEntity(packet.entityId());
+            if (entity != null) {
                 GlowData data = AttachmentManager.getData(entity, DSDataAttachments.GLOW);
 
                 if (packet.isRemoval()) {

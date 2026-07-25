@@ -57,10 +57,11 @@ public class SummonData implements INBTSerializable<CompoundTag> {
             return summonOwner;
         }
 
+        Player player = level.getPlayerByUUID(ownerUUID);
         if (level instanceof ServerLevel serverLevel && serverLevel.getEntity(ownerUUID) instanceof LivingEntity livingEntity) {
             summonOwner = livingEntity;
-        } else if (level.getPlayerByUUID(ownerUUID) instanceof LivingEntity livingEntity) {
-            summonOwner = livingEntity;
+        } else if (player != null) {
+            summonOwner = player;
         } else {
             summonOwner = null;
         }

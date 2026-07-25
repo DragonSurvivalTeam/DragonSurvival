@@ -310,7 +310,8 @@ public class SourceOfMagicBlock extends HorizontalDirectionalBlock implements Si
             rootPosition = position;
         }
 
-        if (!player.isCrouching() && getSource(level, rootPosition) instanceof MenuProvider provider) {
+        SourceOfMagicBlockEntity provider = getSource(level, rootPosition);
+        if (!player.isCrouching() && provider != null) {
             if (player instanceof ServerPlayer serverPlayer) {
                 serverPlayer.openMenu(provider, buffer -> buffer.writeBlockPos(rootPosition));
             }

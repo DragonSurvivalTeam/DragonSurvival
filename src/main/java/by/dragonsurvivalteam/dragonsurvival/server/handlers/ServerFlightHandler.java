@@ -107,9 +107,7 @@ public class ServerFlightHandler {
 
     @SubscribeEvent
     public static void handleLanding(final PlayerFlyableFallEvent event) {
-        if (event.getEntity() instanceof Player player) {
-            handleLanding(player);
-        }
+        handleLanding(event.getEntity());
     }
 
     private static void handleLanding(final Player player) {
