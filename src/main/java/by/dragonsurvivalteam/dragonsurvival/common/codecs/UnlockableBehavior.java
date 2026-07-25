@@ -17,7 +17,7 @@ import java.util.Optional;
 
 public record UnlockableBehavior(Optional<LootItemCondition> unlockCondition, Optional<Visibility> visibility) {
     public static final Codec<UnlockableBehavior> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            LootItemCondition.DIRECT_CODEC.optionalFieldOf("unlock_condition").forGetter(UnlockableBehavior::unlockCondition),
+            MiscCodecs.LOOT_ITEM_CONDITION_CODEC.optionalFieldOf("unlock_condition").forGetter(UnlockableBehavior::unlockCondition),
             Visibility.CODEC.optionalFieldOf("visibility").forGetter(UnlockableBehavior::visibility)
     ).apply(instance, UnlockableBehavior::new));
 

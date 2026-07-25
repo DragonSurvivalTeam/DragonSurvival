@@ -47,7 +47,7 @@ public record DragonAbilityHolder(List<AbilityPair> pairs, Optional<LootItemCond
 
     public static final Codec<DragonAbilityHolder> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             AbilityPair.CODEC.listOf().fieldOf("pairs").forGetter(DragonAbilityHolder::pairs),
-            MiscCodecs.conditional(LootItemCondition.DIRECT_CODEC).optionalFieldOf("conditions").forGetter(DragonAbilityHolder::conditions),
+            MiscCodecs.conditional(MiscCodecs.LOOT_ITEM_CONDITION_CODEC).optionalFieldOf("conditions").forGetter(DragonAbilityHolder::conditions),
             // This can be handled by the condition, but we are keeping it to make the tooltip more helpful
             ResourceLocationWrapper.validatedCodec().listOf().optionalFieldOf("applicable_species", List.of()).forGetter(DragonAbilityHolder::applicableSpecies)
     ).apply(instance, DragonAbilityHolder::new));

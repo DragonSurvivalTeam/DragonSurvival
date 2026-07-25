@@ -27,7 +27,7 @@ public class Fear extends DurationInstanceBase<FearData, Fear.Instance> {
 
     public static final Codec<Fear> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             DurationInstanceBase.CODEC.fieldOf("base").forGetter(identity -> identity),
-            LootItemCondition.DIRECT_CODEC.optionalFieldOf("entity_condition").forGetter(Fear::entityCondition),
+            MiscCodecs.LOOT_ITEM_CONDITION_CODEC.optionalFieldOf("entity_condition").forGetter(Fear::entityCondition),
             LevelBasedValue.CODEC.fieldOf("distance").forGetter(Fear::distance),
             LevelBasedValue.CODEC.optionalFieldOf("walk_speed", LevelBasedValue.constant(DEFAULT_WALK_SPEED)).forGetter(Fear::walkSpeed),
             LevelBasedValue.CODEC.optionalFieldOf("sprint_speed", LevelBasedValue.constant(DEFAULT_SPRINT_SPEED)).forGetter(Fear::sprintSpeed)

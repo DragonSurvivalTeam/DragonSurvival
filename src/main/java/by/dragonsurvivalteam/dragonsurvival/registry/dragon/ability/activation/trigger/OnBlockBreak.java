@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.trigger;
 
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscCodecs;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
@@ -22,7 +23,7 @@ public record OnBlockBreak(Optional<LootItemCondition> condition) implements Act
     private static final String TRANSLATION = Translation.Type.TRIGGER_TYPE.wrap("on_block_break");
 
     public static final MapCodec<OnBlockBreak> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            LootItemCondition.DIRECT_CODEC.optionalFieldOf("condition").forGetter(OnBlockBreak::condition)
+            MiscCodecs.LOOT_ITEM_CONDITION_CODEC.optionalFieldOf("condition").forGetter(OnBlockBreak::condition)
     ).apply(instance, OnBlockBreak::new));
     
     public static void trigger(final BlockEvent.BreakEvent event) {

@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.trigger;
 
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscCodecs;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
@@ -21,7 +22,7 @@ public record OnTargetKilled(Optional<LootItemCondition> condition) implements A
     private static final String TRANSLATION = Translation.Type.TRIGGER_TYPE.wrap("on_target_killed");
 
     public static final MapCodec<OnTargetKilled> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            LootItemCondition.DIRECT_CODEC.optionalFieldOf("condition").forGetter(OnTargetKilled::condition)
+            MiscCodecs.LOOT_ITEM_CONDITION_CODEC.optionalFieldOf("condition").forGetter(OnTargetKilled::condition)
     ).apply(instance, OnTargetKilled::new));
 
     public static void trigger(final LivingEntity entity, final DamageSource source) {

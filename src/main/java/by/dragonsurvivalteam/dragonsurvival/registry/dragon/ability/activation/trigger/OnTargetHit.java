@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.trigger;
 
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscCodecs;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
@@ -20,7 +21,7 @@ public record OnTargetHit(Optional<LootItemCondition> condition) implements Acti
     private static final String TRANSLATION = Translation.Type.TRIGGER_TYPE.wrap("on_target_hit");
 
     public static final MapCodec<OnTargetHit> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            LootItemCondition.DIRECT_CODEC.optionalFieldOf("condition").forGetter(OnTargetHit::condition)
+            MiscCodecs.LOOT_ITEM_CONDITION_CODEC.optionalFieldOf("condition").forGetter(OnTargetHit::condition)
     ).apply(instance, OnTargetHit::new));
 
     public static void trigger(final LivingDamageEvent event) {

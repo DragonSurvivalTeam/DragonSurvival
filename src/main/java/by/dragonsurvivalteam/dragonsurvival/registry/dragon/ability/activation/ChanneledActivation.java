@@ -6,6 +6,7 @@ import com.mojang.serialization.DataResult;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.LevelBasedValue;
+import net.minecraft.util.ExtraCodecs;
 
 import java.util.Optional;
 
@@ -22,8 +23,10 @@ public record ChanneledActivation(
 ) implements Activation {
     public static final MapCodec<ChanneledActivation> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             LevelBasedValue.CODEC.optionalFieldOf("initial_mana_cost").forGetter(ChanneledActivation::initialManaCost),
-            ManaCost.CODEC
-                    .validate(cost -> cost.manaCostType() == ManaCost.ManaCostType.TICKING ? DataResult.success(cost) : DataResult.error(() -> "Channeled activation only supports [ticking] continuous mana cost"))
+            ExtraCodecs.validate(
+                    ManaCost.CODEC,
+                    cost -> cost.manaCostType() == ManaCost.ManaCostType.TICKING ? DataResult.success(cost) : DataResult.error(() -> "Channeled activation only supports [ticking] continuous mana cost")
+            )
                     .optionalFieldOf("continuous_mana_cost").forGetter(ChanneledActivation::continuousManaCost),
             LevelBasedValue.CODEC.optionalFieldOf("cast_time").forGetter(ChanneledActivation::castTime),
             LevelBasedValue.CODEC.optionalFieldOf("cooldown").forGetter(ChanneledActivation::cooldown),

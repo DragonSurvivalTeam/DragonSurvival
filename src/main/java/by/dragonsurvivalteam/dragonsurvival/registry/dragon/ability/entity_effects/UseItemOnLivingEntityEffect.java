@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects;
 
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscCodecs;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -24,7 +25,7 @@ public record UseItemOnLivingEntityEffect(ItemStack item, LevelBasedValue probab
             LevelBasedValue.CODEC.optionalFieldOf("probability", LevelBasedValue.constant(1)).forGetter(UseItemOnLivingEntityEffect::probability),
             SoundEvent.CODEC.optionalFieldOf("sound").forGetter(UseItemOnLivingEntityEffect::sound),
             // TODO 1.22 :: Is this even needed / useful, considering the existing targeting logic?
-            EntityPredicate.CODEC.optionalFieldOf("valid_entities").forGetter(UseItemOnLivingEntityEffect::validEntities)
+            MiscCodecs.ENTITY_PREDICATE_CODEC.optionalFieldOf("valid_entities").forGetter(UseItemOnLivingEntityEffect::validEntities)
     ).apply(instance, UseItemOnLivingEntityEffect::new));
     
     @Override

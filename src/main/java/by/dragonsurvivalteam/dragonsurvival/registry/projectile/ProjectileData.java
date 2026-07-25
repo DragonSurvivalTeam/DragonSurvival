@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.projectile;
 
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscCodecs;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.LevelBasedResource;
 import by.dragonsurvivalteam.dragonsurvival.registry.projectile.block_effects.ProjectileBlockEffect;
@@ -59,7 +60,7 @@ public record ProjectileData(GeneralData generalData, Either<GenericBallData, Ge
         public static final Codec<GeneralData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 ResourceLocation.CODEC.fieldOf("name").forGetter(GeneralData::name),
                 Codec.BOOL.optionalFieldOf("is_impact_projectile", false).forGetter(GeneralData::isImpactProjectile),
-                LootItemCondition.DIRECT_CODEC.optionalFieldOf("entity_hit_condition").forGetter(GeneralData::entityHitCondition),
+            MiscCodecs.LOOT_ITEM_CONDITION_CODEC.optionalFieldOf("entity_hit_condition").forGetter(GeneralData::entityHitCondition),
                 ProjectileTargeting.CODEC.listOf().fieldOf("ticking_effects").forGetter(GeneralData::tickingEffects),
                 ProjectileTargeting.CODEC.listOf().fieldOf("common_hit_effects").forGetter(GeneralData::commonHitEffects),
                 ProjectileEntityEffect.CODEC.listOf().fieldOf("entity_hit_effects").forGetter(GeneralData::entityHitEffects),

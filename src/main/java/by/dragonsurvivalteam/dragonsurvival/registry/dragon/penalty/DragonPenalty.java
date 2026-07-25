@@ -41,7 +41,7 @@ public record DragonPenalty(Optional<ResourceLocation> icon, Optional<LootItemCo
 
     public static final Codec<DragonPenalty> DIRECT_CODEC = RecordCodecBuilder.create(instance -> instance.group(
             ResourceLocation.CODEC.optionalFieldOf("icon").forGetter(DragonPenalty::icon),
-            MiscCodecs.conditional(LootItemCondition.DIRECT_CODEC).optionalFieldOf("condition").forGetter(DragonPenalty::condition),
+            MiscCodecs.conditional(MiscCodecs.LOOT_ITEM_CONDITION_CODEC).optionalFieldOf("condition").forGetter(DragonPenalty::condition),
             PenaltyEffect.CODEC.fieldOf("effect").forGetter(DragonPenalty::effect),
             PenaltyTrigger.CODEC.fieldOf("trigger").forGetter(DragonPenalty::trigger)
     ).apply(instance, DragonPenalty::new));

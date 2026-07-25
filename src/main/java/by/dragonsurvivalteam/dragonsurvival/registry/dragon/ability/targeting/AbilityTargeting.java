@@ -67,7 +67,7 @@ public interface AbilityTargeting {
 
     record BlockTargeting(Optional<LootItemCondition> targetConditions, List<AbilityBlockEffect> effects) {
         public static final Codec<BlockTargeting> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                MiscCodecs.conditional(LootItemCondition.DIRECT_CODEC).optionalFieldOf("target_conditions").forGetter(BlockTargeting::targetConditions),
+            MiscCodecs.conditional(MiscCodecs.LOOT_ITEM_CONDITION_CODEC).optionalFieldOf("target_conditions").forGetter(BlockTargeting::targetConditions),
                 ConditionalOps.decodeListWithElementConditions(AbilityBlockEffect.CODEC).fieldOf("block_effect").forGetter(BlockTargeting::effects)
         ).apply(instance, BlockTargeting::new));
 
@@ -78,7 +78,7 @@ public interface AbilityTargeting {
 
     record EntityTargeting(Optional<LootItemCondition> targetConditions, List<AbilityEntityEffect> effects, TargetingMode targetingMode) {
         public static final Codec<EntityTargeting> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                MiscCodecs.conditional(LootItemCondition.DIRECT_CODEC).optionalFieldOf("target_conditions").forGetter(EntityTargeting::targetConditions),
+            MiscCodecs.conditional(MiscCodecs.LOOT_ITEM_CONDITION_CODEC).optionalFieldOf("target_conditions").forGetter(EntityTargeting::targetConditions),
                 ConditionalOps.decodeListWithElementConditions(AbilityEntityEffect.CODEC).fieldOf("entity_effect").forGetter(EntityTargeting::effects),
                 TargetingMode.CODEC.fieldOf("targeting_mode").forGetter(EntityTargeting::targetingMode)
         ).apply(instance, EntityTargeting::new));

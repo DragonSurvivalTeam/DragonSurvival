@@ -1,6 +1,7 @@
 
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.trigger;
 
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscCodecs;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
@@ -23,7 +24,7 @@ public record OnSelfHit(Optional<LootItemCondition> condition) implements Activa
     private static final String TRANSLATION = Translation.Type.TRIGGER_TYPE.wrap("on_self_hit");
 
     public static final MapCodec<OnSelfHit> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            LootItemCondition.DIRECT_CODEC.optionalFieldOf("condition").forGetter(OnSelfHit::condition)
+            MiscCodecs.LOOT_ITEM_CONDITION_CODEC.optionalFieldOf("condition").forGetter(OnSelfHit::condition)
     ).apply(instance, OnSelfHit::new));
 
     public static void trigger(final LivingDamageEvent event) {

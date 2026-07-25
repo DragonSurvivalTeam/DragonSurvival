@@ -5,6 +5,7 @@ import com.mojang.serialization.DataResult;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.LevelBasedValue;
+import net.minecraft.util.ExtraCodecs;
 
 import java.util.Optional;
 
@@ -23,11 +24,15 @@ public record SimpleActivation(
             LevelBasedValue.CODEC.optionalFieldOf("cooldown").forGetter(SimpleActivation::cooldown),
             Notification.CODEC.optionalFieldOf("notification", Notification.DEFAULT).forGetter(SimpleActivation::notification),
             Codec.BOOL.optionalFieldOf("can_move_while_casting", true).forGetter(SimpleActivation::canMoveWhileCasting),
-            Sound.CODEC
-                    .validate(sound -> sound.looping().isPresent() ? DataResult.error(() -> "Simple activation does not support [looping] sounds") : DataResult.success(sound))
+            ExtraCodecs.validate(
+                    Sound.CODEC,
+                    sound -> sound.looping().isPresent() ? DataResult.error(() -> "Simple activation does not support [looping] sounds") : DataResult.success(sound)
+            )
                     .optionalFieldOf("sound").forGetter(SimpleActivation::sound),
-            Animations.CODEC
-                    .validate(animations -> animations.looping().isPresent() ? DataResult.error(() -> "Simple activation does not support [looping] animations") : DataResult.success(animations))
+            ExtraCodecs.validate(
+                    Animations.CODEC,
+                    animations -> animations.looping().isPresent() ? DataResult.error(() -> "Simple activation does not support [looping] animations") : DataResult.success(animations)
+            )
                     .optionalFieldOf("animations").forGetter(SimpleActivation::animations)
     ).apply(instance, SimpleActivation::new));
 

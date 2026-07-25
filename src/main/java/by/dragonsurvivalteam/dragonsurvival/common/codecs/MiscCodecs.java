@@ -1,9 +1,12 @@
 package by.dragonsurvivalteam.dragonsurvival.common.codecs;
 
 import by.dragonsurvivalteam.dragonsurvival.util.Expression;
+import com.google.gson.Gson;
 import com.google.gson.JsonElement;
+import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
+import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.ByteBuf;
@@ -11,6 +14,8 @@ import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.advancements.critereon.MinMaxBounds;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
 import net.minecraft.util.ExtraCodecs;
+import net.minecraft.world.level.storage.loot.Deserializers;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.levelgen.blockpredicates.BlockPredicate;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
@@ -25,8 +30,13 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class MiscCodecs {
+    private static final Gson LOOT_CONDITION_GSON = Deserializers.createConditionSerializer().create();
     private static final Codec<MinMaxBounds.Doubles> DOUBLE_BOUNDS_CODEC = jsonCodec(MinMaxBounds.Doubles::fromJson, MinMaxBounds.Doubles::serializeToJson);
-    private static final Codec<EntityPredicate> ENTITY_PREDICATE_CODEC = jsonCodec(EntityPredicate::fromJson, EntityPredicate::serializeToJson);
+    public static final Codec<EntityPredicate> ENTITY_PREDICATE_CODEC = jsonCodec(EntityPredicate::fromJson, EntityPredicate::serializeToJson);
+    public static final Codec<LootItemCondition> LOOT_ITEM_CONDITION_CODEC = jsonCodec(
+            json -> LOOT_CONDITION_GSON.fromJson(json, LootItemCondition.class),
+            LOOT_CONDITION_GSON::toJsonTree
+    );
 
     public static <E extends Enum<E>> Codec<E> enumCodec(Class<E> enumType) {
         return ExtraCodecs.validate(Codec.STRING, string -> {
@@ -102,11 +112,22 @@ public class MiscCodecs {
                 "Registry for " + typeField + " has not been created yet"
         ).getCodec().dispatch(typeField, codec, MapCodec::codec);
 
-        return Codec.of(
-                (input, ops, prefix) -> dispatchCodec.get().encode(input, ops, prefix),
-                (ops, input) -> dispatchCodec.get().decode(ops, input),
-                "RegistryDispatch[" + typeField + "]"
-        );
+        return new Codec<>() {
+            @Override
+            public <U> DataResult<Pair<T, U>> decode(final DynamicOps<U> ops, final U input) {
+                return dispatchCodec.get().decode(ops, input);
+            }
+
+            @Override
+            public <U> DataResult<U> encode(final T input, final DynamicOps<U> ops, final U prefix) {
+                return dispatchCodec.get().encode(input, ops, prefix);
+            }
+
+            @Override
+            public String toString() {
+                return "RegistryDispatch[" + typeField + "]";
+            }
+        };
     }
 
     public static final class RegistryHolder<T> implements Supplier<IForgeRegistry<T>> {

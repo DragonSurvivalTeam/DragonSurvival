@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade;
 
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscCodecs;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
@@ -18,7 +19,7 @@ import java.util.Optional;
 
 public record ConditionUpgrade(List<LootItemCondition> conditions, boolean requirePrevious) implements UpgradeType<Void> {
     public static final MapCodec<ConditionUpgrade> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            LootItemCondition.DIRECT_CODEC.listOf().fieldOf("conditions").forGetter(ConditionUpgrade::conditions),
+            MiscCodecs.LOOT_ITEM_CONDITION_CODEC.listOf().fieldOf("conditions").forGetter(ConditionUpgrade::conditions),
             Codec.BOOL.optionalFieldOf("require_previous", true).forGetter(ConditionUpgrade::requirePrevious)
     ).apply(instance, ConditionUpgrade::new));
 

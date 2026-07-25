@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.common.codecs.duration_instance;
 
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscCodecs;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.Storage;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.StorageEntry;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AttachmentManager;
@@ -22,7 +23,7 @@ public class DurationInstanceBase<B extends Storage<I>, I extends DurationInstan
             ResourceLocation.CODEC.fieldOf("id").forGetter(DurationInstanceBase::id),
             LevelBasedValue.CODEC.optionalFieldOf("duration", DragonAbilities.INFINITE_DURATION).forGetter(DurationInstanceBase::duration),
             Codec.BOOL.optionalFieldOf("should_remove_automatically", false).forGetter(DurationInstanceBase::shouldRemoveAutomatically),
-            LootItemCondition.DIRECT_CODEC.optionalFieldOf("early_removal_condition").forGetter(DurationInstanceBase::earlyRemovalCondition),
+            MiscCodecs.LOOT_ITEM_CONDITION_CODEC.optionalFieldOf("early_removal_condition").forGetter(DurationInstanceBase::earlyRemovalCondition),
             ResourceLocation.CODEC.optionalFieldOf("custom_icon").forGetter(DurationInstanceBase::customIcon),
             Codec.BOOL.optionalFieldOf("is_hidden", false).forGetter(DurationInstanceBase::isHidden)
     ).apply(instance, DurationInstanceBase::new));

@@ -47,7 +47,7 @@ public interface ProjectileTargeting {
     record ConditionalEffect(ProjectileEffect<?> effect, Optional<LootItemCondition> condition) {
         public static final Codec<ConditionalEffect> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 ProjectileEffect.GENERIC_CODEC.fieldOf("effect").forGetter(ConditionalEffect::effect),
-                LootItemCondition.DIRECT_CODEC.optionalFieldOf("condition").forGetter(ConditionalEffect::condition)
+                MiscCodecs.LOOT_ITEM_CONDITION_CODEC.optionalFieldOf("condition").forGetter(ConditionalEffect::condition)
         ).apply(instance, ConditionalEffect::new));
 
         public boolean apply(final ServerLevel serverLevel, final Projectile projectile, final Object target, final int level) {

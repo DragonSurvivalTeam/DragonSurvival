@@ -13,6 +13,7 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.Items;
 import net.minecraftforge.common.Tags;
 
@@ -205,7 +206,7 @@ public class ResourceLocationWrapper {
     }
 
     public static Codec<String> validatedCodec() {
-        return Codec.STRING.validate(value -> {
+        return ExtraCodecs.validate(Codec.STRING, value -> {
             boolean isValid;
 
             if (value.startsWith("#")) {

@@ -55,7 +55,7 @@ public record DragonAbility(
     public static final Codec<DragonAbility> DIRECT_CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Activation.CODEC.fieldOf("activation").forGetter(DragonAbility::activation),
             UpgradeType.CODEC.optionalFieldOf("upgrade").forGetter(DragonAbility::upgrade),
-            MiscCodecs.conditional(LootItemCondition.DIRECT_CODEC).optionalFieldOf("usage_blocked").forGetter(DragonAbility::usageBlocked),
+            MiscCodecs.conditional(MiscCodecs.LOOT_ITEM_CONDITION_CODEC).optionalFieldOf("usage_blocked").forGetter(DragonAbility::usageBlocked),
             ConditionalOps.decodeListWithElementConditions(ActionContainer.CODEC).optionalFieldOf("actions", List.of()).forGetter(DragonAbility::actions),
             Codec.BOOL.optionalFieldOf("can_be_manually_disabled", true).forGetter(DragonAbility::canBeManuallyDisabled),
             LevelBasedResource.CODEC.fieldOf("icon").forGetter(DragonAbility::icon)
