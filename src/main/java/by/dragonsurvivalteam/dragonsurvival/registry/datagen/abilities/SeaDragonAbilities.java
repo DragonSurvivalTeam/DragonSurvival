@@ -706,7 +706,7 @@ public class SeaDragonAbilities {
                         new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                                 ModifierEffect.only(new ModifierWithDuration(
                                         DurationInstanceBase.create(DragonSurvival.res("diver")).removeAutomatically().hidden().build(),
-                                        List.of(Modifier.constant(Attributes.SUBMERGED_MINING_SPEED, 0.8f, AttributeOperation.ADD_VALUE))
+                                        List.of(Modifier.constant(DSAttributes.SUBMERGED_MINING_SPEED, 0.8f, AttributeOperation.ADD_VALUE))
                                 )),
                                 TargetingMode.ALLIES_AND_SELF
                         )), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(1))

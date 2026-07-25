@@ -29,6 +29,7 @@ public record Modifier(Holder<Attribute> attribute, Either<LevelBasedValue, Prec
     private static final ResourceLocation SCALE_ID = new ResourceLocation("minecraft", "scale");
     private static final ResourceLocation GENERIC_SCALE_ID = new ResourceLocation("minecraft", "generic.scale");
     private static final ResourceLocation SAFE_FALL_DISTANCE_ID = new ResourceLocation("minecraft", "safe_fall_distance");
+    private static final ResourceLocation SUBMERGED_MINING_SPEED_ID = new ResourceLocation("minecraft", "submerged_mining_speed");
     private static final Codec<Holder<Attribute>> ATTRIBUTE_CODEC = ResourceLocation.CODEC.comapFlatMap(
             id -> {
                 if (isScaleId(id)) {
@@ -36,6 +37,9 @@ public record Modifier(Holder<Attribute> attribute, Either<LevelBasedValue, Prec
                 }
                 if (id.equals(SAFE_FALL_DISTANCE_ID)) {
                     return DataResult.success(BuiltInRegistries.ATTRIBUTE.wrapAsHolder(DSAttributes.SAFE_FALL_DISTANCE.get()));
+                }
+                if (id.equals(SUBMERGED_MINING_SPEED_ID)) {
+                    return DataResult.success(BuiltInRegistries.ATTRIBUTE.wrapAsHolder(DSAttributes.SUBMERGED_MINING_SPEED.get()));
                 }
 
                 return BuiltInRegistries.ATTRIBUTE.getHolder(ResourceKey.create(Registries.ATTRIBUTE, id))
@@ -48,6 +52,9 @@ public record Modifier(Holder<Attribute> attribute, Either<LevelBasedValue, Prec
                 }
                 if (attribute.value() == DSAttributes.SAFE_FALL_DISTANCE.get()) {
                     return SAFE_FALL_DISTANCE_ID;
+                }
+                if (attribute.value() == DSAttributes.SUBMERGED_MINING_SPEED.get()) {
+                    return SUBMERGED_MINING_SPEED_ID;
                 }
                 return BuiltInRegistries.ATTRIBUTE.getKey(attribute.value());
             }

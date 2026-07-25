@@ -15,7 +15,7 @@ import net.minecraftforge.event.entity.EntityAttributeModificationEvent;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
 
-@EventBusSubscriber
+@EventBusSubscriber(modid = DragonSurvival.MODID, bus = EventBusSubscriber.Bus.MOD)
 public class DSAttributes {
     public static final DeferredRegister<Attribute> REGISTRY = DeferredRegister.create(Registries.ATTRIBUTE, DragonSurvival.MODID);
 
@@ -80,6 +80,10 @@ public class DSAttributes {
     @Translation(type = Translation.Type.ATTRIBUTE, comments = "Safe Fall Distance")
     public static final RegistryObject<Attribute> SAFE_FALL_DISTANCE = REGISTRY.register("safe_fall_distance", () -> new RangedAttribute(Translation.Type.ATTRIBUTE.wrap("safe_fall_distance"), 3, -1024, 1024).setSyncable(true));
 
+    /** Backport of the vanilla 1.21 submerged mining speed attribute. */
+    @Translation(type = Translation.Type.ATTRIBUTE, comments = "Submerged Mining Speed")
+    public static final RegistryObject<Attribute> SUBMERGED_MINING_SPEED = REGISTRY.register("submerged_mining_speed", () -> new RangedAttribute(Translation.Type.ATTRIBUTE.wrap("submerged_mining_speed"), 0.2, 0, 20).setSyncable(true));
+
     @SubscribeEvent
     public static void attachAttributes(final EntityAttributeModificationEvent event) {
         event.add(EntityType.PLAYER, FLIGHT_STAMINA_COST.get());
@@ -94,6 +98,7 @@ public class DSAttributes {
         event.add(EntityType.PLAYER, HUNTER_FACTION_DAMAGE.get());
         event.add(EntityType.PLAYER, DRAGON_ABILITY_DAMAGE.get());
         event.add(EntityType.PLAYER, SAFE_FALL_DISTANCE.get());
+        event.add(EntityType.PLAYER, SUBMERGED_MINING_SPEED.get());
 
         event.getTypes().forEach(type -> {
             event.add(type, LAVA_SWIM_SPEED.get());

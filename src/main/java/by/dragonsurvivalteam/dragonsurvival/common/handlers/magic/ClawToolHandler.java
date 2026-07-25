@@ -6,6 +6,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
 import by.dragonsurvivalteam.dragonsurvival.network.claw.SyncBrokenTool;
+import by.dragonsurvivalteam.dragonsurvival.registry.DSAttributes;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ClawInventoryData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.HarvestBonuses;
@@ -13,6 +14,7 @@ import by.dragonsurvivalteam.dragonsurvival.util.ToolUtils;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.LivingEntity;
@@ -245,6 +247,13 @@ public class ClawToolHandler {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST) // To set the base speed as early as possible
     public static void modifyBreakSpeed(final PlayerEvent.BreakSpeed event) {
+        Player player = event.getEntity();
+
+        if (player.isEyeInFluid(FluidTags.WATER) && !EnchantmentHelper.hasAquaAffinity(player)) {
+            double submergedSpeed = player.getAttributeValue(DSAttributes.SUBMERGED_MINING_SPEED.get());
+            event.setNewSpeed(event.getNewSpeed() * (float) (submergedSpeed / 0.2));
+        }
+
         AttachmentManager.getExistingData(event.getEntity(), DSDataAttachments.HARVEST_BONUSES).ifPresent(bonuses -> {
             float baseSpeed = bonuses.getBaseSpeed(event.getState());
 
