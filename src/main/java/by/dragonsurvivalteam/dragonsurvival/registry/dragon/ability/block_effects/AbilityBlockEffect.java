@@ -22,14 +22,13 @@ import net.minecraftforge.registries.RegistryBuilder;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.function.Function;
 
 @EventBusSubscriber
 public interface AbilityBlockEffect {
     ResourceKey<Registry<MapCodec<? extends AbilityBlockEffect>>> REGISTRY_KEY = ResourceKey.createRegistryKey(DragonSurvival.res("ability_block_effect"));
     Registry<MapCodec<? extends AbilityBlockEffect>> REGISTRY = new RegistryBuilder<>(REGISTRY_KEY).create();
 
-    Codec<AbilityBlockEffect> CODEC = REGISTRY.byNameCodec().dispatch("effect_type", AbilityBlockEffect::blockCodec, Function.identity());
+    Codec<AbilityBlockEffect> CODEC = REGISTRY.byNameCodec().dispatch("effect_type", AbilityBlockEffect::blockCodec, MapCodec::codec);
 
     default List<MutableComponent> getDescription(final Player dragon, final DragonAbilityInstance ability) {
         return List.of();

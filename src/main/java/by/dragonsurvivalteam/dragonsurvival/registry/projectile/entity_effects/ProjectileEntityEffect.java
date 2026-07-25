@@ -13,14 +13,13 @@ import net.minecraftforge.registries.NewRegistryEvent;
 import net.minecraftforge.registries.RegisterEvent;
 import net.minecraftforge.registries.RegistryBuilder;
 
-import java.util.function.Function;
 
 @EventBusSubscriber
 public interface ProjectileEntityEffect extends ProjectileEffect<Entity> {
     ResourceKey<Registry<MapCodec<? extends ProjectileEntityEffect>>> REGISTRY_KEY = ResourceKey.createRegistryKey(DragonSurvival.res("projectile_entity_effect"));
     Registry<MapCodec<? extends ProjectileEntityEffect>> REGISTRY = new RegistryBuilder<>(REGISTRY_KEY).create();
 
-    Codec<ProjectileEntityEffect> CODEC = REGISTRY.byNameCodec().dispatch("entity_effect", ProjectileEntityEffect::codec, Function.identity());
+    Codec<ProjectileEntityEffect> CODEC = REGISTRY.byNameCodec().dispatch("entity_effect", ProjectileEntityEffect::codec, MapCodec::codec);
 
     MapCodec<? extends ProjectileEntityEffect> codec();
 

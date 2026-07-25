@@ -34,7 +34,6 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
 
 @EventBusSubscriber
 public interface AbilityTargeting {
@@ -44,7 +43,7 @@ public interface AbilityTargeting {
     ResourceKey<Registry<MapCodec<? extends AbilityTargeting>>> REGISTRY_KEY = ResourceKey.createRegistryKey(DragonSurvival.res("ability_targeting"));
     Registry<MapCodec<? extends AbilityTargeting>> REGISTRY = new RegistryBuilder<>(REGISTRY_KEY).create();
 
-    Codec<AbilityTargeting> CODEC = REGISTRY.byNameCodec().dispatch("target_type", AbilityTargeting::codec, Function.identity());
+    Codec<AbilityTargeting> CODEC = REGISTRY.byNameCodec().dispatch("target_type", AbilityTargeting::codec, MapCodec::codec);
 
     static Either<BlockTargeting, EntityTargeting> block(final List<AbilityBlockEffect> effects) {
         return block(null, effects);

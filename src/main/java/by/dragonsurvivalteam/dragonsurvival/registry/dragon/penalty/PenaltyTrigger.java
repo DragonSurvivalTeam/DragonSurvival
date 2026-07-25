@@ -15,14 +15,13 @@ import net.minecraftforge.registries.NewRegistryEvent;
 import net.minecraftforge.registries.RegisterEvent;
 import net.minecraftforge.registries.RegistryBuilder;
 
-import java.util.function.Function;
 
 @EventBusSubscriber
 public interface PenaltyTrigger {
     ResourceKey<Registry<MapCodec<? extends PenaltyTrigger>>> REGISTRY_KEY = ResourceKey.createRegistryKey(DragonSurvival.res("penalty_trigger"));
     Registry<MapCodec<? extends PenaltyTrigger>> REGISTRY = new RegistryBuilder<>(REGISTRY_KEY).create();
 
-    Codec<PenaltyTrigger> CODEC = REGISTRY.byNameCodec().dispatch("penalty_trigger", PenaltyTrigger::codec, Function.identity());
+    Codec<PenaltyTrigger> CODEC = REGISTRY.byNameCodec().dispatch("penalty_trigger", PenaltyTrigger::codec, MapCodec::codec);
 
     /** If this returns 'false' it will be applied per player tick */
     default boolean hasCustomTrigger() {

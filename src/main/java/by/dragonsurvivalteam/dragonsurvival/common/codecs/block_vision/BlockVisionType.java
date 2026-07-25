@@ -10,7 +10,6 @@ import net.minecraftforge.registries.NewRegistryEvent;
 import net.minecraftforge.registries.RegisterEvent;
 import net.minecraftforge.registries.RegistryBuilder;
 
-import java.util.function.Function;
 
 //@EventBusSubscriber
 // TODO :: implement this properly for 1.22 (breaking change for block vision
@@ -18,7 +17,7 @@ public interface BlockVisionType {
     ResourceKey<Registry<MapCodec<? extends Activation>>> REGISTRY_KEY = ResourceKey.createRegistryKey(DragonSurvival.res("block_vision"));
     Registry<MapCodec<? extends Activation>> REGISTRY = new RegistryBuilder<>(REGISTRY_KEY).create();
 
-    Codec<Activation> CODEC = REGISTRY.byNameCodec().dispatch("block_vision_type", Activation::codec, Function.identity());
+    Codec<Activation> CODEC = REGISTRY.byNameCodec().dispatch("block_vision_type", Activation::codec, MapCodec::codec);
 
 //    @SubscribeEvent
     static void register(final NewRegistryEvent event) {

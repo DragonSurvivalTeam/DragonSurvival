@@ -37,10 +37,10 @@ public interface LevelBasedValue {
         return new Lookup(values, fallback);
     }
 
-    private static MapCodec<? extends LevelBasedValue> codecForType(final String type) {
+    private static Codec<? extends LevelBasedValue> codecForType(final String type) {
         return switch (type) {
-            case Linear.TYPE -> Linear.CODEC;
-            case Lookup.TYPE -> Lookup.CODEC;
+            case Linear.TYPE -> Linear.CODEC.codec();
+            case Lookup.TYPE -> Lookup.CODEC.codec();
             default -> throw new IllegalArgumentException("Unknown level-based value type: " + type);
         };
     }

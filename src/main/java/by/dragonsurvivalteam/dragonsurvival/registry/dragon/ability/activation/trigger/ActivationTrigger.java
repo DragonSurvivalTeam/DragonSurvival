@@ -12,14 +12,13 @@ import net.minecraftforge.registries.NewRegistryEvent;
 import net.minecraftforge.registries.RegisterEvent;
 import net.minecraftforge.registries.RegistryBuilder;
 
-import java.util.function.Function;
 
 @EventBusSubscriber
 public interface ActivationTrigger<T> {
     ResourceKey<Registry<MapCodec<? extends ActivationTrigger<?>>>> REGISTRY_KEY = ResourceKey.createRegistryKey(DragonSurvival.res("activation_trigger"));
     Registry<MapCodec<? extends ActivationTrigger<?>>> REGISTRY = new RegistryBuilder<>(REGISTRY_KEY).create();
 
-    Codec<ActivationTrigger<?>> CODEC = REGISTRY.byNameCodec().dispatch("trigger_type", ActivationTrigger::codec, Function.identity());
+    Codec<ActivationTrigger<?>> CODEC = REGISTRY.byNameCodec().dispatch("trigger_type", ActivationTrigger::codec, MapCodec::codec);
 
     @SubscribeEvent
     static void register(final NewRegistryEvent event) {

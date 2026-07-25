@@ -15,14 +15,13 @@ import net.minecraftforge.registries.NewRegistryEvent;
 import net.minecraftforge.registries.RegisterEvent;
 import net.minecraftforge.registries.RegistryBuilder;
 
-import java.util.function.Function;
 
 @EventBusSubscriber
 public interface PenaltyEffect {
     ResourceKey<Registry<MapCodec<? extends PenaltyEffect>>> REGISTRY_KEY = ResourceKey.createRegistryKey(DragonSurvival.res("penalty_effect"));
     Registry<MapCodec<? extends PenaltyEffect>> REGISTRY = new RegistryBuilder<>(REGISTRY_KEY).create();
 
-    Codec<PenaltyEffect> CODEC = REGISTRY.byNameCodec().dispatch("penalty_type", PenaltyEffect::codec, Function.identity());
+    Codec<PenaltyEffect> CODEC = REGISTRY.byNameCodec().dispatch("penalty_type", PenaltyEffect::codec, MapCodec::codec);
 
     default MutableComponent getDescription() {
         return Component.empty();
