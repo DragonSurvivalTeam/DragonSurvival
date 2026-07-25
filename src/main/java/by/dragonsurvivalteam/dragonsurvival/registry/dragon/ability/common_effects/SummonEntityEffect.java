@@ -113,14 +113,14 @@ public class SummonEntityEffect extends DurationInstanceBase<SummonedEntities, S
             float scale = this.scale.calculate(abilityLevel);
 
             for (Holder<Attribute> attribute : attributes) {
-                AttributeInstance instance = entity.getAttribute(attribute);
+                AttributeInstance instance = entity.getAttribute(attribute.value());
 
                 if (instance != null) {
                     UUID id = ModifierType.CUSTOM.randomId(attribute, AttributeOperation.ADD_MULTIPLIED_BASE, entity.getRandom());
                     instance.addPermanentModifier(new AttributeModifier(id, attribute.unwrapKey().orElseThrow().location().toString(), scale, AttributeOperation.ADD_MULTIPLIED_BASE.legacy()));
                 }
 
-                if (attribute == Attributes.MAX_HEALTH) {
+                if (attribute.value() == Attributes.MAX_HEALTH) {
                     entity.setHealth(entity.getMaxHealth());
                 }
             }

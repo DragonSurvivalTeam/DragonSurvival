@@ -1,7 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects;
 
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscCodecs;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscCodecs;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.ClawToolHandler;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAttributes;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ClawInventoryData;
@@ -14,6 +13,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerPlayer;
@@ -28,13 +28,13 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.LevelBasedValue;
 import java.math.BigDecimal;
 import java.util.List;
 
-public record DamageEffect(Holder<DamageType> damageType, LevelBasedValue amount, Holder<Attribute> scale, Expression expression, boolean useClaw) implements AbilityEntityEffect {
+public record DamageEffect(Holder<DamageType> damageType, LevelBasedValue amount, Attribute scale, Expression expression, boolean useClaw) implements AbilityEntityEffect {
     public static final Expression DEFAULT_EXPRESSION = new Expression("amount * scale");
 
     public static final MapCodec<DamageEffect> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             MiscCodecs.DAMAGE_TYPE_HOLDER_CODEC.fieldOf("damage_type").forGetter(DamageEffect::damageType),
             LevelBasedValue.CODEC.fieldOf("amount").forGetter(DamageEffect::amount),
-            Attribute.CODEC.optionalFieldOf("scale", DSAttributes.DRAGON_ABILITY_DAMAGE).forGetter(DamageEffect::scale),
+            BuiltInRegistries.ATTRIBUTE.byNameCodec().optionalFieldOf("scale", DSAttributes.DRAGON_ABILITY_DAMAGE.get()).forGetter(DamageEffect::scale),
             MiscCodecs.expressionCodec("amount", "scale").optionalFieldOf("expression", DEFAULT_EXPRESSION).forGetter(DamageEffect::expression),
             Codec.BOOL.optionalFieldOf("use_claw", false).forGetter(DamageEffect::useClaw)
     ).apply(instance, DamageEffect::new));

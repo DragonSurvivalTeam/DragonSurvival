@@ -64,7 +64,7 @@ public record DragonPenalty(Optional<ResourceLocation> icon, Optional<LootItemCo
         PenaltySupply supply = AttachmentManager.getData(dragon, DSDataAttachments.PENALTY_SUPPLY);
 
         if (trigger instanceof SupplyTrigger supplyTrigger) {
-            AttributeInstance resistance = dragon.getAttribute(supplyTrigger.attributeToUseAsBase());
+            AttributeInstance resistance = dragon.getAttribute(supplyTrigger.attributeToUseAsBase().value());
             float newMaxSupply = resistance != null ? (float) resistance.getValue() : 0;
             float oldMaxSupply = supply.getMaxSupply(supplyTrigger.supplyType());
 

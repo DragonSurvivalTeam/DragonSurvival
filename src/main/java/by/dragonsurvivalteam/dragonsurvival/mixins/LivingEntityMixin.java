@@ -417,7 +417,7 @@ public abstract class LivingEntityMixin extends Entity {
     public abstract ItemStack getItemBySlot(EquipmentSlot pSlot);
 
     @Shadow
-    public abstract double getAttributeValue(Holder<Attribute> attribute);
+    public abstract double getAttributeValue(Attribute attribute);
 
     @Shadow
     public abstract boolean hasEffect(final MobEffect effect);

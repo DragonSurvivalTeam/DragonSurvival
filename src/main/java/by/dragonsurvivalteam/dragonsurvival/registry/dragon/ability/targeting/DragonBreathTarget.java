@@ -66,7 +66,7 @@ public record DragonBreathTarget(Either<BlockTargeting, EntityTargeting> target,
     }
 
     public AABB calculateBreathArea(final Player dragon, final DragonAbilityInstance ability) {
-        Vec3 viewVector = dragon.getLookAngle().scale(rangeMultiplier.calculate(ability.level()) * dragon.getAttributeValue(DSAttributes.DRAGON_BREATH_RANGE));
+        Vec3 viewVector = dragon.getLookAngle().scale(rangeMultiplier.calculate(ability.level()) * dragon.getAttributeValue(DSAttributes.DRAGON_BREATH_RANGE.get()));
         double defaultRadius = EntityScale.get(dragon);
 
         // Set the radius (value will be at least the default radius)
@@ -91,7 +91,7 @@ public record DragonBreathTarget(Either<BlockTargeting, EntityTargeting> target,
 
     @Override
     public float getDistance(final Player dragon, final DragonAbilityInstance instance) {
-        return (float) (rangeMultiplier.calculate(instance.level()) * dragon.getAttributeValue(DSAttributes.DRAGON_BREATH_RANGE));
+        return (float) (rangeMultiplier.calculate(instance.level()) * dragon.getAttributeValue(DSAttributes.DRAGON_BREATH_RANGE.get()));
     }
 
     private static double getOffset(double value, double defaultValue) {
