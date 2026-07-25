@@ -26,6 +26,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.t
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.trigger.OnSelfHit;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.trigger.OnTargetHit;
 import by.dragonsurvivalteam.dragonsurvival.client.DragonSurvivalClient;
+import by.dragonsurvivalteam.dragonsurvival.common.entity.HunterFaction;
 import by.dragonsurvivalteam.dragonsurvival.util.proxy.ClientProxy;
 import by.dragonsurvivalteam.dragonsurvival.util.proxy.Proxy;
 import by.dragonsurvivalteam.dragonsurvival.util.proxy.ServerProxy;
@@ -53,6 +54,8 @@ public class DragonSurvival {
     public static Proxy PROXY;
 
     public DragonSurvival() {
+        HunterFaction.init();
+
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
 
         PROXY = FMLLoader.getDist().isClient() ? new ClientProxy() : new ServerProxy();
