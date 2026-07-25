@@ -23,20 +23,19 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.network.chat.contents.PlainTextContents;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.EnchantedBookItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.item.enchantment.ItemEnchantments;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -213,15 +212,15 @@ public class ToolTipHandler {
             MutableComponent description = null;
 
             if (ENCHANTMENT_DESCRIPTIONS && event.getItemStack().getItem() instanceof EnchantedBookItem) {
-                ItemEnchantments enchantments = event.getItemStack().get(DataComponents.STORED_ENCHANTMENTS);
+                var enchantments = EnchantmentHelper.getEnchantments(event.getItemStack());
 
                 // Only add it to single-entry enchanted books since the text is longer than usual enchantment descriptions
-                if (enchantments != null && enchantments.size() == 1) {
-                    Holder<Enchantment> holder = enchantments.entrySet().iterator().next().getKey();
-                    ResourceKey<Enchantment> resourceKey = holder.unwrapKey().orElseThrow();
+                if (enchantments.size() == 1) {
+                    Enchantment enchantment = enchantments.keySet().iterator().next();
+                    ResourceLocation enchantmentId = BuiltInRegistries.ENCHANTMENT.getKey(enchantment);
 
-                    if (resourceKey.location().getNamespace().equals(DragonSurvival.MODID)) {
-                        description = Component.translatable(Translation.Type.ENCHANTMENT_DESCRIPTION.wrap(resourceKey.location().getPath())).withStyle(ChatFormatting.DARK_GRAY);
+                    if (enchantmentId.getNamespace().equals(DragonSurvival.MODID)) {
+                        description = Component.translatable(Translation.Type.ENCHANTMENT_DESCRIPTION.wrap(enchantmentId.getPath())).withStyle(ChatFormatting.DARK_GRAY);
                     }
                 }
             } else if (location.getNamespace().equals(DragonSurvival.MODID)) {
