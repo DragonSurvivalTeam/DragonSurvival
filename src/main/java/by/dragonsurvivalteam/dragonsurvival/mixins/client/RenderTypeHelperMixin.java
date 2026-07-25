@@ -7,23 +7,17 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraftforge.client.RenderTypeHelper;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 
 /** Certain items do not support translucent rendering by default */
-@Mixin(RenderTypeHelper.class)
+@Mixin(value = RenderTypeHelper.class, remap = false)
 public abstract class RenderTypeHelperMixin {
     @ModifyReturnValue(method = "getFallbackItemRenderType", at = @At("RETURN"))
     private static RenderType dragonSurvival$getTranslucentRenderType(final RenderType renderType, @Local(argsOnly = true) boolean cull) {
         if (HunterHandler.itemTranslucency != HunterHandler.UNMODIFIED && HunterHandler.itemTranslucency != HunterHandler.NON_TRANSPARENT && renderType == Sheets.cutoutBlockSheet()) {
-            return getEntityRenderType(RenderType.translucent(), cull);
+            return RenderTypeHelper.getEntityRenderType(RenderType.translucent(), cull);
         }
 
         return renderType;
-    }
-
-    @Shadow
-    public static RenderType getEntityRenderType(final RenderType renderType, boolean cull) {
-        throw new AssertionError();
     }
 }
