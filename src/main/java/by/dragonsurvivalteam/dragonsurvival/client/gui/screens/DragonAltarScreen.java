@@ -152,12 +152,12 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollY) {
         for (ScrollableComponent component : scrollableComponents) {
-            component.scroll(mouseX, mouseY, scrollX, scrollY);
+            component.scroll(mouseX, mouseY, 0, scrollY);
         }
 
-        return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
+        return super.mouseScrolled(mouseX, mouseY, scrollY);
     }
 
     @Override
@@ -205,7 +205,7 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
             return;
         }
 
-        renderBackground(graphics, mouseX, mouseY, partialTick);
+        renderBackground(graphics);
 
         tick++;
 
@@ -291,12 +291,12 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
                     // Left side
                     Quaternionf quaternion = Axis.ZP.rotationDegrees(180.0F);
                     quaternion.rotateY((float) Math.toRadians(210));
-                    InventoryScreen.renderEntityInInventory(graphics, (width / 2f) - 180, button.getY() + button.getHeight(), entity1Scale, new Vector3f(), quaternion, null, entity1);
+                    InventoryScreen.renderEntityInInventory(graphics, (int) ((width / 2f) - 180), button.getY() + button.getHeight(), entity1Scale, quaternion, null, entity1);
 
                     // Right side
                     Quaternionf quaternion2 = Axis.ZP.rotationDegrees(180.0F);
                     quaternion2.rotateY((float) Math.toRadians(150));
-                    InventoryScreen.renderEntityInInventory(graphics, (width / 2f) + 180, button.getY() + button.getHeight(), entity2Scale, new Vector3f(), quaternion2, null, entity2);
+                    InventoryScreen.renderEntityInInventory(graphics, (int) ((width / 2f) + 180), button.getY() + button.getHeight(), entity2Scale, quaternion2, null, entity2);
                 }
             }
 
@@ -330,42 +330,43 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
     }
 
     @Override
-    public void renderBackground(@NotNull final GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+    public void renderBackground(@NotNull final GuiGraphics guiGraphics) {
         guiGraphics.fillGradient(0, 0, this.width, this.height, -300, -1072689136, -804253680);
         renderBorders(guiGraphics, BACKGROUND_TEXTURE, 0, width, 25, height - 25, width, height);
     }
 
     public static void renderBorders(@NotNull final GuiGraphics guiGraphics, ResourceLocation texture, int x0, int x1, int y0, int y1, int width, int height) {
         Tesselator tesselator = Tesselator.getInstance();
-        BufferBuilder bufferbuilder = tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
+        BufferBuilder bufferbuilder = tesselator.getBuilder();
+        bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
         RenderSystem.setShaderTexture(0, texture);
         float zLevel = 0;
 
         RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
-        bufferbuilder.addVertex(x0, y0, zLevel).setUv(0.0F, (float) y0 / 32.0F).setColor(64, 64, 64, 55);
-        bufferbuilder.addVertex(x0 + width, y0, zLevel).setUv((float) width / 32.0F, (float) y0 / 32.0F).setColor(64, 64, 64, 255);
-        bufferbuilder.addVertex(x0 + width, 0.0F, zLevel).setUv((float) width / 32.0F, 0.0F).setColor(64, 64, 64, 255);
-        bufferbuilder.addVertex(x0, 0.0F, zLevel).setUv(0.0F, 0.0F).setColor(64, 64, 64, 255);
-        bufferbuilder.addVertex(x0, height, zLevel).setUv(0.0F, (float) height / 32.0F).setColor(64, 64, 64, 255);
-        bufferbuilder.addVertex(x0 + width, height, zLevel).setUv((float) width / 32.0F, (float) height / 32.0F).setColor(64, 64, 64, 255);
-        bufferbuilder.addVertex(x0 + width, y1, zLevel).setUv((float) width / 32.0F, (float) y1 / 32.0F).setColor(64, 64, 64, 255);
-        bufferbuilder.addVertex(x0, y1, zLevel).setUv(0.0F, (float) y1 / 32.0F).setColor(64, 64, 64, 255);
-        BufferUploader.drawWithShader(bufferbuilder.buildOrThrow());
+        bufferbuilder.vertex(x0, y0, zLevel).uv(0.0F, (float) y0 / 32.0F).color(64, 64, 64, 55).endVertex();
+        bufferbuilder.vertex(x0 + width, y0, zLevel).uv((float) width / 32.0F, (float) y0 / 32.0F).color(64, 64, 64, 255).endVertex();
+        bufferbuilder.vertex(x0 + width, 0.0F, zLevel).uv((float) width / 32.0F, 0.0F).color(64, 64, 64, 255).endVertex();
+        bufferbuilder.vertex(x0, 0.0F, zLevel).uv(0.0F, 0.0F).color(64, 64, 64, 255).endVertex();
+        bufferbuilder.vertex(x0, height, zLevel).uv(0.0F, (float) height / 32.0F).color(64, 64, 64, 255).endVertex();
+        bufferbuilder.vertex(x0 + width, height, zLevel).uv((float) width / 32.0F, (float) height / 32.0F).color(64, 64, 64, 255).endVertex();
+        bufferbuilder.vertex(x0 + width, y1, zLevel).uv((float) width / 32.0F, (float) y1 / 32.0F).color(64, 64, 64, 255).endVertex();
+        bufferbuilder.vertex(x0, y1, zLevel).uv(0.0F, (float) y1 / 32.0F).color(64, 64, 64, 255).endVertex();
+        BufferUploader.drawWithShader(bufferbuilder.end());
 
         RenderSystem.enableBlend();
         RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ZERO, GlStateManager.DestFactor.ONE);
         RenderSystem.setShader(GameRenderer::getPositionColorShader);
 
-        bufferbuilder = tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
-        bufferbuilder.addVertex(x0, y0 + 4, zLevel).setUv(0.0F, 1.0F).setColor(0, 0, 0, 0);
-        bufferbuilder.addVertex(x1, y0 + 4, zLevel).setUv(1.0F, 1.0F).setColor(0, 0, 0, 0);
-        bufferbuilder.addVertex(x1, y0, zLevel).setUv(1.0F, 0.0F).setColor(0, 0, 0, 255);
-        bufferbuilder.addVertex(x0, y0, zLevel).setUv(0.0F, 0.0F).setColor(0, 0, 0, 255);
-        bufferbuilder.addVertex(x0, y1, zLevel).setUv(0.0F, 1.0F).setColor(0, 0, 0, 255);
-        bufferbuilder.addVertex(x1, y1, zLevel).setUv(1.0F, 1.0F).setColor(0, 0, 0, 255);
-        bufferbuilder.addVertex(x1, y1 - 4, zLevel).setUv(1.0F, 0.0F).setColor(0, 0, 0, 0);
-        bufferbuilder.addVertex(x0, y1 - 4, zLevel).setUv(0.0F, 0.0F).setColor(0, 0, 0, 0);
-        BufferUploader.drawWithShader(bufferbuilder.buildOrThrow());
+        bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
+        bufferbuilder.vertex(x0, y0 + 4, zLevel).color(0, 0, 0, 0).endVertex();
+        bufferbuilder.vertex(x1, y0 + 4, zLevel).color(0, 0, 0, 0).endVertex();
+        bufferbuilder.vertex(x1, y0, zLevel).color(0, 0, 0, 255).endVertex();
+        bufferbuilder.vertex(x0, y0, zLevel).color(0, 0, 0, 255).endVertex();
+        bufferbuilder.vertex(x0, y1, zLevel).color(0, 0, 0, 255).endVertex();
+        bufferbuilder.vertex(x1, y1, zLevel).color(0, 0, 0, 255).endVertex();
+        bufferbuilder.vertex(x1, y1 - 4, zLevel).color(0, 0, 0, 0).endVertex();
+        bufferbuilder.vertex(x0, y1 - 4, zLevel).color(0, 0, 0, 0).endVertex();
+        BufferUploader.drawWithShader(bufferbuilder.end());
     }
 
     @Override
