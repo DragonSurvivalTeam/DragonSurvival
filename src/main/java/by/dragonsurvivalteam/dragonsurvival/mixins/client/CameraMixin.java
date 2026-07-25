@@ -1,7 +1,10 @@
 package by.dragonsurvivalteam.dragonsurvival.mixins.client;
 
+import by.dragonsurvivalteam.dragonsurvival.client.handlers.ClientFlightHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.EntityScale;
 
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
@@ -20,8 +23,8 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.ModifyArgs;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
@@ -31,11 +34,16 @@ public abstract class CameraMixin {
     @Shadow private Vec3 position;
     @Shadow private Entity entity;
 
+    @ModifyArg(method = "setup", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Camera;getMaxZoom(D)D"), index = 0)
+    private double dragonSurvival$modifyDetachedCameraDistance(double distance, @Local(argsOnly = true) float partialTick) {
+        return ClientFlightHandler.modifyDetachedCameraDistance((Camera) (Object) this, distance, partialTick);
+    }
+
     @Inject(method = "getMaxZoom", at = @At(value = "HEAD"))
-    private void dragonSurvival$moveCameraPositionUpWhenInVisualBlockWithNoCollision(float maxZoom, final CallbackInfoReturnable<Float> callback) {
+    private void dragonSurvival$moveCameraPositionUpWhenInVisualBlockWithNoCollision(double maxZoom, final CallbackInfoReturnable<Double> callback) {
         Player player = Minecraft.getInstance().player;
 
-        if (this.entity != player) {
+        if (player == null || this.entity != player) {
             return;
         }
 
@@ -71,13 +79,15 @@ public abstract class CameraMixin {
     }
 
     /** Reduce x-ray through the blocks to the side of the player (when moving the third person camera) */
-    @ModifyVariable(method = "getMaxZoom", at = @At(value = "STORE"), ordinal = 5)
-    private float dragonSurvival$modifyDistance(float distance) {
-        //noinspection DataFlowIssue -> player is present
-        float scale = Minecraft.getInstance().EntityScale.get(player);
+    @ModifyExpressionValue(method = "getMaxZoom", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/phys/Vec3;distanceTo(Lnet/minecraft/world/phys/Vec3;)D"))
+    private double dragonSurvival$modifyDistance(double distance) {
+        Player player = Minecraft.getInstance().player;
 
-        if (scale < 1) {
-            return distance * scale;
+        if (player != null && this.entity == player) {
+            float scale = EntityScale.get(player);
+            if (scale < 1) {
+                return distance * scale;
+            }
         }
 
         return distance;
@@ -86,10 +96,13 @@ public abstract class CameraMixin {
     // We need to adjust the distance at which blocks are checked for collision to prevent the camera from thinking it is blocked
     @ModifyArgs(method = "getMaxZoom", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/phys/Vec3;add(DDD)Lnet/minecraft/world/phys/Vec3;"))
     private void dragonSurvival$adjustCameraPosition(Args args) {
-        //noinspection DataFlowIssue -> player is present
-        float scale = Math.min(1, Minecraft.getInstance().EntityScale.get(player));
-        args.set(0, (double) args.get(0) * scale);
-        args.set(1, (double) args.get(1) * scale);
-        args.set(2, (double) args.get(2) * scale);
+        Player player = Minecraft.getInstance().player;
+
+        if (player != null && this.entity == player) {
+            float scale = Math.min(1, EntityScale.get(player));
+            args.set(0, (double) args.get(0) * scale);
+            args.set(1, (double) args.get(1) * scale);
+            args.set(2, (double) args.get(2) * scale);
+        }
     }
 }

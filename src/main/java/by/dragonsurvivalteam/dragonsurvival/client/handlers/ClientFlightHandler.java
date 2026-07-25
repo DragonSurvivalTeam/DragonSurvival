@@ -16,6 +16,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import by.dragonsurvivalteam.dragonsurvival.server.handlers.ServerFlightHandler;
 import by.dragonsurvivalteam.dragonsurvival.util.ActionWithTimedCooldown;
 import by.dragonsurvivalteam.dragonsurvival.util.EnchantmentUtils;
+import by.dragonsurvivalteam.dragonsurvival.common.handlers.EntityScale;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import by.dragonsurvivalteam.dragonsurvival.util.TickedCooldown;
 import com.mojang.datafixers.util.Pair;
@@ -39,7 +40,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.client.event.CalculateDetachedCameraDistanceEvent;
 import net.minecraftforge.client.event.ViewportEvent;
 import net.minecraftforge.event.TickEvent;
 import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
@@ -145,27 +145,36 @@ public class ClientFlightHandler {
     private static final TickedCooldown jumpFlyCooldown = new TickedCooldown(7);
     private static boolean lastJumpInputState; // We need to track the rising edge manually
 
-    // Run this somewhat early, but not extremely early so that if another mod messes with camera rendering, it will recieve DS's changes first.
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public static void flightCamera(CalculateDetachedCameraDistanceEvent event) {
-        if (DragonSurvival.PROXY.dragonRenderingWasCancelled(DragonSurvival.PROXY.getLocalPlayer())) {
-            return;
+    public static double modifyDetachedCameraDistance(final Camera camera, double distance, float partialTick) {
+        Player player = DragonSurvival.PROXY.getLocalPlayer();
+
+        if (player == null || DragonSurvival.PROXY.dragonRenderingWasCancelled(player)) {
+            return distance;
         }
 
-        DragonStateProvider.getOptional(DragonSurvival.PROXY.getLocalPlayer()).ifPresent(handler -> {
-            if (handler.isDragon()) {
-                float visualScale = (float) handler.getVisualScale(DragonSurvival.PROXY.getLocalPlayer(), Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(false));
-                if (disableSizeCameraModifications) {
-                    event.setDistance((event.getDistance()) / event.getEntityScalingFactor() * visualScale);
-                } else {
-                    event.setDistance((event.getDistance() + baseDragonCameraOffset) / event.getEntityScalingFactor() * Math.max(visualScale, dragonCameraMinimumScale) * dragonCameraScaleFactor + flatDragonCameraOffset);
-                }
+        DragonStateHandler handler = DragonStateProvider.getData(player);
 
-                if (spinCameraEffect && event.getCamera().isDetached()) {
-                    event.setDistance(event.getDistance() + SpinFlightPresentation.getDetachedCameraOffset());
-                }
-            }
-        });
+        if (!handler.isDragon()) {
+            return distance;
+        }
+
+        float entityScale = EntityScale.get(player);
+        float visualScale = (float) handler.getVisualScale(player, partialTick);
+
+        if (disableSizeCameraModifications) {
+            distance *= visualScale;
+        } else {
+            distance = (distance + baseDragonCameraOffset)
+                    * Math.max(visualScale, dragonCameraMinimumScale)
+                    * dragonCameraScaleFactor
+                    + flatDragonCameraOffset * entityScale;
+        }
+
+        if (spinCameraEffect && camera.isDetached()) {
+            distance += SpinFlightPresentation.getDetachedCameraOffset() * entityScale;
+        }
+
+        return distance;
     }
 
     // Run this somewhat early, but not extremely early so that if another mod messes with camera rendering, it will recieve DS's changes first.
