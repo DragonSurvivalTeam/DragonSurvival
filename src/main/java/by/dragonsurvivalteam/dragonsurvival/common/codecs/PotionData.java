@@ -22,7 +22,6 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.alchemy.PotionContents;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.LevelBasedValue;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -30,7 +29,6 @@ import org.jetbrains.annotations.Nullable;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public record PotionData(
         HolderSet<MobEffect> effects,
@@ -60,7 +58,7 @@ public record PotionData(
     public void apply(@Nullable final ServerPlayer dragon, final int level, final Entity target) {
         if (target instanceof LivingEntity livingTarget) {
             effects().forEach(effect -> {
-                MobEffectInstance instance = livingTarget.getEffect(effect);
+                MobEffectInstance instance = livingTarget.getEffect(effect.value());
                 Calculated calculated = Calculated.from(this, level);
 
                 if (instance != null && (instance.getAmplifier() >= calculated.amplifier() && instance.getDuration() >= calculated.duration())) {
@@ -77,7 +75,7 @@ public record PotionData(
                 if (effect.value().isInstantenous()) {
                     effect.value().applyInstantenousEffect(dragon, null, livingTarget, calculated.amplifier(), /* Seems to be the effect strength */ 1);
                 } else {
-                    livingTarget.addEffect(new MobEffectInstance(effect, calculated.duration(), calculated.amplifier(), false, effectParticles, showIcon), dragon);
+                    livingTarget.addEffect(new MobEffectInstance(effect.value(), calculated.duration(), calculated.amplifier(), false, effectParticles, showIcon), dragon);
                 }
             });
         }
@@ -86,14 +84,14 @@ public record PotionData(
     public void remove(@Nullable final ServerPlayer dragon, final Entity entity) {
         if (entity instanceof LivingEntity livingEntity) {
             effects.forEach(effect -> {
-                MobEffectInstance instance = livingEntity.getEffect(effect);
+                MobEffectInstance instance = livingEntity.getEffect(effect.value());
 
                 if (instance == null) {
                     return;
                 }
 
                 if (dragon == null || ((AdditionalEffectData) instance).dragonSurvival$getApplier(dragon.serverLevel()) == dragon) {
-                    livingEntity.removeEffect(effect);
+                    livingEntity.removeEffect(effect.value());
                 }
             });
         }
@@ -126,7 +124,7 @@ public record PotionData(
         return components;
     }
 
-    public PotionContents toPotionContents(final @NotNull RandomSource random, final int level) {
+    public List<MobEffectInstance> toEffectInstances(final @NotNull RandomSource random, final int level) {
         List<MobEffectInstance> instances = new ArrayList<>();
         Calculated calculated = Calculated.from(this, level);
 
@@ -135,10 +133,10 @@ public record PotionData(
                 continue;
             }
 
-            instances.add(new MobEffectInstance(effect, calculated.duration(), calculated.amplifier(), false, effectParticles()));
+            instances.add(new MobEffectInstance(effect.value(), calculated.duration(), calculated.amplifier(), false, effectParticles()));
         }
 
-        return new PotionContents(Optional.empty(), Optional.empty(), instances);
+        return instances;
     }
 
     @SafeVarargs

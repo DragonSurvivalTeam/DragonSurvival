@@ -35,9 +35,9 @@ public record ProjectileAreaCloudEffect(
             AreaEffectCloud cloud = new AreaEffectCloud(projectile.level(), target.getX(), projectile.level().getBlockState(target.below()).isSolid() ? target.above().getY() : target.getY(), target.getZ());
 
             if (projectile.getOwner() != null) {
-                cloud.setPotionContents(potion.toPotionContents(projectile.getOwner().getRandom(), level));
+                potion.toEffectInstances(projectile.getOwner().getRandom(), level).forEach(cloud::addEffect);
             } else {
-                cloud.setPotionContents(potion.toPotionContents(projectile.getRandom(), level));
+                potion.toEffectInstances(projectile.getRandom(), level).forEach(cloud::addEffect);
             }
 
             cloud.setDuration((int) duration.calculate(level));
