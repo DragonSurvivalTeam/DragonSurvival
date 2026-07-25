@@ -57,12 +57,12 @@ public class EffectModifications extends Storage<EffectModification.Instance> {
             int duration = data.calculateDuration(event.getEffectInstance());
 
             if (duration <= 0 && duration != MobEffectInstance.INFINITE_DURATION) {
-                event.setResult(MobEffectEvent.Applicable.Result.DO_NOT_APPLY);
+                event.setResult(MobEffectEvent.Applicable.Result.DENY);
                 return;
             }
 
             if (data.calculateAmplifier(event.getEffectInstance()) < 0) {
-                event.setResult(MobEffectEvent.Applicable.Result.DO_NOT_APPLY);
+                event.setResult(MobEffectEvent.Applicable.Result.DENY);
             }
         });
     }
