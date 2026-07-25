@@ -62,10 +62,10 @@ import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.client.event.RenderNameTagEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.util.TriState;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityLeaveLevelEvent;
 import net.minecraftforge.event.level.LevelEvent;
+import net.minecraftforge.eventbus.api.Event;
 import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
@@ -254,7 +254,7 @@ public class ClientDragonRenderer {
     public static void cancelNameplatesFromDummyEntities(RenderNameTagEvent renderNameplateEvent) {
         Entity entity = renderNameplateEvent.getEntity();
         if (entity.getType() == DSEntities.DRAGON.get()) {
-            renderNameplateEvent.setCanRender(TriState.FALSE);
+            renderNameplateEvent.setResult(Event.Result.DENY);
         }
     }
 
