@@ -1,25 +1,23 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.datagen;
 
 import net.minecraft.client.renderer.texture.atlas.sources.SingleFile;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.common.data.SpriteSourceProvider;
 
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 
 import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 
 public class DataSpriteSourceProvider extends SpriteSourceProvider {
 
-    public DataSpriteSourceProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper existingFileHelper) {
-        super(output, lookupProvider, MODID, existingFileHelper);
+    public DataSpriteSourceProvider(PackOutput output, ExistingFileHelper existingFileHelper) {
+        super(output, existingFileHelper, MODID);
     }
 
     @Override
-    protected void gather() {
+    protected void addSources() {
         atlas(SpriteSourceProvider.BLOCKS_ATLAS)
                 .addSource(new SingleFile(new ResourceLocation(MODID, "te/star/cage"), Optional.empty()))
                 .addSource(new SingleFile(new ResourceLocation(MODID, "te/star/wind"), Optional.empty()))
