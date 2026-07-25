@@ -9,8 +9,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.client.event.RenderGuiLayerEvent;
-import net.minecraftforge.client.gui.VanillaGuiLayers;
+import net.minecraftforge.client.event.RenderGuiOverlayEvent;
+import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 import software.bernie.geckolib.core.object.Color;
 
 @EventBusSubscriber(Dist.CLIENT)
@@ -18,10 +18,10 @@ public class DragonTreasureHandler {
     private static int renderSleepTimer = 0;
 
     @SubscribeEvent
-    public static void renderSleepScreen(final RenderGuiLayerEvent.Post event) {
+    public static void renderSleepScreen(final RenderGuiOverlayEvent.Post event) {
         Player player = Minecraft.getInstance().player;
 
-        if (player == null || player.isSpectator() || event.getName() != VanillaGuiLayers.AIR_LEVEL) {
+        if (player == null || player.isSpectator() || event.getOverlay() != VanillaGuiOverlay.AIR_LEVEL.type()) {
             return;
         }
 
