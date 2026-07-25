@@ -47,6 +47,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.scores.PlayerTeam;
 import net.minecraft.util.random.SimpleWeightedRandomList;
 import net.minecraft.util.random.WeightedEntry;
 import net.minecraft.util.random.WeightedRandom;
@@ -188,7 +189,7 @@ public class SummonEntityEffect extends DurationInstanceBase<SummonedEntities, S
             int totalWeight = WeightedRandom.getTotalWeight(list.unwrap());
 
             list.unwrap().forEach(wrapper -> {
-                Component entityName = DSColors.dynamicValue(wrapper.data().getDescription());
+                Component entityName = DSColors.dynamicValue(wrapper.getData().getDescription());
                 double chance = (double) wrapper.getWeight().asInt() / totalWeight;
                 component.append(Component.translatable(SUMMON_CHANCE, DSColors.dynamicValue(entityName), DSColors.dynamicValue(NumberFormat.getPercentInstance().format(chance))));
             });
@@ -337,7 +338,7 @@ public class SummonEntityEffect extends DurationInstanceBase<SummonedEntities, S
 
         private void summon(final ServerPlayer storageHolder, final BlockPos spawnPosition, final SummonedEntities summonData) {
             EntityType<?> type = baseData().entities().map(
-                    list -> list.getRandom(storageHolder.getRandom()).map(WeightedEntry.Wrapper::data).orElse(null),
+                    list -> list.getRandom(storageHolder.getRandom()).map(WeightedEntry.Wrapper::getData).orElse(null),
                     set -> set.getRandomElement(storageHolder.getRandom()).map(Holder::value).orElse(null)
             );
 
@@ -407,11 +408,11 @@ public class SummonEntityEffect extends DurationInstanceBase<SummonedEntities, S
 
             if (entity instanceof TamableAnimal tamable) {
                 tamable.setOwnerUUID(dragon.getUUID());
-                tamable.setTame(true, true);
+                tamable.setTame(true);
             }
 
-            if (dragon.getTeam() != null) {
-                dragon.level().getScoreboard().addPlayerToTeam(entity.getScoreboardName(), dragon.getTeam());
+            if (dragon.getTeam() instanceof PlayerTeam team) {
+                dragon.level().getScoreboard().addPlayerToTeam(entity.getScoreboardName(), team);
             }
 
             if (entity instanceof Mob mob) {
