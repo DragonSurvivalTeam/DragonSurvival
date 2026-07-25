@@ -15,7 +15,12 @@ import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SwimData;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.trigger.OnTargetKilled;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.llamalad7.mixinextras.sugar.Share;
 import com.llamalad7.mixinextras.sugar.Local;
+import com.llamalad7.mixinextras.sugar.ref.LocalFloatRef;
+import com.llamalad7.mixinextras.sugar.ref.LocalRef;
 import net.minecraft.core.Holder;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
@@ -36,24 +41,93 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.ForgeMod;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.damagesource.DamageContainer;
+import net.minecraftforge.event.entity.living.LivingIncomingDamageEvent;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Constant;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
+import org.spongepowered.asm.mixin.injection.ModifyConstant;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import javax.annotation.Nullable;
 
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityMixin extends Entity {
+    @Unique private static final ThreadLocal<DamageContainer> dragonSurvival$currentDamage = new ThreadLocal<>();
+
     @Shadow protected boolean jumping;
     @Shadow protected ItemStack useItem;
 
     public LivingEntityMixin(final EntityType<?> type, final Level level) {
         super(type, level);
+    }
+
+    @Inject(method = "hurt", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;isSleeping()Z"), cancellable = true)
+    private void dragonSurvival$fireIncomingDamage(final DamageSource source, final float amount, final CallbackInfoReturnable<Boolean> callback,
+                                                   @Share("dragonSurvival$damageContainer") final LocalRef<DamageContainer> containerRef,
+                                                   @Local(argsOnly = true) final LocalFloatRef amountRef) {
+        DamageContainer container = new DamageContainer(source, amount);
+        LivingIncomingDamageEvent event = new LivingIncomingDamageEvent((LivingEntity) (Object) this, container);
+
+        if (MinecraftForge.EVENT_BUS.post(event)) {
+            callback.setReturnValue(false);
+            return;
+        }
+
+        containerRef.set(container);
+        amountRef.set(container.getNewDamage());
+    }
+
+    @WrapOperation(method = "hurt", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;actuallyHurt(Lnet/minecraft/world/damagesource/DamageSource;F)V"))
+    private void dragonSurvival$trackDamageContainer(final LivingEntity entity, final DamageSource source, final float amount,
+                                                     final Operation<Void> original,
+                                                     @Share("dragonSurvival$damageContainer") final LocalRef<DamageContainer> containerRef) {
+        DamageContainer previous = dragonSurvival$currentDamage.get();
+        DamageContainer container = containerRef.get();
+
+        if (container != null) {
+            container.setNewDamage(amount);
+            dragonSurvival$currentDamage.set(container);
+        }
+
+        try {
+            original.call(entity, source, amount);
+        } finally {
+            if (previous == null) {
+                dragonSurvival$currentDamage.remove();
+            } else {
+                dragonSurvival$currentDamage.set(previous);
+            }
+        }
+    }
+
+    @WrapOperation(method = "actuallyHurt", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;getDamageAfterArmorAbsorb(Lnet/minecraft/world/damagesource/DamageSource;F)F"))
+    private float dragonSurvival$modifyArmorReduction(final LivingEntity entity, final DamageSource source, final float amount,
+                                                      final Operation<Float> original) {
+        float reducedDamage = original.call(entity, source, amount);
+        DamageContainer container = dragonSurvival$currentDamage.get();
+
+        if (container == null) {
+            return reducedDamage;
+        }
+
+        container.setNewDamage(amount);
+        container.setReduction(DamageContainer.Reduction.ARMOR, amount - reducedDamage);
+        return container.getNewDamage();
+    }
+
+    @ModifyConstant(method = "hurt", constant = @Constant(intValue = 20))
+    private int dragonSurvival$modifyPostAttackInvulnerability(final int original,
+                                                               @Share("dragonSurvival$damageContainer") final LocalRef<DamageContainer> containerRef) {
+        DamageContainer container = containerRef.get();
+        return container == null ? original : container.getPostAttackInvulnerabilityTicks();
     }
 
     /** Happens here so that the trigger can occur after the loot has been dropped */
