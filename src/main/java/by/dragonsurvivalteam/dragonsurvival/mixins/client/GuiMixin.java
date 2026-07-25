@@ -5,7 +5,6 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.ClientEffect
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.sugar.Local;
-import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphics;
@@ -31,7 +30,7 @@ public abstract class GuiMixin {
     @Unique private List<ClientEffectProvider> dragonSurvival$providers = List.of();
 
     @Inject(method = "renderEffects", at = @At("HEAD"))
-    private void dragonSurvival$storeProviders(final GuiGraphics graphics, final DeltaTracker deltaTracker, final CallbackInfo callback) {
+    private void dragonSurvival$storeProviders(final GuiGraphics graphics, final CallbackInfo callback) {
         dragonSurvival$providers = ClientEffectProvider.getProviders(false);
     }
 
@@ -42,7 +41,7 @@ public abstract class GuiMixin {
 
     // TODO :: Do we care to determine if effects are beneficial or not? In this UI vanilla puts harmful effects below beneficial ones instead of beside them
     @Inject(method = "renderEffects", at = @At(value = "INVOKE", target = "Ljava/util/List;forEach(Ljava/util/function/Consumer;)V"))
-    private void dragonSurvival$renderAbilityEffects(final GuiGraphics graphics, final DeltaTracker deltaTracker, final CallbackInfo callback, @Local(ordinal = 0) int renderedCount) {
+    private void dragonSurvival$renderAbilityEffects(final GuiGraphics graphics, final CallbackInfo callback, @Local(ordinal = 0) int renderedCount) {
         Gui self = (Gui) (Object) this;
         int effectCount = renderedCount;
 

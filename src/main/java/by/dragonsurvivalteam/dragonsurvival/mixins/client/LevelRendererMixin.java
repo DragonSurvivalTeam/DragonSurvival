@@ -13,7 +13,6 @@ import by.dragonsurvivalteam.dragonsurvival.registry.attachments.GlowData;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Camera;
-import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.LevelRenderer;
@@ -55,7 +54,7 @@ public abstract class LevelRendererMixin {
 
     /** Render the dragon body (except the head) in first person */
     @Inject(method = "renderLevel", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/LevelRenderer;checkPoseStack(Lcom/mojang/blaze3d/vertex/PoseStack;)V", ordinal = 0, shift = At.Shift.BEFORE))
-    public void render(DeltaTracker deltaTracker, boolean renderBlockOutline, Camera camera, GameRenderer renderer, LightTexture light, Matrix4f frustum, Matrix4f projection, CallbackInfo callback, @Local PoseStack poseStack) {
+    public void render(PoseStack poseStack, float partialTick, long finishNanoTime, boolean renderBlockOutline, Camera camera, GameRenderer renderer, LightTexture light, Matrix4f projection, CallbackInfo callback) {
         if (!(camera.getEntity() instanceof Player player)) {
             return;
         }
@@ -80,7 +79,7 @@ public abstract class LevelRendererMixin {
 
         MultiBufferSource immediate = renderBuffers.bufferSource();
         manager.setRenderHitBoxes(false);
-        renderEntity(player, x, y, z, deltaTracker.getGameTimeDeltaPartialTick(false), poseStack, immediate);
+        renderEntity(player, x, y, z, partialTick, poseStack, immediate);
         manager.setRenderHitBoxes(renderHitboxes);
     }
 
