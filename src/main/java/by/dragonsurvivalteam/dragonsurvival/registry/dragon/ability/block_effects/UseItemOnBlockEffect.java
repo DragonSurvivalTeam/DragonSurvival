@@ -11,7 +11,6 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.LevelBasedValue;
@@ -48,7 +47,7 @@ public record UseItemOnBlockEffect(ItemStack item, LevelBasedValue probability, 
                 sound.ifPresent(soundHolder -> dragon.level().playSound(null, position, soundHolder.value(), SoundSource.BLOCKS, 1, 1));
             } else {
                 newStack = new ItemStack(item.getItem());
-                ItemInteractionResult newResult = dragon.serverLevel().getBlockState(position).useItemOn(newStack, dragon.serverLevel(), dragon, InteractionHand.MAIN_HAND,
+                InteractionResult newResult = dragon.serverLevel().getBlockState(position).use(dragon.serverLevel(), dragon, InteractionHand.MAIN_HAND,
                         new BlockHitResult(dragon.position(), Objects.requireNonNullElse(direction, dragon.getDirection()), position, false)
                 );
 
