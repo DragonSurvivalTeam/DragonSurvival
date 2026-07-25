@@ -22,11 +22,11 @@ public class Bolas extends AbstractArrow {
     }
 
     public Bolas(double x, double y, double z, final Level level, final ItemStack pickup, @Nullable final ItemStack firedFrom) {
-        super(DSEntities.BOLAS_ENTITY.get(), x, y, z, level, pickup, firedFrom);
+        super(DSEntities.BOLAS_ENTITY.get(), x, y, z, level);
     }
 
     public Bolas(LivingEntity owner, Level level, ItemStack pickupItemStack, @Nullable ItemStack firedFromWeapon) {
-        super(DSEntities.BOLAS_ENTITY.get(), owner, level, pickupItemStack, firedFromWeapon);
+        super(DSEntities.BOLAS_ENTITY.get(), owner, level);
     }
 
     @Override
@@ -52,7 +52,7 @@ public class Bolas extends AbstractArrow {
     }
 
     @Override
-    protected @NotNull ItemStack getDefaultPickupItem() {
+    protected @NotNull ItemStack getPickupItem() {
         // TODO :: Now that we've actually fixed the arrow behavior, the user can actually pickup arrows fired with the bolas enchantment
         // Ideally we would store the original arrow fired somewhere and make that the pickup item, but it is a lot of work for a very small detail
         // Maybe just remove the bolas enchantment altogether in 1.22 and move it to a proper item?
