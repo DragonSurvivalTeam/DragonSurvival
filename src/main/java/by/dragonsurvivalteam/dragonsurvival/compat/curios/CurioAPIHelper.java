@@ -15,7 +15,7 @@ import java.util.Optional;
 public class CurioAPIHelper {
     public static ArrayList<ItemStack> getVisibleCurioItems(Player player) {
         if (ModID.CURIOS.isLoaded()) {
-            Optional<ICuriosItemHandler> items = CuriosApi.getCuriosInventory(player);
+            Optional<ICuriosItemHandler> items = CuriosApi.getCuriosInventory(player).resolve();
             if (items.isPresent()) {
                 Map<String, ICurioStacksHandler> handler = items.get().getCurios();
                 ArrayList<ItemStack> visibleCurios = new ArrayList<ItemStack>();
