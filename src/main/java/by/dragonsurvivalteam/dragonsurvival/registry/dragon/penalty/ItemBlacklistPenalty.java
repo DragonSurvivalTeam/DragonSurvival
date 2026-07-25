@@ -72,7 +72,7 @@ public class ItemBlacklistPenalty implements PenaltyEffect {
         }
 
         //noinspection deprecation -> ignore
-        return blacklisted.contains(item.builtInRegistryHolder().getKey());
+        return blacklisted.contains(item.builtInRegistryHolder().unwrapKey().orElseThrow());
     }
 
     private void dropAllItemsInList(final Player player, final NonNullList<ItemStack> items) {

@@ -423,7 +423,7 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
             ItemStack stack = CosmeticArmorReworkedHelper.getItemVisibleInSlot(player, equipmentSlot);
 
             //noinspection DataFlowIssue -> key is present
-            armorTotal.append(separator).append(separator).append(stack.getItemHolder().getKey().location().toLanguageKey());
+            armorTotal.append(separator).append(separator).append(stack.getItemHolder().unwrapKey().orElseThrow().location().toLanguageKey());
 
             ArmorTrim trim = stack.getComponents().get(DataComponents.TRIM);
 
@@ -464,8 +464,7 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
         String texture = "textures/armor/" + handler.getModel().getPath() + "/";
 
         if (item instanceof ArmorItem armorItem) {
-            //noinspection DataFlowIssue -> key is present
-            ResourceLocation materialResource = armorItem.getMaterial().getKey().location();
+            ResourceLocation materialResource = new ResourceLocation(armorItem.getMaterial().getName());
             texture += materialResource.getNamespace() + "/materials/" + materialResource.getPath() + "/" + equipmentSlot.getName();
 
             if (armorItem.getMaterial() == ArmorMaterials.LEATHER && player.getItemBySlot(equipmentSlot).get(DataComponents.DYED_COLOR) == null) {
@@ -508,7 +507,7 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
         }
 
         //noinspection deprecation,DataFlowIssue -> ignore deprecated / key is present
-        ResourceLocation itemResource = item.builtInRegistryHolder().getKey().location();
+        ResourceLocation itemResource = item.builtInRegistryHolder().unwrapKey().orElseThrow().location();
         String texture = "textures/armor/" + model.getPath() + "/" + itemResource.getNamespace() + "/" + itemResource.getPath() + ".png";
         return new ResourceLocation(model.getNamespace(), texture);
     }

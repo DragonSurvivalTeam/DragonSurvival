@@ -40,7 +40,7 @@ public class ResourceLocationWrapper {
         if (location.startsWith("#")) {
             Optional<HolderSet.Named<T>> optional = registry.getTag(TagKey.create(registry.key(), new ResourceLocation(location.substring(1))));
             //noinspection DataFlowIssue -> key is expected to be present
-            return optional.map(entries -> entries.stream().map(entry -> entry.getKey().location()).collect(Collectors.toSet())).orElse(Set.of());
+            return optional.map(entries -> entries.stream().map(entry -> entry.unwrapKey().orElseThrow().location()).collect(Collectors.toSet())).orElse(Set.of());
         } else {
             ResourceLocation parsed = ResourceLocation.tryParse(location);
 

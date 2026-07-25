@@ -962,7 +962,7 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
     // --- Upgrade Ability --- //
 
     public Criterion<UpgradeAbilityTrigger.UpgradeAbilityInstance> upgradeAbilityMax(final Holder<DragonAbility> ability) {
-        return upgradeAbility(ability.getKey(), ability.value().getMaxLevel());
+        return upgradeAbility(ability.unwrapKey().orElseThrow(), ability.value().getMaxLevel());
     }
 
     public Criterion<UpgradeAbilityTrigger.UpgradeAbilityInstance> upgradeAbility(final ResourceKey<DragonAbility> ability, int level) {

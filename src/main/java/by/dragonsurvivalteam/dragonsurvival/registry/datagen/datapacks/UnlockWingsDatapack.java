@@ -19,7 +19,7 @@ public class UnlockWingsDatapack {
 
     private static void handleWings(final BootstrapContext<DragonAbility> context, final Holder<DragonAbility> wings) {
         //noinspection DataFlowIssue -> key is present
-        context.register(wings.getKey(), new DragonAbility(
+        context.register(wings.unwrapKey().orElseThrow(), new DragonAbility(
                 wings.value().activation(),
                 Optional.empty(),
                 Optional.empty(),

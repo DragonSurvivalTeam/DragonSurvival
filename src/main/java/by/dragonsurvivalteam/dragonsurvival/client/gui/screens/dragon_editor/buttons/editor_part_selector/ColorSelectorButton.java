@@ -48,14 +48,14 @@ public class ColorSelectorButton extends ExtendedButton {
 
     @Override
     public void renderWidget(@NotNull final GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        active = !screen.preset.get(screen.stage.getKey()).get().defaultSkin;
+        active = !screen.preset.get(screen.stage.unwrapKey().orElseThrow()).get().defaultSkin;
 
-        String parKey = screen.preset.get(screen.stage.getKey()).get().layerSettings.get(layer).get().partKey;
+        String parKey = screen.preset.get(screen.stage.unwrapKey().orElseThrow()).get().layerSettings.get(layer).get().partKey;
         DragonPart part = DragonPartLoader.getDragonPart(layer, DragonEditorScreen.HANDLER.speciesKey(), DragonEditorScreen.HANDLER.body(), parKey);
         visible = part != null && !Objects.equals(part.key(), DefaultPartLoader.NO_PART) && part.isColorable();
 
         if (visible) {
-            LayerSettings layerSettings = screen.preset.get(screen.stage.getKey()).get().layerSettings.get(layer).get();
+            LayerSettings layerSettings = screen.preset.get(screen.stage.unwrapKey().orElseThrow()).get().layerSettings.get(layer).get();
 
             if (layerSettings.isModified) {
                 guiGraphics.blit(BUTTON_HUE_CHANGED, getX(), getY(), 0, 0, width, height, width, height);
@@ -79,7 +79,7 @@ public class ColorSelectorButton extends ExtendedButton {
     @Override
     public void onPress() {
         if (!toggled) {
-            String partKey = screen.preset.get(screen.stage.getKey()).get().layerSettings.get(layer).get().partKey;
+            String partKey = screen.preset.get(screen.stage.unwrapKey().orElseThrow()).get().layerSettings.get(layer).get().partKey;
             DragonPart part = DragonPartLoader.getDragonPart(layer, DragonEditorScreen.HANDLER.speciesKey(), DragonEditorScreen.HANDLER.body(), partKey);
 
             if (part == null) {

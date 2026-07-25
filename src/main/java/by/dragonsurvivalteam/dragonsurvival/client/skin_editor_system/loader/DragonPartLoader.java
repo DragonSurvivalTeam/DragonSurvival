@@ -89,7 +89,7 @@ public class DragonPartLoader extends SimpleJsonResourceReloadListener {
         if (body != null) {
             return parts.keySet().stream().filter(key -> {
                 DragonPart part = parts.get(key);
-                return part.applicableBodies().isEmpty() && body.value().model() == DragonBody.DEFAULT_MODEL || part.applicableBodies().contains(body.getKey());
+                return part.applicableBodies().isEmpty() && body.value().model() == DragonBody.DEFAULT_MODEL || part.applicableBodies().contains(body.unwrapKey().orElseThrow());
             }).collect(Collectors.toMap(key -> key, parts::get));
         }
 

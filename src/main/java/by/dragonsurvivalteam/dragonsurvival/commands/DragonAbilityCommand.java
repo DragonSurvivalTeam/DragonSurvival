@@ -46,7 +46,7 @@ public class DragonAbilityCommand {
                         .then(Commands.argument(DSCommands.TARGETS, EntityArgument.players())
                                 .executes(source -> handleCommand(source, EntityArgument.getPlayers(source, DSCommands.TARGETS), (player, data) -> data.clear(player) > 0))
                                 .then(Commands.argument(DragonAbilityArgument.ID, new DragonAbilityArgument(event.getBuildContext()))
-                                        .executes(source -> handleCommand(source, EntityArgument.getPlayers(source, DSCommands.TARGETS), (player, data) -> data.removeAbility(player, DragonAbilityArgument.get(source).getKey())))
+                                        .executes(source -> handleCommand(source, EntityArgument.getPlayers(source, DSCommands.TARGETS), (player, data) -> data.removeAbility(player, DragonAbilityArgument.get(source).unwrapKey().orElseThrow())))
                                 )))
                 .then(Commands.literal("add")
                         .then(Commands.argument(DSCommands.TARGETS, EntityArgument.players())
@@ -151,7 +151,7 @@ public class DragonAbilityCommand {
         }
 
         MagicData data = MagicData.getData(player);
-        DragonAbilityInstance instance = data.getAbility(ability.getKey());
+        DragonAbilityInstance instance = data.getAbility(ability.unwrapKey().orElseThrow());
 
         if (instance == null) {
             throw UNKNOWN_ABILITY_EXCEPTION.create(null, player.getDisplayName(), ability.getRegisteredName());

@@ -140,7 +140,7 @@ public class DragonStateHandler extends EntityStateHandler {
     public void setStage(@Nullable final Player player, final Holder<DragonStage> dragonStage) {
         if (!dragonSpecies.value().getStages(player != null ? player.registryAccess() : null).contains(dragonStage)) {
             //noinspection DataFlowIssue -> key is present
-            Functions.logOrThrow("The dragon stage [" + dragonStage.getKey().location() + "] is not valid for the dragon species [" + speciesId() + "]");
+            Functions.logOrThrow("The dragon stage [" + dragonStage.unwrapKey().orElseThrow().location() + "] is not valid for the dragon species [" + speciesId() + "]");
             return;
         }
 
@@ -331,7 +331,7 @@ public class DragonStateHandler extends EntityStateHandler {
 
     /** Should only be called if the player is a dragon */
     public ResourceKey<DragonSpecies> speciesKey() {
-        return species().getKey();
+        return species().unwrapKey().orElseThrow();
     }
 
     /** Should only be called if the player is a dragon */
@@ -349,7 +349,7 @@ public class DragonStateHandler extends EntityStateHandler {
 
     /** Should only be called if the player is a dragon */
     public ResourceKey<DragonStage> stageKey() {
-        return stage().getKey();
+        return stage().unwrapKey().orElseThrow();
     }
 
     /** Should only be called if the player is a dragon */
@@ -363,7 +363,7 @@ public class DragonStateHandler extends EntityStateHandler {
 
     /** Should only be called if the player is a dragon */
     public ResourceKey<DragonBody> bodyKey() {
-        return body().getKey();
+        return body().unwrapKey().orElseThrow();
     }
 
     /** Should only be called if the player is a dragon */
@@ -421,12 +421,12 @@ public class DragonStateHandler extends EntityStateHandler {
 
         if (oldSpecies != null && !savedForSoul) {
             // Save the growth for the previous species if we have changed and it isn't due to a soul save
-            savedGrowth.put(oldSpecies.getKey(), oldGrowth);
-            savedDesiredGrowth.put(oldSpecies.getKey(), oldDesiredGrowth);
+            savedGrowth.put(oldSpecies.unwrapKey().orElseThrow(), oldGrowth);
+            savedDesiredGrowth.put(oldSpecies.unwrapKey().orElseThrow(), oldDesiredGrowth);
         } else if (oldSpecies != null) {
             // Clear out saved growth data if we are saving for soul, to prevent the player from getting their growth back and repeatedly saving to a soul
-            savedGrowth.remove(oldSpecies.getKey());
-            savedDesiredGrowth.remove(oldSpecies.getKey());
+            savedGrowth.remove(oldSpecies.unwrapKey().orElseThrow());
+            savedDesiredGrowth.remove(oldSpecies.unwrapKey().orElseThrow());
         }
 
         if (player == null) {
@@ -560,17 +560,17 @@ public class DragonStateHandler extends EntityStateHandler {
     public void refreshSkinPresetForSpecies(final Holder<DragonSpecies> species, final Holder<DragonBody> body) {
         SkinPreset freshSkinPreset = new SkinPreset();
         freshSkinPreset.initDefaults(species, body != null ? body.value().model() : DragonBody.DEFAULT_MODEL);
-        skinData.skinPresets.get().put(species.getKey(), freshSkinPreset);
+        skinData.skinPresets.get().put(species.unwrapKey().orElseThrow(), freshSkinPreset);
     }
 
     public SkinPreset getSkinPresetForSpecies(final Holder<DragonSpecies> species, final Holder<DragonBody> body) {
-        SkinPreset skinPreset = skinData.skinPresets.get().get(species.getKey());
+        SkinPreset skinPreset = skinData.skinPresets.get().get(species.unwrapKey().orElseThrow());
 
         if (skinPreset.isEmpty()) {
             refreshSkinPresetForSpecies(species, body);
         }
 
-        return skinData.skinPresets.get().get(species.getKey());
+        return skinData.skinPresets.get().get(species.unwrapKey().orElseThrow());
     }
 
     public void recompileCurrentSkin() {
@@ -645,7 +645,7 @@ public class DragonStateHandler extends EntityStateHandler {
 
             items.forEach((item, count) -> {
                 //noinspection deprecation,DataFlowIssue -> ignore / key is present
-                perStage.putInt(item.builtInRegistryHolder().getKey().location().toString(), count);
+                perStage.putInt(item.builtInRegistryHolder().unwrapKey().orElseThrow().location().toString(), count);
             });
 
             usedGrowthItems.put(key.location().toString(), perStage);

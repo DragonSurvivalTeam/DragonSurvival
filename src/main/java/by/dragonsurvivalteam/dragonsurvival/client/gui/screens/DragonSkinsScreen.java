@@ -208,10 +208,10 @@ public class DragonSkinsScreen extends Screen {
         float scale = zoom;
 
         //noinspection DataFlowIssue -> key is present
-        if (dragonStage != null && !DragonSkins.playerSkinOrGlowFetchingInProgress(playerName, dragonStage.getKey()) && (showYourSkin || !Objects.equals(playerName, minecraft.player.getGameProfile().getName()))) {
-            if (!DragonSkins.fetchHasFailed(playerName, dragonStage.getKey()) || Objects.equals(playerName, minecraft.player.getGameProfile().getName())) {
+        if (dragonStage != null && !DragonSkins.playerSkinOrGlowFetchingInProgress(playerName, dragonStage.unwrapKey().orElseThrow()) && (showYourSkin || !Objects.equals(playerName, minecraft.player.getGameProfile().getName()))) {
+            if (!DragonSkins.fetchHasFailed(playerName, dragonStage.unwrapKey().orElseThrow()) || Objects.equals(playerName, minecraft.player.getGameProfile().getName())) {
                 if (handler.stage() == null) {
-                    boolean alreadyUsingDefaults = handler.getCurrentSkinPreset().isStageUsingDefaultSkin(dragonStage.getKey());
+                    boolean alreadyUsingDefaults = handler.getCurrentSkinPreset().isStageUsingDefaultSkin(dragonStage.unwrapKey().orElseThrow());
                     handler.setGrowth(null, handler.species().value().getStartingGrowth(minecraft.player.registryAccess()));
                     updateHandlerToUseCorrectSkinData();
                     handler.getCurrentSkinPreset().setAllStagesToUseDefaultSkin(alreadyUsingDefaults);
@@ -238,7 +238,7 @@ public class DragonSkinsScreen extends Screen {
         drawNonShadowString(guiGraphics, minecraft.font, Component.translatable(SETTINGS).withStyle(ChatFormatting.BLACK), startX + 128 + /* image width */ 164 / 2, startY + 7, -1);
         playerNameDisplay.setMessage(Component.literal(playerName));
         //noinspection DataFlowIssue -> key is present
-        playerStageDisplay.setMessage(DragonStage.translatableName(dragonStage.getKey()));
+        playerStageDisplay.setMessage(DragonStage.translatableName(dragonStage.unwrapKey().orElseThrow()));
 
         super.render(guiGraphics, mouseX, mouseY, partialTick);
     }
@@ -260,7 +260,7 @@ public class DragonSkinsScreen extends Screen {
         } else {
             speciesToUseForSkinData = BuiltInDragonSpecies.CAVE_DRAGON;
         }
-        handler.setCurrentStageCustomization(DragonStateProvider.getData(minecraft.player).getCustomizationForStageAndSpecies(speciesToUseForSkinData, dragonStage.getKey()));
+        handler.setCurrentStageCustomization(DragonStateProvider.getData(minecraft.player).getCustomizationForStageAndSpecies(speciesToUseForSkinData, dragonStage.unwrapKey().orElseThrow()));
     }
 
     @Override
@@ -330,11 +330,11 @@ public class DragonSkinsScreen extends Screen {
 
         playerStageDisplay = new HoverButton(startX - 55, startY + 150, 149, 22, 149, 22, STAGE_BACKGROUND, STAGE_BACKGROUND, button -> { /* Nothing to do */ });
         //noinspection DataFlowIssue -> key is present
-        playerStageDisplay.setMessage(DragonStage.translatableName(dragonStage.getKey()));
+        playerStageDisplay.setMessage(DragonStage.translatableName(dragonStage.unwrapKey().orElseThrow()));
         addRenderableOnly(playerStageDisplay);
 
         HoverButton leftArrowButton = new HoverButton(startX - 62, startY + 153, 9, 16, 18, 18, STAGE_ARROW_LEFT_MAIN, STAGE_ARROW_LEFT_HOVER, button -> {
-            ResourceKey<DragonStage> nextLevel = dragonStage.getKey();
+            ResourceKey<DragonStage> nextLevel = dragonStage.unwrapKey().orElseThrow();
 
             if (dragonStage.is(AncientDatapacks.ancient)) {
                 nextLevel = DragonStages.adult;
@@ -346,7 +346,7 @@ public class DragonSkinsScreen extends Screen {
                 nextLevel = DragonStages.adult;
             }
 
-            boolean alreadyUsingDefaults = handler.getCurrentSkinPreset().isStageUsingDefaultSkin(dragonStage.getKey());
+            boolean alreadyUsingDefaults = handler.getCurrentSkinPreset().isStageUsingDefaultSkin(dragonStage.unwrapKey().orElseThrow());
             dragonStage = Objects.requireNonNull(player).registryAccess().holderOrThrow(Objects.requireNonNull(nextLevel));
             handler.setStage(null, dragonStage);
             updateHandlerToUseCorrectSkinData();
@@ -355,7 +355,7 @@ public class DragonSkinsScreen extends Screen {
         addRenderableWidget(leftArrowButton);
 
         HoverButton rightArrowButton = new HoverButton(startX + 92, startY + 153, 9, 16, 18, 18, STAGE_ARROW_RIGHT_MAIN, STAGE_ARROW_RIGHT_HOVER, button -> {
-            ResourceKey<DragonStage> nextLevel = dragonStage.getKey();
+            ResourceKey<DragonStage> nextLevel = dragonStage.unwrapKey().orElseThrow();
             boolean ancientDataPackExists = ResourceHelper.get(Objects.requireNonNull(player).registryAccess(), AncientDatapacks.ancient).isPresent();
 
             if (ancientDataPackExists && dragonStage.is(AncientDatapacks.ancient)) {
@@ -368,7 +368,7 @@ public class DragonSkinsScreen extends Screen {
                 nextLevel = DragonStages.newborn;
             }
 
-            boolean alreadyUsingDefaults = handler.getCurrentSkinPreset().isStageUsingDefaultSkin(dragonStage.getKey());
+            boolean alreadyUsingDefaults = handler.getCurrentSkinPreset().isStageUsingDefaultSkin(dragonStage.unwrapKey().orElseThrow());
             dragonStage = Objects.requireNonNull(player).registryAccess().holderOrThrow(Objects.requireNonNull(nextLevel));
             handler.setStage(null, dragonStage);
             updateHandlerToUseCorrectSkinData();
@@ -471,7 +471,7 @@ public class DragonSkinsScreen extends Screen {
         addRenderableOnly(additionsBackground);
 
         ExtendedButton oldTextureButton = new ExtendedButton(startX + 176, startY + 128 + 20, 14, 14, Component.empty(), button -> {
-            boolean alreadyUsingDefaults = handler.getCurrentSkinPreset().isStageUsingDefaultSkin(dragonStage.getKey());
+            boolean alreadyUsingDefaults = handler.getCurrentSkinPreset().isStageUsingDefaultSkin(dragonStage.unwrapKey().orElseThrow());
             handler.getCurrentSkinPreset().setAllStagesToUseDefaultSkin(!alreadyUsingDefaults);
             // Special case: Also set the actual player's handler as well
             playerHandler.getCurrentSkinPreset().setAllStagesToUseDefaultSkin(!alreadyUsingDefaults);
@@ -504,7 +504,7 @@ public class DragonSkinsScreen extends Screen {
     }
 
     private void setTextures() {
-        ResourceLocation skinTexture = DragonSkins.getPlayerSkin(playerName, Objects.requireNonNull(dragonStage.getKey()));
+        ResourceLocation skinTexture = DragonSkins.getPlayerSkin(playerName, Objects.requireNonNull(dragonStage.unwrapKey().orElseThrow()));
         ResourceLocation glowTexture = null;
         boolean defaultSkin = false;
 
@@ -514,7 +514,7 @@ public class DragonSkinsScreen extends Screen {
         }
 
         if (skinTexture != null) {
-            glowTexture = DragonSkins.getPlayerGlow(playerName, dragonStage.getKey());
+            glowTexture = DragonSkins.getPlayerGlow(playerName, dragonStage.unwrapKey().orElseThrow());
         }
 
         DragonSkinsScreen.glowTexture = glowTexture;

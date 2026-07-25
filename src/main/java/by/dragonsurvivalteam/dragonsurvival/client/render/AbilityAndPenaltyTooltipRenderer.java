@@ -244,7 +244,7 @@ public class AbilityAndPenaltyTooltipRenderer {
         int colorYPos = 0;
 
         //noinspection DataFlowIssue -> key is present
-        FormattedText description = Component.translatable(Translation.Type.PENALTY_DESCRIPTION.wrap(penalty.getKey().location()));
+        FormattedText description = Component.translatable(Translation.Type.PENALTY_DESCRIPTION.wrap(penalty.unwrapKey().orElseThrow().location()));
         Component component = penalty.value().getDescription(Minecraft.getInstance().player);
 
         List<Component> components;
@@ -259,7 +259,7 @@ public class AbilityAndPenaltyTooltipRenderer {
             description = FormattedText.composite(description, Component.empty().append("\n\n"));
         }
 
-        Component name = Component.translatable(Translation.Type.PENALTY.wrap(penalty.getKey().location()));
+        Component name = Component.translatable(Translation.Type.PENALTY.wrap(penalty.unwrapKey().orElseThrow().location()));
         ResourceLocation icon = penalty.value().icon().orElse(MissingTextureAtlasSprite.getLocation());
         drawTooltip(guiGraphics, x, y, components, description, colorXPos, colorYPos, LangKey.PENALTY, name, Color.ofRGB(145, 46, 46), -1, -1, icon, 0);
     }

@@ -92,7 +92,7 @@ public class GrowthCrystalButton extends ExtendedButton {
     private void updateTooltip() {
         List<Component> components = new ArrayList<>();
 
-        components.add(Component.translatable(LangKey.GROWTH_STAGE).append(DragonStage.translatableName(Objects.requireNonNull(stage.getKey()))));
+        components.add(Component.translatable(LangKey.GROWTH_STAGE).append(DragonStage.translatableName(Objects.requireNonNull(stage.unwrapKey().orElseThrow()))));
         components.add(Component.translatable(LangKey.GROWTH_STARTING_AMOUNT, stage.value().growthRange().min()));
         components.add(Component.translatable(LangKey.GROWTH_MAX_AMOUNT, stage.value().growthRange().max()));
         components.add(Component.translatable(LangKey.GROWTH_TIME, stage.value().getTimeToGrowFormatted(false)));

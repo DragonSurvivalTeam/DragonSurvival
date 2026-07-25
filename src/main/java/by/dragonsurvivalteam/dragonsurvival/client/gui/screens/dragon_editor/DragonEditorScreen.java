@@ -322,15 +322,15 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
     };
 
     public final Function<Pair<SkinLayer, String>, Pair<SkinLayer, String>> dragonPartSelectAction = pair -> {
-        Pair<SkinLayer, String> previousPair = new Pair<>(pair.getFirst(), preset.get(Objects.requireNonNull(stage.getKey())).get().layerSettings.get(pair.getFirst()).get().partKey);
+        Pair<SkinLayer, String> previousPair = new Pair<>(pair.getFirst(), preset.get(Objects.requireNonNull(stage.unwrapKey().orElseThrow())).get().layerSettings.get(pair.getFirst()).get().partKey);
 
         SkinLayer layer = pair.getFirst();
         String value = pair.getSecond();
         partComponents.get(layer).setSelectedPart(value);
-        preset.get(stage.getKey()).get().layerSettings.get(layer).get().partKey = value;
+        preset.get(stage.unwrapKey().orElseThrow()).get().layerSettings.get(layer).get().partKey = value;
 
-        LayerSettings settings = preset.get(stage.getKey()).get().layerSettings.get(layer).get();
-        DragonPart part = DragonPartLoader.getDragonPart(layer, species.getKey(), body, settings.partKey);
+        LayerSettings settings = preset.get(stage.unwrapKey().orElseThrow()).get().layerSettings.get(layer).get();
+        DragonPart part = DragonPartLoader.getDragonPart(layer, species.unwrapKey().orElseThrow(), body, settings.partKey);
 
         if (part != null && !settings.isModified) {
             // Do not reset the part if a user has customized it
@@ -345,8 +345,8 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
     };
 
     public final Function<Boolean, Boolean> checkWingsButtonAction = (selected) -> {
-        boolean prevSelected = preset.get(Objects.requireNonNull(stage.getKey())).get().wings;
-        preset.get(Objects.requireNonNull(stage.getKey())).get().wings = selected;
+        boolean prevSelected = preset.get(Objects.requireNonNull(stage.unwrapKey().orElseThrow())).get().wings;
+        preset.get(Objects.requireNonNull(stage.unwrapKey().orElseThrow())).get().wings = selected;
         HANDLER.recompileCurrentSkin();
         update();
         return prevSelected;
@@ -552,7 +552,7 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
         renderBackground(graphics, mouseX, mouseY, partialTick);
         children().stream().filter(DragonUIRenderComponent.class::isInstance).toList().forEach(s -> ((DragonUIRenderComponent) s).render(graphics, mouseX, mouseY, partialTick));
         DragonAltarScreen.renderBorders(graphics, BACKGROUND_TEXTURE, 0, width, 32, height - 32, width, height);
-        TextRenderUtil.drawCenteredScaledText(graphics, width / 2, 10, 2f, DragonStage.translatableName(Objects.requireNonNull(stage.getKey())).getString().toUpperCase(), DyeColor.WHITE.getTextColor());
+        TextRenderUtil.drawCenteredScaledText(graphics, width / 2, 10, 2f, DragonStage.translatableName(Objects.requireNonNull(stage.unwrapKey().orElseThrow())).getString().toUpperCase(), DyeColor.WHITE.getTextColor());
 
         if (slotDisplayMessage != SlotDisplayMessage.NONE) {
             int color;
@@ -745,13 +745,13 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
         int row = 0;
 
         for (SkinLayer layer : SkinLayer.values()) {
-            Map<String, DragonPart> parts = DragonPartLoader.getDragonParts(layer, species.getKey(), body);
+            Map<String, DragonPart> parts = DragonPartLoader.getDragonParts(layer, species.unwrapKey().orElseThrow(), body);
 
             if (layer != SkinLayer.BASE) {
                 parts.put(DefaultPartLoader.NO_PART, null);
             }
 
-            String partKey = preset.get(stage.getKey()).get().layerSettings.get(layer).get().partKey;
+            String partKey = preset.get(stage.unwrapKey().orElseThrow()).get().layerSettings.get(layer).get().partKey;
             int x = row < 8 ? width / 2 - 184 : width / 2 + 74;
             int y = guiTop - 24 + (row >= 8 ? (row - 8) * 21 : row * 21);
 
@@ -875,8 +875,8 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
                     extraParts.remove(partKey);
                 }
 
-                DragonPart part = DragonPartLoader.getDragonPart(layer, species.getKey(), body, partKey);
-                LayerSettings settings = preset.get(stage.getKey()).get().layerSettings.get(layer).get();
+                DragonPart part = DragonPartLoader.getDragonPart(layer, species.unwrapKey().orElseThrow(), body, partKey);
+                LayerSettings settings = preset.get(stage.unwrapKey().orElseThrow()).get().layerSettings.get(layer).get();
                 settings.partKey = partKey;
 
                 if (part != null && part.isHueRandomizable()) {
@@ -912,11 +912,11 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
 
         // Copy to all stages button
         HoverButton copyToAllStagesButton = new HoverButton(guiLeft - 75, 10, 18, 18, 18, 18, COPY_ALL_MAIN, COPY_ALL_HOVER, button -> {
-            Lazy<DragonStageCustomization> lazy = preset.get(Objects.requireNonNull(stage.getKey()));
+            Lazy<DragonStageCustomization> lazy = preset.get(Objects.requireNonNull(stage.unwrapKey().orElseThrow()));
             CompoundTag storedPresetData = lazy.get().serializeNBT(access);
 
             for (Holder<DragonStage> stage : ResourceHelper.all(access, DragonStage.REGISTRY)) {
-                this.preset.put(Objects.requireNonNull(stage.getKey()), Lazy.of(() -> {
+                this.preset.put(Objects.requireNonNull(stage.unwrapKey().orElseThrow()), Lazy.of(() -> {
                     DragonStageCustomization customization = new DragonStageCustomization();
                     customization.deserializeNBT(access, storedPresetData);
                     return customization;
@@ -936,11 +936,11 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
 
         // Wings button
         wingsButton = new ExtendedButton(guiLeft - 35, height - 30, 20, 20, Component.translatable(DragonBody.getWingButtonDescription(body)), button -> {
-            actionHistory.add(new EditorAction<>(checkWingsButtonAction, !preset.get(Objects.requireNonNull(stage.getKey())).get().wings));
+            actionHistory.add(new EditorAction<>(checkWingsButtonAction, !preset.get(Objects.requireNonNull(stage.unwrapKey().orElseThrow())).get().wings));
         }) {
             @Override
             public void renderWidget(@NotNull final GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-                ResourceLocation texture = preset.get(Objects.requireNonNull(stage.getKey())).get().wings ? ALTERNATIVE_ON : ALTERNATIVE_OFF;
+                ResourceLocation texture = preset.get(Objects.requireNonNull(stage.unwrapKey().orElseThrow())).get().wings ? ALTERNATIVE_ON : ALTERNATIVE_OFF;
                 guiGraphics.pose().pushPose();
                 guiGraphics.pose().translate(0, 0, 100);
                 guiGraphics.blit(texture, getX(), getY(), 0, 0, 20, 20, 20, 20);
@@ -969,7 +969,7 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
             SkinPreset preset = new SkinPreset();
             preset.initDefaults(species, body.value().model());
             preset.deserializeNBT(access, this.preset.serializeNBT(access));
-            preset.put(stage.getKey(), Lazy.of(() -> new DragonStageCustomization(stage.getKey(), species.getKey(), body.value().model())));
+            preset.put(stage.unwrapKey().orElseThrow(), Lazy.of(() -> new DragonStageCustomization(stage.unwrapKey().orElseThrow(), species.unwrapKey().orElseThrow(), body.value().model())));
             actionHistory.add(new EditorAction<>(setSkinPresetAction, preset.serializeNBT(access)));
         });
         resetButton.setTooltip(Tooltip.create(Component.translatable(RESET)));
@@ -1007,7 +1007,7 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
                 return;
             }
 
-            if (savedCustomization.getDragonSpecies() != species.getKey()) {
+            if (savedCustomization.getDragonSpecies() != species.unwrapKey().orElseThrow()) {
                 slotDisplayMessage = SlotDisplayMessage.INVALID_FOR_TYPE;
                 tickWhenSlotDisplayMessageSet = tick;
                 return;

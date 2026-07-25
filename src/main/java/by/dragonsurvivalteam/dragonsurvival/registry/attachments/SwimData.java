@@ -31,11 +31,11 @@ public class SwimData {
     private final Map<ResourceKey<FluidType>, Integer> swimData = new HashMap<>();
 
     public Integer add(int maxOxygen, final Holder<FluidType> fluid) {
-        return swimData.put(fluid.getKey(), maxOxygen);
+        return swimData.put(fluid.unwrapKey().orElseThrow(), maxOxygen);
     }
 
     public void remove(final Holder<FluidType> fluid) {
-        swimData.remove(fluid.getKey());
+        swimData.remove(fluid.unwrapKey().orElseThrow());
     }
 
     public int getMaxOxygen(final Player player, final FluidType fluid) {

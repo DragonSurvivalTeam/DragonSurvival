@@ -449,7 +449,7 @@ public class MagicData implements INBTSerializable<CompoundTag> {
     /** This does not automatically synchronize the change to the client */
     public boolean addAbility(final ServerPlayer player, final Holder<DragonAbility> ability) {
         // Don't do anything if we already have this ability
-        if (getAbilities().containsKey(ability.getKey())) {
+        if (getAbilities().containsKey(ability.unwrapKey().orElseThrow())) {
             return false;
         }
 
@@ -468,13 +468,13 @@ public class MagicData implements INBTSerializable<CompoundTag> {
         if (!instance.isPassive()) {
             for (int i = 0; i < HOTBAR_SLOTS; i++) {
                 if (!getHotbar().containsKey(i)) {
-                    getHotbar().put(i, ability.getKey());
+                    getHotbar().put(i, ability.unwrapKey().orElseThrow());
                     break;
                 }
             }
         }
 
-        getAbilities().put(ability.getKey(), instance);
+        getAbilities().put(ability.unwrapKey().orElseThrow(), instance);
         return true;
     }
 
@@ -487,7 +487,7 @@ public class MagicData implements INBTSerializable<CompoundTag> {
             return;
         }
 
-        this.currentSpecies = currentSpecies.getKey();
+        this.currentSpecies = currentSpecies.unwrapKey().orElseThrow();
         InputData growthInput = InputData.growth((int) DragonStateProvider.getData(player).getGrowth());
 
         int slot = 0;
@@ -506,11 +506,11 @@ public class MagicData implements INBTSerializable<CompoundTag> {
             }
 
             if (slot < HOTBAR_SLOTS && !instance.isPassive()) {
-                getHotbar().put(slot, ability.getKey());
+                getHotbar().put(slot, ability.unwrapKey().orElseThrow());
                 slot++;
             }
 
-            getAbilities().put(ability.getKey(), instance);
+            getAbilities().put(ability.unwrapKey().orElseThrow(), instance);
         }
     }
 

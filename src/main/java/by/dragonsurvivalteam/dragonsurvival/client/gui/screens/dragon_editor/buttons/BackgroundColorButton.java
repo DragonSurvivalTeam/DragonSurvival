@@ -71,7 +71,7 @@ public class BackgroundColorButton extends ExtendedButton {
 
     @Override
     public void renderWidget(@NotNull final GuiGraphics guiGraphics, int mouseX, int mouseY, float partial) {
-        active = !screen.preset.get(screen.stage.getKey()).get().defaultSkin;
+        active = !screen.preset.get(screen.stage.unwrapKey().orElseThrow()).get().defaultSkin;
 
         if (toggled && (!visible || !isMouseOver(mouseX, mouseY) && (colorComponent == null || !colorComponent.isMouseOver(mouseX, mouseY)))) {
             toggled = false;

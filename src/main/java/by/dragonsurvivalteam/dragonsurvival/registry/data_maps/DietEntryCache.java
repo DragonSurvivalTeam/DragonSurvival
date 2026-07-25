@@ -29,15 +29,15 @@ public class DietEntryCache {
     }
 
     public static boolean isEmpty(final Holder<DragonSpecies> species) {
-        return CACHE.computeIfAbsent(species.getKey(), key -> generate(species)).isEmpty();
+        return CACHE.computeIfAbsent(species.unwrapKey().orElseThrow(), key -> generate(species)).isEmpty();
     }
 
     public static @Nullable FoodProperties getDiet(final Holder<DragonSpecies> species, final Item item) {
-        return CACHE.computeIfAbsent(species.getKey(), key -> generate(species)).get(item);
+        return CACHE.computeIfAbsent(species.unwrapKey().orElseThrow(), key -> generate(species)).get(item);
     }
 
     public static List<Item> getDietItems(final Holder<DragonSpecies> species) {
-        return List.copyOf(CACHE.computeIfAbsent(species.getKey(), key -> generate(species)).keySet());
+        return List.copyOf(CACHE.computeIfAbsent(species.unwrapKey().orElseThrow(), key -> generate(species)).keySet());
     }
 
     private static Map<Item, FoodProperties> generate(final Holder<DragonSpecies> species) {

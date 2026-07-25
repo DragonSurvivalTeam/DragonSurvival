@@ -42,7 +42,7 @@ public interface ClientEffectProvider {
         @SuppressWarnings({"OptionalUsedAsFieldOrParameterType", "DataFlowIssue"}) // ignore
         public static ClientData from(final ResourceLocation id, final Holder<DragonPenalty> penalty, final Optional<ResourceLocation> customIcon) {
             ResourceLocation icon = customIcon.orElse(penalty.value().icon().orElse(UNKNOWN_ICON));
-            return new ClientData(id, icon, Component.translatable(Translation.Type.PENALTY.wrap(penalty.getKey().location())), Component.empty());
+            return new ClientData(id, icon, Component.translatable(Translation.Type.PENALTY.wrap(penalty.unwrapKey().orElseThrow().location())), Component.empty());
         }
     }
 

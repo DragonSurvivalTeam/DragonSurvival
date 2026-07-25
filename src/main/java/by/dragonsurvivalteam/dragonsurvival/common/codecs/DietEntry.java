@@ -94,7 +94,7 @@ public record DietEntry(String items, Optional<FoodProperties> properties, Optio
 
     public static Builder create(final Item item) {
         //noinspection deprecation, DataFlowIssue -> ignore deprecated / key is present
-        return create(item.builtInRegistryHolder().getKey().location());
+        return create(item.builtInRegistryHolder().unwrapKey().orElseThrow().location());
     }
 
     @Override

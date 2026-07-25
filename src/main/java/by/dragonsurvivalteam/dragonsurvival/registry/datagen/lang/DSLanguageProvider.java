@@ -167,7 +167,7 @@ public class DSLanguageProvider extends LanguageProvider {
                     if (Holder.class.isAssignableFrom(field.getType())) {
                         Holder<?> holder = (Holder<?>) field.get(null);
                         //noinspection DataFlowIssue -> only a problem if we work with Holder$Direct which should not be the case here
-                        add(type.wrap(holder.getKey().location().getPath()), format(comments));
+                        add(type.wrap(holder.unwrapKey().orElseThrow().location().getPath()), format(comments));
                         continue;
                     }
 

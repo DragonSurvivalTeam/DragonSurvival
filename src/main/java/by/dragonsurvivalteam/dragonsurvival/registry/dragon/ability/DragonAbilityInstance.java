@@ -98,12 +98,12 @@ public class DragonAbilityInstance {
 
             if (isAutomaticallyDisabled && !this.isAutomaticallyDisabled) {
                 setDisabled(serverPlayer, true, false);
-                PacketDistributor.sendToPlayer(serverPlayer, new SyncDisableAbility(ability.getKey(), true, false));
+                PacketDistributor.sendToPlayer(serverPlayer, new SyncDisableAbility(ability.unwrapKey().orElseThrow(), true, false));
 
                 stopCasting(dragon, /* This is only needed server-side (client is notified by the packet above) */ false);
             } else if (!isAutomaticallyDisabled && (this.isAutomaticallyDisabled || /* Need to re-activate passive abilities */ isPassive() && !isActive && !isManuallyDisabled)) {
                 setDisabled(serverPlayer, false, false);
-                PacketDistributor.sendToPlayer(serverPlayer, new SyncDisableAbility(ability.getKey(), false, false));
+                PacketDistributor.sendToPlayer(serverPlayer, new SyncDisableAbility(ability.unwrapKey().orElseThrow(), false, false));
             }
         }
 
@@ -314,7 +314,7 @@ public class DragonAbilityInstance {
     }
 
     public ResourceKey<DragonAbility> key() {
-        return ability.getKey();
+        return ability.unwrapKey().orElseThrow();
     }
 
     public ResourceLocation location() {

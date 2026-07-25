@@ -64,7 +64,7 @@ public class DragonUtils {
             return false;
         }
 
-        return isSpecies(playerType.getKey(), typeToCheck);
+        return isSpecies(playerType.unwrapKey().orElseThrow(), typeToCheck);
     }
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted") // ignore
@@ -77,7 +77,7 @@ public class DragonUtils {
             return false;
         }
 
-        return first.getKey() == second.getKey();
+        return first.unwrapKey().orElseThrow() == second.unwrapKey().orElseThrow();
     }
 
     public static boolean isSpecies(final ResourceKey<DragonSpecies> playerType, final ResourceKey<DragonSpecies> typeToCheck) {

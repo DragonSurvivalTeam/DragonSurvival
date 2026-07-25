@@ -113,7 +113,7 @@ public abstract class DurationInstance<B extends DurationInstanceBase<?, ?>> imp
 
             if (commonData.penalty().isPresent() && source instanceof ServerPlayer serverPlayer) {
                 for (Holder<DragonPenalty> penalty : handler.species().value().penalties()) {
-                    if (penalty.getKey() == commonData.penalty().get() && penalty.value().condition().map(condition -> !condition.test(Condition.penaltyContext(serverPlayer))).orElse(false)) {
+                    if (penalty.unwrapKey().orElseThrow() == commonData.penalty().get() && penalty.value().condition().map(condition -> !condition.test(Condition.penaltyContext(serverPlayer))).orElse(false)) {
                         return true;
                     }
                 }

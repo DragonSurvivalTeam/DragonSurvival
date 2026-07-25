@@ -106,7 +106,7 @@ public class AltarTypeButton extends Button implements HoverDisableable {
             graphics.blit(speciesEntry.species().value().miscResources().altarBanner(), getX(), getY(), 0, isHovered() ? 0 : 147, 49, 147, 49, 294);
 
             if (speciesEntry.isUnlocked()) {
-                StageResources.GrowthIcon growthIcon = StageResources.getGrowthIcon(speciesEntry.species(), speciesEntry.species().value().getStartingStage(null).getKey());
+                StageResources.GrowthIcon growthIcon = StageResources.getGrowthIcon(speciesEntry.species(), speciesEntry.species().value().getStartingStage(null).unwrapKey().orElseThrow());
                 graphics.blit(isHovered() && isTop(mouseY) ? growthIcon.hoverIcon() : growthIcon.icon(), getX() + 1, getY() + 1, 0, 0, 18, 18, 18, 18);
             } else {
                 graphics.blit(LOCKED_BANNER, getX(), getY(), 0, 0, 49, 147, 49, 147);
@@ -141,7 +141,7 @@ public class AltarTypeButton extends Button implements HoverDisableable {
                 // Using the color codes in the translation doesn't seem to apply the color to the entire text - therefor we create the [shown / max_items] tooltip part here
                 MutableComponent shownFoods = Component.literal("[" + Math.min(diet.size(), scroll + MAX_SHOWN) + " / " + diet.size() + "]").withStyle(ChatFormatting.DARK_GRAY);
                 //noinspection DataFlowIssue -> key is present
-                components.addFirst(Either.left(Component.translatable(Translation.Type.DRAGON_SPECIES_ALTAR_DESCRIPTION.wrap(speciesEntry.species().getKey().location()), shownFoods)));
+                components.addFirst(Either.left(Component.translatable(Translation.Type.DRAGON_SPECIES_ALTAR_DESCRIPTION.wrap(speciesEntry.species().unwrapKey().orElseThrow().location()), shownFoods)));
 
                 for (int i = scroll; i < max; i++) {
                     components.add(Either.right(new DietComponent(speciesEntry.species(), diet.get(i))));
@@ -188,7 +188,7 @@ public class AltarTypeButton extends Button implements HoverDisableable {
 
             player.closeContainer();
         } else {
-            ClientProxy.openDragonEditor(species.getKey(), true);
+            ClientProxy.openDragonEditor(species.unwrapKey().orElseThrow(), true);
         }
     }
 

@@ -132,7 +132,7 @@ public @interface Translation {
         /** See {@link Translation.Type#wrap(String, String)} */
         public String wrap(final Holder<?> holder) {
             //noinspection DataFlowIssue -> key is present
-            return wrap(holder.getKey());
+            return wrap(holder.unwrapKey().orElseThrow());
         }
 
         /** See {@link Translation.Type#wrap(String, String)} */

@@ -42,6 +42,6 @@ public record CommonData(
     public static CommonData from(final ResourceLocation id, final ServerPlayer dragon, final Holder<DragonPenalty> penalty, final Optional<ResourceLocation> customIcon, boolean removeAutomatically) {
         ClientEffectProvider.ClientData clientData = ClientEffectProvider.ClientData.from(id, penalty, customIcon);
         //noinspection DataFlowIssue -> key is present
-        return new CommonData(clientData, Optional.empty(), Optional.of(penalty.getKey()), Optional.of(dragon.getUUID()), 1, removeAutomatically);
+        return new CommonData(clientData, Optional.empty(), Optional.of(penalty.unwrapKey().orElseThrow()), Optional.of(dragon.getUUID()), 1, removeAutomatically);
     }
 }

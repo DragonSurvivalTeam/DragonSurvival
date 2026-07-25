@@ -53,11 +53,11 @@ public class DragonBodyButton extends ExtendedButton implements HoverDisableable
     private final LockedReason lockedReason;
 
     public DragonBodyButton(Screen screen, int x, int y, int xSize, int ySize, final Holder<DragonBody> dragonBody, LockedReason locked, OnPress action) {
-        this(screen, x, y, xSize, ySize, dragonBody, Objects.requireNonNull(dragonBody.getKey()).location(), locked, action, false, false);
+        this(screen, x, y, xSize, ySize, dragonBody, Objects.requireNonNull(dragonBody.unwrapKey().orElseThrow()).location(), locked, action, false, false);
     }
 
     public DragonBodyButton(Screen screen, int x, int y, int xSize, int ySize, final Holder<DragonBody> dragonBody, LockedReason locked, OnPress action, boolean useBackground, boolean noTooltip) {
-        this(screen, x, y, xSize, ySize, dragonBody, Objects.requireNonNull(dragonBody.getKey()).location(), locked, action, useBackground, noTooltip);
+        this(screen, x, y, xSize, ySize, dragonBody, Objects.requireNonNull(dragonBody.unwrapKey().orElseThrow()).location(), locked, action, useBackground, noTooltip);
     }
 
     private DragonBodyButton(Screen screen, int x, int y, int xSize, int ySize, final Holder<DragonBody> dragonBody, final ResourceLocation location, LockedReason locked, OnPress action, boolean useBackground, boolean noTooltip) {
@@ -70,9 +70,9 @@ public class DragonBodyButton extends ExtendedButton implements HoverDisableable
         ResourceKey<DragonSpecies> species = null;
 
         if (screen instanceof DragonEditorScreen dragonEditorScreen) {
-            species = dragonEditorScreen.species.getKey();
+            species = dragonEditorScreen.species.unwrapKey().orElseThrow();
         } else if (screen instanceof DragonSpeciesScreen dragonSpeciesScreen) {
-            species = dragonSpeciesScreen.species.getKey();
+            species = dragonSpeciesScreen.species.unwrapKey().orElseThrow();
         }
 
         if (species == null) {

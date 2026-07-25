@@ -24,14 +24,14 @@ public class StageResources {
         Map<ResourceKey<DragonStage>, StageResource> resources = species.getData(DSDataMaps.STAGE_RESOURCES);
 
         if (resources == null) {
-            DragonSurvival.LOGGER.error("Stage resources data map is missing for species [{}]. Define a data map in dragonsurvival/data_maps/dragonsurvival/dragon_species/stage_resources.json.", species.getKey());
+            DragonSurvival.LOGGER.error("Stage resources data map is missing for species [{}]. Define a data map in dragonsurvival/data_maps/dragonsurvival/dragon_species/stage_resources.json.", species.unwrapKey().orElseThrow());
             return MISSING;
         }
 
         StageResource stageResource = resources.get(stage);
 
         if (stageResource == null) {
-            DragonSurvival.LOGGER.error("Stage resources data map is missing a resource for stage [{}] for species [{}].", stage, species.getKey());
+            DragonSurvival.LOGGER.error("Stage resources data map is missing a resource for stage [{}] for species [{}].", stage, species.unwrapKey().orElseThrow());
             return MISSING;
         }
 
@@ -42,14 +42,14 @@ public class StageResources {
         Map<ResourceKey<DragonStage>, StageResource> resources = species.getData(DSDataMaps.STAGE_RESOURCES);
 
         if (resources == null) {
-            DragonSurvival.LOGGER.error("Stage resources data map is missing for species [{}]. Define a data map in dragonsurvival/data_maps/dragonsurvival/dragon_species/stage_resources.json.", species.getKey());
+            DragonSurvival.LOGGER.error("Stage resources data map is missing for species [{}]. Define a data map in dragonsurvival/data_maps/dragonsurvival/dragon_species/stage_resources.json.", species.unwrapKey().orElseThrow());
             return DragonSurvival.MISSING_TEXTURE;
         }
 
         StageResource stageResource = resources.get(stage);
 
         if (stageResource == null) {
-            DragonSurvival.LOGGER.error("Stage resources data map is missing a resource for stage [{}] for species [{}].", stage, species.getKey());
+            DragonSurvival.LOGGER.error("Stage resources data map is missing a resource for stage [{}] for species [{}].", stage, species.unwrapKey().orElseThrow());
             return DragonSurvival.MISSING_TEXTURE;
         }
 

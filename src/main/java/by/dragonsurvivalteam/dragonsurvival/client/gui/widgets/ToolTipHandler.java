@@ -159,7 +159,7 @@ public class ToolTipHandler {
 
         if (foodData.getContents() != PlainTextContents.EMPTY) {
             //noinspection DataFlowIssue -> key is present
-            MutableComponent speciesTranslation = Component.translatable(Translation.Type.DRAGON_SPECIES.wrap(species.getKey().location()));
+            MutableComponent speciesTranslation = Component.translatable(Translation.Type.DRAGON_SPECIES.wrap(species.unwrapKey().orElseThrow().location()));
             return Component.translatable(DRAGON_FOOD, speciesTranslation.withStyle(foodData.getStyle()), foodData).withStyle(foodData.getStyle());
         }
 
@@ -208,7 +208,7 @@ public class ToolTipHandler {
     @SuppressWarnings("DataFlowIssue") // resource key should be present
     public static void addCustomItemDescriptions(final ItemTooltipEvent event) {
         if (event.getEntity() != null && event.getEntity().level().isClientSide() && event.getItemStack() != ItemStack.EMPTY) {
-            ResourceLocation location = event.getItemStack().getItemHolder().getKey().location();
+            ResourceLocation location = event.getItemStack().getItemHolder().unwrapKey().orElseThrow().location();
             MutableComponent description = null;
 
             if (ENCHANTMENT_DESCRIPTIONS && event.getItemStack().getItem() instanceof EnchantedBookItem) {
@@ -217,7 +217,7 @@ public class ToolTipHandler {
                 // Only add it to single-entry enchanted books since the text is longer than usual enchantment descriptions
                 if (enchantments != null && enchantments.size() == 1) {
                     Holder<Enchantment> holder = enchantments.entrySet().iterator().next().getKey();
-                    ResourceKey<Enchantment> resourceKey = holder.getKey();
+                    ResourceKey<Enchantment> resourceKey = holder.unwrapKey().orElseThrow();
 
                     if (resourceKey.location().getNamespace().equals(DragonSurvival.MODID)) {
                         description = Component.translatable(Translation.Type.ENCHANTMENT_DESCRIPTION.wrap(resourceKey.location().getPath())).withStyle(ChatFormatting.DARK_GRAY);

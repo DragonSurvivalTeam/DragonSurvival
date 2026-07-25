@@ -80,7 +80,7 @@ public class SkinPreset implements INBTSerializable<CompoundTag> {
             return;
         }
 
-        this.species = species.getKey();
+        this.species = species.unwrapKey().orElseThrow();
 
         if (model != null) {
             this.model = model;
@@ -88,11 +88,11 @@ public class SkinPreset implements INBTSerializable<CompoundTag> {
 
         if (this.model == null) {
             for (Holder<DragonStage> dragonStage : species.value().getStages(null)) {
-                skins.get().put(dragonStage.getKey(), Lazy.of(DragonStageCustomization::new));
+                skins.get().put(dragonStage.unwrapKey().orElseThrow(), Lazy.of(DragonStageCustomization::new));
             }
         } else {
             for (Holder<DragonStage> dragonStage : species.value().getStages(null)) {
-                skins.get().put(dragonStage.getKey(), Lazy.of(() -> new DragonStageCustomization(dragonStage.getKey(), species.getKey(), this.model)));
+                skins.get().put(dragonStage.unwrapKey().orElseThrow(), Lazy.of(() -> new DragonStageCustomization(dragonStage.unwrapKey().orElseThrow(), species.unwrapKey().orElseThrow(), this.model)));
             }
         }
     }
@@ -109,7 +109,7 @@ public class SkinPreset implements INBTSerializable<CompoundTag> {
         List<ResourceKey<DragonStage>> stageKeys;
         if (species != null) {
             Optional<Holder.Reference<DragonSpecies>> speciesHolder = ResourceHelper.get(null, species);
-            stageKeys = speciesHolder.map(dragonSpeciesReference -> dragonSpeciesReference.value().getStages(null).stream().map(Holder::getKey).toList()).orElseGet(List::of);
+            stageKeys = speciesHolder.map(dragonSpeciesReference -> dragonSpeciesReference.value().getStages(null).stream().map(holder -> holder.unwrapKey().orElseThrow()).toList()).orElseGet(List::of);
         } else {
             stageKeys = ResourceHelper.keys(null, DragonStage.REGISTRY);
         }
@@ -133,7 +133,7 @@ public class SkinPreset implements INBTSerializable<CompoundTag> {
         List<ResourceKey<DragonStage>> stageKeys;
         if (species != null) {
             Optional<Holder.Reference<DragonSpecies>> speciesHolder = ResourceHelper.get(provider, species);
-            stageKeys = speciesHolder.map(dragonSpeciesReference -> dragonSpeciesReference.value().getStages(provider).stream().map(Holder::getKey).toList()).orElseGet(List::of);
+            stageKeys = speciesHolder.map(dragonSpeciesReference -> dragonSpeciesReference.value().getStages(provider).stream().map(holder -> holder.unwrapKey().orElseThrow()).toList()).orElseGet(List::of);
         } else {
             stageKeys = ResourceHelper.keys(provider, DragonStage.REGISTRY);
         }
@@ -156,7 +156,7 @@ public class SkinPreset implements INBTSerializable<CompoundTag> {
         List<ResourceKey<DragonStage>> stageKeys;
         if (species != null) {
             Optional<Holder.Reference<DragonSpecies>> speciesHolder = ResourceHelper.get(provider, species);
-            stageKeys = speciesHolder.map(dragonSpeciesReference -> dragonSpeciesReference.value().getStages(provider).stream().map(Holder::getKey).toList()).orElseGet(List::of);
+            stageKeys = speciesHolder.map(dragonSpeciesReference -> dragonSpeciesReference.value().getStages(provider).stream().map(holder -> holder.unwrapKey().orElseThrow()).toList()).orElseGet(List::of);
         } else {
             stageKeys = ResourceHelper.keys(provider, DragonStage.REGISTRY);
         }
@@ -181,7 +181,7 @@ public class SkinPreset implements INBTSerializable<CompoundTag> {
         List<ResourceKey<DragonStage>> stageKeys;
         if (species != null) {
             Optional<Holder.Reference<DragonSpecies>> speciesHolder = ResourceHelper.get(provider, species);
-            stageKeys = speciesHolder.map(dragonSpeciesReference -> dragonSpeciesReference.value().getStages(provider).stream().map(Holder::getKey).toList()).orElseGet(List::of);
+            stageKeys = speciesHolder.map(dragonSpeciesReference -> dragonSpeciesReference.value().getStages(provider).stream().map(holder -> holder.unwrapKey().orElseThrow()).toList()).orElseGet(List::of);
         } else {
             stageKeys = ResourceHelper.keys(provider, DragonStage.REGISTRY);
         }

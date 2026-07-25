@@ -73,7 +73,7 @@ public record CooldownRecoveryEffect(
 
         // If no abilities are specified, we adjust the cooldown of every known ability the target has
         Set<ResourceKey<DragonAbility>> keys = this.abilities
-                .map(abilities -> abilities.stream().map(Holder::getKey).collect(Collectors.toSet()))
+                .map(abilities -> abilities.stream().map(holder -> holder.unwrapKey().orElseThrow()).collect(Collectors.toSet()))
                 .orElse(magic.getAbilities().keySet());
 
         for (ResourceKey<DragonAbility> key : keys) {
