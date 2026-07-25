@@ -19,6 +19,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.concurrent.CompletableFuture;
 
 public class DSDamageTypeTags extends DamageTypeTagsProvider {
+    private static final TagKey<DamageType> NO_KNOCKBACK = TagKey.create(Registries.DAMAGE_TYPE, new ResourceLocation("no_knockback"));
+
     @Translation(comments = "Dragon Breath")
     public static final TagKey<DamageType> DRAGON_BREATH = key("dragon_breath");
 
@@ -85,7 +87,7 @@ public class DSDamageTypeTags extends DamageTypeTagsProvider {
         tag(DamageTypeTags.IS_LIGHTNING)
                 .add(DSDamageTypes.LIGHTNING_BREATH);
 
-        tag(DamageTypeTags.NO_KNOCKBACK)
+        tag(NO_KNOCKBACK)
                 .add(DSDamageTypes.BURN)
                 .add(DSDamageTypes.DRAIN)
                 .add(DSDamageTypes.CRUSHED)
