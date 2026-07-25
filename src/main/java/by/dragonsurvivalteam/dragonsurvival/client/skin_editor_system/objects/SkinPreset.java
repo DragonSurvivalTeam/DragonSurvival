@@ -151,7 +151,7 @@ public class SkinPreset implements INBTSerializable<CompoundTag> {
     // The tag encoding of the species was broken and was just giving "minecraft:" as the species instead of what it should be
     public void deserializeNBT(@NotNull final HolderLookup.Provider provider, @NotNull final CompoundTag base, ResourceKey<DragonSpecies> species) {
         this.species = species;
-        ResourceLocation.read(base.getString(MODEL)).ifSuccess(model -> this.model = model);
+        ResourceLocation.read(base.getString(MODEL)).result().ifPresent(model -> this.model = model);
 
         List<ResourceKey<DragonStage>> stageKeys;
         if (species != null) {
@@ -176,7 +176,7 @@ public class SkinPreset implements INBTSerializable<CompoundTag> {
     @Override
     public void deserializeNBT(@NotNull final HolderLookup.Provider provider, @NotNull final CompoundTag base) {
         this.species = ResourceKey.create(DragonSpecies.REGISTRY, new ResourceLocation(base.getString(SPECIES)));
-        ResourceLocation.read(base.getString(MODEL)).ifSuccess(model -> this.model = model);
+        ResourceLocation.read(base.getString(MODEL)).result().ifPresent(model -> this.model = model);
 
         List<ResourceKey<DragonStage>> stageKeys;
         if (species != null) {

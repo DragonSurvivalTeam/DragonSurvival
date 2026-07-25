@@ -15,7 +15,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.Items;
-import net.minecraftforge.common.Tags;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -179,12 +178,20 @@ public class ResourceLocationWrapper {
         for (String resource : resources) {
             var converted = ResourceLocationWrapper.convert(resource, registry);
 
-            converted.first().ifPresent(tag -> components.add(Component.translatable(Tags.getTagTranslationKey(tag))));
+            converted.first().ifPresent(tag -> components.add(Component.translatable(tagTranslationKey(tag))));
             converted.second().ifPresent(key -> components.add(Component.translatable(type.wrap(key))));
             converted.third().ifPresent(set -> components.add(DSLanguageProvider.formatList(set, key -> Component.translatable(type.wrap(key)))));
         }
 
         return components;
+    }
+
+    private static String tagTranslationKey(final TagKey<?> tag) {
+        ResourceLocation registry = tag.registry().location();
+        ResourceLocation location = tag.location();
+        return "tag." + registry.toShortLanguageKey().replace('/', '.')
+                + "." + location.getNamespace()
+                + "." + location.getPath().replace('/', '.');
     }
 
     /**
