@@ -34,7 +34,7 @@ public class DataBlockModelProvider extends BlockModelProvider {
             } else if (holder.get() instanceof HelmetBlock) {
                 withExistingParent(holder.getId().getPath(), BLOCK_FOLDER + "/" + "skull")
                         .texture("all", DragonSurvival.res(PREFIX + holder.getId().getPath()));
-            } else if (holder == DSBlocks.CHOCOLATE_DRAGON_TREASURE) {
+            } else if (DSBlocks.CHOCOLATE_DRAGON_TREASURE != null && holder.get() == DSBlocks.CHOCOLATE_DRAGON_TREASURE.get()) {
                 ResourceLocation top = DragonSurvival.res(PREFIX + holder.getId().getPath());
                 ResourceLocation side = DragonSurvival.res(PREFIX + holder.getId().getPath() + "_side");
                 ResourceLocation bottom = DragonSurvival.res(PREFIX + holder.getId().getPath() + "_bottom");
