@@ -336,6 +336,10 @@ public class Functions {
         return Objects.requireNonNullElse(list, Component.empty());
     }
 
+    public static double rotLerp(double delta, double start, double end) {
+        return start + delta * Mth.wrapDegrees(end - start);
+    }
+
     private static String tagTranslationKey(final TagKey<?> tag) {
         ResourceLocation registry = tag.registry().location();
         ResourceLocation location = tag.location();

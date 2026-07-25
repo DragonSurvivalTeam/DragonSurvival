@@ -192,8 +192,8 @@ public class ClientDragonRenderer {
     /** See {@link net.minecraft.client.renderer.debug.CollisionBoxRenderer} */
     private static void renderCollisionBox(final PoseStack pose, final LocalPlayer player, final VertexConsumer buffer, final Vec3 camera) {
         EntityDimensions dimensions = player.getDimensions(player.getPose());
-        double width = dimensions.width();
-        double height = dimensions.height();
+        double width = dimensions.width;
+        double height = dimensions.height;
 
         double current = Util.getNanos();
 
@@ -606,7 +606,7 @@ public class ClientDragonRenderer {
                 if (isFirstPerson) {
                     bodyYaw = Functions.lerpAngleAwayFrom(realtimeDeltaTick * factor, bodyYaw, targetAngle, viewYRot + 180);
                 } else {
-                    bodyYaw = Mth.rotLerp(realtimeDeltaTick * factor, bodyYaw, targetAngle);
+                    bodyYaw = Functions.rotLerp(realtimeDeltaTick * factor, bodyYaw, targetAngle);
                 }
             } else if (hasPosDelta && !player.onGround()) {
                 // When moving without input and in the air, slowly align to the move vector
@@ -619,7 +619,7 @@ public class ClientDragonRenderer {
                 double deltaMagFactor = Math.min(1, (posDelta.horizontalDistance() - MOVE_DELTA_EPSILON) / MOVE_DELTA_FULL_EFFECT_MIN_MAG);
                 factor *= deltaMagFactor;
 
-                bodyYaw = Mth.rotLerp(realtimeDeltaTick * factor, bodyYaw, posDeltaAngle);
+                bodyYaw = Functions.rotLerp(realtimeDeltaTick * factor, bodyYaw, posDeltaAngle);
             }
 
             // Limit body angle based on view direction and PoV
