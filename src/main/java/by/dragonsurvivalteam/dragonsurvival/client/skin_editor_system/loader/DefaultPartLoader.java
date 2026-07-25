@@ -10,7 +10,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.mojang.datafixers.util.Either;
 import com.mojang.datafixers.util.Pair;
-import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -37,15 +36,10 @@ public class DefaultPartLoader extends SimpleJsonResourceReloadListener {
     protected void apply(@NotNull final Map<ResourceLocation, JsonElement> map, @NotNull final ResourceManager manager, @NotNull final ProfilerFiller profiler) {
         PARTY_BY_MODEL.clear();
 
-        map.forEach((location, value) -> {
-            DataResult<DefaultPart> result = DefaultPart.CODEC.decode(JsonOps.INSTANCE, value).ifError(DragonSurvival.LOGGER::error).map(Pair::getFirst);
-
-            if (!result.isSuccess()) {
-                return;
-            }
-
-            DefaultPart part = result.getOrThrow();
-
+        map.forEach((location, value) -> DefaultPart.CODEC.decode(JsonOps.INSTANCE, value)
+            .map(Pair::getFirst)
+            .resultOrPartial(DragonSurvival.LOGGER::error)
+            .ifPresent(part -> {
             if (part.body().isPresent()) {
                 PARTY_BY_BODY.computeIfAbsent(part.body().get(), key -> new HashMap<>())
                         .computeIfAbsent(part.species(), key -> new HashMap<>())
@@ -55,7 +49,7 @@ public class DefaultPartLoader extends SimpleJsonResourceReloadListener {
                         .computeIfAbsent(part.species(), key -> new HashMap<>())
                         .computeIfAbsent(part.stage(), key -> new HashMap<>()).putAll(part.parts());
             }
-        });
+        }));
     }
 
     // TODO :: add a call to also query by body in case people want to define things different defaults for them
