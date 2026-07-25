@@ -76,11 +76,11 @@ public class DSColors {
 
     /** Returns a color in the format of {@link FastColor.ARGB32} */
     public static int withAlpha(int rgb, float alpha) {
-        return FastColor.ARGB32.color((int) (255 * alpha), rgb);
+        return (int) (255 * alpha) << 24 | rgb & 0xFFFFFF;
     }
 
     /** Returns a color in the format of {@link FastColor.ARGB32} */
     public static int toARGB(final TextColor color) {
-        return FastColor.ARGB32.color(255, color.getValue());
+        return 0xFF000000 | color.getValue() & 0xFFFFFF;
     }
 }

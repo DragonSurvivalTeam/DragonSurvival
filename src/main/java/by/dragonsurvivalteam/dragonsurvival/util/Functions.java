@@ -10,6 +10,8 @@ import net.minecraft.nbt.DoubleTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
@@ -18,8 +20,6 @@ import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.fml.loading.FMLLoader;
-import net.minecraftforge.common.Tags;
-import net.minecraft.util.Mth;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -159,7 +159,7 @@ public class Functions {
     public static double limitAngleDeltaSoft(double value, double center, double halfRange, double pullCoeff) {
         pullCoeff = Mth.clamp(pullCoeff, 0, 1);
         double targetAngle = limitAngleDelta(value, center, halfRange);
-        return Mth.rotLerp(pullCoeff, value, targetAngle);
+        return value + pullCoeff * Mth.wrapDegrees(targetAngle - value);
     }
 
     /**
@@ -174,7 +174,7 @@ public class Functions {
     public static double lerpAngleAwayFrom(double t, double start, double end, double avoidAngle) {
         if (Math.abs(Mth.wrapDegrees(avoidAngle - end)) < 0.0001) {
             // You're trying to go to the same angle that you're trying to avoid - too bad!
-            return Mth.rotLerp(t, start, end);
+            return start + t * Mth.wrapDegrees(end - start);
         }
 
         start = Mth.wrapDegrees(start);
@@ -318,7 +318,7 @@ public class Functions {
 
     public static <T> MutableComponent translateHolderSet(final HolderSet<T> set, final Function<Holder<T>, String> translationKey) {
         if (set instanceof HolderSet.Named<T> named) {
-            return DSColors.dynamicValue(Component.translatable(Tags.getTagTranslationKey(named.key())));
+            return DSColors.dynamicValue(Component.translatable(tagTranslationKey(named.key())));
         }
 
         MutableComponent list = null;
@@ -334,6 +334,14 @@ public class Functions {
         }
 
         return Objects.requireNonNullElse(list, Component.empty());
+    }
+
+    private static String tagTranslationKey(final TagKey<?> tag) {
+        ResourceLocation registry = tag.registry().location();
+        ResourceLocation location = tag.location();
+        return "tag." + registry.toShortLanguageKey().replace('/', '.')
+                + "." + location.getNamespace()
+                + "." + location.getPath().replace('/', '.');
     }
 
     public static NumberFormat getFormat(final int decimals) {
