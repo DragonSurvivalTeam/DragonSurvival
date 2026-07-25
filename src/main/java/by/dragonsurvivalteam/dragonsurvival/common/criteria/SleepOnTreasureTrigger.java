@@ -1,29 +1,60 @@
 package by.dragonsurvivalteam.dragonsurvival.common.criteria;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
+import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import com.google.gson.JsonObject;
 import net.minecraft.advancements.critereon.ContextAwarePredicate;
-import net.minecraft.advancements.critereon.EntityPredicate;
-import net.minecraft.advancements.critereon.SimpleCriterionTrigger;
+import net.minecraft.advancements.critereon.DeserializationContext;
+import net.minecraft.advancements.critereon.SerializationContext;
 import net.minecraft.server.level.ServerPlayer;
-import org.jetbrains.annotations.NotNull;
+import net.minecraft.util.GsonHelper;
 
 import java.util.Optional;
 
-public class SleepOnTreasureTrigger extends SimpleCriterionTrigger<SleepOnTreasureTrigger.SleepOnTreasureInstance> {
+public class SleepOnTreasureTrigger extends DragonCriterionTrigger<SleepOnTreasureTrigger.SleepOnTreasureInstance> {
+    public SleepOnTreasureTrigger() {
+        super(DragonSurvival.res("sleep_on_treasure"));
+    }
+
     public void trigger(ServerPlayer player, int count) {
         this.trigger(player, triggerInstance -> triggerInstance.nearbyTreasureAmount.map(integer -> integer <= count).orElse(true));
     }
 
     @Override
-    public @NotNull Codec<SleepOnTreasureInstance> codec() {
-        return SleepOnTreasureInstance.CODEC;
+    protected SleepOnTreasureInstance createInstance(
+            final JsonObject json,
+            final ContextAwarePredicate player,
+            final DeserializationContext context
+    ) {
+        return new SleepOnTreasureInstance(
+                json.has("player") ? Optional.of(player) : Optional.empty(),
+                json.has("nearby_treasure_amount")
+                        ? Optional.of(GsonHelper.getAsInt(json, "nearby_treasure_amount"))
+                        : Optional.empty()
+        );
     }
 
-    public record SleepOnTreasureInstance(Optional<ContextAwarePredicate> player, Optional<Integer> nearbyTreasureAmount) implements SimpleCriterionTrigger.SimpleInstance {
-        public static final Codec<SleepOnTreasureInstance> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                EntityPredicate.ADVANCEMENT_CODEC.optionalFieldOf("player").forGetter(SleepOnTreasureInstance::player),
-                Codec.INT.optionalFieldOf("nearby_treasure_amount").forGetter(SleepOnTreasureInstance::nearbyTreasureAmount)
-        ).apply(instance, SleepOnTreasureInstance::new));
+    public static class SleepOnTreasureInstance extends DragonCriterionTrigger.Instance {
+        private final Optional<Integer> nearbyTreasureAmount;
+
+        public SleepOnTreasureInstance(
+                final Optional<ContextAwarePredicate> player,
+                final Optional<Integer> nearbyTreasureAmount
+        ) {
+            super(DragonSurvival.res("sleep_on_treasure"), player);
+            this.nearbyTreasureAmount = nearbyTreasureAmount;
+        }
+
+        public Optional<Integer> nearbyTreasureAmount() {
+            return nearbyTreasureAmount;
+        }
+
+        @Override
+        public JsonObject serializeToJson(final SerializationContext context) {
+            JsonObject json = super.serializeToJson(context);
+            nearbyTreasureAmount.ifPresent(value ->
+                    json.addProperty("nearby_treasure_amount", value)
+            );
+            return json;
+        }
     }
 }
