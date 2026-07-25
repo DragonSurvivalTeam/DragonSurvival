@@ -16,7 +16,6 @@ import by.dragonsurvivalteam.dragonsurvival.server.tileentity.SourceOfMagicBlock
 import by.dragonsurvivalteam.dragonsurvival.server.tileentity.SourceOfMagicPlaceholder;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import by.dragonsurvivalteam.dragonsurvival.util.SpawningUtils;
-import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleOptions;
@@ -68,6 +67,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -129,11 +129,6 @@ public class SourceOfMagicBlock extends HorizontalDirectionalBlock implements Si
         super(properties);
         registerDefaultState(getStateDefinition().any().setValue(BlockStateProperties.WATERLOGGED, false).setValue(PRIMARY_BLOCK, true).setValue(TYPE, Type.GROUND).setValue(FILLED, false));
         this.damageSourceProvider = damageSourceProvider;
-    }
-
-    @Override
-    protected @NotNull MapCodec<? extends HorizontalDirectionalBlock> codec() {
-        return MapCodec.unit(this);
     }
 
     private static void breakBlock(final Level level, final BlockPos position) {
@@ -312,7 +307,7 @@ public class SourceOfMagicBlock extends HorizontalDirectionalBlock implements Si
         SourceOfMagicBlockEntity provider = getSource(level, rootPosition);
         if (!player.isCrouching() && provider != null) {
             if (player instanceof ServerPlayer serverPlayer) {
-                serverPlayer.openMenu(provider, buffer -> buffer.writeBlockPos(rootPosition));
+                NetworkHooks.openScreen(serverPlayer, provider, rootPosition);
             }
 
             return InteractionResult.sidedSuccess(player.level().isClientSide());
@@ -465,7 +460,7 @@ public class SourceOfMagicBlock extends HorizontalDirectionalBlock implements Si
     }
 
     @Override // Entrypoint for bucket interaction
-    public @NotNull ItemStack pickupBlock(@Nullable final Player player, @NotNull final LevelAccessor level, @NotNull final BlockPos position, @NotNull final BlockState state) {
+    public @NotNull ItemStack pickupBlock(@NotNull final LevelAccessor level, @NotNull final BlockPos position, @NotNull final BlockState state) {
         BlockEntity entity = level.getBlockEntity(position);
         BlockPos rootPosition = null;
 
