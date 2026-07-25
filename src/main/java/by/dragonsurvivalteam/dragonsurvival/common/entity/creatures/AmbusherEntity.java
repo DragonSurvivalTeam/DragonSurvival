@@ -255,12 +255,12 @@ public class AmbusherEntity extends Hunter implements RangedAttackMob {
         CrossbowItem tempCrossbowitem = (CrossbowItem) Items.CROSSBOW;
         ItemStack tempCrossbowItemStack = new ItemStack(tempCrossbowitem, 1);
         CrossbowItem.tryLoadProjectiles(this, tempCrossbowItemStack);
-        tempCrossbowitem.performShooting(this.level(), this, InteractionHand.MAIN_HAND, tempCrossbowItemStack, nextArrowVelocity, 1, this.getTarget());
+        tempCrossbowitem.performShooting(this.level(), this, InteractionHand.MAIN_HAND, tempCrossbowItemStack, nextArrowVelocity, 1);
     }
 
     @Override
     public @NotNull ItemStack getProjectile(@NotNull ItemStack pWeaponStack) {
-        return net.minecraftforge.common.CommonHooks.getProjectile(this, pWeaponStack, new ItemStack(Items.ARROW, 1));
+        return net.minecraftforge.common.ForgeHooks.getProjectile(this, pWeaponStack, new ItemStack(Items.ARROW, 1));
     }
 
     private void beginSummonReinforcements() {
