@@ -110,8 +110,8 @@ public class GenericArrowEntity extends AbstractArrow implements IEntityAddition
         super.addAdditionalSaveData(tag);
 
         RegistryOps<Tag> context = RegistryOps.create(NbtOps.INSTANCE, level().registryAccess());
-        ProjectileData.GeneralData.CODEC.encodeStart(context, getGeneralData()).ifSuccess(data -> tag.put(GENERAL_DATA, data));
-        ProjectileData.GenericArrowData.CODEC.encodeStart(context, getTypeData()).ifSuccess(data -> tag.put(TYPE_DATA, data));
+        ProjectileData.GeneralData.CODEC.encodeStart(context, getGeneralData()).result().ifPresent(data -> tag.put(GENERAL_DATA, data));
+        ProjectileData.GenericArrowData.CODEC.encodeStart(context, getTypeData()).result().ifPresent(data -> tag.put(TYPE_DATA, data));
 
         tag.putInt(PROJECTILE_LEVEL, projectileLevel);
     }
