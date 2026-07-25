@@ -185,18 +185,18 @@ public class SummonedEntities extends Storage<SummonEntityEffect.Instance> {
 
     @SubscribeEvent // Prevents summoned entities from targeting their owner or other allied summons
     public static void targetAttackedEnemy(final LivingChangeTargetEvent event) {
-        if (event.getNewAboutToBeSetTarget() == null) {
+        if (event.getNewTarget() == null) {
             return;
         }
 
         if (AttachmentManager.getExistingData(event.getEntity(), DSDataAttachments.SUMMON).map(data -> data.attackBehaviour == AttackBehaviour.PASSIVE).orElse(false)) {
-            event.setNewAboutToBeSetTarget(null);
+            event.setNewTarget(null);
             return;
         }
 
-        if (hasSummonRelationship(event.getEntity(), event.getNewAboutToBeSetTarget())) {
+        if (hasSummonRelationship(event.getEntity(), event.getNewTarget())) {
             // Fallback - should technically already be handled through the 'EntityMixin'
-            event.setNewAboutToBeSetTarget(null);
+            event.setNewTarget(null);
         }
     }
 
