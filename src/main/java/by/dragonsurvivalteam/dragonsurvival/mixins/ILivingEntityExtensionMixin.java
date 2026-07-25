@@ -1,37 +1,33 @@
 package by.dragonsurvivalteam.dragonsurvival.mixins;
 
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SwimData;
-import com.llamalad7.mixinextras.injector.ModifyReturnValue;
-import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.common.extensions.ILivingEntityExtension;
+import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.fluids.FluidType;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.At;
 
-@Mixin(ILivingEntityExtension.class)
-public interface ILivingEntityExtensionMixin {
+@Mixin(LivingEntity.class)
+public abstract class ILivingEntityExtensionMixin {
     /** Allows proper sinking in lava when pressing shift e.g. */
-    @ModifyReturnValue(method = "canSwimInFluidType", at = @At("RETURN"))
-    private boolean dragonSurvival$enableSwimming(boolean canSwimIn, @Local(argsOnly = true) final FluidType fluid) {
+    public boolean canSwimInFluidType(final FluidType fluid) {
+        LivingEntity self = (LivingEntity) (Object) this;
+        boolean canSwimIn = fluid == ForgeMod.WATER_TYPE.get() ? !self.isSensitiveToWater() : fluid.canSwim(self);
+
         if (canSwimIn) {
             return true;
         }
 
-        return self() instanceof Player player && SwimData.getData(player).canSwimIn(fluid);
+        return self instanceof Player player && SwimData.getData(player).canSwimIn(fluid);
     }
 
-    @ModifyReturnValue(method = "canDrownInFluidType", at = @At("RETURN"))
-    private boolean dragonSurvival$handleUnlimitedOxygen(boolean canDrownIn, @Local(argsOnly = true) final FluidType fluid) {
-        if (self() instanceof Player player) {
+    public boolean canDrownInFluidType(final FluidType fluid) {
+        LivingEntity self = (LivingEntity) (Object) this;
+
+        if (self instanceof Player player) {
             return SwimData.getData(player).getMaxOxygen(player, fluid) != SwimData.UNLIMITED_OXYGEN;
         }
 
-        return canDrownIn;
+        return fluid == ForgeMod.WATER_TYPE.get() ? !self.canBreatheUnderwater() : fluid.canDrownIn(self);
     }
-
-    @Shadow
-    LivingEntity self();
 }
