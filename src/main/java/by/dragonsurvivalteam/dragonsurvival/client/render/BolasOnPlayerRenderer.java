@@ -74,7 +74,7 @@ public class BolasOnPlayerRenderer {
         matrixStack.scale(1.6f + eyeHeight / 8.f, 1.6f + eyeHeight / 8.f, 1.6f + eyeHeight / 8.f);
 
         if (BOLAS == null) {
-            BOLAS = new ItemStack(DSItems.HUNTING_NET);
+            BOLAS = new ItemStack(DSItems.HUNTING_NET.get());
         }
 
         Minecraft.getInstance().getItemRenderer().renderStatic(BOLAS, ItemDisplayContext.NONE, light, overlayCoords, matrixStack, buffers, Minecraft.getInstance().level, 0);
