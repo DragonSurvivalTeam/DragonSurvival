@@ -47,18 +47,15 @@ public class ClawsAndTeeth {
     private static String getMaterial(String texture, ItemStack clawItem) {
         if (clawItem.getItem() instanceof TieredItem item) {
             Tier tier = item.getTier();
+            String material = tier == Tiers.NETHERITE ? "netherite_"
+                : tier == Tiers.DIAMOND ? "diamond_"
+                : tier == Tiers.IRON ? "iron_"
+                : tier == Tiers.GOLD ? "gold_"
+                : tier == Tiers.STONE ? "stone_"
+                : tier == Tiers.WOOD ? "wooden_"
+                : "modded_";
 
-            switch (tier) {
-                case Tiers.NETHERITE -> texture += "netherite_";
-                case Tiers.DIAMOND -> texture += "diamond_";
-                case Tiers.IRON -> texture += "iron_";
-                case Tiers.GOLD -> texture += "gold_";
-                case Tiers.STONE -> texture += "stone_";
-                case Tiers.WOOD -> texture += "wooden_";
-                default -> texture += "modded_";
-            }
-
-            return texture;
+            return texture + material;
         }
 
         return texture + "modded_";
