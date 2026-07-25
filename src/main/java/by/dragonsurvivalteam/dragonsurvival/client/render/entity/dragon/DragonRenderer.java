@@ -5,6 +5,7 @@ import by.dragonsurvivalteam.dragonsurvival.client.util.RenderingUtils;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
+import by.dragonsurvivalteam.dragonsurvival.common.handlers.EntityScale;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.HunterHandler;
 import by.dragonsurvivalteam.dragonsurvival.compat.Compat;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MovementData;
@@ -136,6 +137,8 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
 
         poseStack.pushPose();
         setupRender(animatable, player, poseStack, partialTick);
+        float scale = EntityScale.get(animatable);
+        poseStack.scale(scale, scale, scale);
 
         DragonStateHandler handler = DragonStateProvider.getData(player);
         boolean hasWings = !handler.body().value().canHideWings() || handler.getCurrentStageCustomization().wings;
