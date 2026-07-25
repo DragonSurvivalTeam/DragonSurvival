@@ -122,7 +122,7 @@ public class SkeletonPieceBlock extends Block implements SimpleWaterloggedBlock 
         //WING_RIGHT("skeleton_dragon_wing_right"),
         //WING_RIGHT_STRAIGHT("skeleton_dragon_wing_right_straight");
 
-        public static final Codec<Type> CODEC = StringRepresentable.fromValues(Type::values);
+        public static final Codec<Type> CODEC = StringRepresentable.fromEnum(Type::values);
         private final String name;
 
         Type(final String pName) {

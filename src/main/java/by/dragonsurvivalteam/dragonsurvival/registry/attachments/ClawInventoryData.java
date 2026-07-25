@@ -39,7 +39,7 @@ public class ClawInventoryData implements INBTSerializable<CompoundTag> {
         AXE("gui/dragon_claws_axe"),
         SHOVEL("gui/dragon_claws_shovel");
 
-        public static Codec<Slot> CODEC = StringRepresentable.fromValues(Slot::values);
+        public static Codec<Slot> CODEC = StringRepresentable.fromEnum(Slot::values);
         private final ResourceLocation emptyTexture;
 
         Slot(final String path) {

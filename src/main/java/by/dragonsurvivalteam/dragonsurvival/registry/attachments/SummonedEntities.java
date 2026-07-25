@@ -257,7 +257,7 @@ public class SummonedEntities extends Storage<SummonEntityEffect.Instance> {
         @Translation(comments = "Stay")
         STAY;
 
-        public static final Codec<MovementBehaviour> CODEC = StringRepresentable.fromValues(MovementBehaviour::values);
+        public static final Codec<MovementBehaviour> CODEC = StringRepresentable.fromEnum(MovementBehaviour::values);
 
         @Override
         public @NotNull String getSerializedName() {
@@ -274,7 +274,7 @@ public class SummonedEntities extends Storage<SummonEntityEffect.Instance> {
         @Translation(comments = "Defensive")
         DEFENSIVE;
 
-        public static final Codec<AttackBehaviour> CODEC = StringRepresentable.fromValues(AttackBehaviour::values);
+        public static final Codec<AttackBehaviour> CODEC = StringRepresentable.fromEnum(AttackBehaviour::values);
 
         @Override
         public @NotNull String getSerializedName() {

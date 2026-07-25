@@ -34,7 +34,7 @@ public enum SkinLayer implements StringRepresentable {
     EXTRA6("Extra", false),
     EXTRA7("Extra", false);
 
-    public static final Codec<SkinLayer> CODEC = StringRepresentable.fromValues(SkinLayer::values);
+    public static final Codec<SkinLayer> CODEC = StringRepresentable.fromEnum(SkinLayer::values);
 
     public final String name;
     public final boolean base;
