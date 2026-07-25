@@ -63,7 +63,7 @@ public class BlockInteractionHandler {
 
         ItemStack stack = event.getItemStack();
 
-        if (!stack.is(DSItems.ELDER_DRAGON_BONE)) {
+        if (!stack.is(DSItems.ELDER_DRAGON_BONE.get())) {
             return;
         }
 

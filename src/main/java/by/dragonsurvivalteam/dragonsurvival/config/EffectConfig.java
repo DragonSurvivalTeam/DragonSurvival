@@ -3,6 +3,8 @@ package by.dragonsurvivalteam.dragonsurvival.config;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ResourceLocationWrapper;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -40,12 +42,12 @@ public class EffectConfig implements CustomConfig {
     }
 
     public void applyEffects(final Player player, int level) {
-        effects.forEach(resource -> BuiltInRegistries.MOB_EFFECT.getHolder(resource).ifPresent(effect -> {
+        effects.forEach(resource -> BuiltInRegistries.MOB_EFFECT.getHolder(ResourceKey.create(Registries.MOB_EFFECT, resource)).ifPresent(effect -> {
             int duration = (int) (this.duration * (1 + level * durationMultiplier));
             int amplifier = (int) ((1 + this.amplifier) * (1 + level * amplifierMultiplier));
 
             // Subtract 1 from the amplifier since the calculation was done with +1 to it for level 0 amplifier
-            MobEffectInstance instance = new MobEffectInstance(effect, duration, amplifier - 1, false, true);
+            MobEffectInstance instance = new MobEffectInstance(effect.value(), duration, amplifier - 1, false, true);
             player.addEffect(instance);
         }));
     }
