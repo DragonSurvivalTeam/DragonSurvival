@@ -1,6 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscCodecs;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.ManaCost;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.AbilityAnimation;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.AnimationType;
@@ -26,21 +27,21 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
-@EventBusSubscriber
+@EventBusSubscriber(modid = DragonSurvival.MODID, bus = EventBusSubscriber.Bus.MOD)
 public interface Activation {
     ResourceKey<Registry<MapCodec<? extends Activation>>> REGISTRY_KEY = ResourceKey.createRegistryKey(DragonSurvival.res("activation"));
-    Registry<MapCodec<? extends Activation>> REGISTRY = new RegistryBuilder<>(REGISTRY_KEY).create();
+    MiscCodecs.RegistryHolder<MapCodec<? extends Activation>> REGISTRY = new MiscCodecs.RegistryHolder<>();
 
-    Codec<Activation> CODEC = REGISTRY.byNameCodec().dispatch("activation_type", Activation::codec, MapCodec::codec);
+    Codec<Activation> CODEC = MiscCodecs.registryDispatchCodec(REGISTRY, "activation_type", Activation::codec);
 
     @SubscribeEvent
     static void register(final NewRegistryEvent event) {
-        event.register(REGISTRY);
+        event.create(new RegistryBuilder<MapCodec<? extends Activation>>().setName(REGISTRY_KEY.location()), REGISTRY::set);
     }
 
     @SubscribeEvent
     static void registerEntries(final RegisterEvent event) {
-        if (event.getRegistry() == REGISTRY) {
+        if (event.getRegistryKey().equals(REGISTRY_KEY)) {
             event.register(REGISTRY_KEY, DragonSurvival.res("passive"), () -> PassiveActivation.CODEC);
             event.register(REGISTRY_KEY, DragonSurvival.res("simple"), () -> SimpleActivation.CODEC);
             event.register(REGISTRY_KEY, DragonSurvival.res("channeled"), () -> ChanneledActivation.CODEC);

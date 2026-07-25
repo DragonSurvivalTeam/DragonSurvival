@@ -1,6 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscCodecs;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.common_effects.ParticleEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.common_effects.RunFunctionEffect;
@@ -22,12 +23,12 @@ import net.minecraftforge.registries.RegistryBuilder;
 
 import java.util.List;
 
-@EventBusSubscriber
+@EventBusSubscriber(modid = DragonSurvival.MODID, bus = EventBusSubscriber.Bus.MOD)
 public interface AbilityEntityEffect {
     ResourceKey<Registry<MapCodec<? extends AbilityEntityEffect>>> REGISTRY_KEY = ResourceKey.createRegistryKey(DragonSurvival.res("ability_entity_effect"));
-    Registry<MapCodec<? extends AbilityEntityEffect>> REGISTRY = new RegistryBuilder<>(REGISTRY_KEY).create();
+    MiscCodecs.RegistryHolder<MapCodec<? extends AbilityEntityEffect>> REGISTRY = new MiscCodecs.RegistryHolder<>();
 
-    Codec<AbilityEntityEffect> CODEC = REGISTRY.byNameCodec().dispatch("effect_type", AbilityEntityEffect::entityCodec, MapCodec::codec);
+    Codec<AbilityEntityEffect> CODEC = MiscCodecs.registryDispatchCodec(REGISTRY, "effect_type", AbilityEntityEffect::entityCodec);
 
     void apply(final ServerPlayer dragon, final DragonAbilityInstance ability, final Entity target);
 
@@ -56,12 +57,12 @@ public interface AbilityEntityEffect {
 
     @SubscribeEvent
     static void register(final NewRegistryEvent event) {
-        event.register(REGISTRY);
+        event.create(new RegistryBuilder<MapCodec<? extends AbilityEntityEffect>>().setName(REGISTRY_KEY.location()), REGISTRY::set);
     }
 
     @SubscribeEvent
     static void registerEntries(final RegisterEvent event) {
-        if (event.getRegistry() == REGISTRY) {
+        if (event.getRegistryKey().equals(REGISTRY_KEY)) {
             event.register(REGISTRY_KEY, DragonSurvival.res("damage"), () -> DamageEffect.CODEC);
             event.register(REGISTRY_KEY, DragonSurvival.res("modifier"), () -> ModifierEffect.CODEC);
             event.register(REGISTRY_KEY, DragonSurvival.res("potion"), () -> PotionEffect.CODEC);

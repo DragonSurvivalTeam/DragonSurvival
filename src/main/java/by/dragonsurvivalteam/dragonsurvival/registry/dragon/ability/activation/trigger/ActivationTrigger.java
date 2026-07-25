@@ -1,6 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.trigger;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscCodecs;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.Registry;
@@ -13,21 +14,21 @@ import net.minecraftforge.registries.RegisterEvent;
 import net.minecraftforge.registries.RegistryBuilder;
 
 
-@EventBusSubscriber
+@EventBusSubscriber(modid = DragonSurvival.MODID, bus = EventBusSubscriber.Bus.MOD)
 public interface ActivationTrigger<T> {
     ResourceKey<Registry<MapCodec<? extends ActivationTrigger<?>>>> REGISTRY_KEY = ResourceKey.createRegistryKey(DragonSurvival.res("activation_trigger"));
-    Registry<MapCodec<? extends ActivationTrigger<?>>> REGISTRY = new RegistryBuilder<>(REGISTRY_KEY).create();
+    MiscCodecs.RegistryHolder<MapCodec<? extends ActivationTrigger<?>>> REGISTRY = new MiscCodecs.RegistryHolder<>();
 
-    Codec<ActivationTrigger<?>> CODEC = REGISTRY.byNameCodec().dispatch("trigger_type", ActivationTrigger::codec, MapCodec::codec);
+    Codec<ActivationTrigger<?>> CODEC = MiscCodecs.registryDispatchCodec(REGISTRY, "trigger_type", ActivationTrigger::codec);
 
     @SubscribeEvent
     static void register(final NewRegistryEvent event) {
-        event.register(REGISTRY);
+        event.create(new RegistryBuilder<MapCodec<? extends ActivationTrigger<?>>>().setName(REGISTRY_KEY.location()), REGISTRY::set);
     }
 
     @SubscribeEvent
     static void registerEntries(final RegisterEvent event) {
-        if (event.getRegistry() == REGISTRY) {
+        if (event.getRegistryKey().equals(REGISTRY_KEY)) {
             event.register(REGISTRY_KEY, DragonSurvival.res("constant"), () -> ConstantTrigger.CODEC);
             event.register(REGISTRY_KEY, DragonSurvival.res("on_self_hit"), () -> OnSelfHit.CODEC);
             event.register(REGISTRY_KEY, DragonSurvival.res("on_target_hit"), () -> OnTargetHit.CODEC);

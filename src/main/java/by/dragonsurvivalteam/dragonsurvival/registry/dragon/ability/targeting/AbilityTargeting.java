@@ -35,15 +35,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-@EventBusSubscriber
+@EventBusSubscriber(modid = DragonSurvival.MODID, bus = EventBusSubscriber.Bus.MOD)
 public interface AbilityTargeting {
     String EFFECT_HEADER = "#HEADER#";
     NumberFormat FORMAT = Functions.getFormat(2);
 
     ResourceKey<Registry<MapCodec<? extends AbilityTargeting>>> REGISTRY_KEY = ResourceKey.createRegistryKey(DragonSurvival.res("ability_targeting"));
-    Registry<MapCodec<? extends AbilityTargeting>> REGISTRY = new RegistryBuilder<>(REGISTRY_KEY).create();
+    MiscCodecs.RegistryHolder<MapCodec<? extends AbilityTargeting>> REGISTRY = new MiscCodecs.RegistryHolder<>();
 
-    Codec<AbilityTargeting> CODEC = REGISTRY.byNameCodec().dispatch("target_type", AbilityTargeting::codec, MapCodec::codec);
+    Codec<AbilityTargeting> CODEC = MiscCodecs.registryDispatchCodec(REGISTRY, "target_type", AbilityTargeting::codec);
 
     static Either<BlockTargeting, EntityTargeting> block(final List<AbilityBlockEffect> effects) {
         return block(null, effects);
@@ -105,12 +105,12 @@ public interface AbilityTargeting {
 
     @SubscribeEvent
     static void register(final NewRegistryEvent event) {
-        event.register(REGISTRY);
+        event.create(new RegistryBuilder<MapCodec<? extends AbilityTargeting>>().setName(REGISTRY_KEY.location()), REGISTRY::set);
     }
 
     @SubscribeEvent
     static void registerEntries(final RegisterEvent event) {
-        if (event.getRegistry() == REGISTRY) {
+        if (event.getRegistryKey().equals(REGISTRY_KEY)) {
             event.register(REGISTRY_KEY, DragonSurvival.res("area"), () -> AreaTarget.CODEC);
             event.register(REGISTRY_KEY, DragonSurvival.res("dragon_breath"), () -> DragonBreathTarget.CODEC);
             event.register(REGISTRY_KEY, DragonSurvival.res("looking_at"), () -> LookingAtTarget.CODEC);

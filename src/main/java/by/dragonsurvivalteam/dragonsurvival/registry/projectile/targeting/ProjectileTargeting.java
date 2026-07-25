@@ -1,6 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.projectile.targeting;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscCodecs;
 import by.dragonsurvivalteam.dragonsurvival.registry.projectile.ProjectileEffect;
 import com.mojang.datafixers.Products;
 import com.mojang.serialization.Codec;
@@ -28,12 +29,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-@EventBusSubscriber
+@EventBusSubscriber(modid = DragonSurvival.MODID, bus = EventBusSubscriber.Bus.MOD)
 public interface ProjectileTargeting {
     ResourceKey<Registry<MapCodec<? extends ProjectileTargeting>>> REGISTRY_KEY = ResourceKey.createRegistryKey(DragonSurvival.res("projectile_targeting"));
-    Registry<MapCodec<? extends ProjectileTargeting>> REGISTRY = new RegistryBuilder<>(REGISTRY_KEY).create();
+    MiscCodecs.RegistryHolder<MapCodec<? extends ProjectileTargeting>> REGISTRY = new MiscCodecs.RegistryHolder<>();
 
-    Codec<ProjectileTargeting> CODEC = REGISTRY.byNameCodec().dispatch("target_type", ProjectileTargeting::codec, MapCodec::codec);
+    Codec<ProjectileTargeting> CODEC = MiscCodecs.registryDispatchCodec(REGISTRY, "target_type", ProjectileTargeting::codec);
 
     record GeneralData(List<ConditionalEffect> effects, int tickRate, double chance) {
         public static final Codec<GeneralData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
@@ -78,12 +79,12 @@ public interface ProjectileTargeting {
 
     @SubscribeEvent
     static void register(final NewRegistryEvent event) {
-        event.register(REGISTRY);
+        event.create(new RegistryBuilder<MapCodec<? extends ProjectileTargeting>>().setName(REGISTRY_KEY.location()), REGISTRY::set);
     }
 
     @SubscribeEvent
     static void registerEntries(final RegisterEvent event) {
-        if (event.getRegistry() == REGISTRY) {
+        if (event.getRegistryKey().equals(REGISTRY_KEY)) {
             event.register(REGISTRY_KEY, DragonSurvival.res("area"), () -> ProjectileAreaTarget.CODEC);
             event.register(REGISTRY_KEY, DragonSurvival.res("point"), () -> ProjectilePointTarget.CODEC);
         }

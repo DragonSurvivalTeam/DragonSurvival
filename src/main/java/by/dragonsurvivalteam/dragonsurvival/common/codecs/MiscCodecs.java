@@ -4,6 +4,7 @@ import by.dragonsurvivalteam.dragonsurvival.util.Expression;
 import com.google.gson.JsonElement;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.advancements.critereon.EntityPredicate;
@@ -13,12 +14,15 @@ import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.level.levelgen.blockpredicates.BlockPredicate;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.registries.IForgeRegistry;
 import org.jetbrains.annotations.NotNull;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class MiscCodecs {
     private static final Codec<MinMaxBounds.Doubles> DOUBLE_BOUNDS_CODEC = jsonCodec(MinMaxBounds.Doubles::fromJson, MinMaxBounds.Doubles::serializeToJson);
@@ -86,6 +90,36 @@ public class MiscCodecs {
      **/
     public static <T> Codec<T> conditional(final Codec<T> codec) {
         return optionalCodec(ConditionalOps.createConditionalCodec(codec));
+    }
+
+    public static <T> Codec<T> registryDispatchCodec(
+            final Supplier<IForgeRegistry<MapCodec<? extends T>>> registry,
+            final String typeField,
+            final Function<T, ? extends MapCodec<? extends T>> codec
+    ) {
+        Supplier<Codec<T>> dispatchCodec = () -> Objects.requireNonNull(
+                registry.get(),
+                "Registry for " + typeField + " has not been created yet"
+        ).getCodec().dispatch(typeField, codec, MapCodec::codec);
+
+        return Codec.of(
+                (input, ops, prefix) -> dispatchCodec.get().encode(input, ops, prefix),
+                (ops, input) -> dispatchCodec.get().decode(ops, input),
+                "RegistryDispatch[" + typeField + "]"
+        );
+    }
+
+    public static final class RegistryHolder<T> implements Supplier<IForgeRegistry<T>> {
+        private IForgeRegistry<T> registry;
+
+        public void set(final IForgeRegistry<T> registry) {
+            this.registry = registry;
+        }
+
+        @Override
+        public IForgeRegistry<T> get() {
+            return registry;
+        }
     }
 
     public static Codec<MinMaxBounds.Doubles> percentageBounds() {

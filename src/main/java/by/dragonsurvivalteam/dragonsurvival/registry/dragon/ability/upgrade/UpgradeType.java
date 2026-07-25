@@ -1,6 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscCodecs;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncAbilityLevel;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import com.mojang.datafixers.Products;
@@ -26,23 +27,23 @@ import java.util.Optional;
 import java.util.function.Predicate;
 
 /** The type cannot be a parameterized type because the parameter from the input cannot be validated to match (due to type erasure) */
-@EventBusSubscriber
+@EventBusSubscriber(modid = DragonSurvival.MODID, bus = EventBusSubscriber.Bus.MOD)
 public interface UpgradeType<T> {
     ResourceKey<Registry<MapCodec<? extends UpgradeType<?>>>> REGISTRY_KEY = ResourceKey.createRegistryKey(DragonSurvival.res("upgrade_type"));
-    Registry<MapCodec<? extends UpgradeType<?>>> REGISTRY = new RegistryBuilder<>(REGISTRY_KEY).create();
+    MiscCodecs.RegistryHolder<MapCodec<? extends UpgradeType<?>>> REGISTRY = new MiscCodecs.RegistryHolder<>();
 
-    Codec<UpgradeType<?>> CODEC = REGISTRY.byNameCodec().dispatch("upgrade_type", UpgradeType::codec, MapCodec::codec);
+    Codec<UpgradeType<?>> CODEC = MiscCodecs.registryDispatchCodec(REGISTRY, "upgrade_type", UpgradeType::codec);
 
     Predicate<Optional<UpgradeType<?>>> IS_MANUAL = optional -> optional.isPresent() && optional.get() instanceof ExperiencePointsUpgrade;
 
     @SubscribeEvent
     static void register(final NewRegistryEvent event) {
-        event.register(REGISTRY);
+        event.create(new RegistryBuilder<MapCodec<? extends UpgradeType<?>>>().setName(REGISTRY_KEY.location()), REGISTRY::set);
     }
 
     @SubscribeEvent
     static void registerEntries(final RegisterEvent event) {
-        if (event.getRegistry() == REGISTRY) {
+        if (event.getRegistryKey().equals(REGISTRY_KEY)) {
             event.register(REGISTRY_KEY, DragonSurvival.res("experience_points"), () -> ExperiencePointsUpgrade.CODEC);
             event.register(REGISTRY_KEY, DragonSurvival.res("experience_levels"), () -> ExperienceLevelUpgrade.CODEC);
             event.register(REGISTRY_KEY, DragonSurvival.res("dragon_growth"), () -> DragonGrowthUpgrade.CODEC);

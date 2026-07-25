@@ -1,6 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.common.codecs.block_vision;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscCodecs;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.Activation;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
@@ -15,18 +16,18 @@ import net.minecraftforge.registries.RegistryBuilder;
 // TODO :: implement this properly for 1.22 (breaking change for block vision
 public interface BlockVisionType {
     ResourceKey<Registry<MapCodec<? extends Activation>>> REGISTRY_KEY = ResourceKey.createRegistryKey(DragonSurvival.res("block_vision"));
-    Registry<MapCodec<? extends Activation>> REGISTRY = new RegistryBuilder<>(REGISTRY_KEY).create();
+    MiscCodecs.RegistryHolder<MapCodec<? extends Activation>> REGISTRY = new MiscCodecs.RegistryHolder<>();
 
-    Codec<Activation> CODEC = REGISTRY.byNameCodec().dispatch("block_vision_type", Activation::codec, MapCodec::codec);
+    Codec<Activation> CODEC = MiscCodecs.registryDispatchCodec(REGISTRY, "block_vision_type", Activation::codec);
 
 //    @SubscribeEvent
     static void register(final NewRegistryEvent event) {
-        event.register(REGISTRY);
+        event.create(new RegistryBuilder<MapCodec<? extends Activation>>().setName(REGISTRY_KEY.location()), REGISTRY::set);
     }
 
 //    @SubscribeEvent
     static void registerEntries(final RegisterEvent event) {
-        if (event.getRegistry() == REGISTRY) {
+        if (event.getRegistryKey().equals(REGISTRY_KEY)) {
 //            event.register(REGISTRY_KEY, DragonSurvival.res("particle"), () -> ....CODEC);
 //            event.register(REGISTRY_KEY, DragonSurvival.res("outline"), () -> ....CODEC);
 //            event.register(REGISTRY_KEY, DragonSurvival.res("treasure"), () -> ....CODEC);
