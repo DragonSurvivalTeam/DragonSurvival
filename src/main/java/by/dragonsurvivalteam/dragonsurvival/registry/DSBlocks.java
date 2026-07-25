@@ -1227,7 +1227,7 @@ public class DSBlocks {
                 private static final String DRAGON_RIDER_WORKBENCH = Translation.Type.DESCRIPTION.wrap("dragon_rider_workbench");
 
                 @Override
-                public void appendHoverText(@NotNull ItemStack pStack, Item.@NotNull TooltipContext pContext, @NotNull List<Component> pTooltipComponents, @NotNull TooltipFlag pTooltipFlag) {
+                public void appendHoverText(@NotNull ItemStack pStack, @Nullable Level pContext, @NotNull List<Component> pTooltipComponents, @NotNull TooltipFlag pTooltipFlag) {
                     super.appendHoverText(pStack, pContext, pTooltipComponents, pTooltipFlag);
                     pTooltipComponents.add(Component.translatable(DRAGON_RIDER_WORKBENCH));
                 }

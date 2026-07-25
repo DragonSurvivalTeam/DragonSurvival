@@ -83,7 +83,9 @@ public class BlockInteractionHandler {
         event.getLevel().setBlockAndUpdate(event.getPos(), state);
         event.getLevel().playSound(event.getEntity(), event.getPos(), SoundEvents.WITHER_SPAWN, SoundSource.PLAYERS, 0.1f, 1.5f);
 
-        stack.consume(1, event.getEntity());
+        if (!event.getEntity().getAbilities().instabuild) {
+            stack.shrink(1);
+        }
 
         event.setCanceled(true);
         event.setCancellationResult(InteractionResult.SUCCESS);

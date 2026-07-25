@@ -14,12 +14,12 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
 import net.minecraft.util.FastColor;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.FallingBlockEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -90,7 +90,7 @@ public class TreasureBlock extends FallingBlock implements SimpleWaterloggedBloc
     }
 
     @Override
-    public @NotNull InteractionResult useWithoutItem(@NotNull final BlockState state, @NotNull final Level level, @NotNull final BlockPos position, @NotNull final Player player, @NotNull final BlockHitResult hitResult) {
+    public @NotNull InteractionResult use(@NotNull final BlockState state, @NotNull final Level level, @NotNull final BlockPos position, @NotNull final Player player, @NotNull final InteractionHand hand, @NotNull final BlockHitResult hitResult) {
         if (!DragonStateProvider.isDragon(player)) {
             return InteractionResult.PASS;
         }
@@ -114,7 +114,7 @@ public class TreasureBlock extends FallingBlock implements SimpleWaterloggedBloc
             return InteractionResult.sidedSuccess(level.isClientSide());
         }
 
-        return super.useWithoutItem(state, level, position, player, hitResult);
+        return super.use(state, level, position, player, hand, hitResult);
     }
 
     @Override
@@ -123,11 +123,11 @@ public class TreasureBlock extends FallingBlock implements SimpleWaterloggedBloc
     }
 
     @Override
-    public @NotNull Optional<ServerPlayer.RespawnPosAngle> getRespawnPosition(@NotNull BlockState state, @NotNull EntityType<?> type, @NotNull LevelReader levelReader, @NotNull BlockPos pos, float orientation) {
+    public @NotNull Optional<Vec3> getRespawnPosition(@NotNull BlockState state, @NotNull EntityType<?> type, @NotNull LevelReader levelReader, @NotNull BlockPos pos, float orientation, @Nullable LivingEntity entity) {
         if (levelReader instanceof Level) {
             Optional<Vec3> standUpPosition = RespawnAnchorBlock.findStandUpPosition(type, levelReader, pos);
             if (standUpPosition.isPresent()) {
-                return Optional.of(new ServerPlayer.RespawnPosAngle(standUpPosition.get(), orientation));
+                return standUpPosition;
             }
         }
 
@@ -217,7 +217,7 @@ public class TreasureBlock extends FallingBlock implements SimpleWaterloggedBloc
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack pStack, Item.@NotNull TooltipContext pContext, @NotNull List<Component> pTooltipComponents, @NotNull TooltipFlag pTooltipFlag) {
+    public void appendHoverText(@NotNull ItemStack pStack, @Nullable BlockGetter pContext, @NotNull List<Component> pTooltipComponents, @NotNull TooltipFlag pTooltipFlag) {
         super.appendHoverText(pStack, pContext, pTooltipComponents, pTooltipFlag);
         pTooltipComponents.add(Component.translatable(TREASURE));
     }

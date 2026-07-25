@@ -7,6 +7,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -25,8 +26,8 @@ public class TooltipItem extends Item {
     }
 
     @Override
-    public void appendHoverText(@NotNull final ItemStack stack, @NotNull final Item.TooltipContext context, @NotNull final List<Component> tooltips, @NotNull final TooltipFlag flag) {
-        super.appendHoverText(stack, context, tooltips, flag);
+    public void appendHoverText(@NotNull final ItemStack stack, @Nullable final Level level, @NotNull final List<Component> tooltips, @NotNull final TooltipFlag flag) {
+        super.appendHoverText(stack, level, tooltips, flag);
         String key = Translation.Type.DESCRIPTION.wrap(keySupplier.apply(stack));
 
         if (I18n.exists(key)) {

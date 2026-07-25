@@ -61,7 +61,9 @@ public class DragonGrowthHandler {
             }
 
             handler.isGrowthStopped = !handler.isGrowthStopped;
-            event.getItemStack().consume(1, player);
+            if (!player.getAbilities().instabuild) {
+                event.getItemStack().shrink(1);
+            }
 
             if (player.level().isClientSide()) {
                 String message = handler.isGrowthStopped ? INACTIVE : ACTIVE;
@@ -95,7 +97,9 @@ public class DragonGrowthHandler {
             return;
         }
 
-        event.getItemStack().consume(1, player);
+        if (!player.getAbilities().instabuild) {
+            event.getItemStack().shrink(1);
+        }
     }
 
     public static Double getGrowth(final Player player, final DragonStateHandler handler, final Item item) {

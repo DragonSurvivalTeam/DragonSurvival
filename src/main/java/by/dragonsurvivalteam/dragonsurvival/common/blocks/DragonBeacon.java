@@ -16,7 +16,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -62,7 +61,12 @@ public class DragonBeacon extends Block implements SimpleWaterloggedBlock, Entit
     }
 
     @Override
-    public @NotNull InteractionResult useWithoutItem(@NotNull final BlockState state, @NotNull final Level level, @NotNull final BlockPos position, @NotNull final Player player, @NotNull final BlockHitResult hitResult) {
+    public @NotNull InteractionResult use(@NotNull final BlockState state, @NotNull final Level level, @NotNull final BlockPos position, @NotNull final Player player, @NotNull final InteractionHand hand, @NotNull final BlockHitResult hitResult) {
+        ItemStack stack = player.getItemInHand(hand);
+        if (!state.getValue(BlockStateProperties.LIT) && !stack.isEmpty()) {
+            return activateBeacon(stack, state, level, position, player);
+        }
+
         if (!(level.getBlockEntity(position) instanceof DragonBeaconBlockEntity beacon)) {
             return InteractionResult.FAIL;
         }
@@ -87,49 +91,46 @@ public class DragonBeacon extends Block implements SimpleWaterloggedBlock, Entit
         return InteractionResult.FAIL;
     }
 
-    @Override
-    public @NotNull ItemInteractionResult useItemOn(@NotNull final ItemStack stack, @NotNull final BlockState state, @NotNull final Level level, @NotNull final BlockPos position, @NotNull final Player player, @NotNull final InteractionHand hand, @NotNull final BlockHitResult hitResult) {
-        if (state.getValue(BlockStateProperties.LIT)) {
-            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
-        }
-
+    private @NotNull InteractionResult activateBeacon(@NotNull final ItemStack stack, @NotNull final BlockState state, @NotNull final Level level, @NotNull final BlockPos position, @NotNull final Player player) {
         if (!stack.is(DSItemTags.ACTIVATES_DRAGON_BEACON)) {
             if (player.level().isClientSide()) {
                 player.displayClientMessage(Component.translatable(USE_ACTIVATOR), true);
             }
 
-            return ItemInteractionResult.FAIL;
+            return InteractionResult.FAIL;
         }
 
         DragonStateHandler handler = DragonStateProvider.getData(player);
 
         if (!handler.isDragon()) {
-            return ItemInteractionResult.FAIL;
+            return InteractionResult.FAIL;
         }
 
         if (player.level().isClientSide()) {
             // We don't sync the beacon data to the client since it doesn't get retained anyway
             // Therefor we just think of it as a successful interaction at this point
-            return ItemInteractionResult.sidedSuccess(true);
+            return InteractionResult.sidedSuccess(true);
         }
 
         DragonBeaconData beaconData = DSDataMaps.DRAGON_BEACON_DATA.get(handler.species());
 
         if (beaconData == null) {
-            return ItemInteractionResult.FAIL;
+            return InteractionResult.FAIL;
         }
 
         if (!(level.getBlockEntity(position) instanceof DragonBeaconBlockEntity beacon)) {
-            return ItemInteractionResult.FAIL;
+            return InteractionResult.FAIL;
         }
 
         beacon.setData(beaconData);
-        stack.consume(1, player);
+        if (!player.getAbilities().instabuild) {
+            stack.shrink(1);
+        }
 
         level.setBlockAndUpdate(position, state.cycle(BlockStateProperties.LIT));
         level.playSound(null, position, DSSounds.ACTIVATE_BEACON.get(), SoundSource.BLOCKS, 1, 1);
 
-        return ItemInteractionResult.sidedSuccess(level.isClientSide());
+        return InteractionResult.sidedSuccess(level.isClientSide());
     }
 
     @Override

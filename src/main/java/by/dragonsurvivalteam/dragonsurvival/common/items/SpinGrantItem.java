@@ -30,7 +30,9 @@ public class SpinGrantItem extends TooltipItem {
             if (!level.isClientSide()) {
                 player.sendSystemMessage(Component.translatable(SPIN_GRANT_GAINED));
                 handler.spinWasGranted = true;
-                player.getItemInHand(hand).consume(1, player);
+                if (!player.getAbilities().instabuild) {
+                    player.getItemInHand(hand).shrink(1);
+                }
                 level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.UI_TOAST_CHALLENGE_COMPLETE, SoundSource.PLAYERS, 1, 0);
                 return InteractionResultHolder.success(player.getItemInHand(hand));
             }

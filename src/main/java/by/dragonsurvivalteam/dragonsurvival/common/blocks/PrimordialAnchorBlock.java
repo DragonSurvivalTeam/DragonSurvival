@@ -24,7 +24,6 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
@@ -109,7 +108,16 @@ public class PrimordialAnchorBlock extends Block implements EntityBlock {
     }
 
     @Override // TODO :: set state here when it is charged (to enable flight and / or wings)?
-    protected @NotNull InteractionResult useWithoutItem(final BlockState state, @NotNull final Level level, @NotNull final BlockPos position, @NotNull final Player player, @NotNull final BlockHitResult hitResult) {
+    public @NotNull InteractionResult use(final BlockState state, @NotNull final Level level, @NotNull final BlockPos position, @NotNull final Player player, @NotNull final InteractionHand hand, @NotNull final BlockHitResult hitResult) {
+        ItemStack stack = player.getItemInHand(hand);
+        if (!state.getValue(CHARGED) && stack.is(DSItemTags.PRIMORDIAL_ANCHOR_FUEL)) {
+            charge(player, level, position, state);
+            if (!player.getAbilities().instabuild) {
+                stack.shrink(1);
+            }
+            return InteractionResult.sidedSuccess(level.isClientSide);
+        }
+
         if (state.getValue(BLOODY)) {
             for (int i = 0; i < 10; i++) {
                 spawnParticles(position, level, ParticleTypes.SOUL);
@@ -171,21 +179,6 @@ public class PrimordialAnchorBlock extends Block implements EntityBlock {
         }
 
         return InteractionResult.CONSUME;
-    }
-
-    @Override
-    protected @NotNull ItemInteractionResult useItemOn(@NotNull final ItemStack stack, @NotNull final BlockState state, @NotNull final Level level, @NotNull final BlockPos position, @NotNull final Player player, @NotNull final InteractionHand hand, @NotNull final BlockHitResult hitResult) {
-        if (state.getValue(CHARGED)) {
-            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
-        }
-
-        if (stack.is(DSItemTags.PRIMORDIAL_ANCHOR_FUEL)) {
-            charge(player, level, position, state);
-            stack.consume(1, player);
-            return ItemInteractionResult.sidedSuccess(level.isClientSide);
-        }
-
-        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
     }
 
     @Override

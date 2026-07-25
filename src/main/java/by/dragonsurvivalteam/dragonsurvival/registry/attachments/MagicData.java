@@ -245,14 +245,18 @@ public class MagicData implements INBTSerializable<CompoundTag> {
         DragonAbilityHolder abilityHolder = DSDataComponents.DRAGON_ABILITIES.get(stack, player.serverLevel().registryAccess());
 
         if (abilityHolder != null && abilityHolder.use(player, handler, magic)) {
-            stack.consume(1, player);
+            if (!player.getAbilities().instabuild) {
+                stack.shrink(1);
+            }
             player.playNotifySound(DSSounds.UPGRADE_BEACON.get(), SoundSource.PLAYERS, 1, 0);
             PacketDistributor.sendToPlayer(player, new SyncMagicData(magic.serializeNBT(player.level().registryAccess())));
         }
 
         magic.getAbilities().values().forEach(ability -> ability.value().upgrade().ifPresent(upgrade -> {
             if (upgrade.attempt(player, ability, stack.getItem())) {
-                stack.consume(1, player);
+                if (!player.getAbilities().instabuild) {
+                    stack.shrink(1);
+                }
                 player.playNotifySound(SoundEvents.UI_TOAST_CHALLENGE_COMPLETE, SoundSource.PLAYERS, 1, 0);
             }
         }));

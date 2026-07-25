@@ -6,47 +6,90 @@ import by.dragonsurvivalteam.dragonsurvival.mixins.Holder$ReferenceAccess;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSBlocks;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSItems;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSItemTags;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.data.CachedOutput;
+import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
+import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeCategory;
-import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.common.Tags;
+import net.minecraftforge.common.crafting.CraftingHelper;
+import net.minecraftforge.common.crafting.conditions.ICondition;
 import net.minecraftforge.common.crafting.conditions.ModLoadedCondition;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 
 public class DSRecipes extends RecipeProvider {
+    private final PackOutput.PathProvider recipePath;
+    private final PackOutput.PathProvider advancementPath;
+
     public DSRecipes(final PackOutput output, final CompletableFuture<HolderLookup.Provider> registries) {
-        super(output, registries);
+        super(output);
+        this.recipePath = output.createPathProvider(PackOutput.Target.DATA_PACK, "recipe");
+        this.advancementPath = output.createPathProvider(PackOutput.Target.DATA_PACK, "advancement");
     }
 
     @Override
-    protected void buildRecipes(@NotNull final RecipeOutput output, @NotNull final HolderLookup.Provider lookup) {
+    public @NotNull CompletableFuture<?> run(@NotNull final CachedOutput cache) {
+        List<CompletableFuture<?>> futures = new ArrayList<>();
+        Set<ResourceLocation> savedRecipes = new HashSet<>();
+        ModernRecipeOutput output = new ModernRecipeOutput(entry -> {
+            FinishedRecipe recipe = entry.recipe();
+            ResourceLocation recipeId = recipe.getId();
+            if (!savedRecipes.add(recipeId)) {
+                throw new IllegalStateException("Duplicate recipe " + recipeId);
+            }
+
+            futures.add(DataProvider.saveStable(cache, modernRecipeJson(entry), recipePath.json(recipeId)));
+
+            JsonObject advancement = recipe.serializeAdvancement();
+            ResourceLocation advancementId = recipe.getAdvancementId();
+            if (advancement != null && advancementId != null) {
+                futures.add(DataProvider.saveStable(cache, modernAdvancementJson(advancement), advancementPath.json(advancementId)));
+            }
+        }, List.of());
+
+        buildRecipes(output);
+        return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
+    }
+
+    @Override
+    protected void buildRecipes(@NotNull final Consumer<FinishedRecipe> output) {
         //noinspection unchecked -> ignore
         MappedRegistry<Item> registry = (MappedRegistry<Item>) BuiltInRegistries.ITEM;
         //noinspection deprecation -> workaround to create recipes with items from other mods (without having to resort to one-entry-tags)
         registry.unfreeze();
 
-        buildShaped(output, lookup);
-        buildShapeless(output, lookup);
+        buildShaped(output);
+        buildShapeless(output);
 
         // We don't re-freeze the registry because it would complain about unregistered holders
         // Since the data generation is over at this point it doesn't matter anyway
     }
 
-    private void buildShaped(final RecipeOutput output, final HolderLookup.Provider lookup) {
+    private void buildShaped(final Consumer<FinishedRecipe> output) {
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, DSItems.ELDER_DRAGON_HEART.get())
                 .pattern("DGD")
                 .pattern("GHG")
@@ -87,15 +130,15 @@ public class DSRecipes extends RecipeProvider {
                 .define('R', proxyItem)
                 .define('C', ItemTags.COALS)
                 .unlockedBy("has_redstone_bulb", has(proxyItem))
-                .save(output.withConditions(new ModLoadedCondition("regions_unexplored")), DragonSurvival.res("charged_coal_from_bulb"));
+                .save(withConditions(output, new ModLoadedCondition("regions_unexplored")), DragonSurvival.res("charged_coal_from_bulb"));
     }
 
-    private void buildShapeless(final RecipeOutput output, final HolderLookup.Provider lookup) {
-        buildDragonDoors(output, lookup);
-        buildSmallDragonDoors(output, lookup);
-        buildDragonAltars(output, lookup);
-        buildDragonBeacons(output, lookup);
-        buildDragonTreasures(output, lookup);
+    private void buildShapeless(final Consumer<FinishedRecipe> output) {
+        buildDragonDoors(output);
+        buildSmallDragonDoors(output);
+        buildDragonAltars(output);
+        buildDragonBeacons(output);
+        buildDragonTreasures(output);
 
         // --- Misc --- //
 
@@ -115,7 +158,7 @@ public class DSRecipes extends RecipeProvider {
                 .save(output);
     }
 
-    private void buildDragonTreasures(final RecipeOutput output, final HolderLookup.Provider lookup) {
+    private void buildDragonTreasures(final Consumer<FinishedRecipe> output) {
         ShapelessRecipeBuilder
                 .shapeless(RecipeCategory.DECORATIONS, DSBlocks.COPPER_DRAGON_TREASURE.get())
                 .requires(Tags.Items.INGOTS_COPPER)
@@ -165,7 +208,7 @@ public class DSRecipes extends RecipeProvider {
                 .requires(barOfChocolate)
                 .requires(DSItems.ELDER_DRAGON_DUST.get())
                 .unlockedBy(getHasName(DSItems.ELDER_DRAGON_DUST.get()), has(DSItems.ELDER_DRAGON_DUST.get()))
-                .save(output.withConditions(new ModLoadedCondition(ModID.CREATE.value())));
+                .save(withConditions(output, new ModLoadedCondition(ModID.CREATE.value())));
 
         ProxyItem caramelized_nectar = new ProxyItem(ModID.BEE_ADDON.value(), "caramelized_nectar");
 
@@ -174,7 +217,7 @@ public class DSRecipes extends RecipeProvider {
                 .requires(caramelized_nectar)
                 .requires(DSItems.ELDER_DRAGON_DUST.get())
                 .unlockedBy(getHasName(DSItems.ELDER_DRAGON_DUST.get()), has(DSItems.ELDER_DRAGON_DUST.get()))
-                .save(output.withConditions(new ModLoadedCondition(ModID.BEE_ADDON.value())));
+                .save(withConditions(output, new ModLoadedCondition(ModID.BEE_ADDON.value())));
 
 
         ShapelessRecipeBuilder
@@ -185,7 +228,7 @@ public class DSRecipes extends RecipeProvider {
                 .requires(Items.GREEN_DYE, 3)
                 .requires(Items.RED_DYE, 3)
                 .unlockedBy(getHasName(DSItems.ELDER_DRAGON_DUST.get()), has(DSItems.ELDER_DRAGON_DUST.get()))
-                .save(output.withConditions(new ModLoadedCondition(ModID.DESERT_ADDON.value())));
+                .save(withConditions(output, new ModLoadedCondition(ModID.DESERT_ADDON.value())));
 
         ProxyItem ruby = new ProxyItem(ModID.SILENTGEMS.value(), "ruby");
 
@@ -194,7 +237,7 @@ public class DSRecipes extends RecipeProvider {
                 .requires(ruby)
                 .requires(DSItems.ELDER_DRAGON_DUST.get())
                 .unlockedBy(getHasName(DSItems.ELDER_DRAGON_DUST.get()), has(DSItems.ELDER_DRAGON_DUST.get()))
-                .save(output.withConditions(new ModLoadedCondition(ModID.SILENTGEMS.value())));
+                .save(withConditions(output, new ModLoadedCondition(ModID.SILENTGEMS.value())));
 
         ProxyItem carnelian = new ProxyItem(ModID.SILENTGEMS.value(), "carnelian");
 
@@ -203,7 +246,7 @@ public class DSRecipes extends RecipeProvider {
                 .requires(carnelian)
                 .requires(DSItems.ELDER_DRAGON_DUST.get())
                 .unlockedBy(getHasName(DSItems.ELDER_DRAGON_DUST.get()), has(DSItems.ELDER_DRAGON_DUST.get()))
-                .save(output.withConditions(new ModLoadedCondition(ModID.SILENTGEMS.value())));
+                .save(withConditions(output, new ModLoadedCondition(ModID.SILENTGEMS.value())));
 
         ProxyItem topaz = new ProxyItem(ModID.SILENTGEMS.value(), "topaz");
 
@@ -212,7 +255,7 @@ public class DSRecipes extends RecipeProvider {
                 .requires(topaz)
                 .requires(DSItems.ELDER_DRAGON_DUST.get())
                 .unlockedBy(getHasName(DSItems.ELDER_DRAGON_DUST.get()), has(DSItems.ELDER_DRAGON_DUST.get()))
-                .save(output.withConditions(new ModLoadedCondition(ModID.SILENTGEMS.value())));
+                .save(withConditions(output, new ModLoadedCondition(ModID.SILENTGEMS.value())));
 
         ProxyItem citrine = new ProxyItem(ModID.SILENTGEMS.value(), "citrine");
 
@@ -221,7 +264,7 @@ public class DSRecipes extends RecipeProvider {
                 .requires(citrine)
                 .requires(DSItems.ELDER_DRAGON_DUST.get())
                 .unlockedBy(getHasName(DSItems.ELDER_DRAGON_DUST.get()), has(DSItems.ELDER_DRAGON_DUST.get()))
-                .save(output.withConditions(new ModLoadedCondition(ModID.SILENTGEMS.value())));
+                .save(withConditions(output, new ModLoadedCondition(ModID.SILENTGEMS.value())));
 
         ProxyItem heliodor = new ProxyItem(ModID.SILENTGEMS.value(), "heliodor");
 
@@ -230,7 +273,7 @@ public class DSRecipes extends RecipeProvider {
                 .requires(heliodor)
                 .requires(DSItems.ELDER_DRAGON_DUST.get())
                 .unlockedBy(getHasName(DSItems.ELDER_DRAGON_DUST.get()), has(DSItems.ELDER_DRAGON_DUST.get()))
-                .save(output.withConditions(new ModLoadedCondition(ModID.SILENTGEMS.value())));
+                .save(withConditions(output, new ModLoadedCondition(ModID.SILENTGEMS.value())));
 
         ProxyItem moldavite = new ProxyItem(ModID.SILENTGEMS.value(), "moldavite");
 
@@ -239,7 +282,7 @@ public class DSRecipes extends RecipeProvider {
                 .requires(moldavite)
                 .requires(DSItems.ELDER_DRAGON_DUST.get())
                 .unlockedBy(getHasName(DSItems.ELDER_DRAGON_DUST.get()), has(DSItems.ELDER_DRAGON_DUST.get()))
-                .save(output.withConditions(new ModLoadedCondition(ModID.SILENTGEMS.value())));
+                .save(withConditions(output, new ModLoadedCondition(ModID.SILENTGEMS.value())));
 
         ProxyItem peridot = new ProxyItem(ModID.SILENTGEMS.value(), "peridot");
 
@@ -248,7 +291,7 @@ public class DSRecipes extends RecipeProvider {
                 .requires(peridot)
                 .requires(DSItems.ELDER_DRAGON_DUST.get())
                 .unlockedBy(getHasName(DSItems.ELDER_DRAGON_DUST.get()), has(DSItems.ELDER_DRAGON_DUST.get()))
-                .save(output.withConditions(new ModLoadedCondition(ModID.SILENTGEMS.value())));
+                .save(withConditions(output, new ModLoadedCondition(ModID.SILENTGEMS.value())));
 
         ProxyItem turquoise = new ProxyItem(ModID.SILENTGEMS.value(), "turquoise");
 
@@ -257,7 +300,7 @@ public class DSRecipes extends RecipeProvider {
                 .requires(turquoise)
                 .requires(DSItems.ELDER_DRAGON_DUST.get())
                 .unlockedBy(getHasName(DSItems.ELDER_DRAGON_DUST.get()), has(DSItems.ELDER_DRAGON_DUST.get()))
-                .save(output.withConditions(new ModLoadedCondition(ModID.SILENTGEMS.value())));
+                .save(withConditions(output, new ModLoadedCondition(ModID.SILENTGEMS.value())));
 
         ProxyItem kyanite = new ProxyItem(ModID.SILENTGEMS.value(), "kyanite");
 
@@ -266,7 +309,7 @@ public class DSRecipes extends RecipeProvider {
                 .requires(kyanite)
                 .requires(DSItems.ELDER_DRAGON_DUST.get())
                 .unlockedBy(getHasName(DSItems.ELDER_DRAGON_DUST.get()), has(DSItems.ELDER_DRAGON_DUST.get()))
-                .save(output.withConditions(new ModLoadedCondition(ModID.SILENTGEMS.value())));
+                .save(withConditions(output, new ModLoadedCondition(ModID.SILENTGEMS.value())));
 
         ProxyItem sapphire = new ProxyItem(ModID.SILENTGEMS.value(), "sapphire");
 
@@ -275,7 +318,7 @@ public class DSRecipes extends RecipeProvider {
                 .requires(sapphire)
                 .requires(DSItems.ELDER_DRAGON_DUST.get())
                 .unlockedBy(getHasName(DSItems.ELDER_DRAGON_DUST.get()), has(DSItems.ELDER_DRAGON_DUST.get()))
-                .save(output.withConditions(new ModLoadedCondition(ModID.SILENTGEMS.value())));
+                .save(withConditions(output, new ModLoadedCondition(ModID.SILENTGEMS.value())));
 
         ProxyItem iolite = new ProxyItem(ModID.SILENTGEMS.value(), "iolite");
 
@@ -284,7 +327,7 @@ public class DSRecipes extends RecipeProvider {
                 .requires(iolite)
                 .requires(DSItems.ELDER_DRAGON_DUST.get())
                 .unlockedBy(getHasName(DSItems.ELDER_DRAGON_DUST.get()), has(DSItems.ELDER_DRAGON_DUST.get()))
-                .save(output.withConditions(new ModLoadedCondition(ModID.SILENTGEMS.value())));
+                .save(withConditions(output, new ModLoadedCondition(ModID.SILENTGEMS.value())));
 
         ProxyItem alexandrite = new ProxyItem(ModID.SILENTGEMS.value(), "alexandrite");
 
@@ -293,7 +336,7 @@ public class DSRecipes extends RecipeProvider {
                 .requires(alexandrite)
                 .requires(DSItems.ELDER_DRAGON_DUST.get())
                 .unlockedBy(getHasName(DSItems.ELDER_DRAGON_DUST.get()), has(DSItems.ELDER_DRAGON_DUST.get()))
-                .save(output.withConditions(new ModLoadedCondition(ModID.SILENTGEMS.value())));
+                .save(withConditions(output, new ModLoadedCondition(ModID.SILENTGEMS.value())));
 
         ProxyItem ammolite = new ProxyItem(ModID.SILENTGEMS.value(), "ammolite");
 
@@ -302,7 +345,7 @@ public class DSRecipes extends RecipeProvider {
                 .requires(ammolite)
                 .requires(DSItems.ELDER_DRAGON_DUST.get())
                 .unlockedBy(getHasName(DSItems.ELDER_DRAGON_DUST.get()), has(DSItems.ELDER_DRAGON_DUST.get()))
-                .save(output.withConditions(new ModLoadedCondition(ModID.SILENTGEMS.value())));
+                .save(withConditions(output, new ModLoadedCondition(ModID.SILENTGEMS.value())));
 
         ProxyItem rose_quartz = new ProxyItem(ModID.SILENTGEMS.value(), "rose_quartz");
 
@@ -311,7 +354,7 @@ public class DSRecipes extends RecipeProvider {
                 .requires(rose_quartz)
                 .requires(DSItems.ELDER_DRAGON_DUST.get())
                 .unlockedBy(getHasName(DSItems.ELDER_DRAGON_DUST.get()), has(DSItems.ELDER_DRAGON_DUST.get()))
-                .save(output.withConditions(new ModLoadedCondition(ModID.SILENTGEMS.value())));
+                .save(withConditions(output, new ModLoadedCondition(ModID.SILENTGEMS.value())));
 
         ProxyItem black_diamond = new ProxyItem(ModID.SILENTGEMS.value(), "black_diamond");
 
@@ -320,7 +363,7 @@ public class DSRecipes extends RecipeProvider {
                 .requires(black_diamond)
                 .requires(DSItems.ELDER_DRAGON_DUST.get())
                 .unlockedBy(getHasName(DSItems.ELDER_DRAGON_DUST.get()), has(DSItems.ELDER_DRAGON_DUST.get()))
-                .save(output.withConditions(new ModLoadedCondition(ModID.SILENTGEMS.value())));
+                .save(withConditions(output, new ModLoadedCondition(ModID.SILENTGEMS.value())));
 
         ProxyItem white_diamond = new ProxyItem(ModID.SILENTGEMS.value(), "white_diamond");
 
@@ -329,7 +372,7 @@ public class DSRecipes extends RecipeProvider {
                 .requires(white_diamond)
                 .requires(DSItems.ELDER_DRAGON_DUST.get())
                 .unlockedBy(getHasName(DSItems.ELDER_DRAGON_DUST.get()), has(DSItems.ELDER_DRAGON_DUST.get()))
-                .save(output.withConditions(new ModLoadedCondition(ModID.SILENTGEMS.value())));
+                .save(withConditions(output, new ModLoadedCondition(ModID.SILENTGEMS.value())));
 
         ShapelessRecipeBuilder
                 .shapeless(RecipeCategory.MISC, DSItems.ELDER_DRAGON_DUST.get())
@@ -338,7 +381,7 @@ public class DSRecipes extends RecipeProvider {
                 .save(output, DragonSurvival.res("elder_dragon_dust_from_dragon_treasures"));
     }
 
-    private void buildDragonBeacons(final RecipeOutput output, final HolderLookup.Provider lookup) {
+    private void buildDragonBeacons(final Consumer<FinishedRecipe> output) {
         ShapelessRecipeBuilder
                 .shapeless(RecipeCategory.MISC, DSBlocks.DRAGON_BEACON.get())
                 .requires(DSItems.STAR_HEART.get())
@@ -347,7 +390,7 @@ public class DSRecipes extends RecipeProvider {
                 .save(output);
     }
 
-    private void buildDragonAltars(final RecipeOutput output, final HolderLookup.Provider lookup) {
+    private void buildDragonAltars(final Consumer<FinishedRecipe> output) {
         ShapelessRecipeBuilder
                 .shapeless(RecipeCategory.MISC, DSBlocks.BIRCH_DRAGON_ALTAR.get())
                 .requires(Items.BIRCH_PLANKS)
@@ -559,7 +602,7 @@ public class DSRecipes extends RecipeProvider {
                 .save(output);
     }
 
-    private void buildDragonDoors(final RecipeOutput output, final HolderLookup.Provider lookup) {
+    private void buildDragonDoors(final Consumer<FinishedRecipe> output) {
         ShapelessRecipeBuilder
                 .shapeless(RecipeCategory.REDSTONE, DSBlocks.IRON_DRAGON_DOOR.get(), 2)
                 .requires(Items.IRON_DOOR, 3)
@@ -663,7 +706,7 @@ public class DSRecipes extends RecipeProvider {
                 .save(output);
     }
 
-    private void buildSmallDragonDoors(final RecipeOutput output, final HolderLookup.Provider lookup) {
+    private void buildSmallDragonDoors(final Consumer<FinishedRecipe> output) {
         ShapelessRecipeBuilder
                 .shapeless(RecipeCategory.REDSTONE, DSBlocks.SMALL_IRON_DRAGON_DOOR.get(), 3)
                 .requires(DSBlocks.IRON_DRAGON_DOOR.get())
@@ -764,5 +807,151 @@ public class DSRecipes extends RecipeProvider {
             ((Holder$ReferenceAccess) item.builtInRegistryHolder()).dragonSurvival$bindValue(item);
             return item;
         }
+    }
+
+    private static Consumer<FinishedRecipe> withConditions(final Consumer<FinishedRecipe> output, final ICondition... conditions) {
+        if (output instanceof ModernRecipeOutput modernOutput) {
+            return modernOutput.withConditions(List.of(conditions));
+        }
+        return output;
+    }
+
+    private static JsonObject modernRecipeJson(final ModernRecipeEntry entry) {
+        JsonObject json = entry.recipe().serializeRecipe();
+        modernizeRecipeElement(json);
+
+        if (!entry.conditions().isEmpty()) {
+            JsonArray conditions = new JsonArray();
+            entry.conditions().stream()
+                    .map(CraftingHelper::serialize)
+                    .map(DSRecipes::toNeoForgeCondition)
+                    .forEach(conditions::add);
+            json.add("neoforge:conditions", conditions);
+        }
+
+        return json;
+    }
+
+    private static JsonObject modernAdvancementJson(final JsonObject advancement) {
+        JsonObject json = advancement.deepCopy();
+        modernizeAdvancementElement(json);
+        return json;
+    }
+
+    private static JsonElement toNeoForgeCondition(final JsonElement element) {
+        if (element.isJsonArray()) {
+            JsonArray result = new JsonArray();
+            element.getAsJsonArray().forEach(value -> result.add(toNeoForgeCondition(value)));
+            return result;
+        }
+        if (!element.isJsonObject()) {
+            return element.deepCopy();
+        }
+
+        JsonObject result = new JsonObject();
+        for (var entry : element.getAsJsonObject().entrySet()) {
+            JsonElement value = toNeoForgeCondition(entry.getValue());
+            if (entry.getKey().equals("type") && value.isJsonPrimitive()) {
+                String type = value.getAsString();
+                if (type.startsWith("forge:")) {
+                    value = new JsonPrimitive("neoforge:" + type.substring("forge:".length()));
+                }
+            }
+            result.add(entry.getKey(), value);
+        }
+        return result;
+    }
+
+    private static void modernizeRecipeElement(final JsonElement element) {
+        if (element.isJsonArray()) {
+            element.getAsJsonArray().forEach(DSRecipes::modernizeRecipeElement);
+            return;
+        }
+        if (!element.isJsonObject()) {
+            return;
+        }
+
+        JsonObject object = element.getAsJsonObject();
+        if (object.has("tag") && object.get("tag").isJsonPrimitive()) {
+            object.addProperty("tag", modernCommonTag(object.get("tag").getAsString()));
+        }
+        if (object.has("result") && object.get("result").isJsonObject()) {
+            modernizeRecipeResult(object.getAsJsonObject("result"));
+        }
+        for (var entry : new ArrayList<>(object.entrySet())) {
+            modernizeRecipeElement(entry.getValue());
+        }
+    }
+
+    private static void modernizeRecipeResult(final JsonObject result) {
+        if (result.has("item") && !result.has("id")) {
+            result.add("id", result.get("item"));
+            result.remove("item");
+        }
+        if (!result.has("count")) {
+            result.addProperty("count", 1);
+        }
+    }
+
+    private static void modernizeAdvancementElement(final JsonElement element) {
+        if (element.isJsonArray()) {
+            element.getAsJsonArray().forEach(DSRecipes::modernizeAdvancementElement);
+            return;
+        }
+        if (!element.isJsonObject()) {
+            return;
+        }
+
+        JsonObject object = element.getAsJsonObject();
+        if (object.has("tag") && object.get("tag").isJsonPrimitive()) {
+            object.addProperty("tag", modernCommonTag(object.get("tag").getAsString()));
+        }
+        if (object.has("items") && object.get("items").isJsonArray()) {
+            JsonArray items = object.getAsJsonArray("items");
+            if (items.size() == 1 && items.get(0).isJsonPrimitive()) {
+                object.add("items", items.get(0));
+            }
+        }
+        for (var entry : new ArrayList<>(object.entrySet())) {
+            modernizeAdvancementElement(entry.getValue());
+        }
+    }
+
+    private static String modernCommonTag(final String tag) {
+        if (!tag.startsWith("forge:")) {
+            return tag;
+        }
+
+        return "c:" + switch (tag.substring("forge:".length())) {
+            case "foods/berries" -> "foods/berry";
+            case "foods/raw_fishes" -> "foods/raw_fish";
+            case "foods/raw_meats" -> "foods/raw_meat";
+            case "tools/bows" -> "tools/bow";
+            case "tools/crossbows" -> "tools/crossbow";
+            case "tools/shields" -> "tools/shield";
+            default -> tag.substring("forge:".length());
+        };
+    }
+
+    private record ModernRecipeOutput(
+            Consumer<ModernRecipeEntry> sink,
+            List<ICondition> conditions
+    ) implements Consumer<FinishedRecipe> {
+        @Override
+        public void accept(final FinishedRecipe recipe) {
+            sink.accept(new ModernRecipeEntry(recipe, conditions));
+        }
+
+        private Consumer<FinishedRecipe> withConditions(final List<ICondition> extraConditions) {
+            List<ICondition> nextConditions = new ArrayList<>(conditions);
+            nextConditions.addAll(extraConditions);
+            return new ModernRecipeOutput(sink, List.copyOf(nextConditions));
+        }
+    }
+
+    private record ModernRecipeEntry(
+            FinishedRecipe recipe,
+            List<ICondition> conditions
+    ) {
     }
 }

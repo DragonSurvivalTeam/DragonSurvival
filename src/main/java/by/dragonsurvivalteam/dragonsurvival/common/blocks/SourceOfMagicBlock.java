@@ -31,6 +31,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.Container;
 import net.minecraft.world.Containers;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.damagesource.DamageSource;
@@ -300,7 +301,7 @@ public class SourceOfMagicBlock extends HorizontalDirectionalBlock implements Si
     }
 
     @Override
-    public @NotNull InteractionResult useWithoutItem(@NotNull final BlockState state, final Level level, @NotNull final BlockPos position, @NotNull final Player player, @NotNull final BlockHitResult hitResult) {
+    public @NotNull InteractionResult use(@NotNull final BlockState state, final Level level, @NotNull final BlockPos position, @NotNull final Player player, @NotNull final InteractionHand hand, @NotNull final BlockHitResult hitResult) {
         BlockPos rootPosition;
 
         if (level.getBlockEntity(position) instanceof SourceOfMagicPlaceholder placeholder) {

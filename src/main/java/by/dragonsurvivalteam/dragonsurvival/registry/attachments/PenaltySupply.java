@@ -212,7 +212,9 @@ public class PenaltySupply implements INBTSerializable<CompoundTag> {
                 for (SupplyTrigger.RecoveryItem recovery : trigger.recoveryItems()) {
                     if (recovery.itemPredicates().stream().anyMatch(predicate -> predicate.test(stack))) {
                         regenerateManual(player, supplyType, recovery.percentRestored());
-                        stack.consume(1, player);
+            if (!player.getAbilities().instabuild) {
+                stack.shrink(1);
+            }
                         break;
                     }
                 }
