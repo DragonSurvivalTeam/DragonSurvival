@@ -15,7 +15,7 @@ import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.gui.widget.ExtendedButton;
-import net.minecraftforge.client.gui.widget.ExtendedSlider;
+import net.minecraftforge.client.gui.widget.ForgeSlider;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.Color;
@@ -26,14 +26,14 @@ import java.util.function.Supplier;
 import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 
 public class HueSelectorComponent extends AbstractContainerEventHandler implements Renderable {
-    private static final ResourceLocation RESET_SETTINGS_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/editor/color_reset_hover.png");
-    private static final ResourceLocation RESET_SETTINGS_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/editor/color_reset_main.png");
+    private static final ResourceLocation RESET_SETTINGS_HOVER = new ResourceLocation(MODID, "textures/gui/editor/color_reset_hover.png");
+    private static final ResourceLocation RESET_SETTINGS_MAIN = new ResourceLocation(MODID, "textures/gui/editor/color_reset_main.png");
 
-    private static final ResourceLocation SLIDER_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/editor/color_slider_hover.png");
-    private static final ResourceLocation SLIDER_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/editor/color_slider_main.png");
+    private static final ResourceLocation SLIDER_HOVER = new ResourceLocation(MODID, "textures/gui/editor/color_slider_hover.png");
+    private static final ResourceLocation SLIDER_MAIN = new ResourceLocation(MODID, "textures/gui/editor/color_slider_main.png");
 
-    private static final ResourceLocation GLOW_ON = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/editor/glow_on.png");
-    private static final ResourceLocation GLOW_OFF = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/editor/glow_off.png");
+    private static final ResourceLocation GLOW_ON = new ResourceLocation(MODID, "textures/gui/editor/glow_on.png");
+    private static final ResourceLocation GLOW_OFF = new ResourceLocation(MODID, "textures/gui/editor/glow_off.png");
 
     public static final int BACKGROUND_COLOR = -14935012;
     public static final int INNER_BORDER_COLOR = new Color(0x78787880, true).getRGB();
@@ -44,9 +44,9 @@ public class HueSelectorComponent extends AbstractContainerEventHandler implemen
     private final ExtendedButton saturationReset;
     private final ExtendedButton brightnessReset;
     private final ExtendedButton glowing;
-    private final ExtendedSlider hueSlider;
-    private final ExtendedSlider saturationSlider;
-    private final ExtendedSlider brightnessSlider;
+    private final ForgeSlider hueSlider;
+    private final ForgeSlider saturationSlider;
+    private final ForgeSlider brightnessSlider;
     public final Supplier<LayerSettings> settingsSupplier;
 
     private final int x;
@@ -67,7 +67,7 @@ public class HueSelectorComponent extends AbstractContainerEventHandler implemen
         this.xSize = xSize;
         this.ySize = ySize;
 
-        settingsSupplier = () -> screen.preset.get(screen.stage.getKey()).get().layerSettings.get(layer).get();
+        settingsSupplier = () -> screen.preset.get(screen.stage.unwrapKey().orElseThrow()).get().layerSettings.get(layer).get();
         LayerSettings settings = settingsSupplier.get();
         DragonPart dragonPart = DragonPartLoader.getDragonPart(layer, DragonEditorScreen.HANDLER.speciesKey(), DragonEditorScreen.HANDLER.body(), settings.partKey);
 
@@ -105,7 +105,7 @@ public class HueSelectorComponent extends AbstractContainerEventHandler implemen
             hsb[2] = 0.5f;
         }
 
-        hueSlider = new ExtendedSlider(x + 3, y + 5, xSize - 26, 20, Component.empty(), Component.empty(), 0, 360, hsb[0] * 360.0f, true) {
+        hueSlider = new ForgeSlider(x + 3, y + 5, xSize - 26, 20, Component.empty(), Component.empty(), 0, 360, hsb[0] * 360.0f, true) {
             private int previousHue = 0;
 
             private final Function<Integer, Integer> setHueAction = value -> {
@@ -159,7 +159,7 @@ public class HueSelectorComponent extends AbstractContainerEventHandler implemen
 
         hueReset = new HoverButton(x + 3 + xSize - 26, y + INITIAL_BAR_OFFSET - 1, 24, 24, 24, 24, RESET_SETTINGS_MAIN, RESET_SETTINGS_HOVER, button -> hueSlider.setValue(dragonPart != null ? Math.round(dragonPart.averageHue() * 360f) : 180));
 
-        saturationSlider = new ExtendedSlider(x + 3, y + INITIAL_BAR_OFFSET + GAP_BETWEEN_BARS, xSize - 26, 20, Component.empty(), Component.empty(), 0, 360, hsb[1] * 360, true) {
+        saturationSlider = new ForgeSlider(x + 3, y + INITIAL_BAR_OFFSET + GAP_BETWEEN_BARS, xSize - 26, 20, Component.empty(), Component.empty(), 0, 360, hsb[1] * 360, true) {
             private int previousSaturation = 0;
 
             private final Function<Integer, Integer> setSaturationAction = value -> {
@@ -218,7 +218,7 @@ public class HueSelectorComponent extends AbstractContainerEventHandler implemen
 
         saturationReset = new HoverButton(x + 3 + xSize - 26, y + INITIAL_BAR_OFFSET + GAP_BETWEEN_BARS - 1, 24, 24, 24, 24, RESET_SETTINGS_MAIN, RESET_SETTINGS_HOVER, button -> saturationSlider.setValue(180));
 
-        brightnessSlider = new ExtendedSlider(x + 3, y + INITIAL_BAR_OFFSET + GAP_BETWEEN_BARS * 2, xSize - 26, 20, Component.empty(), Component.empty(), 0, 360, hsb[2] * 360, true) {
+        brightnessSlider = new ForgeSlider(x + 3, y + INITIAL_BAR_OFFSET + GAP_BETWEEN_BARS * 2, xSize - 26, 20, Component.empty(), Component.empty(), 0, 360, hsb[2] * 360, true) {
             private int previousBrightness = 0;
 
             private final Function<Integer, Integer> setBrightnessAction = value -> {

@@ -39,10 +39,10 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraftforge.fml.ModList;
-import net.minecraftforge.client.gui.IConfigScreenFactory;
+import net.minecraftforge.client.ConfigScreenHandler;
 import net.minecraftforge.client.gui.widget.ExtendedButton;
 import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
-import net.minecraftforgespi.language.IModInfo;
+import net.minecraftforge.forgespi.language.IModInfo;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 
@@ -216,8 +216,8 @@ public class DragonInventoryScreen extends EffectRenderingInventoryScreen<Dragon
                     .getModContainerById(MODID)
                     .flatMap(m -> {
                         IModInfo modInfo = m.getModInfo();
-                        return IConfigScreenFactory.getForMod(modInfo)
-                                .map(f -> f.createScreen(m, minecraft.screen));
+                        return ConfigScreenHandler.getScreenFactoryFor(modInfo)
+                                .map(factory -> factory.apply(minecraft, minecraft.screen));
                     });
             minecraft.setScreen(configScreen.orElse(null));
         });
