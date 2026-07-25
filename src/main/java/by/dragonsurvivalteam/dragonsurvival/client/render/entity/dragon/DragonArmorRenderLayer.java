@@ -102,7 +102,9 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
             // Ensure that the armor is rendering on top of all the other layers
             InnerWrappedRenderType wrappedType = new InnerWrappedRenderType("dragon_armor", type, LayeringStates.VIEW_OFFSET_Z_LAYERING_FORWARD);
             VertexConsumer vertexConsumer = bufferSource.getBuffer(wrappedType);
-            renderer.actuallyRender(poseStack, animatable, bakedModel, wrappedType, bufferSource, vertexConsumer, true, partialTick, packedLight, OverlayTexture.NO_OVERLAY, renderer.getRenderColor(animatable, partialTick, packedLight).getColor());
+            var renderColor = renderer.getRenderColor(animatable, partialTick, packedLight);
+            renderer.actuallyRender(poseStack, animatable, bakedModel, wrappedType, bufferSource, vertexConsumer, true, partialTick, packedLight, OverlayTexture.NO_OVERLAY,
+                renderColor.getRedFloat(), renderColor.getGreenFloat(), renderColor.getBlueFloat(), renderColor.getAlphaFloat());
         }
 
         DragonSurvivalClient.DRAGON_MODEL.setOverrideTexture(null);
@@ -322,12 +324,13 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
         armorGenerationShader.getUniform("TrimSaturation").set(trimSaturation);
         armorGenerationShader.apply();
 
-        BufferBuilder buffer = RenderSystem.renderThreadTesselator().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.BLIT_SCREEN);
-        buffer.addVertex(0.0F, 0.0F, 0.0F);
-        buffer.addVertex(1.0F, 0.0F, 0.0F);
-        buffer.addVertex(1.0F, 1.0F, 0.0F);
-        buffer.addVertex(0.0F, 1.0F, 0.0F);
-        BufferUploader.draw(buffer.buildOrThrow());
+        BufferBuilder buffer = RenderSystem.renderThreadTesselator().getBuilder();
+        buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.BLIT_SCREEN);
+        buffer.vertex(0.0F, 0.0F, 0.0F).endVertex();
+        buffer.vertex(1.0F, 0.0F, 0.0F).endVertex();
+        buffer.vertex(1.0F, 1.0F, 0.0F).endVertex();
+        buffer.vertex(0.0F, 1.0F, 0.0F).endVertex();
+        BufferUploader.draw(buffer.end());
 
         armorGenerationShader.clear();
         target.unbindWrite();
