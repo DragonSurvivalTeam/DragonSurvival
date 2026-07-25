@@ -34,7 +34,7 @@ public class EffectHandler {
     @SubscribeEvent
     public static void checkIfEffectIsApplicable(final MobEffectEvent.Applicable event) {
         if (event.getEffectInstance().getEffect() == DSEffects.EXHAUSTED_SOUL.get() && event.getEntity().hasEffect(DSEffects.EMPOWERED_SOUL.get())) {
-            event.setResult(MobEffectEvent.Applicable.Result.DO_NOT_APPLY);
+            event.setResult(MobEffectEvent.Applicable.Result.DENY);
         }
     }
 
