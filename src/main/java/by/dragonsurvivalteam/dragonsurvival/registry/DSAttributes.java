@@ -76,6 +76,10 @@ public class DSAttributes {
     @Translation(type = Translation.Type.ATTRIBUTE, comments = "Scale")
     public static final RegistryObject<Attribute> SCALE = REGISTRY.register("scale", () -> new RangedAttribute(Translation.Type.ATTRIBUTE.wrap("scale"), 1, 0.0625, 16).setSyncable(true));
 
+    /** Backport of the vanilla 1.21 safe fall distance attribute. */
+    @Translation(type = Translation.Type.ATTRIBUTE, comments = "Safe Fall Distance")
+    public static final RegistryObject<Attribute> SAFE_FALL_DISTANCE = REGISTRY.register("safe_fall_distance", () -> new RangedAttribute(Translation.Type.ATTRIBUTE.wrap("safe_fall_distance"), 3, -1024, 1024).setSyncable(true));
+
     @SubscribeEvent
     public static void attachAttributes(final EntityAttributeModificationEvent event) {
         event.add(EntityType.PLAYER, FLIGHT_STAMINA_COST.get());
@@ -89,6 +93,7 @@ public class DSAttributes {
         event.add(EntityType.PLAYER, ARMOR_IGNORE_CHANCE.get());
         event.add(EntityType.PLAYER, HUNTER_FACTION_DAMAGE.get());
         event.add(EntityType.PLAYER, DRAGON_ABILITY_DAMAGE.get());
+        event.add(EntityType.PLAYER, SAFE_FALL_DISTANCE.get());
 
         event.getTypes().forEach(type -> {
             event.add(type, LAVA_SWIM_SPEED.get());

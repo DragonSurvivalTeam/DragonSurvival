@@ -50,7 +50,7 @@ public class AncientDatapacks {
                         Modifier.perWithBase(DSAttributes.DRAGON_BREATH_RANGE, 6.5f, 0.05f, AttributeOperation.ADD_VALUE),
                         Modifier.perWithBase(Attributes.ATTACK_DAMAGE, 3.f, 0.05f, AttributeOperation.ADD_VALUE),
                         Modifier.perWithBase(Attributes.JUMP_STRENGTH, 0.1f, 0.0015f, AttributeOperation.ADD_VALUE),
-                        Modifier.perWithBase(Attributes.SAFE_FALL_DISTANCE, 1, 0.015f, AttributeOperation.ADD_VALUE),
+                        Modifier.perWithBase(DSAttributes.SAFE_FALL_DISTANCE, 1, 0.015f, AttributeOperation.ADD_VALUE),
                         Modifier.per(DSAttributes.BLOCK_BREAK_RADIUS, 0.01f, AttributeOperation.ADD_VALUE),
                         Modifier.perWithBase(ForgeMod.ENTITY_REACH, 1, 0.05f, AttributeOperation.ADD_VALUE),
                         Modifier.perWithBase(ForgeMod.BLOCK_REACH, 1, 0.05f, AttributeOperation.ADD_VALUE),

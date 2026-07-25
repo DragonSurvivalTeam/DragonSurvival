@@ -28,17 +28,29 @@ import java.util.function.Supplier;
 public record Modifier(Holder<Attribute> attribute, Either<LevelBasedValue, PreciseLevelBasedValue> amount, AttributeOperation operation) {
     private static final ResourceLocation SCALE_ID = new ResourceLocation("minecraft", "scale");
     private static final ResourceLocation GENERIC_SCALE_ID = new ResourceLocation("minecraft", "generic.scale");
+    private static final ResourceLocation SAFE_FALL_DISTANCE_ID = new ResourceLocation("minecraft", "safe_fall_distance");
     private static final Codec<Holder<Attribute>> ATTRIBUTE_CODEC = ResourceLocation.CODEC.comapFlatMap(
             id -> {
                 if (isScaleId(id)) {
                     return DataResult.success(BuiltInRegistries.ATTRIBUTE.wrapAsHolder(DSAttributes.SCALE.get()));
+                }
+                if (id.equals(SAFE_FALL_DISTANCE_ID)) {
+                    return DataResult.success(BuiltInRegistries.ATTRIBUTE.wrapAsHolder(DSAttributes.SAFE_FALL_DISTANCE.get()));
                 }
 
                 return BuiltInRegistries.ATTRIBUTE.getHolder(ResourceKey.create(Registries.ATTRIBUTE, id))
                         .map(DataResult::success)
                         .orElseGet(() -> DataResult.error(() -> "Unknown attribute: " + id));
             },
-            attribute -> attribute.value() == DSAttributes.SCALE.get() ? SCALE_ID : BuiltInRegistries.ATTRIBUTE.getKey(attribute.value())
+            attribute -> {
+                if (attribute.value() == DSAttributes.SCALE.get()) {
+                    return SCALE_ID;
+                }
+                if (attribute.value() == DSAttributes.SAFE_FALL_DISTANCE.get()) {
+                    return SAFE_FALL_DISTANCE_ID;
+                }
+                return BuiltInRegistries.ATTRIBUTE.getKey(attribute.value());
+            }
     );
 
     public static final Codec<Modifier> CODEC = RecordCodecBuilder.create(instance -> instance.group(

@@ -162,6 +162,9 @@ public class ServerFlightHandler {
                     event.setDistance((float) damage + SAFE_FALL_DISTANCE_DEFAULT_VALUE);
                 }
             });
+
+            double extraSafeFallDistance = player.getAttributeValue(DSAttributes.SAFE_FALL_DISTANCE.get()) - 3;
+            event.setDistance((float) Math.max(0, event.getDistance() - extraSafeFallDistance));
         }
     }
 

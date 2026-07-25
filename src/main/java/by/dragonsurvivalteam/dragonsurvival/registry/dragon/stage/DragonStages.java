@@ -54,7 +54,7 @@ public class DragonStages {
                         /* Constant */
                         Modifier.constant(Attributes.ATTACK_DAMAGE, 1, AttributeOperation.ADD_VALUE),
                         Modifier.constant(Attributes.JUMP_STRENGTH, 0.025f, AttributeOperation.ADD_VALUE),
-                        Modifier.constant(Attributes.SAFE_FALL_DISTANCE, 0.25f, AttributeOperation.ADD_VALUE),
+                        Modifier.constant(DSAttributes.SAFE_FALL_DISTANCE, 0.25f, AttributeOperation.ADD_VALUE),
                         /* Per growth */
                 Modifier.precisePerWithBase(DSAttributes.SCALE, -0.75f, 0.013f, AttributeOperation.ADD_VALUE),
                         Modifier.perWithBase(Attributes.MAX_HEALTH, -6, 0.4f, AttributeOperation.ADD_VALUE),
@@ -81,7 +81,7 @@ public class DragonStages {
                         /* Constant */
                         Modifier.constant(Attributes.ATTACK_DAMAGE, 2, AttributeOperation.ADD_VALUE),
                         Modifier.constant(Attributes.JUMP_STRENGTH, 0.05f, AttributeOperation.ADD_VALUE),
-                        Modifier.constant(Attributes.SAFE_FALL_DISTANCE, 0.5f, AttributeOperation.ADD_VALUE),
+                        Modifier.constant(DSAttributes.SAFE_FALL_DISTANCE, 0.5f, AttributeOperation.ADD_VALUE),
                         /* Per growth */
                 Modifier.precisePerWithBase(DSAttributes.SCALE, -0.55f, 1.f / 30.f, AttributeOperation.ADD_VALUE),
                         Modifier.per(Attributes.MAX_HEALTH, 2.f / 3.f, AttributeOperation.ADD_VALUE),
@@ -108,7 +108,7 @@ public class DragonStages {
                         Modifier.constant(ForgeMod.STEP_HEIGHT, 0.5f, AttributeOperation.ADD_VALUE),
                         Modifier.constant(Attributes.ATTACK_DAMAGE, 3, AttributeOperation.ADD_VALUE),
                         Modifier.constant(Attributes.JUMP_STRENGTH, 0.1f, AttributeOperation.ADD_VALUE),
-                        Modifier.constant(Attributes.SAFE_FALL_DISTANCE, 1, AttributeOperation.ADD_VALUE),
+                        Modifier.constant(DSAttributes.SAFE_FALL_DISTANCE, 1, AttributeOperation.ADD_VALUE),
                         /* Per growth */
                 Modifier.precisePerWithBase(DSAttributes.SCALE, -0.05f, 0.025f, AttributeOperation.ADD_VALUE),
                         Modifier.perWithBase(Attributes.MAX_HEALTH, 10.0f, 0.5f, AttributeOperation.ADD_VALUE),

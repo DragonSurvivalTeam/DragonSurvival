@@ -473,7 +473,7 @@ public class ForestDragonAbilities {
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         ModifierEffect.only(new ModifierWithDuration(
                                 DurationInstanceBase.create(DragonSurvival.res("cliffhanger")).removeAutomatically().hidden().build(),
-                                List.of(Modifier.perWithBase(Attributes.SAFE_FALL_DISTANCE, 5, 2, AttributeOperation.ADD_VALUE))
+                                List.of(Modifier.perWithBase(DSAttributes.SAFE_FALL_DISTANCE, 5, 2, AttributeOperation.ADD_VALUE))
                         )),
                         TargetingMode.ALLIES_AND_SELF
                 )), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(1))),
