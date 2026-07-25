@@ -87,7 +87,7 @@ public class HunterHandler { // FIXME :: disable shadows in EntityRenderDispatch
             HunterData data = AttachmentManager.getData(entity, DSDataAttachments.HUNTER);
             int modification;
 
-            if (/* Below feet*/ isHunterRelevant(entity.getBlockStateOn()) || /* Within block */ isHunterRelevant(entity.getInBlockState())) {
+            if (/* Below feet*/ isHunterRelevant(entity.getBlockStateOn()) || /* Within block */ isHunterRelevant(entity.level().getBlockState(entity.blockPosition()))) {
                 // Gain more stacks per tick per amplifier level (min. of 1 and max. of max. ability level)
                 modification = Math.min(MAX_LEVEL, 1 + hunterEffect.getAmplifier());
             } else {
@@ -226,7 +226,7 @@ public class HunterHandler { // FIXME :: disable shadows in EntityRenderDispatch
 
         int packedColor = color.getColor();
         float alpha = calculateAlpha(data, entity == DragonSurvival.PROXY.getLocalPlayer());
-        return Color.ofARGB((int) (alpha * 255), FastColor.ARGB32.red(packedColor), FastColor.ARGB32.green(packedColor), FastColor.ARGB32.blue(packedColor));
+        return Color.ofRGBA(FastColor.ARGB32.red(packedColor), FastColor.ARGB32.green(packedColor), FastColor.ARGB32.blue(packedColor), (int) (alpha * 255));
     }
 
     public static int calculateAlpha(final Entity entity) {
