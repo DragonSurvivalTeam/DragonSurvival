@@ -286,7 +286,7 @@ public class DragonAbilityInstance {
 
     /** This does not sync the change to the client */
     public void setCooldown(int cooldown) {
-        this.cooldown = Math.clamp(cooldown, NO_COOLDOWN, value().activation().getCooldown(level));
+        this.cooldown = Mth.clamp(cooldown, NO_COOLDOWN, value().activation().getCooldown(level));
     }
 
     public boolean isPassive() {

@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.client.gui.screens;
 
+import net.minecraft.util.Mth;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.AltarTypeButton;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic.HoverButton;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic.HoverDisableable;
@@ -262,7 +263,7 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
                     FakeClientPlayerUtils.getFakePlayer(1, handler2).animationSupplier = () -> animations[Math.min(animation2, animations.length - 1)];
 
                     LivingEntity entity1;
-                    int entity1Scale = Math.clamp((int) handler1.getGrowth(), 20, 50);
+        int entity1Scale = Mth.clamp((int) handler1.getGrowth(), 20, 50);
 
                     if (handler1.isDragon() && !handler1.body().value().noDragonModelRendering()) {
                         entity1 = FakeClientPlayerUtils.getFakeDragon(0, handler1);
@@ -275,7 +276,7 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
                     }
 
                     LivingEntity entity2;
-                    int entity2Scale = Math.clamp((int) handler2.getGrowth(), 20, 50);
+        int entity2Scale = Mth.clamp((int) handler2.getGrowth(), 20, 50);
 
                     if (handler2.isDragon() && !handler1.body().value().noDragonModelRendering()) {
                         entity2 = FakeClientPlayerUtils.getFakeDragon(1, handler2);

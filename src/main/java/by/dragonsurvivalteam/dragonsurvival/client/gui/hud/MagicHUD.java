@@ -412,7 +412,7 @@ public class MagicHUD {
 
                 int startX = graphics.guiWidth() / 2 - 49 + castbarXOffset;
                 int startY = graphics.guiHeight() - 96 + castbarYOffset;
-                float percentage = Math.clamp(1 - currentTime / (float) targetTime, 0, 1);
+        float percentage = Mth.clamp(1 - currentTime / (float) targetTime, 0, 1);
 
                 graphics.pose().translate(startX, startY, 0);
 

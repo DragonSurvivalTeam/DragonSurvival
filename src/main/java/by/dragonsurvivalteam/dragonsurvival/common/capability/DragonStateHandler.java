@@ -258,7 +258,7 @@ public class DragonStateHandler extends EntityStateHandler {
 
     private double clampGrowth(@Nullable final HolderLookup.Provider provider, double growth) {
         MiscCodecs.Bounds bounds = DragonStage.getBounds();
-        double newGrowth = Math.clamp(growth, bounds.min(), bounds.max());
+        double newGrowth = Mth.clamp(growth, bounds.min(), bounds.max());
 
         if (dragonSpecies == null) {
             return newGrowth;
@@ -852,7 +852,7 @@ public class DragonStateHandler extends EntityStateHandler {
 
     public Pair<List<Either<FormattedText, TooltipComponent>>, Integer> getGrowthDescription(int currentScroll) {
         DragonStage stage = dragonStage.value();
-        double percentage = Math.clamp(stage.getProgress(getGrowth()), 0, 1);
+        double percentage = Mth.clamp(stage.getProgress(getGrowth()), 0, 1);
         String ageInformation = stage.getTimeToGrowFormattedWithPercentage(percentage, getGrowth(), isGrowing);
 
         List<TimeComponent> growthItems = new ArrayList<>();
@@ -866,7 +866,7 @@ public class DragonStateHandler extends EntityStateHandler {
         if (growthItems.size() <= MAX_SHOWN) {
             scroll = 0;
         } else {
-            scroll = Math.clamp(scroll, 0, growthItems.size() - MAX_SHOWN);
+        scroll = Mth.clamp(scroll, 0, growthItems.size() - MAX_SHOWN);
         }
 
         int max = Math.min(growthItems.size(), scroll + MAX_SHOWN);

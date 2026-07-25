@@ -140,7 +140,7 @@ public class Functions {
         }
 
         double delta = angleDifference(center, value);
-        delta = Math.clamp(delta, -halfRange, halfRange);
+        delta = Mth.clamp(delta, -halfRange, halfRange);
 
         return center + delta;
     }
@@ -157,7 +157,7 @@ public class Functions {
      * @see Functions#limitAngleDelta(double, double, double)
      */
     public static double limitAngleDeltaSoft(double value, double center, double halfRange, double pullCoeff) {
-        pullCoeff = Math.clamp(pullCoeff, 0, 1);
+        pullCoeff = Mth.clamp(pullCoeff, 0, 1);
         double targetAngle = limitAngleDelta(value, center, halfRange);
         return Mth.rotLerp(pullCoeff, value, targetAngle);
     }
@@ -214,7 +214,7 @@ public class Functions {
      * Divides by zero when start == end - will return an infinity or NaN.
      */
     public static double inverseLerpClamped(double value, double start, double end) {
-        return Math.clamp(inverseLerp(value, start, end), 0, 1);
+        return Mth.clamp(inverseLerp(value, start, end), 0, 1);
     }
 
     /**

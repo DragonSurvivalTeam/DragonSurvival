@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons;
 
+import net.minecraft.util.Mth;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.DragonAltarScreen;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.DietComponent;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic.HoverDisableable;
@@ -133,7 +134,7 @@ public class AltarTypeButton extends Button implements HoverDisableable {
                 if (diet.size() <= MAX_SHOWN) {
                     scroll = 0;
                 } else {
-                    scroll = Math.clamp(scroll, 0, diet.size() - MAX_SHOWN);
+        scroll = Mth.clamp(scroll, 0, diet.size() - MAX_SHOWN);
                 }
 
                 int max = Math.min(diet.size(), scroll + MAX_SHOWN);

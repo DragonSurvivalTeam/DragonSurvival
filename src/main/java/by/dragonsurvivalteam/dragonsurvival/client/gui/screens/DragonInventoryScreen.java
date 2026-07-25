@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.client.gui.screens;
 
+import net.minecraft.util.Mth;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.EntityScale;
 
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.GrowthCrystalButton;
@@ -248,7 +249,7 @@ public class DragonInventoryScreen extends EffectRenderingInventoryScreen<Dragon
 
         // In order to scale up the smaller dragon sizes, since they are too small otherwise
         int scale = (int) (20 * EntityScale.get(player));
-        scale = Math.clamp(scale, 10, 40); // Very large dragon sizes (above the default max. size) will have a < 20 scale value
+        scale = Mth.clamp(scale, 10, 40); // Very large dragon sizes (above the default max. size) will have a < 20 scale value
 
         InventoryScreen.renderEntityInInventoryFollowsMouse(guiGraphics, scissorX0, scissorY0, scissorX1, scissorY1, scale, 0, mouseX, mouseY, player);
 

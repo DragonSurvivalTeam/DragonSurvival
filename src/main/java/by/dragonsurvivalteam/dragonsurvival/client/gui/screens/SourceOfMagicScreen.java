@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.client.gui.screens;
 
+import net.minecraft.util.Mth;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.TimeComponent;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic.HelpButton;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.SourceOfMagicData;
@@ -65,7 +66,7 @@ public class SourceOfMagicScreen extends AbstractContainerScreen<SourceOfMagicCo
         if (helpButton.isHovered()) {
             int oldScroll = scrollAmount;
             // invert the value so that scrolling down shows further entries
-            scrollAmount = Math.clamp(scrollAmount + (int) -scrollY, 0, maxScroll());
+        scrollAmount = Mth.clamp(scrollAmount + (int) -scrollY, 0, maxScroll());
 
             if (oldScroll != scrollAmount) {
                 helpButton.setTooltip(getTooltip());

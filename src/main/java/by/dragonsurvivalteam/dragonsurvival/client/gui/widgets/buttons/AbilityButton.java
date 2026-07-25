@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons;
 
+import net.minecraft.util.Mth;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.DragonAbilityScreen;
 import by.dragonsurvivalteam.dragonsurvival.client.render.AbilityAndPenaltyTooltipRenderer;
@@ -268,7 +269,7 @@ public class AbilityButton extends ExtendedButton {
     public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
         if (Screen.hasShiftDown() && isHovered()) {
             // invert the value so that scrolling down shows further entries
-            scrollAmount = Math.clamp(scrollAmount + (int) -scrollY, 0, AbilityAndPenaltyTooltipRenderer.maxScroll());
+        scrollAmount = Mth.clamp(scrollAmount + (int) -scrollY, 0, AbilityAndPenaltyTooltipRenderer.maxScroll());
             return true;
         }
 

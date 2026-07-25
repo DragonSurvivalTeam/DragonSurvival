@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.client.render;
 
+import net.minecraft.util.Mth;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.AbilityTooltipPositioner;
 import by.dragonsurvivalteam.dragonsurvival.client.util.RenderingUtils;
@@ -73,7 +74,7 @@ public class AbilityAndPenaltyTooltipRenderer {
         // -10 to leave some space so it doesn't overflow into the main description window
         List<FormattedCharSequence> lines = Minecraft.getInstance().font.split(textContents, maxLineWidth - 10);
         maxScrollAmount = lines.size();
-        scrollAmount = Math.clamp(scrollAmount, 0, maxScroll());
+        scrollAmount = Mth.clamp(scrollAmount, 0, maxScroll());
 
         // Need to format the text for the bottom info at this point to adjust the height of the background
         List<FormattedCharSequence> bottomInfoLines;

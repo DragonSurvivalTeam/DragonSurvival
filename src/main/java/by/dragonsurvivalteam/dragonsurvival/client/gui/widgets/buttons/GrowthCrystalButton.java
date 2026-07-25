@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons;
 
+import net.minecraft.util.Mth;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Modifier;
@@ -60,7 +61,7 @@ public class GrowthCrystalButton extends ExtendedButton {
             int oldScrollAmount = scrollAmount;
 
             // invert the value so that scrolling down shows further entries
-            scrollAmount = Math.clamp(scrollAmount + (int) -scrollY, 0, maxScroll());
+        scrollAmount = Mth.clamp(scrollAmount + (int) -scrollY, 0, maxScroll());
 
             if (oldScrollAmount != scrollAmount) {
                 updateTooltip();
@@ -124,7 +125,7 @@ public class GrowthCrystalButton extends ExtendedButton {
         List<FormattedCharSequence> shownTooltip = new ArrayList<>();
 
         maxScroll = lines.size();
-        scrollAmount = Math.clamp(scrollAmount, 0, maxScroll());
+        scrollAmount = Mth.clamp(scrollAmount, 0, maxScroll());
 
         for (int line = scrollAmount; line < lines.size(); line++) {
             if (line - scrollAmount == MAX_LINES_SHOWN) {

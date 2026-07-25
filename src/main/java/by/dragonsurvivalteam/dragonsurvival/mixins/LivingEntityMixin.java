@@ -350,7 +350,7 @@ public abstract class LivingEntityMixin extends Entity {
             float maxSpeed = 0.12f;
 
             // Speed increase depending on how much the player looks up or down
-            float yModifier = minSpeed + (maxSpeed - minSpeed) * Mth.abs(Math.clamp(lookY, -1, 1));
+        float yModifier = minSpeed + (maxSpeed - minSpeed) * Mth.abs(Mth.clamp(lookY, -1, 1));
 
             if (isSprinting()) {
                 yModifier *= 1.2f;

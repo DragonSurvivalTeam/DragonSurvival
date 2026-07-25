@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components;
 
+import net.minecraft.util.Mth;
 import by.dragonsurvivalteam.dragonsurvival.registry.data_maps.DietEntryCache;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
@@ -52,7 +53,7 @@ public class DietMenuComponent implements ScrollableComponent, Renderable {
     public void scroll(double mouseX, double mouseY, double scrollX, double scrollY) {
         if (isHovered(mouseX, mouseY)) {
             // invert the value so that scrolling down shows further entries
-            scrollAmount = Math.clamp(scrollAmount + (int) -scrollY, 0, maxScroll());
+        scrollAmount = Mth.clamp(scrollAmount + (int) -scrollY, 0, maxScroll());
         }
     }
 

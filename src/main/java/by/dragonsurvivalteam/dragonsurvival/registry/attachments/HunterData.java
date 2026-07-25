@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.attachments;
 
+import net.minecraft.util.Mth;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.HunterHandler;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -42,7 +43,7 @@ public class HunterData implements INBTSerializable<CompoundTag> {
     }
 
     public void modifyHunterStacks(int modification) {
-        hunterStacks = Math.clamp(hunterStacks + modification, 0, HunterHandler.getMaxStacks());
+        hunterStacks = Mth.clamp(hunterStacks + modification, 0, HunterHandler.getMaxStacks());
     }
 
     public boolean hasMaxHunterStacks() {

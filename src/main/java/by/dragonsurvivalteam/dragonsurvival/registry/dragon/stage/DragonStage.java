@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage;
 
+import net.minecraft.util.Mth;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.GrowthItem;
@@ -168,7 +169,7 @@ public record DragonStage(
     }
 
     public double getBoundedGrowth(double growth) {
-        return Math.clamp(growth, growthRange().min(), growthRange().max());
+        return Mth.clamp(growth, growthRange().min(), growthRange().max());
     }
 
     /** Returns the bounds between the smallest and largest dragon growth */
