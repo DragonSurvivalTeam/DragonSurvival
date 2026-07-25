@@ -57,12 +57,14 @@ import net.minecraft.data.loot.LootTableProvider;
 import net.minecraft.data.metadata.PackMetadataGenerator;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.server.packs.PathPackResources;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.server.packs.repository.PackSource;
 import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.common.data.BlockTagsProvider;
 import net.minecraftforge.common.data.DatapackBuiltinEntriesProvider;
@@ -70,6 +72,7 @@ import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.event.AddPackFindersEvent;
 
+import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -210,11 +213,23 @@ public class DataGeneration {
     }
 
     private static void registerResourcePack(final AddPackFindersEvent event, final MutableComponent name, final String folder) {
-        event.addPackFinders(DragonSurvival.res(folder), PackType.CLIENT_RESOURCES, name, PackSource.BUILT_IN, false, Pack.Position.TOP);
+        registerPack(event, name, folder, PackSource.BUILT_IN, false);
     }
 
     private static void registerDataPack(final AddPackFindersEvent event, final MutableComponent name, final String datapack, final PackSource source, final boolean alwaysActive) {
-        event.addPackFinders(DragonSurvival.res("data/" + DragonSurvival.MODID + "/datapacks/" + datapack), PackType.SERVER_DATA, name, source, alwaysActive, Pack.Position.TOP);
+        registerPack(event, name, "data/" + DragonSurvival.MODID + "/datapacks/" + datapack, source, alwaysActive);
+    }
+
+    private static void registerPack(final AddPackFindersEvent event, final MutableComponent name, final String folder, final PackSource source, final boolean alwaysActive) {
+        Path path = ModList.get().getModFileById(DragonSurvival.MODID).getFile().findResource(folder.split("/"));
+        String id = DragonSurvival.MODID + "/" + folder;
+
+        event.addRepositorySource(consumer -> {
+            Pack pack = Pack.readMetaAndCreate(id, name, alwaysActive, packId -> new PathPackResources(packId, path, true), event.getPackType(), Pack.Position.TOP, source);
+            if (pack != null) {
+                consumer.accept(pack);
+            }
+        });
     }
 
     private static void addAncientStageDatapack(final DataGenerator generator, final CompletableFuture<HolderLookup.Provider> lookup) {
