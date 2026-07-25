@@ -13,6 +13,7 @@
     "EntityAccessor",
     "EntityMixin",
     "FireworkRocketItemMixin",
+    "FileToIdConverterMixin",
     "Holder$ReferenceAccess",
     "HolderSet$NamedAccess",
     "HolderSetCodecMixin",
