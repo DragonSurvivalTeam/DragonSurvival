@@ -139,7 +139,7 @@ public class CustomizationFileHandler {
             }
 
             try {
-                CompoundTag nbt = NbtIo.read(savedFile.toPath());
+                CompoundTag nbt = NbtIo.read(savedFile);
 
                 if (nbt == null) {
                     DragonSurvival.LOGGER.warn("Could not read saved skin from the file [{}]", savedFile);
@@ -170,7 +170,7 @@ public class CustomizationFileHandler {
         SavedCustomization savedCustomization = SavedCustomization.fromHandler(handler, provider);
 
         try {
-            NbtIo.write(savedCustomization.serializeNBT(provider), savedFileForSlot.get(slot).toPath());
+            NbtIo.write(savedCustomization.serializeNBT(provider), savedFileForSlot.get(slot));
         } catch (IOException exception) {
             DragonSurvival.LOGGER.error("An error occurred while trying to save the dragon skin", exception);
         }
