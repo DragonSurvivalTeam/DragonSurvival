@@ -88,6 +88,8 @@ dependencies {
 
     // Test
     implementation fg.deobf("curse.maven:jei-238222:6075247") // 15.20.0.106
+    testImplementation platform("org.junit:junit-bom:5.10.2")
+    testImplementation "org.junit.jupiter:junit-jupiter"
 
 //    implementation fg.deobf("curse.maven:embeddium-908741:5556138") // 0.3.31
 //    implementation fg.deobf("curse.maven:oculus-581495:5299671") // 1.7.0
@@ -104,6 +106,10 @@ dependencies {
     implementation(jarJar("io.github.llamalad7:mixinextras-forge:0.3.6")) {
         jarJar.ranged(it, "[0.3.6,)")
     }
+}
+
+tasks.named('test', Test).configure {
+    useJUnitPlatform()
 }
 
 mixin {
