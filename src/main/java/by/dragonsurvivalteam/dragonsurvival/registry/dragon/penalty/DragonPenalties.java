@@ -20,7 +20,7 @@ import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.worldgen.BootstrapContext;
+import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.FluidTags;
@@ -80,7 +80,7 @@ public class DragonPenalties {
     @Translation(type = Translation.Type.PENALTY, comments = "Fear")
     public static final ResourceKey<DragonPenalty> FEAR = DragonPenalties.key("fear");
 
-    public static void registerPenalties(final BootstrapContext<DragonPenalty> context) {
+    public static void registerPenalties(final BootstapContext<DragonPenalty> context) {
         context.register(COLD_WEAKNESS, new DragonPenalty(
                 Optional.of(DragonSurvival.res("penalties/cave/cold_weakness")),
                 Optional.of(AnyOfCondition.anyOf(

@@ -14,7 +14,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStages;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import net.minecraft.advancements.critereon.EntityPredicate;
-import net.minecraft.data.worldgen.BootstrapContext;
+import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -27,11 +27,11 @@ public class AncientDatapacks {
     @Translation(type = Translation.Type.STAGE, comments = "Ancient")
     public static final ResourceKey<DragonStage> ancient = DragonStages.key("ancient");
 
-    public static void registerAncient(final BootstrapContext<DragonStage> context) {
+    public static void registerAncient(final BootstapContext<DragonStage> context) {
         context.register(ancient, ancient());
     }
 
-    public static void registerAncientNoCrushing(final BootstrapContext<DragonStage> context) {
+    public static void registerAncientNoCrushing(final BootstapContext<DragonStage> context) {
         context.register(ancient, ancientNoCrushing());
     }
 

@@ -10,7 +10,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSDragonPenalt
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbility;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty.DragonPenalty;
 import net.minecraft.core.HolderSet;
-import net.minecraft.data.worldgen.BootstrapContext;
+import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -57,11 +57,18 @@ public class BuiltInDragonSpecies {
     @Translation(type = Translation.Type.DRAGON_SPECIES, comments = "Sea Dragon")
     public static final ResourceKey<DragonSpecies> SEA_DRAGON = key("sea_dragon");
 
-    public static void registerTypes(final BootstrapContext<DragonSpecies> context) {
+    public static void registerTypes(final BootstapContext<DragonSpecies> context) {
+        registerTypes(context, ManaHandling.DEFAULT);
+    }
+
+    public static void registerTypes(
+            final BootstapContext<DragonSpecies> context,
+            final ManaHandling manaHandling
+    ) {
         context.register(CAVE_DRAGON, new DragonSpecies(
                 Optional.empty(),
                 Optional.empty(),
-                ManaHandling.DEFAULT,
+                manaHandling,
                 Optional.empty(),
                 HolderSet.empty(),
                 context.lookup(DragonAbility.REGISTRY).getOrThrow(DSDragonAbilityTags.CAVE),
@@ -99,7 +106,7 @@ public class BuiltInDragonSpecies {
         context.register(SEA_DRAGON, new DragonSpecies(
                 Optional.empty(),
                 Optional.empty(),
-                ManaHandling.DEFAULT,
+                manaHandling,
                 Optional.empty(),
                 HolderSet.empty(),
                 context.lookup(DragonAbility.REGISTRY).getOrThrow(DSDragonAbilityTags.SEA),
@@ -137,7 +144,7 @@ public class BuiltInDragonSpecies {
         context.register(FOREST_DRAGON, new DragonSpecies(
                 Optional.empty(),
                 Optional.empty(),
-                ManaHandling.DEFAULT,
+                manaHandling,
                 Optional.empty(),
                 HolderSet.empty(),
                 context.lookup(DragonAbility.REGISTRY).getOrThrow(DSDragonAbilityTags.FOREST),

@@ -23,7 +23,7 @@ import by.dragonsurvivalteam.dragonsurvival.server.handlers.LightningHandler;
 import com.mojang.datafixers.util.Either;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.worldgen.BootstrapContext;
+import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.valueproviders.ConstantFloat;
@@ -46,7 +46,7 @@ public class Projectiles {
     @Translation(type = Translation.Type.PROJECTILE, comments = "Bouncy Ball Lightning")
     public static final ResourceKey<ProjectileData> BOUNCY_BALL_LIGHTNING = key("bouncy_ball_lightning");
 
-    public static void registerProjectiles(final BootstrapContext<ProjectileData> context) {
+    public static void registerProjectiles(final BootstapContext<ProjectileData> context) {
         context.register(FIREBALL, new ProjectileData(
                 new ProjectileData.GeneralData(
                         FIREBALL.location(),

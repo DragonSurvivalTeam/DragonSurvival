@@ -8,7 +8,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.DSAttributes;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.emotes.DragonEmoteSet;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.emotes.DragonEmoteSets;
-import net.minecraft.data.worldgen.BootstrapContext;
+import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -69,7 +69,7 @@ public class DragonBodies {
 
     private static final DragonBody.MountingOffsets DEFAULT_MOUNTING_OFFSETS = DragonBody.MountingOffsets.of(new Vec3(0, -0.15, -0.5), new Vec3(0, 0.05, -0.5), new Vec3(0, -0.25, -0.5));
 
-    public static void registerBodies(final BootstrapContext<DragonBody> context) {
+    public static void registerBodies(final BootstapContext<DragonBody> context) {
         context.register(CENTER, new DragonBody(true, Optional.empty(), List.of(
                 Modifier.constant(DSAttributes.FLIGHT_SPEED, 0.2f, AttributeOperation.ADD_VALUE)
         ), false,

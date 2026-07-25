@@ -4,7 +4,7 @@ import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.worldgen.BootstrapContext;
+import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.damagesource.DamageEffects;
@@ -99,7 +99,7 @@ public class DSDamageTypes {
         return level.registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(damageType);
     }
 
-    public static void registerDamageTypes(final BootstrapContext<DamageType> context) {
+    public static void registerDamageTypes(final BootstapContext<DamageType> context) {
         register(context, DSDamageTypes.ANTI_DRAGON);
         register(context, DSDamageTypes.FIRE_BREATH);
         register(context, DSDamageTypes.BURN);
@@ -118,7 +118,7 @@ public class DSDamageTypes {
         register(context, DSDamageTypes.MIRROR_CURSE);
     }
 
-    private static void register(final BootstrapContext<DamageType> context, final ResourceKey<DamageType> damageType) {
+    private static void register(final BootstapContext<DamageType> context, final ResourceKey<DamageType> damageType) {
         context.register(damageType, type(damageType.location().getPath()));
     }
 

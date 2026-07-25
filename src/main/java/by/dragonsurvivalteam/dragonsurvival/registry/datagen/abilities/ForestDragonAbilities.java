@@ -68,7 +68,7 @@ import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.worldgen.BootstrapContext;
+import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.BlockTags;
@@ -165,12 +165,12 @@ public class ForestDragonAbilities {
     @Translation(type = Translation.Type.ABILITY, comments = "Forest Immunity")
     public static final ResourceKey<DragonAbility> FOREST_IMMUNITY = DragonAbilities.key("forest_immunity");
 
-    public static void registerAbilities(final BootstrapContext<DragonAbility> context) {
+    public static void registerAbilities(final BootstapContext<DragonAbility> context) {
         registerActiveAbilities(context);
         registerPassiveAbilities(context);
     }
 
-    private static void registerActiveAbilities(final BootstrapContext<DragonAbility> context) {
+    private static void registerActiveAbilities(final BootstapContext<DragonAbility> context) {
         context.register(FOREST_BREATH, new DragonAbility(
                 new ChanneledActivation(
                         Optional.empty(),
@@ -379,7 +379,7 @@ public class ForestDragonAbilities {
         ));
     }
 
-    private static void registerPassiveAbilities(final BootstrapContext<DragonAbility> context) {
+    private static void registerPassiveAbilities(final BootstapContext<DragonAbility> context) {
         context.register(FOREST_MAGIC, new DragonAbility(
                 PassiveActivation.DEFAULT,
                 Optional.of(new ExperiencePointsUpgrade(10, LevelBasedValue.perLevel(36))),
@@ -559,12 +559,24 @@ public class ForestDragonAbilities {
         ));
     }
 
-    public static void registerWings(final BootstrapContext<DragonAbility> context) {
+    public static void registerWings(final BootstapContext<DragonAbility> context) {
+        registerWings(context, false);
+    }
+
+    public static void registerUnlockedWings(final BootstapContext<DragonAbility> context) {
+        registerWings(context, true);
+    }
+
+    private static void registerWings(final BootstapContext<DragonAbility> context, final boolean unlocked) {
         context.register(FOREST_WINGS, new DragonAbility(
                 PassiveActivation.DEFAULT,
-                Optional.of(new ConditionUpgrade(List.of(Condition.thisEntity(EntityCondition.flightWasGranted(true)).build()), false)),
+                unlocked
+                        ? Optional.empty()
+                        : Optional.of(new ConditionUpgrade(List.of(Condition.thisEntity(EntityCondition.flightWasGranted(true)).build()), false)),
                 // Disable when marked by the ender dragon
-                Optional.of(Condition.thisEntity(EntityCondition.isMarked(true)).build()),
+                unlocked
+                        ? Optional.empty()
+                        : Optional.of(Condition.thisEntity(EntityCondition.isMarked(true)).build()),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         List.of(new FlightEffect(1, DragonSurvival.res("textures/ability_effect/forest_dragon_wings.png"))),
                         TargetingMode.ALLIES_AND_SELF

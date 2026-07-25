@@ -2,7 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.emotes;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
-import net.minecraft.data.worldgen.BootstrapContext;
+import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
@@ -200,7 +200,7 @@ public class DragonEmoteSets {
     public static final String SOUND_HAPPY = "happy";
 
 
-    public static void registerEmoteSets(final BootstrapContext<DragonEmoteSet> context) {
+    public static void registerEmoteSets(final BootstapContext<DragonEmoteSet> context) {
         context.register(DEFAULT_EMOTES,
                 new DragonEmoteSet(
                         List.of(

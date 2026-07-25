@@ -55,7 +55,6 @@ import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.loot.LootTableProvider;
 import net.minecraft.data.metadata.PackMetadataGenerator;
-import net.minecraft.data.registries.RegistryPatchGenerator;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.packs.PackType;
@@ -249,13 +248,8 @@ public class DataGeneration {
         DataGenerator.PackGenerator datapack = generator.getBuiltinDatapack(true, DragonSurvival.MODID, NO_EXPERIENCE_CONVERSION_DATAPACK);
         datapack.addProvider(output -> PackMetadataGenerator.forFeaturePack(output, Component.translatable(NO_EXPERIENCE_CONVERSION_DATAPACK_DESCRIPTION), FeatureFlagSet.of()));
 
-        // Only provide the abilities we need for context, otherwise it will generate data of all abilities for that datapack
-        CompletableFuture<RegistrySetBuilder.PatchedRegistries> patched = RegistryPatchGenerator
-                .createLookup(lookup, new RegistrySetBuilder()
-                        .add(DragonSpecies.REGISTRY, BuiltInDragonSpecies::registerTypes));
-
-        RegistrySetBuilder builder = new RegistrySetBuilder();
-        builder.add(DragonSpecies.REGISTRY, context -> DisableExperienceConversionDatapack.register(context, patched.join()));
+        RegistrySetBuilder builder = new RegistrySetBuilder()
+                .add(DragonSpecies.REGISTRY, DisableExperienceConversionDatapack::register);
 
         datapack.addProvider(output -> new DatapackBuiltinEntriesProvider(output, lookup, builder, Set.of(DragonSurvival.MODID)));
     }
@@ -264,16 +258,8 @@ public class DataGeneration {
         DataGenerator.PackGenerator datapack = generator.getBuiltinDatapack(true, DragonSurvival.MODID, UNLOCK_WINGS_DATAPACK);
         datapack.addProvider(output -> PackMetadataGenerator.forFeaturePack(output, Component.translatable(UNLOCK_WINGS_DATAPACK_DESCRIPTION), FeatureFlagSet.of()));
 
-        // Only provide the abilities we need for context, otherwise it will generate data of all abilities for that datapack
-        CompletableFuture<RegistrySetBuilder.PatchedRegistries> patched = RegistryPatchGenerator
-                .createLookup(lookup, new RegistrySetBuilder().add(DragonAbility.REGISTRY, context -> {
-                    CaveDragonAbilities.registerWings(context);
-                    SeaDragonAbilities.registerWings(context);
-                    ForestDragonAbilities.registerWings(context);
-                }));
-
-        RegistrySetBuilder builder = new RegistrySetBuilder();
-        builder.add(DragonAbility.REGISTRY, context -> UnlockWingsDatapack.register(context, patched.join()));
+        RegistrySetBuilder builder = new RegistrySetBuilder()
+                .add(DragonAbility.REGISTRY, UnlockWingsDatapack::register);
 
         datapack.addProvider(output -> new DatapackBuiltinEntriesProvider(output, lookup, builder, Set.of(DragonSurvival.MODID)));
     }

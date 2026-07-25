@@ -11,7 +11,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.DSAttributes;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSItems;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
-import net.minecraft.data.worldgen.BootstrapContext;
+import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -38,7 +38,7 @@ public class DragonStages {
         return key(DragonSurvival.res(path));
     }
 
-    public static void registerStages(final BootstrapContext<DragonStage> context) {
+    public static void registerStages(final BootstapContext<DragonStage> context) {
         context.register(newborn, newborn());
         context.register(young, young());
         context.register(adult, adult());
