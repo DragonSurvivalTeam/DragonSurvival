@@ -195,23 +195,23 @@ public class DragonSurvivalClient {
         return model;
     }
 
-    private ModelPart empty() {
+    private static ModelPart empty() {
         return new ModelPart(Collections.emptyList(), Collections.emptyMap());
     }
 
-    private DragonHelmet<?> head() {
+    private static DragonHelmet<?> head() {
         return new DragonHelmet<>(Minecraft.getInstance().getEntityModels().bakeLayer(DragonHelmet.LAYER_LOCATION));
     }
 
-    private DragonChestplate<?> body() {
+    private static DragonChestplate<?> body() {
         return new DragonChestplate<>(Minecraft.getInstance().getEntityModels().bakeLayer(DragonChestplate.LAYER_LOCATION));
     }
 
-    private DragonLeggings<?> leggings() {
+    private static DragonLeggings<?> leggings() {
         return new DragonLeggings<>(Minecraft.getInstance().getEntityModels().bakeLayer(DragonLeggings.LAYER_LOCATION));
     }
 
-    private DragonBoots<?> boots() {
+    private static DragonBoots<?> boots() {
         return new DragonBoots<>(Minecraft.getInstance().getEntityModels().bakeLayer(DragonBoots.LAYER_LOCATION));
     }
 }
