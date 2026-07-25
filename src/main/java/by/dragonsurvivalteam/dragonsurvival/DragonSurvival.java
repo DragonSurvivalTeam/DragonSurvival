@@ -18,7 +18,6 @@ import by.dragonsurvivalteam.dragonsurvival.registry.DSLootModifiers;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSParticles;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSSounds;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSStructurePlacementTypes;
-import by.dragonsurvivalteam.dragonsurvival.registry.DSSubPredicates;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSTrades;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.trigger.OnBlockBreak;
@@ -76,7 +75,6 @@ public class DragonSurvival {
         DSTrades.POI_REGISTRY.register(bus);
         DSTrades.PROFESSION_REGISTRY.register(bus);
         DSStructurePlacementTypes.REGISTRY.register(bus);
-        DSSubPredicates.REGISTRY.register(bus);
         DSAdvancementTriggers.REGISTRY.register(bus);
         DSCommands.REGISTRY.register(bus);
         DSLootModifiers.REGISTRY.register(bus);

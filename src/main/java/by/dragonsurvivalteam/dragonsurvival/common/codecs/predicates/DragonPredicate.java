@@ -3,6 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.common.codecs.predicates;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscCodecs;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
+import by.dragonsurvivalteam.dragonsurvival.registry.DSSubPredicates;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbility;
@@ -10,6 +11,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilit
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import by.dragonsurvivalteam.dragonsurvival.server.handlers.ServerFlightHandler;
+import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -120,8 +122,13 @@ public record DragonPredicate(
     }
 
     @Override
-    public @NotNull MapCodec<? extends EntitySubPredicate> codec() {
-        return CODEC;
+    public @NotNull JsonObject serializeCustomData() {
+        return DSSubPredicates.serialize(CODEC, this);
+    }
+
+    @Override
+    public EntitySubPredicate.@NotNull Type type() {
+        return DSSubPredicates.DRAGON_PREDICATE;
     }
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType") // ignore

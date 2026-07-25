@@ -1,5 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.common.codecs.predicates;
 
+import by.dragonsurvivalteam.dragonsurvival.registry.DSSubPredicates;
+import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -69,8 +71,13 @@ public record EntityCheckPredicate(Optional<Type> checkFor) implements EntitySub
     }
 
     @Override
-    public @NotNull MapCodec<? extends EntitySubPredicate> codec() {
-        return CODEC;
+    public @NotNull JsonObject serializeCustomData() {
+        return DSSubPredicates.serialize(CODEC, this);
+    }
+
+    @Override
+    public EntitySubPredicate.@NotNull Type type() {
+        return DSSubPredicates.ENTITY_CHECK_PREDICATE;
     }
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType") // ignore

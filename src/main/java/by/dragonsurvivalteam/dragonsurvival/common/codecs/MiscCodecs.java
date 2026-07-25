@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.common.codecs;
 
+import by.dragonsurvivalteam.dragonsurvival.registry.DSSubPredicates;
 import by.dragonsurvivalteam.dragonsurvival.util.Expression;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -37,7 +38,7 @@ public class MiscCodecs {
     private static final Gson LOOT_CONDITION_GSON = Deserializers.createConditionSerializer().create();
     public static final Codec<MinMaxBounds.Ints> INT_BOUNDS_CODEC = jsonCodec(MinMaxBounds.Ints::fromJson, MinMaxBounds.Ints::serializeToJson);
     public static final Codec<MinMaxBounds.Doubles> DOUBLE_BOUNDS_CODEC = jsonCodec(MinMaxBounds.Doubles::fromJson, MinMaxBounds.Doubles::serializeToJson);
-    public static final Codec<EntityPredicate> ENTITY_PREDICATE_CODEC = jsonCodec(EntityPredicate::fromJson, EntityPredicate::serializeToJson);
+    public static final Codec<EntityPredicate> ENTITY_PREDICATE_CODEC = registryAwareJsonCodec(EntityPredicate::fromJson, EntityPredicate::serializeToJson);
     public static final Codec<Holder<DamageType>> DAMAGE_TYPE_HOLDER_CODEC = RegistryFileCodec.create(Registries.DAMAGE_TYPE, DamageType.CODEC);
     public static final Codec<LootItemCondition> LOOT_ITEM_CONDITION_CODEC = jsonCodec(
             json -> LOOT_CONDITION_GSON.fromJson(json, LootItemCondition.class),
@@ -252,5 +253,39 @@ public class MiscCodecs {
                     }
                 }
         );
+    }
+
+    private static <T> Codec<T> registryAwareJsonCodec(final Function<JsonElement, T> decoder, final Function<T, JsonElement> encoder) {
+        return new Codec<>() {
+            @Override
+            public <U> DataResult<Pair<T, U>> decode(final DynamicOps<U> ops, final U input) {
+                return ExtraCodecs.JSON.decode(ops, input).flatMap(pair -> DSSubPredicates.withCodecOps(
+                        ops,
+                        () -> decodeJson(decoder, pair.getFirst()).map(value -> Pair.of(value, pair.getSecond()))
+                ));
+            }
+
+            @Override
+            public <U> DataResult<U> encode(final T input, final DynamicOps<U> ops, final U prefix) {
+                DataResult<JsonElement> encoded = DSSubPredicates.withCodecOps(ops, () -> encodeJson(encoder, input));
+                return encoded.flatMap(json -> ExtraCodecs.JSON.encode(json, ops, prefix));
+            }
+        };
+    }
+
+    private static <T> DataResult<T> decodeJson(final Function<JsonElement, T> decoder, final JsonElement json) {
+        try {
+            return DataResult.success(decoder.apply(json));
+        } catch (RuntimeException exception) {
+            return DataResult.error(exception::getMessage);
+        }
+    }
+
+    private static <T> DataResult<JsonElement> encodeJson(final Function<T, JsonElement> encoder, final T value) {
+        try {
+            return DataResult.success(encoder.apply(value));
+        } catch (RuntimeException exception) {
+            return DataResult.error(exception::getMessage);
+        }
     }
 }

@@ -1,9 +1,11 @@
 package by.dragonsurvivalteam.dragonsurvival.common.codecs.predicates;
 
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscCodecs;
+import by.dragonsurvivalteam.dragonsurvival.registry.DSSubPredicates;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.Storage;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
+import com.google.gson.JsonObject;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
@@ -66,8 +68,13 @@ public record CustomPredicates(
     }
 
     @Override
-    public @NotNull MapCodec<? extends EntitySubPredicate> codec() {
-        return CODEC;
+    public @NotNull JsonObject serializeCustomData() {
+        return DSSubPredicates.serialize(CODEC, this);
+    }
+
+    @Override
+    public EntitySubPredicate.@NotNull Type type() {
+        return DSSubPredicates.CUSTOM_PREDICATES;
     }
 
     @Override

@@ -122,21 +122,21 @@ public class DataGeneration {
         DataGenerator generator = event.getGenerator();
         PackOutput output = generator.getPackOutput();
         ExistingFileHelper helper = event.getExistingFileHelper();
-        CompletableFuture<HolderLookup.Provider> lookup = event.getLookupProvider();
+        CompletableFuture<HolderLookup.Provider> vanillaLookup = event.getLookupProvider();
 
         // Client
         generator.addProvider(event.includeClient(), new DataBlockStateProvider(output, helper));
         generator.addProvider(event.includeClient(), new DataItemModelProvider(output, helper));
         generator.addProvider(event.includeClient(), new DataSpriteSourceProvider(output, helper));
-        generator.addProvider(event.includeClient(), new DSLanguageProvider(output, lookup, "en_us"));
+        generator.addProvider(event.includeClient(), new DSLanguageProvider(output, vanillaLookup, "en_us"));
 
         // Server
-        LootTableProvider.SubProviderEntry blockLootTableSubProvider = new LootTableProvider.SubProviderEntry(() -> new BlockLootTableSubProvider(lookup.join()), LootContextParamSets.BLOCK);
+        LootTableProvider.SubProviderEntry blockLootTableSubProvider = new LootTableProvider.SubProviderEntry(() -> new BlockLootTableSubProvider(vanillaLookup.join()), LootContextParamSets.BLOCK);
         generator.addProvider(event.includeServer(), (DataProvider.Factory<LootTableProvider>) lootTableOutput -> new LootTableProvider(lootTableOutput, Collections.emptySet(), List.of(blockLootTableSubProvider)));
 
         if (event.includeServer()) {
-            addSilentGemsLootTables(generator, lookup);
-            addCreateLootTables(generator, lookup);
+            addSilentGemsLootTables(generator, vanillaLookup);
+            addCreateLootTables(generator, vanillaLookup);
         }
 
         // built-in registries
@@ -149,11 +149,11 @@ public class DataGeneration {
         builder.add(ProjectileData.REGISTRY, Projectiles::registerProjectiles);
         builder.add(DragonPenalty.REGISTRY, DragonPenalties::registerPenalties);
         builder.add(DragonSpecies.REGISTRY, BuiltInDragonSpecies::registerTypes);
-        DatapackBuiltinEntriesProvider datapackProvider = new DatapackBuiltinEntriesProvider(output, lookup, builder, Set.of(DragonSurvival.MODID));
+        DatapackBuiltinEntriesProvider datapackProvider = new DatapackBuiltinEntriesProvider(output, vanillaLookup, builder, Set.of(DragonSurvival.MODID));
         generator.addProvider(event.includeServer(), datapackProvider);
 
         // Update the lookup provider with our registries
-        lookup = datapackProvider.getRegistryProvider();
+        CompletableFuture<HolderLookup.Provider> lookup = datapackProvider.getRegistryProvider();
 
         // Handle additional datapacks
         addAncientStageDatapack(generator, lookup);
