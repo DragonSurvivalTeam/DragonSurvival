@@ -17,6 +17,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -231,7 +232,7 @@ public class ClawToolHandler {
             ItemStack clawTool = getDragonHarvestTool(player);
 
             if (ItemStack.matches(clawTool, event.getOriginal())) {
-                clawTool.hurtAndBreak(1, player, LivingEntity.getSlotForHand(event.getHand()));
+                clawTool.hurtAndBreak(1, player, EquipmentSlot.MAINHAND);
             } else if (!player.level().isClientSide()) {
                 ClawInventoryData clawInventory = ClawInventoryData.getData(player);
 
