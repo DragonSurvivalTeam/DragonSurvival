@@ -2,10 +2,9 @@ package by.dragonsurvivalteam.dragonsurvival.util;
 
 import by.dragonsurvivalteam.dragonsurvival.compat.overgeared.Overgeared;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSItemTags;
-import net.minecraft.core.HolderSet;
-import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.item.Item;
@@ -17,14 +16,26 @@ import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.TieredItem;
 import net.minecraft.world.item.Tiers;
-import net.minecraft.world.item.component.Tool;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.ItemAbilities;
 import net.minecraftforge.common.Tags;
+import net.minecraftforge.common.ToolActions;
 
 public class ToolUtils {
+    private static final TagKey<Item> PICKAXES = itemTag("pickaxes");
+    private static final TagKey<Item> AXES = itemTag("axes");
+    private static final TagKey<Item> SHOVELS = itemTag("shovels");
+    private static final TagKey<Item> HOES = itemTag("hoes");
+
+    // Keep recognizing the 1.21.1 tier tags when they are supplied by a compatible datapack.
+    private static final TagKey<Block> INCORRECT_FOR_WOODEN_TOOL = blockTag("incorrect_for_wooden_tool");
+    private static final TagKey<Block> INCORRECT_FOR_GOLD_TOOL = blockTag("incorrect_for_gold_tool");
+    private static final TagKey<Block> INCORRECT_FOR_STONE_TOOL = blockTag("incorrect_for_stone_tool");
+    private static final TagKey<Block> INCORRECT_FOR_IRON_TOOL = blockTag("incorrect_for_iron_tool");
+    private static final TagKey<Block> INCORRECT_FOR_DIAMOND_TOOL = blockTag("incorrect_for_diamond_tool");
+    private static final TagKey<Block> INCORRECT_FOR_NETHERITE_TOOL = blockTag("incorrect_for_netherite_tool");
+
     @SuppressWarnings("BooleanMethodIsAlwaysInverted") // ignore
     public static boolean shouldUseDragonTools(final ItemStack itemStack) {
         return !(itemStack.getItem() instanceof TieredItem) && !isHarvestTool(itemStack) && !isWeapon(itemStack);
@@ -35,27 +46,27 @@ public class ToolUtils {
     }
 
     public static boolean isWeapon(final ItemStack itemStack) {
-        return itemStack.getItem() instanceof SwordItem || itemStack.canPerformAction(ItemAbilities.SWORD_SWEEP) || itemStack.canPerformAction(ItemAbilities.SWORD_DIG) || itemStack.is(DSItemTags.CLAW_WEAPONS);
+        return itemStack.getItem() instanceof SwordItem || itemStack.canPerformAction(ToolActions.SWORD_SWEEP) || itemStack.canPerformAction(ToolActions.SWORD_DIG) || itemStack.is(DSItemTags.CLAW_WEAPONS);
     }
 
     public static boolean isPickaxe(final ItemStack itemStack) {
-        return itemStack.getItem() instanceof PickaxeItem || itemStack.canPerformAction(ItemAbilities.PICKAXE_DIG) || itemStack.is(ItemTags.PICKAXES) || itemStack.isCorrectToolForDrops(Blocks.STONE.defaultBlockState());
+        return itemStack.getItem() instanceof PickaxeItem || itemStack.canPerformAction(ToolActions.PICKAXE_DIG) || itemStack.is(PICKAXES) || itemStack.isCorrectToolForDrops(Blocks.STONE.defaultBlockState());
     }
 
     public static boolean isAxe(final ItemStack itemStack) {
-        return itemStack.getItem() instanceof AxeItem || itemStack.canPerformAction(ItemAbilities.AXE_STRIP) || itemStack.canPerformAction(ItemAbilities.AXE_DIG) || itemStack.canPerformAction(ItemAbilities.AXE_SCRAPE) || itemStack.is(ItemTags.AXES) || itemStack.isCorrectToolForDrops(Blocks.OAK_LOG.defaultBlockState());
+        return itemStack.getItem() instanceof AxeItem || itemStack.canPerformAction(ToolActions.AXE_STRIP) || itemStack.canPerformAction(ToolActions.AXE_DIG) || itemStack.canPerformAction(ToolActions.AXE_SCRAPE) || itemStack.is(AXES) || itemStack.isCorrectToolForDrops(Blocks.OAK_LOG.defaultBlockState());
     }
 
     public static boolean isShovel(final ItemStack itemStack) {
-        return itemStack.getItem() instanceof ShovelItem || itemStack.canPerformAction(ItemAbilities.SHOVEL_FLATTEN) || itemStack.canPerformAction(ItemAbilities.SHOVEL_DIG) || itemStack.is(ItemTags.SHOVELS) || itemStack.isCorrectToolForDrops(Blocks.DIRT.defaultBlockState());
+        return itemStack.getItem() instanceof ShovelItem || itemStack.canPerformAction(ToolActions.SHOVEL_FLATTEN) || itemStack.canPerformAction(ToolActions.SHOVEL_DIG) || itemStack.is(SHOVELS) || itemStack.isCorrectToolForDrops(Blocks.DIRT.defaultBlockState());
     }
 
     public static boolean isHoe(final ItemStack itemStack) {
-        return itemStack.canPerformAction(ItemAbilities.HOE_DIG) || itemStack.canPerformAction(ItemAbilities.HOE_TILL) || itemStack.is(ItemTags.HOES);
+        return itemStack.canPerformAction(ToolActions.HOE_DIG) || itemStack.canPerformAction(ToolActions.HOE_TILL) || itemStack.is(HOES);
     }
 
     public static boolean isShears(final ItemStack itemStack) {
-        return itemStack.canPerformAction(ItemAbilities.SHEARS_CARVE) || itemStack.canPerformAction(ItemAbilities.SHEARS_DIG) || itemStack.canPerformAction(ItemAbilities.SHEARS_DISARM) || itemStack.canPerformAction(ItemAbilities.SHEARS_HARVEST) || itemStack.is(Items.SHEARS);
+        return itemStack.canPerformAction(ToolActions.SHEARS_CARVE) || itemStack.canPerformAction(ToolActions.SHEARS_DIG) || itemStack.canPerformAction(ToolActions.SHEARS_DISARM) || itemStack.canPerformAction(ToolActions.SHEARS_HARVEST) || itemStack.is(Items.SHEARS);
     }
 
     public static double getRequiredHarvestLevel(final BlockState state) {
@@ -79,7 +90,7 @@ public class ToolUtils {
             return 4;
         } else if (state.is(Tags.Blocks.NEEDS_NETHERITE_TOOL)) {
             return 5;
-        } else if (state.is(BlockTags.INCORRECT_FOR_NETHERITE_TOOL)) {
+        } else if (state.is(INCORRECT_FOR_NETHERITE_TOOL)) {
             return 6;
         } else if (state.requiresCorrectToolForDrops()) {
             return 1;
@@ -97,36 +108,24 @@ public class ToolUtils {
         if (item instanceof TieredItem tiered) {
             Tier tier = tiered.getTier();
 
-            level = switch (tier) {
-                case Tiers.WOOD, Tiers.GOLD -> 1;
-                case Tiers.STONE -> 2;
-                case Tiers.IRON -> 3;
-                case Tiers.DIAMOND -> 4;
-                case Tiers.NETHERITE -> 5;
-                default -> 0;
-            };
+            if (tier == Tiers.WOOD || tier == Tiers.GOLD) {
+                level = 1;
+            } else if (tier == Tiers.STONE) {
+                level = 2;
+            } else if (tier == Tiers.IRON) {
+                level = 3;
+            } else if (tier == Tiers.DIAMOND) {
+                level = 4;
+            } else if (tier == Tiers.NETHERITE) {
+                level = 5;
+            }
 
             if (level == 0) {
-                level = tagToLevel(tier.getIncorrectBlocksForDrops());
-            }
-        }
-
-        if (level == 0) {
-            // In case it is some custom item / multi-tool
-            Tool tool = stack.get(DataComponents.TOOL);
-
-            if (tool == null) {
-                return level;
+                level = tagToLevel(tier.getTag());
             }
 
-            for (Tool.Rule rule : tool.rules()) {
-                if (rule.blocks() instanceof HolderSet.Named<Block> set) {
-                    level = tagToLevel(set.key());
-
-                    if (level > 0) {
-                        return level;
-                    }
-                }
+            if (level == 0) {
+                level = tier.getLevel() + 1;
             }
         }
 
@@ -139,68 +138,49 @@ public class ToolUtils {
             return false;
         }
 
-        Tool tool = stack.get(DataComponents.TOOL);
-
-        if (tool == null) {
-            return stack.isCorrectToolForDrops(state);
+        if (state.is(BlockTags.MINEABLE_WITH_PICKAXE)) {
+            return isPickaxe(stack);
+        } else if (state.is(BlockTags.MINEABLE_WITH_AXE)) {
+            return isAxe(stack);
+        } else if (state.is(BlockTags.MINEABLE_WITH_SHOVEL)) {
+            return isShovel(stack);
+        } else if (state.is(BlockTags.MINEABLE_WITH_HOE)) {
+            return isHoe(stack);
         }
 
-        for (Tool.Rule rule : tool.rules()) {
-            if (isIncorrectRule(rule)) {
-                // Skip these since we just want to know if this tool is the correct type (defined by the rule that has a speed component)
-                // We don't skip all rules in case the tool is some sort of custom tool
-                continue;
-            }
-
-            if (rule.correctForDrops().orElse(false) && state.is(rule.blocks())) {
-                // The order of the rules seems relevant
-                // Meaning the first entries are the exclusions
-                return true;
-            }
-        }
-
-        return false;
+        // Custom 1.20 tools express arbitrary mining rules through their destroy speed.
+        return stack.isCorrectToolForDrops(state) || stack.getDestroySpeed(state) > 1.0F;
     }
 
     private static double tagToLevel(final TagKey<Block> tag) {
-        double level = 0;
-
         // Basically - if a tool has this tag, it means it can be considered to be of that tier
         // Because it says "this tool cannot mine these blocks"
-        if (tag == BlockTags.INCORRECT_FOR_WOODEN_TOOL ||tag == BlockTags.INCORRECT_FOR_GOLD_TOOL) {
-            level = 1;
-        } else if (tag == BlockTags.INCORRECT_FOR_STONE_TOOL) {
-            level = 2;
-        } else if (tag == Overgeared.INCORRECT_FOR_COPPER_TOOL) {
-            level = 2.5;
-        } else if (tag == BlockTags.INCORRECT_FOR_IRON_TOOL) {
-            level = 3;
-        } else if (tag == Overgeared.INCORRECT_FOR_STEEL_TOOL) {
-            level = 3.5;
-        } else if (tag == BlockTags.INCORRECT_FOR_DIAMOND_TOOL) {
-            level = 4;
-        } else if (tag == BlockTags.INCORRECT_FOR_NETHERITE_TOOL) {
-            level = 5;
+        if (tag == null) {
+            return 0;
+        } else if (tag.equals(Tags.Blocks.NEEDS_WOOD_TOOL) || tag.equals(Tags.Blocks.NEEDS_GOLD_TOOL) || tag.equals(INCORRECT_FOR_WOODEN_TOOL) || tag.equals(INCORRECT_FOR_GOLD_TOOL)) {
+            return 1;
+        } else if (tag.equals(BlockTags.NEEDS_STONE_TOOL) || tag.equals(INCORRECT_FOR_STONE_TOOL)) {
+            return 2;
+        } else if (tag.equals(Overgeared.NEEDS_COPPER_TOOL) || tag.equals(Overgeared.INCORRECT_FOR_COPPER_TOOL)) {
+            return 2.5;
+        } else if (tag.equals(BlockTags.NEEDS_IRON_TOOL) || tag.equals(INCORRECT_FOR_IRON_TOOL)) {
+            return 3;
+        } else if (tag.equals(Overgeared.NEEDS_STEEL_TOOL) || tag.equals(Overgeared.INCORRECT_FOR_STEEL_TOOL)) {
+            return 3.5;
+        } else if (tag.equals(BlockTags.NEEDS_DIAMOND_TOOL) || tag.equals(INCORRECT_FOR_DIAMOND_TOOL)) {
+            return 4;
+        } else if (tag.equals(Tags.Blocks.NEEDS_NETHERITE_TOOL) || tag.equals(INCORRECT_FOR_NETHERITE_TOOL)) {
+            return 5;
         }
 
-        return level;
+        return 0;
     }
 
-    private static boolean isIncorrectRule(final Tool.Rule rule) {
-        if (rule.blocks() instanceof HolderSet.Named<Block> set) {
-            // Generic check would be possible
-            // But 'toolToHarvestLevel' also needs adjustment for each new entry
-            return set.key() == BlockTags.INCORRECT_FOR_WOODEN_TOOL ||
-                    set.key() == BlockTags.INCORRECT_FOR_GOLD_TOOL ||
-                    set.key() == BlockTags.INCORRECT_FOR_STONE_TOOL ||
-                    set.key() == BlockTags.INCORRECT_FOR_IRON_TOOL ||
-                    set.key() == BlockTags.INCORRECT_FOR_DIAMOND_TOOL ||
-                    set.key() == BlockTags.INCORRECT_FOR_NETHERITE_TOOL ||
-                    // Overgeared
-                    set.key() == Overgeared.INCORRECT_FOR_COPPER_TOOL ||
-                    set.key() == Overgeared.INCORRECT_FOR_STEEL_TOOL;
-        }
+    private static TagKey<Item> itemTag(final String path) {
+        return TagKey.create(Registries.ITEM, new ResourceLocation("minecraft", path));
+    }
 
-        return false;
+    private static TagKey<Block> blockTag(final String path) {
+        return TagKey.create(Registries.BLOCK, new ResourceLocation("minecraft", path));
     }
 }
