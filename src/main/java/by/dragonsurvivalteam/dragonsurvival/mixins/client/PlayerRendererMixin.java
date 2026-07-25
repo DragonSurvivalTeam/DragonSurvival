@@ -25,8 +25,8 @@ public abstract class PlayerRendererMixin {
     @WrapOperation(method = "renderHand", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/model/geom/ModelPart;render(Lcom/mojang/blaze3d/vertex/PoseStack;Lcom/mojang/blaze3d/vertex/VertexConsumer;II)V"))
     private void dragonSurvival$renderTranslucent(final ModelPart instance, final PoseStack poseStack, final VertexConsumer buffer, int packedLight, int packedOverlay, final Operation<Void> original, @Local(argsOnly = true) final MultiBufferSource bufferSource, @Local(argsOnly = true) final AbstractClientPlayer player) {
         if (HunterData.hasTransparency(player)) {
-            VertexConsumer translucentBuffer = bufferSource.getBuffer(RenderType.entityTranslucent(player.getSkin().texture()));
-            instance.render(poseStack, translucentBuffer, packedLight, packedOverlay, HunterHandler.modifyAlpha(player, -1));
+            VertexConsumer translucentBuffer = bufferSource.getBuffer(RenderType.entityTranslucent(player.getSkinTextureLocation()));
+            instance.render(poseStack, translucentBuffer, packedLight, packedOverlay, 1, 1, 1, HunterHandler.calculateAlphaAsFloat(player));
         } else {
             original.call(instance, poseStack, buffer, packedLight, packedOverlay);
         }
