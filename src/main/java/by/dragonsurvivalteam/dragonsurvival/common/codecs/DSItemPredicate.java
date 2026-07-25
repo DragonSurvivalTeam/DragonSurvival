@@ -149,8 +149,9 @@ public final class DSItemPredicate implements Predicate<ItemStack> {
     }
 
     private static boolean matchesPotion(final ItemStack stack, final JsonElement selector) {
-        ResourceLocation potion = BuiltInRegistries.POTION.getKey(PotionUtils.getPotion(stack));
-        return matchesIdSelector(potion, selector);
+        return PotionUtils.getPotion(stack)
+                .map(potion -> matchesIdSelector(BuiltInRegistries.POTION.getKey(potion), selector))
+                .orElse(false);
     }
 
     private static boolean matchesDamage(final ItemStack stack, final JsonElement value) {
