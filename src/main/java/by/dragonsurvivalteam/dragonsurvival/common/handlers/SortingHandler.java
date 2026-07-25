@@ -2,7 +2,6 @@ package by.dragonsurvivalteam.dragonsurvival.common.handlers;
 
 import by.dragonsurvivalteam.dragonsurvival.server.containers.DragonContainer;
 import by.dragonsurvivalteam.dragonsurvival.util.PotionUtils;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
@@ -32,9 +31,7 @@ import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.TippedArrowItem;
 import net.minecraft.world.item.TridentItem;
 import net.minecraft.world.item.alchemy.Potion;
-import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
-import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.items.IItemHandler;
@@ -198,7 +195,7 @@ public final class SortingHandler {
                 continue;
             }
 
-            if (stackAt.getCount() < stackAt.getMaxStackSize() && ItemStack.isSameItemSameComponents(stack, stackAt)) {
+            if (stackAt.getCount() < stackAt.getMaxStackSize() && ItemStack.isSameItemSameTags(stack, stackAt)) {
                 int setSize = stackAt.getCount() + stack.getCount();
                 int carryover = Math.max(0, setSize - stackAt.getMaxStackSize());
 
@@ -393,12 +390,10 @@ public final class SortingHandler {
 
         // There is probably no need to resolve these through Stack#getAllEnchantments
         // Since enchantments added through events are probably present on all instances of the item
-        ItemEnchantments enchantments = EnchantmentHelper.getEnchantmentsForCrafting(stack);
-
         int total = 0;
 
-        for (var entry : enchantments.entrySet()) {
-            total += entry.getIntValue();
+        for (int level : EnchantmentHelper.getEnchantments(stack).values()) {
+            total += level;
         }
 
         return total;
@@ -448,24 +443,21 @@ public final class SortingHandler {
 
     @SuppressWarnings("deprecation") // tag is not modified
     public static int fallbackNBTCompare(final ItemStack first, final ItemStack second) {
-        if (ItemStack.isSameItemSameComponents(first, second)) {
+        if (ItemStack.isSameItemSameTags(first, second)) {
             return 0;
         }
 
-        CustomData firstData = first.get(DataComponents.CUSTOM_DATA);
-        CustomData secondData = second.get(DataComponents.CUSTOM_DATA);
+        CompoundTag firstTag = first.getTag();
+        CompoundTag secondTag = second.getTag();
 
-        if (firstData != null && secondData == null) {
+        if (firstTag != null && secondTag == null) {
             return 1;
-        } else if (firstData == null && secondData != null) {
+        } else if (firstTag == null && secondTag != null) {
             return -1;
-        } else if (firstData == null) {
+        } else if (firstTag == null) {
             // Both have no custom data
             return 0;
         }
-
-        CompoundTag firstTag = firstData.getUnsafe();
-        CompoundTag secondTag = secondData.getUnsafe();
 
         if (NbtUtils.compareNbt(firstTag, secondTag, true)) {
             return 0;
