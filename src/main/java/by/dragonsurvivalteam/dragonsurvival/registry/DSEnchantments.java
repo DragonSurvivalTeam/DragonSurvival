@@ -209,7 +209,7 @@ public class DSEnchantments {
 
             return BuiltInRegistries.ENCHANTMENT.getResourceKey(other)
                     .flatMap(BuiltInRegistries.ENCHANTMENT::getHolder)
-                    .map(holder -> !exclusiveSet.contains(holder))
+                    .map(holder -> !holder.is(exclusiveSet))
                     .orElse(true);
         }
     }
