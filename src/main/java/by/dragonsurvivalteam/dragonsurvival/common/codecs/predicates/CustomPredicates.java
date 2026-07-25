@@ -4,6 +4,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscCodecs;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.Storage;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
+import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -42,6 +43,9 @@ public record CustomPredicates(
         Optional<UUID> hasUUID,
         Optional<LookingAtBlock> lookingAtBlock
 ) implements EntitySubPredicate {
+    private static final Codec<UUID> LENIENT_UUID_CODEC = Codec.either(UUIDUtil.CODEC, UUIDUtil.STRING_CODEC)
+        .xmap(either -> either.map(uuid -> uuid, uuid -> uuid), Either::left);
+
     public static final MapCodec<CustomPredicates> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             RegistryCodecs.homogeneousList(ForgeRegistries.Keys.FLUID_TYPES).optionalFieldOf("eye_in_fluid").forGetter(CustomPredicates::eyeInFluid),
             WeatherPredicate.CODEC.optionalFieldOf("weather_predicate").forGetter(CustomPredicates::weatherPredicate),
@@ -50,7 +54,7 @@ public record CustomPredicates(
             NearbyEntityPredicate.CODEC.optionalFieldOf("is_nearby_entity").forGetter(CustomPredicates::isNearbyEntity),
             MiscCodecs.INT_BOUNDS_CODEC.optionalFieldOf("player_hunger").forGetter(CustomPredicates::playerHunger),
             MiscCodecs.DOUBLE_BOUNDS_CODEC.optionalFieldOf("health_percentage").forGetter(CustomPredicates::healthPercentage),
-            UUIDUtil.LENIENT_CODEC.optionalFieldOf("has_uuid").forGetter(CustomPredicates::hasUUID),
+            LENIENT_UUID_CODEC.optionalFieldOf("has_uuid").forGetter(CustomPredicates::hasUUID),
             LookingAtBlock.CODEC.optionalFieldOf("looking_at_block").forGetter(CustomPredicates::lookingAtBlock)
     ).apply(instance, CustomPredicates::new));
 
