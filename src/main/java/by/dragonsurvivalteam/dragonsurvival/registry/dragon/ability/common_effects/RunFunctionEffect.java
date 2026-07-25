@@ -16,7 +16,6 @@ import net.minecraft.server.ServerFunctionManager;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.enchantment.effects.RunFunction;
 import net.minecraft.world.phys.Vec2;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
@@ -24,7 +23,7 @@ import org.joml.Vector3f;
 
 import java.util.List;
 
-/** See {@link RunFunction} */
+/** Runs a data pack function with the affected entity or block as its command context. */
 public record RunFunctionEffect(ResourceLocation function) implements AbilityEntityEffect, AbilityBlockEffect {
     public static final MapCodec<RunFunctionEffect> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             ResourceLocation.CODEC.fieldOf("function").forGetter(RunFunctionEffect::function)
