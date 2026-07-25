@@ -21,8 +21,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DiggerItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.enchantment.EnchantmentEffectComponents;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
@@ -56,7 +56,7 @@ public class ClawToolHandler {
         for (int i = 0; i < ClawInventoryData.Slot.size(); i++) {
             ItemStack clawStack = clawInventory.getItem(i);
 
-            if (clawStack.isDamaged() && EnchantmentHelper.has(clawStack, EnchantmentEffectComponents.REPAIR_WITH_XP)) {
+            if (clawStack.isDamaged() && EnchantmentHelper.getItemEnchantmentLevel(Enchantments.MENDING, clawStack) > 0) {
                 stacks.add(clawStack);
             }
         }
@@ -85,7 +85,7 @@ public class ClawToolHandler {
                 ItemStack stack = clawInventory.getItem(i);
 
                 if (!stack.isEmpty()) {
-                    if (!EnchantmentHelper.has(stack, EnchantmentEffectComponents.PREVENT_EQUIPMENT_DROP)) {
+                    if (!EnchantmentHelper.hasVanishingCurse(stack)) {
                         event.getDrops().add(new ItemEntity(player.level(), player.getX(), player.getY(), player.getZ(), stack));
                         clawInventory.setItem(i, ItemStack.EMPTY);
                     }
