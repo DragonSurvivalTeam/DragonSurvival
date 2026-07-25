@@ -124,21 +124,22 @@ public class DragonEditorHandler {
                         skinGenerationShader.getUniform("Glowing").set(settings.isGlowing ? 1.0f : 0.0f);
                         skinGenerationShader.apply();
 
-                        BufferBuilder bufferbuilder = RenderSystem.renderThreadTesselator().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.BLIT_SCREEN);
-                        bufferbuilder.addVertex(0.0F, 0.0F, 0.0F);
-                        bufferbuilder.addVertex(1.0F, 0.0F, 0.0F);
-                        bufferbuilder.addVertex(1.0F, 1.0F, 0.0F);
-                        bufferbuilder.addVertex(0.0F, 1.0F, 0.0F);
-                        BufferUploader.draw(bufferbuilder.buildOrThrow());
+                        BufferBuilder bufferbuilder = RenderSystem.renderThreadTesselator().getBuilder();
+                        bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.BLIT_SCREEN);
+                        bufferbuilder.vertex(0.0F, 0.0F, 0.0F).endVertex();
+                        bufferbuilder.vertex(1.0F, 0.0F, 0.0F).endVertex();
+                        bufferbuilder.vertex(1.0F, 1.0F, 0.0F).endVertex();
+                        bufferbuilder.vertex(0.0F, 1.0F, 0.0F).endVertex();
+                        BufferUploader.draw(bufferbuilder.end());
 
                         if (settings.isGlowing && layer == SkinLayer.BASE) {
                             normalTarget.bindWrite(true);
-                            bufferbuilder = RenderSystem.renderThreadTesselator().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.BLIT_SCREEN);
-                            bufferbuilder.addVertex(0.0F, 0.0F, 0.0F);
-                            bufferbuilder.addVertex(1.0F, 0.0F, 0.0F);
-                            bufferbuilder.addVertex(1.0F, 1.0F, 0.0F);
-                            bufferbuilder.addVertex(0.0F, 1.0F, 0.0F);
-                            BufferUploader.draw(bufferbuilder.buildOrThrow());
+                            bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.BLIT_SCREEN);
+                            bufferbuilder.vertex(0.0F, 0.0F, 0.0F).endVertex();
+                            bufferbuilder.vertex(1.0F, 0.0F, 0.0F).endVertex();
+                            bufferbuilder.vertex(1.0F, 1.0F, 0.0F).endVertex();
+                            bufferbuilder.vertex(0.0F, 1.0F, 0.0F).endVertex();
+                            BufferUploader.draw(bufferbuilder.end());
                             normalTarget.unbindWrite();
                         }
 
