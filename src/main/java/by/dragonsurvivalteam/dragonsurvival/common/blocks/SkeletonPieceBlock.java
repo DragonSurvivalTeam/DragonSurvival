@@ -2,8 +2,6 @@ package by.dragonsurvivalteam.dragonsurvival.common.blocks;
 
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.StringRepresentable;
@@ -32,9 +30,6 @@ public class SkeletonPieceBlock extends Block implements SimpleWaterloggedBlock 
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
     private final SkeletonPieceBlock.Type type;
-    public static final MapCodec<SkeletonPieceBlock> CODEC = RecordCodecBuilder.mapCodec(
-            instance -> instance.group(SkeletonPieceBlock.Type.CODEC.fieldOf("type").forGetter(SkeletonPieceBlock::type), propertiesCodec())
-                    .apply(instance, SkeletonPieceBlock::new));
 
     public SkeletonPieceBlock(SkeletonPieceBlock.Type type, Properties p_56319_) {
         super(p_56319_);
@@ -47,19 +42,19 @@ public class SkeletonPieceBlock extends Block implements SimpleWaterloggedBlock 
     }
 
     @Override
-    protected @NotNull VoxelShape getShape(@NotNull BlockState pState, @NotNull BlockGetter pLevel, @NotNull BlockPos pPos, @NotNull CollisionContext pContext) {
+    public @NotNull VoxelShape getShape(@NotNull BlockState pState, @NotNull BlockGetter pLevel, @NotNull BlockPos pPos, @NotNull CollisionContext pContext) {
         // TODO :: These don't seem to be really accurate
         return switch (this.type) {
-            case Type.CHEST -> Block.box(0.0, 0.0, 0.0, 16.0, 16.0, 16.0);
-            case Type.FULL -> Block.box(-12.0, 0.0, -12.0, 32.0, 16.0, 32.0);
-            case Type.PELVIS -> Block.box(4.0, 0.0, 4.0, 12.0, 12.0, 12.0);
-            case Type.LEG_3 -> Block.box(4.0, 0.0, 4.0, 12.0, 6.0, 12.0);
+            case CHEST -> Block.box(0.0, 0.0, 0.0, 16.0, 16.0, 16.0);
+            case FULL -> Block.box(-12.0, 0.0, -12.0, 32.0, 16.0, 32.0);
+            case PELVIS -> Block.box(4.0, 0.0, 4.0, 12.0, 12.0, 12.0);
+            case LEG_3 -> Block.box(4.0, 0.0, 4.0, 12.0, 6.0, 12.0);
             default -> Block.box(0.0, 0.0, 0.0, 16.0, 6.0, 16.0);
         };
     }
 
     @Override
-    protected @NotNull VoxelShape getOcclusionShape(@NotNull BlockState pState, @NotNull BlockGetter pLevel, @NotNull BlockPos pPos) {
+    public @NotNull VoxelShape getOcclusionShape(@NotNull BlockState pState, @NotNull BlockGetter pLevel, @NotNull BlockPos pPos) {
         return Shapes.empty();
     }
 
@@ -88,11 +83,6 @@ public class SkeletonPieceBlock extends Block implements SimpleWaterloggedBlock 
         }
 
         return state.setValue(WATERLOGGED, context.getLevel().getFluidState(context.getClickedPos()).getType() == Fluids.WATER);
-    }
-
-    @Override
-    protected @NotNull MapCodec<? extends Block> codec() {
-        return CODEC;
     }
 
     public enum Type implements StringRepresentable {
