@@ -139,7 +139,6 @@ public class DataGeneration {
         // built-in registries
         RegistrySetBuilder builder = new RegistrySetBuilder();
         builder.add(Registries.DAMAGE_TYPE, DSDamageTypes::registerDamageTypes);
-        builder.add(Registries.ENCHANTMENT, DSEnchantments::registerEnchantments);
         builder.add(DragonEmoteSet.REGISTRY, DragonEmoteSets::registerEmoteSets);
         builder.add(DragonBody.REGISTRY, DragonBodies::registerBodies);
         builder.add(DragonStage.REGISTRY, DragonStages::registerStages);

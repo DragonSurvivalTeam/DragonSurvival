@@ -16,7 +16,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.tags.EnchantmentTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
@@ -154,21 +153,21 @@ public class DSTrades {
 
         @Override
         public MerchantOffer getOffer(@NotNull final Entity trader, @NotNull final RandomSource random) {
-            Holder<Enchantment> enchantment = EnchantmentUtils.getHolder(this.enchantment);
+            Enchantment enchantment = EnchantmentUtils.get(this.enchantment);
 
             if (enchantment == null) {
                 DragonSurvival.LOGGER.warn("Enchantment [{}] is not present - cannot create proper trade offer", this.enchantment.location());
                 return new MerchantOffer(new ItemCost(Items.EMERALD, 1), Optional.empty(), Items.BOOK.getDefaultInstance(), 1, 0, 1);
             }
 
-            int minLevel = Math.max(enchantment.value().getMinLevel(), this.minLevel);
-            int maxLevel = Math.min(enchantment.value().getMaxLevel(), this.maxLevel);
+            int minLevel = Math.max(enchantment.getMinLevel(), this.minLevel);
+            int maxLevel = Math.min(enchantment.getMaxLevel(), this.maxLevel);
             int level = Mth.nextInt(random, minLevel, maxLevel);
 
             ItemStack book = EnchantedBookItem.createForEnchantment(new EnchantmentInstance(enchantment, level));
             int cost = 2 + random.nextInt(5 + level * 10) + 3 * level;
 
-            if (enchantment.is(EnchantmentTags.DOUBLE_TRADE_PRICE)) {
+            if (enchantment.isTreasureOnly()) {
                 cost *= 2;
             }
 

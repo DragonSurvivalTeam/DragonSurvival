@@ -7,18 +7,21 @@ import by.dragonsurvivalteam.dragonsurvival.registry.DSEquipment;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSItemTags;
 import by.dragonsurvivalteam.dragonsurvival.util.EnchantmentUtils;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.enchantment.ItemEnchantments;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.function.Consumer;
 
 public class DarkDragonArmorItem extends ArmorItem implements PermanentEnchantmentItem {
-    public ItemEnchantments getDefaultEnchantments() {
-        ItemEnchantments.Mutable enchantments = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
+    public Map<Enchantment, Integer> getDefaultEnchantments() {
+        Map<Enchantment, Integer> enchantments = new LinkedHashMap<>();
 
         switch (this.getType()) {
             case HELMET -> EnchantmentUtils.set(enchantments, DSEnchantments.BLOOD_SIPHON, 1);
@@ -28,7 +31,7 @@ public class DarkDragonArmorItem extends ArmorItem implements PermanentEnchantme
         }
 
         EnchantmentUtils.set(enchantments, DSEnchantments.CURSE_OF_OUTLAW, 1);
-        return enchantments.toImmutable();
+        return enchantments;
     }
 
     public DarkDragonArmorItem(Type pType, Properties pProperties) {
@@ -41,17 +44,21 @@ public class DarkDragonArmorItem extends ArmorItem implements PermanentEnchantme
     }
 
     @Override
-    public boolean canEquip(@NotNull final ItemStack stack, @NotNull final EquipmentSlot armorType, @NotNull final LivingEntity entity) {
+    public boolean canEquip(@NotNull final ItemStack stack, @NotNull final EquipmentSlot armorType, @NotNull final Entity entity) {
         if (!super.canEquip(stack, armorType, entity)) {
             return false;
         }
 
-        if (entity.hasEffect(DSEffects.ANIMAL_PEACE.get())) {
+        if (!(entity instanceof LivingEntity livingEntity)) {
+            return true;
+        }
+
+        if (livingEntity.hasEffect(DSEffects.ANIMAL_PEACE.get())) {
             return false;
         }
 
-        for (ItemStack armor : entity.getArmorSlots()) {
-            if (armor.isEmpty() || /* Allow swapping items */ entity.getEquipmentSlotForItem(armor) == armorType) {
+        for (ItemStack armor : livingEntity.getArmorSlots()) {
+            if (armor.isEmpty() || /* Allow swapping items */ livingEntity.getEquipmentSlotForItem(armor) == armorType) {
                 continue;
             }
 

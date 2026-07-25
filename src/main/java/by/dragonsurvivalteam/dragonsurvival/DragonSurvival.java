@@ -63,6 +63,7 @@ public class DragonSurvival {
         DSAttributes.REGISTRY.register(bus);
         DSBlocks.REGISTRY.register(bus); // Needs to happen before items
         DSItems.REGISTRY.register(bus);
+        DSEnchantments.REGISTRY.register(bus);
         DSEffects.REGISTRY.register(bus);
         DSContainers.REGISTRY.register(bus);
         DSCreativeTabs.REGISTRY.register(bus);
