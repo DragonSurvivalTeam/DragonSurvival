@@ -9,7 +9,7 @@ import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.advancements.critereon.ItemPredicate;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.DSItemPredicate;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerPlayer;
@@ -27,7 +27,7 @@ import java.text.NumberFormat;
 import java.util.List;
 import java.util.Optional;
 
-public record SmeltItemEffect(Optional<ItemPredicate> itemPredicate, Optional<LevelBasedValue> progress, boolean dropsExperience) implements AbilityEntityEffect {
+public record SmeltItemEffect(Optional<DSItemPredicate> itemPredicate, Optional<LevelBasedValue> progress, boolean dropsExperience) implements AbilityEntityEffect {
     @Translation(comments = "§6■ Smelts items§r %s as fast as a furnace")
     private static final String CUSTOM_SPEED = Translation.Type.GUI.wrap("smelting_effect.custom_speed");
 
@@ -38,7 +38,7 @@ public record SmeltItemEffect(Optional<ItemPredicate> itemPredicate, Optional<Le
     private static final String INSTANT = Translation.Type.GUI.wrap("smelting_effect.instant");
 
     public static final MapCodec<SmeltItemEffect> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            ItemPredicate.CODEC.optionalFieldOf("item_predicate").forGetter(SmeltItemEffect::itemPredicate),
+            DSItemPredicate.CODEC.optionalFieldOf("item_predicate").forGetter(SmeltItemEffect::itemPredicate),
             LevelBasedValue.CODEC.optionalFieldOf("progress").forGetter(SmeltItemEffect::progress),
             Codec.BOOL.optionalFieldOf("grants_experience", true).forGetter(SmeltItemEffect::dropsExperience)
     ).apply(instance, SmeltItemEffect::new));

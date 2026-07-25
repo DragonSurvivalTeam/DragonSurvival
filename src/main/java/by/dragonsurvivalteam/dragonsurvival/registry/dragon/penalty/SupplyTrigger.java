@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty;
 
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.DSItemPredicate;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAttributes;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.PenaltySupply;
@@ -9,10 +10,10 @@ import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -44,7 +45,7 @@ public record SupplyTrigger(
 
     public static final MapCodec<SupplyTrigger> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             ResourceLocation.CODEC.fieldOf("supply_type").forGetter(SupplyTrigger::supplyType),
-            Attribute.CODEC.optionalFieldOf("attribute", DSAttributes.PENALTY_RESISTANCE_TIME).forGetter(SupplyTrigger::attributeToUseAsBase),
+            BuiltInRegistries.ATTRIBUTE.holderByNameCodec().optionalFieldOf("attribute", BuiltInRegistries.ATTRIBUTE.wrapAsHolder(DSAttributes.PENALTY_RESISTANCE_TIME.get())).forGetter(SupplyTrigger::attributeToUseAsBase),
             ExtraCodecs.intRange(1, Integer.MAX_VALUE).fieldOf("trigger_rate").forGetter(SupplyTrigger::triggerRate),
             Codec.FLOAT.fieldOf("reduction_rate").forGetter(SupplyTrigger::reductionRate),
             Codec.FLOAT.fieldOf("regeneration_rate").forGetter(SupplyTrigger::regenerationRate),
@@ -53,9 +54,9 @@ public record SupplyTrigger(
             ParticleTypes.CODEC.optionalFieldOf("particles_on_trigger").forGetter(SupplyTrigger::particlesOnTrigger)
     ).apply(instance, SupplyTrigger::new));
 
-    public record RecoveryItem(List<ItemPredicate> itemPredicates, float percentRestored) {
+    public record RecoveryItem(List<DSItemPredicate> itemPredicates, float percentRestored) {
         public static final MapCodec<RecoveryItem> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-                ItemPredicate.CODEC.listOf().fieldOf("item_predicates").forGetter(RecoveryItem::itemPredicates),
+                DSItemPredicate.CODEC.listOf().fieldOf("item_predicates").forGetter(RecoveryItem::itemPredicates),
                 Codec.FLOAT.fieldOf("percent_restored").forGetter(RecoveryItem::percentRestored)
         ).apply(instance, RecoveryItem::new));
     }
@@ -87,7 +88,7 @@ public record SupplyTrigger(
 
     @Override
     public MutableComponent getDescription(final Player dragon) {
-        AttributeInstance attribute = dragon.getAttribute(attributeToUseAsBase);
+        AttributeInstance attribute = dragon.getAttribute(attributeToUseAsBase.value());
 
         if (attribute == null) {
             return Component.empty();

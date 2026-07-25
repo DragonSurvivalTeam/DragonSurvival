@@ -1,16 +1,16 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty;
 
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.DSItemPredicate;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.List;
 
-public record ItemUsedTrigger(List<ItemPredicate> itemPredicates) implements PenaltyTrigger {
+public record ItemUsedTrigger(List<DSItemPredicate> itemPredicates) implements PenaltyTrigger {
     public static final MapCodec<ItemUsedTrigger> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            ItemPredicate.CODEC.listOf().fieldOf("item_predicates").forGetter(ItemUsedTrigger::itemPredicates)
+            DSItemPredicate.CODEC.listOf().fieldOf("item_predicates").forGetter(ItemUsedTrigger::itemPredicates)
     ).apply(instance, ItemUsedTrigger::new));
 
     @Override
@@ -24,7 +24,7 @@ public record ItemUsedTrigger(List<ItemPredicate> itemPredicates) implements Pen
     }
 
     public boolean test(final ItemStack item) {
-        for (ItemPredicate predicate : itemPredicates) {
+        for (DSItemPredicate predicate : itemPredicates) {
             if (predicate.test(item)) {
                 return true;
             }

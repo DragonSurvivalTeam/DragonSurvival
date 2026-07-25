@@ -1,12 +1,12 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects;
 
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ParticleData;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.DSItemPredicate;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAdvancementTriggers;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerPlayer;
@@ -31,9 +31,9 @@ public record ItemConversionEffect(List<ItemConversionData> itemConversions, Lev
             LevelBasedValue.CODEC.fieldOf("probability").forGetter(ItemConversionEffect::probability)
     ).apply(instance, ItemConversionEffect::new));
 
-    public record ItemConversionData(ItemPredicate predicate, WeightedRandomList<ItemTo> itemsTo) {
+    public record ItemConversionData(DSItemPredicate predicate, WeightedRandomList<ItemTo> itemsTo) {
         public static final Codec<ItemConversionData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                ItemPredicate.CODEC.fieldOf("item_predicate").forGetter(ItemConversionData::predicate),
+                DSItemPredicate.CODEC.fieldOf("item_predicate").forGetter(ItemConversionData::predicate),
                 SimpleWeightedRandomList.codec(ItemTo.CODEC).fieldOf("items_to").forGetter(ItemConversionData::itemsTo)
         ).apply(instance, ItemConversionData::new));
     }
@@ -82,13 +82,13 @@ public record ItemConversionEffect(List<ItemConversionData> itemConversions, Lev
 
         for (ItemConversionData data : itemConversions) {
             if (data.predicate().test(itemEntity.getItem())) {
-                data.itemsTo().getRandom(target.getRandom()).ifPresent(conversion -> {
+                data.itemsTo().getRandom(dragon.getRandom()).ifPresent(conversion -> {
                     // TODO :: add converted-to amount to the achievement?
                     DSAdvancementTriggers.CONVERT_ITEM_FROM_ABILITY.get().trigger(dragon, itemEntity.getItem().getItemHolder(), conversion.item());
                     conversion.particles.ifPresent(particles -> particles.spawn(dragon.serverLevel(), itemEntity, ability.level()));
 
                     int newAmount = (int) (itemEntity.getItem().getCount() * conversion.conversionRate());
-                    int maxStackSize = conversion.item().value().getDefaultMaxStackSize();
+                    int maxStackSize = conversion.item().value().getMaxStackSize();
 
                     if (newAmount > maxStackSize) {
                         Vec3 position = itemEntity.position();
