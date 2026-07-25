@@ -33,18 +33,17 @@ import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Holder;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterials;
+import net.minecraft.world.item.DyeableLeatherItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.armortrim.ArmorTrim;
-import net.minecraft.world.item.component.DyedItemColor;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -243,7 +242,7 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
         boolean hasTrim = false;
         float trimHue = 0.0F;
         float trimSaturation = 0.0F;
-        ArmorTrim trim = stack.get(DataComponents.TRIM);
+        ArmorTrim trim = ArmorTrim.getTrim(player.level().registryAccess(), stack).orElse(null);
 
         if (trim != null) {
             ResourceLocation trimLocation = new ResourceLocation(
@@ -262,13 +261,12 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
 
         float dyeHue = 0.0F;
         float dyeSaturation = 0.0F;
-        DyedItemColor dyeColor = stack.get(DataComponents.DYED_COLOR);
-
-        if (dyeColor != null) {
+        if (stack.getItem() instanceof DyeableLeatherItem dyeableItem && dyeableItem.hasCustomColor(stack)) {
+            int dyeColor = dyeableItem.getColor(stack);
             float[] dyeHSB = Color.RGBtoHSB(
-                (dyeColor.rgb() >> 16) & 0xFF,
-                (dyeColor.rgb() >> 8) & 0xFF,
-                dyeColor.rgb() & 0xFF,
+                (dyeColor >> 16) & 0xFF,
+                (dyeColor >> 8) & 0xFF,
+                dyeColor & 0xFF,
                 null
             );
             dyeHue = dyeHSB[0];
@@ -408,8 +406,8 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
      * Appends the following elements together to create an id <br>
      * - {@link DragonBody#model} (e.g. dragonsurvival.dragon_model <br>
      * - {@link ResourceLocation#toLanguageKey()} of each equipped armor item <br>
-     * - {@link DataComponents#TRIM} of each equipped armor slot <br>
-     * - {@link DataComponents#DYED_COLOR} of each equipped armor slot <br> <br>
+     * - The armor trim of each equipped armor slot <br>
+     * - The custom dye color of each equipped armor slot <br> <br>
      * - What is currently being used in the claw slot and teeth slot (i.e. tools/weapons)
      */
     private static String buildUniqueArmorUUID(final Player player) {
@@ -428,16 +426,14 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
             //noinspection DataFlowIssue -> key is present
             armorTotal.append(separator).append(separator).append(stack.getItemHolder().unwrapKey().orElseThrow().location().toLanguageKey());
 
-            ArmorTrim trim = stack.getComponents().get(DataComponents.TRIM);
+            ArmorTrim trim = ArmorTrim.getTrim(player.level().registryAccess(), stack).orElse(null);
 
             if (trim != null) {
                 armorTotal.append(separator).append(trim.material().value().assetName()).append(separator).append(trim.pattern().value().assetId());
             }
 
-            DyedItemColor dyeColor = stack.get(DataComponents.DYED_COLOR);
-
-            if (dyeColor != null) {
-                armorTotal.append(separator).append(dyeColor.rgb());
+            if (stack.getItem() instanceof DyeableLeatherItem dyeableItem && dyeableItem.hasCustomColor(stack)) {
+                armorTotal.append(separator).append(dyeableItem.getColor(stack));
             }
         }
 
@@ -457,7 +453,8 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
 
     private static ResourceLocation generateArmorTextureResourceLocation(Player player, EquipmentSlot equipmentSlot) {
         DragonStateHandler handler = DragonStateProvider.getData(player);
-        Item item = CosmeticArmorReworkedHelper.getItemVisibleInSlot(player, equipmentSlot).getItem();
+        ItemStack stack = CosmeticArmorReworkedHelper.getItemVisibleInSlot(player, equipmentSlot);
+        Item item = stack.getItem();
         ResourceLocation armorResource = toArmorResource(handler.getModel(), item);
 
         if (armorResource != null && Minecraft.getInstance().getResourceManager().getResource(armorResource).isPresent()) {
@@ -470,7 +467,7 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
             ResourceLocation materialResource = new ResourceLocation(armorItem.getMaterial().getName());
             texture += materialResource.getNamespace() + "/materials/" + materialResource.getPath() + "/" + equipmentSlot.getName();
 
-            if (armorItem.getMaterial() == ArmorMaterials.LEATHER && player.getItemBySlot(equipmentSlot).get(DataComponents.DYED_COLOR) == null) {
+            if (armorItem.getMaterial() == ArmorMaterials.LEATHER && (!(item instanceof DyeableLeatherItem dyeableItem) || !dyeableItem.hasCustomColor(stack))) {
                 // TODO :: Do we really have to make a special case for this? Do items not have a way to signify "can be dyed?"
                 texture += "_undyed";
             }
