@@ -39,7 +39,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Supplier;
 
-@EventBusSubscriber(Dist.CLIENT)
+@EventBusSubscriber(modid = DragonSurvival.MODID, value = Dist.CLIENT, bus = EventBusSubscriber.Bus.MOD)
 public class DSParticles {
     public static final DeferredRegister<ParticleType<?>> REGISTRY = DeferredRegister.create(ForgeRegistries.PARTICLE_TYPES, DragonSurvival.MODID);
 
