@@ -67,25 +67,29 @@ public class DragonSizeHandler {
 
         Pose sizePose = Compat.hasModelSwapOrDoesNotUseModel(player) ? event.getPose() : handler.previousPose;
         EntityDimensions newDimensions = calculateDimensions(handler, player, sizePose);
-        event.setNewSize(new EntityDimensions(newDimensions.width(), newDimensions.height(), newDimensions.eyeHeight(), event.getOldSize().attachments(), event.getOldSize().fixed()));
+        event.setNewSize(event.getOldSize().fixed
+                ? EntityDimensions.fixed(newDimensions.width, newDimensions.height)
+                : newDimensions);
+        event.setNewEyeHeight((float) calculateDragonEyeHeight(handler, player, sizePose));
     }
 
     public static double calculateDragonEyeHeight(final DragonStateHandler handler, final Player player) {
+        return calculateDragonEyeHeight(handler, player, overridePose(player));
+    }
+
+    private static double calculateDragonEyeHeight(final DragonStateHandler handler, final Player player, @Nullable final Pose pose) {
         double scale = player.getAttributeValue(DSAttributes.SCALE.get());
         double eyeHeight = handler.body().value().scalingProportions().eyeHeight();
-        return applyPose(eyeHeight * scale, overridePose(player), handler.body().value().crouchHeightRatio());
+        return applyPose(eyeHeight * scale, pose, handler.body().value().crouchHeightRatio());
     }
 
     public static EntityDimensions calculateDimensions(final DragonStateHandler handler, @Nullable final Player player, @Nullable final Pose overridePose) {
         double scale = player != null ? player.getAttributeValue(DSAttributes.SCALE.get()) : 1;
         double height = handler.body().value().scalingProportions().height();
-        double eyeHeight = handler.body().value().scalingProportions().eyeHeight();
         double width = handler.body().value().scalingProportions().width();
 
         height = applyPose(height, overridePose, handler.body().value().crouchHeightRatio());
-        eyeHeight = applyPose(eyeHeight, overridePose, handler.body().value().crouchHeightRatio());
-
-        return EntityDimensions.scalable((float) (width * scale), (float) (height * scale)).withEyeHeight((float) (eyeHeight * scale));
+        return EntityDimensions.scalable((float) (width * scale), (float) (height * scale));
     }
 
     public static double applyPose(double height, @Nullable final Pose pose, double crouchHeightRatio) {
@@ -157,14 +161,14 @@ public class DragonSizeHandler {
             return;
         }
 
-        float newWidth = newDimensions.width();
-        float newHeight = newDimensions.height();
+        float newWidth = newDimensions.width;
+        float newHeight = newDimensions.height;
 
-        if (currentDimension.width() > newWidth && currentDimension.height() > newHeight) {
+        if (currentDimension.width > newWidth && currentDimension.height > newHeight) {
             return;
         }
 
-        if (entity.level().noBlockCollision(entity, newDimensions.makeBoundingBox(entity.position()))) {
+        if (!entity.level().getBlockCollisions(entity, newDimensions.makeBoundingBox(entity.position())).iterator().hasNext()) {
             // Do a minimal check to see if the player is phasing into any blocks
             // It doesn't seem to have a big impact when actual collision happens and skips unneeded shape calculations
             return;
@@ -191,13 +195,13 @@ public class DragonSizeHandler {
     }
 
     public static AABB createPlayerBounds(final Entity entity, final EntityDimensions currentDimensions, final EntityDimensions newDimensions, final double yOffset) {
-        double widthDifference = newDimensions.width() - currentDimensions.width() + Shapes.BIG_EPSILON;
-        double heightDifference = newDimensions.height() - currentDimensions.height() + Shapes.BIG_EPSILON;
+        double widthDifference = newDimensions.width - currentDimensions.width + Shapes.BIG_EPSILON;
+        double heightDifference = newDimensions.height - currentDimensions.height + Shapes.BIG_EPSILON;
 
         AABB boundingBox = AABB.ofSize(entity.position().add(0, yOffset, 0), widthDifference, heightDifference, widthDifference);
         // Inflate adds the sizes fully to min and max, meaning it doubles the size of the actual shape
         // This is used to catch more blocks and therefore collect more positions that the player can be moved to
-        return boundingBox.inflate(newDimensions.width(), newDimensions.height(), newDimensions.width());
+        return boundingBox.inflate(newDimensions.width, newDimensions.height, newDimensions.width);
     }
 
     public static VoxelShape createCollisionShape(final Entity entity, final AABB boundingBox, double widthExpansion, double heightExpansion) {
