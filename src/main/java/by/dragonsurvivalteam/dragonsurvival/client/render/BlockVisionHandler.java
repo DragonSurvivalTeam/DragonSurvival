@@ -123,7 +123,6 @@ public class BlockVisionHandler {
         pose.pushPose();
 
         Vec3 camera = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
-        pose.mulPose(event.getModelViewMatrix());
         pose.translate(-camera.x(), -camera.y(), -camera.z());
 
         BlockVisionOutline.beginBatch();
@@ -192,7 +191,6 @@ public class BlockVisionHandler {
         pose.pushPose();
 
         Vec3 camera = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
-        pose.mulPose(event.getModelViewMatrix());
         pose.translate(-camera.x(), -camera.y(), -camera.z());
 
         BlockVisionShaderSimple.beginBatch();
