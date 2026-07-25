@@ -33,7 +33,6 @@
     "LightningBoltMixin",
     "LivingEntityMixin",
     "LocationPredicateMixin",
-    "MaceItemMixin",
     "MobEffectInstanceMixin",
     "ParrotMixin",
     "PlayerEndMixin",
