@@ -127,6 +127,6 @@ public class FakeClientPlayer extends AbstractClientPlayer implements EntityScal
     }
 
     @Override
-    public void onAddedToLevel() {
+    public void onAddedToWorld() {
     }
 }
