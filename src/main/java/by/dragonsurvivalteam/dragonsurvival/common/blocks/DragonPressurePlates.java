@@ -40,7 +40,7 @@ public class DragonPressurePlates extends PressurePlateBlock implements SimpleWa
     private final boolean allowHumans;
 
     public DragonPressurePlates(final Properties properties, final TagKey<DragonSpecies> types, boolean allowHumans) {
-        super(BlockSetType.WARPED, properties);
+        super(Sensitivity.EVERYTHING, properties, BlockSetType.WARPED);
         registerDefaultState(stateDefinition.any().setValue(POWERED, false).setValue(WATERLOGGED, false));
 
         this.types = types;
