@@ -13,6 +13,7 @@ import software.bernie.geckolib.model.GeoModel;
 public class AnimationUtils {
     /** Time in MS of 1 frame for 60 FPS */
     private static final float MS_FOR_60FPS = 1.f / 60.f * 1000.f;
+    private static final float MS_PER_TICK = 50.f;
 
     public static <E extends GeoAnimatable> void setAnimationSpeed(double speed, double currentAnimationTick, AnimationController<E> controller) {
 
@@ -38,14 +39,16 @@ public class AnimationUtils {
     }
 
     public static float getDeltaTickFor60FPS() {
-        float deltaTick = Minecraft.getInstance().getTimer().getRealtimeDeltaTicks();
-        //noinspection DataFlowIssue -> level is present
-        return deltaTick / (MS_FOR_60FPS / Minecraft.getInstance().level.tickRateManager().millisecondsPerTick());
+        return getRealtimeDeltaTicks() / (MS_FOR_60FPS / MS_PER_TICK);
     }
 
     public static float getDeltaSeconds() {
-        //noinspection DataFlowIssue -> level is present
-        return (Minecraft.getInstance().getTimer().getRealtimeDeltaTicks() * Minecraft.getInstance().level.tickRateManager().millisecondsPerTick()) / 1000f;
+        return getRealtimeDeltaTicks() * MS_PER_TICK / 1000f;
+    }
+
+    private static float getRealtimeDeltaTicks() {
+        float deltaTicks = Minecraft.getInstance().getTimer().tickDelta;
+        return deltaTicks > 7.f ? 0.5f : deltaTicks;
     }
 
     public static <A extends GeoAnimatable, T extends GeoModel<A>> boolean doesAnimationExist(final T model, final A animatable, final String animation) {
