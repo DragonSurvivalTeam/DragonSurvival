@@ -251,7 +251,11 @@ public class DragonInventoryScreen extends EffectRenderingInventoryScreen<Dragon
         int scale = (int) (20 * EntityScale.get(player));
         scale = Mth.clamp(scale, 10, 40); // Very large dragon sizes (above the default max. size) will have a < 20 scale value
 
-        InventoryScreen.renderEntityInInventoryFollowsMouse(guiGraphics, scissorX0, scissorY0, scissorX1, scissorY1, scale, 0, mouseX, mouseY, player);
+        int entityX = (scissorX0 + scissorX1) / 2;
+        int entityY = (scissorY0 + scissorY1) / 2;
+        guiGraphics.enableScissor(scissorX0, scissorY0, scissorX1, scissorY1);
+        InventoryScreen.renderEntityInInventoryFollowsMouse(guiGraphics, entityX, entityY, scale, entityX - mouseX, entityY - mouseY, player);
+        guiGraphics.disableScissor();
 
         if (!clawsMenu) {
             return;

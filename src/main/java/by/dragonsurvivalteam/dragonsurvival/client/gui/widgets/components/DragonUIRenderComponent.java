@@ -12,7 +12,6 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Quaternionf;
-import org.joml.Vector3f;
 
 import java.util.List;
 import java.util.function.Supplier;
@@ -49,7 +48,7 @@ public class DragonUIRenderComponent extends AbstractContainerEventHandler imple
         Quaternionf quaternion = Axis.ZP.rotationDegrees(180);
         quaternion.mul(Axis.XP.rotationDegrees(yRot * 10));
         quaternion.rotateY((float) Math.toRadians(180 - xRot * 10));
-        InventoryScreen.renderEntityInInventory(guiGraphics, x + (float) width / 2 + xOffset, y + height - 30 + yOffset, (int) scale, new Vector3f(0, 0, 0), quaternion, null, getter.get());
+        InventoryScreen.renderEntityInInventory(guiGraphics, (int) (x + (float) width / 2 + xOffset), (int) (y + height - 30 + yOffset), (int) scale, quaternion, null, getter.get());
 
         guiGraphics.pose().popPose();
     }

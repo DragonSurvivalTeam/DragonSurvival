@@ -51,7 +51,6 @@ import net.minecraftforge.client.gui.widget.ExtendedButton;
 import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Quaternionf;
-import org.joml.Vector3f;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -221,7 +220,7 @@ public class DragonSkinsScreen extends Screen {
                 Quaternionf quaternion = Axis.ZP.rotationDegrees(180.0F);
                 quaternion.mul(Axis.XP.rotationDegrees(yRot * 10.0F));
                 quaternion.rotateY((float) Math.toRadians(180 - xRot * 10));
-                InventoryScreen.renderEntityInInventory(guiGraphics, startX + 15, startY + 70, (int) scale, new Vector3f(0, 0, 100), quaternion, null, dragon);
+                InventoryScreen.renderEntityInInventory(guiGraphics, startX + 15, startY + 70, (int) scale, quaternion, null, dragon);
             } else {
                 drawNonShadowString(guiGraphics, minecraft.font, Component.translatable(NO_SKIN).withStyle(ChatFormatting.RED), startX + 21, startY + 40, -1);
             }

@@ -23,7 +23,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Quaternionf;
-import org.joml.Vector3f;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -93,18 +92,18 @@ public abstract class InventoryScreenMixin extends EffectRenderingInventoryScree
 
     // If we are a dragon, we don't want to angle the entire entity when rendering it with a follows mouse command (like vanilla does).
     // Instead, we angle just the dragon's head to follow the given angle. So we modify the angles to eb zero if we are a dragon and capture them to use them later.
-    @ModifyArgs(method = "renderEntityInInventoryFollowsMouse", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/InventoryScreen;renderEntityInInventoryFollowsAngle(Lnet/minecraft/client/gui/GuiGraphics;IIIIIFFFLnet/minecraft/world/entity/LivingEntity;)V"))
+    @ModifyArgs(method = "renderEntityInInventoryFollowsMouse", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/InventoryScreen;renderEntityInInventoryFollowsAngle(Lnet/minecraft/client/gui/GuiGraphics;IIIFFLnet/minecraft/world/entity/LivingEntity;)V", remap = false))
     private static void dragon_survival$cancelEntityAnglingForDragons(Args args) {
-        if (DragonStateProvider.isDragon(args.get(9))) {
-            dragon_survival$storedXAngle = args.get(7);
-            dragon_survival$storedYAngle = args.get(8);
-            args.set(7, 0.f);
-            args.set(8, 0.f);
+        if (DragonStateProvider.isDragon(args.get(6))) {
+            dragon_survival$storedXAngle = args.get(4);
+            dragon_survival$storedYAngle = args.get(5);
+            args.set(4, 0.f);
+            args.set(5, 0.f);
         }
     }
 
     @Inject(method = "renderEntityInInventory", at = @At("HEAD"))
-    private static void dragonSurvival$setFlag(final GuiGraphics graphics, float x, float y, float scale, final Vector3f translate, final Quaternionf pose, final Quaternionf cameraOrientation, final LivingEntity entity, final CallbackInfo callback) {
+    private static void dragonSurvival$setFlag(final GuiGraphics graphics, int x, int y, int scale, final Quaternionf pose, final Quaternionf cameraOrientation, final LivingEntity entity, final CallbackInfo callback) {
         if (entity instanceof DragonEntity dragon) {
             Player player = dragon.getPlayer();
 
@@ -117,7 +116,7 @@ public abstract class InventoryScreenMixin extends EffectRenderingInventoryScree
     }
 
     @Inject(method = "renderEntityInInventory", at = @At("RETURN"))
-    private static void dragonSurvival$clearFlag(final GuiGraphics graphics, float x, float y, float scale, final Vector3f translate, final Quaternionf pose, final Quaternionf cameraOrientation, final LivingEntity entity, final CallbackInfo callback) {
+    private static void dragonSurvival$clearFlag(final GuiGraphics graphics, int x, int y, int scale, final Quaternionf pose, final Quaternionf cameraOrientation, final LivingEntity entity, final CallbackInfo callback) {
         if (entity instanceof DragonEntity dragon) {
             Player player = dragon.getPlayer();
 
