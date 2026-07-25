@@ -187,7 +187,7 @@ public class SeaDragonAbilities {
                 List.of(new ActionContainer(new DragonBreathTarget(AbilityTargeting.entity(
                                 Condition.thisEntity(EntityCondition.isLiving()).build(),
                                 List.of(
-                                        new DamageEffect(context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.LIGHTNING_BREATH), LevelBasedValue.perLevel(1), DSAttributes.DRAGON_ABILITY_DAMAGE, DamageEffect.DEFAULT_EXPRESSION, false),
+                                        new DamageEffect(context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.LIGHTNING_BREATH), LevelBasedValue.perLevel(1), DSAttributes.DRAGON_ABILITY_DAMAGE.getHolder().orElseThrow(), DamageEffect.DEFAULT_EXPRESSION, false),
                                         new PotionEffect(PotionData.create(DSEffects.CHARGED.get()).duration(30).probability(0.5f).build())
                                 ),
                                 TargetingMode.NON_ALLIES
@@ -633,7 +633,7 @@ public class SeaDragonAbilities {
                 // Disable when marked by the ender dragon
                 Optional.of(Condition.thisEntity(EntityCondition.isMarked(true)).build()),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
-                        List.of(new SpinEffect(1, Optional.of(HolderSet.direct(ForgeMod.WATER_TYPE)))),
+                        List.of(new SpinEffect(1, Optional.of(HolderSet.direct(ForgeMod.WATER_TYPE.getHolder().orElseThrow())))),
                         TargetingMode.ALLIES_AND_SELF
                 )), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(1))),
                 true,
@@ -668,7 +668,7 @@ public class SeaDragonAbilities {
                 Optional.empty(),
                 List.of(
                         new ActionContainer(new SelfTarget(AbilityTargeting.entity(
-                                List.of(new SwimEffect(LevelBasedValue.constant(SwimData.UNLIMITED_OXYGEN), ForgeMod.WATER_TYPE)),
+                                List.of(new SwimEffect(LevelBasedValue.constant(SwimData.UNLIMITED_OXYGEN), ForgeMod.WATER_TYPE.getHolder().orElseThrow())),
                                 TargetingMode.ALL
                         )), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(1)),
                         new ActionContainer(new SelfTarget(AbilityTargeting.entity(

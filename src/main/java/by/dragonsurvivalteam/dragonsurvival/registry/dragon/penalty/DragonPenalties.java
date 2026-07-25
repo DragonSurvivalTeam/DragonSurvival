@@ -89,7 +89,7 @@ public class DragonPenalties {
                         Condition.thisEntity(EntityCondition.isInBlock(DSBlockTags.IS_WET))
                 ).and(Condition.thisEntity(EntityCondition.hasEffect(DSEffects.FIRE.get())).invert()).build()),
                 new DamagePenalty(context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.RAIN_BURN), 1),
-                new SupplyTrigger(DragonSurvival.res("rain_supply"), DSAttributes.PENALTY_RESISTANCE_TIME, Functions.secondsToTicks(2), 1, 0.013f, List.of(), false, Optional.of(ParticleTypes.SMOKE))
+                new SupplyTrigger(DragonSurvival.res("rain_supply"), DSAttributes.PENALTY_RESISTANCE_TIME.getHolder().orElseThrow(), Functions.secondsToTicks(2), 1, 0.013f, List.of(), false, Optional.of(ParticleTypes.SMOKE))
         ));
 
         context.register(WATER_WEAKNESS, new DragonPenalty(
@@ -112,7 +112,7 @@ public class DragonPenalties {
                 new DamagePenalty(context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.DEHYDRATION), 1),
                 new SupplyTrigger(
                         DragonSurvival.res("water_supply"),
-                        DSAttributes.PENALTY_RESISTANCE_TIME,
+                        DSAttributes.PENALTY_RESISTANCE_TIME.getHolder().orElseThrow(),
                         Functions.secondsToTicks(2),
                         1,
                         0.013f,
@@ -147,7 +147,7 @@ public class DragonPenalties {
                         Condition.thisEntity(EntityCondition.isInLight(3))
                 ).invert().build()),
                 new MobEffectPenalty(PotionData.create(DSEffects.STRESS.get()).duration(10).showParticles().build()),
-                new SupplyTrigger(DragonSurvival.res("stress_supply"), DSAttributes.PENALTY_RESISTANCE_TIME, Functions.secondsToTicks(2), 1, 0.013f, List.of(), false, Optional.empty())
+                new SupplyTrigger(DragonSurvival.res("stress_supply"), DSAttributes.PENALTY_RESISTANCE_TIME.getHolder().orElseThrow(), Functions.secondsToTicks(2), 1, 0.013f, List.of(), false, Optional.empty())
         ));
 
         context.register(WATER_POTION_WEAKNESS, new DragonPenalty(

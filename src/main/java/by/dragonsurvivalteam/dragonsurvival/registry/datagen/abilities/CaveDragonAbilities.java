@@ -200,12 +200,12 @@ public class CaveDragonAbilities {
                 ),
                 Optional.of(new ExperienceLevelUpgrade(4, LevelBasedValue.lookup(List.of(0f, 10f, 30f, 50f), LevelBasedValue.perLevel(15)))),
                 // Disable underwater
-                Optional.of(Condition.thisEntity(EntityCondition.isEyeInFluid(ForgeMod.WATER_TYPE)).or(Condition.thisEntity(EntityCondition.isInRainOrSnow())).build()),
+                Optional.of(Condition.thisEntity(EntityCondition.isEyeInFluid(ForgeMod.WATER_TYPE.getHolder().orElseThrow())).or(Condition.thisEntity(EntityCondition.isInRainOrSnow())).build()),
                 List.of(
                         new ActionContainer(new DragonBreathTarget(AbilityTargeting.entity(
                                 Condition.thisEntity(EntityCondition.isLiving()).build(),
                                 List.of(
-                                        new DamageEffect(context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.FIRE_BREATH), LevelBasedValue.perLevel(3), DSAttributes.DRAGON_ABILITY_DAMAGE, DamageEffect.DEFAULT_EXPRESSION, false),
+                                        new DamageEffect(context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.FIRE_BREATH), LevelBasedValue.perLevel(3), DSAttributes.DRAGON_ABILITY_DAMAGE.getHolder().orElseThrow(), DamageEffect.DEFAULT_EXPRESSION, false),
                                         new IgniteEffect(LevelBasedValue.perLevel(Functions.secondsToTicks(5))),
                                         new PotionEffect(PotionData.create(DSEffects.BURN.get()).duration(10).probability(0.3f).build())
                                 ),
@@ -251,7 +251,7 @@ public class CaveDragonAbilities {
                                 .optional()
                 ),
                 Optional.of(new ExperienceLevelUpgrade(4, LevelBasedValue.lookup(List.of(0f, 12f, 32f, 64f), LevelBasedValue.perLevel(15)))),
-                Optional.of(Condition.thisEntity(EntityCondition.isEyeInFluid(ForgeMod.WATER_TYPE)).or(Condition.thisEntity(EntityCondition.isInRainOrSnow())).build()),
+                Optional.of(Condition.thisEntity(EntityCondition.isEyeInFluid(ForgeMod.WATER_TYPE.getHolder().orElseThrow())).or(Condition.thisEntity(EntityCondition.isInRainOrSnow())).build()),
                 List.of(
                         new ActionContainer(new DragonBreathTarget(AbilityTargeting.entity(List.of(
                                 new SmeltItemEffect(Optional.empty(), Optional.of(LevelBasedValue.perLevel(4.0f)), true)
@@ -259,7 +259,7 @@ public class CaveDragonAbilities {
                         new ActionContainer(new DragonBreathTarget(AbilityTargeting.entity(
                                 Condition.thisEntity(EntityCondition.isLiving()).build(),
                                 List.of(
-                                        new DamageEffect(context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.FIRE_BREATH), LevelBasedValue.perLevel(0.5f), DSAttributes.DRAGON_ABILITY_DAMAGE, DamageEffect.DEFAULT_EXPRESSION, false),
+                                        new DamageEffect(context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.FIRE_BREATH), LevelBasedValue.perLevel(0.5f), DSAttributes.DRAGON_ABILITY_DAMAGE.getHolder().orElseThrow(), DamageEffect.DEFAULT_EXPRESSION, false),
                                         new IgniteEffect(LevelBasedValue.perLevel(Functions.secondsToTicks(1)))
                                 ),
                                 TargetingMode.NON_ALLIES
@@ -295,7 +295,7 @@ public class CaveDragonAbilities {
                 ),
                 Optional.of(new ExperienceLevelUpgrade(4, LevelBasedValue.lookup(List.of(0f, 20f, 40f, 45f), LevelBasedValue.perLevel(15)))),
                 // Disable underwater
-                Optional.of(Condition.thisEntity(EntityCondition.isEyeInFluid(ForgeMod.WATER_TYPE)).or(Condition.thisEntity(EntityCondition.isInRainOrSnow())).build()),
+                Optional.of(Condition.thisEntity(EntityCondition.isEyeInFluid(ForgeMod.WATER_TYPE.getHolder().orElseThrow())).or(Condition.thisEntity(EntityCondition.isInRainOrSnow())).build()),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         Condition.thisEntity(EntityCondition.isLiving()).build(),
                         List.of(new ProjectileEffect(
@@ -564,7 +564,7 @@ public class CaveDragonAbilities {
                 // Disable when marked by the ender dragon
                 Optional.of(Condition.thisEntity(EntityCondition.isMarked(true)).build()),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
-                        List.of(new SpinEffect(1, Optional.of(HolderSet.direct(ForgeMod.LAVA_TYPE)))),
+                        List.of(new SpinEffect(1, Optional.of(HolderSet.direct(ForgeMod.LAVA_TYPE.getHolder().orElseThrow())))),
                         TargetingMode.ALLIES_AND_SELF
                 )), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(1))),
                 true,
@@ -598,7 +598,7 @@ public class CaveDragonAbilities {
                 Optional.empty(),
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
-                        List.of(new SwimEffect(LevelBasedValue.perLevel(Functions.secondsToTicks(180), Functions.secondsToTicks(60)), ForgeMod.LAVA_TYPE)),
+                        List.of(new SwimEffect(LevelBasedValue.perLevel(Functions.secondsToTicks(180), Functions.secondsToTicks(60)), ForgeMod.LAVA_TYPE.getHolder().orElseThrow())),
                         TargetingMode.ALLIES_AND_SELF
                 )), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(1))),
                 false, // To prevent regaining oxygen
