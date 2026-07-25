@@ -13,6 +13,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraftforge.client.gui.overlay.ForgeGui;
 import org.jetbrains.annotations.NotNull;
 
 /** Render dragon specific hud elements (e.g. time in rain for cave dragons or time without water for sea dragons) */
@@ -41,6 +42,8 @@ public class DragonPenaltyHUD {
             return;
         }
 
+        ForgeGui gui = (ForgeGui) Minecraft.getInstance().gui;
+
         for (ResourceLocation supplyType : supply.getSupplyTypes()) {
             boolean displayLikeHungerBar = supply.getMatchingPenalty(supplyType, DragonStateProvider.getData(player)).map(penalty -> {
                 if (penalty.value().trigger() instanceof SupplyTrigger supplyTrigger) {
@@ -54,8 +57,8 @@ public class DragonPenaltyHUD {
             boolean shouldRender = supply.hasSupply(supplyType) && supplyPercentage < 1 || displayLikeHungerBar;
 
             if (shouldRender) {
-                int rightHeight = Minecraft.getInstance().gui.rightHeight;
-                Minecraft.getInstance().gui.rightHeight += 10;
+                int rightHeight = gui.rightHeight;
+                gui.rightHeight += 10;
 
                 // See renderAirLevel in vanilla to understand this value
                 float vanillaSupplyPercentageOffset = (float) 2 / 360;

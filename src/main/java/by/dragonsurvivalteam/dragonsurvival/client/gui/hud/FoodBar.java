@@ -12,6 +12,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodData;
+import net.minecraftforge.client.gui.overlay.ForgeGui;
 
 public class FoodBar {
     private static final RandomSource RANDOM = RandomSource.create();
@@ -43,9 +44,10 @@ public class FoodBar {
         Minecraft.getInstance().getProfiler().push("food");
         RenderSystem.enableBlend();
 
+        ForgeGui gui = (ForgeGui) Minecraft.getInstance().gui;
         final int left = width / 2 + 91;
-        final int top = height - Minecraft.getInstance().gui.rightHeight;
-        Minecraft.getInstance().gui.rightHeight += 10;
+        final int top = height - gui.rightHeight;
+        gui.rightHeight += 10;
         final FoodData food = localPlayer.getFoodData();
 
         final boolean hunger = localPlayer.hasEffect(MobEffects.HUNGER);
