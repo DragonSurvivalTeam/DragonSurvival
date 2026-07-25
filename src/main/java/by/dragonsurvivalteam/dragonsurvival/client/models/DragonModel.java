@@ -23,8 +23,8 @@ import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.common.ForgeMod;
 import software.bernie.geckolib.core.animation.AnimationState;
 import software.bernie.geckolib.core.molang.MolangParser;
 import software.bernie.geckolib.model.GeoModel;
@@ -64,7 +64,7 @@ public class DragonModel extends GeoModel<DragonEntity> {
             MolangParser.INSTANCE.setValue("query.head_pitch", () -> movement.headPitch);
         }
 
-        double gravity = player.getAttributeValue(Attributes.GRAVITY);
+        double gravity = player.getAttributeValue(ForgeMod.ENTITY_GRAVITY.get());
         MolangParser.INSTANCE.setValue("query.gravity", () -> gravity);
 
         double bodyYawAvg;

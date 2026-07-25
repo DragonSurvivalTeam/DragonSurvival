@@ -37,6 +37,7 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -354,7 +355,7 @@ public class ClientFlightHandler {
                                 float verticalDelta = Mth.cos(pitch);
 
                                 verticalDelta = (float) ((double) verticalDelta * (double) verticalDelta * Math.min(1.0D, lookMagnitude / 0.4D));
-                                double gravity = player.getAttributeValue(Attributes.GRAVITY);
+                                double gravity = player.getAttributeValue(ForgeMod.ENTITY_GRAVITY.get());
 
                                 if (ServerFlightHandler.isGliding(player)) {
                                     if (!wasGliding) {

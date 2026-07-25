@@ -19,6 +19,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.levelgen.blockpredicates.BlockPredicate;
+import net.minecraftforge.common.ForgeMod;
 
 import java.util.List;
 import java.util.Optional;
@@ -51,9 +52,9 @@ public class AncientDatapacks {
                         Modifier.perWithBase(Attributes.JUMP_STRENGTH, 0.1f, 0.0015f, AttributeOperation.ADD_VALUE),
                         Modifier.perWithBase(Attributes.SAFE_FALL_DISTANCE, 1, 0.015f, AttributeOperation.ADD_VALUE),
                         Modifier.per(DSAttributes.BLOCK_BREAK_RADIUS, 0.01f, AttributeOperation.ADD_VALUE),
-                        Modifier.perWithBase(Attributes.ENTITY_INTERACTION_RANGE, 1, 0.05f, AttributeOperation.ADD_VALUE),
-                        Modifier.perWithBase(Attributes.BLOCK_INTERACTION_RANGE, 1, 0.05f, AttributeOperation.ADD_VALUE),
-                        Modifier.perWithBase(Attributes.STEP_HEIGHT, 0.5f, 0.015f, AttributeOperation.ADD_VALUE)
+                        Modifier.perWithBase(ForgeMod.ENTITY_REACH, 1, 0.05f, AttributeOperation.ADD_VALUE),
+                        Modifier.perWithBase(ForgeMod.BLOCK_REACH, 1, 0.05f, AttributeOperation.ADD_VALUE),
+                        Modifier.perWithBase(ForgeMod.STEP_HEIGHT, 0.5f, 0.015f, AttributeOperation.ADD_VALUE)
                 ),
                 List.of(
                         GrowthItem.create(Functions.hoursToTicks(1), DSItems.ELDER_DRAGON_HEART.get()),

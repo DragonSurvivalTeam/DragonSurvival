@@ -16,6 +16,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraftforge.common.ForgeMod;
 
 import java.util.List;
 import java.util.Optional;
@@ -104,7 +105,7 @@ public class DragonStages {
                 Functions.hoursToTicks(24),
                 List.of(
                         /* Constant */
-                        Modifier.constant(Attributes.STEP_HEIGHT, 0.5f, AttributeOperation.ADD_VALUE),
+                        Modifier.constant(ForgeMod.STEP_HEIGHT, 0.5f, AttributeOperation.ADD_VALUE),
                         Modifier.constant(Attributes.ATTACK_DAMAGE, 3, AttributeOperation.ADD_VALUE),
                         Modifier.constant(Attributes.JUMP_STRENGTH, 0.1f, AttributeOperation.ADD_VALUE),
                         Modifier.constant(Attributes.SAFE_FALL_DISTANCE, 1, AttributeOperation.ADD_VALUE),
@@ -112,8 +113,8 @@ public class DragonStages {
                 Modifier.precisePerWithBase(DSAttributes.SCALE, -0.05f, 0.025f, AttributeOperation.ADD_VALUE),
                         Modifier.perWithBase(Attributes.MAX_HEALTH, 10.0f, 0.5f, AttributeOperation.ADD_VALUE),
                         Modifier.perWithBase(DSAttributes.DRAGON_BREATH_RANGE, 5.5f, 0.05f, AttributeOperation.ADD_VALUE),
-                        Modifier.per(Attributes.ENTITY_INTERACTION_RANGE, 0.05f, AttributeOperation.ADD_VALUE),
-                        Modifier.per(Attributes.BLOCK_INTERACTION_RANGE, 0.05f, AttributeOperation.ADD_VALUE)
+                        Modifier.per(ForgeMod.ENTITY_REACH, 0.05f, AttributeOperation.ADD_VALUE),
+                        Modifier.per(ForgeMod.BLOCK_REACH, 0.05f, AttributeOperation.ADD_VALUE)
                 ),
                 List.of(
                         GrowthItem.create(Functions.hoursToTicks(1), DSItems.ELDER_DRAGON_HEART.get()),
