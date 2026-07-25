@@ -84,7 +84,7 @@ public abstract class VillagerMixin extends AbstractVillager {
                 }
 
                 setLastHurtByMob(player); // To increase the prices when players are stealing
-                makeSound(getHurtSound(damageSources().generic()));
+                playSound(getHurtSound(damageSources().generic()));
                 player.level().broadcastEntityEvent(this, EntityEvent.VILLAGER_ANGRY);
 
                 handler.setPillageCooldown();
