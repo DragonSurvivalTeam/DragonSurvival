@@ -419,8 +419,8 @@ public final class SortingHandler {
         EquipmentSlot secondSlot = secondArmor.getEquipmentSlot();
 
         if (firstSlot == secondSlot) {
-            double firstDefense = firstArmor.getMaterial().getDefense(firstArmor.getType()) * (1 + firstArmor.getToughness());
-            double secondDefense = secondArmor.getMaterial().getDefense(secondArmor.getType()) * (1 + secondArmor.getToughness());
+            double firstDefense = firstArmor.getDefense() * (1 + firstArmor.getToughness());
+            double secondDefense = secondArmor.getDefense() * (1 + secondArmor.getToughness());
 
             // To make sure that a difference of 0.3 gets sorted properly
             double result = secondDefense - firstDefense;
