@@ -43,12 +43,13 @@ public class CustomSoulIconLoader {
         Map<ResourceLocation, JsonElement> resources = new HashMap<>();
         SimpleJsonResourceReloadListener.scanDirectory(manager, "custom_soul_icons", new Gson(), resources);
 
-        resources.forEach((location, element) -> CustomSoulIcon.CODEC.decode(JsonOps.INSTANCE, element)
-                .ifError(DragonSurvival.LOGGER::error).map(Pair::getFirst)
-                .ifSuccess(result -> {
-                    ResourceKey<DragonStage> stage = result.stage().orElse(null);
-                    ICONS.computeIfAbsent(result.species(), key -> new HashMap<>()).put(stage, result.model());
-                }));
+		resources.forEach((location, element) -> CustomSoulIcon.CODEC.decode(JsonOps.INSTANCE, element)
+			.map(Pair::getFirst)
+			.resultOrPartial(DragonSurvival.LOGGER::error)
+			.ifPresent(result -> {
+				ResourceKey<DragonStage> stage = result.stage().orElse(null);
+				ICONS.computeIfAbsent(result.species(), key -> new HashMap<>()).put(stage, result.model());
+			}));
     }
 
     public static @Nullable ResourceLocation getIcon(final ResourceKey<DragonSpecies> species, @Nullable final ResourceKey<DragonStage> stage) {
@@ -70,6 +71,6 @@ public class CustomSoulIconLoader {
 
     @SubscribeEvent
     public static void registerIcons(final ModelEvent.RegisterAdditional event) {
-        ICONS.values().forEach(maps -> maps.values().forEach(resource -> event.register(ModelResourceLocation.standalone(resource))));
+        ICONS.values().forEach(maps -> maps.values().forEach(resource -> event.register(new ModelResourceLocation(resource, "standalone"))));
     }
 }

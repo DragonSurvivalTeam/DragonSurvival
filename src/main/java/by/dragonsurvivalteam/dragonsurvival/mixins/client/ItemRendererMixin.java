@@ -91,7 +91,7 @@ public abstract class ItemRendererMixin { // FIXME :: doesn't work with sodium s
                 return;
             }
 
-            callback.setReturnValue(getItemModelShaper().getModelManager().getModel(ModelResourceLocation.standalone(resource)));
+            callback.setReturnValue(getItemModelShaper().getModelManager().getModel(new ModelResourceLocation(resource, "standalone")));
         }
     }
 
