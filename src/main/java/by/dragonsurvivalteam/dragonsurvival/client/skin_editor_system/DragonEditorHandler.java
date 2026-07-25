@@ -26,11 +26,11 @@ import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.client.GlStateBackup;
 import net.minecraftforge.client.event.RegisterShadersEvent;
-import net.minecraftforge.client.event.RenderFrameEvent;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 
@@ -196,7 +196,11 @@ public class DragonEditorHandler {
     }
 
     @SubscribeEvent
-    public static void purgeUnusedSkinTextures(final RenderFrameEvent.Pre event) {
+    public static void purgeUnusedSkinTextures(final TickEvent.ClientTickEvent event) {
+        if (event.phase != TickEvent.Phase.END) {
+            return;
+        }
+
         generatedSkinTextures.removeIf(texture -> {
             if (usedSkinTextures.contains(texture)) {
                 return false;

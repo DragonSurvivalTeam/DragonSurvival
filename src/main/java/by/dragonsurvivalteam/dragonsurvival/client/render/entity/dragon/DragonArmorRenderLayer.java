@@ -45,11 +45,11 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.armortrim.ArmorTrim;
 import net.minecraft.world.item.component.DyedItemColor;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.client.GlStateBackup;
 import net.minecraftforge.client.event.RegisterShadersEvent;
-import net.minecraftforge.client.event.RenderFrameEvent;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
@@ -125,7 +125,11 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
     }
 
     @SubscribeEvent
-    public static void purgeUnusedArmorTextures(final RenderFrameEvent.Pre event) {
+    public static void purgeUnusedArmorTextures(final TickEvent.ClientTickEvent event) {
+        if (event.phase != TickEvent.Phase.END) {
+            return;
+        }
+
         generatedArmorTextures.removeIf(texture -> {
             if (usedArmorTextures.contains(texture)) {
                 return false;
