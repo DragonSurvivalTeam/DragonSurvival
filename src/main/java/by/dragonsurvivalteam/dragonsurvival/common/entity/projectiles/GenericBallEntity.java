@@ -79,7 +79,7 @@ public class GenericBallEntity extends AbstractHurtingProjectile implements GeoE
         this.generalData = generalData;
         this.typeData = typeData;
         this.projectileLevel = projectileLevel;
-        accelerationPower = 0;
+        disableAcceleration();
 
         refreshDimensions();
         setPos(position.x, position.y, position.z);
@@ -137,7 +137,7 @@ public class GenericBallEntity extends AbstractHurtingProjectile implements GeoE
         generalData = ByteBufCodecs.fromCodecWithRegistries(ProjectileData.GeneralData.CODEC).decode(buffer);
         typeData = ByteBufCodecs.fromCodecWithRegistries(ProjectileData.GenericBallData.CODEC).decode(buffer);
         projectileLevel = buffer.readVarInt();
-        accelerationPower = 0;
+        disableAcceleration();
 
         refreshDimensions();
     }
@@ -185,9 +185,15 @@ public class GenericBallEntity extends AbstractHurtingProjectile implements GeoE
         lingerTicks = tag.getInt(LINGERING_TICKS);
         lifespan = tag.getInt(LIFESPAN);
         bounces = tag.getInt(BOUNCES);
-        accelerationPower = 0;
+        disableAcceleration();
 
         refreshDimensions();
+    }
+
+    public void disableAcceleration() {
+        xPower = 0;
+        yPower = 0;
+        zPower = 0;
     }
 
     @Override
