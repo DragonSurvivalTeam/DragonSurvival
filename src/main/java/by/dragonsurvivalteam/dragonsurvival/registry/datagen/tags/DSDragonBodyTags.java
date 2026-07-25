@@ -8,7 +8,6 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.tags.TagKey;
-import net.minecraftforge.common.CommonHooks;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -30,17 +29,15 @@ public class DSDragonBodyTags extends TagsProvider<DragonBody> {
     }
 
     public static List<Holder<DragonBody>> getOrdered(@Nullable final HolderLookup.Provider provider) {
-        HolderLookup.RegistryLookup<DragonBody> registry;
+        HolderLookup.Provider actualProvider = provider != null ? provider : DragonSurvival.PROXY.getAccess();
 
-        if (provider != null) {
-            registry = provider.lookupOrThrow(DragonBody.REGISTRY);
-        } else {
-            registry = CommonHooks.resolveLookup(DragonBody.REGISTRY);
+        if (actualProvider == null) {
+            throw new IllegalStateException("Registry context is not available for " + DragonBody.REGISTRY.location());
         }
 
+        HolderLookup.RegistryLookup<DragonBody> registry = actualProvider.lookupOrThrow(DragonBody.REGISTRY);
         List<Holder<DragonBody>> bodies = new ArrayList<>();
 
-        //noinspection DataFlowIssue -> registry is expected to be present
         registry.get(ORDER).ifPresent(set -> set.forEach(bodies::add));
 
         registry.listElements().forEach(body -> {
