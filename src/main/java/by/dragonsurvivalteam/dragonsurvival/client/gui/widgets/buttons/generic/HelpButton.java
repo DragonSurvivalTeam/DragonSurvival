@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic;
 
+import by.dragonsurvivalteam.dragonsurvival.client.util.TooltipRenderUtils;
 import com.mojang.datafixers.util.Either;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -54,7 +55,7 @@ public class HelpButton extends ExtendedButton {
         ResourceLocation resource;
 
         if (isHovered()) {
-            graphics.renderComponentTooltipFromElements(Minecraft.getInstance().font, tooltip, mouseX, mouseY, ItemStack.EMPTY);
+            TooltipRenderUtils.renderTooltipFromElements(graphics, Minecraft.getInstance().font, tooltip, mouseX, mouseY, ItemStack.EMPTY);
             resource = hover;
         } else {
             resource = main;

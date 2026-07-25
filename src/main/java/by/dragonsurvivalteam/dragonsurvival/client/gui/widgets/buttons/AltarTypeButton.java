@@ -4,6 +4,7 @@ import net.minecraft.util.Mth;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.DragonAltarScreen;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.DietComponent;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic.HoverDisableable;
+import by.dragonsurvivalteam.dragonsurvival.client.util.TooltipRenderUtils;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.StageResources;
@@ -163,7 +164,7 @@ public class AltarTypeButton extends Button implements HoverDisableable {
         }
 
         if (!components.isEmpty()) {
-            graphics.renderComponentTooltipFromElements(Minecraft.getInstance().font, components, mouseX, mouseY, ItemStack.EMPTY);
+            TooltipRenderUtils.renderTooltipFromElements(graphics, Minecraft.getInstance().font, components, mouseX, mouseY, ItemStack.EMPTY);
         }
     }
 

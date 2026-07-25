@@ -11,6 +11,7 @@ import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components.BarCom
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components.DietMenuComponent;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components.ScrollableComponent;
 import by.dragonsurvivalteam.dragonsurvival.client.util.TextRenderUtil;
+import by.dragonsurvivalteam.dragonsurvival.client.util.TooltipRenderUtils;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscResources;
@@ -230,7 +231,7 @@ public class DragonSpeciesScreen extends Screen {
                     List<Either<FormattedText, TooltipComponent>> components = new ArrayList<>();
                     //noinspection DataFlowIssue -> key is present
                     components.add(0, Either.left(Component.translatable(Translation.Type.DRAGON_SPECIES_INVENTORY_DESCRIPTION.wrap(species.unwrapKey().orElseThrow().location()))));
-                    graphics.renderComponentTooltipFromElements(Minecraft.getInstance().font, components, mouseX, mouseY, ItemStack.EMPTY);
+                    TooltipRenderUtils.renderTooltipFromElements(graphics, Minecraft.getInstance().font, components, mouseX, mouseY, ItemStack.EMPTY);
                 } else {
                     graphics.blit(data.species().value().miscResources().altarBanner(), getX(), getY(), 0, 147, 49, 147, 49, 294);
                 }

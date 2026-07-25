@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic;
 
+import by.dragonsurvivalteam.dragonsurvival.client.util.TooltipRenderUtils;
 import com.mojang.datafixers.util.Either;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -107,6 +108,6 @@ public class HoverButton extends ExtendedButton implements HoverDisableable {
             return;
         }
 
-        graphics.renderComponentTooltipFromElements(Minecraft.getInstance().font, customTooltip.get(), mouseX, mouseY, ItemStack.EMPTY);
+        TooltipRenderUtils.renderTooltipFromElements(graphics, Minecraft.getInstance().font, customTooltip.get(), mouseX, mouseY, ItemStack.EMPTY);
     }
 }
