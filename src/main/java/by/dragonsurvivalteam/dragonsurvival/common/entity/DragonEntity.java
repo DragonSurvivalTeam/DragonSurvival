@@ -32,7 +32,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.scores.PlayerTeam;
+import net.minecraft.world.scores.Team;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraft.client.Minecraft;
@@ -488,18 +488,18 @@ public class DragonEntity extends LivingEntity implements GeoEntity, EntityScale
     }
 
     @Override
-    protected @NotNull EntityDimensions getDefaultDimensions(@NotNull final Pose pose) {
+    public @NotNull EntityDimensions getDimensions(@NotNull final Pose pose) {
         Player player = getPlayer();
 
         if (player == null) {
-            return super.getDefaultDimensions(pose);
+            return super.getDimensions(pose);
         }
 
         return player.getDimensions(pose);
     }
 
     @Override
-    public @Nullable PlayerTeam getTeam() {
+    public @Nullable Team getTeam() {
         Player player = getPlayer();
 
         if (player != null) {
@@ -577,7 +577,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity, EntityScale
      * See dragonSurvival$modifyWalkSoundsWhenWalkingUnderwater and dragonSurvival$consideredSwimmingEvenWhenGroundedInWater
      */
     public static boolean isConsideredSwimmingForAnimation(Player player) {
-        boolean isInFluid = player.canSwimInFluidType(player.getInBlockState().getFluidState().getFluidType());
+        boolean isInFluid = player.canSwimInFluidType(player.level().getFluidState(player.blockPosition()).getFluidType());
         return isInFluid && !player.isPassenger() && (!player.onGround() || !player.getEyeInFluidType().isAir());
     }
 
