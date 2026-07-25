@@ -25,7 +25,6 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.Mirror;
@@ -243,6 +242,6 @@ public class DragonSoulBlock extends Block implements SimpleWaterloggedBlock, En
 
     @Override
     public <T extends BlockEntity> @Nullable BlockEntityTicker<T> getTicker(final Level level, @NotNull final BlockState state, @NotNull final BlockEntityType<T> type) {
-        return level.isClientSide ? null : BaseEntityBlock.createTickerHelper(type, DSBlockEntities.DRAGON_SOUL.get(), DragonSoulBlockEntity::serverTick);
+        return level.isClientSide ? null : BlockEntityTickerHelper.create(type, DSBlockEntities.DRAGON_SOUL.get(), DragonSoulBlockEntity::serverTick);
     }
 }

@@ -22,7 +22,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.RenderShape;
@@ -174,6 +173,6 @@ public class DragonBeacon extends Block implements SimpleWaterloggedBlock, Entit
 
     @Override
     public <T extends BlockEntity> @Nullable BlockEntityTicker<T> getTicker(final Level level, @NotNull final BlockState state, @NotNull final BlockEntityType<T> type) {
-        return level.isClientSide ? null : BaseEntityBlock.createTickerHelper(type, DSBlockEntities.DRAGON_BEACON.get(), DragonBeaconBlockEntity::serverTick);
+        return level.isClientSide ? null : BlockEntityTickerHelper.create(type, DSBlockEntities.DRAGON_BEACON.get(), DragonBeaconBlockEntity::serverTick);
     }
 }

@@ -27,7 +27,7 @@ public class DragonBeaconRenderer implements BlockEntityRenderer<DragonBeaconBlo
     public void render(final DragonBeaconBlockEntity beacon, final float partialTick, final PoseStack pose, @NotNull final MultiBufferSource buffer, final int packedLight, final int packedOverlay) {
         Level level = Objects.requireNonNull(beacon.getLevel());
 
-        boolean hasMemoryBlock = level.getBlockState(beacon.getBlockPos().below()).is(DSBlocks.DRAGON_MEMORY_BLOCK);
+        boolean hasMemoryBlock = level.getBlockState(beacon.getBlockPos().below()).is(DSBlocks.DRAGON_MEMORY_BLOCK.get());
         boolean isPaused = Minecraft.getInstance().isPaused();
 
         double x = beacon.getBlockPos().getX() + (0.25 + level.getRandom().nextInt(5) / 10d);
