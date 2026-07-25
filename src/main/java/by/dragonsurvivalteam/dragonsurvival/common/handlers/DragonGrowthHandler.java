@@ -177,7 +177,7 @@ public class DragonGrowthHandler {
                 || playerBounds.minZ < border.getMinZ() + borderEpsilon
                 || playerBounds.maxZ > border.getMaxZ() - borderEpsilon) {
                 return false;
-            } else if (!player.level().noBlockCollision(player, adjustedBounds)) {
+            } else if (player.level().getBlockCollisions(player, adjustedBounds).iterator().hasNext()) {
                 // Move y position slightly upwards to prevent false-positives with floor collisions
                 return false;
             }
