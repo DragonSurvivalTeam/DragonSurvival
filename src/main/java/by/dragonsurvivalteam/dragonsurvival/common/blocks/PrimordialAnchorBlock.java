@@ -44,7 +44,6 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.pathfinder.PathComputationType;
-import net.minecraft.world.level.portal.DimensionTransition;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
@@ -153,8 +152,8 @@ public class PrimordialAnchorBlock extends Block implements EntityBlock {
 
         if (level instanceof ServerLevel serverLevel) {
             BlockPos teleportPosition = findOrCreateValidTeleportPos(serverLevel, position).above(5);
-            DimensionTransition transition = new DimensionTransition(serverLevel, teleportPosition.getCenter(), player.getDeltaMovement(), player.getYRot(), player.getXRot(), DimensionTransition.PLAY_PORTAL_SOUND);
-            player.changeDimension(transition);
+            Vec3 destination = teleportPosition.getCenter();
+            player.teleportTo(serverLevel, destination.x, destination.y, destination.z, player.getYRot(), player.getXRot());
             handler.markedByEnderDragon = false;
             boolean flightWasActuallyGranted = false;
             boolean spinWasActuallyGranted = false;
