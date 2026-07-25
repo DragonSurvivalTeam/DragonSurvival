@@ -232,7 +232,7 @@ public class ClawToolHandler {
             ItemStack clawTool = getDragonHarvestTool(player);
 
             if (ItemStack.matches(clawTool, event.getOriginal())) {
-                clawTool.hurtAndBreak(1, player, EquipmentSlot.MAINHAND);
+                clawTool.hurtAndBreak(1, player, living -> living.broadcastBreakEvent(EquipmentSlot.MAINHAND));
             } else if (!player.level().isClientSide()) {
                 ClawInventoryData clawInventory = ClawInventoryData.getData(player);
 
