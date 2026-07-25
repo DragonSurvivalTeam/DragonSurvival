@@ -149,7 +149,7 @@ public class DragonEmoteScreen extends Screen {
     }
 
     @Override
-    public void renderBackground(@NotNull final GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    public void renderBackground(@NotNull final GuiGraphics graphics) {
         // Don't render the vanilla background, it darkens the UI in an undesirable way
     }
 
@@ -184,11 +184,11 @@ public class DragonEmoteScreen extends Screen {
         infoButton.setTooltip(Tooltip.create(Component.translatable(EMOTE_INFO)));
         addRenderableWidget(infoButton);
 
-        HoverButton discordButton = new HoverButton(startX + 83, startY - 26, 14, 14, 14, 14, DISCORD_MAIN, DISCORD_HOVER, ConfirmLinkScreen.confirmLink(this, DragonSurvival.DISCORD_URL));
+        HoverButton discordButton = new HoverButton(startX + 83, startY - 26, 14, 14, 14, 14, DISCORD_MAIN, DISCORD_HOVER, ConfirmLinkScreen.confirmLink(DragonSurvival.DISCORD_URL, this, true));
         discordButton.setTooltip(Tooltip.create(Component.translatable(LangKey.DISCORD)));
         addRenderableWidget(discordButton);
 
-        HoverButton wikiButton = new HoverButton(startX + 98, startY - 26, 14, 14, 14, 14, WIKI_MAIN, WIKI_HOVER, ConfirmLinkScreen.confirmLink(this, EMOTE_WIKI_URL));
+        HoverButton wikiButton = new HoverButton(startX + 98, startY - 26, 14, 14, 14, 14, WIKI_MAIN, WIKI_HOVER, ConfirmLinkScreen.confirmLink(EMOTE_WIKI_URL, this, true));
         wikiButton.setTooltip(Tooltip.create(Component.translatable(WIKI)));
         addRenderableWidget(wikiButton);
 

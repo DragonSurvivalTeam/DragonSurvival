@@ -93,8 +93,6 @@ public class DragonAbilityScreen extends Screen {
             return;
         }
 
-        renderBlurredBackground(partialTick);
-
         int startX = guiLeft + 8;
         int startY = guiTop - 28;
 
@@ -184,7 +182,7 @@ public class DragonAbilityScreen extends Screen {
     }
 
     @Override
-    public void renderBackground(@NotNull GuiGraphics pGuiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
+    public void renderBackground(@NotNull GuiGraphics pGuiGraphics) {
         // Don't render the vanilla background, it darkens the UI in an undesirable way
     }
 

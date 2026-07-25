@@ -187,8 +187,6 @@ public class DragonSkinsScreen extends Screen {
             return;
         }
 
-        this.renderBlurredBackground(partialTick);
-
         int startX = guiLeft;
         int startY = guiTop;
 
@@ -244,7 +242,7 @@ public class DragonSkinsScreen extends Screen {
     }
 
     @Override // We override this to not blur the background
-    public void renderBackground(@NotNull GuiGraphics graphics, int pMouseX, int pMouseY, float pPartialTick) {
+    public void renderBackground(@NotNull GuiGraphics graphics) {
         // Don't render the vanilla background, it darkens the UI in an undesirable way
     }
 
@@ -490,11 +488,11 @@ public class DragonSkinsScreen extends Screen {
         helpButton.setTooltip(Tooltip.create(Component.translatable(HELP)));
         addRenderableWidget(helpButton);
 
-        HoverButton discordButton = new HoverButton(startX + 176 + 32, startY + 128 + 20, 14, 14, 14, 14, DISCORD_MAIN, DISCORD_HOVER, ConfirmLinkScreen.confirmLink(this, DragonSurvival.DISCORD_URL));
+        HoverButton discordButton = new HoverButton(startX + 176 + 32, startY + 128 + 20, 14, 14, 14, 14, DISCORD_MAIN, DISCORD_HOVER, ConfirmLinkScreen.confirmLink(DragonSurvival.DISCORD_URL, this, true));
         discordButton.setTooltip(Tooltip.create(Component.translatable(LangKey.DISCORD)));
         addRenderableWidget(discordButton);
 
-        HoverButton wikiButton = new HoverButton(startX + 176 + 48, startY + 128 + 20, 14, 14, 14, 14, WIKI_MAIN, WIKI_HOVER, ConfirmLinkScreen.confirmLink(this, SKIN_WIKI_URL));
+        HoverButton wikiButton = new HoverButton(startX + 176 + 48, startY + 128 + 20, 14, 14, 14, 14, WIKI_MAIN, WIKI_HOVER, ConfirmLinkScreen.confirmLink(SKIN_WIKI_URL, this, true));
         wikiButton.setTooltip(Tooltip.create(Component.translatable(WIKI)));
         addRenderableWidget(wikiButton);
     }
