@@ -1,9 +1,5 @@
 package by.dragonsurvivalteam.dragonsurvival.compat.emi;
 
-import by.dragonsurvivalteam.dragonsurvival.compat.ModID;
-import dev.emi.emi.config.EffectLocation;
-import dev.emi.emi.config.EmiConfig;
-
 public class EmiCompat {
     /**
      * Copies the logic of <a href="https://github.com/emilyploszaj/emi/blob/533b5d025723b1627b8afb11804295740d61d20e/xplat/src/main/java/dev/emi/emi/mixin/AbstractInventoryScreenMixin.java#L66-L73">EMI</a> <br> <br>
@@ -11,10 +7,6 @@ public class EmiCompat {
      * See <a href="https://github.com/DragonSurvivalTeam/DragonSurvival/issues/839">this</a> issue
      */
     public static boolean hideEffects() {
-        if (!ModID.EMI.isLoaded()) {
-            return false;
-        }
-
-        return EmiConfig.effectLocation == EffectLocation.TOP || EmiConfig.effectLocation == EffectLocation.HIDDEN;
+        return false;
     }
 }

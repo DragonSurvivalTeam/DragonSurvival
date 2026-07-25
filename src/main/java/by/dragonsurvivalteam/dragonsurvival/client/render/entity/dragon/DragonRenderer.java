@@ -7,8 +7,6 @@ import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvide
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.HunterHandler;
 import by.dragonsurvivalteam.dragonsurvival.compat.Compat;
-import by.dragonsurvivalteam.dragonsurvival.compat.ModID;
-import by.dragonsurvivalteam.dragonsurvival.compat.sophisticatedBackpacks.DragonBackpackRenderLayer;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MovementData;
 import by.dragonsurvivalteam.dragonsurvival.server.handlers.ServerFlightHandler;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -58,9 +56,6 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
             return null;
         }, (bone, animatable) -> null));
 
-        if (ModID.SOPHISTICATED_BACKPACKS.isLoaded()) {
-            getRenderLayers().add(new DragonBackpackRenderLayer(this));
-        }
     }
 
     /**

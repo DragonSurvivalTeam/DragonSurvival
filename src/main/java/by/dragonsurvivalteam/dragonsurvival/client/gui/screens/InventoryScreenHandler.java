@@ -2,7 +2,6 @@ package by.dragonsurvivalteam.dragonsurvival.client.gui.screens;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
-import by.dragonsurvivalteam.dragonsurvival.compat.ModID;
 import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
@@ -32,7 +31,6 @@ import net.minecraftforge.client.event.ScreenEvent;
 import net.minecraftforge.client.gui.widget.ExtendedButton;
 import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
-import top.theillusivec4.curios.client.gui.CuriosScreen;
 
 import java.util.Objects;
 
@@ -139,9 +137,6 @@ public class InventoryScreenHandler {
         Integer height = null;
 
         if (sc instanceof InventoryScreen screen) {
-            width = screen.getGuiLeft();
-            height = screen.height;
-        } else if (ModID.CURIOS.isLoaded() && sc instanceof CuriosScreen screen) {
             width = screen.getGuiLeft();
             height = screen.height;
         }
