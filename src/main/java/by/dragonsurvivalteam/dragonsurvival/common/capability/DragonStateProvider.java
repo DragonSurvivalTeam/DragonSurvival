@@ -4,18 +4,31 @@ import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AttachmentManag
 
 import by.dragonsurvivalteam.dragonsurvival.client.util.FakeClientPlayer;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
+import net.minecraft.core.Direction;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
-public class DragonStateProvider implements ICapabilityProvider<Player, Void, DragonStateHandler> {
+public class DragonStateProvider implements ICapabilityProvider {
+    private final LazyOptional<DragonStateHandler> capability;
+
+    public DragonStateProvider(final Player player) {
+        capability = LazyOptional.of(() -> getData(player));
+    }
+
     @Override
-    public @Nullable DragonStateHandler getCapability(@NotNull Player player, @Nullable Void context) {
-        return getData(player);
+    public <T> @NotNull LazyOptional<T> getCapability(@NotNull Capability<T> requested, @Nullable Direction side) {
+        return requested == Capabilities.DRAGON_CAPABILITY ? capability.cast() : LazyOptional.empty();
+    }
+
+    public void invalidate() {
+        capability.invalidate();
     }
 
     public static @NotNull DragonStateHandler getData(@NotNull final Player player) {
@@ -33,7 +46,12 @@ public class DragonStateProvider implements ICapabilityProvider<Player, Void, Dr
             return Optional.empty();
         }
 
-        return Optional.ofNullable(entity.getCapability(Capabilities.DRAGON_CAPABILITY));
+        DragonStateHandler fakeData = getFakePlayerHandler(entity);
+        if (fakeData != null) {
+            return Optional.of(fakeData);
+        }
+
+        return entity.getCapability(Capabilities.DRAGON_CAPABILITY).resolve();
     }
 
     public static boolean isDragon(@Nullable Entity entity) {
