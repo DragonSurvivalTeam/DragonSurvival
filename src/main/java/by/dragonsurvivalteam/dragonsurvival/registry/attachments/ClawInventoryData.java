@@ -10,7 +10,6 @@ import com.mojang.serialization.Codec;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionHand;
@@ -20,14 +19,12 @@ import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.block.state.BlockState;
 import by.dragonsurvivalteam.dragonsurvival.common.serialization.INBTSerializable;
 import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
-import java.util.Optional;
 
 public class ClawInventoryData implements INBTSerializable<CompoundTag> {
     public static final String IS_MENU_OPEN = "is_menu_open";
@@ -98,16 +95,12 @@ public class ClawInventoryData implements INBTSerializable<CompoundTag> {
             player.setItemInHand(InteractionHand.MAIN_HAND, tool);
 
             // Copied from collectEquipmentChanges() in LivingEntity.java
-            tool.forEachModifier(EquipmentSlot.MAINHAND, (attribute, modifier) -> {
+            tool.getAttributeModifiers(EquipmentSlot.MAINHAND).forEach((attribute, modifier) -> {
                 AttributeInstance instance = player.getAttributes().getInstance(attribute);
 
                 if (instance != null) {
-                    instance.removeModifier(modifier.id());
+                    instance.removeModifier(modifier);
                     instance.addTransientModifier(modifier);
-                }
-
-                if (player.level() instanceof ServerLevel serverlevel) {
-                    EnchantmentHelper.runLocationChangedEffects(serverlevel, tool, player, EquipmentSlot.MAINHAND);
                 }
             });
 
@@ -144,13 +137,11 @@ public class ClawInventoryData implements INBTSerializable<CompoundTag> {
             ItemStack originalToolSlot = player.getItemInHand(InteractionHand.MAIN_HAND);
 
             // Copied from collectEquipmentChanges() in LivingEntity.java
-            originalToolSlot.forEachModifier(EquipmentSlot.MAINHAND, (attributeHolder, attributeModifier) -> {
-                AttributeInstance attributeinstance = player.getAttributes().getInstance(attributeHolder);
+            originalToolSlot.getAttributeModifiers(EquipmentSlot.MAINHAND).forEach((attribute, modifier) -> {
+                AttributeInstance attributeinstance = player.getAttributes().getInstance(attribute);
                 if (attributeinstance != null) {
-                    attributeinstance.removeModifier(attributeModifier);
+                    attributeinstance.removeModifier(modifier);
                 }
-
-                EnchantmentHelper.stopLocationBasedEffects(originalToolSlot, player, EquipmentSlot.MAINHAND);
             });
 
             player.setItemInHand(InteractionHand.MAIN_HAND, originalMainHand);
@@ -254,7 +245,7 @@ public class ClawInventoryData implements INBTSerializable<CompoundTag> {
                 continue;
             }
 
-            tag.put(slot.name(), clawsInventory.getItem(slot.ordinal()).save(provider));
+            tag.put(slot.name(), clawsInventory.getItem(slot.ordinal()).save(new CompoundTag()));
         }
 
         tag.putBoolean(SHOULD_RENDER_CLAWS, shouldRenderClaws);
@@ -274,13 +265,7 @@ public class ClawInventoryData implements INBTSerializable<CompoundTag> {
                 continue;
             }
 
-            Optional<ItemStack> stack = ItemStack.parse(provider, slotTag);
-
-            if (stack.isEmpty()) {
-                continue;
-            }
-
-            clawsInventory.setItem(slot.ordinal(), stack.get());
+            clawsInventory.setItem(slot.ordinal(), ItemStack.of(slotTag));
         }
     }
 }
