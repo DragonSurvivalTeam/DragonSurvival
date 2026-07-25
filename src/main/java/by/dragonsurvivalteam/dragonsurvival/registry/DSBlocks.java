@@ -26,6 +26,7 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RotatedPillarBlock;
@@ -175,13 +176,13 @@ public class DSBlocks {
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Gothic Dragon Door")
-    public static final RegistryObject<DragonDoor> GOTHIC_DRAGON_DOOR = register("gothic_dragon_door", () -> new DragonDoor(OAK_DRAGON_DOOR.get().properties()));
+    public static final RegistryObject<DragonDoor> GOTHIC_DRAGON_DOOR = register("gothic_dragon_door", () -> new DragonDoor(BlockBehaviour.Properties.copy(OAK_DRAGON_DOOR.get())));
 
     @Translation(type = Translation.Type.BLOCK, comments = "Skyrim Dragon Door")
-    public static final RegistryObject<DragonDoor> SKYRIM_DRAGON_DOOR = register("skyrim_dragon_door", () -> new DragonDoor(OAK_DRAGON_DOOR.get().properties()));
+    public static final RegistryObject<DragonDoor> SKYRIM_DRAGON_DOOR = register("skyrim_dragon_door", () -> new DragonDoor(BlockBehaviour.Properties.copy(OAK_DRAGON_DOOR.get())));
 
     @Translation(type = Translation.Type.BLOCK, comments = "Stone Dragon Door")
-    public static final RegistryObject<DragonDoor> STONE_DRAGON_DOOR = register("stone_dragon_door", () -> new DragonDoor(OAK_DRAGON_DOOR.get().properties()));
+    public static final RegistryObject<DragonDoor> STONE_DRAGON_DOOR = register("stone_dragon_door", () -> new DragonDoor(BlockBehaviour.Properties.copy(OAK_DRAGON_DOOR.get())));
 
     @Translation(type = Translation.Type.BLOCK, comments = "Cave Dragon Door")
     @Translation(type = Translation.Type.DESCRIPTION_ADDITION, comments = "■§7 A large door that only a cave dragon may open.")
@@ -1130,7 +1131,7 @@ public class DSBlocks {
     @Translation(type = Translation.Type.BLOCK, comments = "Dragon Rider Workbench")
     public static final RegistryObject<Block> DRAGON_RIDER_WORKBENCH = REGISTRY.register("dragon_rider_workbench",
             () -> new DragonRiderWorkbenchBlock(BlockBehaviour.Properties.of()
-                    .sound(SoundType.TRIAL_SPAWNER)
+                    .sound(SoundType.COPPER)
                     .strength(1.5f)
                     .mapColor(MapColor.WOOD)
             )
