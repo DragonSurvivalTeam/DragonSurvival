@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.common.codecs.predicates;
 
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscCodecs;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
@@ -54,7 +55,7 @@ public record DragonPredicate(
     public record AbilityLevel(ResourceKey<DragonAbility> ability, MinMaxBounds.Ints level) {
         public static final Codec<AbilityLevel> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 ResourceKey.codec(DragonAbility.REGISTRY).fieldOf("ability").forGetter(AbilityLevel::ability),
-                MinMaxBounds.Ints.CODEC.fieldOf("level").forGetter(AbilityLevel::level)
+                MiscCodecs.INT_BOUNDS_CODEC.fieldOf("level").forGetter(AbilityLevel::level)
         ).apply(instance, AbilityLevel::new));
     }
 

@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.common.codecs.predicates;
 
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscCodecs;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.Storage;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
@@ -44,11 +45,11 @@ public record CustomPredicates(
     public static final MapCodec<CustomPredicates> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             RegistryCodecs.homogeneousList(ForgeRegistries.Keys.FLUID_TYPES).optionalFieldOf("eye_in_fluid").forGetter(CustomPredicates::eyeInFluid),
             WeatherPredicate.CODEC.optionalFieldOf("weather_predicate").forGetter(CustomPredicates::weatherPredicate),
-            MinMaxBounds.Ints.CODEC.optionalFieldOf("sun_light_level").forGetter(CustomPredicates::sunLightLevel),
+            MiscCodecs.INT_BOUNDS_CODEC.optionalFieldOf("sun_light_level").forGetter(CustomPredicates::sunLightLevel),
             ResourceLocation.CODEC.optionalFieldOf("has_duration_effect").forGetter(CustomPredicates::hasDurationEffect),
             NearbyEntityPredicate.CODEC.optionalFieldOf("is_nearby_entity").forGetter(CustomPredicates::isNearbyEntity),
-            MinMaxBounds.Ints.CODEC.optionalFieldOf("player_hunger").forGetter(CustomPredicates::playerHunger),
-            MinMaxBounds.Doubles.CODEC.optionalFieldOf("health_percentage").forGetter(CustomPredicates::healthPercentage),
+            MiscCodecs.INT_BOUNDS_CODEC.optionalFieldOf("player_hunger").forGetter(CustomPredicates::playerHunger),
+            MiscCodecs.DOUBLE_BOUNDS_CODEC.optionalFieldOf("health_percentage").forGetter(CustomPredicates::healthPercentage),
             UUIDUtil.LENIENT_CODEC.optionalFieldOf("has_uuid").forGetter(CustomPredicates::hasUUID),
             LookingAtBlock.CODEC.optionalFieldOf("looking_at_block").forGetter(CustomPredicates::lookingAtBlock)
     ).apply(instance, CustomPredicates::new));

@@ -15,7 +15,7 @@ public record DragonStagePredicate(Optional<HolderSet<DragonStage>> dragonStage,
     public static final Codec<DragonStagePredicate> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             RegistryCodecs.homogeneousList(DragonStage.REGISTRY).optionalFieldOf("dragon_stage").forGetter(DragonStagePredicate::dragonStage),
             MiscCodecs.percentageBounds().optionalFieldOf("growth_percentage").forGetter(DragonStagePredicate::growthPercentage),
-            MinMaxBounds.Doubles.CODEC.optionalFieldOf("growth").forGetter(DragonStagePredicate::growth)
+            MiscCodecs.DOUBLE_BOUNDS_CODEC.optionalFieldOf("growth").forGetter(DragonStagePredicate::growth)
     ).apply(instance, DragonStagePredicate::new));
 
     @SuppressWarnings("RedundantIfStatement") // ignore for clarity

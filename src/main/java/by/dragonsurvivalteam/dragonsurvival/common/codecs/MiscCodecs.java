@@ -35,7 +35,8 @@ import java.util.function.Supplier;
 
 public class MiscCodecs {
     private static final Gson LOOT_CONDITION_GSON = Deserializers.createConditionSerializer().create();
-    private static final Codec<MinMaxBounds.Doubles> DOUBLE_BOUNDS_CODEC = jsonCodec(MinMaxBounds.Doubles::fromJson, MinMaxBounds.Doubles::serializeToJson);
+    public static final Codec<MinMaxBounds.Ints> INT_BOUNDS_CODEC = jsonCodec(MinMaxBounds.Ints::fromJson, MinMaxBounds.Ints::serializeToJson);
+    public static final Codec<MinMaxBounds.Doubles> DOUBLE_BOUNDS_CODEC = jsonCodec(MinMaxBounds.Doubles::fromJson, MinMaxBounds.Doubles::serializeToJson);
     public static final Codec<EntityPredicate> ENTITY_PREDICATE_CODEC = jsonCodec(EntityPredicate::fromJson, EntityPredicate::serializeToJson);
     public static final Codec<Holder<DamageType>> DAMAGE_TYPE_HOLDER_CODEC = RegistryFileCodec.create(Registries.DAMAGE_TYPE, DamageType.CODEC);
     public static final Codec<LootItemCondition> LOOT_ITEM_CONDITION_CODEC = jsonCodec(
