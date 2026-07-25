@@ -20,8 +20,6 @@ import java.util.List;
 import java.util.stream.Stream;
 
 public final class TooltipRenderUtils {
-    private TooltipRenderUtils() {
-    }
 
     public static void renderTooltipFromElements(final GuiGraphics graphics, final Font fallbackFont,
                                                   final List<Either<FormattedText, TooltipComponent>> elements,
