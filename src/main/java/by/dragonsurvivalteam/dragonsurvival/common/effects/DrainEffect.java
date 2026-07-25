@@ -29,12 +29,12 @@ public class DrainEffect extends ModifiableMobEffect {
     }
 
     @Override
-    public boolean shouldApplyEffectTickThisTick(int duration, int amplifier) {
+    public boolean isDurationEffectTick(int duration, int amplifier) {
         return duration % 20 == 0;
     }
 
     @Override
-    public boolean applyEffectTick(@NotNull final LivingEntity entity, int amplifier) {
+    public void applyEffectTick(@NotNull final LivingEntity entity, int amplifier) {
         if (!DragonStateProvider.isDragon(entity)) {
             ParticleOptions particle = new SmallPoisonParticleOption(37F, false);
 
@@ -52,6 +52,6 @@ public class DrainEffect extends ModifiableMobEffect {
 
         entity.hurt(new DamageSource(DSDamageTypes.get(entity.level(), DSDamageTypes.DRAIN), effectApplier), damage);
 
-        return super.applyEffectTick(entity, amplifier);
+        super.applyEffectTick(entity, amplifier);
     }
 }

@@ -16,10 +16,12 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectCategory;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.common.ForgeMod;
@@ -38,35 +40,42 @@ public class BlastDustedEffect extends ModifiableMobEffect {
     }
 
     @Override
-    public boolean shouldApplyEffectTickThisTick(int duration, int amplifier) {
+    public boolean isDurationEffectTick(int duration, int amplifier) {
         return true;
     }
 
     @Override
-    public boolean applyEffectTick(@NotNull final LivingEntity entity, final int amplifier) {
+    public void applyEffectTick(@NotNull final LivingEntity entity, final int amplifier) {
         if (entity instanceof Player player) {
             DragonStateHandler handler = DragonStateProvider.getData(player);
 
             if (handler.isDragon() && handler.species().is(DSDragonSpeciesTags.CAVE_DRAGONS)) {
-                return false;
+                return;
             }
         }
 
         if (entity.isEyeInFluidType(ForgeMod.WATER_TYPE.get()) || entity.isInWaterRainOrBubble()) {
-            return false;
+            return;
         }
 
-        return super.applyEffectTick(entity, amplifier);
+        super.applyEffectTick(entity, amplifier);
     }
 
-    @Override
-    public void onMobHurt(@NotNull final LivingEntity entity, final int amplifier, @NotNull final DamageSource damageSource, final float amount) {
+    @SubscribeEvent
+    public static void onMobHurt(final LivingDamageEvent event) {
+        LivingEntity entity = event.getEntity();
+        MobEffectInstance effect = entity.getEffect(DSEffects.BLAST_DUSTED.get());
+
+        if (effect == null) {
+            return;
+        }
+
         if (entity.level().isClientSide()) {
             return;
         }
 
-        if (damageSource.is(DamageTypeTags.IS_FIRE)) {
-            explode(entity, amplifier);
+        if (event.getSource().is(DamageTypeTags.IS_FIRE)) {
+            explode(entity, effect.getAmplifier());
             entity.removeEffect(DSEffects.BLAST_DUSTED.get());
         }
     }

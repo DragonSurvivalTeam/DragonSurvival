@@ -25,14 +25,14 @@ public class BurnEffect extends ModifiableMobEffect {
     }
 
     @Override
-    public boolean shouldApplyEffectTickThisTick(int duration, int amplifier) {
+    public boolean isDurationEffectTick(int duration, int amplifier) {
         return duration % 20 == 0;
     }
 
     @Override
-    public boolean applyEffectTick(final LivingEntity entity, int amplifier) {
+    public void applyEffectTick(final LivingEntity entity, int amplifier) {
         if (entity.fireImmune() || entity.isEyeInFluidType(ForgeMod.WATER_TYPE.get()) || entity.isInWaterRainOrBubble()) {
-            return false;
+            return;
         }
 
         EntityStateHandler data = AttachmentManager.getData(entity, DSDataAttachments.ENTITY_HANDLER);
@@ -71,6 +71,6 @@ public class BurnEffect extends ModifiableMobEffect {
         }
 
         data.lastPos = entity.position();
-        return super.applyEffectTick(entity, amplifier);
+        super.applyEffectTick(entity, amplifier);
     }
 }

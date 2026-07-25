@@ -18,6 +18,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSEntityTypeTags;
 import by.dragonsurvivalteam.dragonsurvival.util.AdditionalEffectData;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
+import by.dragonsurvivalteam.dragonsurvival.mixins.CreeperAccessor;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
@@ -29,10 +30,13 @@ import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.phys.Vec3;
 import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
-import org.jetbrains.annotations.NotNull;
+import net.minecraftforge.event.entity.living.MobEffectEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
 import java.util.List;
 
+@EventBusSubscriber
 public class ChargedEffect extends ModifiableMobEffect {
     public static final int INFINITE_CHAINS = -1;
 
@@ -61,20 +65,24 @@ public class ChargedEffect extends ModifiableMobEffect {
     }
 
     @Override
-    public boolean shouldApplyEffectTickThisTick(int duration, int amplifier) {
+    public boolean isDurationEffectTick(int duration, int amplifier) {
         return duration % 20 == 0;
     }
 
-    @Override
-    public void onEffectStarted(@NotNull LivingEntity livingEntity, int amplifier) {
+    @SubscribeEvent
+    public static void onEffectStarted(final MobEffectEvent.Added event) {
+        if (event.getEffectInstance().getEffect() != DSEffects.CHARGED.get()) {
+            return;
+        }
+
         // Make creepers become charged
-        if (livingEntity instanceof Creeper creeper && !creeper.isPowered()) {
-            creeper.getEntityData().set(Creeper.DATA_IS_POWERED, true);
+        if (event.getEntity() instanceof Creeper creeper && !creeper.isPowered()) {
+            creeper.getEntityData().set(CreeperAccessor.dragonSurvival$getPoweredAccessor(), true);
         }
     }
 
     @Override
-    public boolean applyEffectTick(final LivingEntity entity, int amplifier) {
+    public void applyEffectTick(final LivingEntity entity, int amplifier) {
         entity.hurt(new DamageSource(DSDamageTypes.get(entity.level(), DSDamageTypes.ELECTRIC)), damage * (amplifier + 1));
 
         if (!DragonStateProvider.isDragon(entity)) {
@@ -86,7 +94,7 @@ public class ChargedEffect extends ModifiableMobEffect {
         }
 
         chargedEffectChain(entity, damage * amplifier + 1);
-        return super.applyEffectTick(entity, amplifier);
+        super.applyEffectTick(entity, amplifier);
     }
 
     public static void drawParticleLine(LivingEntity source, LivingEntity target) {

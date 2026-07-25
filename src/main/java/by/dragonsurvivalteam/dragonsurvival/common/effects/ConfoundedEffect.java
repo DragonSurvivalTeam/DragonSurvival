@@ -50,11 +50,11 @@ public class ConfoundedEffect extends ModifiableMobEffect {
     }
 
     @Override
-    public boolean applyEffectTick(@NotNull LivingEntity livingEntity, int amplifier) {
+    public void applyEffectTick(@NotNull LivingEntity livingEntity, int amplifier) {
         if (livingEntity instanceof Player player) {
             if (!player.level().isClientSide()) {
                 DragonStateHandler handler = DragonStateProvider.getData(player);
-                if (handler.isDragon() && handler.species().is(BuiltInDragonSpecies.FOREST_DRAGON)) { return false; }
+                if (handler.isDragon() && handler.species().is(BuiltInDragonSpecies.FOREST_DRAGON)) { return; }
 
                 player.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 100));
                 if (amplifier > 1) {
@@ -68,7 +68,7 @@ public class ConfoundedEffect extends ModifiableMobEffect {
         } else if (livingEntity instanceof Mob mob){
             if (!mob.level().isClientSide()) {
                 if (mob.getType().is(DSEntityTypeTags.CONFOUNDED_TARGET_BLACKLIST)) {
-                    return true; // Keep the effect but don't change targets
+                    return; // Keep the effect but don't change targets
                 }
                 List<LivingEntity> list1 = mob.level().getEntitiesOfClass(LivingEntity.class, mob.getBoundingBox().inflate(5.0));
                 // Remove all forest dragons from potential targets
@@ -81,17 +81,17 @@ public class ConfoundedEffect extends ModifiableMobEffect {
                 }).toList();
                 if (list1.size() <= 0) {
                     // No valid targets to swap to.
-                    return true;
+                    return;
                 }
                 int targetIndex = mob.getRandom().nextInt(list1.size());
                 mob.setTarget(list1.get(targetIndex));
             }
         }
-        return super.applyEffectTick(livingEntity, amplifier);
+        super.applyEffectTick(livingEntity, amplifier);
     }
 
     @Override
-    public boolean shouldApplyEffectTickThisTick(int duration, int amplifier) {
+    public boolean isDurationEffectTick(int duration, int amplifier) {
         return duration % Functions.secondsToTicks(5) == 0;
     }
 }

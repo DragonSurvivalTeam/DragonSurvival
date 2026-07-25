@@ -25,7 +25,7 @@ public class StressEffect extends MobEffect {
     }
 
     @Override
-    public boolean applyEffectTick(@NotNull final LivingEntity living, int amplifier) {
+    public void applyEffectTick(@NotNull final LivingEntity living, int amplifier) {
         if (living instanceof Player player) {
             FoodData food = player.getFoodData();
 
@@ -39,14 +39,11 @@ public class StressEffect extends MobEffect {
             }
 
             player.causeFoodExhaustion(1.0f * stressExhaustion);
-            return true;
         }
-
-        return false;
     }
 
     @Override
-    public boolean shouldApplyEffectTickThisTick(int duration, int amplifier) {
+    public boolean isDurationEffectTick(int duration, int amplifier) {
         int i = 20 >> amplifier;
 
         if (i > 0) {
