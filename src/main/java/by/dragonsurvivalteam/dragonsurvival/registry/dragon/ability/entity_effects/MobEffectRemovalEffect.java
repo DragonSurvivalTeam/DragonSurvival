@@ -81,32 +81,32 @@ public record MobEffectRemovalEffect(
     public List<MutableComponent> getDescription(final Player dragon, final DragonAbilityInstance ability) {
         List<MutableComponent> description = List.of(Component.empty());
         if (maxAmount.isPresent() && maxAmount.get().calculate(ability.level()) == 1) {
-            description.getFirst().append(Component.translatable(REMOVE_ONE, DSColors.dynamicValue("1")));
+            description.get(0).append(Component.translatable(REMOVE_ONE, DSColors.dynamicValue("1")));
         } else if (maxAmount.isPresent()) {
-            description.getFirst().append(Component.translatable(REMOVE_MULTIPLE, DSColors.dynamicValue(maxAmount.get().calculate(ability.level()))));
+            description.get(0).append(Component.translatable(REMOVE_MULTIPLE, DSColors.dynamicValue(maxAmount.get().calculate(ability.level()))));
         } else {
-            description.getFirst().append(Component.translatable(REMOVE_ALL));
+            description.get(0).append(Component.translatable(REMOVE_ALL));
         }
 
         if (categories.isPresent()) {
-            description.getFirst().append(Component.translatable(CATEGORY_FILTER));
+            description.get(0).append(Component.translatable(CATEGORY_FILTER));
             for (MobEffectCategory category : categories.get()) {
-                description.getFirst().append(DSColors.withColor(Component.literal(" " + category.name()), DSColors.GOLD));
+                description.get(0).append(DSColors.withColor(Component.literal(" " + category.name()), DSColors.GOLD));
             }
         }
 
         if (validEffects.isPresent()) {
             // FIXME :: use Functions#translateHolderSet
-            description.getFirst().append(Component.translatable(LIMITED_TO));
+            description.get(0).append(Component.translatable(LIMITED_TO));
             for (Holder<MobEffect> effect : validEffects.get()) {
-                description.getFirst().append(DSColors.withColor(Component.translatable(" " + effect.value().getDisplayName()), DSColors.GREEN));
+                description.get(0).append(DSColors.withColor(Component.translatable(" " + effect.value().getDisplayName()), DSColors.GREEN));
             }
         }
 
         if (maximumEffectLevel.isPresent()) {
-            description.getFirst().append(Component.translatable(MAXIMUM_LEVEL, DSColors.dynamicValue(maximumEffectLevel.get())));
+            description.get(0).append(Component.translatable(MAXIMUM_LEVEL, DSColors.dynamicValue(maximumEffectLevel.get())));
         }
-        description.getFirst().append(".");
+        description.get(0).append(".");
 
         return description;
     }

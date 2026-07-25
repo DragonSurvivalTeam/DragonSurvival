@@ -357,7 +357,7 @@ public class Functions {
         }
 
         if (colorsARGB.size() == 1) {
-            return colorsARGB.getFirst();
+            return colorsARGB.get(0);
         }
 
         // Determine by how much % we have shifted through the color so far

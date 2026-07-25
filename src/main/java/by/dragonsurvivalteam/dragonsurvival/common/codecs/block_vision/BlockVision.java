@@ -108,7 +108,7 @@ public class BlockVision extends DurationInstanceBase<BlockVisionData, BlockVisi
         Component color;
 
         if (colors.size() == 1) {
-            color = DSColors.withColor(colors.getFirst().serialize(), colors.getFirst().getValue());
+            color = DSColors.withColor(colors.get(0).serialize(), colors.get(0).getValue());
         } else if (colors.size() > 1) {
             color = DSColors.withColor(Component.translatable(MULTIPLE_COLORS), Functions.lerpColor(colors.stream().map(TextColor::getValue).toList(), colorShiftRate, 0));
         } else {

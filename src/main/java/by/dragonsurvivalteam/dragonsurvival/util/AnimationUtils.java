@@ -29,7 +29,7 @@ public class AnimationUtils {
 
     // TODO: This is a hack since GeckoLib's state.isCurrentAnimation() doesn't work. If they ever fix that, we can remove this.
     public static boolean isAnimationPlaying(AnimationController<?> controller, RawAnimation animation) {
-        String animationName = animation.getAnimationStages().getFirst().animationName();
+        String animationName = animation.getAnimationStages().get(0).animationName();
         return controller.getCurrentAnimation() != null && controller.getCurrentAnimation().animation().name().equals(animationName);
     }
 
@@ -61,7 +61,7 @@ public class AnimationUtils {
     public static <A extends GeoAnimatable, T extends GeoModel<A>> boolean doesAnimationExist(final T model, final A animatable, final RawAnimation animation) {
         assert (animation.getAnimationStages().size() == 1);
 
-        return doesAnimationExist(model, animatable, animation.getAnimationStages().getFirst().animationName());
+        return doesAnimationExist(model, animatable, animation.getAnimationStages().get(0).animationName());
     }
 
     public static <A extends GeoAnimatable, T extends GeoModel<A>> double animationDuration(final T model, final A animatable, final String animation) {

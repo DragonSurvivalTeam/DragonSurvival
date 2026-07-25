@@ -386,7 +386,7 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
             delegate.add(new UndoRedoPair(undoAction, action));
 
             if (delegate.size() > maxSize) {
-                delegate.removeFirst();
+                delegate.remove(0);
             } else {
                 selectedIndex++;
             }
@@ -1114,7 +1114,7 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
         dragonRender.xOffset = xOffset;
         dragonRender.yOffset = yOffset;
 
-        ((ScreenAccessor) this).dragonSurvival$children().addFirst(dragonRender);
+        ((ScreenAccessor) this).dragonSurvival$children().add(0, dragonRender);
     }
 
     public void cancel() {

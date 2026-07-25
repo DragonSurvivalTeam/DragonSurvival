@@ -87,7 +87,7 @@ public class AbilityAndPenaltyTooltipRenderer {
         // The effect header is meant to separate multiple effects from each other
         // Currently we append this header at a point in time where we don't know the actual order of the effects
         // That's why we use this check to skip the first header line
-        boolean skipFirstLine = !lines.isEmpty() && isEffectHeader(lines.getFirst());
+        boolean skipFirstLine = !lines.isEmpty() && isEffectHeader(lines.get(0));
 
         // '65' is roughly the amount of space needed for the other components so that the name and level can be centered without overlap
         int backgroundWidth = Math.max(150, Minecraft.getInstance().font.width(name) + 65);

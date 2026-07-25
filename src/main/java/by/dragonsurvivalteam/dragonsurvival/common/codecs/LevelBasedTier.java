@@ -18,7 +18,8 @@ public record LevelBasedTier(List<Entry> entries) {
             Entry.CODEC.listOf().xmap(list -> {
                 List<Entry> sorted = new ArrayList<>(list);
                 Collections.sort(sorted);
-                return sorted.reversed();
+                Collections.reverse(sorted);
+                return sorted;
             }, Function.identity()).fieldOf("tiers").forGetter(LevelBasedTier::entries)
     ).apply(instance, LevelBasedTier::new));
 

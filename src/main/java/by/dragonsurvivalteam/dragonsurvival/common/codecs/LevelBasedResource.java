@@ -17,7 +17,8 @@ public record LevelBasedResource(List<Entry> entries) {
             Entry.CODEC.listOf().xmap(list -> {
                 List<Entry> sorted = new ArrayList<>(list);
                 Collections.sort(sorted);
-                return sorted.reversed();
+                Collections.reverse(sorted);
+                return sorted;
             }, Function.identity()).fieldOf("texture_entries").forGetter(LevelBasedResource::entries)
     ).apply(instance, LevelBasedResource::new));
 
@@ -29,7 +30,7 @@ public record LevelBasedResource(List<Entry> entries) {
         }
 
         // Fallback to returning the first entry (this is intended, as it happens for a single tick as the client is receiving projectile data from the server)
-        return entries().getFirst().location();
+        return entries().get(0).location();
     }
 
     public record Entry(ResourceLocation location, int fromLevel) implements Comparable<Entry> {

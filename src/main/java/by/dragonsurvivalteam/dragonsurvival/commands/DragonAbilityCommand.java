@@ -161,7 +161,7 @@ public class DragonAbilityCommand {
 
         source.getSource().sendSuccess(() -> Component.translatable(
                 QUERY_RESULT,
-                DSColors.withColor(source.getNodes().getLast().getNode().getName(), DSColors.GOLD),
+                DSColors.withColor(source.getNodes().get(source.getNodes().size() - 1).getNode().getName(), DSColors.GOLD),
                 DSColors.withColor(ability.getRegisteredName(), DSColors.GOLD),
                 DSColors.withColor(player.getDisplayName(), DSColors.GOLD),
                 DSColors.withColor(result, DSColors.GOLD)

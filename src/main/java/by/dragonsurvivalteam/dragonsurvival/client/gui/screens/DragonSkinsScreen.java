@@ -450,7 +450,7 @@ public class DragonSkinsScreen extends Screen {
                 SEEN_SKINS.add(skin.second);
 
                 if (SEEN_SKINS.size() >= users.size() / 2) {
-                    SEEN_SKINS.removeFirst();
+                    SEEN_SKINS.remove(0);
                 }
 
                 break;

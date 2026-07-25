@@ -124,7 +124,7 @@ public class AbilityColumnsComponent implements ScrollableComponent {
 
         // Once the lerp is complete, update the current column
         // This is done by comparing the x position of the middle column with the next (which the lerp is being applied to)
-        if (Math.abs(buttonPositions[MIDDLE][0].x() - columns.get(nextColumn).getFirst().getOffset().x()) < 0.1) {
+        if (Math.abs(buttonPositions[MIDDLE][0].x() - columns.get(nextColumn).get(0).getOffset().x()) < 0.1) {
             currentColumn = nextColumn;
             forceSetButtonPositions();
         }

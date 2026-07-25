@@ -99,9 +99,9 @@ public class EditorPartComponent implements ScrollableComponent {
         }
 
         if (currentPart < 0) {
-            setSelectedPartInternal(sortedPartKeys.getLast());
+            setSelectedPartInternal(sortedPartKeys.get(sortedPartKeys.size() - 1));
         } else if (currentPart - 1 < 0) {
-            setSelectedPartInternal(sortedPartKeys.getLast());
+            setSelectedPartInternal(sortedPartKeys.get(sortedPartKeys.size() - 1));
         } else {
             setSelectedPartInternal(sortedPartKeys.get(currentPart - 1));
         }
@@ -118,9 +118,9 @@ public class EditorPartComponent implements ScrollableComponent {
         }
 
         if (currentPart < 0) {
-            setSelectedPartInternal(sortedPartKeys.getFirst());
+            setSelectedPartInternal(sortedPartKeys.get(0));
         } else if (currentPart + 1 >= sortedPartKeys.size()) {
-            setSelectedPartInternal(sortedPartKeys.getFirst());
+            setSelectedPartInternal(sortedPartKeys.get(0));
         } else {
             setSelectedPartInternal(sortedPartKeys.get(currentPart + 1));
         }

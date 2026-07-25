@@ -37,7 +37,8 @@ public class BackgroundColorButton extends ExtendedButton {
     }
 
     public @NotNull List<? extends GuiEventListener> childrenAndSelf() {
-        return ImmutableList.of(colorComponent, this, colorComponent.children().getFirst(), colorComponent.children().getLast());
+        List<? extends GuiEventListener> children = colorComponent.children();
+        return ImmutableList.of(colorComponent, this, children.get(0), children.get(children.size() - 1));
     }
 
     @Override

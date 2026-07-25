@@ -218,7 +218,7 @@ public class AmbusherEntity extends Hunter implements RangedAttackMob {
         }
 
         if (getAmbushHornTimer() == AMBUSH_HORN_SOUND_START_TIME) {
-            this.playSound(SoundEvents.GOAT_HORN_SOUND_VARIANTS.getFirst().value(), 1.0F, 1.0F);
+            this.playSound(SoundEvents.GOAT_HORN_SOUND_VARIANTS.get(0).value(), 1.0F, 1.0F);
         }
 
         if (getAmbushHornTimer() == AMBUSH_ARROW_PLACE_SOUND_TIME) {

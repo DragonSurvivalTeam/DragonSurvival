@@ -120,7 +120,7 @@ public class SourceOfMagicScreen extends AbstractContainerScreen<SourceOfMagicCo
             tooltip.add(Either.right(new TimeComponent(consumable.item(), consumable.duration(), TimeComponent.DEFAULT)));
         }
 
-        tooltip.addFirst(Either.left(Component.translatable(HELP)));
+        tooltip.add(0, Either.left(Component.translatable(HELP)));
         return tooltip;
     }
 

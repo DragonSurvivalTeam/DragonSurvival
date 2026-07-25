@@ -99,22 +99,22 @@ public class DragonModel extends GeoModel<DragonEntity> {
                 boolean removedElement = false;
 
                 if (dragon.bodyYawHistory.size() > removeSize) {
-                    dragon.bodyYawHistory.removeFirst();
+                    dragon.bodyYawHistory.remove(0);
                     removedElement = true;
                 }
 
                 if (dragon.headYawHistory.size() > removeSize) {
-                    dragon.headYawHistory.removeFirst();
+                    dragon.headYawHistory.remove(0);
                     removedElement = true;
                 }
 
                 if (dragon.headPitchHistory.size() > removeSize) {
-                    dragon.headPitchHistory.removeFirst();
+                    dragon.headPitchHistory.remove(0);
                     removedElement = true;
                 }
 
                 if (dragon.verticalVelocityHistory.size() > removeSize) {
-                    dragon.verticalVelocityHistory.removeFirst();
+                    dragon.verticalVelocityHistory.remove(0);
                     removedElement = true;
                 }
 

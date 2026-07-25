@@ -207,7 +207,7 @@ public class ConfigHandler {
                 throw new IllegalStateException("Configuration key [" + key + "] had [" + translations.size() + "] translations - expected 1");
             }
 
-            Translation translation = translations.getFirst();
+            Translation translation = translations.get(0);
 
             // Get the category - if none is present put it in the 'general' category
             String[] categories = configOption.category() != null && configOption.category().length > 0 ? configOption.category() : new String[]{"general"};

@@ -116,7 +116,7 @@ public class ColorSelectorButton extends ExtendedButton {
             }
 
             hueComponent = new HueSelectorComponent(this.screen, xOffset, getY() + yOffset, 120, 90, layer);
-            ((ScreenAccessor) screen).dragonSurvival$children().addFirst(hueComponent);
+            ((ScreenAccessor) screen).dragonSurvival$children().add(0, hueComponent);
             ((ScreenAccessor) screen).dragonSurvival$children().add(hueComponent);
             screen.renderables.add(renderButton);
         } else {
