@@ -178,7 +178,7 @@ public class GriffinEntity extends Hunter {
 
     @Override
     public boolean isWithinMeleeAttackRange(LivingEntity pEntity) {
-        return this.getBoundingBox().inflate(GriffinEntity.RANGE).intersects(pEntity.getHitbox());
+        return this.getBoundingBox().inflate(GriffinEntity.RANGE).intersects(pEntity.getBoundingBox());
     }
 
     @Override
