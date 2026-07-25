@@ -31,7 +31,6 @@ import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.LevelBasedValue;
-import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
@@ -179,6 +178,7 @@ public class GenericArrowEntity extends AbstractArrow implements IEntityAddition
     @Override
     protected void onHitBlock(@NotNull final BlockHitResult result) {
         super.onHitBlock(result);
+        ProjectileImpactHelper.breakImpactBlock(this, getGeneralData(), result);
 
         if (level().isClientSide()) {
             return;
@@ -272,11 +272,6 @@ public class GenericArrowEntity extends AbstractArrow implements IEntityAddition
     protected @NotNull ItemStack getPickupItem() {
         // Empty item stack will cause encoding issues
         return Items.ARROW.getDefaultInstance();
-    }
-
-    @Override
-    public boolean mayBreak(@NotNull final Level level) {
-        return getGeneralData().isImpactProjectile() && level.getGameRules().getBoolean(GameRules.RULE_PROJECTILESCANBREAKBLOCKS);
     }
 
     private static final String GENERAL_DATA = "general_data";

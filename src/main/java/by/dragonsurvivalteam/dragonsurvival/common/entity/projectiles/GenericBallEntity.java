@@ -30,7 +30,6 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.projectile.AbstractHurtingProjectile;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.LevelBasedValue;
-import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
@@ -331,6 +330,7 @@ public class GenericBallEntity extends AbstractHurtingProjectile implements GeoE
 
         lastBlockHit = hitResult.getBlockPos();
         super.onHitBlock(hitResult);
+        ProjectileImpactHelper.breakImpactBlock(this, getGeneralData(), hitResult);
 
         if (!level().isClientSide()) {
             for (ProjectileBlockEffect effect : getGeneralData().blockHitEffects()) {
@@ -459,11 +459,6 @@ public class GenericBallEntity extends AbstractHurtingProjectile implements GeoE
     public boolean fireImmune() {
         // Stops fire from completely smothering the animations
         return true;
-    }
-
-    @Override
-    public boolean mayBreak(@NotNull final Level level) {
-        return getGeneralData().isImpactProjectile() && level.getGameRules().getBoolean(GameRules.RULE_PROJECTILESCANBREAKBLOCKS);
     }
 
     private static final RawAnimation EXPLOSION = RawAnimation.begin().thenLoop("explosion");
