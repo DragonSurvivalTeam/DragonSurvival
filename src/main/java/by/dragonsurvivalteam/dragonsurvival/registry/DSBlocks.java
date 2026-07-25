@@ -17,11 +17,8 @@ import by.dragonsurvivalteam.dragonsurvival.compat.ModCheck;
 import by.dragonsurvivalteam.dragonsurvival.compat.ModID;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSDragonSpeciesTags;
-import by.dragonsurvivalteam.dragonsurvival.util.CompoundTagBuilder;
 import com.mojang.datafixers.util.Pair;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FastColor;
 import net.minecraft.world.damagesource.DamageSources;
@@ -29,12 +26,10 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.block.VaultBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
@@ -1131,76 +1126,6 @@ public class DSBlocks {
     );
 
     // --- Misc --- //
-
-    private static final CompoundTag LIGHT_VAULT_TAG = CompoundTagBuilder.tag()
-            .putTag("config", CompoundTagBuilder.tag()
-                    .putTag("key_item", CompoundTagBuilder.tag()
-                            .putInt("count", 1)
-                            .putString("id", DragonSurvival.res(DSItems.LIGHT_KEY_ID).toString()).build()
-                    ).putString("loot_table", DragonSurvival.res("generic/light_vault").toString()).build()
-            ).build();
-
-    private static final CompoundTag DARK_VAULT_TAG = CompoundTagBuilder.tag()
-            .putTag("config", CompoundTagBuilder.tag()
-                    .putTag("key_item", CompoundTagBuilder.tag()
-                            .putInt("count", 1)
-                            .putString("id", DragonSurvival.res(DSItems.DARK_KEY_ID).toString()).build()
-                    ).putString("loot_table", DragonSurvival.res("generic/dark_vault").toString()).build()
-            ).build();
-
-    private static final CompoundTag HUNTER_VAULT_TAG = CompoundTagBuilder.tag()
-            .putTag("config", CompoundTagBuilder.tag()
-                    .putTag("key_item", CompoundTagBuilder.tag()
-                            .putInt("count", 1)
-                            .putString("id", DragonSurvival.res(DSItems.HUNTER_KEY_ID).toString()).build()
-                    ).putString("loot_table", DragonSurvival.res("generic/hunter_vault").toString()).build()
-            ).build();
-
-    // Copied from "vault" entry for Blocks.java
-    private static final BlockBehaviour.Properties vaultBlockProperties = BlockBehaviour.Properties.of()
-            .mapColor(MapColor.STONE)
-            .instrument(NoteBlockInstrument.BASEDRUM)
-            .noOcclusion()
-            .sound(SoundType.VAULT)
-            .lightLevel(p_323402_ -> p_323402_.getValue(VaultBlock.STATE).lightLevel())
-            .strength(50.0F)
-            .isViewBlocking((a, b, c) -> false);
-
-    @Translation(type = Translation.Type.BLOCK, comments = "Light Vault")
-    public static final RegistryObject<VaultBlock> LIGHT_VAULT = REGISTRY.register(
-            "light_vault",
-            () -> new VaultBlock(vaultBlockProperties)
-    );
-
-    public static final RegistryObject<BlockItem> LIGHT_VAULT_ITEM = DSItems.REGISTRY.register(
-            "light_vault",
-            () -> new BlockItem(LIGHT_VAULT.get(), new Item.Properties()
-                    .component(DataComponents.BLOCK_ENTITY_DATA, CustomData.of(LIGHT_VAULT_TAG)))
-    );
-
-    @Translation(type = Translation.Type.BLOCK, comments = "Dark Vault")
-    public static final RegistryObject<VaultBlock> DARK_VAULT = REGISTRY.register(
-            "dark_vault",
-            () -> new VaultBlock(vaultBlockProperties)
-    );
-
-    public static final RegistryObject<BlockItem> DARK_VAULT_ITEM = DSItems.REGISTRY.register(
-            "dark_vault",
-            () -> new BlockItem(DARK_VAULT.get(), new Item.Properties()
-                    .component(DataComponents.BLOCK_ENTITY_DATA, CustomData.of(DARK_VAULT_TAG)))
-    );
-
-    @Translation(type = Translation.Type.BLOCK, comments = "Hunter's Vault")
-    public static final RegistryObject<VaultBlock> HUNTER_VAULT = REGISTRY.register(
-            "hunter_vault",
-            () -> new VaultBlock(vaultBlockProperties)
-    );
-
-    public static final RegistryObject<BlockItem> HUNTER_VAULT_ITEM = DSItems.REGISTRY.register(
-            "hunter_vault",
-            () -> new BlockItem(HUNTER_VAULT.get(), new Item.Properties()
-                    .component(DataComponents.BLOCK_ENTITY_DATA, CustomData.of(HUNTER_VAULT_TAG)))
-    );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Dragon Rider Workbench")
     public static final RegistryObject<Block> DRAGON_RIDER_WORKBENCH = REGISTRY.register("dragon_rider_workbench",

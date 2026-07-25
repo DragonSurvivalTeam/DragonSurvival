@@ -49,7 +49,6 @@
     "SleepStatusMixin",
     "SwellGoalMixin",
     "ThrownPotionMixin",
-    "VaultBlockEntityServerMixin",
     "VillagerHostilesSensorMixin",
     "VillagerMixin",
     "create.PlayerSkyhookRendererAccessor",
