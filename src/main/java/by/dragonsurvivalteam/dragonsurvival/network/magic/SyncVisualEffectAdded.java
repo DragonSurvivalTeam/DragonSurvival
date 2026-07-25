@@ -17,7 +17,7 @@ public record SyncVisualEffectAdded(int entityId, MobEffectInstance effect) impl
 
     public static final StreamCodec<FriendlyByteBuf, SyncVisualEffectAdded> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.VAR_INT, SyncVisualEffectAdded::entityId,
-            ByteBufCodecs.fromCodecWithRegistries(MobEffectInstance.CODEC), SyncVisualEffectAdded::effect,
+            ByteBufCodecs.MOB_EFFECT_INSTANCE, SyncVisualEffectAdded::effect,
             SyncVisualEffectAdded::new
     );
 

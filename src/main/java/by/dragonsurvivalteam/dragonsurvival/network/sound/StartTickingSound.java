@@ -18,7 +18,7 @@ public record StartTickingSound(int playerId, SoundEvent soundEvent, ResourceLoc
 
     public static final StreamCodec<FriendlyByteBuf, StartTickingSound> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.VAR_INT, StartTickingSound::playerId,
-            SoundEvent.DIRECT_STREAM_CODEC, StartTickingSound::soundEvent,
+            ByteBufCodecs.SOUND_EVENT, StartTickingSound::soundEvent,
             ByteBufCodecs.RESOURCE_LOCATION, StartTickingSound::id,
             StartTickingSound::new
     );

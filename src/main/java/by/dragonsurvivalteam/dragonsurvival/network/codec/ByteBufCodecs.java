@@ -20,6 +20,8 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.RegistryOps;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.RegistryManager;
 import org.joml.Vector3f;
@@ -105,6 +107,21 @@ public interface ByteBufCodecs {
             value.writeToNetwork(buffer);
         }
     };
+    StreamCodec<FriendlyByteBuf, MobEffectInstance> MOB_EFFECT_INSTANCE = codec(buffer -> {
+        CompoundTag tag = buffer.readNbt();
+        if (tag == null) {
+            throw new DecoderException("Missing mob effect instance");
+        }
+        MobEffectInstance effect = MobEffectInstance.load(tag);
+        if (effect == null) {
+            throw new DecoderException("Unknown mob effect instance");
+        }
+        return effect;
+    }, (buffer, value) -> buffer.writeNbt(value.save(new CompoundTag())));
+    StreamCodec<FriendlyByteBuf, SoundEvent> SOUND_EVENT = codec(
+            SoundEvent::readFromNetwork,
+            (buffer, value) -> value.writeToNetwork(buffer)
+    );
 
     static <B extends ByteBuf, V> StreamCodec<B, V> codec(final Decoder<B, V> decoder, final Encoder<B, V> encoder) {
         return new StreamCodec<>() {
