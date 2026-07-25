@@ -102,7 +102,9 @@ public class DragonGlowLayerRenderer extends GeoRenderLayer<DragonEntity> {
         if (hasGlowTexture) {
             DragonEditorHandler.markSkinTextureUsed(glowTexture);
             RenderType type = LIGHTNING_EYES.apply(glowTexture);
-            dragonRenderer.actuallyRender(poseStack, animatable, bakedModel, type, bufferSource, bufferSource.getBuffer(type), true, partialTick, packedLight, OverlayTexture.NO_OVERLAY, renderer.getRenderColor(animatable, partialTick, packedLight).getColor());
+            var renderColor = renderer.getRenderColor(animatable, partialTick, packedLight);
+            dragonRenderer.actuallyRender(poseStack, animatable, bakedModel, type, bufferSource, bufferSource.getBuffer(type), true, partialTick, packedLight, OverlayTexture.NO_OVERLAY,
+                renderColor.getRedFloat(), renderColor.getGreenFloat(), renderColor.getBlueFloat(), renderColor.getAlphaFloat());
         }
     }
 }
