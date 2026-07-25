@@ -38,7 +38,7 @@ public class OffsetConfig implements CustomConfig {
     }
 
     public static OffsetConfig create(final Holder<EntityType<?>> entityType, final Vec3 offset) {
-        return create(entityType.getRegisteredName(), offset);
+        return create(entityType.unwrapKey().orElseThrow().location().toString(), offset);
     }
 
     public static OffsetConfig create(final TagKey<EntityType<?>> entityType, final Vec3 offset) {

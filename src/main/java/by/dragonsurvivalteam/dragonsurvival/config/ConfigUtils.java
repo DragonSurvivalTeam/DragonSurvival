@@ -125,11 +125,11 @@ public class ConfigUtils {
         }
 
         if (object instanceof Block block) {
-            return location(block.builtInRegistryHolder().getRegisteredName());
+            return location(block.builtInRegistryHolder().unwrapKey().orElseThrow());
         }
 
         if (object instanceof Item item) {
-            return location(item.builtInRegistryHolder().getRegisteredName());
+            return location(item.builtInRegistryHolder().unwrapKey().orElseThrow());
         }
 
         if (object instanceof ResourceKey<?> key) {
@@ -137,7 +137,7 @@ public class ConfigUtils {
         }
 
         if (object instanceof Holder<?> holder) {
-            return holder.getRegisteredName();
+            return location(holder.unwrapKey().orElseThrow());
         }
 
         if (object instanceof ResourceLocation location) {

@@ -34,8 +34,9 @@ public class EffectConfig implements CustomConfig {
     }
 
     public static EffectConfig create(final Holder<MobEffect> effect, final int duration, final int amplifier, final double durationMultiplier, final double amplifierMultiplier) {
-        String data = effect.getRegisteredName() + SPLIT + duration + SPLIT + amplifier + SPLIT + durationMultiplier + SPLIT + amplifierMultiplier;
-        return new EffectConfig(effect.getRegisteredName(), duration, amplifier, durationMultiplier, amplifierMultiplier, data);
+        String effectName = effect.unwrapKey().orElseThrow().location().toString();
+        String data = effectName + SPLIT + duration + SPLIT + amplifier + SPLIT + durationMultiplier + SPLIT + amplifierMultiplier;
+        return new EffectConfig(effectName, duration, amplifier, durationMultiplier, amplifierMultiplier, data);
     }
 
     public void applyEffects(final Player player, int level) {

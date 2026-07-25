@@ -147,14 +147,14 @@ public class DragonAbilityCommand {
     private static int query(final CommandContext<CommandSourceStack> source, final Player player, final Holder<DragonAbility> ability, final BiFunction<Player, DragonAbilityInstance, Integer> query) throws CommandSyntaxException {
         if (!DragonStateProvider.isDragon(player)) {
             // There is some weird 'a' parameter that is unused - the arguments (array) are specified after that
-            throw UNKNOWN_ABILITY_EXCEPTION.create(null, player.getDisplayName(), ability.getRegisteredName());
+            throw UNKNOWN_ABILITY_EXCEPTION.create(null, player.getDisplayName(), ability.unwrapKey().orElseThrow().location().toString());
         }
 
         MagicData data = MagicData.getData(player);
         DragonAbilityInstance instance = data.getAbility(ability.unwrapKey().orElseThrow());
 
         if (instance == null) {
-            throw UNKNOWN_ABILITY_EXCEPTION.create(null, player.getDisplayName(), ability.getRegisteredName());
+            throw UNKNOWN_ABILITY_EXCEPTION.create(null, player.getDisplayName(), ability.unwrapKey().orElseThrow().location().toString());
         }
 
         Integer result = query.apply(player, instance);
@@ -162,7 +162,7 @@ public class DragonAbilityCommand {
         source.getSource().sendSuccess(() -> Component.translatable(
                 QUERY_RESULT,
                 DSColors.withColor(source.getNodes().get(source.getNodes().size() - 1).getNode().getName(), DSColors.GOLD),
-                DSColors.withColor(ability.getRegisteredName(), DSColors.GOLD),
+                DSColors.withColor(ability.unwrapKey().orElseThrow().location(), DSColors.GOLD),
                 DSColors.withColor(player.getDisplayName(), DSColors.GOLD),
                 DSColors.withColor(result, DSColors.GOLD)
         ), false);

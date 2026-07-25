@@ -61,7 +61,7 @@ public class DragonBodyArgument implements ArgumentType<Holder<DragonBody>> {
 
             this.context.lookupOrThrow(DragonBody.REGISTRY).listElements().forEach(body -> {
                 if (DragonBody.bodyIsValidForSpecies(body, finalSpecies)) {
-                    suggestions.add(body.getRegisteredName());
+                    suggestions.add(body.unwrapKey().orElseThrow().location().toString());
                 }
             });
         } else {

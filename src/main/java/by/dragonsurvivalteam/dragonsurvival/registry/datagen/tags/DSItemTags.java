@@ -169,7 +169,7 @@ public class DSItemTags extends ItemTagsProvider {
             } else if (species.key() == BuiltInDragonSpecies.SEA_DRAGON) {
                 diet = DietEntryProvider.seaDiet();
             } else {
-                throw new IllegalStateException("Diet tag setup is missing for dragon species [" + species.getRegisteredName() + "]");
+                throw new IllegalStateException("Diet tag setup is missing for dragon species [" + species.unwrapKey().orElseThrow().location() + "]");
             }
 
             for (DietEntry entry : diet) {

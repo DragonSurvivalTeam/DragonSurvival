@@ -51,7 +51,7 @@ public class DragonStageArgument implements ArgumentType<Holder<DragonStage>> {
 
         if (species != null) {
             HolderSet<DragonStage> stages = species.value().getStages(this.context);
-            stages.forEach(stage -> suggestions.add(stage.getRegisteredName()));
+            stages.forEach(stage -> suggestions.add(stage.unwrapKey().orElseThrow().location().toString()));
         } else {
             lookup.listElementIds().forEach(element -> suggestions.add(element.location().toString()));
         }

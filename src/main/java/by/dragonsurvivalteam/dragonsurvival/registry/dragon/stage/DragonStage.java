@@ -132,7 +132,7 @@ public record DragonStage(
     public static boolean areStagesConnected(final HolderSet<DragonStage> sortedStages, final StringBuilder error, boolean isForDefaultStages) {
         for (int i = 0; i < sortedStages.size() - 1; i++) {
             if (sortedStages.get(i).value().growthRange().max() != sortedStages.get(i + 1).value().growthRange().min()) {
-                error.append(isForDefaultStages ? "\n- Default stages [" : "\n- Stages [").append(sortedStages.get(i).getRegisteredName()).append("] and [").append(sortedStages.get(i + 1).getRegisteredName()).append("] are not connected");
+                error.append(isForDefaultStages ? "\n- Default stages [" : "\n- Stages [").append(sortedStages.get(i).unwrapKey().orElseThrow().location()).append("] and [").append(sortedStages.get(i + 1).unwrapKey().orElseThrow().location()).append("] are not connected");
                 return false;
             }
         }
@@ -237,7 +237,7 @@ public record DragonStage(
         }
 
         if (fallback != null) {
-            DragonSurvival.LOGGER.warn("No matching dragon level found for growth [{}] - using [{}] as fallback", growth, fallback.getRegisteredName());
+            DragonSurvival.LOGGER.warn("No matching dragon level found for growth [{}] - using [{}] as fallback", growth, fallback.unwrapKey().orElseThrow().location());
             return fallback;
         }
 
