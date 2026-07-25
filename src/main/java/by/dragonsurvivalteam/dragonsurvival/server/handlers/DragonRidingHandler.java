@@ -10,18 +10,21 @@ import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigRange;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
 import by.dragonsurvivalteam.dragonsurvival.network.player.SyncDragonPassengerID;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSetPassengersPacket;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.common.Tags;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.TickEvent;
@@ -32,6 +35,8 @@ import java.util.List;
 
 @EventBusSubscriber
 public class DragonRidingHandler {
+    private static final TagKey<EntityType<?>> BOATS = TagKey.create(Registries.ENTITY_TYPE, new ResourceLocation("c", "boats"));
+
     @Translation(key = "riding_offsets", type = Translation.Type.CONFIGURATION, comments = {
             "Offset the riding position per entity type",
             "Format: resource/tag;x_offset;y_offset;z_offset",
@@ -40,7 +45,7 @@ public class DragonRidingHandler {
     @ConfigOption(side = ConfigSide.SERVER, category = "riding", key = "riding_offsets")
     public static List<OffsetConfig> OFFSETS = List.of(
             // To avoid touching the water
-            OffsetConfig.create(Tags.EntityTypes.BOATS, new Vec3(0, 0.9, 0))
+            OffsetConfig.create(BOATS, new Vec3(0, 0.9, 0))
     );
     @ConfigRange(min = -1000, max = 1000)
     @Translation(key = "player_riding_scale", type = Translation.Type.CONFIGURATION, comments = "Maximum human-rider size compared to mount dragon. Default: 0.7 (70%).")
