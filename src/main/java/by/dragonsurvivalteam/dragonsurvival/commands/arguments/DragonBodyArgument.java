@@ -24,11 +24,11 @@ import java.util.concurrent.CompletableFuture;
 public class DragonBodyArgument implements ArgumentType<Holder<DragonBody>> {
     public static final String ID = "dragon_body";
 
-    private final HolderLookup.RegistryLookup<DragonBody> lookup;
+    private final HolderLookup<DragonBody> lookup;
     private final CommandBuildContext context;
 
     public DragonBodyArgument(final CommandBuildContext context) {
-        lookup = context.lookupOrThrow(DragonBody.REGISTRY);
+        lookup = context.holderLookup(DragonBody.REGISTRY);
         this.context = context;
     }
 
@@ -59,7 +59,7 @@ public class DragonBodyArgument implements ArgumentType<Holder<DragonBody>> {
         if (species != null) {
             Holder<DragonSpecies> finalSpecies = species;
 
-            this.context.lookupOrThrow(DragonBody.REGISTRY).listElements().forEach(body -> {
+            this.context.holderLookup(DragonBody.REGISTRY).listElements().forEach(body -> {
                 if (DragonBody.bodyIsValidForSpecies(body, finalSpecies)) {
                     suggestions.add(body.unwrapKey().orElseThrow().location().toString());
                 }

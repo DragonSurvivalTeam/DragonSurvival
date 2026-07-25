@@ -20,10 +20,10 @@ import java.util.concurrent.CompletableFuture;
 public class DragonGrowthArgument implements ArgumentType<Double> {
     public static final String ID = "dragon_growth";
 
-    private final HolderLookup.RegistryLookup<DragonStage> lookup;
+    private final HolderLookup<DragonStage> lookup;
 
     public DragonGrowthArgument(final CommandBuildContext context) {
-        lookup = context.lookupOrThrow(DragonStage.REGISTRY);
+        lookup = context.holderLookup(DragonStage.REGISTRY);
     }
 
     @Override

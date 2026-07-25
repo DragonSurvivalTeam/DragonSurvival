@@ -23,10 +23,10 @@ import java.util.concurrent.CompletableFuture;
 public class DragonAbilityArgument implements ArgumentType<Holder<DragonAbility>> {
     public static final String ID = "dragon_ability";
 
-    private final HolderLookup.RegistryLookup<DragonAbility> lookup;
+    private final HolderLookup<DragonAbility> lookup;
 
     public DragonAbilityArgument(final CommandBuildContext context) {
-        lookup = context.lookupOrThrow(DragonAbility.REGISTRY);
+        lookup = context.holderLookup(DragonAbility.REGISTRY);
     }
 
     @Override

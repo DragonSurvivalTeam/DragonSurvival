@@ -30,10 +30,10 @@ public class DragonSpeciesArgument implements ArgumentType<Holder<DragonSpecies>
     public static final DragonSpecies EMPTY = new DragonSpecies(Optional.empty(), Optional.empty(), ManaHandling.DEFAULT, Optional.empty(), HolderSet.direct(), HolderSet.direct(), HolderSet.direct(), null);
 
     private static final ResourceLocation HUMAN = DragonSurvival.res("human");
-    private final HolderLookup.RegistryLookup<DragonSpecies> lookup;
+    private final HolderLookup<DragonSpecies> lookup;
 
     public DragonSpeciesArgument(final CommandBuildContext context) {
-        lookup = context.lookupOrThrow(DragonSpecies.REGISTRY);
+        lookup = context.holderLookup(DragonSpecies.REGISTRY);
     }
 
     @Override

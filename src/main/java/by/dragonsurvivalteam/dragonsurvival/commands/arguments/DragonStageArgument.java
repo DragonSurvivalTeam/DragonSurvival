@@ -25,12 +25,10 @@ import java.util.concurrent.CompletableFuture;
 public class DragonStageArgument implements ArgumentType<Holder<DragonStage>> {
     public static final String ID = "dragon_stage";
 
-    private final HolderLookup.RegistryLookup<DragonStage> lookup;
-    private final CommandBuildContext context;
+    private final HolderLookup<DragonStage> lookup;
 
     public DragonStageArgument(final CommandBuildContext context) {
-        lookup = context.lookupOrThrow(DragonStage.REGISTRY);
-        this.context = context;
+        lookup = context.holderLookup(DragonStage.REGISTRY);
     }
 
     @Override
@@ -50,7 +48,9 @@ public class DragonStageArgument implements ArgumentType<Holder<DragonStage>> {
         Holder<DragonSpecies> species = DragonSpeciesArgument.get(context);
 
         if (species != null) {
-            HolderSet<DragonStage> stages = species.value().getStages(this.context);
+            HolderSet<DragonStage> stages = species.value().stages().orElseGet(() ->
+                    HolderSet.direct(lookup.listElements().filter(stage -> stage.value().isDefault()).toList())
+            );
             stages.forEach(stage -> suggestions.add(stage.unwrapKey().orElseThrow().location().toString()));
         } else {
             lookup.listElementIds().forEach(element -> suggestions.add(element.location().toString()));
