@@ -542,7 +542,7 @@ public class DragonSkinsScreen extends Screen {
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollY) {
         zoom += (float) scrollY;
         zoom = Mth.clamp(zoom, 10, 80);
 

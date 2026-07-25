@@ -111,14 +111,14 @@ public class DragonSpeciesScreen extends Screen {
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollY) {
         for (ScrollableComponent component : scrollableComponents) {
             // Ignore scrolling on the crystal bar; we need scrolling to be available for the tooltip to work
             if (component == crystalBar) {
                 continue;
             }
 
-            component.scroll(mouseX, mouseY, scrollX, scrollY);
+            component.scroll(mouseX, mouseY, 0, scrollY);
         }
 
         if (growthButton.isHovered()) {
@@ -128,7 +128,7 @@ public class DragonSpeciesScreen extends Screen {
             growthTooltipScroll = 0;
         }
 
-        return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
+        return super.mouseScrolled(mouseX, mouseY, scrollY);
     }
 
     @Override

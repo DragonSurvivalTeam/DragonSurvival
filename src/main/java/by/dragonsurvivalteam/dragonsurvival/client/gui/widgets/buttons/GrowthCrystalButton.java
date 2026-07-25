@@ -56,7 +56,7 @@ public class GrowthCrystalButton extends ExtendedButton {
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollY) {
         if (isHovered()) {
             int oldScrollAmount = scrollAmount;
 
@@ -70,7 +70,7 @@ public class GrowthCrystalButton extends ExtendedButton {
             return true;
         }
 
-        return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
+        return super.mouseScrolled(mouseX, mouseY, scrollY);
     }
 
     @Override

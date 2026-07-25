@@ -87,13 +87,13 @@ public class DragonUIRenderComponent extends AbstractContainerEventHandler imple
     }
 
     @Override
-    public boolean mouseScrolled(double pMouseX, double pMouseY, double pScrollX, double pScrollY) {
+    public boolean mouseScrolled(double pMouseX, double pMouseY, double pScrollY) {
         if (isMouseOver(pMouseX, pMouseY)) {
             zoom += (float) pScrollY * 2;
             zoom = Mth.clamp(zoom, 10, 100);
             return true;
         }
 
-        return super.mouseScrolled(pMouseX, pMouseY, pScrollX, pScrollY);
+        return super.mouseScrolled(pMouseX, pMouseY, pScrollY);
     }
 }

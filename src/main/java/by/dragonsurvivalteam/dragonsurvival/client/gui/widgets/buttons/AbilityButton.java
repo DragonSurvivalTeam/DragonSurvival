@@ -266,14 +266,14 @@ public class AbilityButton extends ExtendedButton {
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollY) {
         if (Screen.hasShiftDown() && isHovered()) {
             // invert the value so that scrolling down shows further entries
         scrollAmount = Mth.clamp(scrollAmount + (int) -scrollY, 0, AbilityAndPenaltyTooltipRenderer.maxScroll());
             return true;
         }
 
-        return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
+        return super.mouseScrolled(mouseX, mouseY, scrollY);
     }
 
     @Override

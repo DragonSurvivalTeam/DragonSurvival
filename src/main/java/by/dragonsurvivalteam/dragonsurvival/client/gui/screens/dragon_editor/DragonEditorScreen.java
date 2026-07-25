@@ -415,12 +415,12 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
     public final UndoRedoList actionHistory = new UndoRedoList(200);
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollY) {
         for (ScrollableComponent component : scrollableComponents) {
-            component.scroll(mouseX, mouseY, scrollX, scrollY);
+            component.scroll(mouseX, mouseY, 0, scrollY);
         }
 
-        return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
+        return super.mouseScrolled(mouseX, mouseY, scrollY);
     }
 
     private boolean onlyCheckForColorSelectorComponentButtons() {

@@ -117,7 +117,7 @@ public class DragonInventoryScreen extends EffectRenderingInventoryScreen<Dragon
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollY) {
         if (growthButton.isHovered()) {
             // invert the value so that scrolling down shows further entries
             growthTooltipScroll += (int) -scrollY;
@@ -125,7 +125,7 @@ public class DragonInventoryScreen extends EffectRenderingInventoryScreen<Dragon
             growthTooltipScroll = 0;
         }
 
-        return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
+        return super.mouseScrolled(mouseX, mouseY, scrollY);
     }
 
     @Override

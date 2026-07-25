@@ -62,7 +62,7 @@ public class SourceOfMagicScreen extends AbstractContainerScreen<SourceOfMagicCo
     protected void renderLabels(@NotNull final GuiGraphics guiGraphics, int mouseX, int mouseY) { /* Nothing to do */ }
 
     @Override
-    public boolean mouseScrolled(final double mouseX, final double mouseY, final double scrollX, final double scrollY) {
+    public boolean mouseScrolled(final double mouseX, final double mouseY, final double scrollY) {
         if (helpButton.isHovered()) {
             int oldScroll = scrollAmount;
             // invert the value so that scrolling down shows further entries
@@ -74,7 +74,7 @@ public class SourceOfMagicScreen extends AbstractContainerScreen<SourceOfMagicCo
             }
         }
 
-        return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
+        return super.mouseScrolled(mouseX, mouseY, scrollY);
     }
 
     @Override
