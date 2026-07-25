@@ -5,7 +5,6 @@ import by.dragonsurvivalteam.dragonsurvival.common.particles.TreasureParticleOpt
 import by.dragonsurvivalteam.dragonsurvival.network.status.SyncResting;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.TreasureRestData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
-import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -16,6 +15,7 @@ import net.minecraft.util.FastColor;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.FallingBlockEntity;
@@ -135,7 +135,7 @@ public class TreasureBlock extends FallingBlock implements SimpleWaterloggedBloc
     }
 
     @Override
-    public boolean isBed(@NotNull BlockState state, @NotNull BlockGetter level, @NotNull BlockPos pos, @NotNull LivingEntity sleeper) {
+    public boolean isBed(@NotNull BlockState state, @NotNull BlockGetter level, @NotNull BlockPos pos, @Nullable Entity sleeper) {
         return DragonStateProvider.isDragon(sleeper);
     }
 
@@ -231,11 +231,6 @@ public class TreasureBlock extends FallingBlock implements SimpleWaterloggedBloc
                 world.setBlockAndUpdate(pos, state.setValue(LAYERS, Math.min(8, i + entity.getBlockState().getValue(LAYERS))));
             }
         }
-    }
-
-    @Override
-    protected @NotNull MapCodec<? extends FallingBlock> codec() {
-        return MapCodec.unit(this);
     }
 
     @Override
