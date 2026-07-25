@@ -37,7 +37,7 @@ public class EndPlatformHandler {
             return null;
         }
 
-        EndPlatform data = handler.species().getData(DSDataMaps.END_PLATFORMS);
+        EndPlatform data = DSDataMaps.END_PLATFORMS.get(handler.species());
 
         if (data != null) {
             return data.spawnPosition();
@@ -53,7 +53,7 @@ public class EndPlatformHandler {
             return false;
         }
 
-        EndPlatform data = handler.species().getData(DSDataMaps.END_PLATFORMS);
+        EndPlatform data = DSDataMaps.END_PLATFORMS.get(handler.species());
 
         if (data == null) {
             return false;

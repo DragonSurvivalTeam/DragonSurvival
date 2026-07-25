@@ -76,6 +76,7 @@ import by.dragonsurvivalteam.dragonsurvival.network.status.SyncPlayerJump;
 import by.dragonsurvivalteam.dragonsurvival.network.status.SyncResting;
 import by.dragonsurvivalteam.dragonsurvival.network.syncing.SyncComplete;
 import by.dragonsurvivalteam.dragonsurvival.network.syncing.SyncCooldown;
+import by.dragonsurvivalteam.dragonsurvival.network.syncing.SyncDataMaps;
 import by.dragonsurvivalteam.dragonsurvival.network.syncing.SyncDragonSoulPlacement;
 import by.dragonsurvivalteam.dragonsurvival.network.syncing.SyncKey;
 import by.dragonsurvivalteam.dragonsurvival.network.syncing.SyncMana;
@@ -199,6 +200,7 @@ public class NetworkHandler {
         registrar.playToClient(SyncBreathParticles.TYPE, SyncBreathParticles.STREAM_CODEC, SyncBreathParticles::handleClient);
         registrar.playToClient(SyncMana.TYPE, SyncMana.STREAM_CODEC, SyncMana::handleClient);
         registrar.playToClient(SyncCooldown.TYPE, SyncCooldown.STREAM_CODEC, SyncCooldown::handleClient);
+        registrar.playToClient(SyncDataMaps.TYPE, SyncDataMaps.STREAM_CODEC, SyncDataMaps::handleClient);
 
         registrar.playToServer(SyncDragonSoulPlacement.TYPE, SyncDragonSoulPlacement.STREAM_CODEC, SyncDragonSoulPlacement::handleServer);
         registrar.playToServer(SyncKey.TYPE, SyncKey.STREAM_CODEC, SyncKey::handleServer);

@@ -7,25 +7,21 @@ import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.registries.datamaps.DataMapsUpdatedEvent;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@EventBusSubscriber
 public class DietEntryCache {
     // In singleplayer '/reload' while having the species screen did not cause any multithreading issues
     private static final Map<ResourceKey<DragonSpecies>, Map<Item, FoodProperties>> CACHE = new HashMap<>();
 
-    @SubscribeEvent
-    public static void buildCache(final DataMapsUpdatedEvent event) {
-        event.ifRegistry(DragonSpecies.REGISTRY, registry -> {
-            registry.getDataMap(DSDataMaps.DIET_ENTRIES).forEach((key, diet) -> CACHE.put(key, DietEntry.map(diet == null ? List.of() : diet)));
-        });
+    public static void rebuild() {
+        CACHE.clear();
+        DSDataMaps.DIET_ENTRIES.values().forEach(
+                (key, diet) -> CACHE.put(key, DietEntry.map(diet == null ? List.of() : diet))
+        );
     }
 
     public static boolean isEmpty(final Holder<DragonSpecies> species) {
@@ -41,7 +37,7 @@ public class DietEntryCache {
     }
 
     private static Map<Item, FoodProperties> generate(final Holder<DragonSpecies> species) {
-        List<DietEntry> diet = species.getData(DSDataMaps.DIET_ENTRIES);
+        List<DietEntry> diet = DSDataMaps.DIET_ENTRIES.get(species);
         return DietEntry.map(diet == null ? List.of() : diet);
     }
 }

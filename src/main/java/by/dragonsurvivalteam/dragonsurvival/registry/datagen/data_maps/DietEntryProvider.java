@@ -9,7 +9,6 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
-import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.DataMapProvider;
 import org.jetbrains.annotations.NotNull;
 
@@ -68,9 +67,9 @@ public class DietEntryProvider extends DataMapProvider {
 
     public static List<DietEntry> forestDiet() {
         return List.of(
-                DietEntry.create(Tags.Items.FOODS_RAW_MEAT).nutrition(6).saturation(4).seconds(1.2f).build(),
-                DietEntry.create(Tags.Items.FOODS_BERRY).nutrition(1).saturation(1).seconds(1.2f).build(),
-                DietEntry.create(Tags.Items.MUSHROOMS).nutrition(1).saturation(1).fast().build(),
+                DietEntry.create("#c:foods/raw_meat").nutrition(6).saturation(4).seconds(1.2f).build(),
+                DietEntry.create("#c:foods/berry").nutrition(1).saturation(1).seconds(1.2f).build(),
+                DietEntry.create("#c:mushrooms").nutrition(1).saturation(1).fast().build(),
                 DietEntry.create(Items.SWEET_BERRIES).nutrition(2).saturation(2).seconds(0.6f).build(),
                 DietEntry.create(Items.ROTTEN_FLESH).nutrition(2).saturation(4).build(),
                 DietEntry.create(Items.SPIDER_EYE).nutrition(6).saturation(8).build(),
@@ -180,7 +179,7 @@ public class DietEntryProvider extends DataMapProvider {
 
     public static List<DietEntry> seaDiet() {
         return List.of(
-                DietEntry.create(Tags.Items.FOODS_RAW_FISH).nutrition(1).saturation(1).seconds(1.2f).build(),
+                DietEntry.create("#c:foods/raw_fish").nutrition(1).saturation(1).seconds(1.2f).build(),
                 DietEntry.create(Items.KELP).nutrition(1).saturation(1).seconds(1).build(),
                 DietEntry.create(Items.PUFFERFISH).nutrition(8).saturation(8).build(),
                 DietEntry.create(DSItems.SEA_DRAGON_TREAT.get()).nutrition(4).saturation(8).build(),

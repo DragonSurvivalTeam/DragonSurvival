@@ -113,7 +113,7 @@ public class DragonBeacon extends Block implements SimpleWaterloggedBlock, Entit
             return ItemInteractionResult.sidedSuccess(true);
         }
 
-        DragonBeaconData beaconData = handler.species().getData(DSDataMaps.DRAGON_BEACON_DATA);
+        DragonBeaconData beaconData = DSDataMaps.DRAGON_BEACON_DATA.get(handler.species());
 
         if (beaconData == null) {
             return ItemInteractionResult.FAIL;

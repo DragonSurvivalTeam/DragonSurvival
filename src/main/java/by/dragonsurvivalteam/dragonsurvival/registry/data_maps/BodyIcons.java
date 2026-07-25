@@ -17,7 +17,7 @@ public class BodyIcons {
     );
 
     public static ResourceLocation getIcon(final Holder<DragonBody> body, final ResourceKey<DragonSpecies> species) {
-        Map<ResourceKey<DragonSpecies>, ResourceLocation> data = body.getData(DSDataMaps.BODY_ICONS);
+        Map<ResourceKey<DragonSpecies>, ResourceLocation> data = DSDataMaps.BODY_ICONS.get(body);
 
         if (data == null) {
             return body.value().defaultIcon().orElse(DragonSurvival.MISSING_TEXTURE);

@@ -21,7 +21,7 @@ public class StageResources {
     private static final GrowthIcon MISSING = new GrowthIcon(DragonSurvival.MISSING_TEXTURE, DragonSurvival.MISSING_TEXTURE);
 
     public static StageResources.GrowthIcon getGrowthIcon(final Holder<DragonSpecies> species, final ResourceKey<DragonStage> stage) {
-        Map<ResourceKey<DragonStage>, StageResource> resources = species.getData(DSDataMaps.STAGE_RESOURCES);
+        Map<ResourceKey<DragonStage>, StageResource> resources = DSDataMaps.STAGE_RESOURCES.get(species);
 
         if (resources == null) {
             DragonSurvival.LOGGER.error("Stage resources data map is missing for species [{}]. Define a data map in dragonsurvival/data_maps/dragonsurvival/dragon_species/stage_resources.json.", species.unwrapKey().orElseThrow());
@@ -39,7 +39,7 @@ public class StageResources {
     }
 
     public static ResourceLocation getDefaultSkin(final Holder<DragonSpecies> species, final ResourceKey<DragonStage> stage, final boolean glowLayer) {
-        Map<ResourceKey<DragonStage>, StageResource> resources = species.getData(DSDataMaps.STAGE_RESOURCES);
+        Map<ResourceKey<DragonStage>, StageResource> resources = DSDataMaps.STAGE_RESOURCES.get(species);
 
         if (resources == null) {
             DragonSurvival.LOGGER.error("Stage resources data map is missing for species [{}]. Define a data map in dragonsurvival/data_maps/dragonsurvival/dragon_species/stage_resources.json.", species.unwrapKey().orElseThrow());

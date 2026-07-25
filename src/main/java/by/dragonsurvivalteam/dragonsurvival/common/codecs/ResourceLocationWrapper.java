@@ -7,11 +7,13 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Items;
 import net.minecraftforge.common.Tags;
 
 import java.util.ArrayList;
@@ -38,9 +40,15 @@ public class ResourceLocationWrapper {
 
     public static <T> Set<ResourceLocation> getEntries(final String location, final Registry<T> registry) {
         if (location.startsWith("#")) {
-            Optional<HolderSet.Named<T>> optional = registry.getTag(TagKey.create(registry.key(), new ResourceLocation(location.substring(1))));
-            //noinspection DataFlowIssue -> key is expected to be present
-            return optional.map(entries -> entries.stream().map(entry -> entry.unwrapKey().orElseThrow().location()).collect(Collectors.toSet())).orElse(Set.of());
+            ResourceLocation tagId = new ResourceLocation(location.substring(1));
+            Set<ResourceLocation> entries = getTagEntries(registry, tagId);
+            if (tagId.getNamespace().equals("c")) {
+                commonTagFallbacks(tagId).forEach(fallback ->
+                        entries.addAll(getTagEntries(registry, fallback))
+                );
+                addVanillaFoodFallbacks(registry, tagId, entries);
+            }
+            return entries;
         } else {
             ResourceLocation parsed = ResourceLocation.tryParse(location);
 
@@ -70,6 +78,60 @@ public class ResourceLocationWrapper {
                 }
 
                 return locations;
+            }
+        }
+    }
+
+    private static <T> Set<ResourceLocation> getTagEntries(
+            final Registry<T> registry,
+            final ResourceLocation tagId
+    ) {
+        Optional<HolderSet.Named<T>> optional = registry.getTag(
+                TagKey.create(registry.key(), tagId)
+        );
+        return optional.map(entries -> entries.stream()
+                        .map(entry -> entry.unwrapKey().orElseThrow().location())
+                        .collect(Collectors.toCollection(HashSet::new)))
+                .orElseGet(HashSet::new);
+    }
+
+    private static List<ResourceLocation> commonTagFallbacks(final ResourceLocation tagId) {
+        List<ResourceLocation> fallbacks = new ArrayList<>();
+        fallbacks.add(new ResourceLocation("forge", tagId.getPath()));
+        switch (tagId.getPath()) {
+            case "foods/berry" -> fallbacks.add(new ResourceLocation("forge", "foods/berries"));
+            case "foods/raw_fish" -> fallbacks.add(new ResourceLocation("forge", "foods/raw_fishes"));
+            case "foods/raw_meat" -> fallbacks.add(new ResourceLocation("forge", "foods/raw_meats"));
+        }
+        return fallbacks;
+    }
+
+    private static <T> void addVanillaFoodFallbacks(
+            final Registry<T> registry,
+            final ResourceLocation tagId,
+            final Set<ResourceLocation> entries
+    ) {
+        if (!registry.key().equals(Registries.ITEM)) {
+            return;
+        }
+
+        switch (tagId.getPath()) {
+            case "foods/berry" -> {
+                entries.add(Items.SWEET_BERRIES.builtInRegistryHolder().key().location());
+                entries.add(Items.GLOW_BERRIES.builtInRegistryHolder().key().location());
+            }
+            case "foods/raw_fish" -> {
+                entries.add(Items.COD.builtInRegistryHolder().key().location());
+                entries.add(Items.SALMON.builtInRegistryHolder().key().location());
+                entries.add(Items.TROPICAL_FISH.builtInRegistryHolder().key().location());
+                entries.add(Items.PUFFERFISH.builtInRegistryHolder().key().location());
+            }
+            case "foods/raw_meat" -> {
+                entries.add(Items.BEEF.builtInRegistryHolder().key().location());
+                entries.add(Items.CHICKEN.builtInRegistryHolder().key().location());
+                entries.add(Items.MUTTON.builtInRegistryHolder().key().location());
+                entries.add(Items.PORKCHOP.builtInRegistryHolder().key().location());
+                entries.add(Items.RABBIT.builtInRegistryHolder().key().location());
             }
         }
     }
