@@ -47,9 +47,9 @@ public class DragonSpecies implements AttributeModifierSupplier {
             UnlockableBehavior.CODEC.optionalFieldOf("unlockable_behavior").forGetter(DragonSpecies::unlockableBehavior),
             ManaHandling.CODEC.optionalFieldOf("mana_handling", ManaHandling.DEFAULT).forGetter(DragonSpecies::manaHandling),
             RegistryCodecs.homogeneousList(DragonStage.REGISTRY).optionalFieldOf("custom_stage_progression").forGetter(DragonSpecies::stages),
-            RegistryCodecs.homogeneousList(DragonBody.REGISTRY).optionalFieldOf("bodies", HolderSet.empty()).forGetter(DragonSpecies::bodies),
-            RegistryCodecs.homogeneousList(DragonAbility.REGISTRY).optionalFieldOf("abilities", HolderSet.empty()).forGetter(DragonSpecies::abilities),
-            RegistryCodecs.homogeneousList(DragonPenalty.REGISTRY).optionalFieldOf("penalties", HolderSet.empty()).forGetter(DragonSpecies::penalties),
+            RegistryCodecs.homogeneousList(DragonBody.REGISTRY).optionalFieldOf("bodies", HolderSet.direct()).forGetter(DragonSpecies::bodies),
+            RegistryCodecs.homogeneousList(DragonAbility.REGISTRY).optionalFieldOf("abilities", HolderSet.direct()).forGetter(DragonSpecies::abilities),
+            RegistryCodecs.homogeneousList(DragonPenalty.REGISTRY).optionalFieldOf("penalties", HolderSet.direct()).forGetter(DragonSpecies::penalties),
             MiscResources.CODEC.fieldOf("misc_resources").forGetter(DragonSpecies::miscResources)
     ).apply(instance, instance.stable(DragonSpecies::new)));
 

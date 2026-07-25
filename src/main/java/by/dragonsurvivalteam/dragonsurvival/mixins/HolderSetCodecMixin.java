@@ -19,7 +19,7 @@ public class HolderSetCodecMixin {
     private static <E> DataResult<HolderSet<E>> dragonSurvival$skipError(final DataResult<HolderSet<E>> original) {
         if (original.error().isPresent()) {
             DragonSurvival.LOGGER.error("Skipping data generation error [{}]", original.error().get().message());
-            return DataResult.success(HolderSet.empty());
+            return DataResult.success(HolderSet.direct());
         }
 
         return original;

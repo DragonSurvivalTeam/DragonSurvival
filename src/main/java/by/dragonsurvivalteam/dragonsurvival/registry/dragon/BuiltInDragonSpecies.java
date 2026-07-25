@@ -70,7 +70,7 @@ public class BuiltInDragonSpecies {
                 Optional.empty(),
                 manaHandling,
                 Optional.empty(),
-                HolderSet.empty(),
+                HolderSet.direct(),
                 context.lookup(DragonAbility.REGISTRY).getOrThrow(DSDragonAbilityTags.CAVE),
                 context.lookup(DragonPenalty.REGISTRY).getOrThrow(DSDragonPenaltyTags.CAVE),
                 new MiscResources(
@@ -108,7 +108,7 @@ public class BuiltInDragonSpecies {
                 Optional.empty(),
                 manaHandling,
                 Optional.empty(),
-                HolderSet.empty(),
+                HolderSet.direct(),
                 context.lookup(DragonAbility.REGISTRY).getOrThrow(DSDragonAbilityTags.SEA),
                 context.lookup(DragonPenalty.REGISTRY).getOrThrow(DSDragonPenaltyTags.SEA),
                 new MiscResources(
@@ -146,7 +146,7 @@ public class BuiltInDragonSpecies {
                 Optional.empty(),
                 manaHandling,
                 Optional.empty(),
-                HolderSet.empty(),
+                HolderSet.direct(),
                 context.lookup(DragonAbility.REGISTRY).getOrThrow(DSDragonAbilityTags.FOREST),
                 context.lookup(DragonPenalty.REGISTRY).getOrThrow(DSDragonPenaltyTags.FOREST),
                 new MiscResources(

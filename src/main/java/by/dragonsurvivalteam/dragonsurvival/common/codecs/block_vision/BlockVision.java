@@ -269,7 +269,7 @@ public class BlockVision extends DurationInstanceBase<BlockVisionData, BlockVisi
     
     public static class Builder {
         private final DurationInstanceBase<?, ?> base;
-        private HolderSet<Block> blocks = HolderSet.empty();
+        private HolderSet<Block> blocks = HolderSet.direct();
         private LevelBasedValue range = LevelBasedValue.constant(1);
         private DisplayType displayType = DisplayType.NONE;
         private Either<List<TextColor>, List<ColorEntry>> colors = Either.left(List.of());
