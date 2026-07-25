@@ -38,7 +38,7 @@ import java.util.stream.Collectors;
 
 public class BlockLootTableSubProvider extends BlockLootSubProvider {
     public BlockLootTableSubProvider(HolderLookup.Provider provider) {
-        super(Collections.emptySet(), FeatureFlags.REGISTRY.allFlags(), provider);
+        super(Collections.emptySet(), FeatureFlags.REGISTRY.allFlags());
     }
 
     @Override
@@ -59,13 +59,13 @@ public class BlockLootTableSubProvider extends BlockLootSubProvider {
                     return createTreasureBlockLoot(block);
                 } else if (block instanceof SkeletonPieceBlock skeleton) {
                     return switch (skeleton.type()) {
-                        case SkeletonPieceBlock.Type.CHEST -> createSingleItemTable(DSItems.STAR_BONE.get(), UniformGenerator.between(3, 6));
-                        case SkeletonPieceBlock.Type.LEG_1, SkeletonPieceBlock.Type.NECK_2 -> createSingleItemTable(DSItems.STAR_BONE.get(), UniformGenerator.between(1, 3));
-                        case SkeletonPieceBlock.Type.LEG_2, SkeletonPieceBlock.Type.NECK_1 -> createSingleItemTable(DSItems.STAR_BONE.get(), UniformGenerator.between(1, 2));
-                        case SkeletonPieceBlock.Type.LEG_3 -> createSingleItemTable(DSItems.STAR_BONE.get(), ConstantValue.exactly(1));
-                        case SkeletonPieceBlock.Type.NECK_3 -> createSingleItemTable(DSItems.STAR_BONE.get(), UniformGenerator.between(1, 4));
-                        case SkeletonPieceBlock.Type.PELVIS -> createSingleItemTable(DSItems.STAR_BONE.get(), UniformGenerator.between(2, 4));
-                        case SkeletonPieceBlock.Type.SKULL_1, SkeletonPieceBlock.Type.SKULL_2 -> createSingleItemTable(DSItems.STAR_BONE.get(), UniformGenerator.between(1, 5));
+                        case CHEST -> createSingleItemTable(DSItems.STAR_BONE.get(), UniformGenerator.between(3, 6));
+                        case LEG_1, NECK_2 -> createSingleItemTable(DSItems.STAR_BONE.get(), UniformGenerator.between(1, 3));
+                        case LEG_2, NECK_1 -> createSingleItemTable(DSItems.STAR_BONE.get(), UniformGenerator.between(1, 2));
+                        case LEG_3 -> createSingleItemTable(DSItems.STAR_BONE.get(), ConstantValue.exactly(1));
+                        case NECK_3 -> createSingleItemTable(DSItems.STAR_BONE.get(), UniformGenerator.between(1, 4));
+                        case PELVIS -> createSingleItemTable(DSItems.STAR_BONE.get(), UniformGenerator.between(2, 4));
+                        case SKULL_1, SKULL_2 -> createSingleItemTable(DSItems.STAR_BONE.get(), UniformGenerator.between(1, 5));
                         default -> createSingleItemTable(DSItems.STAR_BONE.get());
                     };
                 } else if (block instanceof DragonBeacon) {
