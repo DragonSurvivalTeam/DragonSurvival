@@ -23,7 +23,6 @@ import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.item.Tiers;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.loading.moddiscovery.ModAnnotation;
-import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.LanguageProvider;
 import net.minecraftforge.forgespi.language.ModFileScanData;
 import org.apache.commons.lang3.text.WordUtils;
@@ -91,6 +90,20 @@ public class DSLanguageProvider extends LanguageProvider {
         return enumClassKey(enumValue) + "." + enumValue.name().toLowerCase(Locale.ENGLISH);
     }
 
+    private static String getTagTranslationKey(final TagKey<?> tag) {
+        ResourceLocation registry = tag.registry().location();
+        String registryKey = registry.getNamespace().equals("minecraft")
+                ? registry.getPath()
+                : registry.getNamespace() + "." + registry.getPath();
+
+        return "tag."
+                + registryKey.replace("/", ".")
+                + "."
+                + tag.location().getNamespace()
+                + "."
+                + tag.location().getPath().replace("/", ".");
+    }
+
     /** Replace 'SomeDefinedClass' with 'enum.some_defined_class' for the translation key */
     private static String enumClassKey(final Class<?> classType) {
         return "enum." + classType.getSimpleName().replaceAll("([a-z])([A-Z])", "$1_$2").toLowerCase(Locale.ENGLISH);
@@ -109,9 +122,9 @@ public class DSLanguageProvider extends LanguageProvider {
 
         // It seems only built-in registries are present (which excludes dragon species)
         // Therefor we have to handle these manually (because the tags are dynamically created)
-        add(Tags.getTagTranslationKey(DSItemTags.key(LangKey.FOOD.apply(BuiltInDragonSpecies.CAVE_DRAGON.location()))), "Cave Dragon Food");
-        add(Tags.getTagTranslationKey(DSItemTags.key(LangKey.FOOD.apply(BuiltInDragonSpecies.FOREST_DRAGON.location()))), "Forest Dragon Food");
-        add(Tags.getTagTranslationKey(DSItemTags.key(LangKey.FOOD.apply(BuiltInDragonSpecies.SEA_DRAGON.location()))), "Sea Dragon Food");
+        add(getTagTranslationKey(DSItemTags.key(LangKey.FOOD.apply(BuiltInDragonSpecies.CAVE_DRAGON.location()))), "Cave Dragon Food");
+        add(getTagTranslationKey(DSItemTags.key(LangKey.FOOD.apply(BuiltInDragonSpecies.FOREST_DRAGON.location()))), "Forest Dragon Food");
+        add(getTagTranslationKey(DSItemTags.key(LangKey.FOOD.apply(BuiltInDragonSpecies.SEA_DRAGON.location()))), "Sea Dragon Food");
     }
 
     private void handleVanilla() {
@@ -125,11 +138,11 @@ public class DSLanguageProvider extends LanguageProvider {
         }
 
         // Tags are not available during data generation
-        add(Tags.getTagTranslationKey(DamageTypeTags.IS_FIRE), "Fire");
+        add(getTagTranslationKey(DamageTypeTags.IS_FIRE), "Fire");
 
-        add(Tags.getTagTranslationKey(BlockTags.MINEABLE_WITH_PICKAXE), "Mineable with Pickaxe");
-        add(Tags.getTagTranslationKey(BlockTags.MINEABLE_WITH_AXE), "Mineable with Axe");
-        add(Tags.getTagTranslationKey(BlockTags.MINEABLE_WITH_SHOVEL), "Mineable with Shovel");
+        add(getTagTranslationKey(BlockTags.MINEABLE_WITH_PICKAXE), "Mineable with Pickaxe");
+        add(getTagTranslationKey(BlockTags.MINEABLE_WITH_AXE), "Mineable with Axe");
+        add(getTagTranslationKey(BlockTags.MINEABLE_WITH_SHOVEL), "Mineable with Shovel");
 
         for (Direction direction : Direction.values()) {
             add(enumClassKey(direction) + "." + direction.name().toLowerCase(Locale.ENGLISH), capitalize(direction.getName()));
@@ -153,7 +166,7 @@ public class DSLanguageProvider extends LanguageProvider {
 
             String key = (String) annotationData.annotationData().get("key");
             Optional<ModAnnotation.EnumHolder> optionalEnum = Optional.ofNullable((ModAnnotation.EnumHolder) annotationData.annotationData().get("type"));
-            Translation.Type type = optionalEnum.map(holder -> Translation.Type.valueOf(holder.value())).orElse(Translation.Type.NONE);
+            Translation.Type type = optionalEnum.map(holder -> Translation.Type.valueOf(holder.getValue())).orElse(Translation.Type.NONE);
             //noinspection unchecked -> type is correct
             List<String> comments = (List<String>) annotationData.annotationData().get("comments");
 
@@ -173,7 +186,7 @@ public class DSLanguageProvider extends LanguageProvider {
 
                     if (TagKey.class.isAssignableFrom(field.getType())) {
                         TagKey<?> tag = (TagKey<?>) field.get(null);
-                        add(Tags.getTagTranslationKey(tag), format(comments));
+                        add(getTagTranslationKey(tag), format(comments));
                         continue;
                     }
 
