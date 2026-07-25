@@ -310,7 +310,7 @@ public class ServerFlightHandler {
             return false;
         }
 
-        return data.inFluid.contains(player.registryAccess().holderOrThrow(key));
+        return data.inFluid.contains(player.level().registryAccess().holderOrThrow(key));
     }
 
     @SubscribeEvent

@@ -21,7 +21,7 @@ public record SyncAltarState(CompoundTag altarData) implements CustomPacketPaylo
     public static void handleClient(final SyncAltarState message, final PayloadContext context) {
         context.enqueueWork(() -> {
             AltarData data = AltarData.getData(context.player());
-            data.deserializeNBT(context.player().registryAccess(), message.altarData());
+            data.deserializeNBT(context.player().level().registryAccess(), message.altarData());
         });
     }
 

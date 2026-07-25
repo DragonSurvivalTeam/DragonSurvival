@@ -26,7 +26,7 @@ public record SyncDragonClawsMenu(int playerId, boolean isOpen, CompoundTag data
             if (context.player().level().getEntity(packet.playerId()) instanceof Player player) {
                 ClawInventoryData data = ClawInventoryData.getData(player);
                 data.setMenuOpen(packet.isOpen());
-                data.deserializeNBT(player.registryAccess(), packet.data());
+                data.deserializeNBT(player.level().registryAccess(), packet.data());
             }
         });
     }

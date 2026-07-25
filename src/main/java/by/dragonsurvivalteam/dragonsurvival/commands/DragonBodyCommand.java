@@ -48,7 +48,7 @@ public class DragonBodyCommand {
             handler.setBody(target, body);
 
             SyncComplete.handleDragonSync(target, false);
-            PacketDistributor.sendToPlayersTrackingEntityAndSelf(target, new SyncComplete(target.getId(), handler.serializeNBT(target.registryAccess())));
+            PacketDistributor.sendToPlayersTrackingEntityAndSelf(target, new SyncComplete(target.getId(), handler.serializeNBT(target.level().registryAccess())));
 
             processed++;
         }

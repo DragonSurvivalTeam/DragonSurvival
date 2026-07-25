@@ -307,8 +307,8 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
 
     // FIXME :: Known issue: if I switch to a body type that invalidates my preset, my preset data will be lost even if I undo
     public final Function<CompoundTag, CompoundTag> setSkinPresetAction = tag -> {
-        CompoundTag prevTag = HANDLER.getCurrentSkinPreset().serializeNBT(Objects.requireNonNull(Minecraft.getInstance().player).registryAccess());
-        HANDLER.getCurrentSkinPreset().deserializeNBT(Minecraft.getInstance().player.registryAccess(), tag);
+        CompoundTag prevTag = HANDLER.getCurrentSkinPreset().serializeNBT(Objects.requireNonNull(Minecraft.getInstance().player).level().registryAccess());
+        HANDLER.getCurrentSkinPreset().deserializeNBT(Minecraft.getInstance().player.level().registryAccess(), tag);
         HANDLER.recompileCurrentSkin();
         update();
         return prevTag;
@@ -645,7 +645,7 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
         SkinPreset skinPreset = localHandler.getSkinPresetForSpecies(species, body);
         SkinPreset copy = new SkinPreset();
         //noinspection DataFlowIssue -> player is present
-        copy.deserializeNBT(minecraft.player.registryAccess(), skinPreset.serializeNBT(minecraft.player.registryAccess()));
+        copy.deserializeNBT(minecraft.player.level().registryAccess(), skinPreset.serializeNBT(minecraft.player.level().registryAccess()));
 
         if (copy.getModel().equals(body.value().model())) {
             HANDLER.setCurrentSkinPreset(copy);
@@ -843,7 +843,7 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
         discardButton.setMessage(Component.translatable(LangKey.GUI_CANCEL));
         addRenderableWidget(discardButton);
 
-        RegistryAccess access = Objects.requireNonNull(Minecraft.getInstance().player).registryAccess();
+        RegistryAccess access = Objects.requireNonNull(Minecraft.getInstance().player).level().registryAccess();
 
         HoverButton randomButton = new HoverButton(width / 2 - 8, 40, 16, 17, 20, 20, RANDOM_MAIN, RANDOM_HOVER, btn -> {
             // Since there are multiple 'EXTRA' field for the editor
@@ -993,7 +993,7 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
         }
 
         HoverButton loadSlotButton = new HoverButton(width / 2 + 182, height - 28, 17, 18, 20, 20, SLOT_LOAD_MAIN, SLOT_LOAD_HOVER, button -> {
-            CustomizationFileHandler.SavedCustomization savedCustomization = CustomizationFileHandler.load(selectedSaveSlot, minecraft.player.registryAccess());
+            CustomizationFileHandler.SavedCustomization savedCustomization = CustomizationFileHandler.load(selectedSaveSlot, minecraft.player.level().registryAccess());
 
             if (savedCustomization == null) {
                 slotDisplayMessage = SlotDisplayMessage.NO_DATA;
@@ -1021,7 +1021,7 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
         addRenderableWidget(loadSlotButton);
 
         HoverButton saveSlotButton = new HoverButton(width / 2 + 160, height - 28, 17, 18, 20, 20, SLOT_SAVE_MAIN, SLOT_SAVE_HOVER, button -> {
-            CustomizationFileHandler.save(HANDLER, selectedSaveSlot, minecraft.player.registryAccess());
+            CustomizationFileHandler.save(HANDLER, selectedSaveSlot, minecraft.player.level().registryAccess());
             slotDisplayMessage = SlotDisplayMessage.SLOT_SAVED;
             tickWhenSlotDisplayMessageSet = tick;
         });
@@ -1139,7 +1139,7 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
             double savedSize = data.getSavedDragonAge(data.speciesKey());
 
             if (!ServerConfig.saveGrowthStage || savedSize == DragonStateHandler.NO_GROWTH) {
-                double startingGrowth = species.value().getStartingGrowth(minecraft.player.registryAccess());
+                double startingGrowth = species.value().getStartingGrowth(minecraft.player.level().registryAccess());
                 data.setGrowth(minecraft.player, startingGrowth);
                 data.setDesiredGrowth(minecraft.player, startingGrowth);
             }
@@ -1155,10 +1155,10 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
             altarData.isInAltar = false;
 
             PacketDistributor.sendToServer(new SyncAltarCooldown(altarData.altarCooldown));
-            PacketDistributor.sendToServer(new SyncComplete(minecraft.player.getId(), data.serializeNBT(minecraft.player.registryAccess())));
+            PacketDistributor.sendToServer(new SyncComplete(minecraft.player.getId(), data.serializeNBT(minecraft.player.level().registryAccess())));
         } else {
             data.setCurrentSkinPreset(preset);
-            PacketDistributor.sendToServer(new SyncPlayerSkinPreset(minecraft.player.getId(), HANDLER.speciesKey(), HANDLER.getCurrentSkinPreset().serializeNBT(minecraft.player.registryAccess())));
+            PacketDistributor.sendToServer(new SyncPlayerSkinPreset(minecraft.player.getId(), HANDLER.speciesKey(), HANDLER.getCurrentSkinPreset().serializeNBT(minecraft.player.level().registryAccess())));
         }
 
         minecraft.player.closeContainer();

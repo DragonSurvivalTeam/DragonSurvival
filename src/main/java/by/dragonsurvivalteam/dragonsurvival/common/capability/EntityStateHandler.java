@@ -81,9 +81,9 @@ public class EntityStateHandler implements INBTSerializable<CompoundTag> {
     /** If no player is specified it will be sent to all tracking players */
     public void sync(final Entity holder, @Nullable final Player player) {
         if (player instanceof ServerPlayer serverPlayer) {
-            PacketDistributor.sendToPlayer(serverPlayer, new SyncData(holder.getId(), DSDataAttachments.ENTITY_HANDLER.getId(), serializeNBT(holder.registryAccess())));
+            PacketDistributor.sendToPlayer(serverPlayer, new SyncData(holder.getId(), DSDataAttachments.ENTITY_HANDLER.getId(), serializeNBT(holder.level().registryAccess())));
         } else if (player == null) {
-            PacketDistributor.sendToPlayersTrackingEntity(holder, new SyncData(holder.getId(), DSDataAttachments.ENTITY_HANDLER.getId(), serializeNBT(holder.registryAccess())));
+            PacketDistributor.sendToPlayersTrackingEntity(holder, new SyncData(holder.getId(), DSDataAttachments.ENTITY_HANDLER.getId(), serializeNBT(holder.level().registryAccess())));
         }
     }
 

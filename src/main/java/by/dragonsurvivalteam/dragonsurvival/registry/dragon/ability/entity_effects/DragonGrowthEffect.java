@@ -69,7 +69,7 @@ public record DragonGrowthEffect(GrowthType growth_type, ActionType action_type,
                 double maxGrowth = growthRange.max();
                 double minGrowth = growthRange.min();
                 // TODO :: add some other parameter that works off of the overall growth (stage progression min & max)
-                //         by using 'handler.getStages(player.registryAccess())'
+                //         by using 'handler.getStages(player.level().registryAccess())'
                 difference = amount * (maxGrowth - minGrowth);
 
                 if (growth_type == GrowthType.SET) {

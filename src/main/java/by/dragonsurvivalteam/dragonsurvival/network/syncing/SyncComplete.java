@@ -49,7 +49,7 @@ public record SyncComplete(int playerId, CompoundTag data) implements CustomPack
         context.enqueueWork(() -> {
             if (context.player().level().getEntity(packet.playerId()) instanceof Player player) {
                 DragonStateHandler handler = DragonStateProvider.getData(player);
-                handler.deserializeNBT(player.registryAccess(), packet.data());
+                handler.deserializeNBT(player.level().registryAccess(), packet.data());
                 player.refreshDimensions();
             }
         });
@@ -61,7 +61,7 @@ public record SyncComplete(int playerId, CompoundTag data) implements CustomPack
 
             DragonStateHandler handler = DragonStateProvider.getData(player);
             Holder<DragonSpecies> previousType = handler.species();
-            handler.deserializeNBT(player.registryAccess(), packet.data());
+            handler.deserializeNBT(player.level().registryAccess(), packet.data());
             handleDragonSync(player, false);
 
             if (!handler.isDragon()) {

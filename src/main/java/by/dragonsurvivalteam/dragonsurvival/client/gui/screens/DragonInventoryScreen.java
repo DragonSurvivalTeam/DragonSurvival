@@ -188,7 +188,7 @@ public class DragonInventoryScreen extends EffectRenderingInventoryScreen<Dragon
         addRenderableWidget(growthButton);
 
         // Growth stage crystals
-        List<Holder<DragonStage>> stages = data.getStagesSortedByProgression(minecraft.player.registryAccess());
+        List<Holder<DragonStage>> stages = data.getStagesSortedByProgression(minecraft.player.level().registryAccess());
 
         if (!stages.isEmpty()) {
             List<AbstractWidget> crystals = stages.stream().map(stage -> (AbstractWidget) new GrowthCrystalButton(0, 0, stage)).toList();

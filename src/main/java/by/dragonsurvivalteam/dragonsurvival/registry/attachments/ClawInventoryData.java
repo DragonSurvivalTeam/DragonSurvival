@@ -237,7 +237,7 @@ public class ClawInventoryData implements INBTSerializable<CompoundTag> {
             return;
         }
 
-        PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new SyncDragonClawsMenu(player.getId(), isMenuOpen, serializeNBT(player.registryAccess())));
+        PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new SyncDragonClawsMenu(player.getId(), isMenuOpen, serializeNBT(player.level().registryAccess())));
     }
 
     public static ClawInventoryData getData(final Player player) {

@@ -65,11 +65,11 @@ public class TestUtils {
         data.setSpecies(player, species);
         helper.assertTrue(data.species().is(dragonSpecies), String.format("Dragon species was [%s] - expected [%s]", data.species(), species));
 
-        Holder<DragonBody> body = player.registryAccess().holderOrThrow(dragonBody);
+        Holder<DragonBody> body = player.level().registryAccess().holderOrThrow(dragonBody);
         data.setBody(player, body);
         helper.assertTrue(DragonUtils.isBody(data, body), String.format("Dragon type was [%s] - expected [%s]", data.body(), dragonBody));
 
-        Holder<DragonStage> stage = player.registryAccess().holderOrThrow(dragonStage);
+        Holder<DragonStage> stage = player.level().registryAccess().holderOrThrow(dragonStage);
         data.setStage(player, stage);
         helper.assertTrue(data.stage().is(stage), String.format("Dragon stage was [%s] - expected [%s]", data.stage(), stage));
 

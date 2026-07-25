@@ -180,7 +180,7 @@ public record DragonBody(
     public static List<UnlockableBehavior.BodyEntry> getBodies(final ServerPlayer player, boolean isEditor) {
         List<UnlockableBehavior.BodyEntry> entries = new ArrayList<>();
 
-        ResourceHelper.all(player.registryAccess(), REGISTRY).forEach(body -> {
+        ResourceHelper.all(player.level().registryAccess(), REGISTRY).forEach(body -> {
             UnlockableBehavior behaviour = body.value().unlockableBehavior().orElse(null);
 
             if (behaviour == null) {

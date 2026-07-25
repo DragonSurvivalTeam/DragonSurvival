@@ -130,7 +130,7 @@ public class DragonAbilityCommand {
                     processed++;
                 }
 
-                PacketDistributor.sendToPlayer(player, new SyncMagicData(data.serializeNBT(target.registryAccess())));
+                PacketDistributor.sendToPlayer(player, new SyncMagicData(data.serializeNBT(target.level().registryAccess())));
             }
         }
 

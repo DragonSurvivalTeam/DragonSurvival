@@ -26,7 +26,7 @@ public abstract class Storage<T extends StorageEntry> implements INBTSerializabl
     @Nullable protected Map<ResourceLocation, T> storage;
 
     public void sync(final ServerPlayer player) {
-        AttachmentManager.getExistingData(player, type()).ifPresent(data -> PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new SyncData(player.getId(), DSDataAttachments.ATTACHMENT_TYPES.get().getKey(type()), serializeNBT(player.registryAccess()))));
+        AttachmentManager.getExistingData(player, type()).ifPresent(data -> PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new SyncData(player.getId(), DSDataAttachments.ATTACHMENT_TYPES.get().getKey(type()), serializeNBT(player.level().registryAccess()))));
     }
 
     public void tick(final Entity storageHolder) {

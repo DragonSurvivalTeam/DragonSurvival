@@ -123,7 +123,7 @@ public record DragonAbilityHolder(List<AbilityPair> pairs, Optional<LootItemCond
 
     public boolean use(final ServerPlayer player, final DragonStateHandler handler, final MagicData magic) {
         for (String resource : applicableSpecies) {
-            if (!ResourceLocationWrapper.getEntries(resource, player.registryAccess().registryOrThrow(DragonSpecies.REGISTRY)).contains(handler.speciesId())) {
+            if (!ResourceLocationWrapper.getEntries(resource, player.level().registryAccess().registryOrThrow(DragonSpecies.REGISTRY)).contains(handler.speciesId())) {
                 player.sendSystemMessage(Component.translatable(REQUIREMENTS_NOT_MET).withStyle(ChatFormatting.RED));
                 return false;
             }
@@ -134,7 +134,7 @@ public record DragonAbilityHolder(List<AbilityPair> pairs, Optional<LootItemCond
             return false;
         }
 
-        Registry<DragonAbility> registry = player.registryAccess().registryOrThrow(DragonAbility.REGISTRY);
+        Registry<DragonAbility> registry = player.level().registryAccess().registryOrThrow(DragonAbility.REGISTRY);
         List<ResourceKey<DragonAbility>> totalToAdd = new ArrayList<>();
         List<ResourceKey<DragonAbility>> totalToRemove = new ArrayList<>();
 

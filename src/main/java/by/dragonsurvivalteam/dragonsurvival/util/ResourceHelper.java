@@ -10,19 +10,18 @@ import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.RegistryOps;
 import net.minecraft.util.RandomSource;
-import net.minecraftforge.common.CommonHooks;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
 
 public class ResourceHelper {
     private static final RandomSource RANDOM = RandomSource.create();
 
     public static <T> Optional<Holder.Reference<T>> get(@Nullable final HolderLookup.Provider provider, final ResourceKey<T> key) {
-        return getRegistry(provider, key.registryKey()).get(key);
+        return getRegistry(provider, registryKey(key)).get(key);
     }
 
     public static <T> List<Holder.Reference<T>> all(@Nullable final HolderLookup.Provider provider, final ResourceKey<Registry<T>> key) {
@@ -56,12 +55,13 @@ public class ResourceHelper {
             return null;
         }
 
-        ResourceKey<T> resource = ResourceKey.codec(registryKey).decode(actualProvider.createSerializationContext(NbtOps.INSTANCE), tag.get(key)).mapOrElse(Pair::getFirst, error -> {
-            DragonSurvival.LOGGER.error(error.message());
-            return null;
-        });
+        ResourceKey<T> resource = ResourceKey.codec(registryKey)
+                .decode(RegistryOps.create(NbtOps.INSTANCE, actualProvider), tag.get(key))
+                .resultOrPartial(DragonSurvival.LOGGER::error)
+                .map(Pair::getFirst)
+                .orElse(null);
 
-        if (resource != null && actualProvider.holder(resource).isEmpty()) {
+        if (resource != null && actualProvider.lookupOrThrow(registryKey).get(resource).isEmpty()) {
             return null;
         }
 
@@ -86,21 +86,23 @@ public class ResourceHelper {
             return null;
         }
 
-        return ResourceKey.codec(key.registryKey()).encodeStart(actualProvider.createSerializationContext(NbtOps.INSTANCE), key).mapOrElse(Function.identity(), error -> {
-            DragonSurvival.LOGGER.error(error.message());
-            return null;
-        });
+        return ResourceKey.codec(registryKey(key))
+                .encodeStart(RegistryOps.create(NbtOps.INSTANCE, actualProvider), key)
+                .resultOrPartial(DragonSurvival.LOGGER::error)
+                .orElse(null);
     }
 
     private static <T> HolderLookup.RegistryLookup<T> getRegistry(@Nullable final HolderLookup.Provider provider, final ResourceKey<Registry<T>> key) {
-        HolderLookup.RegistryLookup<T> registry;
+        HolderLookup.Provider actualProvider = provider != null ? provider : DragonSurvival.PROXY.getAccess();
 
-        if (provider == null) {
-            registry = CommonHooks.resolveLookup(key);
-        } else {
-            registry = provider.lookupOrThrow(key);
+        if (actualProvider == null) {
+            throw new IllegalStateException("Registry context is not available for " + key.location());
         }
 
-        return registry;
+        return actualProvider.lookupOrThrow(key);
+    }
+
+    private static <T> ResourceKey<Registry<T>> registryKey(final ResourceKey<T> key) {
+        return ResourceKey.createRegistryKey(key.registry());
     }
 }

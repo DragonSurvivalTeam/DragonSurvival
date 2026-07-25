@@ -247,7 +247,7 @@ public class MagicData implements INBTSerializable<CompoundTag> {
         if (abilityHolder != null && abilityHolder.use(player, handler, magic)) {
             stack.consume(1, player);
             player.playNotifySound(DSSounds.UPGRADE_BEACON.get(), SoundSource.PLAYERS, 1, 0);
-            PacketDistributor.sendToPlayer(player, new SyncMagicData(magic.serializeNBT(player.registryAccess())));
+            PacketDistributor.sendToPlayer(player, new SyncMagicData(magic.serializeNBT(player.level().registryAccess())));
         }
 
         magic.getAbilities().values().forEach(ability -> ability.value().upgrade().ifPresent(upgrade -> {

@@ -8,6 +8,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
+import net.minecraft.resources.RegistryOps;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.player.Player;
@@ -89,7 +90,7 @@ public class DragonBeaconBlockEntity extends BlockEntity {
         super.loadAdditional(tag, provider);
 
         if (tag.contains(DRAGON_BEACON_DATA)) {
-            DragonBeaconData.CODEC.decode(provider.createSerializationContext(NbtOps.INSTANCE), tag.getCompound(DRAGON_BEACON_DATA))
+            DragonBeaconData.CODEC.decode(RegistryOps.create(NbtOps.INSTANCE, provider), tag.getCompound(DRAGON_BEACON_DATA))
                     .resultOrPartial(DragonSurvival.LOGGER::error)
                     .ifPresent(data -> this.data = data.getFirst());
         }
@@ -100,7 +101,7 @@ public class DragonBeaconBlockEntity extends BlockEntity {
         super.saveAdditional(tag, provider);
 
         if (data != null) {
-            DragonBeaconData.CODEC.encodeStart(provider.createSerializationContext(NbtOps.INSTANCE), data)
+            DragonBeaconData.CODEC.encodeStart(RegistryOps.create(NbtOps.INSTANCE, provider), data)
                     .resultOrPartial(DragonSurvival.LOGGER::error)
                     .ifPresent(compound -> tag.put(DRAGON_BEACON_DATA, compound));
         }

@@ -132,13 +132,13 @@ public class DragonStateHandler extends EntityStateHandler {
             return;
         }
 
-        HolderSet<DragonStage> stages = dragonSpecies.value().getStages(player != null ? player.registryAccess() : null);
+        HolderSet<DragonStage> stages = dragonSpecies.value().getStages(player != null ? player.level().registryAccess() : null);
         setStage(player, stages.getRandomElement(player != null ? player.getRandom() : RANDOM).orElseThrow());
     }
 
     /** Sets the stage and retains the current age */
     public void setStage(@Nullable final Player player, final Holder<DragonStage> dragonStage) {
-        if (!dragonSpecies.value().getStages(player != null ? player.registryAccess() : null).contains(dragonStage)) {
+        if (!dragonSpecies.value().getStages(player != null ? player.level().registryAccess() : null).contains(dragonStage)) {
             //noinspection DataFlowIssue -> key is present
             Functions.logOrThrow("The dragon stage [" + dragonStage.unwrapKey().orElseThrow().location() + "] is not valid for the dragon species [" + speciesId() + "]");
             return;
@@ -208,7 +208,7 @@ public class DragonStateHandler extends EntityStateHandler {
     public void setGrowth(@Nullable final Player player, final double growth, final boolean forceUpdate) {
         double oldGrowth = this.growth;
         Holder<DragonStage> oldStage = dragonStage;
-        updateGrowthAndStage(player != null ? player.registryAccess() : null, growth);
+        updateGrowthAndStage(player != null ? player.level().registryAccess() : null, growth);
 
         if (player == null) {
             return;
@@ -249,7 +249,7 @@ public class DragonStateHandler extends EntityStateHandler {
             return;
         }
 
-        desiredGrowth = clampGrowth(player.registryAccess(), growth);
+        desiredGrowth = clampGrowth(player.level().registryAccess(), growth);
 
         if (player instanceof ServerPlayer serverPlayer) {
             PacketDistributor.sendToPlayersTrackingEntityAndSelf(serverPlayer, new SyncDesiredGrowth(serverPlayer.getId(), desiredGrowth));
@@ -344,7 +344,7 @@ public class DragonStateHandler extends EntityStateHandler {
     }
 
     public Holder<DragonStage> stageFromDesiredSize(Player player) {
-        return DragonStage.get(dragonSpecies.value().getStages(player.registryAccess()), desiredGrowth);
+        return DragonStage.get(dragonSpecies.value().getStages(player.level().registryAccess()), desiredGrowth);
     }
 
     /** Should only be called if the player is a dragon */
@@ -386,7 +386,7 @@ public class DragonStateHandler extends EntityStateHandler {
             }
         }
 
-        PacketDistributor.sendToPlayer(player, new SyncMagicData(magic.serializeNBT(player.registryAccess())));
+        PacketDistributor.sendToPlayer(player, new SyncMagicData(magic.serializeNBT(player.level().registryAccess())));
     }
 
     public void setSpecies(@Nullable final Player player, @Nullable final Holder<DragonSpecies> species, boolean savedForSoul) {
@@ -402,13 +402,13 @@ public class DragonStateHandler extends EntityStateHandler {
                 if (player instanceof ServerPlayer serverPlayer) {
                     setBody(serverPlayer, DragonBody.getRandomUnlocked(serverPlayer));
                 } else {
-                    setBody(player, DragonBody.getRandom(player != null ? player.registryAccess() : null, species));
+                    setBody(player, DragonBody.getRandom(player != null ? player.level().registryAccess() : null, species));
                 }
             }
 
             // Also make sure we clamp our growth to a valid stage
-            updateGrowthAndStage(player != null ? player.registryAccess() : null, getSavedDragonAge(speciesKey()));
-            desiredGrowth = getSavedDragonDesiredAge(player != null ? player.registryAccess() : null, speciesKey());
+            updateGrowthAndStage(player != null ? player.level().registryAccess() : null, getSavedDragonAge(speciesKey()));
+            desiredGrowth = getSavedDragonDesiredAge(player != null ? player.level().registryAccess() : null, speciesKey());
 
             // The server doesn't need to check for skin preset refreshes; the client handles this
             if (FMLLoader.getDist().isClient()) {

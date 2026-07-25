@@ -177,7 +177,7 @@ public class DragonSkinsScreen extends Screen {
 
         if (dragonStage == null) {
             //noinspection DataFlowIssue -> player should not be null
-            dragonStage = DragonStage.get(minecraft.player.registryAccess(), Double.MAX_VALUE);
+            dragonStage = DragonStage.get(minecraft.player.level().registryAccess(), Double.MAX_VALUE);
         }
     }
 
@@ -212,7 +212,7 @@ public class DragonSkinsScreen extends Screen {
             if (!DragonSkins.fetchHasFailed(playerName, dragonStage.unwrapKey().orElseThrow()) || Objects.equals(playerName, minecraft.player.getGameProfile().getName())) {
                 if (handler.stage() == null) {
                     boolean alreadyUsingDefaults = handler.getCurrentSkinPreset().isStageUsingDefaultSkin(dragonStage.unwrapKey().orElseThrow());
-                    handler.setGrowth(null, handler.species().value().getStartingGrowth(minecraft.player.registryAccess()));
+                    handler.setGrowth(null, handler.species().value().getStartingGrowth(minecraft.player.level().registryAccess()));
                     updateHandlerToUseCorrectSkinData();
                     handler.getCurrentSkinPreset().setAllStagesToUseDefaultSkin(alreadyUsingDefaults);
                     DragonSkinsScreen.dragonStage = handler.stage();
@@ -268,7 +268,7 @@ public class DragonSkinsScreen extends Screen {
         super.init();
 
         //noinspection DataFlowIssue -> player is present
-        if (ResourceHelper.all(minecraft.player.registryAccess(), DragonBody.REGISTRY).stream().noneMatch(body -> body.value().model().equals(DragonBody.DEFAULT_MODEL))) {
+        if (ResourceHelper.all(minecraft.player.level().registryAccess(), DragonBody.REGISTRY).stream().noneMatch(body -> body.value().model().equals(DragonBody.DEFAULT_MODEL))) {
             DragonSurvival.LOGGER.warn("No dragon body in the registry uses the default dragon model. Cannot use the Skins screen in this situation.");
             onClose();
             return;
@@ -289,11 +289,11 @@ public class DragonSkinsScreen extends Screen {
 
         //noinspection DataFlowIssue -> player is present
         DragonStateHandler playerHandler = DragonStateProvider.getData(minecraft.player);
-        handler.deserializeNBT(minecraft.player.registryAccess(), playerHandler.serializeNBT(minecraft.player.registryAccess()));
+        handler.deserializeNBT(minecraft.player.level().registryAccess(), playerHandler.serializeNBT(minecraft.player.level().registryAccess()));
 
         if (!DragonSpecies.isBuiltIn(handler.speciesKey())) {
             // TODO :: maybe don't throw and find some alternative, in case cave species is removed?
-            handler.setSpecies(null, player.registryAccess().holderOrThrow(BuiltInDragonSpecies.CAVE_DRAGON));
+            handler.setSpecies(null, player.level().registryAccess().holderOrThrow(BuiltInDragonSpecies.CAVE_DRAGON));
         }
 
         if (!playerHandler.body().value().model().equals(DragonBody.DEFAULT_MODEL)) {
@@ -347,7 +347,7 @@ public class DragonSkinsScreen extends Screen {
             }
 
             boolean alreadyUsingDefaults = handler.getCurrentSkinPreset().isStageUsingDefaultSkin(dragonStage.unwrapKey().orElseThrow());
-            dragonStage = Objects.requireNonNull(player).registryAccess().holderOrThrow(Objects.requireNonNull(nextLevel));
+            dragonStage = Objects.requireNonNull(player).level().registryAccess().holderOrThrow(Objects.requireNonNull(nextLevel));
             handler.setStage(null, dragonStage);
             updateHandlerToUseCorrectSkinData();
             handler.getCurrentSkinPreset().setAllStagesToUseDefaultSkin(alreadyUsingDefaults);
@@ -356,7 +356,7 @@ public class DragonSkinsScreen extends Screen {
 
         HoverButton rightArrowButton = new HoverButton(startX + 92, startY + 153, 9, 16, 18, 18, STAGE_ARROW_RIGHT_MAIN, STAGE_ARROW_RIGHT_HOVER, button -> {
             ResourceKey<DragonStage> nextLevel = dragonStage.unwrapKey().orElseThrow();
-            boolean ancientDataPackExists = ResourceHelper.get(Objects.requireNonNull(player).registryAccess(), AncientDatapacks.ancient).isPresent();
+            boolean ancientDataPackExists = ResourceHelper.get(Objects.requireNonNull(player).level().registryAccess(), AncientDatapacks.ancient).isPresent();
 
             if (ancientDataPackExists && dragonStage.is(AncientDatapacks.ancient)) {
                 nextLevel = DragonStages.newborn;
@@ -369,7 +369,7 @@ public class DragonSkinsScreen extends Screen {
             }
 
             boolean alreadyUsingDefaults = handler.getCurrentSkinPreset().isStageUsingDefaultSkin(dragonStage.unwrapKey().orElseThrow());
-            dragonStage = Objects.requireNonNull(player).registryAccess().holderOrThrow(Objects.requireNonNull(nextLevel));
+            dragonStage = Objects.requireNonNull(player).level().registryAccess().holderOrThrow(Objects.requireNonNull(nextLevel));
             handler.setStage(null, dragonStage);
             updateHandlerToUseCorrectSkinData();
             handler.getCurrentSkinPreset().setAllStagesToUseDefaultSkin(alreadyUsingDefaults);
@@ -438,7 +438,7 @@ public class DragonSkinsScreen extends Screen {
                     continue;
                 }
 
-                Optional<Holder.Reference<DragonStage>> stage = player.registryAccess().holder(skin.first);
+                Optional<Holder.Reference<DragonStage>> stage = player.level().registryAccess().holder(skin.first);
 
                 if (stage.isEmpty()) {
                     continue;

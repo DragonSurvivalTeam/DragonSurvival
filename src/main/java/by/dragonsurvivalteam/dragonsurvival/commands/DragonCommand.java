@@ -97,7 +97,7 @@ public class DragonCommand {
 
         // Need to use 'setSize' since the desired size call doesn't set the stage
         if (dragonStage == null) {
-            handler.setGrowth(player, species.value().getStartingGrowth(player.registryAccess()));
+            handler.setGrowth(player, species.value().getStartingGrowth(player.level().registryAccess()));
         } else {
             handler.setStage(player, dragonStage);
         }
@@ -106,7 +106,7 @@ public class DragonCommand {
         handler.isGrowing = true;
 
         SyncComplete.handleDragonSync(player, false);
-        PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new SyncComplete(player.getId(), handler.serializeNBT(player.registryAccess())));
+        PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new SyncComplete(player.getId(), handler.serializeNBT(player.level().registryAccess())));
         return 1;
     }
 }

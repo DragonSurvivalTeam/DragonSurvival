@@ -70,7 +70,7 @@ public abstract class ItemRendererMixin { // FIXME :: doesn't work with sodium s
             if (level != null) {
                 access = level.registryAccess();
             } else if (entity != null) {
-                access = entity.registryAccess();
+                access = entity.level().registryAccess();
             } else {
                 access = DragonSurvival.PROXY.getAccess();
             }

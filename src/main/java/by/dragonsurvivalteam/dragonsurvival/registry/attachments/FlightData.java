@@ -11,6 +11,7 @@ import net.minecraft.core.HolderSet;
 import net.minecraft.core.RegistryCodecs;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
+import net.minecraft.resources.RegistryOps;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -52,7 +53,7 @@ public class FlightData implements INBTSerializable<CompoundTag> {
         tag.putInt(DURATION, duration);
 
         if (inFluid != null) {
-            RegistryCodecs.homogeneousList(ForgeRegistries.Keys.FLUID_TYPES).encodeStart(provider.createSerializationContext(NbtOps.INSTANCE), inFluid)
+            RegistryCodecs.homogeneousList(ForgeRegistries.Keys.FLUID_TYPES).encodeStart(RegistryOps.create(NbtOps.INSTANCE, provider), inFluid)
                     .resultOrPartial(DragonSurvival.LOGGER::error).ifPresent(list -> tag.put(IN_FLUID, list));
         }
 
@@ -69,7 +70,7 @@ public class FlightData implements INBTSerializable<CompoundTag> {
         duration = tag.getInt(DURATION);
 
         if (tag.contains(IN_FLUID)) {
-            inFluid = RegistryCodecs.homogeneousList(ForgeRegistries.Keys.FLUID_TYPES).decode(provider.createSerializationContext(NbtOps.INSTANCE), tag.get(IN_FLUID))
+            inFluid = RegistryCodecs.homogeneousList(ForgeRegistries.Keys.FLUID_TYPES).decode(RegistryOps.create(NbtOps.INSTANCE, provider), tag.get(IN_FLUID))
                     .resultOrPartial(DragonSurvival.LOGGER::error).map(Pair::getFirst).orElse(null);
         } else {
             inFluid = null;
@@ -79,12 +80,12 @@ public class FlightData implements INBTSerializable<CompoundTag> {
     }
 
     public void sync(final ServerPlayer player) {
-        PacketDistributor.sendToPlayer(player, new SyncData(player.getId(), DSDataAttachments.FLIGHT.getId(), serializeNBT(player.registryAccess())));
+        PacketDistributor.sendToPlayer(player, new SyncData(player.getId(), DSDataAttachments.FLIGHT.getId(), serializeNBT(player.level().registryAccess())));
     }
 
     // Needed for when a player enters tracking range, as the flight data has a visual impact (whether the wings are spread or not)
     public void sync(final ServerPlayer source, final ServerPlayer target) {
-        PacketDistributor.sendToPlayer(target, new SyncData(source.getId(), DSDataAttachments.FLIGHT.getId(), serializeNBT(source.registryAccess())));
+        PacketDistributor.sendToPlayer(target, new SyncData(source.getId(), DSDataAttachments.FLIGHT.getId(), serializeNBT(source.level().registryAccess())));
     }
 
     public boolean hasFlight() {

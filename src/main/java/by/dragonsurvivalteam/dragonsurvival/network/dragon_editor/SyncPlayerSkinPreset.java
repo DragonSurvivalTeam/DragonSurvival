@@ -30,7 +30,7 @@ public record SyncPlayerSkinPreset(int playerId, ResourceKey<DragonSpecies> drag
         context.enqueueWork(() -> {
             if (context.player().level().getEntity(packet.playerId()) instanceof Player player) {
                 SkinPreset newPreset = new SkinPreset();
-                newPreset.deserializeNBT(player.registryAccess(), packet.preset());
+                newPreset.deserializeNBT(player.level().registryAccess(), packet.preset());
 
                 DragonStateHandler handler = DragonStateProvider.getData(player);
                 handler.setSkinPresetForType(packet.dragonSpecies(), newPreset);
@@ -43,7 +43,7 @@ public record SyncPlayerSkinPreset(int playerId, ResourceKey<DragonSpecies> drag
         context.enqueueWork(() -> {
             if (context.player().level().getEntity(packet.playerId()) instanceof Player player) {
                 SkinPreset newPreset = new SkinPreset();
-                newPreset.deserializeNBT(player.registryAccess(), packet.preset());
+                newPreset.deserializeNBT(player.level().registryAccess(), packet.preset());
                 DragonStateProvider.getData(player).setSkinPresetForType(packet.dragonSpecies(), newPreset);
             }
         }).thenRun(() -> PacketDistributor.sendToPlayersTrackingEntityAndSelf(context.player(), packet));

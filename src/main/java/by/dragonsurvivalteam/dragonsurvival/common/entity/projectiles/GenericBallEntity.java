@@ -146,7 +146,7 @@ public class GenericBallEntity extends AbstractHurtingProjectile implements GeoE
     public void addAdditionalSaveData(@NotNull final CompoundTag tag) {
         super.addAdditionalSaveData(tag);
 
-        RegistryOps<Tag> context = level().registryAccess().createSerializationContext(NbtOps.INSTANCE);
+        RegistryOps<Tag> context = RegistryOps.create(NbtOps.INSTANCE, level().registryAccess());
         ProjectileData.GeneralData.CODEC.encodeStart(context, getGeneralData()).ifSuccess(data -> tag.put(GENERAL_DATA, data));
         ProjectileData.GenericBallData.CODEC.encodeStart(context, getTypeData()).ifSuccess(data -> tag.put(TYPE_DATA, data));
 
@@ -160,7 +160,7 @@ public class GenericBallEntity extends AbstractHurtingProjectile implements GeoE
     @Override
     public void readAdditionalSaveData(@NotNull final CompoundTag tag) {
         super.readAdditionalSaveData(tag);
-        RegistryOps<Tag> context = level().registryAccess().createSerializationContext(NbtOps.INSTANCE);
+        RegistryOps<Tag> context = RegistryOps.create(NbtOps.INSTANCE, level().registryAccess());
 
         if (tag.contains(GENERAL_DATA)) {
             ProjectileData.GeneralData.CODEC.parse(context, tag.get(GENERAL_DATA))

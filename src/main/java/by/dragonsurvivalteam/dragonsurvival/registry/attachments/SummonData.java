@@ -7,6 +7,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
+import net.minecraft.resources.RegistryOps;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -85,7 +86,7 @@ public class SummonData implements INBTSerializable<CompoundTag> {
     public CompoundTag serializeNBT(@NotNull final HolderLookup.Provider provider) {
         CompoundTag tag = new CompoundTag();
 
-        CODEC.encodeStart(provider.createSerializationContext(NbtOps.INSTANCE), this).resultOrPartial(DragonSurvival.LOGGER::error)
+        CODEC.encodeStart(RegistryOps.create(NbtOps.INSTANCE, provider), this).resultOrPartial(DragonSurvival.LOGGER::error)
                 .ifPresent(compound -> tag.put(DATA, compound));
 
         return tag;

@@ -117,7 +117,7 @@ public class DragonSpecies implements AttributeModifierSupplier {
     public static List<UnlockableBehavior.SpeciesEntry> getSpecies(final ServerPlayer player, boolean isAltar) {
         List<UnlockableBehavior.SpeciesEntry> entries = new ArrayList<>();
 
-        ResourceHelper.all(player.registryAccess(), REGISTRY).forEach(species -> {
+        ResourceHelper.all(player.level().registryAccess(), REGISTRY).forEach(species -> {
             UnlockableBehavior behaviour = species.value().unlockableBehavior().orElse(null);
 
             if (behaviour == null) {

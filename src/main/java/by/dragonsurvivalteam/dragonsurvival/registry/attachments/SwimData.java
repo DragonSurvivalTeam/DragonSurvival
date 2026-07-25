@@ -71,7 +71,7 @@ public class SwimData {
 
     public void sync(final ServerPlayer player) {
         swimData.forEach((fluid, oxygen) -> {
-            PacketDistributor.sendToPlayer(player, new SyncSwimDataEntry(oxygen, player.registryAccess().holderOrThrow(fluid), false));
+            PacketDistributor.sendToPlayer(player, new SyncSwimDataEntry(oxygen, player.level().registryAccess().holderOrThrow(fluid), false));
         });
     }
 

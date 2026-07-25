@@ -13,6 +13,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
+import net.minecraft.resources.RegistryOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -157,7 +158,7 @@ public class PenaltySupply implements INBTSerializable<CompoundTag> {
     }
 
     public void sync(final ServerPlayer player) {
-        PacketDistributor.sendToPlayer(player, new SyncPenaltySupply(serializeNBT(player.registryAccess())));
+        PacketDistributor.sendToPlayer(player, new SyncPenaltySupply(serializeNBT(player.level().registryAccess())));
     }
 
     public List<ResourceLocation> getSupplyTypes() {
@@ -318,12 +319,12 @@ public class PenaltySupply implements INBTSerializable<CompoundTag> {
         }
 
         public Tag serializeNBT(final HolderLookup.Provider provider) {
-            return CODEC.encodeStart(provider.createSerializationContext(NbtOps.INSTANCE), this)
+            return CODEC.encodeStart(RegistryOps.create(NbtOps.INSTANCE, provider), this)
                     .resultOrPartial(DragonSurvival.LOGGER::error).orElseThrow();
         }
 
         public static Data deserializeNBT(final HolderLookup.Provider provider, final Tag tag) {
-            return CODEC.decode(provider.createSerializationContext(NbtOps.INSTANCE), tag)
+            return CODEC.decode(RegistryOps.create(NbtOps.INSTANCE, provider), tag)
                     .resultOrPartial(DragonSurvival.LOGGER::error).orElseThrow().getFirst();
         }
 

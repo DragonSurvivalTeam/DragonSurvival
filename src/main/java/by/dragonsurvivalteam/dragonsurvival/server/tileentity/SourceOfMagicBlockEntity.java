@@ -15,6 +15,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
+import net.minecraft.resources.RegistryOps;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
@@ -168,7 +169,7 @@ public class SourceOfMagicBlockEntity extends BlockEntity implements Container, 
         ContainerHelper.loadAllItems(tag, inputItem, provider);
 
         if (tag.contains(SOURCE_OF_MAGIC_DATA)) {
-            SourceOfMagicData.CODEC.decode(provider.createSerializationContext(NbtOps.INSTANCE), tag.getCompound(SOURCE_OF_MAGIC_DATA))
+            SourceOfMagicData.CODEC.decode(RegistryOps.create(NbtOps.INSTANCE, provider), tag.getCompound(SOURCE_OF_MAGIC_DATA))
                     .resultOrPartial(DragonSurvival.LOGGER::error)
                     .ifPresent(data -> {
                         SourceOfMagicData sourceOfMagicData = data.getFirst();
@@ -198,7 +199,7 @@ public class SourceOfMagicBlockEntity extends BlockEntity implements Container, 
         }
 
         SourceOfMagicData sourceOfMagicData = new SourceOfMagicData(consumables, applicableSpecies);
-        SourceOfMagicData.CODEC.encodeStart(provider.createSerializationContext(NbtOps.INSTANCE), sourceOfMagicData)
+        SourceOfMagicData.CODEC.encodeStart(RegistryOps.create(NbtOps.INSTANCE, provider), sourceOfMagicData)
                 .resultOrPartial(DragonSurvival.LOGGER::error)
                 .ifPresent(compound -> tag.put(SOURCE_OF_MAGIC_DATA, compound));
     }

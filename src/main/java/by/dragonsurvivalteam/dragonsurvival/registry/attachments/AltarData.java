@@ -18,7 +18,7 @@ public class AltarData implements INBTSerializable<CompoundTag> {
     public boolean isInAltar;
 
     public void sync(final ServerPlayer player) {
-        PacketDistributor.sendToPlayer(player, new SyncAltarState(serializeNBT(player.registryAccess())));
+        PacketDistributor.sendToPlayer(player, new SyncAltarState(serializeNBT(player.level().registryAccess())));
     }
 
     public static AltarData getData(final Player player) {

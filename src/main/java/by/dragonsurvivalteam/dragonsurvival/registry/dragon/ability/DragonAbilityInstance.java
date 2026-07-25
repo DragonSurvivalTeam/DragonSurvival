@@ -20,6 +20,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
+import net.minecraft.resources.RegistryOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.contents.PlainTextContents;
@@ -85,11 +86,11 @@ public class DragonAbilityInstance {
     }
 
     public Tag save(@NotNull final HolderLookup.Provider provider) {
-        return CODEC.encodeStart(provider.createSerializationContext(NbtOps.INSTANCE), this).getOrThrow();
+        return CODEC.encodeStart(RegistryOps.create(NbtOps.INSTANCE, provider), this).getOrThrow(false, DragonSurvival.LOGGER::error);
     }
 
     public static @Nullable DragonAbilityInstance load(@NotNull final HolderLookup.Provider provider, final CompoundTag nbt) {
-        return CODEC.parse(provider.createSerializationContext(NbtOps.INSTANCE), nbt).resultOrPartial(DragonSurvival.LOGGER::error).orElse(null);
+        return CODEC.parse(RegistryOps.create(NbtOps.INSTANCE, provider), nbt).resultOrPartial(DragonSurvival.LOGGER::error).orElse(null);
     }
 
     public void tick(final Player dragon) {

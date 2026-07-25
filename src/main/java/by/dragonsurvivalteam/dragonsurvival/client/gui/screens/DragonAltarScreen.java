@@ -116,7 +116,7 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
         super(Component.translatable(CHOOSE_SPECIES));
 
         //noinspection DataFlowIssue -> 'minecraft' (from 'Screen') is null at this point because it gets set in 'init'
-        Minecraft.getInstance().player.registryAccess().registryOrThrow(DragonSpecies.REGISTRY).getTag(DSDragonSpeciesTags.ORDER).ifPresent(order -> {
+        Minecraft.getInstance().player.level().registryAccess().registryOrThrow(DragonSpecies.REGISTRY).getTag(DSDragonSpeciesTags.ORDER).ifPresent(order -> {
             //noinspection unchecked -> cast is valid
             List<Holder<DragonSpecies>> list = ((HolderSet$NamedAccess<DragonSpecies>) order).dragonSurvival$contents();
 
@@ -216,7 +216,7 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
             // FIXME :: for some reason at this point the species may not be set
             if (handler1.species() != null && handler2.species() != null) {
                 //noinspection DataFlowIssue -> player is present
-                RegistryAccess access = getMinecraft().player.registryAccess();
+                RegistryAccess access = getMinecraft().player.level().registryAccess();
 
                 if (handler1.body() == null) {
                     handler1.setBody(null, DragonBody.getRandom(access, handler1.species()));
