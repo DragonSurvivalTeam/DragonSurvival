@@ -11,7 +11,6 @@ import by.dragonsurvivalteam.dragonsurvival.registry.projectile.entity_effects.P
 import by.dragonsurvivalteam.dragonsurvival.registry.projectile.entity_effects.ProjectileEntityEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.projectile.targeting.ProjectileTargeting;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
@@ -24,13 +23,11 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.DamageTypeTags;
-import net.minecraft.util.Unit;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
-import net.minecraft.world.entity.projectile.ProjectileDeflection;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.LevelBasedValue;
@@ -53,8 +50,6 @@ public class GenericArrowEntity extends AbstractArrow implements IEntityAddition
 
     // Copied from AbstractArrow.java
     @Nullable private IntOpenHashSet piercingIgnoreEntityIds;
-    // Copied from AbstractArrow.java
-    @Nullable private Entity lastDeflectedBy;
 
     public GenericArrowEntity(final ProjectileData.GeneralData generalData, final ProjectileData.GenericArrowData typeData, final int projectileLevel, final Vec3 position, final Level level) {
         super(DSEntities.GENERIC_ARROW_ENTITY.get(), level);
@@ -237,16 +232,8 @@ public class GenericArrowEntity extends AbstractArrow implements IEntityAddition
 
         boolean hasImmunityFrames = target.invulnerableTime > 10;
         boolean isImmune = considerImmunityFrames ? hasImmunityFrames && targetIsImmune : targetIsImmune;
-        ProjectileDeflection deflection = target.deflection(this);
 
-        if (target != lastDeflectedBy
-                && deflection != ProjectileDeflection.NONE
-                && piercingIgnoreEntityIds != null && piercingIgnoreEntityIds.size() >= getPierceLevel() + 1
-                && isImmune
-                // Short-circuit eval will prevent this from being called in situations where we don't want it
-                && deflect(ProjectileDeflection.REVERSE, getOwner(), target, target instanceof Player)) {
-            lastDeflectedBy = target;
-        } else if (!isImmune) {
+        if (!isImmune) {
             // TODO :: immunity to a single damage type skips all entity effects here
             for (ProjectileEntityEffect effect : getGeneralData().entityHitEffects()) {
                 effect.apply(this, result.getEntity(), projectileLevel);
@@ -284,17 +271,7 @@ public class GenericArrowEntity extends AbstractArrow implements IEntityAddition
     @Override
     protected @NotNull ItemStack getPickupItem() {
         // Empty item stack will cause encoding issues
-        ItemStack stack = Items.ARROW.getDefaultInstance();
-        stack.set(DataComponents.INTANGIBLE_PROJECTILE, Unit.INSTANCE);
-        return stack;
-    }
-
-    @Override
-    protected @NotNull ItemStack getDefaultPickupItem() {
-        // Empty item stack will cause encoding issues
-        ItemStack stack = Items.ARROW.getDefaultInstance();
-        stack.set(DataComponents.INTANGIBLE_PROJECTILE, Unit.INSTANCE);
-        return stack;
+        return Items.ARROW.getDefaultInstance();
     }
 
     @Override
