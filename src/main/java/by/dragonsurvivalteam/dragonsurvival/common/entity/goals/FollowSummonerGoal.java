@@ -13,7 +13,7 @@ import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
 import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
-import net.minecraft.world.level.pathfinder.PathType;
+import net.minecraft.world.level.pathfinder.BlockPathTypes;
 import net.minecraft.world.level.pathfinder.WalkNodeEvaluator;
 import org.jetbrains.annotations.Nullable;
 
@@ -68,15 +68,15 @@ public class FollowSummonerGoal extends Goal {
     @Override
     public void start() {
         timeToRecalculatePath = 0;
-        oldWaterCost = mob.getPathfindingMalus(PathType.WATER);
-        mob.setPathfindingMalus(PathType.WATER, 0);
+        oldWaterCost = mob.getPathfindingMalus(BlockPathTypes.WATER);
+        mob.setPathfindingMalus(BlockPathTypes.WATER, 0);
     }
 
     @Override
     public void stop() {
         owner = null;
         navigation.stop();
-        mob.setPathfindingMalus(PathType.WATER, oldWaterCost);
+        mob.setPathfindingMalus(BlockPathTypes.WATER, oldWaterCost);
     }
 
     @Override
@@ -143,9 +143,9 @@ public class FollowSummonerGoal extends Goal {
 
     /** Copied from {@link TamableAnimal#canTeleportTo(BlockPos)} */
     private boolean canTeleportTo(final BlockPos position) {
-        PathType pathtype = WalkNodeEvaluator.getPathTypeStatic(mob, position);
+        BlockPathTypes pathtype = WalkNodeEvaluator.getPathTypeStatic(mob, position);
 
-        if (pathtype != PathType.WALKABLE) {
+        if (pathtype != BlockPathTypes.WALKABLE) {
             return false;
         } else {
             BlockPos blockpos = position.subtract(mob.blockPosition());
