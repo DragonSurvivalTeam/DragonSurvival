@@ -1,6 +1,5 @@
 package by.dragonsurvivalteam.dragonsurvival.common.entity.creatures;
 
-import net.minecraft.core.Holder;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
@@ -21,7 +20,7 @@ public interface ConfigurableAttributes {
         setBaseValue(Attributes.KNOCKBACK_RESISTANCE, knockbackResistanceConfig());
     }
 
-    default void setBaseValue(final Holder<Attribute> attribute, final double value) {
+    default void setBaseValue(final Attribute attribute, final double value) {
         if (Double.isNaN(value)) {
             return;
         }
