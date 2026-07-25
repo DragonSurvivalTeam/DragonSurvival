@@ -40,7 +40,7 @@ public class DragonSoulBar {
 
         ItemStack stack = player.getMainHandItem();
 
-        if (player.isUsingItem() && stack.is(DSItems.DRAGON_SOUL)) {
+        if (player.isUsingItem() && stack.is(DSItems.DRAGON_SOUL.get())) {
             int duration = stack.getUseDuration(player);
 
             float progress = ((float) duration - (float) player.getUseItemRemainingTicks()) / (float) duration;
