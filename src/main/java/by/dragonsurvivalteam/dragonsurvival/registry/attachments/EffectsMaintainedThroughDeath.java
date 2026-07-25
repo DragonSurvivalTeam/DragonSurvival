@@ -46,7 +46,7 @@ public class EffectsMaintainedThroughDeath implements INBTSerializable<CompoundT
     public @UnknownNullability CompoundTag serializeNBT(@NotNull final HolderLookup.Provider provider) {
         CompoundTag tag = new CompoundTag();
         for (int i = 0; i < effectsToReapplyOnDeath.size(); i++) {
-            tag.put("effect" + i, effectsToReapplyOnDeath.get(i).save());
+            tag.put("effect" + i, effectsToReapplyOnDeath.get(i).save(new CompoundTag()));
         }
 
         return tag;
