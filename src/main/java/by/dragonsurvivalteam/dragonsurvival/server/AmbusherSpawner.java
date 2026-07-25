@@ -15,13 +15,10 @@ import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.NaturalSpawner;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.event.EventHooks;
-import net.minecraftforge.event.level.ModifyCustomSpawnersEvent;
+import net.minecraftforge.event.ForgeEventFactory;
 import org.jetbrains.annotations.NotNull;
 
-@EventBusSubscriber // Initially coped from 'PatrolSpawner'
+// Initially copied from PatrolSpawner.
 public class AmbusherSpawner implements CustomSpawner {
     private int nextTick;
 
@@ -90,12 +87,7 @@ public class AmbusherSpawner implements CustomSpawner {
         }
 
         ambusher.setPos(spawnPosition.getX(), spawnPosition.getY(), spawnPosition.getZ());
-        EventHooks.finalizeMobSpawn(ambusher, level, level.getCurrentDifficultyAt(spawnPosition), MobSpawnType.PATROL, null);
+        ForgeEventFactory.onFinalizeSpawn(ambusher, level, level.getCurrentDifficultyAt(spawnPosition), MobSpawnType.PATROL, null, null);
         level.addFreshEntityWithPassengers(ambusher);
-    }
-
-    @SubscribeEvent
-    public static void addCustomSpawners(final ModifyCustomSpawnersEvent event) {
-        event.addCustomSpawner(new AmbusherSpawner());
     }
 }

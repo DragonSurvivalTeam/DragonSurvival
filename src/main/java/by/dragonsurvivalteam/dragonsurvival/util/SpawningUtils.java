@@ -9,7 +9,7 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.event.EventHooks;
+import net.minecraftforge.event.ForgeEventFactory;
 
 public class SpawningUtils {
     private static BlockPos findRandomSpawnPosition(final Level level, final Vec3 worldPos, int attempts, float radius) {
@@ -39,7 +39,7 @@ public class SpawningUtils {
 
         if (spawnPosition != null) {
             mob.setPos(spawnPosition.getX(), spawnPosition.getY(), spawnPosition.getZ());
-            EventHooks.finalizeMobSpawn(mob, serverLevel, level.getCurrentDifficultyAt(spawnPosition), type, null);
+            ForgeEventFactory.onFinalizeSpawn(mob, serverLevel, level.getCurrentDifficultyAt(spawnPosition), type, null, null);
             level.addFreshEntity(mob);
 
             if (useSpawnParticles) {
