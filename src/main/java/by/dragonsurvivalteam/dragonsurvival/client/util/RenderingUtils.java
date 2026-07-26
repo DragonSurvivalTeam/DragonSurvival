@@ -367,4 +367,5 @@ public class RenderingUtils {
             return scissorArea != null ? scissorArea.intersection(bounds) : bounds;
         }
     }
+
 }
