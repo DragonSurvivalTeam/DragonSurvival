@@ -2,11 +2,14 @@ package by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.models.DragonModel;
+import by.dragonsurvivalteam.dragonsurvival.client.render.ClientDragonRenderer;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.loader.DefaultPartLoader;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.loader.DragonPartLoader;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.DragonPart;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.DragonStageCustomization;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.LayerSettings;
+import by.dragonsurvivalteam.dragonsurvival.client.util.FakeClientPlayer;
+import by.dragonsurvivalteam.dragonsurvival.client.util.FakeClientPlayerUtils;
 import by.dragonsurvivalteam.dragonsurvival.client.util.RenderingUtils;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
@@ -66,6 +69,36 @@ public class DragonEditorHandler {
             return;
         }
 
+        generateAndMarkSkinTextures(player, handler);
+    }
+
+    private static void ensureSkinTexturesAvailable(final Player player, final DragonStateHandler handler) {
+        if (player == null || handler == null || !handler.isDragon() || handler.body() == null
+            || handler.getSkinData().blankSkin || handler.getCurrentStageCustomization().defaultSkin) {
+            return;
+        }
+
+        Identifier normalTexture = DragonModel.dynamicTexture(player, handler, false);
+
+        if (handler.needsSkinRecompilation() || !generatedSkinTextures.contains(normalTexture)) {
+            generateAndMarkSkinTextures(player, handler);
+        }
+    }
+
+    private static void prepareFakePlayerSkinTextures(final FakeClientPlayer player) {
+        DragonStateHandler handler = player.handler;
+
+        if (handler == null || !handler.isDragon() || handler.body() == null
+            || handler.getSkinData().blankSkin || handler.getCurrentStageCustomization().defaultSkin) {
+            return;
+        }
+
+        ensureSkinTexturesAvailable(player, handler);
+        markSkinTextureUsed(DragonModel.dynamicTexture(player, handler, false));
+        markSkinTextureUsed(DragonModel.dynamicTexture(player, handler, true));
+    }
+
+    private static void generateAndMarkSkinTextures(final Player player, final DragonStateHandler handler) {
         generateSkinTextures(player, handler);
         handler.getSkinData().markSkinCompiled(handler.stageKey());
     }
@@ -162,19 +195,25 @@ public class DragonEditorHandler {
         });
         usedSkinTextures.clear();
 
-        Minecraft minecraft = Minecraft.getInstance();
+        FakeClientPlayerUtils.processActivePlayers(DragonEditorHandler::prepareFakePlayerSkinTextures);
 
-        if (minecraft.level == null) {
-            return;
-        }
+        ClientDragonRenderer.process(dragonEntity -> {
+            Player player = dragonEntity.getPlayer();
+            if (player == null) {
+                return;
+            }
 
-        for (Player player : minecraft.level.players()) {
-            DragonStateHandler handler = DragonStateProvider.getData(player);
+            DragonStateHandler handler;
+            if (player instanceof FakeClientPlayer fakeClientPlayer) {
+                handler = fakeClientPlayer.handler;
+            } else {
+                handler = DragonStateProvider.getData(player);
+            }
 
-            if (handler.isDragon()) {
+            if (handler != null && handler.isDragon()) {
                 ensureSkinTexturesGenerated(player, handler);
             }
-        }
+        });
     }
 
     private static void renderPartToTarget(
