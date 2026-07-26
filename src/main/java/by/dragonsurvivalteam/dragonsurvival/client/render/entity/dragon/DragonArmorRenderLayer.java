@@ -502,20 +502,25 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
         String texture = "textures/armor/" + handler.getModel().getPath() + "/";
 
         if (item instanceof ArmorItem armorItem) {
-            ResourceLocation materialResource = new ResourceLocation(armorItem.getMaterial().getName());
-            texture += materialResource.getNamespace() + "/materials/" + materialResource.getPath() + "/" + equipmentSlot.getName();
+            ResourceLocation materialResource = ResourceLocation.tryParse(armorItem.getMaterial().getName());
 
-            if (armorItem.getMaterial() == ArmorMaterials.LEATHER && (!(item instanceof DyeableLeatherItem dyeableItem) || !dyeableItem.hasCustomColor(stack))) {
-                // TODO :: Do we really have to make a special case for this? Do items not have a way to signify "can be dyed?"
-                texture += "_undyed";
-            }
+            if (materialResource != null) {
+                String materialTexture = texture + materialResource.getNamespace() + "/materials/" + materialResource.getPath() + "/" + equipmentSlot.getName();
 
-            ResourceLocation resource = new ResourceLocation(handler.getModel().getNamespace(), texture + ".png");
+                if (armorItem.getMaterial() == ArmorMaterials.LEATHER && (!(item instanceof DyeableLeatherItem dyeableItem) || !dyeableItem.hasCustomColor(stack))) {
+                    // TODO :: Do we really have to make a special case for this? Do items not have a way to signify "can be dyed?"
+                    materialTexture += "_undyed";
+                }
 
-            if (Minecraft.getInstance().getResourceManager().getResource(resource).isPresent()) {
-                return resource;
-            } else if (materialResource.getNamespace().equals(ResourceLocation.DEFAULT_NAMESPACE)) {
-                DragonSurvival.LOGGER.warn("Missing vanilla armor texture for {} in model {}, falling back to generic armor.", resource.getPath(), handler.getModel().getPath());
+                ResourceLocation resource = new ResourceLocation(handler.getModel().getNamespace(), materialTexture + ".png");
+
+                if (Minecraft.getInstance().getResourceManager().getResource(resource).isPresent()) {
+                    return resource;
+                } else if (materialResource.getNamespace().equals(ResourceLocation.DEFAULT_NAMESPACE)) {
+                    DragonSurvival.LOGGER.warn("Missing vanilla armor texture for {} in model {}, falling back to generic armor.", resource.getPath(), handler.getModel().getPath());
+                }
+            } else {
+                DragonSurvival.LOGGER.warn("Armor item {} uses an invalid armor material, falling back to generic armor.", item.builtInRegistryHolder().unwrapKey().orElseThrow().location());
             }
 
             String prefix;
