@@ -64,7 +64,7 @@ public class DragonGlowLayerRenderer extends GeoRenderLayer<DragonEntity> {
             glowTexture = dragonRenderer.glowTexture;
         }
 
-        if (glowTexture == null && handler.getCurrentStageCustomization().defaultSkin) {
+        if (glowTexture == null && customization.defaultSkin) {
             ResourceLocation defaultGlowSkin = StageResources.getDefaultSkin(handler.species(), handler.stageKey(), true);
 
             if (Minecraft.getInstance().getResourceManager().getResource(defaultGlowSkin).isPresent()) {

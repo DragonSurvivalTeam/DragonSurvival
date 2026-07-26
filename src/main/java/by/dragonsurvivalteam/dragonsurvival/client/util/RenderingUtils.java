@@ -209,9 +209,19 @@ public class RenderingUtils {
             return false;
         }
 
+        Minecraft minecraft = Minecraft.getInstance();
         DynamicTexture missing = MissingTextureAtlasSprite.getTexture();
-        AbstractTexture texture = Minecraft.getInstance().getTextureManager().getTexture(resource, missing);
-        return texture != missing;
+        AbstractTexture texture = minecraft.getTextureManager().getTexture(resource, missing);
+
+        if (texture != missing) {
+            return true;
+        }
+
+        if (minecraft.getResourceManager().getResource(resource).isEmpty()) {
+            return false;
+        }
+
+        return minecraft.getTextureManager().getTexture(resource) != missing;
     }
 
     public static void setShaderColor(int color) {
