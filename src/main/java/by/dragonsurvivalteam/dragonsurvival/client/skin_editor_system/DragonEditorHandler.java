@@ -1,16 +1,20 @@
 package by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.DragonSkinsScreen;
+import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.dragon_editor.DragonEditorScreen;
 import by.dragonsurvivalteam.dragonsurvival.client.models.DragonModel;
+import by.dragonsurvivalteam.dragonsurvival.client.render.ClientDragonRenderer;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.loader.DragonPartLoader;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.DragonPart;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.DragonStageCustomization;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.LayerSettings;
+import by.dragonsurvivalteam.dragonsurvival.client.util.FakeClientPlayer;
+import by.dragonsurvivalteam.dragonsurvival.client.util.FakeClientPlayerUtils;
 import by.dragonsurvivalteam.dragonsurvival.client.util.RenderStateBackup;
 import by.dragonsurvivalteam.dragonsurvival.client.util.RenderingUtils;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
-import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.pipeline.TextureTarget;
@@ -44,14 +48,38 @@ public class DragonEditorHandler {
     private static final Set<ResourceLocation> generatedSkinTextures = new HashSet<>();
     private static final Set<ResourceLocation> usedSkinTextures = new HashSet<>();
 
-    public static void generateSkinTextures(final DragonEntity dragon) {
-        Player player = dragon.getPlayer();
-
-        if (player == null) {
+    public static void ensureSkinTexturesGenerated(final Player player, final DragonStateHandler handler) {
+        if (player == null || handler == null || !handler.needsSkinRecompilation()) {
             return;
         }
 
-        DragonStateHandler handler = DragonStateProvider.getData(player);
+        generateAndMarkSkinTextures(player, handler);
+    }
+
+    private static void ensureSkinTexturesAvailable(final Player player, final DragonStateHandler handler) {
+        if (player == null || handler == null || !handler.isDragon() || handler.body() == null
+            || handler.getSkinData().blankSkin || handler.getCurrentStageCustomization().defaultSkin) {
+            return;
+        }
+
+        ResourceLocation normalTexture = DragonModel.dynamicTexture(player, handler, false);
+
+        if (handler.needsSkinRecompilation() || !generatedSkinTextures.contains(normalTexture)) {
+            generateAndMarkSkinTextures(player, handler);
+        }
+    }
+
+    private static void generateAndMarkSkinTextures(final Player player, final DragonStateHandler handler) {
+        generateSkinTextures(player, handler);
+        handler.getSkinData().isCompiled.put(handler.stageKey(), true);
+        handler.getSkinData().recompileSkin.put(handler.stageKey(), false);
+    }
+
+    public static void generateSkinTextures(final Player player, final DragonStateHandler handler) {
+        if (player == null || handler.body() == null) {
+            return;
+        }
+
         DragonBody.TextureSize textureSize = handler.body().value().textureSize();
 
         RenderStateBackup state = RenderStateBackup.capture();
@@ -210,6 +238,33 @@ public class DragonEditorHandler {
             return true;
         });
         usedSkinTextures.clear();
+
+        Minecraft minecraft = Minecraft.getInstance();
+
+        if (minecraft.level != null && minecraft.screen instanceof DragonEditorScreen) {
+            ensureSkinTexturesAvailable(FakeClientPlayerUtils.getFakePlayer(0, DragonEditorScreen.HANDLER), DragonEditorScreen.HANDLER);
+        }
+
+        if (minecraft.level != null && minecraft.screen instanceof DragonSkinsScreen) {
+            ensureSkinTexturesAvailable(FakeClientPlayerUtils.getFakePlayer(0, DragonSkinsScreen.handler), DragonSkinsScreen.handler);
+        }
+
+        ClientDragonRenderer.process(dragonEntity -> {
+            Player player = dragonEntity.getPlayer();
+            if (player == null) return;
+
+            DragonStateHandler handler;
+            if (player instanceof FakeClientPlayer fakeClientPlayer) {
+                handler = fakeClientPlayer.handler;
+            }
+            else {
+                handler = DragonStateProvider.getData(player);
+            }
+
+            if (handler.isDragon()) {
+                ensureSkinTexturesGenerated(player, handler);
+            }
+        });
     }
 
     public static void registerShaders(RegisterShadersEvent event) throws IOException {

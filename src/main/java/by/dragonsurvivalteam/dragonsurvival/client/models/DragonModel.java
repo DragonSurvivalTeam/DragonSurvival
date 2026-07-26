@@ -249,12 +249,6 @@ public class DragonModel extends GeoModel<DragonEntity> {
         }
 
         ResourceKey<DragonStage> stageKey = handler.stageKey();
-        if (handler.needsSkinRecompilation()) {
-            DragonEditorHandler.generateSkinTextures(dragon);
-            handler.getSkinData().isCompiled.put(handler.stageKey(), true);
-            handler.getSkinData().recompileSkin.put(handler.stageKey(), false);
-        }
-
         ResourceLocation texture = dynamicTexture(player, handler, false);
 
         // Show the default skin while we are compiling if we haven't already compiled the skin
@@ -263,7 +257,7 @@ public class DragonModel extends GeoModel<DragonEntity> {
         }
 
         if (!DragonEditorHandler.hasGeneratedSkinTexture(texture)) {
-            DragonEditorHandler.generateSkinTextures(dragon);
+            DragonEditorHandler.generateSkinTextures(player, handler);
         }
 
         DragonEditorHandler.markSkinTextureUsed(texture);
