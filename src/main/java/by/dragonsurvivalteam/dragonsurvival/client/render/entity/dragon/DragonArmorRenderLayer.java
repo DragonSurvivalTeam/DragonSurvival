@@ -3,6 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.client.render.entity.dragon;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.DragonSurvivalClient;
 import by.dragonsurvivalteam.dragonsurvival.client.render.ClientDragonRenderer;
+import by.dragonsurvivalteam.dragonsurvival.client.util.FakeClientPlayerUtils;
 import by.dragonsurvivalteam.dragonsurvival.client.util.RenderStateBackup;
 import by.dragonsurvivalteam.dragonsurvival.client.util.RenderingUtils;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
@@ -140,6 +141,19 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
             return true;
         });
         usedArmorTextures.clear();
+
+        FakeClientPlayerUtils.processActivePlayers(fakeClientPlayer -> {
+            DragonStateHandler handler = fakeClientPlayer.handler;
+
+            if (handler == null || !handler.isDragon() || handler.body() == null) {
+                return;
+            }
+
+            if (hasAnyArmorEquipped(fakeClientPlayer)
+                || ClawInventoryData.getData(fakeClientPlayer).shouldRenderClaws || hasVisibleCurios(fakeClientPlayer)) {
+                prepareArmorTexture(fakeClientPlayer);
+            }
+        });
 
         ClientDragonRenderer.process(dragonEntity -> {
             Player player = dragonEntity.getPlayer();
