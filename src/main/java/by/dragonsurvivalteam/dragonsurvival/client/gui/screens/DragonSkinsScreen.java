@@ -160,7 +160,7 @@ public class DragonSkinsScreen extends Screen {
     private static boolean noSkin;
     private boolean showYourSkin;
 
-    public final DragonStateHandler handler = new DragonStateHandler();
+    public static final DragonStateHandler handler = new DragonStateHandler();
 
     private HoverButton playerNameDisplay;
     private HoverButton playerStageDisplay;
@@ -196,14 +196,9 @@ public class DragonSkinsScreen extends Screen {
 
         DragonEntity dragon = FakeClientPlayerUtils.getFakeDragon(0, handler);
         EntityRenderer<? super DragonEntity> dragonRenderer = Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(dragon);
-
-        if (noSkin && Objects.equals(playerName, minecraft.player.getGameProfile().getName())) {
-            DragonSurvivalClient.DRAGON_MODEL.setOverrideTexture(null);
-            ((DragonRenderer) dragonRenderer).glowTexture = null;
-        } else {
-            DragonSurvivalClient.DRAGON_MODEL.setOverrideTexture(skinTexture);
-            ((DragonRenderer) dragonRenderer).glowTexture = glowTexture;
-        }
+        boolean useDefaultPreview = noSkin && Objects.equals(playerName, minecraft.player.getGameProfile().getName());
+        ResourceLocation previewSkinTexture = useDefaultPreview ? null : skinTexture;
+        ResourceLocation previewGlowTexture = useDefaultPreview ? null : glowTexture;
 
         float scale = zoom;
 
@@ -223,7 +218,16 @@ public class DragonSkinsScreen extends Screen {
                 Quaternionf quaternion = Axis.ZP.rotationDegrees(180.0F);
                 quaternion.mul(Axis.XP.rotationDegrees(yRot * 10.0F));
                 quaternion.rotateY((float) Math.toRadians(180 - xRot * 10));
-                InventoryScreen.renderEntityInInventory(guiGraphics, startX + 15, startY + 70, (int) scale, new Vector3f(0, 0, 100), quaternion, null, dragon);
+
+                DragonSurvivalClient.DRAGON_MODEL.setOverrideTexture(previewSkinTexture);
+                ((DragonRenderer) dragonRenderer).glowTexture = previewGlowTexture;
+
+                try {
+                    InventoryScreen.renderEntityInInventory(guiGraphics, startX + 15, startY + 70, (int) scale, new Vector3f(0, 0, 100), quaternion, null, dragon);
+                } finally {
+                    DragonSurvivalClient.DRAGON_MODEL.setOverrideTexture(null);
+                    ((DragonRenderer) dragonRenderer).glowTexture = null;
+                }
             } else {
                 drawNonShadowString(guiGraphics, minecraft.font, Component.translatable(NO_SKIN).withStyle(ChatFormatting.RED), startX + 21, startY + 40, -1);
             }
@@ -231,8 +235,6 @@ public class DragonSkinsScreen extends Screen {
             drawNonShadowString(guiGraphics, minecraft.font, Component.translatable(CUSTOM_MODEL_WARNING_1).withStyle(ChatFormatting.RED), startX + 26, startY + 40, -1);
             drawNonShadowString(guiGraphics, minecraft.font, Component.translatable(CUSTOM_MODEL_WARNING_2).withStyle(ChatFormatting.RED), startX + 26, startY + 50, -1);
         }
-
-        ((DragonRenderer) dragonRenderer).glowTexture = null;
 
         guiGraphics.blit(BACKGROUND_TEXTURE, startX + 128, startY, 0, 0, 164, 256);
         drawNonShadowString(guiGraphics, minecraft.font, Component.translatable(SETTINGS).withStyle(ChatFormatting.BLACK), startX + 128 + /* image width */ 164 / 2, startY + 7, -1);

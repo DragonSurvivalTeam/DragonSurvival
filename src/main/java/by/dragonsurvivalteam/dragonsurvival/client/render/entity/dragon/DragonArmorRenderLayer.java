@@ -2,6 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.client.render.entity.dragon;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.DragonSurvivalClient;
+import by.dragonsurvivalteam.dragonsurvival.client.render.ClientDragonRenderer;
 import by.dragonsurvivalteam.dragonsurvival.client.util.RenderingUtils;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
@@ -116,8 +117,7 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
         ResourceLocation imageResource = DragonSurvival.res("armor_" + armorUUID);
 
         if (!generatedArmorTextures.contains(imageResource)) {
-            generateArmorTexture(player, imageResource);
-            generatedArmorTextures.add(imageResource);
+            return Optional.empty();
         }
 
         usedArmorTextures.add(imageResource);
@@ -135,6 +135,27 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
             return true;
         });
         usedArmorTextures.clear();
+
+        ClientDragonRenderer.process(dragonEntity -> {
+            Player player = dragonEntity.getPlayer();
+            if (player == null) return;
+
+            DragonStateHandler handler = DragonStateProvider.getData(player);
+
+            if (handler.isDragon()
+                    && (hasAnyArmorEquipped(player) || ClawInventoryData.getData(player).shouldRenderClaws || hasVisibleCurios(player))) {
+                prepareArmorTexture(player);
+            }
+        });
+    }
+
+    private static void prepareArmorTexture(final Player player) {
+        ResourceLocation imageResource = DragonSurvival.res("armor_" + buildUniqueArmorUUID(player));
+
+        if (!generatedArmorTextures.contains(imageResource)) {
+            generateArmorTexture(player, imageResource);
+            generatedArmorTextures.add(imageResource);
+        }
     }
 
     private static void generateArmorTexture(final Player player, final ResourceLocation imageResource) {
