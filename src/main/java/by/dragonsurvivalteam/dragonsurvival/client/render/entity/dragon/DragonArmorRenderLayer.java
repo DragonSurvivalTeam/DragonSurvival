@@ -36,10 +36,12 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.TextColor;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.ArmorMaterials;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -499,21 +501,26 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
         String texture = "textures/armor/" + handler.getModel().getPath() + "/";
 
         if (item instanceof ArmorItem armorItem) {
-            //noinspection DataFlowIssue -> key is present
-            ResourceLocation materialResource = armorItem.getMaterial().getKey().location();
-            texture += materialResource.getNamespace() + "/materials/" + materialResource.getPath() + "/" + equipmentSlot.getName();
+            ResourceKey<ArmorMaterial> materialKey = armorItem.getMaterial().getKey();
 
-            if (armorItem.getMaterial() == ArmorMaterials.LEATHER && player.getItemBySlot(equipmentSlot).get(DataComponents.DYED_COLOR) == null) {
-                // TODO :: Do we really have to make a special case for this? Do items not have a way to signify "can be dyed?"
-                texture += "_undyed";
-            }
+            if (materialKey != null) {
+                ResourceLocation materialResource = materialKey.location();
+                String materialTexture = texture + materialResource.getNamespace() + "/materials/" + materialResource.getPath() + "/" + equipmentSlot.getName();
 
-            ResourceLocation resource = ResourceLocation.fromNamespaceAndPath(handler.getModel().getNamespace(), texture + ".png");
+                if (armorItem.getMaterial() == ArmorMaterials.LEATHER && player.getItemBySlot(equipmentSlot).get(DataComponents.DYED_COLOR) == null) {
+                    // TODO :: Do we really have to make a special case for this? Do items not have a way to signify "can be dyed?"
+                    materialTexture += "_undyed";
+                }
 
-            if (Minecraft.getInstance().getResourceManager().getResource(resource).isPresent()) {
-                return resource;
-            } else if (materialResource.getNamespace().equals(ResourceLocation.DEFAULT_NAMESPACE)) {
-                DragonSurvival.LOGGER.warn("Missing vanilla armor texture for {} in model {}, falling back to generic armor.", resource.getPath(), handler.getModel().getPath());
+                ResourceLocation resource = ResourceLocation.fromNamespaceAndPath(handler.getModel().getNamespace(), materialTexture + ".png");
+
+                if (Minecraft.getInstance().getResourceManager().getResource(resource).isPresent()) {
+                    return resource;
+                } else if (materialResource.getNamespace().equals(ResourceLocation.DEFAULT_NAMESPACE)) {
+                    DragonSurvival.LOGGER.warn("Missing vanilla armor texture for {} in model {}, falling back to generic armor.", resource.getPath(), handler.getModel().getPath());
+                }
+            } else {
+                DragonSurvival.LOGGER.warn("Armor item {} uses an unregistered armor material, falling back to generic armor.", item.builtInRegistryHolder().getKey().location());
             }
 
             String prefix;
