@@ -1,8 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
-import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.DragonSkinsScreen;
-import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.dragon_editor.DragonEditorScreen;
 import by.dragonsurvivalteam.dragonsurvival.client.models.DragonModel;
 import by.dragonsurvivalteam.dragonsurvival.client.render.ClientDragonRenderer;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.loader.DragonPartLoader;
@@ -67,6 +65,19 @@ public class DragonEditorHandler {
         if (handler.needsSkinRecompilation() || !generatedSkinTextures.contains(normalTexture)) {
             generateAndMarkSkinTextures(player, handler);
         }
+    }
+
+    private static void prepareFakePlayerSkinTextures(final FakeClientPlayer player) {
+        DragonStateHandler handler = player.handler;
+
+        if (handler == null || !handler.isDragon() || handler.body() == null
+            || handler.getSkinData().blankSkin || handler.getCurrentStageCustomization().defaultSkin) {
+            return;
+        }
+
+        ensureSkinTexturesAvailable(player, handler);
+        markSkinTextureUsed(DragonModel.dynamicTexture(player, handler, false));
+        markSkinTextureUsed(DragonModel.dynamicTexture(player, handler, true));
     }
 
     private static void generateAndMarkSkinTextures(final Player player, final DragonStateHandler handler) {
@@ -235,15 +246,7 @@ public class DragonEditorHandler {
         });
         usedSkinTextures.clear();
 
-        Minecraft minecraft = Minecraft.getInstance();
-
-        if (minecraft.level != null && minecraft.screen instanceof DragonEditorScreen) {
-            ensureSkinTexturesAvailable(FakeClientPlayerUtils.getFakePlayer(0, DragonEditorScreen.HANDLER), DragonEditorScreen.HANDLER);
-        }
-
-        if (minecraft.level != null && minecraft.screen instanceof DragonSkinsScreen) {
-            ensureSkinTexturesAvailable(FakeClientPlayerUtils.getFakePlayer(0, DragonSkinsScreen.handler), DragonSkinsScreen.handler);
-        }
+        FakeClientPlayerUtils.processActivePlayers(DragonEditorHandler::prepareFakePlayerSkinTextures);
 
         ClientDragonRenderer.process(dragonEntity -> {
             Player player = dragonEntity.getPlayer();
