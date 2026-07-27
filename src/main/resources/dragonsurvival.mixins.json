@@ -63,6 +63,7 @@
     "client.BlockRenderDispatcherAccess",
     "client.CameraMixin",
     "client.ClientLevelMixin",
+    "client.ClientPacketListenerMixin",
     "client.EffectRenderingInventoryScreenMixin",
     "client.EntityRenderDispatcherMixin",
     "client.EntityRendererAccessor",
