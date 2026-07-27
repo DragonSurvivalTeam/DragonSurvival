@@ -71,6 +71,15 @@ public class PrimordialAnchorBlock extends Block implements EntityBlock {
     @Translation(comments = "The ender dragon has blessed you with the ability to fly and spin through the air.")
     private static final String PRIMORDIAL_ANCHOR_GRANTED_FLIGHT_SPIN = Translation.Type.GUI.wrap("primordial_anchor.flight_spin_grant_gained");
 
+    @Translation(comments = "You must be a dragon to use the primordial anchor.")
+    private static final String PRIMORDIAL_ANCHOR_MUST_BE_DRAGON_TO_USE = Translation.Type.GUI.wrap("primordial_anchor.must_be_dragon");
+
+    @Translation(comments = "The primordial anchor must be charged with an ender pearl to use it.")
+    private static final String PRIMORDIAL_ANCHOR_NEEDS_CHARGE = Translation.Type.GUI.wrap("primordial_anchor.needs_charge");
+
+    @Translation(comments = "The primordial anchor cannot be used while the ender dragon is dead.")
+    private static final String PRIMORDIAL_ANCHOR_ENDER_DRAGON_DEAD = Translation.Type.GUI.wrap("primordial_anchor.ender_dragon_dead");
+
     public static final BooleanProperty CHARGED = BooleanProperty.create("charged");
     public static final BooleanProperty BLOODY = BooleanProperty.create("bloody");
 
@@ -117,6 +126,9 @@ public class PrimordialAnchorBlock extends Block implements EntityBlock {
 
             level.playSound(player, (double) position.getX() + 0.5, (double) position.getY() + 0.5, (double) position.getZ() + 0.5, SoundEvents.SOUL_ESCAPE, SoundSource.BLOCKS, 4, 1);
             player.hurt(level.damageSources().magic(), 1);
+            if (level instanceof ServerLevel) {
+                player.sendSystemMessage(Component.translatable(PRIMORDIAL_ANCHOR_ENDER_DRAGON_DEAD));
+            }
             return InteractionResult.PASS;
         }
 
@@ -126,6 +138,9 @@ public class PrimordialAnchorBlock extends Block implements EntityBlock {
             }
 
             level.playSound(player, (double) position.getX() + 0.5, (double) position.getY() + 0.5, (double) position.getZ() + 0.5, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 1, 1);
+            if (level instanceof ServerLevel) {
+                player.sendSystemMessage(Component.translatable(PRIMORDIAL_ANCHOR_NEEDS_CHARGE));
+            }
             return InteractionResult.PASS;
         }
 
@@ -138,6 +153,9 @@ public class PrimordialAnchorBlock extends Block implements EntityBlock {
 
             level.playSound(player, (double) position.getX() + 0.5, (double) position.getY() + 0.5, (double) position.getZ() + 0.5, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 1, 1);
             player.hurt(level.damageSources().magic(), 1);
+            if (level instanceof ServerLevel) {
+                player.sendSystemMessage(Component.translatable(PRIMORDIAL_ANCHOR_MUST_BE_DRAGON_TO_USE));
+            }
             return InteractionResult.PASS;
         }
 
