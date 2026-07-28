@@ -89,7 +89,7 @@ public class DragonAbilityCommand {
                                                 .executes(source -> query(source, EntityArgument.getPlayer(source, DSCommands.TARGET), DragonAbilityArgument.get(source), instance -> instance.isApplyingEffects() ? 1 : 0))
                                         )
                                         .then(Commands.literal("is_enabled")
-                                                .executes(source -> query(source, EntityArgument.getPlayer(source, DSCommands.TARGET), DragonAbilityArgument.get(source), (target, instance) -> instance.isEnabled(target) ? 1 : 0))
+                                                .executes(source -> query(source, EntityArgument.getPlayer(source, DSCommands.TARGET), DragonAbilityArgument.get(source), (target, instance) -> instance.isEnabled() ? 1 : 0))
                                         )
                                 )
                         )

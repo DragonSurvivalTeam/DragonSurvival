@@ -143,7 +143,7 @@ public class AbilityButton extends ExtendedButton {
     @Override
     public void onClick(double mouseX, double mouseY) {
         if (!isHotbar && ability != null && ability.value().canBeManuallyDisabled() && Screen.hasControlDown()) {
-            boolean isDisabled = !ability.isDisabled(true, DragonSurvival.PROXY.getLocalPlayer());
+            boolean isDisabled = !ability.isDisabled(true);
             ability.setDisabled(Minecraft.getInstance().player, isDisabled, true);
             PacketDistributor.sendToServer(new SyncDisableAbility(ability.key(), isDisabled, true));
             return;
@@ -225,7 +225,7 @@ public class AbilityButton extends ExtendedButton {
             return;
         }
 
-        if (!ability.isEnabled(DragonSurvival.PROXY.getLocalPlayer())) {
+        if (!ability.isEnabled()) {
             blit(graphics, DISABLED_BACKGROUND, getX() - 2, getY() - 2, ORNAMENTATION_SIZE);
         } else {
             if (ability.isPassive()) {
