@@ -8,6 +8,8 @@ import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncSlotAssignment;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.UpgradeType;
+import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
+import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Renderable;
@@ -16,6 +18,7 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
+import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.client.gui.widget.ExtendedButton;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
@@ -64,7 +67,7 @@ public class AbilityButton extends ExtendedButton {
             return;
         }
 
-        leftLevelButton = new LevelButton(LevelButton.Type.DOWNGRADE, ability, x - width / 2 + 0, y + 9);
+        leftLevelButton = new LevelButton(LevelButton.Type.DOWNGRADE, ability, x - width / 2, y + 9);
         rightLevelButton = new LevelButton(LevelButton.Type.UPGRADE, ability, x + width / 2 + 18, y + 9);
         ((ScreenAccessor) screen).dragonSurvival$addRenderableWidget(leftLevelButton);
         ((ScreenAccessor) screen).dragonSurvival$addRenderableWidget(rightLevelButton);
@@ -249,6 +252,24 @@ public class AbilityButton extends ExtendedButton {
 
         if (!isHotbar || !isDragging) {
             blit(graphics, ability.getIcon(), getX(), getY(), SIZE);
+            float cooldown = ability.value().activation().getCooldown(ability.level());
+
+            if (cooldown > 0 && ability.cooldown() > 0) {
+                float percentage = Mth.clamp(ability.cooldown() / cooldown, 0, 1);
+                int offset = SIZE - (int) (SIZE - (percentage * SIZE));
+                graphics.fill(getX(), getY(), getX() + SIZE, getY() + offset, DSColors.withAlpha(DSColors.DARK_GRAY, 0.75f));
+
+                String cooldownText = String.valueOf((int) Functions.ticksToSeconds(ability.cooldown()));
+                int drawX = getX() + SIZE / 2 - Minecraft.getInstance().font.width(cooldownText) / 2;
+                int drawY = getY() + SIZE / 2 - Minecraft.getInstance().font.lineHeight / 2;
+
+                // Border makes it more readable on bright icons
+                graphics.text(Minecraft.getInstance().font, cooldownText, drawX + 1, drawY, DSColors.BLACK, false);
+                graphics.text(Minecraft.getInstance().font, cooldownText, drawX - 1, drawY, DSColors.BLACK, false);
+                graphics.text(Minecraft.getInstance().font, cooldownText, drawX, drawY + 1, DSColors.BLACK, false);
+                graphics.text(Minecraft.getInstance().font, cooldownText, drawX, drawY - 1, DSColors.BLACK, false);
+                graphics.text(Minecraft.getInstance().font, cooldownText, drawX, drawY, DSColors.WHITE, false);
+            }
         }
 
         graphics.pose().popMatrix();
