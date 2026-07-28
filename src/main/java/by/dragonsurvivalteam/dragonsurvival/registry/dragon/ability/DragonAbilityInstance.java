@@ -94,7 +94,8 @@ public class DragonAbilityInstance {
 
     public void tick(final Player dragon) {
         if (dragon instanceof ServerPlayer serverPlayer) {
-            boolean isAutomaticallyDisabled = value().usageBlocked().map(condition -> condition.test(Condition.abilityContext(serverPlayer))).orElse(false);
+            boolean isAutomaticallyDisabled = DragonAbilityInstance.hasAbilityDisablingEffect(dragon) ||
+                    value().usageBlocked().map(condition -> condition.test(Condition.abilityContext(serverPlayer))).orElse(false);
 
             if (isAutomaticallyDisabled && !this.isAutomaticallyDisabled) {
                 setDisabled(serverPlayer, true, false);
@@ -358,9 +359,9 @@ public class DragonAbilityInstance {
             this.isAutomaticallyDisabled = isDisabled;
         }
 
-        if (isActive && !isEnabled(player)) {
+        if (isActive && !isEnabled()) {
             setActive(player, false);
-        } else if (!isActive && isEnabled(player) && isPassive()) {
+        } else if (!isActive && isEnabled() && isPassive()) {
             // Passive abilities need to be re-activated automatically
             setActive(player, true);
         }
@@ -370,11 +371,7 @@ public class DragonAbilityInstance {
         return player != null && player.hasEffect(DSEffects.MAGIC_DISABLED);
     }
 
-    public boolean isDisabled(boolean isManual, Player player) {
-        if (hasAbilityDisablingEffect(player)) {
-            return true;
-        }
-
+    public boolean isDisabled(boolean isManual) {
         if (isManual) {
             return isManuallyDisabled;
         } else {
@@ -382,15 +379,7 @@ public class DragonAbilityInstance {
         }
     }
 
-    public boolean isEnabled(Player player) {
-        if (hasAbilityDisablingEffect(player)) {
-            return false;
-        }
-
-        return !isManuallyDisabled && !isAutomaticallyDisabled;
-    }
-
     public boolean isEnabled() {
-        return isEnabled(null);
+        return !isManuallyDisabled && !isAutomaticallyDisabled;
     }
 }
