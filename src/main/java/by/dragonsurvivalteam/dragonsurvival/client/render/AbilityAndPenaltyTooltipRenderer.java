@@ -268,7 +268,7 @@ public class AbilityAndPenaltyTooltipRenderer {
 
         var player = Minecraft.getInstance().player;
 
-        if (!ability.isEnabled(player) && ability.isDisabled(true, player)) {
+        if (!ability.isEnabled() && ability.isDisabled(true)) {
             if (DragonAbilityInstance.hasAbilityDisablingEffect(player)) {
                 rawDescription = Component.translatable(DISABLED_BY_EFFECTS).append("\n\n").append(abilityDescription);
             } else {
