@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "minecraft:paper"
+    },
+    {
+      "item": "minecraft:emerald_block",
+      "count": 3
+    }
+  ],
+  "result": {
+    "count": 1,
+    "item": "dragonsurvival:spearman_promotion"
+  }
+}

@@ -54,6 +54,7 @@ import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
+import net.minecraft.data.advancements.AdvancementProvider;
 import net.minecraft.data.loot.LootTableProvider;
 import net.minecraft.data.metadata.PackMetadataGenerator;
 import net.minecraft.network.chat.Component;
@@ -183,10 +184,9 @@ public class DataGeneration {
         generator.addProvider(event.includeServer(), new BodyIconProvider(output, lookup));
 
         generator.addProvider(event.includeServer(), new DataBlockModelProvider(output, helper));
-        generator.addProvider(event.includeServer(), new DSAdvancements(output));
+        generator.addProvider(event.includeServer(), new AdvancementProvider(output, lookup, List.of(new DSAdvancements())));
 
-        // Should run last due to doing weird registry things
-        generator.addProvider(event.includeServer(), new DSRecipes(output, lookup));
+        generator.addProvider(event.includeServer(), new DSRecipes(output));
     }
 
     @SubscribeEvent

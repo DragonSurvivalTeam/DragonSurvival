@@ -5,14 +5,7 @@ import by.dragonsurvivalteam.dragonsurvival.compat.ModID;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSBlocks;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSItems;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSItemTags;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.CachedOutput;
-import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeCategory;
@@ -25,16 +18,12 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraftforge.common.Tags;
-import net.minecraftforge.common.crafting.CraftingHelper;
+import net.minecraftforge.common.crafting.ConditionalRecipe;
 import net.minecraftforge.common.crafting.conditions.ICondition;
 import net.minecraftforge.common.crafting.conditions.ModLoadedCondition;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
 public class DSRecipes extends RecipeProvider {
@@ -60,37 +49,8 @@ public class DSRecipes extends RecipeProvider {
             new ProxyItem(ModID.SILENTGEMS.value(), "white_diamond")
     );
 
-    private final PackOutput.PathProvider recipePath;
-    private final PackOutput.PathProvider advancementPath;
-
-    public DSRecipes(final PackOutput output, final CompletableFuture<HolderLookup.Provider> registries) {
+    public DSRecipes(final PackOutput output) {
         super(output);
-        this.recipePath = output.createPathProvider(PackOutput.Target.DATA_PACK, "recipe");
-        this.advancementPath = output.createPathProvider(PackOutput.Target.DATA_PACK, "advancement");
-    }
-
-    @Override
-    public @NotNull CompletableFuture<?> run(@NotNull final CachedOutput cache) {
-        List<CompletableFuture<?>> futures = new ArrayList<>();
-        Set<ResourceLocation> savedRecipes = new HashSet<>();
-        ModernRecipeOutput output = new ModernRecipeOutput(entry -> {
-            FinishedRecipe recipe = entry.recipe();
-            ResourceLocation recipeId = recipe.getId();
-            if (!savedRecipes.add(recipeId)) {
-                throw new IllegalStateException("Duplicate recipe " + recipeId);
-            }
-
-            futures.add(DataProvider.saveStable(cache, modernRecipeJson(entry), recipePath.json(recipeId)));
-
-            JsonObject advancement = recipe.serializeAdvancement();
-            ResourceLocation advancementId = recipe.getAdvancementId();
-            if (advancement != null && advancementId != null) {
-                futures.add(DataProvider.saveStable(cache, modernAdvancementJson(advancement), advancementPath.json(advancementId)));
-            }
-        }, List.of());
-
-        buildRecipes(output);
-        return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
     }
 
     @Override
@@ -819,148 +779,14 @@ public class DSRecipes extends RecipeProvider {
     }
 
     private static Consumer<FinishedRecipe> withConditions(final Consumer<FinishedRecipe> output, final ICondition... conditions) {
-        if (output instanceof ModernRecipeOutput modernOutput) {
-            return modernOutput.withConditions(List.of(conditions));
-        }
-        return output;
-    }
-
-    private static JsonObject modernRecipeJson(final ModernRecipeEntry entry) {
-        JsonObject json = entry.recipe().serializeRecipe();
-        modernizeRecipeElement(json);
-
-        if (!entry.conditions().isEmpty()) {
-            JsonArray conditions = new JsonArray();
-            entry.conditions().stream()
-                    .map(CraftingHelper::serialize)
-                    .map(DSRecipes::toNeoForgeCondition)
-                    .forEach(conditions::add);
-            json.add("neoforge:conditions", conditions);
-        }
-
-        return json;
-    }
-
-    private static JsonObject modernAdvancementJson(final JsonObject advancement) {
-        JsonObject json = advancement.deepCopy();
-        modernizeAdvancementElement(json);
-        return json;
-    }
-
-    private static JsonElement toNeoForgeCondition(final JsonElement element) {
-        if (element.isJsonArray()) {
-            JsonArray result = new JsonArray();
-            element.getAsJsonArray().forEach(value -> result.add(toNeoForgeCondition(value)));
-            return result;
-        }
-        if (!element.isJsonObject()) {
-            return element.deepCopy();
-        }
-
-        JsonObject result = new JsonObject();
-        for (var entry : element.getAsJsonObject().entrySet()) {
-            JsonElement value = toNeoForgeCondition(entry.getValue());
-            if (entry.getKey().equals("type") && value.isJsonPrimitive()) {
-                String type = value.getAsString();
-                if (type.startsWith("forge:")) {
-                    value = new JsonPrimitive("neoforge:" + type.substring("forge:".length()));
-                }
+        return recipe -> {
+            ConditionalRecipe.Builder builder = ConditionalRecipe.builder();
+            for (ICondition condition : conditions) {
+                builder.addCondition(condition);
             }
-            result.add(entry.getKey(), value);
-        }
-        return result;
-    }
-
-    private static void modernizeRecipeElement(final JsonElement element) {
-        if (element.isJsonArray()) {
-            element.getAsJsonArray().forEach(DSRecipes::modernizeRecipeElement);
-            return;
-        }
-        if (!element.isJsonObject()) {
-            return;
-        }
-
-        JsonObject object = element.getAsJsonObject();
-        if (object.has("tag") && object.get("tag").isJsonPrimitive()) {
-            object.addProperty("tag", modernCommonTag(object.get("tag").getAsString()));
-        }
-        if (object.has("result") && object.get("result").isJsonObject()) {
-            modernizeRecipeResult(object.getAsJsonObject("result"));
-        }
-        for (var entry : new ArrayList<>(object.entrySet())) {
-            modernizeRecipeElement(entry.getValue());
-        }
-    }
-
-    private static void modernizeRecipeResult(final JsonObject result) {
-        if (result.has("item") && !result.has("id")) {
-            result.add("id", result.get("item"));
-            result.remove("item");
-        }
-        if (!result.has("count")) {
-            result.addProperty("count", 1);
-        }
-    }
-
-    private static void modernizeAdvancementElement(final JsonElement element) {
-        if (element.isJsonArray()) {
-            element.getAsJsonArray().forEach(DSRecipes::modernizeAdvancementElement);
-            return;
-        }
-        if (!element.isJsonObject()) {
-            return;
-        }
-
-        JsonObject object = element.getAsJsonObject();
-        if (object.has("tag") && object.get("tag").isJsonPrimitive()) {
-            object.addProperty("tag", modernCommonTag(object.get("tag").getAsString()));
-        }
-        if (object.has("items") && object.get("items").isJsonArray()) {
-            JsonArray items = object.getAsJsonArray("items");
-            if (items.size() == 1 && items.get(0).isJsonPrimitive()) {
-                object.add("items", items.get(0));
-            }
-        }
-        for (var entry : new ArrayList<>(object.entrySet())) {
-            modernizeAdvancementElement(entry.getValue());
-        }
-    }
-
-    private static String modernCommonTag(final String tag) {
-        if (!tag.startsWith("forge:")) {
-            return tag;
-        }
-
-        return "c:" + switch (tag.substring("forge:".length())) {
-            case "foods/berries" -> "foods/berry";
-            case "foods/raw_fishes" -> "foods/raw_fish";
-            case "foods/raw_meats" -> "foods/raw_meat";
-            case "tools/bows" -> "tools/bow";
-            case "tools/crossbows" -> "tools/crossbow";
-            case "tools/shields" -> "tools/shield";
-            default -> tag.substring("forge:".length());
+            builder.addRecipe(recipe)
+                    .generateAdvancement()
+                    .build(output, recipe.getId());
         };
-    }
-
-    private record ModernRecipeOutput(
-            Consumer<ModernRecipeEntry> sink,
-            List<ICondition> conditions
-    ) implements Consumer<FinishedRecipe> {
-        @Override
-        public void accept(final FinishedRecipe recipe) {
-            sink.accept(new ModernRecipeEntry(recipe, conditions));
-        }
-
-        private Consumer<FinishedRecipe> withConditions(final List<ICondition> extraConditions) {
-            List<ICondition> nextConditions = new ArrayList<>(conditions);
-            nextConditions.addAll(extraConditions);
-            return new ModernRecipeOutput(sink, List.copyOf(nextConditions));
-        }
-    }
-
-    private record ModernRecipeEntry(
-            FinishedRecipe recipe,
-            List<ICondition> conditions
-    ) {
     }
 }

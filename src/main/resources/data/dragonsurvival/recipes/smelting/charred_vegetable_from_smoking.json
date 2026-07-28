@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:smoking",
+  "ingredient": {
+    "tag": "dragonsurvival:cooked_vegetables"
+  },
+  "result": {
+    "item": "dragonsurvival:charred_vegetable"
+  },
+  "experience": 0.35,
+  "cookingtime": 50
+}

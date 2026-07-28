@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#Dg",
+    "#Jg",
+    "#Tg"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:quartz"
+    },
+    "D": {
+      "item": "dragonsurvival:elder_dragon_bone"
+    },
+    "g": {
+      "item": "minecraft:gold_ingot"
+    },
+    "J": {
+      "item": "dragonsurvival:star_bone"
+    },
+    "T": {
+      "item": "minecraft:diamond"
+    }
+  },
+  "result": {
+    "count": 32,
+    "item": "dragonsurvival:star_bone"
+  }
+}

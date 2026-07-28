@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " C ",
+    "SVM",
+    "LLL"
+  ],
+  "key": {
+    "C": {
+      "item": "dragonsurvival:charged_coal"
+    },
+    "S": {
+      "item": "dragonsurvival:charred_meat"
+    },
+    "V": {
+      "item": "dragonsurvival:charred_vegetable"
+    },
+    "M": {
+      "item": "dragonsurvival:charred_mushroom"
+    },
+    "L": {
+      "item": "minecraft:lava_bucket"
+    }
+  },
+  "result": {
+    "count": 3,
+    "item": "dragonsurvival:charged_soup"
+  }
+}

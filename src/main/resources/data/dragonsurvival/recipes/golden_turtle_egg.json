@@ -1,0 +1,36 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "minecraft:gold_nugget"
+    },
+    {
+      "item": "minecraft:gold_nugget"
+    },
+    {
+      "item": "minecraft:gold_nugget"
+    },
+    {
+      "item": "minecraft:gold_nugget"
+    },
+    {
+      "item": "minecraft:gold_nugget"
+    },
+    {
+      "item": "minecraft:turtle_egg"
+    },
+    {
+      "item": "dragonsurvival:elder_dragon_dust"
+    },
+    {
+      "item": "dragonsurvival:elder_dragon_dust"
+    },
+    {
+      "item": "dragonsurvival:elder_dragon_dust"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "item": "dragonsurvival:golden_turtle_egg"
+  }
+}

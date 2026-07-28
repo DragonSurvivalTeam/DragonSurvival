@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:smithing_transform",
+  "template": {
+    "item": "dragonsurvival:light_upgrade"
+  },
+  "base": {
+    "item": "minecraft:netherite_chestplate"
+  },
+  "addition": {
+    "item": "dragonsurvival:elder_dragon_heart"
+  },
+  "result": {
+    "item": "dragonsurvival:light_dragon_chestplate"
+  }
+}

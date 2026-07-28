@@ -1,0 +1,14 @@
+{
+  "type": "crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "minecraft:diamond"
+    },
+    {
+      "item": "dragonsurvival:hunter_partisan"
+    }
+  ],
+  "result": {
+    "item": "dragonsurvival:hunter_partisan_diamond"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "bbb",
+    "bbb",
+    "bbb"
+  ],
+  "key": {
+    "b": {
+      "item": "dragonsurvival:elder_dragon_dust"
+    }
+  },
+  "result": {
+    "count": 1,
+    "item": "dragonsurvival:elder_dragon_bone"
+  }
+}
