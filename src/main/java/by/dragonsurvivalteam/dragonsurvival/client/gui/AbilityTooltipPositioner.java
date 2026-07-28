@@ -31,7 +31,8 @@ public class AbilityTooltipPositioner implements ClientTooltipPositioner {
         }
 
         if (tooltipPos.y + tooltipHeight + padding > screenHeight) {
-            tooltipPos.y = screenHeight - (tooltipHeight + padding);
+            // Prefer to cut off the bottom part if we have to
+            tooltipPos.y = Math.max(0, screenHeight - (tooltipHeight + padding));
         }
     }
 }
