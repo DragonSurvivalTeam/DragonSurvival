@@ -12,6 +12,7 @@ import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncMagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAdvancementTriggers;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSSounds;
 import by.dragonsurvivalteam.dragonsurvival.registry.data_components.DSDataComponents;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.BuiltInDragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbility;
@@ -61,6 +62,9 @@ import java.util.stream.Collectors;
 public class MagicData implements INBTSerializable<CompoundTag> {
     public static final int HOTBAR_SLOTS = 4;
     public static final int NO_SLOT = -1;
+
+    @Translation(comments = "Your ability is disabled due to a magic effect")
+    public static final String ABILITY_DISABLED = Translation.Type.GUI.wrap("message.ability_disabled.effect");
 
     private final Map<ResourceKey<DragonSpecies>, Map<ResourceKey<DragonAbility>, DragonAbilityInstance>> abilities = new HashMap<>();
     private final Map<ResourceKey<DragonSpecies>, Map<Integer, ResourceKey<DragonAbility>>> hotbar = new HashMap<>();
@@ -388,10 +392,16 @@ public class MagicData implements INBTSerializable<CompoundTag> {
                 MagicData magic = MagicData.getData(dragon);
                 magic.setErrorMessageSent(true);
 
+                if (DragonAbilityInstance.hasAbilityDisablingEffect(dragon)) {
+                    MagicHUD.castingError(Component.translatable(ABILITY_DISABLED));
+                    return false;
+                }
+
                 Optional<Component> message = instance.value().activation().notification().usageBlocked();
 
                 if (message.isPresent() && message.get().getContents() != PlainTextContents.EMPTY) {
                     MagicHUD.castingError(message.get());
+                    return false;
                 }
             }
 
