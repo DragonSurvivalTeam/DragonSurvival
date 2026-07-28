@@ -7,6 +7,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.ManaCost;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.ManaHandler;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncDisableAbility;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncStopCast;
+import by.dragonsurvivalteam.dragonsurvival.network.syncing.SyncCooldown;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
@@ -273,10 +274,20 @@ public class DragonAbilityInstance {
         } else {
             cooldown = ability.value().activation().getCooldown(level);
         }
+
+        if (isPassive() && dragon instanceof ServerPlayer serverPlayer) {
+            // Active abilities already set the client-side cooldown through 'release' when the player stops pressing the button
+            // Such a behavior doesn't exist for passive abilities though - therefore, we synchronize manually
+            PacketDistributor.sendToPlayer(serverPlayer, new SyncCooldown(key(), cooldown));
+        }
     }
 
     /** This does not sync the change to the client */
     public void tickCooldown(final Player player) {
+        if (cooldown == NO_COOLDOWN) {
+            return;
+        }
+
         // Passive abilities keep their cooldown since some effects can affect creative mode gameplay in a confusing way
         // (e.g. a revival effect - since the player does not actively cast it, it may seem like there is a bug)
         if (player.getAbilities().instabuild && !this.isPassive()) {
