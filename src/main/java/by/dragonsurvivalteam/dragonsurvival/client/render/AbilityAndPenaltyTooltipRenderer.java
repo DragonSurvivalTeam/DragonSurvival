@@ -93,26 +93,33 @@ public class AbilityAndPenaltyTooltipRenderer {
 
         Window window = Minecraft.getInstance().getWindow();
         int maxHeight = (int) (window.getHeight() / window.getGuiScale());
-        int maxWidth = (int) (window.getWidth() / window.getGuiScale()) - /* Space for the side-info */ maxLineWidth;
+        int maxWidth = (int) (window.getWidth() / window.getGuiScale()) - maxLineWidth;
 
         // '65' is roughly the amount of space needed for the other components so that the name and level can be centered without overlap
         int backgroundWidth = Math.max(maxLineWidth, Minecraft.getInstance().font.width(name) + 65);
         int backgroundHeight;
 
+        int offset = /* Size of the horizontal colored bar */ 20 + /* Line breaks between bar, title and bottom info */ 27 + /* Extra padding to account for word wrap */ 8;
         List<FormattedCharSequence> description;
 
         // There will still be issues if the description is way too long (side-info not being visible e.g.)
         // But at that point it's just a problem of the description content
         while (true) {
             description = Minecraft.getInstance().font.split(rawDescription, backgroundWidth - 7);
-            backgroundHeight = /* Size of the horizontal colored bar */ 20 + /* Line breaks between bar, title and bottom info */ 27 + /* Extra padding to account for word wrap */ 8 + (description.size() + bottomInfoLines.size()) * 9;
+            backgroundHeight = offset + (description.size() + bottomInfoLines.size()) * 9;
 
             if (backgroundHeight <= maxHeight) {
                 break;
             }
 
             // Preferably, we wrap the lines into the compact default width - but if the description is too long, we need to it
-            backgroundWidth = Math.max(maxWidth, backgroundWidth + 50);
+            backgroundWidth = backgroundWidth + 10;
+
+            if (Screen.hasShiftDown() && backgroundWidth > maxWidth) {
+                // Forcefully show the side-info when requested
+                backgroundWidth = maxWidth;
+                break;
+            }
         }
 
         // The side-info doesn't need dynamic width adjustments (scroll support when Shift is pressed)
