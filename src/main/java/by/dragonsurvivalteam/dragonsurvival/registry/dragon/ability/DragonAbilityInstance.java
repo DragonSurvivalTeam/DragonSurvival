@@ -94,7 +94,7 @@ public class DragonAbilityInstance {
 
     public void tick(final Player dragon) {
         if (dragon instanceof ServerPlayer serverPlayer) {
-            boolean isAutomaticallyDisabled = DragonAbilityInstance.hasAbilityDisablingEffect(dragon) ||
+            boolean isAutomaticallyDisabled = (!isPassive() && DragonAbilityInstance.hasAbilityDisablingEffect(dragon)) ||
                     value().usageBlocked().map(condition -> condition.test(Condition.abilityContext(serverPlayer))).orElse(false);
 
             if (isAutomaticallyDisabled && !this.isAutomaticallyDisabled) {
