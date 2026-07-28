@@ -53,7 +53,7 @@ public class DSSubPredicates {
         return encoded.getAsJsonObject();
     }
 
-    private static <T extends EntitySubPredicate> T deserialize(final MapCodec<T> codec, final JsonObject json) {
+    public static <T extends EntitySubPredicate> T deserialize(final MapCodec<T> codec, final JsonObject json) {
         DataResult<T> result = codec.codec().parse(jsonOps(), json);
         return result.result().orElseThrow(() -> codecException(result));
     }

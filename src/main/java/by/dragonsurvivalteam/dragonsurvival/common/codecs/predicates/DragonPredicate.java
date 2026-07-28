@@ -19,7 +19,6 @@ import net.minecraft.advancements.critereon.EntitySubPredicate;
 import net.minecraft.advancements.critereon.MinMaxBounds;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
-import net.minecraft.core.RegistryCodecs;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -32,9 +31,9 @@ import java.util.List;
 import java.util.Optional;
 
 public record DragonPredicate(
-        Optional<HolderSet<DragonSpecies>> dragonSpecies,
+        Optional<HolderSetPredicate<DragonSpecies>> dragonSpecies,
         Optional<DragonStagePredicate> dragonStage,
-        Optional<HolderSet<DragonBody>> dragonBody,
+        Optional<HolderSetPredicate<DragonBody>> dragonBody,
         Optional<List<AbilityLevel>> abilityLevels,
         Optional<Boolean> isGrowthStopped,
         Optional<Boolean> markedByEnderDragon,
@@ -43,9 +42,9 @@ public record DragonPredicate(
         Optional<Boolean> isFlying
 ) implements EntitySubPredicate {
     public static final MapCodec<DragonPredicate> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            RegistryCodecs.homogeneousList(DragonSpecies.REGISTRY).optionalFieldOf("dragon_species").forGetter(DragonPredicate::dragonSpecies),
+            HolderSetPredicate.codec(DragonSpecies.REGISTRY).optionalFieldOf("dragon_species").forGetter(DragonPredicate::dragonSpecies),
             DragonStagePredicate.CODEC.optionalFieldOf("stage_specific").forGetter(DragonPredicate::dragonStage),
-            RegistryCodecs.homogeneousList(DragonBody.REGISTRY).optionalFieldOf("dragon_body").forGetter(DragonPredicate::dragonBody),
+            HolderSetPredicate.codec(DragonBody.REGISTRY).optionalFieldOf("dragon_body").forGetter(DragonPredicate::dragonBody),
             AbilityLevel.CODEC.listOf().optionalFieldOf("ability_levels").forGetter(DragonPredicate::abilityLevels),
             Codec.BOOL.optionalFieldOf("is_growth_stopped").forGetter(DragonPredicate::isGrowthStopped),
             Codec.BOOL.optionalFieldOf("marked_by_ender_dragon").forGetter(DragonPredicate::markedByEnderDragon),
@@ -133,9 +132,9 @@ public record DragonPredicate(
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType") // ignore
     public static class Builder {
-        private Optional<HolderSet<DragonSpecies>> dragonSpecies = Optional.empty();
+        private Optional<HolderSetPredicate<DragonSpecies>> dragonSpecies = Optional.empty();
         private Optional<DragonStagePredicate> dragonStage = Optional.empty();
-        private Optional<HolderSet<DragonBody>> dragonBody = Optional.empty();
+        private Optional<HolderSetPredicate<DragonBody>> dragonBody = Optional.empty();
         private Optional<List<AbilityLevel>> abilityLevels = Optional.empty();
         private Optional<Boolean> isGrowthStopped = Optional.empty();
         private Optional<Boolean> markedByEnderDragon = Optional.empty();
@@ -148,12 +147,12 @@ public record DragonPredicate(
         }
 
         public DragonPredicate.Builder species(final Holder<DragonSpecies> dragonSpecies) {
-            this.dragonSpecies = Optional.of(HolderSet.direct(dragonSpecies));
+            this.dragonSpecies = Optional.of(HolderSetPredicate.of(dragonSpecies));
             return this;
         }
 
         public DragonPredicate.Builder species(HolderSet<DragonSpecies> dragonSpecies) {
-            this.dragonSpecies = Optional.of(dragonSpecies);
+            this.dragonSpecies = Optional.of(HolderSetPredicate.of(dragonSpecies));
             return this;
         }
 
@@ -173,7 +172,7 @@ public record DragonPredicate(
         }
 
         public DragonPredicate.Builder body(final Holder<DragonBody> dragonBody) {
-            this.dragonBody = Optional.of(HolderSet.direct(dragonBody));
+            this.dragonBody = Optional.of(HolderSetPredicate.of(dragonBody));
             return this;
         }
 

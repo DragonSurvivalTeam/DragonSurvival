@@ -6,14 +6,12 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.advancements.critereon.MinMaxBounds;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderSet;
-import net.minecraft.core.RegistryCodecs;
 
 import java.util.Optional;
 
-public record DragonStagePredicate(Optional<HolderSet<DragonStage>> dragonStage, Optional<MinMaxBounds.Doubles> growthPercentage, Optional<MinMaxBounds.Doubles> growth) {
+public record DragonStagePredicate(Optional<HolderSetPredicate<DragonStage>> dragonStage, Optional<MinMaxBounds.Doubles> growthPercentage, Optional<MinMaxBounds.Doubles> growth) {
     public static final Codec<DragonStagePredicate> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            RegistryCodecs.homogeneousList(DragonStage.REGISTRY).optionalFieldOf("dragon_stage").forGetter(DragonStagePredicate::dragonStage),
+            HolderSetPredicate.codec(DragonStage.REGISTRY).optionalFieldOf("dragon_stage").forGetter(DragonStagePredicate::dragonStage),
             MiscCodecs.percentageBounds().optionalFieldOf("growth_percentage").forGetter(DragonStagePredicate::growthPercentage),
             MiscCodecs.DOUBLE_BOUNDS_CODEC.optionalFieldOf("growth").forGetter(DragonStagePredicate::growth)
     ).apply(instance, DragonStagePredicate::new));
@@ -41,7 +39,7 @@ public record DragonStagePredicate(Optional<HolderSet<DragonStage>> dragonStage,
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType") // ignore
     public static class Builder {
-        private Optional<HolderSet<DragonStage>> dragonStage = Optional.empty();
+        private Optional<HolderSetPredicate<DragonStage>> dragonStage = Optional.empty();
         private Optional<MinMaxBounds.Doubles> progress = Optional.empty();
         private Optional<MinMaxBounds.Doubles> growth = Optional.empty();
 
@@ -50,7 +48,7 @@ public record DragonStagePredicate(Optional<HolderSet<DragonStage>> dragonStage,
         }
 
         public DragonStagePredicate.Builder stage(final Holder<DragonStage> dragonStage) {
-            this.dragonStage = Optional.of(HolderSet.direct(dragonStage));
+            this.dragonStage = Optional.of(HolderSetPredicate.of(dragonStage));
             return this;
         }
 
@@ -80,7 +78,7 @@ public record DragonStagePredicate(Optional<HolderSet<DragonStage>> dragonStage,
         }
 
         public DragonStagePredicate.Builder growthAtMost(double max) {
-            this.growth = Optional.of(MinMaxBounds.Doubles.atLeast(max));
+            this.growth = Optional.of(MinMaxBounds.Doubles.atMost(max));
             return this;
         }
 
