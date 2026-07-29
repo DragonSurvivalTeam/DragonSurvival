@@ -114,7 +114,7 @@ public class AbilityAndPenaltyTooltipRenderer {
             // Preferably, we wrap the lines into the compact default width - but if the description is too long, we need to it
             backgroundWidth = backgroundWidth + 10;
 
-            if (Screen.hasShiftDown() && backgroundWidth > maxWidth) {
+            if (Minecraft.getInstance().hasShiftDown() && backgroundWidth > maxWidth) {
                 // Forcefully show the side-info when requested
                 backgroundWidth = maxWidth;
                 break;

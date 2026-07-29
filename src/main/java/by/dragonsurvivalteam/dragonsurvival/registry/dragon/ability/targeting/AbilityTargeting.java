@@ -121,10 +121,6 @@ public interface AbilityTargeting {
     }
 
     default List<MutableComponent> getAllEffectDescriptions(final Player dragon, final DragonAbilityInstance ability) {
-        if (!ability.isUsable()) {
-            return List.of();
-        }
-
         // TODO :: need to adjust this so they can be grouped into the respective action container trigger points
 
         List<MutableComponent> descriptions = new ArrayList<>();
