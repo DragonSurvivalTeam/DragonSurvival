@@ -238,7 +238,7 @@ public class AbilityAndPenaltyTooltipRenderer {
         Component abilityDescription = Component.translatable(Translation.Type.ABILITY_DESCRIPTION.wrap(ability.location()));
         FormattedText rawDescription;
 
-        if (!ability.isEnabled() && ability.isDisabled(true)) {
+        if (!ability.isEnabled()) {
             if (DragonAbilityInstance.hasAbilityDisablingEffect(DragonSurvival.PROXY.getLocalPlayer())) {
                 rawDescription = Component.translatable(DISABLED_BY_EFFECTS).append("\n\n").append(abilityDescription);
             } else {
