@@ -49,12 +49,22 @@ public class ManaHandler {
         return getCurrentMana(player) + getManaFromExperience(player) - manaCost >= 0;
     }
 
+    /**
+     * Returns the current maximum mana (after subtracting reserved mana) </br>
+     * (Does not return negative values)
+     * */
     public static float getMaxMana(final Player player) {
-        float mana = (float) player.getAttributeValue(DSAttributes.MANA);
-        mana += getBonusManaFromExperience(player);
+        float mana = getRawMaxMana(player);
         mana -= getReservedMana(player);
 
         return Math.max(0, mana);
+    }
+
+    /** Returns the current maximum mana */
+    public static float getRawMaxMana(final Player player) {
+        float mana = (float) player.getAttributeValue(DSAttributes.MANA);
+        mana += getBonusManaFromExperience(player);
+        return mana;
     }
 
     public static void replenishMana(final Player player, float mana) {

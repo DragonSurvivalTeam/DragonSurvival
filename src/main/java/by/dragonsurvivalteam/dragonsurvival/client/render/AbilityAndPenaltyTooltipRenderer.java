@@ -40,6 +40,9 @@ public class AbilityAndPenaltyTooltipRenderer {
     @Translation(comments = "§4Manually disabled§r")
     private static final String MANUALLY_DISABLED = Translation.Type.GUI.wrap("general.manually_disabled");
 
+    @Translation(comments = "§4Disabled due to ability conditions§r")
+    private static final String AUTOMATICALLY_DISABLED = Translation.Type.GUI.wrap("general.automatically_disabled");
+
     private static final Identifier EFFECT_HEADER = DragonSurvival.res("ability_effect_header");
     private static final Identifier BARS = DragonSurvival.res("textures/gui/widget_bars.png");
     private static final int BARS_TEXTURE_SIZE = 256;
@@ -297,10 +300,13 @@ public class AbilityAndPenaltyTooltipRenderer {
         var player = Minecraft.getInstance().player;
 
         if (!ability.isEnabled()) {
-            if (DragonAbilityInstance.hasAbilityDisablingEffect(player)) {
+            if (!ability.isPassive() && DragonAbilityInstance.hasAbilityDisablingEffect(player)) {
+                // Only active abilities can be disabled by magic effects
                 rawDescription = Component.translatable(DISABLED_BY_EFFECTS).append("\n\n").append(abilityDescription);
-            } else {
+            } else if (ability.isDisabled(true)) {
                 rawDescription = Component.translatable(MANUALLY_DISABLED).append("\n\n").append(abilityDescription);
+            } else {
+                rawDescription = Component.translatable(AUTOMATICALLY_DISABLED).append("\n\n").append(abilityDescription);
             }
         } else {
             rawDescription = abilityDescription;

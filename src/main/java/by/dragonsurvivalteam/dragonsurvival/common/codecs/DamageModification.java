@@ -33,7 +33,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.text.NumberFormat;
+import java.util.Optional;
 
+// We store the damage type as optional instead considering an empty holder set as "all damage types"
+// Since the holderset may be empty due to specified damage types / tags not being present (optional ones)
+@SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 public class DamageModification extends DurationInstanceBase<DamageModifications, DamageModification.Instance> {
     @Translation(comments = "§6■ Immune§r to %s")
     private static final String ABILITY_IMMUNITY = Translation.Type.GUI.wrap("damage_modification.immunity");
@@ -44,16 +48,23 @@ public class DamageModification extends DurationInstanceBase<DamageModifications
     @Translation(comments = "§6■ %s increased damage taken§r from %s")
     private static final String ABILITY_DAMAGE_INCREASE = Translation.Type.GUI.wrap("damage_modification.damage_increase");
 
+    @Translation(comments = "All Sources")
+    public static final String ALL = Translation.Type.GUI.wrap("damage_modification.all");
+
     public static final Codec<DamageModification> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             DurationInstanceBase.CODEC.fieldOf("base").forGetter(identity -> identity),
-            RegistryCodecs.homogeneousList(Registries.DAMAGE_TYPE).fieldOf("damage_types").forGetter(DamageModification::damageTypes),
+            RegistryCodecs.homogeneousList(Registries.DAMAGE_TYPE).optionalFieldOf("damage_types").forGetter(DamageModification::damageTypes),
             LevelBasedValue.CODEC.fieldOf("multiplier").forGetter(DamageModification::multiplier)
     ).apply(instance, DamageModification::new));
 
-    private final HolderSet<DamageType> damageTypes;
+    private final Optional<HolderSet<DamageType>> damageTypes;
     private final LevelBasedValue multiplier;
 
     public DamageModification(final DurationInstanceBase<?, ?> base, final HolderSet<DamageType> damageTypes, final LevelBasedValue multiplier) {
+        this(base, Optional.ofNullable(damageTypes), multiplier);
+    }
+
+    public DamageModification(final DurationInstanceBase<?, ?> base, final Optional<HolderSet<DamageType>> damageTypes, final LevelBasedValue multiplier) {
         super(base);
         this.damageTypes = damageTypes;
         this.multiplier = multiplier;
@@ -64,11 +75,11 @@ public class DamageModification extends DurationInstanceBase<DamageModifications
             return false;
         }
 
-        if (damageTypes instanceof HolderSet.Named<DamageType> named && named.key() == DamageTypeTags.IS_FIRE) {
+        if (damageTypes.map(types -> types instanceof HolderSet.Named<DamageType> named && named.key() == DamageTypeTags.IS_FIRE).orElse(true)) {
             return true;
         }
 
-        for (Holder<DamageType> damageType : damageTypes) {
+        for (Holder<DamageType> damageType : damageTypes.orElse(HolderSet.empty())) {
             if (damageType.is(DamageTypes.ON_FIRE) || damageType.is(DamageTypes.IN_FIRE) || damageType.is(DamageTypes.LAVA)) {
                 return true;
             }
@@ -81,7 +92,10 @@ public class DamageModification extends DurationInstanceBase<DamageModifications
         float amount = multiplier.calculate(abilityLevel);
         String difference = NumberFormat.getPercentInstance().format(Math.abs(amount - 1));
 
-        MutableComponent damageType = Functions.translateHolderSet(damageTypes, Translation.Type.DAMAGE_TYPE);
+        MutableComponent damageType = damageTypes.map(
+                types -> Functions.translateHolderSet(types, Translation.Type.DAMAGE_TYPE)
+        ).orElse(/* 'translateHolderSet' handles the coloring for the other component */ DSColors.dynamicValue(Component.translatable(ALL)));
+
         MutableComponent description;
 
         if (amount == 0) {
@@ -111,7 +125,7 @@ public class DamageModification extends DurationInstanceBase<DamageModifications
         return DSDataAttachments.DAMAGE_MODIFICATIONS.value();
     }
 
-    public HolderSet<DamageType> damageTypes() {
+    public Optional<HolderSet<DamageType>> damageTypes() {
         return damageTypes;
     }
 
@@ -131,7 +145,7 @@ public class DamageModification extends DurationInstanceBase<DamageModifications
         public float calculate(final Holder<DamageType> damageType, float damageAmount) {
             float modification = 1;
 
-            if (baseData().damageTypes().contains(damageType)) {
+            if (baseData().damageTypes().map(types -> types.contains(damageType)).orElse(true)) {
                 modification = Math.max(0, baseData().multiplier().calculate(appliedAbilityLevel()));
             }
 
