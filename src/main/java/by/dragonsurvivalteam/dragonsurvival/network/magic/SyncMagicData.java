@@ -19,7 +19,11 @@ public record SyncMagicData(CompoundTag magicData) implements CustomPacketPayloa
     );
 
     public static void handleClient(final SyncMagicData packet, final PayloadContext context) {
-        context.enqueueWork(() -> MagicData.getData(context.player()).deserializeNBT(context.player().level().registryAccess(), packet.magicData()));
+        context.enqueueWork(() -> {
+            MagicData magic = MagicData.getData(context.player());
+            magic.deserializeNBT(context.player().level().registryAccess(), packet.magicData());
+            magic.validateHotbar();
+        });
     }
 
     @Override
