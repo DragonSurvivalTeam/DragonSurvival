@@ -371,6 +371,11 @@ public class DragonStateHandler extends EntityStateHandler {
         return bodyKey().location();
     }
 
+    /**
+     * Refreshes the magic data based on the (potentially new) species </br>
+     * The updated data is then sent to the client
+     * @param forceRetainMagicData Set this to true to allow a reset of values (usually when the species has changed)
+     */
     public void refreshMagicData(final ServerPlayer player, boolean forceRetainMagicData) {
         MagicData magic = MagicData.getData(player);
 
@@ -384,6 +389,12 @@ public class DragonStateHandler extends EntityStateHandler {
             } else {
                 magic.setCurrentSpecies(player, speciesKey());
             }
+        }
+
+        if (!forceRetainMagicData) {
+            // To avoid exploits where players switch to species with mana regeneration
+            // To bypass limitations of other species without passive regeneration
+            magic.setCurrentMana(0);
         }
 
         PacketDistributor.sendToPlayer(player, new SyncMagicData(magic.serializeNBT(player.level().registryAccess())));
