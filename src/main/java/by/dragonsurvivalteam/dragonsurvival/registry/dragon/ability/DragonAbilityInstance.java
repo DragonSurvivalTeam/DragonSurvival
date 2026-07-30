@@ -95,7 +95,7 @@ public class DragonAbilityInstance {
 
     public void tick(final Player dragon) {
         if (dragon instanceof ServerPlayer serverPlayer) {
-            boolean isAutomaticallyDisabled = !canReserve(dragon) ||
+            boolean isAutomaticallyDisabled = cannotReserve(dragon) ||
                     (!isPassive() && DragonAbilityInstance.hasAbilityDisablingEffect(dragon)) ||
                     value().usageBlocked().map(condition -> condition.test(Condition.abilityContext(serverPlayer))).orElse(false);
 
@@ -119,20 +119,20 @@ public class DragonAbilityInstance {
      * We disable the first reserved passive ability we find when not enough mana is present </br>
      * Since there doesn't seem to be a proper way to determine which one we should deactivate (they are all active automatically)
      */
-    private boolean canReserve(final Player dragon) {
+    public boolean cannotReserve(final Player dragon) {
         float manaCost = getContinuousManaCost(ManaCost.ManaCostType.RESERVED);
 
         if (manaCost == 0) {
-            return true;
-        }
-
-        if (isDisabled(false) && manaCost > ManaHandler.getMaxMana(dragon)) {
-            // Not enough (unreserved) mana present to activate
             return false;
         }
 
+        if (!isEnabled() && manaCost > ManaHandler.getCurrentMana(dragon)) {
+            // Not enough (unreserved) mana present to activate
+            return true;
+        }
+
         // Too much is already reserved
-        return !(ManaHandler.getReservedMana(dragon) > ManaHandler.getRawMaxMana(dragon));
+        return ManaHandler.getReservedMana(dragon) > ManaHandler.getRawMaxMana(dragon);
     }
 
     public void queueTickingSound(final SoundEvent soundEvent, final SoundSource soundSource, final Player dragon) {
