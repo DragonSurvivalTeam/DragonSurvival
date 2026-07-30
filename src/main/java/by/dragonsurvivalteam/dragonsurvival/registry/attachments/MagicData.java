@@ -501,6 +501,7 @@ public class MagicData implements INBTSerializable<CompoundTag> {
         int slot = 0;
 
         getAbilities().clear();
+        Map<Integer, ResourceKey<DragonAbility>> hotbar = getHotbar();
 
         for (Holder<DragonAbility> ability : currentSpecies.value().abilities()) {
             UpgradeType<?> upgrade = ability.value().upgrade().orElse(null);
@@ -514,12 +515,14 @@ public class MagicData implements INBTSerializable<CompoundTag> {
             }
 
             if (slot < HOTBAR_SLOTS && !instance.isPassive()) {
-                getHotbar().put(slot, ability.getKey());
+                hotbar.put(slot, ability.getKey());
                 slot++;
             }
 
             getAbilities().put(ability.getKey(), instance);
         }
+
+        validateHotbar();
     }
 
     public List<DragonAbilityInstance> getActiveAbilities() {
@@ -580,6 +583,25 @@ public class MagicData implements INBTSerializable<CompoundTag> {
         }
 
         return false;
+    }
+
+    public void validateHotbar() {
+        Map<Integer, ResourceKey<DragonAbility>> hotbar = getHotbar();
+        Map<ResourceKey<DragonAbility>, DragonAbilityInstance> abilities = getAbilities();
+
+        for (int slot = 0; slot < HOTBAR_SLOTS; slot++) {
+            ResourceKey<DragonAbility> key = hotbar.get(slot);
+
+            if (key == null) {
+                continue;
+            }
+
+            DragonAbilityInstance ability = abilities.get(key);
+
+            if (ability == null || ability.isPassive()) {
+                hotbar.remove(slot);
+            }
+        }
     }
 
     public enum AbilityCheck {
