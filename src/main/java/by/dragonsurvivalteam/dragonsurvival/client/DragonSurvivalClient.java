@@ -24,6 +24,7 @@ import by.dragonsurvivalteam.dragonsurvival.client.models.creatures.SpearmanMode
 import by.dragonsurvivalteam.dragonsurvival.client.models.projectiles.GenericBallModel;
 import by.dragonsurvivalteam.dragonsurvival.client.render.blocks.DragonBeaconRenderer;
 import by.dragonsurvivalteam.dragonsurvival.client.render.blocks.DragonSoulRenderer;
+import by.dragonsurvivalteam.dragonsurvival.client.render.blocks.DragonVaultRenderer;
 import by.dragonsurvivalteam.dragonsurvival.client.render.blocks.HelmetEntityRenderer;
 import by.dragonsurvivalteam.dragonsurvival.client.render.entity.creatures.AmbusherRenderer;
 import by.dragonsurvivalteam.dragonsurvival.client.render.entity.creatures.GriffinRenderer;
@@ -109,6 +110,7 @@ public class DragonSurvivalClient {
             BlockEntityRenderers.register(DSBlockEntities.HELMET.get(), HelmetEntityRenderer::new);
             BlockEntityRenderers.register(DSBlockEntities.DRAGON_BEACON.get(), DragonBeaconRenderer::new);
             BlockEntityRenderers.register(DSBlockEntities.DRAGON_SOUL.get(), DragonSoulRenderer::new);
+            BlockEntityRenderers.register(DSBlockEntities.DRAGON_VAULT.get(), DragonVaultRenderer::new);
 
             // GeckoLib renderers
             EntityRenderers.register(DSEntities.GENERIC_BALL_ENTITY.get(), manager -> new GenericBallRenderer(manager, new GenericBallModel()));

@@ -3,6 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.registry.datagen;
 import by.dragonsurvivalteam.dragonsurvival.common.blocks.DragonBeacon;
 import by.dragonsurvivalteam.dragonsurvival.common.blocks.DragonDoor;
 import by.dragonsurvivalteam.dragonsurvival.common.blocks.DragonSoulBlock;
+import by.dragonsurvivalteam.dragonsurvival.common.blocks.DragonVaultBlock;
 import by.dragonsurvivalteam.dragonsurvival.common.blocks.ModCompat;
 import by.dragonsurvivalteam.dragonsurvival.common.blocks.PrimordialAnchorBlock;
 import by.dragonsurvivalteam.dragonsurvival.common.blocks.SkeletonPieceBlock;
@@ -71,8 +72,8 @@ public class BlockLootTableSubProvider extends BlockLootSubProvider {
                 } else if (block instanceof DragonBeacon) {
                     // We want all dragon beacons to drop empty dragon beacons instead
                     return createSingleItemTable(DSBlocks.DRAGON_BEACON.get());
-                } else if (block instanceof PrimordialAnchorBlock) {
-                    // Primordial Anchors should not drop anything
+                } else if (block instanceof DragonVaultBlock || block instanceof PrimordialAnchorBlock) {
+                    // Vaults and Primordial Anchors should not drop anything
                     return LootTable.lootTable();
                 } else if (block instanceof DragonSoulBlock) {
                     return LootTable.lootTable().withPool(

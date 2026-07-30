@@ -7,6 +7,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.blocks.DragonDoor;
 import by.dragonsurvivalteam.dragonsurvival.common.blocks.DragonPressurePlates;
 import by.dragonsurvivalteam.dragonsurvival.common.blocks.DragonRiderWorkbenchBlock;
 import by.dragonsurvivalteam.dragonsurvival.common.blocks.DragonSoulBlock;
+import by.dragonsurvivalteam.dragonsurvival.common.blocks.DragonVaultBlock;
 import by.dragonsurvivalteam.dragonsurvival.common.blocks.HelmetBlock;
 import by.dragonsurvivalteam.dragonsurvival.common.blocks.PrimordialAnchorBlock;
 import by.dragonsurvivalteam.dragonsurvival.common.blocks.SkeletonPieceBlock;
@@ -1127,6 +1128,45 @@ public class DSBlocks {
     );
 
     // --- Misc --- //
+
+    private static final BlockBehaviour.Properties VAULT_PROPERTIES = BlockBehaviour.Properties.of()
+            .mapColor(MapColor.STONE)
+            .instrument(NoteBlockInstrument.BASEDRUM)
+            .noOcclusion()
+            .sound(SoundType.METAL)
+            .lightLevel(state -> state.getValue(DragonVaultBlock.STATE).lightLevel())
+            .strength(50.0F)
+            .isViewBlocking((state, level, pos) -> false);
+
+    @Translation(type = Translation.Type.BLOCK, comments = "Light Vault")
+    public static final RegistryObject<DragonVaultBlock> LIGHT_VAULT = register(
+            "light_vault",
+            () -> new DragonVaultBlock(
+                    VAULT_PROPERTIES,
+                    DragonSurvival.res(DSItems.LIGHT_KEY_ID),
+                    DragonSurvival.res("generic/light_vault")
+            )
+    );
+
+    @Translation(type = Translation.Type.BLOCK, comments = "Dark Vault")
+    public static final RegistryObject<DragonVaultBlock> DARK_VAULT = register(
+            "dark_vault",
+            () -> new DragonVaultBlock(
+                    VAULT_PROPERTIES,
+                    DragonSurvival.res(DSItems.DARK_KEY_ID),
+                    DragonSurvival.res("generic/dark_vault")
+            )
+    );
+
+    @Translation(type = Translation.Type.BLOCK, comments = "Hunter's Vault")
+    public static final RegistryObject<DragonVaultBlock> HUNTER_VAULT = register(
+            "hunter_vault",
+            () -> new DragonVaultBlock(
+                    VAULT_PROPERTIES,
+                    DragonSurvival.res(DSItems.HUNTER_KEY_ID),
+                    DragonSurvival.res("generic/hunter_vault")
+            )
+    );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Dragon Rider Workbench")
     public static final RegistryObject<Block> DRAGON_RIDER_WORKBENCH = REGISTRY.register("dragon_rider_workbench",

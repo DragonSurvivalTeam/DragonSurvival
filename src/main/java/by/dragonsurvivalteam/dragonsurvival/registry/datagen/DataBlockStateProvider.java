@@ -7,6 +7,8 @@ import by.dragonsurvivalteam.dragonsurvival.common.blocks.DragonDoor;
 import by.dragonsurvivalteam.dragonsurvival.common.blocks.DragonPressurePlates;
 import by.dragonsurvivalteam.dragonsurvival.common.blocks.DragonRiderWorkbenchBlock;
 import by.dragonsurvivalteam.dragonsurvival.common.blocks.DragonSoulBlock;
+import by.dragonsurvivalteam.dragonsurvival.common.blocks.DragonVaultBlock;
+import by.dragonsurvivalteam.dragonsurvival.common.blocks.DragonVaultState;
 import by.dragonsurvivalteam.dragonsurvival.common.blocks.HelmetBlock;
 import by.dragonsurvivalteam.dragonsurvival.common.blocks.PrimordialAnchorBlock;
 import by.dragonsurvivalteam.dragonsurvival.common.blocks.SkeletonPieceBlock;
@@ -25,6 +27,8 @@ import net.minecraftforge.client.model.generators.ConfiguredModel;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Locale;
 
 import static net.minecraftforge.client.model.generators.ModelProvider.BLOCK_FOLDER;
 
@@ -151,6 +155,30 @@ public class DataBlockStateProvider extends BlockStateProvider {
                                     : /* 8 layers */ models().cubeAll(name, modLoc(BLOCK_FOLDER + "/" + name));
                             return ConfiguredModel.builder().modelFile(builder).build();
                         }, TreasureBlock.WATERLOGGED);
+            } else if (holder.get() instanceof DragonVaultBlock vaultBlock) {
+                String name = holder.getId().getPath();
+                getVariantBuilder(vaultBlock).forAllStates(state -> {
+                    DragonVaultState vaultState = state.getValue(DragonVaultBlock.STATE);
+                    String suffix = vaultState.name().toLowerCase(Locale.ENGLISH);
+                    if (vaultState == DragonVaultState.EJECTING) {
+                        suffix = "ejecting_reward";
+                    }
+
+                    BlockModelBuilder builder = models()
+                            .withExistingParent(name + "_" + suffix, modLoc(BLOCK_FOLDER + "/template_vault"))
+                            .texture("bottom", modLoc(BLOCK_FOLDER + "/" + name + "_bottom"))
+                            .texture("front", modLoc(BLOCK_FOLDER + "/" + name + "_front"
+                                    + (vaultState == DragonVaultState.ACTIVE ? "_on"
+                                    : vaultState == DragonVaultState.INACTIVE ? "_off" : "_ejecting")))
+                            .texture("side", modLoc(BLOCK_FOLDER + "/" + name + "_side"
+                                    + (vaultState == DragonVaultState.ACTIVE || vaultState == DragonVaultState.EJECTING ? "_on" : "_off")))
+                            .texture("top", modLoc(BLOCK_FOLDER + "/" + name + "_top"
+                                    + (vaultState == DragonVaultState.EJECTING ? "_ejecting" : "")))
+                            .renderType("cutout");
+
+                    int yRotation = (int) state.getValue(DragonVaultBlock.FACING).toYRot() - 180;
+                    return ConfiguredModel.builder().modelFile(builder).rotationY(yRotation).build();
+                });
             } else if (holder.get() instanceof DragonRiderWorkbenchBlock) {
                 String name = holder.getId().getPath();
 

@@ -184,6 +184,15 @@ public class DSAdvancements implements AdvancementSubProvider {
                 .criteria("collect_dark_key", InventoryChangeTrigger.TriggerInstance.hasItems(DSItems.DARK_KEY.get()))
                 .build(saver);
 
+        create(LangKey.DARK_OPEN_VAULT)
+                .parent(collectKey)
+                .displayItem(DSBlocks.DARK_VAULT.get())
+                .showToast()
+                .announceChat()
+                .criteria("open_dark_vault", itemUsedOnBlock(DSBlocks.DARK_VAULT.get(), DSItems.DARK_KEY.get()))
+                .experienceReward(10)
+                .build(saver);
+
         Advancement getArmorItem = create(LangKey.DARK_GET_ARMOR_ITEM)
                 .parent(collectKey)
                 .displayItem(DSItems.DARK_DRAGON_HELMET.get())
@@ -224,6 +233,15 @@ public class DSAdvancements implements AdvancementSubProvider {
                 .showToast()
                 .announceChat()
                 .criteria("collect_light_key", InventoryChangeTrigger.TriggerInstance.hasItems(DSItems.LIGHT_KEY.get()))
+                .build(saver);
+
+        create(LangKey.LIGHT_OPEN_VAULT)
+                .parent(collectKey)
+                .displayItem(DSBlocks.LIGHT_VAULT.get())
+                .showToast()
+                .announceChat()
+                .criteria("open_light_vault", itemUsedOnBlock(DSBlocks.LIGHT_VAULT.get(), DSItems.LIGHT_KEY.get()))
+                .experienceReward(10)
                 .build(saver);
 
         Advancement getArmorItem = create(LangKey.LIGHT_GET_ARMOR_ITEM)
@@ -268,6 +286,15 @@ public class DSAdvancements implements AdvancementSubProvider {
                 .showToast()
                 .announceChat()
                 .criteria("collect_hunter_key", InventoryChangeTrigger.TriggerInstance.hasItems(DSItems.HUNTER_KEY.get()))
+                .build(saver);
+
+        create(LangKey.HUNTER_OPEN_VAULT)
+                .parent(collectKey)
+                .displayItem(DSBlocks.HUNTER_VAULT.get())
+                .showToast()
+                .announceChat()
+                .criteria("open_hunter_vault", itemUsedOnBlock(DSBlocks.HUNTER_VAULT.get(), DSItems.HUNTER_KEY.get()))
+                .experienceReward(10)
                 .build(saver);
 
         Holder.Reference<Enchantment> bolas = registries.lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(DSEnchantments.BOLAS);

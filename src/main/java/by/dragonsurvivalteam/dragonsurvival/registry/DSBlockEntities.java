@@ -2,6 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.registry;
 
 import by.dragonsurvivalteam.dragonsurvival.server.tileentity.DragonBeaconBlockEntity;
 import by.dragonsurvivalteam.dragonsurvival.server.tileentity.DragonSoulBlockEntity;
+import by.dragonsurvivalteam.dragonsurvival.server.tileentity.DragonVaultBlockEntity;
 import by.dragonsurvivalteam.dragonsurvival.server.tileentity.HelmetBlockEntity;
 import by.dragonsurvivalteam.dragonsurvival.server.tileentity.PrimordialAnchorBlockEntity;
 import by.dragonsurvivalteam.dragonsurvival.server.tileentity.SourceOfMagicBlockEntity;
@@ -62,6 +63,15 @@ public class DSBlockEntities {
             "primordial_anchor", () -> BlockEntityType.Builder.of(
                             PrimordialAnchorBlockEntity::new,
                             DSBlocks.PRIMORDIAL_ANCHOR.get())
+                    .build(null)
+    );
+
+    public static final RegistryObject<BlockEntityType<DragonVaultBlockEntity>> DRAGON_VAULT = REGISTRY.register(
+            "dragon_vault", () -> BlockEntityType.Builder.of(
+                            DragonVaultBlockEntity::new,
+                            DSBlocks.LIGHT_VAULT.get(),
+                            DSBlocks.DARK_VAULT.get(),
+                            DSBlocks.HUNTER_VAULT.get())
                     .build(null)
     );
 }
