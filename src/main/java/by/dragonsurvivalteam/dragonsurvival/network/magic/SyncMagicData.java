@@ -24,7 +24,9 @@ public record SyncMagicData(CompoundTag magicData) implements CustomPacketPayloa
     public static void handleClient(final SyncMagicData packet, final IPayloadContext context) {
         context.enqueueWork(() -> {
             ValueInput valueInput = TagValueInput.create(ProblemReporter.DISCARDING, context.player().registryAccess(), packet.magicData());
-            MagicData.getData(context.player()).deserialize(valueInput);
+            MagicData magic = MagicData.getData(context.player());
+            magic.deserialize(valueInput);
+            magic.validateHotbar();
         });
     }
 
