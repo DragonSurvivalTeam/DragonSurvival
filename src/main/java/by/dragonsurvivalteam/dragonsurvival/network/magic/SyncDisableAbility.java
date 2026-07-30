@@ -41,13 +41,11 @@ public record SyncDisableAbility(ResourceKey<DragonAbility> ability, boolean isD
                 magic.stopCasting(context.player(), ability, true);
             }
 
-            if (!packet.isDisabled() && packet.isManual()) {
-                if (ability.cannotReserve(context.player())) {
-                    // Automatic disable is already handled in the 'tick' method of the ability instance
-                    context.reply(new SyncDisableAbility(packet.ability(), true, true));
-                    context.player().sendSystemMessage(Component.translatable(NOT_ENOUGH_MANA).withColor(DSColors.RED));
-                    return;
-                }
+            if (!packet.isDisabled() && packet.isManual() && ability.cannotReserve(context.player())) {
+                // Automatic disable is already handled in the 'tick' method of the ability instance
+                context.reply(new SyncDisableAbility(packet.ability(), true, true));
+                context.player().sendSystemMessage(Component.translatable(NOT_ENOUGH_MANA).withColor(DSColors.RED));
+                return;
             }
 
             ability.setDisabled(context.player(), packet.isDisabled(), packet.isManual());
