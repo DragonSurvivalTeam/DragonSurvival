@@ -41,7 +41,6 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Pose;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.neoforged.neoforge.client.gui.widget.ExtendedButton;

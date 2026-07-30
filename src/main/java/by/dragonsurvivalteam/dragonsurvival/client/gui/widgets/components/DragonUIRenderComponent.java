@@ -2,7 +2,6 @@ package by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components;
 
 import by.dragonsurvivalteam.dragonsurvival.client.render.entity.dragon.DragonRenderer;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
-import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.platform.InputConstants;
