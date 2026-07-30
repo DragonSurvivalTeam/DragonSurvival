@@ -5,6 +5,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AttachmentManag
 import by.dragonsurvivalteam.dragonsurvival.client.render.ClientDragonRenderer;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
+import by.dragonsurvivalteam.dragonsurvival.common.handlers.EntityScale;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.HunterData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MovementData;
@@ -27,7 +28,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyArg;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(InventoryScreen.class)
@@ -68,6 +69,8 @@ public abstract class InventoryScreenMixin extends EffectRenderingInventoryScree
 
             if (dragon != null) {
                 dragon.isInInventory = true;
+                // GeckoLib otherwise reuses the world-render pose for this second render of the same entity and frame.
+                dragon.getAnimatableInstanceCache().getManagerForId(dragon.getId()).updatedAt(Double.NaN);
             }
 
             RenderSystem.runAsFancy(runnable);
@@ -90,25 +93,18 @@ public abstract class InventoryScreenMixin extends EffectRenderingInventoryScree
     }
 
     // If we are a dragon, we don't want to angle the entire entity when rendering it with a follows mouse command (like vanilla does).
-    // Instead, we angle just the dragon's head to follow the given angle. So we modify the angles to eb zero if we are a dragon and capture them to use them later.
-    @ModifyArg(method = "renderEntityInInventoryFollowsMouse", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/InventoryScreen;renderEntityInInventoryFollowsAngle(Lnet/minecraft/client/gui/GuiGraphics;IIIFFLnet/minecraft/world/entity/LivingEntity;)V", remap = false), index = 4)
-    private static float dragonSurvival$cancelEntityXAngleForDragons(final float angle, @Local(argsOnly = true) final LivingEntity entity) {
+    // Instead, we angle just the dragon's head to follow the given angle. Capture both angles together before zeroing them for vanilla's render.
+    @Redirect(method = "renderEntityInInventoryFollowsMouse", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/InventoryScreen;renderEntityInInventoryFollowsAngle(Lnet/minecraft/client/gui/GuiGraphics;IIIFFLnet/minecraft/world/entity/LivingEntity;)V", remap = false))
+    private static void dragonSurvival$redirectEntityAngling(final GuiGraphics graphics, int x, int y, int scale, float xAngle, float yAngle, final LivingEntity entity) {
         if (DragonStateProvider.isDragon(entity)) {
-            dragon_survival$storedXAngle = angle;
-            return 0;
+            dragon_survival$storedXAngle = xAngle;
+            dragon_survival$storedYAngle = yAngle;
+            int normalizedScale = Math.max(1, (int) (scale / EntityScale.get(entity)));
+            InventoryScreen.renderEntityInInventoryFollowsAngle(graphics, x, y, normalizedScale, 0, 0, entity);
+            return;
         }
 
-        return angle;
-    }
-
-    @ModifyArg(method = "renderEntityInInventoryFollowsMouse", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/InventoryScreen;renderEntityInInventoryFollowsAngle(Lnet/minecraft/client/gui/GuiGraphics;IIIFFLnet/minecraft/world/entity/LivingEntity;)V", remap = false), index = 5)
-    private static float dragonSurvival$cancelEntityYAngleForDragons(final float angle, @Local(argsOnly = true) final LivingEntity entity) {
-        if (DragonStateProvider.isDragon(entity)) {
-            dragon_survival$storedYAngle = angle;
-            return 0;
-        }
-
-        return angle;
+        InventoryScreen.renderEntityInInventoryFollowsAngle(graphics, x, y, scale, xAngle, yAngle, entity);
     }
 
     @Inject(method = "renderEntityInInventory", at = @At("HEAD"))
