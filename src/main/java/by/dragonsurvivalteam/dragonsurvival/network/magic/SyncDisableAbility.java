@@ -2,9 +2,12 @@ package by.dragonsurvivalteam.dragonsurvival.network.magic;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbility;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
+import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -22,17 +25,29 @@ public record SyncDisableAbility(ResourceKey<DragonAbility> ability, boolean isD
             SyncDisableAbility::new
     );
 
+    @Translation(comments = "You do not have enough mana for the reservation cost of this ability")
+    private static final String NOT_ENOUGH_MANA = Translation.Type.GUI.wrap("message.not_enough_mana_for_reserve");
+
     public static void handleServer(final SyncDisableAbility packet, final IPayloadContext context) {
         context.enqueueWork(() -> {
-            MagicData data = MagicData.getData(context.player());
-            DragonAbilityInstance ability = data.getAbility(packet.ability());
+            MagicData magic = MagicData.getData(context.player());
+            DragonAbilityInstance ability = magic.getAbility(packet.ability());
 
             if (ability == null) {
                 return;
             }
 
-            if (packet.isDisabled() && ability.isApplyingEffects() && ability == data.getCurrentlyCasting()) {
-                data.stopCasting(context.player(), ability, true);
+            if (packet.isDisabled() && ability.isApplyingEffects() && ability == magic.getCurrentlyCasting()) {
+                magic.stopCasting(context.player(), ability, true);
+            }
+
+            if (!packet.isDisabled() && packet.isManual()) {
+                if (ability.cannotReserve(context.player())) {
+                    // Automatic disable is already handled in the 'tick' method of the ability instance
+                    context.reply(new SyncDisableAbility(packet.ability(), true, true));
+                    context.player().sendSystemMessage(Component.translatable(NOT_ENOUGH_MANA).withColor(DSColors.RED));
+                    return;
+                }
             }
 
             ability.setDisabled(context.player(), packet.isDisabled(), packet.isManual());
