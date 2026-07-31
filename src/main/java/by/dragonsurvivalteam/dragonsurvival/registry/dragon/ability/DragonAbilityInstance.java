@@ -116,6 +116,18 @@ public class DragonAbilityInstance {
         }
     }
 
+    public float getReservedCost() {
+        if (!isActive) {
+            return 0;
+        }
+
+        if (!canBeCast()) {
+            return 0;
+        }
+
+        return getContinuousManaCost(ManaCost.ManaCostType.RESERVED);
+    }
+
     /**
      * We disable the first reserved passive ability we find when not enough mana is present </br>
      * Since there doesn't seem to be a proper way to determine which one we should deactivate (they are all active automatically)
@@ -388,8 +400,6 @@ public class DragonAbilityInstance {
      * Afterward its active status will be updated
      */
     public void setDisabled(final Player player, boolean isDisabled, boolean isManual) {
-        boolean wasEnabled = isEnabled();
-
         if (isManual) {
             this.isManuallyDisabled = isDisabled;
         } else {
@@ -401,12 +411,6 @@ public class DragonAbilityInstance {
         } else if (!isActive && isEnabled() && isPassive()) {
             // Passive abilities need to be re-activated automatically
             setActive(player, true);
-        }
-
-        float manaCost = getContinuousManaCost(ManaCost.ManaCostType.RESERVED);
-
-        if (manaCost > 0 && wasEnabled != isEnabled()) {
-            MagicData.getData(player).adjustReservedMana(isActive ? manaCost : -manaCost);
         }
     }
 
