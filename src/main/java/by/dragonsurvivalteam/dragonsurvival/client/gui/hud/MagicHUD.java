@@ -84,6 +84,11 @@ public class MagicHUD {
     @ConfigOption(side = ConfigSide.CLIENT, category = {"ui", "magic"}, key = "mana_bar_y_offset")
     public static Integer manabarYOffset = 0;
 
+    @ConfigRange
+    @Translation(key = "show_mana_text", type = Translation.Type.CONFIGURATION, comments = "Shows the available (non-reserved) mana in text form above the mana icons")
+    @ConfigOption(side = ConfigSide.CLIENT, category = {"ui", "magic"}, key = "show_mana_text")
+    public static boolean showManaText = false;
+
     public static final ResourceLocation ID = DragonSurvival.res("magic_hud");
 
     // 1.20.6 moved a bunch of widgets around, so to keep compatibility with older versions, we need to use the old widgets texture
@@ -420,9 +425,11 @@ public class MagicHUD {
                 }
             }
 
-            String manaText = FORMATTER.format(magic.getAvailableMana()) + " / " + FORMATTER.format(ManaHandler.getMaxMana(player));
-            int drawX = hotbarX + (iconSize * maxIcons) / 2 - Minecraft.getInstance().font.width(manaText) / 2;
-            RenderingUtils.renderTextWithOutline(graphics, manaText, drawX, y - 10);
+            if (showManaText) {
+                String manaText = FORMATTER.format(magic.getAvailableMana()) + " / " + FORMATTER.format(ManaHandler.getMaxMana(player));
+                int drawX = hotbarX + (iconSize * maxIcons) / 2 - Minecraft.getInstance().font.width(manaText) / 2;
+                RenderingUtils.renderTextWithOutline(graphics, manaText, drawX, y - 10);
+            }
         }
 
         if (magic.isCasting()) {
