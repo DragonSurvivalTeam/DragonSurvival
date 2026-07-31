@@ -880,6 +880,8 @@
   "dragonsurvival.configuration.save_all_abilities.tooltip": "If enabled all abilities will remain when changing dragon species\nThis does not mean that the other dragon species gains these abilities\nIt means that when turning to the previous type the abilities will have the same levels",
   "dragonsurvival.configuration.save_growth_stage": "Save Growth Stage",
   "dragonsurvival.configuration.save_growth_stage.tooltip": "If enabled the current growth will be saved for the current dragon species when changing types or reverting back to being a human",
+  "dragonsurvival.configuration.show_mana_text": "Show Mana Text",
+  "dragonsurvival.configuration.show_mana_text.tooltip": "Shows the available (non-reserved) mana in text form above the mana icons",
   "dragonsurvival.configuration.show_vanilla_experience_bar": "Show Vanilla Experience Bar",
   "dragonsurvival.configuration.show_vanilla_experience_bar.tooltip": "If enabled the vanilla experience bar will be shown",
   "dragonsurvival.configuration.show_vanilla_food_bar": "Show Vanilla Food Bar",
