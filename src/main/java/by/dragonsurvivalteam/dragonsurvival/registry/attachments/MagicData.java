@@ -7,6 +7,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvide
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.DragonAbilityHolder;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.ActionContainer;
+import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.ManaHandler;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncAbilityLevel;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncMagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAdvancementTriggers;
@@ -71,7 +72,9 @@ public class MagicData implements INBTSerializable<CompoundTag> {
     private @Nullable ResourceKey<DragonSpecies> currentSpecies; // TODO :: are we storing this in two data attachments now?
     private boolean renderAbilities = true;
     private int selectedAbilitySlot;
+
     private float currentMana;
+    private float reservedMana;
 
     private boolean errorMessageSent;
     private boolean isCasting;
@@ -82,12 +85,22 @@ public class MagicData implements INBTSerializable<CompoundTag> {
         return player.getData(DSDataAttachments.MAGIC);
     }
 
+    /** Returns the mana that can be used to cast abilities */
+    public float getAvailableMana() {
+        return Math.max(0, currentMana - reservedMana);
+    }
+
+    /** Used when setting the new amount of mana (Also see {@link MagicData#getAvailableMana()}) */
     public float getCurrentMana() {
         return currentMana;
     }
 
-    public void setCurrentMana(float currentMana) {
-        this.currentMana = Math.max(0, currentMana);
+    public void setCurrentMana(final Player player, float currentMana) {
+        // We keep the reserved mana so that the player can enable / disable reserved mana abilities
+        // Without constantly losing said mana
+        this.currentMana = Math.max(reservedMana, currentMana);
+        // Make sure that we are still within the actual max. mana amount
+        this.currentMana = Math.min(ManaHandler.getRawMaxMana(player), this.currentMana);
     }
 
     public void setSelectedAbilitySlot(int newSlot) {
@@ -604,6 +617,16 @@ public class MagicData implements INBTSerializable<CompoundTag> {
         }
     }
 
+    public void adjustReservedMana(final Player player, float adjustment) {
+        reservedMana = Math.max(0, reservedMana + adjustment);
+        // We need to re-check the current mana here, otherwise the ability may keep switching between enabled and disabled
+        currentMana = Math.min(ManaHandler.getRawMaxMana(player), currentMana);
+    }
+
+    public float getReservedMana() {
+        return reservedMana;
+    }
+
     public enum AbilityCheck {
         HAS_EFFECT,
         IS_EFFECT_UNLOCKED
@@ -682,6 +705,7 @@ public class MagicData implements INBTSerializable<CompoundTag> {
         tag.put(ABILITIES, allAbilities);
         tag.put(HOTBARS, allHotbars);
         tag.putFloat(CURRENT_MANA, currentMana);
+        tag.putFloat(RESERVED_MANA, reservedMana);
         tag.putInt(SELECTED_SLOT, selectedAbilitySlot);
         tag.putBoolean(RENDER_ABILITIES, renderAbilities);
 
@@ -748,6 +772,7 @@ public class MagicData implements INBTSerializable<CompoundTag> {
         }
 
         currentMana = tag.getFloat(CURRENT_MANA);
+        reservedMana = tag.getFloat(RESERVED_MANA);
         selectedAbilitySlot = tag.getInt(SELECTED_SLOT);
         renderAbilities = tag.getBoolean(RENDER_ABILITIES);
 
@@ -765,6 +790,7 @@ public class MagicData implements INBTSerializable<CompoundTag> {
     private final String ABILITIES = "abilities";
     private final String CURRENT_SPECIES = "current_species";
     private final String CURRENT_MANA = "current_mana";
+    private final String RESERVED_MANA = "reserved_mana";
     private final String SELECTED_SLOT = "selected_slot";
     private final String RENDER_ABILITIES = "render_abilities";
 }
