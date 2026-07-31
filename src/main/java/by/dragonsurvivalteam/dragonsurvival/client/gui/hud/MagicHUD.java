@@ -324,9 +324,8 @@ public class MagicHUD {
                 );
             }
 
-            float reservedMana = ManaHandler.getReservedMana(player);
             float maxMana = ManaHandler.getMaxMana(player);
-            float currentMana = Math.min(maxMana, ManaHandler.getCurrentMana(player));
+            float currentMana = magic.getAvailableMana();
 
             int manaX = i1;
             int manaY = graphics.guiHeight() - sizeY;
@@ -376,7 +375,7 @@ public class MagicHUD {
                                 blit(graphics, manaSprites.empty(), x, y, 9, 1, 1, 1, 1);
                                 blit(graphics, manaSprites.recovery(), x, y, 9, deltaCounter, red, green, blue);
                             }
-                        } else if (reservedMana > 0 && reservedMana >= slot + 0.5 - maxMana) {
+                        } else if (magic.getReservedMana() > 0 && magic.getReservedMana() >= slot + 0.5 - maxMana) {
                             // Reserved mana
                             blit(graphics, manaSprites.reserved(), x, y, 9, 1, red, green, blue);
                         }

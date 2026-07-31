@@ -404,7 +404,7 @@ public class DragonStateHandler extends EntityStateHandler {
         if (!forceRetainMagicData) {
             // To avoid exploits where players switch to species with mana regeneration
             // To bypass limitations of other species without passive regeneration
-            magic.setCurrentMana(0);
+            magic.setCurrentMana(player, 0);
         }
 
         TagValueOutput valueOutput = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, player.registryAccess());
