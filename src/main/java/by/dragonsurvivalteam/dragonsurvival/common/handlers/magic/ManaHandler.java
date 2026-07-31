@@ -76,7 +76,7 @@ public class ManaHandler {
 
     public static void replenishMana(final Player player, float mana) {
         MagicData data = MagicData.getData(player);
-        data.setCurrentMana(player, data.getCurrentMana() + mana);
+        data.adjustMana(player, mana);
     }
 
     public static void consumeMana(final Player player, float manaCost) {
@@ -101,10 +101,10 @@ public class ManaHandler {
                 player.giveExperiencePoints(convertMana(missingMana, manaHandling.manaXpConversion()));
                 magic.setCurrentMana(player, 0);
             } else {
-                magic.setCurrentMana(player, pureMana - manaCost);
+                magic.adjustMana(player, -manaCost);
             }
         } else {
-            magic.setCurrentMana(player, pureMana - manaCost);
+            magic.adjustMana(player, -manaCost);
         }
     }
 
