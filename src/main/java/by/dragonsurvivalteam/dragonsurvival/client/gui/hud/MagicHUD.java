@@ -362,29 +362,38 @@ public class MagicHUD {
             for (int row = 0; row < 3; row++) {
                 for (int point = 0; point < 9; point++) {
                     int slot = row * 9 + point;
+                    int x = manaX + point * 9;
+                    int y = manaY - 13 - row * 10;
 
-                    if (slot + 0.5 > currentMana) {
-                        int x = manaX + point * 9;
-                        int y = manaY - 13 - row * 10;
-
-                        if (maxMana > 0 && maxMana >= slot + 0.5) {
-                            if (magic.isCasting()) {
-                                // No mana regeneration
-                                blit(graphics, manaSprites.empty(), x, y, 9, 1, 1, 1, 1);
-                            } else if (player.getAttributeValue(DSAttributes.MANA_REGENERATION.get()) > player.getAttributeBaseValue(DSAttributes.MANA_REGENERATION.get())) {
-                                // Fast mana regeneration
-                                blit(graphics, manaSprites.recovery(), x, y, 9, 1, red, green, blue);
-                            } else {
-                                // Slow mana regeneration
-                                blit(graphics, manaSprites.empty(), x, y, 9, 1, 1, 1, 1);
-                                blit(graphics, manaSprites.recovery(), x, y, 9, deltaCounter, red, green, blue);
-                            }
-                        } else if (magic.getReservedMana() > 0 && magic.getReservedMana() >= slot + 0.5 - maxMana) {
-                            // Reserved mana
-                            blit(graphics, manaSprites.reserved(), x, y, 9, 1, red, green, blue);
+                    // We only show the extra icon in 0.5 steps (i.e. 6.5 gets an extra icon, 6.4 does not)
+                    if (maxMana > 0 && maxMana >= slot + 0.5) {
+                        if (magic.isCasting()) {
+                            // No mana regeneration
+                            blit(graphics, manaSprites.empty(), x, y, 9, 1, 1, 1, 1, 1);
+                        } else if (player.getAttributeValue(DSAttributes.MANA_REGENERATION.get()) > player.getAttributeBaseValue(DSAttributes.MANA_REGENERATION.get())) {
+                            // Fast mana regeneration
+                            blit(graphics, manaSprites.recovery(), x, y, 9, 1, 1, red, green, blue);
+                        } else {
+                            // Slow mana regeneration
+                            blit(graphics, manaSprites.empty(), x, y, 9, 1, 1, 1, 1, 1);
+                            blit(graphics, manaSprites.recovery(), x, y, 9, 1, deltaCounter, red, green, blue);
                         }
-                    } else {
-                        blit(graphics, manaSprites.full(), manaX + point * 9, manaY - 13 - row * 10, 9, 1, red, green, blue);
+                    } else if (magic.getReservedMana() > 0 && magic.getReservedMana() >= slot + 0.5 - maxMana) {
+                        // Reserved mana (as long as at least half of the slot is reserved)
+                        blit(graphics, manaSprites.reserved(), x, y, 9, 1, 1, red, green, blue);
+                    }
+
+                    if (currentMana >= slot) {
+                        float percentage = Math.min(currentMana - slot, 1);
+
+                        if (percentage < 1) {
+                            // We can't do it precise in decimals because the relevant methods work in integers
+                            graphics.enableScissor(x, y, x + (int) (9 * percentage + /* Round up */ 0.5), y + 9);
+                            blit(graphics, manaSprites.full(), x, y, 9, 1, 1, red, green, blue);
+                            graphics.disableScissor();
+                        } else {
+                            blit(graphics, manaSprites.full(), x, y, 9, 1, 1, red, green, blue);
+                        }
                     }
                 }
             }
@@ -436,7 +445,7 @@ public class MagicHUD {
     }
 
     @SuppressWarnings("SameParameterValue") // ignore
-    private static void blit(final GuiGraphics graphics, final ResourceLocation resource, int x, int y, int size, float alpha, float red, float green, float blue) {
-        ((GuiGraphicsAccess) graphics).dragonSurvival$innerBlit(resource, x, x + size, y, y + size, 0, 0, 1, 0, 1, red, green, blue, alpha);
+    private static void blit(final GuiGraphics graphics, final ResourceLocation resource, int x, int y, int size, float maxU, float alpha, float red, float green, float blue) {
+        ((GuiGraphicsAccess) graphics).dragonSurvival$innerBlit(resource, x, x + size, y, y + size, 0, 0, maxU, 0, 1, red, green, blue, alpha);
     }
 }
