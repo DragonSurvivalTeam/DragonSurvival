@@ -96,6 +96,10 @@ public class MagicData implements INBTSerializable<CompoundTag> {
         return currentMana;
     }
 
+    public void adjustMana(final Player player, float currentMana) {
+        setCurrentMana(player, this.currentMana + currentMana);
+    }
+
     public void setCurrentMana(final Player player, float currentMana) {
         // We keep the reserved mana so that the player can enable / disable reserved mana abilities
         // Without constantly losing said mana

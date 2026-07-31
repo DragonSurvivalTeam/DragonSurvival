@@ -23,7 +23,12 @@ public record SyncMana(float amount, boolean fullSync) implements CustomPacketPa
     public static void handleClient(final SyncMana packet, final PayloadContext context) {
         context.enqueueWork(() -> {
             MagicData magic = MagicData.getData(context.player());
-            magic.setCurrentMana(context.player(), packet.fullSync() ? packet.amount() : magic.getCurrentMana() + packet.amount());
+
+            if (packet.fullSync()) {
+                magic.setCurrentMana(context.player(), packet.amount());
+            } else {
+                magic.adjustMana(context.player(), packet.amount());
+            }
         });
     }
 
