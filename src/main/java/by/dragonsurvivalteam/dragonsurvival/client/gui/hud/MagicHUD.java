@@ -374,21 +374,21 @@ public class MagicHUD {
 
             // Render up to 3 rows with 9 mana icons max.
             for (int row = 0; row < 3; row++) {
-                if (row * maxIcons + 0.5 > maxMana + magic.getReservedMana()) {
+                if (row * maxIcons > maxMana + magic.getReservedMana()) {
                     break;
                 }
 
                 for (int point = 0; point < maxIcons; point++) {
                     int slot = row * iconSize + point;
 
-                    if (slot + 0.5 > maxMana + magic.getReservedMana()) {
+                    if (slot > maxMana + magic.getReservedMana()) {
                         break;
                     }
 
                     int x = manaX + point * iconSize;
-                    y = manaY - 13 - row * iconSize + 1;
+                    y = manaY - 13 - row * (iconSize + 1);
 
-                    if (maxMana > 0 && maxMana >= slot) {
+                    if (maxMana > 0 && maxMana > slot) {
                         if (magic.isCasting()) {
                             // No mana regeneration
                             blit(graphics, manaSprites.empty(), x, y, iconSize, 1, 1, 1, 1);
@@ -400,12 +400,12 @@ public class MagicHUD {
                             blit(graphics, manaSprites.empty(), x, y, iconSize, 1, 1, 1, 1);
                             blit(graphics, manaSprites.recovery(), x, y, iconSize, deltaCounter, red, green, blue);
                         }
-                    } else if (magic.getReservedMana() > 0 && magic.getReservedMana() >= slot - maxMana) {
+                    } else if (magic.getReservedMana() > 0 && magic.getReservedMana() > slot - maxMana) {
                         // Reserved mana (as long as at least half of the slot is reserved)
                         blit(graphics, manaSprites.reserved(), x, y, iconSize, 1, red, green, blue);
                     }
 
-                    if (currentMana >= slot) {
+                    if (currentMana > slot) {
                         float percentage = Math.min(currentMana - slot, 1);
 
                         if (percentage < 1) {
