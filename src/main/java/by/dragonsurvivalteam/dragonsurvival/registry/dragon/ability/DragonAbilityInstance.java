@@ -127,13 +127,15 @@ public class DragonAbilityInstance {
             return false;
         }
 
-        if (!isEnabled() && manaCost > ManaHandler.getCurrentMana(dragon)) {
+        MagicData magic = MagicData.getData(dragon);
+
+        if (!isEnabled() && manaCost > magic.getAvailableMana()) {
             // Not enough (unreserved) mana present to activate
             return true;
         }
 
         // Too much is already reserved
-        return ManaHandler.getReservedMana(dragon) > ManaHandler.getRawMaxMana(dragon);
+        return magic.getReservedMana() > ManaHandler.getRawMaxMana(dragon);
     }
 
     public void queueTickingSound(final SoundEvent soundEvent, final SoundSource soundSource, final Player dragon) {
@@ -386,6 +388,8 @@ public class DragonAbilityInstance {
      * Afterward its active status will be updated
      */
     public void setDisabled(final Player player, boolean isDisabled, boolean isManual) {
+        boolean wasEnabled = isEnabled();
+
         if (isManual) {
             this.isManuallyDisabled = isDisabled;
         } else {
@@ -397,6 +401,12 @@ public class DragonAbilityInstance {
         } else if (!isActive && isEnabled() && isPassive()) {
             // Passive abilities need to be re-activated automatically
             setActive(player, true);
+        }
+
+        float manaCost = getContinuousManaCost(ManaCost.ManaCostType.RESERVED);
+
+        if (manaCost > 0 && wasEnabled != isEnabled()) {
+            MagicData.getData(player).adjustReservedMana(player, isActive ? manaCost : -manaCost);
         }
     }
 
