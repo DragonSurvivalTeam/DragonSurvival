@@ -4,6 +4,7 @@ import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
+import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
 import com.mojang.blaze3d.Blaze3D;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
@@ -279,6 +280,15 @@ public class RenderingUtils {
 
         RenderSystem.restoreProjectionMatrix();
         RenderSystem.restoreGlState(state);
+    }
+
+    /** Renders a white text with a black outline for better readability */
+    public static void renderTextWithOutline(final GuiGraphics graphics, final String text, final int x, final int y) {
+        graphics.drawString(Minecraft.getInstance().font, text, x + 1, y, DSColors.BLACK, false);
+        graphics.drawString(Minecraft.getInstance().font, text, x - 1, y, DSColors.BLACK, false);
+        graphics.drawString(Minecraft.getInstance().font, text, x, y + 1, DSColors.BLACK, false);
+        graphics.drawString(Minecraft.getInstance().font, text, x, y - 1, DSColors.BLACK, false);
+        graphics.drawString(Minecraft.getInstance().font, text, x, y, DSColors.WHITE, false);
     }
 
     public static float getNearPlane(float original) {

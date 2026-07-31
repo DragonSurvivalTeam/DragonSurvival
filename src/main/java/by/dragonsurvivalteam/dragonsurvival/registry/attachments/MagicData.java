@@ -621,12 +621,8 @@ public class MagicData implements INBTSerializable<CompoundTag> {
         }
     }
 
-    public void adjustReservedMana(final Player player, float adjustment) {
+    public void adjustReservedMana(float adjustment) {
         reservedMana = Math.max(0, reservedMana + adjustment);
-        // We need to re-check the current mana here, otherwise the ability may keep switching between enabled and disabled
-        // Seems to be due to the sequence when you lose sth. that grants you max. mana while the reserved ability was active
-        // Keeping your current mana at the reserved amount which may be higher than the max. mana amount
-        currentMana = Math.min(ManaHandler.getRawMaxMana(player), currentMana);
     }
 
     public float getReservedMana() {

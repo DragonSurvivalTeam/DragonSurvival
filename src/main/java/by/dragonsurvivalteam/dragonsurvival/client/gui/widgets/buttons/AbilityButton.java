@@ -3,6 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.DragonAbilityScreen;
 import by.dragonsurvivalteam.dragonsurvival.client.render.AbilityAndPenaltyTooltipRenderer;
+import by.dragonsurvivalteam.dragonsurvival.client.util.RenderingUtils;
 import by.dragonsurvivalteam.dragonsurvival.mixins.client.ScreenAccessor;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncDisableAbility;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncSlotAssignment;
@@ -261,12 +262,7 @@ public class AbilityButton extends ExtendedButton {
                 int drawX = getX() + SIZE / 2 - Minecraft.getInstance().font.width(cooldownText) / 2;
                 int drawY = getY() + SIZE / 2 - Minecraft.getInstance().font.lineHeight / 2;
 
-                // Border makes it more readable on bright icons
-                graphics.drawString(Minecraft.getInstance().font, cooldownText, drawX + 1, drawY, DSColors.BLACK, false);
-                graphics.drawString(Minecraft.getInstance().font, cooldownText, drawX - 1, drawY, DSColors.BLACK, false);
-                graphics.drawString(Minecraft.getInstance().font, cooldownText, drawX, drawY + 1, DSColors.BLACK, false);
-                graphics.drawString(Minecraft.getInstance().font, cooldownText, drawX, drawY - 1, DSColors.BLACK, false);
-                graphics.drawString(Minecraft.getInstance().font, cooldownText, drawX, drawY, DSColors.WHITE, false);
+                RenderingUtils.renderTextWithOutline(graphics, cooldownText, drawX, drawY);
             }
         }
 
