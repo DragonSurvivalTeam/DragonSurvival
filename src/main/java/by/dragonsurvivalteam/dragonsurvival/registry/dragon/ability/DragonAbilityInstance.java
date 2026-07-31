@@ -406,7 +406,7 @@ public class DragonAbilityInstance {
         float manaCost = getContinuousManaCost(ManaCost.ManaCostType.RESERVED);
 
         if (manaCost > 0 && wasEnabled != isEnabled()) {
-            MagicData.getData(player).adjustReservedMana(player, isActive ? manaCost : -manaCost);
+            MagicData.getData(player).adjustReservedMana(isActive ? manaCost : -manaCost);
         }
     }
 
