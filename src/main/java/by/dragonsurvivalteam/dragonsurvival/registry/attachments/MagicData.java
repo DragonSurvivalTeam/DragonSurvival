@@ -95,8 +95,8 @@ public class MagicData implements INBTSerializable<CompoundTag> {
         return currentMana;
     }
 
-    public void adjustMana(final Player player, float currentMana) {
-        setCurrentMana(player, this.currentMana + currentMana);
+    public void adjustMana(final Player player, float delta) {
+        setCurrentMana(player, currentMana + delta);
     }
 
     public void setCurrentMana(final Player player, float currentMana) {
