@@ -6,6 +6,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvide
 import by.dragonsurvivalteam.dragonsurvival.network.RequestClientData;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAdvancementTriggers;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSModifiers;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.PenaltySupply;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import net.minecraft.core.Holder;
@@ -38,6 +39,9 @@ public record SyncComplete(int playerId, CompoundTag data) implements CustomPack
 
         if (refreshMagicData) {
             handler.refreshMagicData(player, true);
+        } else {
+            // The server gets more ticks while joining the world than the client, causing the mana to desync when logging in
+            PacketDistributor.sendToPlayer(player, new SyncMana(MagicData.getData(player).getCurrentMana(), true));
         }
 
         if (handler.isDragon()) {

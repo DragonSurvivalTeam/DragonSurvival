@@ -65,7 +65,7 @@ public record ManaRecoveryEffect(ActionType actionType, AdjustmentType adjustmen
 
         magic.setCurrentMana(player, base + adjustment);
         // Usually there is no need to sync since mana related logic occurs on both sides
-        PacketDistributor.sendToPlayer(dragon, new SyncMana(adjustment));
+        PacketDistributor.sendToPlayer(dragon, new SyncMana(adjustment, false));
     }
 
     @Override

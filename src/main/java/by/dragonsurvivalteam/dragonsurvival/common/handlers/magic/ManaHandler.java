@@ -34,6 +34,8 @@ public class ManaHandler {
         }
 
         if (magic.getAvailableMana() < getMaxMana(player)) {
+            // FIXME :: Mana may still be out of sync by about ~0.03
+            //          Potentially we have to send a sync packet every tick and let the server fully handle mana amount
             replenishMana(player, (float) player.getAttributeValue(DSAttributes.MANA_REGENERATION.get()));
         }
     }
