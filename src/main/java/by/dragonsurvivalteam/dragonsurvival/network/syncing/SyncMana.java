@@ -11,18 +11,19 @@ import org.jetbrains.annotations.NotNull;
 
 // Since the client manually adjusts the mana as well it's probably safer to send the delta from the server
 // Instead of overriding it completely, in case the server data is a couple of ticks older
-public record SyncMana(float delta) implements CustomPacketPayload {
+public record SyncMana(float amount, boolean fullSync) implements CustomPacketPayload {
     public static final Type<SyncMana> TYPE = new Type<>(DragonSurvival.res("sync_mana"));
 
     public static final StreamCodec<FriendlyByteBuf, SyncMana> STREAM_CODEC = StreamCodec.composite(
-            ByteBufCodecs.FLOAT, SyncMana::delta,
+            ByteBufCodecs.FLOAT, SyncMana::amount,
+            ByteBufCodecs.BOOL, SyncMana::fullSync,
             SyncMana::new
     );
 
     public static void handleClient(final SyncMana packet, final IPayloadContext context) {
         context.enqueueWork(() -> {
             MagicData magic = MagicData.getData(context.player());
-            magic.setCurrentMana(context.player(), magic.getCurrentMana() + packet.delta());
+            magic.setCurrentMana(context.player(), packet.fullSync() ? packet.amount() : magic.getCurrentMana() + packet.amount());
         });
     }
 

@@ -26,7 +26,6 @@ import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
 
-
 public class DragonCommand {
     @Translation(comments = "There are no available (unlocked) species present")
     private static final String NO_UNLOCKED_SPECIES = Translation.Type.GUI.wrap("message.no_unlocked_species");
