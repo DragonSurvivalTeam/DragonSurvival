@@ -29,6 +29,13 @@ public class ManaHandler {
 
         MagicData magic = MagicData.getData(player);
 
+        if (magic.getCurrentMana() > ManaHandler.getRawMaxMana(player)) {
+            // There doesn't seem to be a good point to listen to attribute value changes
+            // So we have to manually check and adjust, because otherwise current mana is not properly set
+            // (Causing visual issues and reserved abilities to switch between enabled and disabled)
+            magic.setCurrentMana(player, ManaHandler.getRawMaxMana(player));
+        }
+
         if (magic.isCasting()) {
             return;
         }
