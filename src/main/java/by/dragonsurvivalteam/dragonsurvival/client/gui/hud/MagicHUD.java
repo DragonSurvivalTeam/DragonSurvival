@@ -388,8 +388,7 @@ public class MagicHUD {
                     int x = manaX + point * iconSize;
                     y = manaY - 13 - row * iconSize + 1;
 
-                    // We only show the extra icon in 0.5 steps (i.e. 6.5 gets an extra icon, 6.4 does not)
-                    if (maxMana > 0 && maxMana >= slot + 0.5) {
+                    if (maxMana > 0 && maxMana >= slot) {
                         if (magic.isCasting()) {
                             // No mana regeneration
                             blit(graphics, manaSprites.empty(), x, y, iconSize, 1, 1, 1, 1);
@@ -401,7 +400,7 @@ public class MagicHUD {
                             blit(graphics, manaSprites.empty(), x, y, iconSize, 1, 1, 1, 1);
                             blit(graphics, manaSprites.recovery(), x, y, iconSize, deltaCounter, red, green, blue);
                         }
-                    } else if (magic.getReservedMana() > 0 && magic.getReservedMana() >= slot + 0.5 - maxMana) {
+                    } else if (magic.getReservedMana() > 0 && magic.getReservedMana() >= slot - maxMana) {
                         // Reserved mana (as long as at least half of the slot is reserved)
                         blit(graphics, manaSprites.reserved(), x, y, iconSize, 1, red, green, blue);
                     }
