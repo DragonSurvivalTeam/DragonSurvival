@@ -199,6 +199,8 @@ public class MagicData implements INBTSerializable<CompoundTag> {
         MagicData magic = optional.get();
         InputData experienceLevels = InputData.experienceLevels(event.getEntity().experienceLevel);
 
+        float reservedMana = 0;
+
         for (DragonAbilityInstance ability : magic.getAbilities().values()) {
             if (event.getEntity() instanceof ServerPlayer serverPlayer) {
                 ability.value().upgrade().ifPresent(upgrade -> {
@@ -225,6 +227,10 @@ public class MagicData implements INBTSerializable<CompoundTag> {
             ability.tickCooldown(event.getEntity());
             ability.triggered = false;
 
+            // TODO :: Check if there is a single entry point where we can catch changes to skills to update the reserved mana amount
+            float manaCost = ability.getReservedCost();
+            reservedMana += manaCost;
+
             if (ability.value().activation() instanceof PassiveActivation passive && !(passive.trigger() instanceof ConstantTrigger)) {
                 // Passive activations with non-constant triggers are handled elsewhere
                 continue;
@@ -232,6 +238,8 @@ public class MagicData implements INBTSerializable<CompoundTag> {
 
             ability.tick(event.getEntity());
         }
+
+        magic.setReservedMana(reservedMana);
 
         if (event.getEntity().level().isClientSide() && magic.isCasting()) {
             if (magic.castTimer == 0) {
@@ -621,8 +629,8 @@ public class MagicData implements INBTSerializable<CompoundTag> {
         }
     }
 
-    public void adjustReservedMana(float adjustment) {
-        reservedMana = Math.max(0, reservedMana + adjustment);
+    private void setReservedMana(float reservedMana) {
+        this.reservedMana = Math.max(0, reservedMana);
     }
 
     public float getReservedMana() {
