@@ -46,8 +46,13 @@ public final class AttachmentType<T> {
     @SuppressWarnings("unchecked")
     public T deserialize(final Tag tag, final HolderLookup.Provider provider) {
         T value = create();
-        ((INBTSerializable<Tag>) value).deserializeNBT(provider, tag);
+        deserialize(value, tag, provider);
         return value;
+    }
+
+    @SuppressWarnings("unchecked")
+    public void deserialize(final T value, final Tag tag, final HolderLookup.Provider provider) {
+        ((INBTSerializable<Tag>) value).deserializeNBT(provider, tag);
     }
 
     public static final class Builder<T> {

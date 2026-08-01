@@ -156,7 +156,14 @@ public final class AttachmentManager {
     private static <T> void copy(final AttachmentType<T> type, final Object value, final Map<AttachmentType<?>, Object> target, final HolderLookup.Provider provider) {
         Tag serialized = type.serialize((T) value, provider);
         if (serialized != null) {
-            target.put(type, type.deserialize(serialized, provider));
+            Object existing = target.get(type);
+            if (existing == null) {
+                target.put(type, type.deserialize(serialized, provider));
+            } else {
+                // Forge's capability bridge caches the attachment instance in a LazyOptional.
+                // Keep that instance valid when the player is cloned during respawn.
+                type.deserialize((T) existing, serialized, provider);
+            }
         }
     }
 
