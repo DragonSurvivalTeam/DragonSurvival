@@ -38,7 +38,7 @@ public class ItemInHandRendererMixin {
     }
 
     /** If we made an item edible we need to supply the duration it takes to eat the item */
-    @ModifyExpressionValue(method = "applyEatTransform", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;getUseDuration(Lnet/minecraft/world/entity/LivingEntity;)I"))
+    @ModifyExpressionValue(method = "applyEatTransform", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;getUseDuration()I"))
     private int dragonSurvival$dragonUseDuration(int original, @Local(argsOnly = true) ItemStack stack) {
         if (!DragonFoodHandler.dragonFoodHandlingIsDisabled() && DragonStateProvider.isDragon(minecraft.player)) {
             return DragonFoodHandler.getUseDuration(stack, minecraft.player, original);

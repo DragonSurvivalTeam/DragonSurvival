@@ -24,6 +24,7 @@ import com.llamalad7.mixinextras.sugar.Local;
 import com.llamalad7.mixinextras.sugar.ref.LocalFloatRef;
 import com.llamalad7.mixinextras.sugar.ref.LocalRef;
 import net.minecraft.util.Mth;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -176,26 +177,41 @@ public abstract class LivingEntityMixin extends Entity {
         }
     }
 
-    @Unique private int dragonSurvival$getHumanOrDragonUseDuration(int original) {
+    @Unique private int dragonSurvival$getHumanOrDragonUseDuration(final ItemStack stack, int original) {
         if (!DragonFoodHandler.dragonFoodHandlingIsDisabled() && (Object) this instanceof Player player) {
             DragonStateHandler handler = DragonStateProvider.getData(player);
 
             if (handler != null && handler.isDragon()) {
-                return DragonFoodHandler.getUseDuration(useItem, player, original);
+                return DragonFoodHandler.getUseDuration(stack, player, original);
             }
         }
 
         return original;
     }
 
-    @ModifyExpressionValue(method = "shouldTriggerItemUseEffects", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;getUseDuration(Lnet/minecraft/world/entity/LivingEntity;)I"))
-    private int replaceUseDurationInShouldTriggerItemUseEffects(int original) {
-        return dragonSurvival$getHumanOrDragonUseDuration(original);
+    @ModifyExpressionValue(method = "startUsingItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;getUseDuration()I"))
+    private int replaceUseDurationInStartUsingItem(int original, final InteractionHand hand) {
+        return dragonSurvival$getHumanOrDragonUseDuration(((LivingEntity) (Object) this).getItemInHand(hand), original);
     }
 
-    @ModifyExpressionValue(method = "onSyncedDataUpdated", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;getUseDuration(Lnet/minecraft/world/entity/LivingEntity;)I"))
+    @ModifyExpressionValue(method = "shouldTriggerItemUseEffects", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;getUseDuration()I"))
+    private int replaceUseDurationInShouldTriggerItemUseEffects(int original) {
+        return dragonSurvival$getHumanOrDragonUseDuration(useItem, original);
+    }
+
+    @ModifyExpressionValue(method = "onSyncedDataUpdated", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;getUseDuration()I"))
     private int replaceUseDurationInSyncedDataUpdated(int original) {
-        return dragonSurvival$getHumanOrDragonUseDuration(original);
+        return dragonSurvival$getHumanOrDragonUseDuration(useItem, original);
+    }
+
+    @ModifyExpressionValue(method = "eat", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;isEdible()Z"))
+    private boolean dragonSurvival$eatDragonFood(final boolean original, final Level level, final ItemStack stack) {
+        return original || (Object) this instanceof Player player && DragonFoodHandler.isEdible(player, stack);
+    }
+
+    @ModifyExpressionValue(method = "addEatEffect", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/Item;isEdible()Z"))
+    private boolean dragonSurvival$applyDragonFoodEffects(final boolean original, final ItemStack stack, final Level level, final LivingEntity entity) {
+        return original || entity instanceof Player player && DragonFoodHandler.isEdible(player, stack);
     }
 
     @ModifyExpressionValue(method = "triggerItemUseEffects", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;getUseAnimation()Lnet/minecraft/world/item/UseAnim;"))

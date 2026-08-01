@@ -22,6 +22,7 @@
     "FireworkRocketItemMixin",
     "FileToIdConverterMixin",
     "FluidPredicateMixin",
+    "FoodDataMixin",
     "Holder$ReferenceAccess",
     "HolderSet$NamedAccess",
     "HolderSetCodecMixin",
