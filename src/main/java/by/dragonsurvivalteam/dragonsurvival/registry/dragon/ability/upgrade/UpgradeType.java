@@ -3,6 +3,8 @@ package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscCodecs;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncAbilityLevel;
+import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncDisableAbility;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import com.mojang.datafixers.Products;
 import com.mojang.serialization.Codec;
@@ -69,8 +71,30 @@ public interface UpgradeType<T> {
 
             // 'Void' as type parameter means the upgrade logic is not dependent on any input
             if (input == null && parameterClass == Void.class || parameterClass.isInstance(input)) {
+                float previousCost = ability.getReservedCost();
+
                 if (apply(dragon, ability, (T) input)) {
                     PacketDistributor.sendToPlayer(dragon, new SyncAbilityLevel(ability.key(), ability.level()));
+
+                    if (!ability.isUsable()) {
+                        return true;
+                    }
+
+                    float cost = ability.getReservedCost();
+
+                    if (Float.compare(previousCost, cost) == 0) {
+                        return true;
+                    }
+
+                    MagicData magic = MagicData.getData(dragon);
+                    // Both 'cannotReserve' and the later adjustment in 'setDisabled' assume that reserved mana is already adjusted on enabled abilities
+                    magic.adjustReservedMana(cost - previousCost);
+
+                    if (ability.cannotReserve(dragon)) {
+                        ability.setDisabled(dragon, true, false);
+                        PacketDistributor.sendToPlayer(dragon, new SyncDisableAbility(ability.key(), true, false));
+                    }
+
                     return true;
                 }
             }
