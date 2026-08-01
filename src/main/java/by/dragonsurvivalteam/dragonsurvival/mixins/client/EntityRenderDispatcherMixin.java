@@ -3,6 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.mixins.client;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.render.ClientDragonRenderer;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
+import by.dragonsurvivalteam.dragonsurvival.common.handlers.EntityScale;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
@@ -25,7 +26,9 @@ public abstract class EntityRenderDispatcherMixin {
         if (entity instanceof Player player && DragonStateProvider.isDragon(player) && !DragonSurvival.PROXY.dragonRenderingWasCancelled(player)) {
             Vector3f offset = ClientDragonRenderer.getModelShadowOffset(player, partialTicks).negate();
             poseStack.pushPose();
+            float scale = EntityScale.get(player);
             poseStack.translate(offset.x(), offset.y(), offset.z());
+            poseStack.scale(scale, scale, scale);
             dragonSurvival$modifiedPoseStack = true;
         }
     }
