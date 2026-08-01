@@ -45,6 +45,5 @@
     }
   },
   "max_distance_from_center": 100,
-  "use_expansion_hack": true,
-  "liquid_settings": "ignore_waterlogging"
+  "use_expansion_hack": true
 }
