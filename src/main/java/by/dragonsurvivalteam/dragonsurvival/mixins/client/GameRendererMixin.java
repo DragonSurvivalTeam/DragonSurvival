@@ -16,8 +16,10 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Constant;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
+import org.spongepowered.asm.mixin.injection.ModifyConstant;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(GameRenderer.class)
@@ -32,7 +34,7 @@ public abstract class GameRendererMixin {
      * - First person: You can view through the block in front of you, if you're too close <br>
      * - Third person: You can view through the blocks to your side, if you're too close
      */
-    @ModifyArg(method = "getProjectionMatrix", at = @At(value = "INVOKE", target = "Lorg/joml/Matrix4f;perspective(FFFF)Lorg/joml/Matrix4f;"), index = 2)
+    @ModifyConstant(method = "getProjectionMatrix", constant = @Constant(floatValue = 0.05F))
     private float dragonSurvival$adjustNearPlane(float original) {
         return RenderingUtils.getNearPlane(original);
     }

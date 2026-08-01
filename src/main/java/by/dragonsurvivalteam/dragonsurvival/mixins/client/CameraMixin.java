@@ -1,6 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.mixins.client;
 
 import by.dragonsurvivalteam.dragonsurvival.client.handlers.ClientFlightHandler;
+import by.dragonsurvivalteam.dragonsurvival.client.util.RenderingUtils;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.EntityScale;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
@@ -22,8 +23,10 @@ import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Constant;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
+import org.spongepowered.asm.mixin.injection.ModifyConstant;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(Camera.class)
@@ -116,5 +119,14 @@ public abstract class CameraMixin {
         }
 
         return original;
+    }
+
+    /**
+     * Small scale values have camera / x-ray issues if the near plane is too far away.
+     * Keep the main camera projection and culling projection in sync.
+     */
+    @ModifyConstant(method = "getNearPlane", constant = @Constant(floatValue = 0.05F))
+    private float dragonSurvival$adjustNearPlane(final float original) {
+        return RenderingUtils.getNearPlane(original);
     }
 }
