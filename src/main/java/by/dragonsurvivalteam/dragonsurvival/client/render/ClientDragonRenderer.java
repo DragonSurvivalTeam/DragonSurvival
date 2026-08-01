@@ -16,6 +16,7 @@ import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
 import by.dragonsurvivalteam.dragonsurvival.input.Keybind;
 import by.dragonsurvivalteam.dragonsurvival.mixins.client.EntityRendererAccessor;
 import by.dragonsurvivalteam.dragonsurvival.mixins.client.LivingRendererAccessor;
+import by.dragonsurvivalteam.dragonsurvival.mixins.client.LocalPlayerAccessor;
 import by.dragonsurvivalteam.dragonsurvival.network.flight.SyncDeltaMovement;
 import by.dragonsurvivalteam.dragonsurvival.network.player.SyncDragonMovement;
 import by.dragonsurvivalteam.dragonsurvival.network.player.SyncPitchAndYaw;
@@ -489,8 +490,17 @@ public class ClientDragonRenderer {
         PacketDistributor.sendToServer(new SyncPitchAndYaw(player.getId(), movement.headYaw, movement.headPitch, movement.bodyYaw));
     }
 
-    @SubscribeEvent // Don't render the fire overlay when fire immune
-    public static void removeFireOverlay(final RenderBlockScreenEffectEvent event) {
+    @SubscribeEvent
+    public static void removeInvalidScreenOverlay(final RenderBlockScreenEffectEvent event) {
+        if (event.getOverlayType() == RenderBlockScreenEffectEvent.OverlayType.BLOCK
+                && DragonStateProvider.isDragon(event.getPlayer())) {
+            if (!((LocalPlayerAccessor) event.getPlayer()).dragonSurvival$suffocatesAt(event.getBlockPos())) {
+                event.setCanceled(true);
+            }
+
+            return;
+        }
+
         if (event.getOverlayType() != RenderBlockScreenEffectEvent.OverlayType.FIRE) {
             return;
         }
