@@ -84,5 +84,10 @@ void main() {
     float inside = (signedDistanceInner <= 0.0) ? 1.0 : 0.0;
     float outline = (signedDistanceOuter > -OUTLINE_THRESHOLD && signedDistanceOuter < 0) ? 1.0 : 0.0;
 
-    fragColor = mix(mix(vec4(texColor.rgb, border), InnerColor, inside), OutlineColor, outline);
+    vec4 finalColor = mix(mix(vec4(texColor.rgb, border), InnerColor, inside), OutlineColor, outline);
+    if (finalColor.a <= 0.0) {
+        discard;
+    }
+
+    fragColor = finalColor;
 }
