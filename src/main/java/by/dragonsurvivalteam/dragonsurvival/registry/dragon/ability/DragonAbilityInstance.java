@@ -399,6 +399,8 @@ public class DragonAbilityInstance {
      * Afterward its active status will be updated
      */
     public void setDisabled(final Player player, boolean isDisabled, boolean isManual) {
+        boolean wasEnabled = isEnabled();
+
         if (isManual) {
             this.isManuallyDisabled = isDisabled;
         } else {
@@ -410,6 +412,15 @@ public class DragonAbilityInstance {
         } else if (!isActive && isEnabled() && isPassive()) {
             // Passive abilities need to be re-activated automatically
             setActive(player, true);
+        }
+
+        // We calculate the reserved mana per tick, but we still need to immediately apply adjustments when abilities are (de)activated
+        // Otherwise we may activate 2 reserved abilities and in the tick they realize they need to disable themselves
+        // Causing them to constantly switch between enabled and disabled
+        float manaCost = getContinuousManaCost(ManaCost.ManaCostType.RESERVED);
+
+        if (manaCost > 0 && wasEnabled != isEnabled()) {
+            MagicData.getData(player).adjustReservedMana(isActive ? manaCost : -manaCost);
         }
     }
 
