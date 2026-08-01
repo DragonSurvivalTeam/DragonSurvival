@@ -47,7 +47,6 @@ import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
-import net.minecraftforge.common.Tags;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -80,6 +79,9 @@ public class PrimordialAnchorBlock extends Block implements EntityBlock {
 
     @Translation(comments = "The primordial anchor cannot be used while the Ender Dragon is dead.")
     private static final String PRIMORDIAL_ANCHOR_ENDER_DRAGON_DEAD = Translation.Type.GUI.wrap("primordial_anchor.ender_dragon_dead");
+    private static final String PRIMORDIAL_ANCHOR_FUEL = "tag.item."
+            + DSItemTags.PRIMORDIAL_ANCHOR_FUEL.location().getNamespace() + "."
+            + DSItemTags.PRIMORDIAL_ANCHOR_FUEL.location().getPath().replace('/', '.');
 
     public static final BooleanProperty CHARGED = BooleanProperty.create("charged");
     public static final BooleanProperty BLOODY = BooleanProperty.create("bloody");
@@ -149,7 +151,7 @@ public class PrimordialAnchorBlock extends Block implements EntityBlock {
 
             level.playSound(player, (double) position.getX() + 0.5, (double) position.getY() + 0.5, (double) position.getZ() + 0.5, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 1, 1);
             if (level instanceof ServerLevel) {
-                player.sendSystemMessage(Component.translatable(PRIMORDIAL_ANCHOR_NEEDS_CHARGE, DSColors.withColor(Component.translatable(Tags.getTagTranslationKey(DSItemTags.PRIMORDIAL_ANCHOR_FUEL)), DSColors.GOLD)));
+                player.sendSystemMessage(Component.translatable(PRIMORDIAL_ANCHOR_NEEDS_CHARGE, DSColors.withColor(Component.translatable(PRIMORDIAL_ANCHOR_FUEL), DSColors.GOLD)));
             }
             return InteractionResult.PASS;
         }

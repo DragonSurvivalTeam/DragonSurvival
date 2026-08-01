@@ -83,7 +83,7 @@ public class DamageModification extends DurationInstanceBase<DamageModifications
             return true;
         }
 
-        for (Holder<DamageType> damageType : damageTypes.orElse(HolderSet.empty())) {
+        for (Holder<DamageType> damageType : damageTypes.orElse(HolderSet.direct())) {
             if (damageType.is(DamageTypes.ON_FIRE) || damageType.is(DamageTypes.IN_FIRE) || damageType.is(DamageTypes.LAVA)) {
                 return true;
             }

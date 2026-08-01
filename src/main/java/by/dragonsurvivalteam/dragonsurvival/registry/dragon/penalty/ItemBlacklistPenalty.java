@@ -1,12 +1,12 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty;
 
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ResourceLocationWrapper;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.DSItemPredicate;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.DataReloadHandler;
 import by.dragonsurvivalteam.dragonsurvival.compat.ModID;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ClawInventoryData;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.core.Holder;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -28,15 +28,15 @@ import java.util.Set;
 public class ItemBlacklistPenalty implements PenaltyEffect {
     public static final MapCodec<ItemBlacklistPenalty> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             ResourceLocationWrapper.validatedCodec().listOf().optionalFieldOf("items", List.of()).forGetter(ItemBlacklistPenalty::items),
-            ItemPredicate.CODEC.optionalFieldOf("predicate").forGetter(ItemBlacklistPenalty::predicate)
+            DSItemPredicate.CODEC.optionalFieldOf("predicate").forGetter(ItemBlacklistPenalty::predicate)
     ).apply(instance, ItemBlacklistPenalty::new));
 
     private final List<String> items;
-    private final Optional<ItemPredicate> predicate;
+    private final Optional<DSItemPredicate> predicate;
     private Set<ResourceKey<Item>> blacklisted;
     private long lastUpdate;
 
-    public ItemBlacklistPenalty(final List<String> items, final Optional<ItemPredicate> predicate) {
+    public ItemBlacklistPenalty(final List<String> items, final Optional<DSItemPredicate> predicate) {
         this.items = items;
         this.predicate = predicate;
     }
@@ -84,7 +84,7 @@ public class ItemBlacklistPenalty implements PenaltyEffect {
 
         //noinspection deprecation -> ignore
         return blacklisted.contains(stack.getItem().builtInRegistryHolder().unwrapKey().orElseThrow()) ||
-                predicate.isPresent() && predicate.get().matches(stack);
+                predicate.isPresent() && predicate.get().test(stack);
     }
 
     private void dropAllItemsInList(final Player player, final NonNullList<ItemStack> items) {
@@ -126,7 +126,7 @@ public class ItemBlacklistPenalty implements PenaltyEffect {
         return items;
     }
 
-    public Optional<ItemPredicate> predicate() {
+    public Optional<DSItemPredicate> predicate() {
         return predicate;
     }
 
