@@ -299,7 +299,7 @@ public class AbilityAndPenaltyTooltipRenderer {
 
         var player = Minecraft.getInstance().player;
 
-        if (!ability.isEnabled()) {
+        if (ability.isDisabled(true) || ability.isDisabled(false) && ability.level() > 0) {
             if (!ability.isPassive() && DragonAbilityInstance.hasAbilityDisablingEffect(player)) {
                 // Only active abilities can be disabled by magic effects
                 rawDescription = Component.translatable(DISABLED_BY_EFFECTS).append("\n\n").append(abilityDescription);

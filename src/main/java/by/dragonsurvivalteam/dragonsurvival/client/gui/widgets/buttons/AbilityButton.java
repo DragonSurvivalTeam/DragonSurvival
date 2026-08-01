@@ -231,7 +231,7 @@ public class AbilityButton extends ExtendedButton {
             return;
         }
 
-        if (!ability.isEnabled()) {
+        if (ability.isDisabled(true) || ability.isDisabled(false) && ability.level() > 0) {
             blit(graphics, DISABLED_BACKGROUND, getX() - 2, getY() - 2, ORNAMENTATION_SIZE);
         } else {
             if (ability.isPassive()) {
