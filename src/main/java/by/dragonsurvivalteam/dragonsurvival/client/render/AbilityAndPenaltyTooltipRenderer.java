@@ -240,7 +240,7 @@ public class AbilityAndPenaltyTooltipRenderer {
         Component abilityDescription = Component.translatable(Translation.Type.ABILITY_DESCRIPTION.wrap(ability.location()));
         FormattedText rawDescription;
 
-        if (!ability.isEnabled()) {
+        if (ability.isDisabled(true) || ability.isDisabled(false) && ability.level() > 0) {
             if (!ability.isPassive() && DragonAbilityInstance.hasAbilityDisablingEffect(DragonSurvival.PROXY.getLocalPlayer())) {
                 // Only active abilities can be disabled by magic effects
                 rawDescription = Component.translatable(DISABLED_BY_EFFECTS).append("\n\n").append(abilityDescription);

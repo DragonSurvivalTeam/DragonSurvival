@@ -120,7 +120,7 @@ public class DragonAbilityInstance {
             return 0;
         }
 
-        if (!canBeCast()) {
+        if (!isUsable()) {
             return 0;
         }
 
