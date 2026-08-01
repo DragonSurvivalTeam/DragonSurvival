@@ -1,0 +1,46 @@
+{
+  "actions": [
+    {
+      "target_selection": {
+        "applied_effects": {
+          "entity_effect": [
+            {
+              "effect_type": "dragonsurvival:damage_modification",
+              "modifications": [
+                {
+                  "base": {
+                    "id": "dragonsurvival:test_reserve_mana_second",
+                    "should_remove_automatically": true
+                  },
+                  "multiplier": 0.5
+                }
+              ]
+            }
+          ],
+          "targeting_mode": "all"
+        },
+        "target_type": "dragonsurvival:self"
+      }
+    }
+  ],
+  "activation": {
+    "activation_type": "dragonsurvival:passive",
+    "continuous_mana_cost": {
+      "type": "reserved",
+      "amount": 6.0
+    }
+  },
+  "icon": {
+    "texture_entries": [
+      {
+        "from_level": 0,
+        "texture_resource": "dragonsurvival:test"
+      }
+    ]
+  },
+  "upgrade": {
+    "experience_cost": 10.0,
+    "maximum_level": 5,
+    "upgrade_type": "dragonsurvival:experience_points"
+  }
+}
