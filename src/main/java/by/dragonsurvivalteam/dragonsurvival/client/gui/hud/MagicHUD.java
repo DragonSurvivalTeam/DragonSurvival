@@ -156,7 +156,7 @@ public class MagicHUD {
         if (localPlayer.experienceLevel > 0) {
             Profiler.get().push("expLevel");
 
-            String s = "" + localPlayer.experienceLevel;
+            String s = String.valueOf(localPlayer.experienceLevel);
             int width = (guiScaledWidth - Minecraft.getInstance().font.width(s)) / 2;
             int height = guiScaledHeight - 31 - 4;
 

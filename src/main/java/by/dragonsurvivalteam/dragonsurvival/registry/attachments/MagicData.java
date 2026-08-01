@@ -228,16 +228,16 @@ public class MagicData implements ValueIOSerializable {
             ability.tickCooldown(event.getEntity());
             ability.triggered = false;
 
-            // TODO :: Check if there is a single entry point where we can catch changes to skills to update the reserved mana amount
-            float manaCost = ability.getReservedCost();
-            reservedMana += manaCost;
-
             if (ability.value().activation() instanceof PassiveActivation passive && !(passive.trigger() instanceof ConstantTrigger)) {
                 // Passive activations with non-constant triggers are handled elsewhere
                 continue;
             }
 
             ability.tick(event.getEntity());
+
+            // Need to check the reserved cost after the tick in case the ability enabled or disabled itself
+            float manaCost = ability.getReservedCost();
+            reservedMana += manaCost;
         }
 
         magic.setReservedMana(reservedMana);
@@ -630,6 +630,10 @@ public class MagicData implements ValueIOSerializable {
                 hotbar.remove(slot);
             }
         }
+    }
+
+    public void adjustReservedMana(float adjustment) {
+        this.reservedMana = Math.max(0, reservedMana + adjustment);
     }
 
     private void setReservedMana(float reservedMana) {

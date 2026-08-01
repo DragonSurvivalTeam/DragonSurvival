@@ -88,6 +88,23 @@ public class DragonAbilities {
 
         // --- Reserve Mana --- //
 
+        context.register(ResourceKey.create(DragonAbility.REGISTRY, DragonSurvival.res(TEST_PREFIX + "reserve_mana_second")), new DragonAbility(
+                new PassiveActivation(Optional.of(ManaCost.reserved(LevelBasedValue.constant(6))), Optional.empty(), ConstantTrigger.INSTANCE),
+                Optional.of(new ExperiencePointsUpgrade(5, LevelBasedValue.constant(10))),
+                Optional.empty(),
+                List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
+                        DamageModificationEffect.only(new DamageModification(
+                                DurationInstanceBase.create(DragonSurvival.res(TEST_PREFIX + "reserve_mana_second")).removeAutomatically().build(),
+                                Optional.empty(),
+                                LevelBasedValue.constant(0.5f)
+                        )),
+                        TargetingMode.ALL
+                )), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(1))),
+                true,
+                new LevelBasedResource(List.of(new LevelBasedResource.Entry(DragonSurvival.res("test"), 0)))
+        ));
+
+
         context.register(ResourceKey.create(DragonAbility.REGISTRY, DragonSurvival.res(TEST_PREFIX + "reserve_mana")), new DragonAbility(
                 new PassiveActivation(Optional.of(ManaCost.reserved(LevelBasedValue.constant(6))), Optional.empty(), ConstantTrigger.INSTANCE),
                 Optional.of(new ExperiencePointsUpgrade(5, LevelBasedValue.constant(10))),
