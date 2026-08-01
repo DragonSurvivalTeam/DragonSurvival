@@ -40,6 +40,7 @@ import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.loader.Def
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.loader.DragonPartLoader;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.compat.ModID;
+import by.dragonsurvivalteam.dragonsurvival.compat.curios.CuriosButtonHandler;
 import by.dragonsurvivalteam.dragonsurvival.mixins.client.LocalPlayerAccessor;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSBlockEntities;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEntities;
@@ -88,6 +89,9 @@ public class DragonSurvivalClient {
         MinecraftForge.EVENT_BUS.addListener(this::incrementTimer);
         MinecraftForge.EVENT_BUS.addListener(this::preventThirdPersonWhenSuffocating);
 
+        if (ModID.CURIOS.isLoaded()) {
+            MinecraftForge.EVENT_BUS.addListener(CuriosButtonHandler::handleCurios);
+        }
     }
 
     private void incrementTimer(final ClientTickEvent event) {

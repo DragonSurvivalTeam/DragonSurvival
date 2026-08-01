@@ -1,6 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.compat;
 
 public enum ModID {
+    APPLESKIN("appleskin"),
     VISTA("vista"),
     IRIS("iris"),
     JEI("jei"),
@@ -8,6 +9,7 @@ public enum ModID {
     SOPHISTICATED_BACKPACKS("sophisticatedbackpacks"),
     CURIOS("curios"),
     CREATE("create"),
+    BETTER_COMBAT("bettercombat"),
     BEE_ADDON("bee_queen_ds"),
     DESERT_ADDON("desert_monster_ds"),
     FREECAM("freecam"),

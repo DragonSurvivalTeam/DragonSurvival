@@ -1,5 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.client.gui.hud;
 
+import by.dragonsurvivalteam.dragonsurvival.compat.ModID;
+import by.dragonsurvivalteam.dragonsurvival.compat.appleskin.AppleSkinCompat;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.DragonFoodHandler;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
@@ -10,6 +12,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderGuiOverlayEvent;
 import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
@@ -23,7 +26,7 @@ public class HUDHandler {
     @ConfigOption(side = ConfigSide.CLIENT, category = {"ui", "hud"}, key = "show_vanilla_experience_bar")
     public static Boolean vanillaExperienceBar = false;
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onRenderOverlay(final RenderGuiOverlayEvent.Pre event) {
         Minecraft minecraft = Minecraft.getInstance();
 
@@ -39,6 +42,10 @@ public class HUDHandler {
             boolean wasRendered = FoodBar.render(event.getGuiGraphics(), screenWidth, screenHeight);
 
             if (wasRendered) {
+                if (ModID.APPLESKIN.isLoaded()) {
+                    AppleSkinCompat.renderFoodOverlayAfterDragonBar(event);
+                }
+
                 event.setCanceled(true);
             }
         } else if (!vanillaExperienceBar && id.equals(VanillaGuiOverlay.EXPERIENCE_BAR.id())) {

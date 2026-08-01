@@ -54,11 +54,17 @@
     "ThrownPotionMixin",
     "VillagerHostilesSensorMixin",
     "VillagerMixin",
+    "create.TreasureBlockMixin",
+    "multimine.MultiMineServerMixin",
     "tool_swap.ServerPlayerGameModeEndMixin",
     "tool_swap.ServerPlayerGameModeStartMixin"
   ],
   "client": [
+    "appleskin.HUDOverlayHandlerMixin",
     "client.AbstractContainerScreenAccessor",
+    "bettercombat.AnimationApplierMixin",
+    "bettercombat.HumanoidArmorLayerMixin",
+    "bettercombat.PlayerModelMixin",
     "client.AnimationControllerAccessor",
     "client.BlockRenderDispatcherAccess",
     "client.CameraMixin",
@@ -94,7 +100,10 @@
     "client.RenderTypeHelperMixin",
     "client.ScreenAccessor",
     "client.SmithingScreenMixin",
+    "create.PlayerSkyhookRendererAccessor",
+    "curios.CuriosButtonMixin",
     "iris.GameRendererMixin",
+    "multimine.MultiMineClientMixin",
     "sodium.ClientNeoForgeModMixin",
     "tool_swap.MultiPlayerGameModeEndMixin",
     "tool_swap.MultiPlayerGameModeStartMixin"
