@@ -36,6 +36,11 @@ public class GrowthCrystalButton extends ExtendedButton {
 
     @Override
     public void renderWidget(@NotNull final GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        if (super.isHovered()) {
+            //noinspection DataFlowIssue -> the widget is only rendered while its screen is active
+            Minecraft.getInstance().screen.setTooltipForNextRenderPass(tooltip);
+        }
+
         //noinspection DataFlowIssue -> player is present
         DragonStateHandler handler = DragonStateProvider.getData(Minecraft.getInstance().player);
         double percentageFull = stage.value().getProgress(handler.getGrowth());
@@ -80,11 +85,6 @@ public class GrowthCrystalButton extends ExtendedButton {
         if (!isHovered && scrollAmount > 0) {
             scrollAmount = 0;
             updateTooltip();
-        }
-
-        if (isHovered) {
-            //noinspection DataFlowIssue -> screen is not null
-            Minecraft.getInstance().screen.setTooltipForNextRenderPass(tooltip);
         }
 
         return isHovered;
