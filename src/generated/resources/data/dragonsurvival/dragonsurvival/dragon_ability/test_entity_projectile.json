@@ -6,7 +6,7 @@
           "entity_effect": [
             {
               "effect_type": "dragonsurvival:projectile",
-              "number_of_projectiles": 1.0,
+              "number_of_projectiles": 3.0,
               "projectile_spread": 1.5,
               "projectile_type": "minecraft:fireball",
               "speed": 1.0,

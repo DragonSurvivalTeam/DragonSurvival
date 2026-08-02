@@ -3,6 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effe
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.TargetDirection;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.projectiles.GenericArrowEntity;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.projectiles.GenericBallEntity;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import by.dragonsurvivalteam.dragonsurvival.registry.projectile.ProjectileData;
@@ -32,6 +33,7 @@ import net.minecraft.world.phys.Vec3;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.function.BiConsumer;
 
 public record ProjectileEffect(
@@ -142,17 +144,19 @@ public record ProjectileEffect(
                 launchPosition = dragon.getLookAngle().scale(scale).add(dragon.getEyePosition());
             }
 
+            UUID batchId = UUID.randomUUID();
+
             for (int count = 0; count < amount; count++) {
                 // TODO :: add support for all types of entities
                 if (entity.value().create(dragon.level(), EntitySpawnReason.TRIGGERED) instanceof Projectile projectile) {
                     projectile.setOwner(dragon);
                     projectile.setPos(launchPosition);
+                    projectile.getData(DSDataAttachments.ENTITY_HANDLER).projectileBatchID = batchId;
 
                     if (projectile instanceof GenericArrowEntity arrow) {
                         arrow.pickup = AbstractArrow.Pickup.DISALLOWED;
                     }
 
-                    // TODO :: currently shot projectiles can collide with each other (e.g. ghast fireball hitting another and exploding)
                     shootLogic.accept(projectile, spread * count);
                     target.level().addFreshEntity(projectile);
                 }

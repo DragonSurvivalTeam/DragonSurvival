@@ -109,7 +109,7 @@ public class DragonAbilities {
                                 Optional.empty(),
                                 Optional.of(context.lookup(Registries.ENTITY_TYPE).getOrThrow(EntityType.FIREBALL.builtInRegistryHolder().key())),
                                 TargetDirection.lookingAt(),
-                                LevelBasedValue.constant(1),
+                                LevelBasedValue.constant(3),
                                 LevelBasedValue.constant(1.5f),
                                 LevelBasedValue.constant(1)
                         )),
