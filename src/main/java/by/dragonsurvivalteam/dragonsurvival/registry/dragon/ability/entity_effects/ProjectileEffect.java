@@ -3,6 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effe
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.TargetDirection;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.projectiles.GenericArrowEntity;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.projectiles.GenericBallEntity;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AttachmentManager;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
@@ -63,11 +64,13 @@ public record ProjectileEffect(
             LevelBasedValue.CODEC.fieldOf("number_of_projectiles").forGetter(ProjectileEffect::numberOfProjectiles),
             LevelBasedValue.CODEC.optionalFieldOf("projectile_spread", LevelBasedValue.constant(0)).forGetter(ProjectileEffect::projectileSpread),
             LevelBasedValue.CODEC.fieldOf("speed").forGetter(ProjectileEffect::speed)
-    ).apply(instance, ProjectileEffect::new)).validate(
-            data -> data.projectileData.isEmpty() && data.projectileType.isEmpty() ?
-                    DataResult.error(() -> "Need to specify either 'projectile_data' or 'projectile_type'") :
-                    DataResult.success(data)
-    );
+    ).apply(instance, ProjectileEffect::new)).flatXmap(ProjectileEffect::validate, ProjectileEffect::validate);
+
+    private static DataResult<ProjectileEffect> validate(final ProjectileEffect data) {
+        return data.projectileData.isEmpty() && data.projectileType.isEmpty()
+                ? DataResult.error(() -> "Need to specify either 'projectile_data' or 'projectile_type'")
+                : DataResult.success(data);
+    }
 
     @Override
     public void apply(final ServerPlayer dragon, final DragonAbilityInstance ability, final Entity target) {
@@ -150,7 +153,7 @@ public record ProjectileEffect(
                 if (entity.value().create(dragon.serverLevel()) instanceof Projectile projectile) {
                     projectile.setOwner(dragon);
                     projectile.setPos(launchPosition);
-                    projectile.getData(DSDataAttachments.ENTITY_HANDLER).projectileBatchID = batchId;
+                    AttachmentManager.getData(projectile, DSDataAttachments.ENTITY_HANDLER).projectileBatchID = batchId;
 
                     if (projectile instanceof GenericArrowEntity arrow) {
                         arrow.pickup = AbstractArrow.Pickup.DISALLOWED;

@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.server.handlers;
 
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AttachmentManager;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSEntityTypeTags;
 import net.minecraft.world.entity.Entity;
@@ -33,14 +34,14 @@ public class ProjectileHandler {
     /** Prevent projectiles in the same batch from colliding against each other */
     @SubscribeEvent
     public static void handleBatchImpact(final ProjectileImpactEvent event) {
-        UUID batchID = event.getProjectile().getExistingData(DSDataAttachments.ENTITY_HANDLER).map(data -> data.projectileBatchID).orElse(null);
+        UUID batchID = AttachmentManager.getExistingData(event.getProjectile(), DSDataAttachments.ENTITY_HANDLER).map(data -> data.projectileBatchID).orElse(null);
 
         if (batchID == null) {
             return;
         }
 
         if (event.getRayTraceResult() instanceof EntityHitResult result) {
-            if (batchID.equals(result.getEntity().getExistingData(DSDataAttachments.ENTITY_HANDLER).map(data -> data.projectileBatchID).orElse(null))) {
+            if (batchID.equals(AttachmentManager.getExistingData(result.getEntity(), DSDataAttachments.ENTITY_HANDLER).map(data -> data.projectileBatchID).orElse(null))) {
                 event.setCanceled(true);
             }
         }
