@@ -1232,6 +1232,7 @@
   "dragonsurvival.gui.projectile.damage_effect": "§6■ %s §6Projectile Damage:§r %s",
   "dragonsurvival.gui.projectile.speed": "§6■ Projectile Speed:§r %s",
   "dragonsurvival.gui.projectile.spread": "§6■ Projectile Spread:§r %s",
+  "dragonsurvival.gui.projectile.type": "§6■ Projectile type:§r %s",
   "dragonsurvival.gui.projectile_push_effect.away": "Pushes targets away from the projectile with a strength of %s.",
   "dragonsurvival.gui.projectile_push_effect.directional": "Pushes targets %s with a strength of %s.",
   "dragonsurvival.gui.projectile_push_effect.facing": "Pushes targets in the direction the projectile is travelling with a strength of %s",

@@ -287,7 +287,8 @@ public class ForestDragonAbilities {
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         Condition.thisEntity(EntityCondition.isLiving()).build(),
                         List.of(new ProjectileEffect(
-                                context.lookup(ProjectileData.REGISTRY).getOrThrow(Projectiles.SPIKE),
+                                Optional.of(context.lookup(ProjectileData.REGISTRY).getOrThrow(Projectiles.SPIKE)),
+                                Optional.empty(),
                                 TargetDirection.lookingAt(),
                                 LevelBasedValue.perLevel(1),
                                 LevelBasedValue.constant(1.5f),
