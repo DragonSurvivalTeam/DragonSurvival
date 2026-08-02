@@ -30,6 +30,8 @@ import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.UUID;
+
 @EventBusSubscriber
 public class EntityStateHandler implements INBTSerializable<CompoundTag> {
     @Translation(comments = "You have to wait %s seconds until you can steal from this villager")
@@ -47,6 +49,8 @@ public class EntityStateHandler implements INBTSerializable<CompoundTag> {
     public int chainCount;
 
     public int pillageCooldown;
+
+    public UUID projectileBatchID;
 
     public static boolean cannotPillageProfession(final Villager villager) {
         VillagerProfession profession = villager.getVillagerData().getProfession();
@@ -108,6 +112,10 @@ public class EntityStateHandler implements INBTSerializable<CompoundTag> {
             tag.put(LAST_POSITION, Functions.newDoubleList(lastPos.x, lastPos.y, lastPos.z));
         }
 
+        if (projectileBatchID != null) {
+            tag.putUUID(PROJECTILE_BATCH_ID, projectileBatchID);
+        }
+
         return tag;
     }
 
@@ -120,9 +128,14 @@ public class EntityStateHandler implements INBTSerializable<CompoundTag> {
             ListTag list = tag.getList(LAST_POSITION, ListTag.TAG_DOUBLE);
             lastPos = new Vec3(list.getDouble(0), list.getDouble(1), list.getDouble(2));
         }
+
+        if (tag.contains(PROJECTILE_BATCH_ID)) {
+            projectileBatchID = tag.getUUID(PROJECTILE_BATCH_ID);
+        }
     }
 
     private static final String LAST_POSITION = "last_position";
     private static final String CHAIN_COUNT = "chain_count";
     private static final String PILLAGE_COOLDOWN_KEY = "pillage_cooldown";
+    private static final String PROJECTILE_BATCH_ID = "projectile_batch_id";
 }
