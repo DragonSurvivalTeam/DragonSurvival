@@ -296,7 +296,8 @@ public class CaveDragonAbilities {
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         Condition.thisEntity(EntityCondition.isLiving()).build(),
                         List.of(new ProjectileEffect(
-                                context.lookup(ProjectileData.REGISTRY).getOrThrow(Projectiles.FIREBALL),
+                                Optional.of(context.lookup(ProjectileData.REGISTRY).getOrThrow(Projectiles.FIREBALL)),
+                                Optional.empty(),
                                 TargetDirection.lookingAt(),
                                 LevelBasedValue.constant(1),
                                 LevelBasedValue.constant(0),

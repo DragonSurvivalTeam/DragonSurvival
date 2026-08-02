@@ -11,14 +11,18 @@ import by.dragonsurvivalteam.dragonsurvival.registry.projectile.entity_effects.P
 import by.dragonsurvivalteam.dragonsurvival.registry.projectile.targeting.ProjectileTargeting;
 import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
 import com.mojang.datafixers.util.Either;
+import com.mojang.serialization.DataResult;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
@@ -27,15 +31,20 @@ import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.BiConsumer;
 
 public record ProjectileEffect(
-        Holder<ProjectileData> projectileData,
+        Optional<Holder<ProjectileData>> projectileData,
+        Optional<Holder<EntityType<?>>> projectileType,
         TargetDirection targetDirection,
         LevelBasedValue numberOfProjectiles,
         LevelBasedValue projectileSpread,
         LevelBasedValue speed
 ) implements AbilityEntityEffect {
+    @Translation(comments = "§6■ Projectile type:§r %s")
+    private static final String ABILITY_PROJECTILE_TYPE = Translation.Type.GUI.wrap("projectile.type");
+
     @Translation(comments = "§6■ Number of projectiles:§r %s")
     private static final String ABILITY_PROJECTILE_COUNT = Translation.Type.GUI.wrap("projectile.count");
 
@@ -45,27 +54,35 @@ public record ProjectileEffect(
     @Translation(comments = "§6■ Projectile Spread:§r %s")
     private static final String ABILITY_PROJECTILE_SPREAD = Translation.Type.GUI.wrap("projectile.spread");
 
-    public static final MapCodec<ProjectileEffect> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            ProjectileData.CODEC.fieldOf("projectile_data").forGetter(ProjectileEffect::projectileData),
+    public static final MapCodec<ProjectileEffect> CODEC = RecordCodecBuilder./* Need to specify otherwise the IDE can't handle validate */<ProjectileEffect>mapCodec(instance -> instance.group(
+            // Since both are registry references we can't use either since it will just crash after trying the first codec, saying registry entry does not exist
+            ProjectileData.CODEC.optionalFieldOf("projectile_data").forGetter(ProjectileEffect::projectileData),
+            BuiltInRegistries.ENTITY_TYPE.holderByNameCodec().optionalFieldOf("projectile_type").forGetter(ProjectileEffect::projectileType),
             TargetDirection.CODEC.fieldOf("target_direction").forGetter(ProjectileEffect::targetDirection),
             LevelBasedValue.CODEC.fieldOf("number_of_projectiles").forGetter(ProjectileEffect::numberOfProjectiles),
             LevelBasedValue.CODEC.optionalFieldOf("projectile_spread", LevelBasedValue.constant(0)).forGetter(ProjectileEffect::projectileSpread),
             LevelBasedValue.CODEC.fieldOf("speed").forGetter(ProjectileEffect::speed)
-    ).apply(instance, ProjectileEffect::new));
+    ).apply(instance, ProjectileEffect::new)).validate(
+            data -> data.projectileData.isEmpty() && data.projectileType.isEmpty() ?
+                    DataResult.error(() -> "Need to specify either 'projectile_data' or 'projectile_type'") :
+                    DataResult.success(data)
+    );
 
     @Override
     public void apply(final ServerPlayer dragon, final DragonAbilityInstance ability, final Entity target) {
-        ProjectileData projectileData = projectileData().value();
-        Either<ProjectileData.GenericBallData, ProjectileData.GenericArrowData> specificData = projectileData.typeData();
-
         float speed = this.speed.calculate(ability.level());
+        float amount = numberOfProjectiles.calculate(ability.level());
+        float spread = projectileSpread.calculate(ability.level());
+
         BiConsumer<Projectile, Float> shootLogic = getShootLogic(dragon, target, speed);
 
         // It doesn't make sense to spawn the projectile at the entity position and then make it move towards said entity
         boolean useEntityPosition = targetDirection.direction().left().orElse(null) != TargetDirection.Type.TOWARDS_ENTITY;
 
-        specificData.ifLeft(data -> {
-            for (int count = 0; count < numberOfProjectiles.calculate(ability.level()); count++) {
+        projectileData.ifPresent(projectileData -> {
+            Either<ProjectileData.GenericBallData, ProjectileData.GenericArrowData> specificData = projectileData.value().typeData();
+
+            specificData.ifLeft(data -> {
                 Vec3 launchPosition;
 
                 if (useEntityPosition) {
@@ -81,16 +98,15 @@ public record ProjectileEffect(
                     launchPosition = dragon.getLookAngle().scale(scale).add(dragon.getEyePosition());
                 }
 
-                GenericBallEntity projectile = new GenericBallEntity(projectileData.generalData(), data, ability.level(), launchPosition, dragon.level());
-                projectile.setOwner(target);
-                projectile.accelerationPower = 0;
+                for (int count = 0; count < amount; count++) {
+                    GenericBallEntity projectile = new GenericBallEntity(projectileData.value().generalData(), data, ability.level(), launchPosition, dragon.level());
+                    projectile.setOwner(target);
+                    projectile.accelerationPower = 0;
 
-                float spread = count * projectileSpread.calculate(ability.level());
-                shootLogic.accept(projectile, spread);
-                target.level().addFreshEntity(projectile);
-            }
-        }).ifRight(data -> {
-            for (int i = 0; i < numberOfProjectiles.calculate(ability.level()); i++) {
+                    shootLogic.accept(projectile, spread * count);
+                    target.level().addFreshEntity(projectile);
+                }
+            }).ifRight(data -> {
                 Vec3 launchPosition;
 
                 if (useEntityPosition) {
@@ -99,13 +115,47 @@ public record ProjectileEffect(
                     launchPosition = new Vec3(dragon.getX(), dragon.getEyeY() - 0.1f, dragon.getZ());
                 }
 
-                GenericArrowEntity arrow = new GenericArrowEntity(projectileData.generalData(), data, ability.level(), launchPosition, dragon.level());
-                arrow.setOwner(target);
-                arrow.pickup = AbstractArrow.Pickup.DISALLOWED;
+                for (int count = 0; count < amount; count++) {
+                    GenericArrowEntity arrow = new GenericArrowEntity(projectileData.value().generalData(), data, ability.level(), launchPosition, dragon.level());
+                    arrow.setOwner(target);
+                    arrow.pickup = AbstractArrow.Pickup.DISALLOWED;
 
-                float spread = i * projectileSpread.calculate(ability.level());
-                shootLogic.accept(arrow, spread);
-                target.level().addFreshEntity(arrow);
+                    shootLogic.accept(arrow, spread * count);
+                    target.level().addFreshEntity(arrow);
+                }
+            });
+        });
+
+        projectileType.ifPresent(entity -> {
+            Vec3 launchPosition;
+
+            if (useEntityPosition) {
+                int scale = 1;
+
+                if (target instanceof Player player && player.getAbilities().flying) {
+                    scale = 2;
+                }
+
+                launchPosition = target.getLookAngle().scale(scale).add(target.getEyePosition());
+            } else {
+                int scale = dragon.getAbilities().flying ? 2 : 1;
+                launchPosition = dragon.getLookAngle().scale(scale).add(dragon.getEyePosition());
+            }
+
+            for (int count = 0; count < amount; count++) {
+                // TODO :: add support for all types of entities
+                if (entity.value().create(dragon.level(), EntitySpawnReason.TRIGGERED) instanceof Projectile projectile) {
+                    projectile.setOwner(dragon);
+                    projectile.setPos(launchPosition);
+
+                    if (projectile instanceof GenericArrowEntity arrow) {
+                        arrow.pickup = AbstractArrow.Pickup.DISALLOWED;
+                    }
+
+                    // TODO :: currently shot projectiles can collide with each other (e.g. ghast fireball hitting another and exploding)
+                    shootLogic.accept(projectile, spread * count);
+                    target.level().addFreshEntity(projectile);
+                }
             }
         });
     }
@@ -132,32 +182,38 @@ public record ProjectileEffect(
     public List<MutableComponent> getDescription(final Player dragon, final DragonAbilityInstance ability) {
         List<MutableComponent> components = new ArrayList<>();
 
-        for (ProjectileEntityEffect entityHitEffect : projectileData().value().generalData().entityHitEffects()) {
-            List<MutableComponent> effectComponents = entityHitEffect.getDescription(dragon, ability.level());
-            components.addAll(effectComponents);
-        }
-
-        for (ProjectileBlockEffect blockHitEffect : projectileData().value().generalData().blockHitEffects()) {
-            List<MutableComponent> effectComponents = blockHitEffect.getDescription(dragon, ability.level());
-            components.addAll(effectComponents);
-        }
-
-        for (ProjectileTargeting tickingEffect : projectileData().value().generalData().tickingEffects()) {
-            List<MutableComponent> effectComponents = tickingEffect.getAllEffectDescriptions(dragon, ability.level());
-            components.addAll(effectComponents);
-        }
-
-        for (ProjectileTargeting commonEffect : projectileData().value().generalData().commonHitEffects()) {
-            List<MutableComponent> effectComponents = commonEffect.getAllEffectDescriptions(dragon, ability.level());
-            components.addAll(effectComponents);
-        }
-
-        if (projectileData().value().typeData().left().isPresent()) {
-            for (ProjectileTargeting onDestroyEffect : projectileData().value().typeData().left().get().onDestroyEffects()) {
-                List<MutableComponent> effectComponents = onDestroyEffect.getAllEffectDescriptions(dragon, ability.level());
+        projectileData.ifPresent(projectileData -> {
+            for (ProjectileEntityEffect entityHitEffect : projectileData.value().generalData().entityHitEffects()) {
+                List<MutableComponent> effectComponents = entityHitEffect.getDescription(dragon, ability.level());
                 components.addAll(effectComponents);
             }
-        }
+
+            for (ProjectileBlockEffect blockHitEffect : projectileData.value().generalData().blockHitEffects()) {
+                List<MutableComponent> effectComponents = blockHitEffect.getDescription(dragon, ability.level());
+                components.addAll(effectComponents);
+            }
+
+            for (ProjectileTargeting tickingEffect : projectileData.value().generalData().tickingEffects()) {
+                List<MutableComponent> effectComponents = tickingEffect.getAllEffectDescriptions(dragon, ability.level());
+                components.addAll(effectComponents);
+            }
+
+            for (ProjectileTargeting commonEffect : projectileData.value().generalData().commonHitEffects()) {
+                List<MutableComponent> effectComponents = commonEffect.getAllEffectDescriptions(dragon, ability.level());
+                components.addAll(effectComponents);
+            }
+
+            if (projectileData.value().typeData().left().isPresent()) {
+                for (ProjectileTargeting onDestroyEffect : projectileData.value().typeData().left().get().onDestroyEffects()) {
+                    List<MutableComponent> effectComponents = onDestroyEffect.getAllEffectDescriptions(dragon, ability.level());
+                    components.addAll(effectComponents);
+                }
+            }
+        });
+
+        projectileType.ifPresent(entity -> {
+            components.add(Component.translatable(ABILITY_PROJECTILE_TYPE, DSColors.dynamicValue(Component.translatable(entity.value().getDescriptionId()))));
+        });
 
         if (numberOfProjectiles.calculate(ability.level()) > 1) {
             components.add(Component.translatable(ABILITY_PROJECTILE_COUNT, DSColors.dynamicValue(numberOfProjectiles.calculate(ability.level()))));
