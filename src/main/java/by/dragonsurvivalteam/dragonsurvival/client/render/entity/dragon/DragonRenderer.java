@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.client.render.entity.dragon;
 
+import by.dragonsurvivalteam.dragonsurvival.client.DragonSurvivalClient;
 import by.dragonsurvivalteam.dragonsurvival.client.render.ClientDragonRenderer;
 import by.dragonsurvivalteam.dragonsurvival.client.util.FakeClientPlayer;
 import by.dragonsurvivalteam.dragonsurvival.client.util.FakeClientPlayerUtils;
@@ -303,6 +304,12 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
         @Nullable Identifier glowTextureOverride
     ) { }
 
+    public static final class InvalidUIRenderAnimationException extends IllegalStateException {
+        private InvalidUIRenderAnimationException(final String animationName, final Identifier animationResource) {
+            super("Cannot render dragon UI animation '" + animationName + "': animation resource '" + animationResource + "' is missing or does not contain that animation");
+        }
+    }
+
     private static final class UIRenderDragonEntity extends DragonEntity {
         private @Nullable Player player;
         private @Nullable Supplier<String> animationSupplier;
@@ -349,7 +356,7 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
             if (animationSupplier == null) {
                 cachedAnimationName = null;
                 cachedAnimation = null;
-                return DragonAnimations.IDLE.getAnimation();
+                return getValidatedUIAnimation(DragonAnimations.IDLE.getAnimationName(), DragonAnimations.IDLE.getAnimation());
             }
 
             String animationName = animationSupplier.get();
@@ -357,7 +364,7 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
             if (animationName == null || animationName.isBlank()) {
                 cachedAnimationName = null;
                 cachedAnimation = null;
-                return DragonAnimations.IDLE.getAnimation();
+                return getValidatedUIAnimation(DragonAnimations.IDLE.getAnimationName(), DragonAnimations.IDLE.getAnimation());
             }
 
             if (!animationName.equals(cachedAnimationName) || cachedAnimation == null) {
@@ -365,7 +372,15 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
                 cachedAnimation = RawAnimation.begin().thenLoop(animationName);
             }
 
-            return cachedAnimation;
+            return getValidatedUIAnimation(animationName, cachedAnimation);
+        }
+
+        private RawAnimation getValidatedUIAnimation(final String animationName, final RawAnimation animation) {
+            if (!AnimationUtils.doesAnimationExist(DragonSurvivalClient.DRAGON_MODEL, this, animationName)) {
+                throw new InvalidUIRenderAnimationException(animationName, DragonSurvivalClient.DRAGON_MODEL.getAnimationResource(this));
+            }
+
+            return animation;
         }
     }
 

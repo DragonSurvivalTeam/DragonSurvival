@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components;
 
+import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.render.entity.dragon.DragonRenderer;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
@@ -27,6 +28,7 @@ import org.joml.Vector3f;
 import org.jspecify.annotations.Nullable;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Supplier;
 
 public class DragonUIRenderComponent extends AbstractContainerEventHandler implements Renderable {
@@ -38,6 +40,7 @@ public class DragonUIRenderComponent extends AbstractContainerEventHandler imple
     public int x, y, width, height;
     private @Nullable Identifier textureOverride;
     private @Nullable Identifier glowTextureOverride;
+    private @Nullable String lastRenderFailure;
 
     public DragonUIRenderComponent(Screen screen, int x, int y, int xSize, int ySize, Supplier<? extends LivingEntity> entityGetter) {
         this.screen = screen;
@@ -71,16 +74,30 @@ public class DragonUIRenderComponent extends AbstractContainerEventHandler imple
         rotation.rotateY((float) Math.toRadians(180 - xRot * 10));
 
         EntityRenderState renderState;
-        if (getter.get() instanceof Player player && DragonStateProvider.getData(player).body().value().noDragonModelRendering()) {
-            EntityRenderDispatcher entityRenderDispatcher = Minecraft.getInstance().getEntityRenderDispatcher();
-            EntityRenderer<? super LivingEntity, ?> renderer = entityRenderDispatcher.getRenderer(player);
-            renderState = renderer.createRenderState(player, pPartialTicks);
-            renderState.shadowPieces.clear();
-            renderState.outlineColor = 0;
+
+        try {
+            LivingEntity entity = getter.get();
+
+            if (entity instanceof Player player && DragonStateProvider.getData(player).body().value().noDragonModelRendering()) {
+                EntityRenderDispatcher entityRenderDispatcher = Minecraft.getInstance().getEntityRenderDispatcher();
+                EntityRenderer<? super LivingEntity, ?> renderer = entityRenderDispatcher.getRenderer(player);
+                renderState = renderer.createRenderState(player, pPartialTicks);
+                renderState.shadowPieces.clear();
+                renderState.outlineColor = 0;
+            }
+            else {
+                renderState = DragonRenderer.createUIRenderState(entity, pPartialTicks, 0.0F, 0.0F, 0.0F, null, textureOverride, glowTextureOverride);
+            }
+        } catch (DragonRenderer.InvalidUIRenderAnimationException exception) {
+            if (!Objects.equals(lastRenderFailure, exception.getMessage())) {
+                DragonSurvival.LOGGER.error("Failed to render dragon UI preview", exception);
+                lastRenderFailure = exception.getMessage();
+            }
+
+            return;
         }
-        else {
-            renderState = DragonRenderer.createUIRenderState(getter.get(), pPartialTicks, 0.0F, 0.0F, 0.0F, null, textureOverride, glowTextureOverride);
-        }
+
+        lastRenderFailure = null;
 
         // Not sure what changed about the scale of UI elements that forces me to divide by 50 here for translation, but it is good enough for now
         Vector3f translation = new Vector3f(xOffset / 50.f, yOffset /  50.f, 0.0F);
