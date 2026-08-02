@@ -1,5 +1,8 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.attachments;
 
+import by.dragonsurvivalteam.dragonsurvival.common.compat.event.EntityTickEvent;
+import by.dragonsurvivalteam.dragonsurvival.common.serialization.INBTSerializable;
+import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncData;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import net.minecraft.core.HolderLookup;
@@ -7,9 +10,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import by.dragonsurvivalteam.dragonsurvival.common.serialization.INBTSerializable;
-import by.dragonsurvivalteam.dragonsurvival.common.compat.event.EntityTickEvent;
-import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
 @EventBusSubscriber

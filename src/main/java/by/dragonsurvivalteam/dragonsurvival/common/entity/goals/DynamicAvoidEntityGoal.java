@@ -1,7 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.common.entity.goals;
 
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AttachmentManager;
-
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.FearData;
 import net.minecraft.core.BlockPos;
@@ -13,9 +12,9 @@ import net.minecraft.world.entity.ai.util.DefaultRandomPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.pathfinder.Path;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 
 @EventBusSubscriber
 public class DynamicAvoidEntityGoal extends Goal {

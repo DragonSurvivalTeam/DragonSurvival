@@ -1,9 +1,8 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty;
 
-import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AttachmentManager;
-
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.DSItemPredicate;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAttributes;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AttachmentManager;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.PenaltySupply;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;

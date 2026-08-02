@@ -1,16 +1,16 @@
 package by.dragonsurvivalteam.dragonsurvival.network;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
-import by.dragonsurvivalteam.dragonsurvival.network.compat.CustomPacketPayload;
-import by.dragonsurvivalteam.dragonsurvival.network.compat.DirectionalPayloadHandler;
-import by.dragonsurvivalteam.dragonsurvival.network.compat.PayloadContext;
-import by.dragonsurvivalteam.dragonsurvival.network.compat.PayloadRegistrar;
 import by.dragonsurvivalteam.dragonsurvival.network.animation.StopAbilityAnimation;
 import by.dragonsurvivalteam.dragonsurvival.network.animation.SyncAbilityAnimation;
 import by.dragonsurvivalteam.dragonsurvival.network.claw.SyncBrokenTool;
 import by.dragonsurvivalteam.dragonsurvival.network.claw.SyncDragonClawMenuToggle;
 import by.dragonsurvivalteam.dragonsurvival.network.claw.SyncDragonClawRender;
 import by.dragonsurvivalteam.dragonsurvival.network.claw.SyncDragonClawsMenu;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.CustomPacketPayload;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.DirectionalPayloadHandler;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.PayloadContext;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.PayloadRegistrar;
 import by.dragonsurvivalteam.dragonsurvival.network.container.OpenDragonAltar;
 import by.dragonsurvivalteam.dragonsurvival.network.container.OpenDragonEditor;
 import by.dragonsurvivalteam.dragonsurvival.network.container.RequestOpenDragonInventory;

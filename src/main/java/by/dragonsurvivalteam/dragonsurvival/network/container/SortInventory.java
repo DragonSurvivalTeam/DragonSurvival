@@ -2,10 +2,10 @@ package by.dragonsurvivalteam.dragonsurvival.network.container;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.SortingHandler;
-import io.netty.buffer.ByteBuf;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
 import by.dragonsurvivalteam.dragonsurvival.network.compat.CustomPacketPayload;
 import by.dragonsurvivalteam.dragonsurvival.network.compat.PayloadContext;
+import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
 
 public record SortInventory() implements CustomPacketPayload {

@@ -1,14 +1,14 @@
 package by.dragonsurvivalteam.dragonsurvival.client.handlers;
 
-import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AttachmentManager;
-
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.input.Keybind;
 import by.dragonsurvivalteam.dragonsurvival.mixins.client.KeyMappingAccess;
+import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncSummonedEntitiesBehaviour;
 import by.dragonsurvivalteam.dragonsurvival.network.syncing.SyncDragonSoulPlacement;
 import by.dragonsurvivalteam.dragonsurvival.network.syncing.SyncKey;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AttachmentManager;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.PlayerData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
@@ -22,11 +22,10 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.settings.KeyConflictContext;
-import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import org.jetbrains.annotations.Nullable;
 
 @EventBusSubscriber(Dist.CLIENT)

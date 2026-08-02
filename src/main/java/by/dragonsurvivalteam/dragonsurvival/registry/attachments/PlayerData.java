@@ -1,8 +1,8 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.attachments;
 
+import by.dragonsurvivalteam.dragonsurvival.common.serialization.INBTSerializable;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import by.dragonsurvivalteam.dragonsurvival.common.serialization.INBTSerializable;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;

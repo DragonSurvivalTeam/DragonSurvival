@@ -1,7 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.common.particles;
 
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AttachmentManager;
-
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.BlockVisionData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.util.DSColors;

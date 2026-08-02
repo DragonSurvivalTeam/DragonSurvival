@@ -1,6 +1,9 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.attachments;
 
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Glow;
+import by.dragonsurvivalteam.dragonsurvival.common.compat.attachments.AttachmentType;
+import by.dragonsurvivalteam.dragonsurvival.common.compat.event.EntityTickEvent;
+import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncData;
 import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
@@ -8,12 +11,9 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.Entity;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import by.dragonsurvivalteam.dragonsurvival.common.compat.attachments.AttachmentType;
-import net.minecraftforge.event.entity.player.PlayerEvent;
-import by.dragonsurvivalteam.dragonsurvival.common.compat.event.EntityTickEvent;
-import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;

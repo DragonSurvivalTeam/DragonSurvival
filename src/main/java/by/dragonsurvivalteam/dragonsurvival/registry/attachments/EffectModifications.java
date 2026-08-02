@@ -1,17 +1,17 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.attachments;
 
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.EffectModification;
+import by.dragonsurvivalteam.dragonsurvival.common.compat.attachments.AttachmentType;
+import by.dragonsurvivalteam.dragonsurvival.common.compat.event.EntityTickEvent;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraftforge.event.entity.living.MobEffectEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import by.dragonsurvivalteam.dragonsurvival.common.compat.attachments.AttachmentType;
-import net.minecraftforge.event.entity.living.MobEffectEvent;
-import by.dragonsurvivalteam.dragonsurvival.common.compat.event.EntityTickEvent;
 import org.jetbrains.annotations.NotNull;
 
 @EventBusSubscriber

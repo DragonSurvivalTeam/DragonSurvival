@@ -1,9 +1,8 @@
 package by.dragonsurvivalteam.dragonsurvival.client.render.entity;
 
-import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AttachmentManager;
-
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.util.RenderStateBackup;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AttachmentManager;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;

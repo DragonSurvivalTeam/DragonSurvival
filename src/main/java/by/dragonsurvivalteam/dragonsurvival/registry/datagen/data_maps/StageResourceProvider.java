@@ -2,6 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.registry.datagen.data_maps;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.StageResources;
+import by.dragonsurvivalteam.dragonsurvival.common.compat.datamaps.DataMapProvider;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSConditions;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSDataMaps;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.datapacks.AncientDatapacks;
@@ -11,7 +12,6 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStages;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceKey;
-import by.dragonsurvivalteam.dragonsurvival.common.compat.datamaps.DataMapProvider;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;

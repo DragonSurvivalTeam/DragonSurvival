@@ -1,10 +1,11 @@
 package by.dragonsurvivalteam.dragonsurvival.common.capability;
 
-import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AttachmentManager;
-
+import by.dragonsurvivalteam.dragonsurvival.common.serialization.INBTSerializable;
 import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
+import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncData;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AttachmentManager;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSProfessionTags;
@@ -22,13 +23,13 @@ import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import by.dragonsurvivalteam.dragonsurvival.common.serialization.INBTSerializable;
-import net.minecraftforge.event.entity.player.PlayerEvent;
-import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.UUID;
 
 @EventBusSubscriber
 public class EntityStateHandler implements INBTSerializable<CompoundTag> {
@@ -47,6 +48,8 @@ public class EntityStateHandler implements INBTSerializable<CompoundTag> {
     public int chainCount;
 
     public int pillageCooldown;
+
+    public UUID projectileBatchID;
 
     public static boolean cannotPillageProfession(final Villager villager) {
         VillagerProfession profession = villager.getVillagerData().getProfession();
@@ -108,6 +111,10 @@ public class EntityStateHandler implements INBTSerializable<CompoundTag> {
             tag.put(LAST_POSITION, Functions.newDoubleList(lastPos.x, lastPos.y, lastPos.z));
         }
 
+        if (projectileBatchID != null) {
+            tag.putUUID(PROJECTILE_BATCH_ID, projectileBatchID);
+        }
+
         return tag;
     }
 
@@ -120,9 +127,14 @@ public class EntityStateHandler implements INBTSerializable<CompoundTag> {
             ListTag list = tag.getList(LAST_POSITION, ListTag.TAG_DOUBLE);
             lastPos = new Vec3(list.getDouble(0), list.getDouble(1), list.getDouble(2));
         }
+
+        if (tag.contains(PROJECTILE_BATCH_ID)) {
+            projectileBatchID = tag.getUUID(PROJECTILE_BATCH_ID);
+        }
     }
 
     private static final String LAST_POSITION = "last_position";
     private static final String CHAIN_COUNT = "chain_count";
     private static final String PILLAGE_COOLDOWN_KEY = "pillage_cooldown";
+    private static final String PROJECTILE_BATCH_ID = "projectile_batch_id";
 }

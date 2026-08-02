@@ -3,7 +3,6 @@ package by.dragonsurvivalteam.dragonsurvival.common.codecs;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.util.StringRepresentable;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.LevelBasedValue;
 import org.jetbrains.annotations.NotNull;
 
 public record Modification(ModificationType type, LevelBasedValue amount) {

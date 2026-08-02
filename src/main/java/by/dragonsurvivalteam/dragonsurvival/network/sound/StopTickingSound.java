@@ -1,12 +1,12 @@
 package by.dragonsurvivalteam.dragonsurvival.network.sound;
 
-import by.dragonsurvivalteam.dragonsurvival.network.codec.ByteBufCodecs;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
-import net.minecraft.network.FriendlyByteBuf;
+import by.dragonsurvivalteam.dragonsurvival.network.codec.ByteBufCodecs;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
 import by.dragonsurvivalteam.dragonsurvival.network.compat.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
 import by.dragonsurvivalteam.dragonsurvival.network.compat.PayloadContext;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
 public record StopTickingSound(ResourceLocation id) implements CustomPacketPayload {

@@ -1,6 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects;
 
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
+import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
 import by.dragonsurvivalteam.dragonsurvival.network.flight.FlightStatus;
 import by.dragonsurvivalteam.dragonsurvival.network.flight.SyncWingIcon;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.FlightData;
@@ -15,7 +16,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
 
 import java.util.ArrayList;
 import java.util.List;

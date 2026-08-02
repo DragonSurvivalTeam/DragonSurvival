@@ -1,12 +1,12 @@
 package by.dragonsurvivalteam.dragonsurvival.network.flight;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
-import net.minecraft.network.FriendlyByteBuf;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.ByteBufCodecs;
 import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
 import by.dragonsurvivalteam.dragonsurvival.network.compat.CustomPacketPayload;
-import net.minecraft.world.entity.player.Player;
 import by.dragonsurvivalteam.dragonsurvival.network.compat.PayloadContext;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
 
 public record SyncFlyingPlayerAbility(int playerId, boolean state) implements CustomPacketPayload {

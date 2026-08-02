@@ -1,7 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.projectile.world_effects;
 
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AttachmentManager;
-
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.server.handlers.LightningHandler;
 import com.mojang.serialization.MapCodec;

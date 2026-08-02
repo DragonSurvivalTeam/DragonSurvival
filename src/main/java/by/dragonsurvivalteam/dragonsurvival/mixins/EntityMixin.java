@@ -1,11 +1,12 @@
 package by.dragonsurvivalteam.dragonsurvival.mixins;
 
-import by.dragonsurvivalteam.dragonsurvival.common.handlers.EntityScale;
-
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
+import by.dragonsurvivalteam.dragonsurvival.common.compat.attachments.AttachmentType;
+import by.dragonsurvivalteam.dragonsurvival.common.compat.event.EntityTickEvent;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.DragonSizeHandler;
+import by.dragonsurvivalteam.dragonsurvival.common.handlers.EntityScale;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.HunterHandler;
 import by.dragonsurvivalteam.dragonsurvival.compat.Compat;
 import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
@@ -30,8 +31,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.MinecraftForge;
-import by.dragonsurvivalteam.dragonsurvival.common.compat.event.EntityTickEvent;
-import by.dragonsurvivalteam.dragonsurvival.common.compat.attachments.AttachmentType;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -46,8 +45,7 @@ import java.util.Map;
 @Mixin(Entity.class)
 public abstract class EntityMixin implements AttachmentStorage {
     @Shadow private EntityDimensions dimensions;
-    @Unique
-    private final Map<AttachmentType<?>, Object> dragonSurvival$attachments = new IdentityHashMap<>();
+    @Unique private final Map<AttachmentType<?>, Object> dragonSurvival$attachments = new IdentityHashMap<>();
 
     @Override
     public Map<AttachmentType<?>, Object> dragonSurvival$getAttachments() {

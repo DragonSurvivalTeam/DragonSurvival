@@ -34,13 +34,11 @@ public abstract class DisplayInfoMixin {
         }
     }
 
-    @Unique
-    private static JsonObject dragonSurvival$object(final JsonElement element) {
+    @Unique private static JsonObject dragonSurvival$object(final JsonElement element) {
         return element != null && element.isJsonObject() ? element.getAsJsonObject() : null;
     }
 
-    @Unique
-    private static String dragonSurvival$quote(final String value) {
+    @Unique private static String dragonSurvival$quote(final String value) {
         return "\"" + value.replace("\\", "\\\\").replace("\"", "\\\"") + "\"";
     }
 }

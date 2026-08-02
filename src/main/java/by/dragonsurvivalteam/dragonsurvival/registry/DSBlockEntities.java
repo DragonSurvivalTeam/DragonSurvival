@@ -9,8 +9,8 @@ import by.dragonsurvivalteam.dragonsurvival.server.tileentity.SourceOfMagicBlock
 import by.dragonsurvivalteam.dragonsurvival.server.tileentity.SourceOfMagicPlaceholder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraftforge.registries.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.RegistryObject;
 
 import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 

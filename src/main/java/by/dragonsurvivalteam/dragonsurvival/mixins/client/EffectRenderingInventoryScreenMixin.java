@@ -1,7 +1,8 @@
 package by.dragonsurvivalteam.dragonsurvival.mixins.client;
 
-import by.dragonsurvivalteam.dragonsurvival.compat.emi.EmiCompat;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.EffectRenderingInventoryScreenAccessor;
+import by.dragonsurvivalteam.dragonsurvival.common.compat.chat.PlainTextContents;
+import by.dragonsurvivalteam.dragonsurvival.compat.emi.EmiCompat;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.ClientEffectProvider;
 import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
@@ -19,7 +20,6 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import by.dragonsurvivalteam.dragonsurvival.common.compat.chat.PlainTextContents;
 import net.minecraft.util.Mth;
 import net.minecraft.util.StringUtil;
 import net.minecraft.world.effect.MobEffectInstance;

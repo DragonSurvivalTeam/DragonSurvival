@@ -1,7 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.datagen.datapacks;
 
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.AttributeOperation;
-
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.GrowthItem;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscCodecs;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Modifier;
@@ -16,7 +15,6 @@ import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.levelgen.blockpredicates.BlockPredicate;
 import net.minecraftforge.common.ForgeMod;

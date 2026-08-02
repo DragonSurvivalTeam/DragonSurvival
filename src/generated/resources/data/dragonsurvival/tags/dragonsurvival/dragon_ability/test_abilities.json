@@ -3,6 +3,7 @@
     "dragonsurvival:test_convert_items",
     "dragonsurvival:test_cooldown_recovery",
     "dragonsurvival:test_damage_expression",
+    "dragonsurvival:test_entity_projectile",
     "dragonsurvival:test_experience_points_add",
     "dragonsurvival:test_function",
     "dragonsurvival:test_glow",

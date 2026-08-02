@@ -1,17 +1,17 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.attachments;
 
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.DamageModification;
+import by.dragonsurvivalteam.dragonsurvival.common.compat.attachments.AttachmentType;
+import by.dragonsurvivalteam.dragonsurvival.common.compat.event.EntityTickEvent;
+import by.dragonsurvivalteam.dragonsurvival.common.compat.event.LivingIncomingDamageEvent;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.damagesource.DamageType;
+import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import by.dragonsurvivalteam.dragonsurvival.common.compat.attachments.AttachmentType;
-import net.minecraftforge.event.entity.living.LivingAttackEvent;
-import by.dragonsurvivalteam.dragonsurvival.common.compat.event.LivingIncomingDamageEvent;
-import by.dragonsurvivalteam.dragonsurvival.common.compat.event.EntityTickEvent;
 import org.jetbrains.annotations.NotNull;
 
 @EventBusSubscriber

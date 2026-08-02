@@ -1,8 +1,10 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects;
 
-import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AttachmentManager;
-
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.DSItemPredicate;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.LevelBasedValue;
+import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncData;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AttachmentManager;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ItemData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
@@ -11,7 +13,6 @@ import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.DSItemPredicate;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerPlayer;
@@ -22,8 +23,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SmeltingRecipe;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.LevelBasedValue;
-import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
 
 import java.text.NumberFormat;
 import java.util.List;

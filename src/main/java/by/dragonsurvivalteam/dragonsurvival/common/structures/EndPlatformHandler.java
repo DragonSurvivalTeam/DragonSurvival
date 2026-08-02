@@ -1,11 +1,10 @@
 package by.dragonsurvivalteam.dragonsurvival.common.structures;
 
-import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AttachmentManager;
-
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.EndPlatform;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSDataMaps;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AttachmentManager;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.PlacedEndPlatforms;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSBlockTags;
