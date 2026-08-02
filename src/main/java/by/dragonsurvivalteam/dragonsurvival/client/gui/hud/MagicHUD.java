@@ -396,18 +396,18 @@ public class MagicHUD {
                     if (maxMana > 0 && maxMana > slot) {
                         if (magic.isCasting()) {
                             // No mana regeneration
-                            blit(graphics, manaSprites.empty(), x, y, iconSize, 1, 1, 1, 1, 1);
+                            blit(graphics, manaSprites.empty(), x, y, iconSize, 1, 1, 1, 1);
                         } else if (player.getAttributeValue(DSAttributes.MANA_REGENERATION.get()) > player.getAttributeBaseValue(DSAttributes.MANA_REGENERATION.get())) {
                             // Fast mana regeneration
-                            blit(graphics, manaSprites.recovery(), x, y, iconSize, 1, 1, red, green, blue);
+                            blit(graphics, manaSprites.recovery(), x, y, iconSize, 1, red, green, blue);
                         } else {
                             // Slow mana regeneration
-                            blit(graphics, manaSprites.empty(), x, y, iconSize, 1, 1, 1, 1, 1);
-                            blit(graphics, manaSprites.recovery(), x, y, iconSize, 1, deltaCounter, red, green, blue);
+                            blit(graphics, manaSprites.empty(), x, y, iconSize, 1, 1, 1, 1);
+                            blit(graphics, manaSprites.recovery(), x, y, iconSize, deltaCounter, red, green, blue);
                         }
                     } else if (magic.getReservedMana() > 0 && magic.getReservedMana() > slot - maxMana) {
                         // Reserved mana (as long as at least half of the slot is reserved)
-                        blit(graphics, manaSprites.reserved(), x, y, iconSize, 1, 1, red, green, blue);
+                        blit(graphics, manaSprites.reserved(), x, y, iconSize, 1, red, green, blue);
                     }
 
                     if (currentMana > slot) {
@@ -416,10 +416,10 @@ public class MagicHUD {
                         if (percentage < 1) {
                             // We can't do it precise in decimals because the relevant methods work in integers
                             graphics.enableScissor(x, y, x + (int) (iconSize * percentage + /* Round up */ 0.5), y + iconSize);
-                            blit(graphics, manaSprites.full(), x, y, iconSize, 1, 1, red, green, blue);
+                            blit(graphics, manaSprites.full(), x, y, iconSize, 1, red, green, blue);
                             graphics.disableScissor();
                         } else {
-                            blit(graphics, manaSprites.full(), x, y, iconSize, 1, 1, red, green, blue);
+                            blit(graphics, manaSprites.full(), x, y, iconSize, 1, red, green, blue);
                         }
                     }
                 }
@@ -477,8 +477,7 @@ public class MagicHUD {
         }
     }
 
-    @SuppressWarnings("SameParameterValue") // ignore
-    private static void blit(final GuiGraphics graphics, final ResourceLocation resource, int x, int y, int size, float maxU, float alpha, float red, float green, float blue) {
-        ((GuiGraphicsAccess) graphics).dragonSurvival$innerBlit(resource, x, x + size, y, y + size, 0, 0, maxU, 0, 1, red, green, blue, alpha);
+    private static void blit(final GuiGraphics graphics, final ResourceLocation resource, int x, int y, int size, float alpha, float red, float green, float blue) {
+        ((GuiGraphicsAccess) graphics).dragonSurvival$innerBlit(resource, x, x + size, y, y + size, 0, 0, 1, 0, 1, red, green, blue, alpha);
     }
 }
