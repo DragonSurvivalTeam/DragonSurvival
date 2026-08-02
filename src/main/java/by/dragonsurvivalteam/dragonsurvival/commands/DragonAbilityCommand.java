@@ -3,6 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.commands;
 import by.dragonsurvivalteam.dragonsurvival.commands.arguments.DragonAbilityArgument;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
+import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncMagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSCommands;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
@@ -23,7 +24,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.event.RegisterCommandsEvent;
-import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
 
 import java.util.Collection;
 import java.util.function.BiFunction;

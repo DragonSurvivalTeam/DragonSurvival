@@ -2,6 +2,10 @@ package by.dragonsurvivalteam.dragonsurvival.registry.data_maps;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ConditionalOps;
+import by.dragonsurvivalteam.dragonsurvival.common.compat.datamaps.AdvancedDataMapType;
+import by.dragonsurvivalteam.dragonsurvival.common.compat.datamaps.DataMapType;
+import by.dragonsurvivalteam.dragonsurvival.common.compat.datamaps.DataMapValueMerger;
+import by.dragonsurvivalteam.dragonsurvival.common.compat.datamaps.DataMapValueRemover;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -22,13 +26,8 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.util.profiling.ProfilerFiller;
-import by.dragonsurvivalteam.dragonsurvival.common.compat.datamaps.AdvancedDataMapType;
-import by.dragonsurvivalteam.dragonsurvival.common.compat.datamaps.DataMapType;
-import by.dragonsurvivalteam.dragonsurvival.common.compat.datamaps.DataMapValueMerger;
-import by.dragonsurvivalteam.dragonsurvival.common.compat.datamaps.DataMapValueRemover;
 
 import java.io.Reader;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;

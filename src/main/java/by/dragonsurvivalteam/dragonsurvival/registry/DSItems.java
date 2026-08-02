@@ -46,7 +46,6 @@ import net.minecraft.world.item.Tiers;
 import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
-import org.joml.Vector3f;
 
 import java.util.List;
 import java.util.Optional;

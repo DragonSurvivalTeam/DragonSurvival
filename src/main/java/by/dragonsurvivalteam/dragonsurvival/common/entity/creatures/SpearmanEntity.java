@@ -30,8 +30,8 @@ import org.jetbrains.annotations.NotNull;
 import software.bernie.geckolib.core.animation.AnimatableManager;
 import software.bernie.geckolib.core.animation.AnimationController;
 import software.bernie.geckolib.core.animation.AnimationState;
-import software.bernie.geckolib.core.object.PlayState;
 import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.core.object.PlayState;
 
 public class SpearmanEntity extends Hunter {
     private static final double DEFAULT_ATTACK_REACH = Math.sqrt(2.04F) - 0.6F;

@@ -1,6 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.datagen.data_maps;
 
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.DietEntry;
+import by.dragonsurvivalteam.dragonsurvival.common.compat.datamaps.DataMapProvider;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSConditions;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSDataMaps;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSItems;
@@ -9,7 +10,6 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
-import by.dragonsurvivalteam.dragonsurvival.common.compat.datamaps.DataMapProvider;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;

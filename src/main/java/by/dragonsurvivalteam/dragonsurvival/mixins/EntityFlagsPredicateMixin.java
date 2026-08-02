@@ -14,8 +14,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(EntityFlagsPredicate.class)
 public abstract class EntityFlagsPredicateMixin implements EntityFlagsPredicateAccess {
-    @Unique
-    private @Nullable Boolean dragonsurvival$onGround;
+    @Unique private @Nullable Boolean dragonsurvival$onGround;
 
     @Override
     public void dragonsurvival$setOnGround(final Boolean onGround) {

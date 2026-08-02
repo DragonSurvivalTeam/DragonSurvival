@@ -1,12 +1,12 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.data_maps;
 
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.DietEntry;
+import by.dragonsurvivalteam.dragonsurvival.common.compat.datamaps.DataMapValueMerger;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import com.mojang.datafixers.util.Either;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
-import by.dragonsurvivalteam.dragonsurvival.common.compat.datamaps.DataMapValueMerger;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;

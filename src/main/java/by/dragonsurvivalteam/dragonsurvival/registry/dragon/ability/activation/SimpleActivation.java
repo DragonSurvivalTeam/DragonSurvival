@@ -1,10 +1,10 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation;
 
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.LevelBasedValue;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.LevelBasedValue;
 import net.minecraft.util.ExtraCodecs;
 
 import java.util.Optional;

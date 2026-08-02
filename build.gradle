@@ -1,125 +1,126 @@
 plugins {
-    id 'eclipse'
-    id 'idea'
-    id 'maven-publish'
-    id 'net.neoforged.gradle' version '[6.0.18,6.2)'
-    id 'org.parchmentmc.librarian.forgegradle' version '1.+'
-    id 'org.spongepowered.mixin' version '0.7.+'
+	id 'eclipse'
+	id 'idea'
+	id 'maven-publish'
+	id 'net.neoforged.gradle' version '[6.0.18,6.2)'
+	id 'org.parchmentmc.librarian.forgegradle' version '1.+'
+	id 'org.spongepowered.mixin' version '0.7.+'
+	id 'com.diffplug.spotless' version '7.0.0'
 }
 
 version = minecraft_version + "-v" + mod_version + "-" + new Date().format("dd.MM.yyyy")
 group = mod_group
 
 base {
-    archivesName = "DragonSurvival"
+	archivesName = "DragonSurvival"
 }
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 minecraft {
-    mappings channel: mapping_channel, version: mapping_version
+	mappings channel: mapping_channel, version: mapping_version
 
-    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
+	accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 
-    runs {
-        configureEach {
-            workingDirectory project.file("run/${it.name}")
-            property 'dragonsurvival.data_generation', 'false'
-            property 'forge.logging.markers', 'SCAN' /* REGISTRIES / REGISTRYDUMP */
-            property 'forge.logging.console.level', 'debug'
+	runs {
+		configureEach {
+			workingDirectory project.file("run/${it.name}")
+			property 'dragonsurvival.data_generation', 'false'
+			property 'forge.logging.markers', 'SCAN' /* REGISTRIES / REGISTRYDUMP */
+			property 'forge.logging.console.level', 'debug'
 
-            mods {
-                "${mod_id}" {
-                    source sourceSets.main
-                }
-            }
-        }
+			mods {
+				"${mod_id}" {
+					source sourceSets.main
+				}
+			}
+		}
 
-        client {
-            property 'forge.enabledGameTestNamespaces', mod_id
-            // Support for mixins of other mods
-            property 'mixin.env.remapRefMap', 'true'
-            property 'mixin.env.refMapRemappingFile', "${buildDir}/createSrgToMcp/output.srg"
-        }
+		client {
+			property 'forge.enabledGameTestNamespaces', mod_id
+			// Support for mixins of other mods
+			property 'mixin.env.remapRefMap', 'true'
+			property 'mixin.env.refMapRemappingFile', "${buildDir}/createSrgToMcp/output.srg"
+		}
 
-        clientRandom {
-            parent runs.client
-            // #### will be replaced with a random number | UUID is a randomly generated one
-            args '--username', 'Dev####', '--uuid', 'fdb0e318-1ac3-4049-b6f8-d024c0b87a56'
-        }
+		clientRandom {
+			parent runs.client
+			// #### will be replaced with a random number | UUID is a randomly generated one
+			args '--username', 'Dev####', '--uuid', 'fdb0e318-1ac3-4049-b6f8-d024c0b87a56'
+		}
 
-        server {
-            property 'forge.enabledGameTestNamespaces', mod_id
-            // Support for mixins of other mods
-            property 'mixin.env.remapRefMap', 'true'
-            property 'mixin.env.refMapRemappingFile', "${buildDir}/createSrgToMcp/output.srg"
-        }
+		server {
+			property 'forge.enabledGameTestNamespaces', mod_id
+			// Support for mixins of other mods
+			property 'mixin.env.remapRefMap', 'true'
+			property 'mixin.env.refMapRemappingFile', "${buildDir}/createSrgToMcp/output.srg"
+		}
 
-        data {
-            property 'dragonsurvival.data_generation', 'true'
-            args '--mod', mod_id, '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
-        }
-    }
+		data {
+			property 'dragonsurvival.data_generation', 'true'
+			args '--mod', mod_id, '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+		}
+	}
 }
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 repositories {
-    maven { /* GeckoLib */ url "https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/" }
-    maven { /* JEI */ url "https://maven.blamejared.com" }
-    maven { /* Curios */ url "https://maven.theillusivec4.top/" }
-    maven { /* AppleSkin */ url "https://maven.ryanliptak.com/" }
-    maven {
-        url "https://api.modrinth.com/maven"
-        content { includeGroup "maven.modrinth" }
-    }
-    maven {
-        url "https://maven.kosmx.dev/"
-        content { includeGroup "dev.kosmx.player-anim" }
-    }
-    maven {
-        url "https://cursemaven.com"
-        content { includeGroup "curse.maven" }
-    }
+	maven { /* GeckoLib */ url "https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/" }
+	maven { /* JEI */ url "https://maven.blamejared.com" }
+	maven { /* Curios */ url "https://maven.theillusivec4.top/" }
+	maven { /* AppleSkin */ url "https://maven.ryanliptak.com/" }
+	maven {
+		url "https://api.modrinth.com/maven"
+		content { includeGroup "maven.modrinth" }
+	}
+	maven {
+		url "https://maven.kosmx.dev/"
+		content { includeGroup "dev.kosmx.player-anim" }
+	}
+	maven {
+		url "https://cursemaven.com"
+		content { includeGroup "curse.maven" }
+	}
 }
 
 dependencies {
-    minecraft "net.neoforged:forge:${minecraft_version}-${neo_version}"
+	minecraft "net.neoforged:forge:${minecraft_version}-${neo_version}"
 
-    // Dependencies
-    implementation fg.deobf("software.bernie.geckolib:geckolib-forge-${minecraft_version}:${geckolib_version}")
-    implementation "com.eliotlash.mclib:mclib:20"
+	// Dependencies
+	implementation fg.deobf("software.bernie.geckolib:geckolib-forge-${minecraft_version}:${geckolib_version}")
+	implementation "com.eliotlash.mclib:mclib:20"
 
-    // Compatibility
-    compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
+	// Compatibility
+	compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
 
-    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}+${minecraft_version}:api")
-    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}+${minecraft_version}")
-    runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}+${minecraft_version}")
+	compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}+${minecraft_version}:api")
+	compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}+${minecraft_version}")
+	runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}+${minecraft_version}")
 
-    compileOnly fg.deobf("squeek.appleskin:appleskin-forge:${appleskin_version}:api")
-    compileOnly fg.deobf("squeek.appleskin:appleskin-forge:${appleskin_version}")
-    runtimeOnly fg.deobf("squeek.appleskin:appleskin-forge:${appleskin_version}")
+	compileOnly fg.deobf("squeek.appleskin:appleskin-forge:${appleskin_version}:api")
+	compileOnly fg.deobf("squeek.appleskin:appleskin-forge:${appleskin_version}")
+	runtimeOnly fg.deobf("squeek.appleskin:appleskin-forge:${appleskin_version}")
 
-    // Optional compatibility dependencies
-    compileOnly fg.deobf("curse.maven:create-328085:6641603") // 1.20.1-6.0.6
-    compileOnly fg.deobf("curse.maven:cosmetic-armor-reworked-237307:4600191") // 1.20.1-v1a
-    compileOnly fg.deobf("curse.maven:emi-580555:6420945") // 1.1.22+1.20.1+forge
-    compileOnly fg.deobf("curse.maven:free-cam-557076:4643128") // 1.2.1+1.20 Forge
-    compileOnly fg.deobf("curse.maven:multi-mine-227887:5389052") // 1.20.1.4
-    compileOnly fg.deobf("curse.maven:oculus-581495:6020952") // 1.8.0
-    compileOnly fg.deobf("curse.maven:sophisticated-backpacks-422301:6679415") // 3.23.19.1263
-    compileOnly fg.deobf("curse.maven:sophisticated-core-618298:6680838") // 1.2.71.1022
-    compileOnly fg.deobf("curse.maven:vista-1368607:8001242") // 3.1.3
+	// Optional compatibility dependencies
+	compileOnly fg.deobf("curse.maven:create-328085:6641603") // 1.20.1-6.0.6
+	compileOnly fg.deobf("curse.maven:cosmetic-armor-reworked-237307:4600191") // 1.20.1-v1a
+	compileOnly fg.deobf("curse.maven:emi-580555:6420945") // 1.1.22+1.20.1+forge
+	compileOnly fg.deobf("curse.maven:free-cam-557076:4643128") // 1.2.1+1.20 Forge
+	compileOnly fg.deobf("curse.maven:multi-mine-227887:5389052") // 1.20.1.4
+	compileOnly fg.deobf("curse.maven:oculus-581495:6020952") // 1.8.0
+	compileOnly fg.deobf("curse.maven:sophisticated-backpacks-422301:6679415") // 3.23.19.1263
+	compileOnly fg.deobf("curse.maven:sophisticated-core-618298:6680838") // 1.2.71.1022
+	compileOnly fg.deobf("curse.maven:vista-1368607:8001242") // 3.1.3
 
-    compileOnly fg.deobf("maven.modrinth:better-combat:1.7.4+1.20.1-forge")
-    compileOnly fg.deobf("dev.kosmx.player-anim:player-animation-lib-forge:1.0.2-rc1+1.20")
-    compileOnly fg.deobf("curse.maven:cloth-config-348521:5729105") // 11.1.136
+	compileOnly fg.deobf("maven.modrinth:better-combat:1.7.4+1.20.1-forge")
+	compileOnly fg.deobf("dev.kosmx.player-anim:player-animation-lib-forge:1.0.2-rc1+1.20")
+	compileOnly fg.deobf("curse.maven:cloth-config-348521:5729105") // 11.1.136
 
-    // Test
-    implementation fg.deobf("curse.maven:jei-238222:6075247") // 15.20.0.106
-    testImplementation platform("org.junit:junit-bom:5.10.2")
-    testImplementation "org.junit.jupiter:junit-jupiter"
+	// Test
+	implementation fg.deobf("curse.maven:jei-238222:6075247") // 15.20.0.106
+	testImplementation platform("org.junit:junit-bom:5.10.2")
+	testImplementation "org.junit.jupiter:junit-jupiter"
 
 //    implementation fg.deobf("curse.maven:embeddium-908741:5556138") // 0.3.31
 //    implementation fg.deobf("curse.maven:oculus-581495:5299671") // 1.7.0
@@ -127,86 +128,110 @@ dependencies {
 //    implementation fg.deobf("curse.maven:alexs-caves-924854:5848216") // 2.0.2
 //    implementation fg.deobf("curse.maven:citadel-331936:6002521") // 2.6.1
 
-    // Mixin
-    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+	// Mixin
+	annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 
-    // MixinExtras (we can remove this once we update to a newer version of NeoForge)
-    compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:0.3.6"))
-    implementation group: 'io.github.llamalad7', name: 'mixinextras-common', version: '0.3.6'
-    implementation(jarJar("io.github.llamalad7:mixinextras-forge:0.3.6")) {
-        jarJar.ranged(it, "[0.3.6,)")
-    }
+	// MixinExtras (we can remove this once we update to a newer version of NeoForge)
+	compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:0.3.6"))
+	implementation group: 'io.github.llamalad7', name: 'mixinextras-common', version: '0.3.6'
+	implementation(jarJar("io.github.llamalad7:mixinextras-forge:0.3.6")) {
+		jarJar.ranged(it, "[0.3.6,)")
+	}
 }
 
 tasks.named('test', Test).configure {
-    useJUnitPlatform()
+	useJUnitPlatform()
 }
 
 mixin {
-    add sourceSets.main, "${mod_id}.refmap.json"
+	add sourceSets.main, "${mod_id}.refmap.json"
 }
 
 tasks.withType(ProcessResources).configureEach {
-    var replaceProperties = [
-            minecraft_version           : minecraft_version,
-            minecraft_version_range     : minecraft_version_range,
-            neo_version                 : neo_version,
-            neo_version_range           : neo_version_range,
-            loader_version_range        : loader_version_range,
-            geckolib_version_range      : geckolib_version_range,
-            mod_id                      : mod_id,
-            mod_name                    : mod_name,
-            mod_license                 : mod_license,
-            mod_version                 : mod_version,
-            mod_authors                 : mod_authors,
-            pack_format_number          : pack_format_number,
-    ]
+	var replaceProperties = [
+			minecraft_version           : minecraft_version,
+			minecraft_version_range     : minecraft_version_range,
+			neo_version                 : neo_version,
+			neo_version_range           : neo_version_range,
+			loader_version_range        : loader_version_range,
+			geckolib_version_range      : geckolib_version_range,
+			mod_id                      : mod_id,
+			mod_name                    : mod_name,
+			mod_license                 : mod_license,
+			mod_version                 : mod_version,
+			mod_authors                 : mod_authors,
+			pack_format_number          : pack_format_number,
+	]
 
-    duplicatesStrategy = DuplicatesStrategy.WARN
+	duplicatesStrategy = DuplicatesStrategy.WARN
 
-    inputs.properties replaceProperties
+	inputs.properties replaceProperties
 
-    filesMatching(['META-INF/mods.toml', 'pack.mcmeta']) {
-        expand replaceProperties + [project: project]
-    }
+	filesMatching(['META-INF/mods.toml', 'pack.mcmeta']) {
+		expand replaceProperties + [project: project]
+	}
 }
 
 tasks.named('jar', Jar).configure {
-    manifest {
-        attributes([
-                'Specification-Title'     : mod_id,
-                'Specification-Vendor'    : mod_authors,
-                'Specification-Version'   : '1',
-                'Implementation-Title'    : project.name,
-                'Implementation-Version'  : project.jar.archiveVersion,
-                'Implementation-Vendor'   : mod_authors,
-                'Implementation-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
-                'MixinConfigs'            : "${mod_id}.mixins.json"
-        ])
-    }
+	manifest {
+		attributes([
+				'Specification-Title'     : mod_id,
+				'Specification-Vendor'    : mod_authors,
+				'Specification-Version'   : '1',
+				'Implementation-Title'    : project.name,
+				'Implementation-Version'  : project.jar.archiveVersion,
+				'Implementation-Vendor'   : mod_authors,
+				'Implementation-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+				'MixinConfigs'            : "${mod_id}.mixins.json"
+		])
+	}
 
-    finalizedBy 'reobfJar'
+	finalizedBy 'reobfJar'
 }
 
 tasks.named('jarJar', Jar).configure {
-    jarJar.enable()
+	jarJar.enable()
 
-    manifest {
-        attributes([
-                'Specification-Title'     : mod_id,
-                'Specification-Vendor'    : mod_authors,
-                'Specification-Version'   : '1',
-                'Implementation-Title'    : project.name,
-                'Implementation-Version'  : project.jar.archiveVersion,
-                'Implementation-Vendor'   : mod_authors,
-                'Implementation-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
-        ])
-    }
+	manifest {
+		attributes([
+				'Specification-Title'     : mod_id,
+				'Specification-Vendor'    : mod_authors,
+				'Specification-Version'   : '1',
+				'Implementation-Title'    : project.name,
+				'Implementation-Version'  : project.jar.archiveVersion,
+				'Implementation-Vendor'   : mod_authors,
+				'Implementation-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+		])
+	}
 
-    finalizedBy 'reobfJarJar'
+	finalizedBy 'reobfJarJar'
 }
 
 
 tasks.withType(JavaCompile).configureEach {
-    options.encoding = 'UTF-8'
+	options.encoding = 'UTF-8'
+}
+
+// We use spotless for code formatting.
+spotless {
+	format 'misc', {
+		// define the files to apply `misc` to
+		target '*.gradle', '.gitattributes', '.gitignore'
+
+		// define the steps to apply to those files
+		trimTrailingWhitespace()
+		leadingSpacesToTabs()
+		endWithNewline()
+	}
+
+	java {
+		target 'src/*/java/**/*.java'
+
+		// note: '' is for all other imports, \# is a prefix for static
+		// There's an empty line between all groups; use | to join without empty lines
+		importOrder('', 'javax|java', '\\#')
+		removeUnusedImports()
+		formatAnnotations()
+		leadingTabsToSpaces()
+	}
 }

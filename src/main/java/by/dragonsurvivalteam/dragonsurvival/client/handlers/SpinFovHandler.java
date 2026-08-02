@@ -1,9 +1,9 @@
 package by.dragonsurvivalteam.dragonsurvival.client.handlers;
 
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.ComputeFovModifierEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.client.event.ComputeFovModifierEvent;
 
 
 @EventBusSubscriber(Dist.CLIENT)

@@ -28,8 +28,7 @@ public abstract class ForgeGuiMixin {
         }
     }
 
-    @Unique
-    private static @Nullable ResourceLocation dragonSurvival$getAirSprite(boolean burst) {
+    @Unique private static @Nullable ResourceLocation dragonSurvival$getAirSprite(boolean burst) {
         Player player = Minecraft.getInstance().player;
 
         if (player == null) {

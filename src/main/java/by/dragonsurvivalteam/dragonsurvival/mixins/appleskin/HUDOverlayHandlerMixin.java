@@ -5,7 +5,6 @@ import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.DragonFoodHandler;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
@@ -81,8 +80,7 @@ public abstract class HUDOverlayHandlerMixin {
         return dragonSurvival$getDragonFoodSprites() == null ? v : 0;
     }
 
-    @Unique
-    private static @Nullable ResourceLocation dragonSurvival$getDragonFoodSprites() {
+    @Unique private static @Nullable ResourceLocation dragonSurvival$getDragonFoodSprites() {
         if (DragonFoodHandler.dragonFoodHandlingIsDisabled() || HUDHandler.vanillaFoodLevel) {
             return null;
         }

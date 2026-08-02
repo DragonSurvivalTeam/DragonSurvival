@@ -5,7 +5,6 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.LevelBasedValue;
 
 public record ParticleData(SpawnParticles particleData, LevelBasedValue particleCount) {
     public static final Codec<ParticleData> CODEC = RecordCodecBuilder.create(instance -> instance.group(

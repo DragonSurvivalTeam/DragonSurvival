@@ -1,5 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.projectile.targeting;
 
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.LevelBasedValue;
+import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
 import by.dragonsurvivalteam.dragonsurvival.network.particle.SyncParticleTrail;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.AbilityTargeting;
@@ -18,10 +20,8 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.LevelBasedValue;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
 
 import java.util.Optional;
 

@@ -1,8 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.registry;
 
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.AttributeOperation;
-
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.AttributeOperation;
 import by.dragonsurvivalteam.dragonsurvival.common.effects.*;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import net.minecraft.core.registries.Registries;

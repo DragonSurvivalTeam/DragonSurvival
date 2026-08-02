@@ -65,8 +65,7 @@ public abstract class ItemPredicateMixin {
         }
     }
 
-    @Unique
-    private static JsonObject dragonSurvival$object(final JsonElement element) {
+    @Unique private static JsonObject dragonSurvival$object(final JsonElement element) {
         return element != null && element.isJsonObject() ? element.getAsJsonObject() : null;
     }
 }

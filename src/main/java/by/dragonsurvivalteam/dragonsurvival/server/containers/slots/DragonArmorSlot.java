@@ -19,8 +19,7 @@ import javax.annotation.Nullable;
 public class DragonArmorSlot extends Slot {
     private final LivingEntity owner;
     private final EquipmentSlot equipmentSlot;
-    @Nullable
-    private final ResourceLocation emptyIcon;
+    @Nullable private final ResourceLocation emptyIcon;
 
     public DragonArmorSlot(final Container container, final LivingEntity owner, final EquipmentSlot equipmentSlot,
                            final int slotIndex, final int x, final int y, @Nullable final ResourceLocation emptyIcon) {

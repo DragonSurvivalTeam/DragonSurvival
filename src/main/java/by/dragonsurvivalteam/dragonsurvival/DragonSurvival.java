@@ -1,5 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival;
 
+import by.dragonsurvivalteam.dragonsurvival.client.DragonSurvivalClient;
+import by.dragonsurvivalteam.dragonsurvival.common.entity.HunterFaction;
 import by.dragonsurvivalteam.dragonsurvival.config.ConfigHandler;
 import by.dragonsurvivalteam.dragonsurvival.network.NetworkHandler;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAdvancementTriggers;
@@ -25,8 +27,6 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.t
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.trigger.OnDeath;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.trigger.OnSelfHit;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.trigger.OnTargetHit;
-import by.dragonsurvivalteam.dragonsurvival.client.DragonSurvivalClient;
-import by.dragonsurvivalteam.dragonsurvival.common.entity.HunterFaction;
 import by.dragonsurvivalteam.dragonsurvival.util.proxy.ClientProxy;
 import by.dragonsurvivalteam.dragonsurvival.util.proxy.Proxy;
 import by.dragonsurvivalteam.dragonsurvival.util.proxy.ServerProxy;

@@ -12,7 +12,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.levelgen.structure.Structure;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -24,12 +23,9 @@ import java.util.List;
 
 @Mixin(LocationPredicate.class)
 public abstract class LocationPredicateMixin {
-    @Unique
-    private List<String> dragonSurvival$biomes = List.of();
-    @Unique
-    private List<String> dragonSurvival$structures = List.of();
-    @Unique
-    private Boolean dragonSurvival$canSeeSky;
+    @Unique private List<String> dragonSurvival$biomes = List.of();
+    @Unique private List<String> dragonSurvival$structures = List.of();
+    @Unique private Boolean dragonSurvival$canSeeSky;
 
     @Inject(method = "fromJson", at = @At("RETURN"))
     private static void dragonSurvival$readModernLocation(
@@ -85,8 +81,7 @@ public abstract class LocationPredicateMixin {
         }
     }
 
-    @Unique
-    private boolean dragonSurvival$matchesBiome(final Holder<Biome> biome, final List<String> biomes) {
+    @Unique private boolean dragonSurvival$matchesBiome(final Holder<Biome> biome, final List<String> biomes) {
         for (String value : biomes) {
             ResourceLocation id = new ResourceLocation(dragonSurvival$withoutTag(value));
             if (value.startsWith("#") && biome.is(TagKey.create(Registries.BIOME, id))) {
@@ -99,8 +94,7 @@ public abstract class LocationPredicateMixin {
         return false;
     }
 
-    @Unique
-    private boolean dragonSurvival$matchesStructure(final ServerLevel level, final BlockPos pos, final List<String> structures) {
+    @Unique private boolean dragonSurvival$matchesStructure(final ServerLevel level, final BlockPos pos, final List<String> structures) {
         for (String value : structures) {
             ResourceLocation id = new ResourceLocation(dragonSurvival$withoutTag(value));
             boolean matches = value.startsWith("#")
@@ -117,8 +111,7 @@ public abstract class LocationPredicateMixin {
         return false;
     }
 
-    @Unique
-    private static List<String> dragonSurvival$values(final JsonElement element) {
+    @Unique private static List<String> dragonSurvival$values(final JsonElement element) {
         if (element == null || element.isJsonNull()) {
             return List.of();
         }
@@ -139,8 +132,7 @@ public abstract class LocationPredicateMixin {
         return List.copyOf(values);
     }
 
-    @Unique
-    private static String dragonSurvival$withoutTag(final String value) {
+    @Unique private static String dragonSurvival$withoutTag(final String value) {
         return value.startsWith("#") ? value.substring(1) : value;
     }
 }

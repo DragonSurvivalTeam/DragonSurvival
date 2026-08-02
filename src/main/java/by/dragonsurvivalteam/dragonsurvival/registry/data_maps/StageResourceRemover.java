@@ -1,6 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.data_maps;
 
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.StageResources;
+import by.dragonsurvivalteam.dragonsurvival.common.compat.datamaps.DataMapValueRemover;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import com.mojang.datafixers.util.Either;
@@ -8,7 +9,6 @@ import com.mojang.serialization.Codec;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
-import by.dragonsurvivalteam.dragonsurvival.common.compat.datamaps.DataMapValueRemover;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;

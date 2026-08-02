@@ -15,9 +15,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.client.event.ModelEvent;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
@@ -43,13 +43,13 @@ public class CustomSoulIconLoader {
         Map<ResourceLocation, JsonElement> resources = new HashMap<>();
         SimpleJsonResourceReloadListener.scanDirectory(manager, "custom_soul_icons", new Gson(), resources);
 
-		resources.forEach((location, element) -> CustomSoulIcon.CODEC.decode(JsonOps.INSTANCE, element)
-			.map(Pair::getFirst)
-			.resultOrPartial(DragonSurvival.LOGGER::error)
-			.ifPresent(result -> {
-				ResourceKey<DragonStage> stage = result.stage().orElse(null);
-				ICONS.computeIfAbsent(result.species(), key -> new HashMap<>()).put(stage, result.model());
-			}));
+        resources.forEach((location, element) -> CustomSoulIcon.CODEC.decode(JsonOps.INSTANCE, element)
+            .map(Pair::getFirst)
+            .resultOrPartial(DragonSurvival.LOGGER::error)
+            .ifPresent(result -> {
+                ResourceKey<DragonStage> stage = result.stage().orElse(null);
+                ICONS.computeIfAbsent(result.species(), key -> new HashMap<>()).put(stage, result.model());
+            }));
     }
 
     public static @Nullable ResourceLocation getIcon(final ResourceKey<DragonSpecies> species, @Nullable final ResourceKey<DragonStage> stage) {

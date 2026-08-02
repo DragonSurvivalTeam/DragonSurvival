@@ -1,12 +1,12 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.projectile.entity_effects;
 
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.LevelBasedValue;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.SpawnParticles;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.projectile.Projectile;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.LevelBasedValue;
 
 public record ProjectileEntityParticleEffect(SpawnParticles particleData, LevelBasedValue particleCount) implements ProjectileEntityEffect {
     public static final MapCodec<ProjectileEntityParticleEffect> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
