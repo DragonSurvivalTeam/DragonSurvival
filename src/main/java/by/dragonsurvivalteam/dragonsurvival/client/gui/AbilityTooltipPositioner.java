@@ -24,13 +24,15 @@ public class AbilityTooltipPositioner implements ClientTooltipPositioner {
 
         // Use tooltipLeftWidth, tooltipLeftHeight, tooltipRightWidth, and tooltipRightHeight to determine the position of the tooltip
         if (tooltipPos.x + tooltipRightWidth + padding > screenWidth) {
-            tooltipPos.x = screenWidth - (tooltipRightWidth + padding);
+            // If we have to, we'd rather cut off the right side of the tooltip
+            tooltipPos.x = Math.max(0, screenWidth - (tooltipRightWidth + padding));
         } else if (tooltipPos.x - tooltipLeftWidth - padding < 0) {
             tooltipPos.x = padding + tooltipLeftWidth;
         }
 
         if (tooltipPos.y + tooltipHeight + padding > screenHeight) {
-            tooltipPos.y = screenHeight - (tooltipHeight + padding);
+            // Prefer to cut off the bottom part if we have to
+            tooltipPos.y = Math.max(0, screenHeight - (tooltipHeight + padding));
         }
     }
 }

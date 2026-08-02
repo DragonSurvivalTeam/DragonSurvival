@@ -76,8 +76,7 @@ public class HUDOverlayHandlerMixin {
         }
     }
 
-    @Unique
-    private static @Nullable Identifier dragonSurvival$getDragonFoodSprites() {
+    @Unique private static @Nullable Identifier dragonSurvival$getDragonFoodSprites() {
         if (DragonFoodHandler.dragonFoodHandlingIsDisabled() || HUDHandler.vanillaFoodLevel) {
             // Same check exists for 'HudHandler' which manages whether the vanilla food icons are to be shown or not
             return null;

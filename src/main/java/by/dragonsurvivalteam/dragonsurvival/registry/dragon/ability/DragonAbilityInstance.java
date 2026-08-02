@@ -7,6 +7,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.ManaCost;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.ManaHandler;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncDisableAbility;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncStopCast;
+import by.dragonsurvivalteam.dragonsurvival.network.syncing.SyncCooldown;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
@@ -95,7 +96,9 @@ public class DragonAbilityInstance {
 
     public void tick(final Player dragon) {
         if (dragon instanceof ServerPlayer serverPlayer) {
-            boolean isAutomaticallyDisabled = value().usageBlocked().map(condition -> condition.test(Condition.abilityContext(serverPlayer))).orElse(false);
+            boolean isAutomaticallyDisabled = cannotReserve(dragon) ||
+                    (!isPassive() && DragonAbilityInstance.hasAbilityDisablingEffect(dragon)) ||
+                    value().usageBlocked().map(condition -> condition.test(Condition.abilityContext(serverPlayer))).orElse(false);
 
             if (isAutomaticallyDisabled && !this.isAutomaticallyDisabled) {
                 setDisabled(serverPlayer, true, false);
@@ -111,6 +114,40 @@ public class DragonAbilityInstance {
         if (isActive && canBeCast()) {
             tickActions(dragon);
         }
+    }
+
+    public float getReservedCost() {
+        if (!isActive) {
+            return 0;
+        }
+
+        if (!isUsable()) {
+            return 0;
+        }
+
+        return getContinuousManaCost(ManaCost.ManaCostType.RESERVED);
+    }
+
+    /**
+     * We disable the first reserved passive ability we find when not enough mana is present </br>
+     * Since there doesn't seem to be a proper way to determine which one we should deactivate (they are all active automatically)
+     */
+    public boolean cannotReserve(final Player dragon) {
+        float manaCost = getContinuousManaCost(ManaCost.ManaCostType.RESERVED);
+
+        if (manaCost == 0) {
+            return false;
+        }
+
+        MagicData magic = MagicData.getData(dragon);
+
+        if (!isEnabled() && manaCost > magic.getAvailableMana()) {
+            // Not enough (unreserved) mana present to activate
+            return true;
+        }
+
+        // Too much is already reserved
+        return magic.getReservedMana() > ManaHandler.getRawMaxMana(dragon);
     }
 
     public void queueTickingSound(final SoundEvent soundEvent, final SoundSource soundSource, final Player dragon) {
@@ -267,18 +304,28 @@ public class DragonAbilityInstance {
 
         // Passive abilities keep their cooldown since some effects can affect creative mode gameplay in a confusing way
         // (e.g. a revival effect - since the player does not actively cast it, it may seem like there is a bug)
-        if (dragon.hasInfiniteMaterials() && !this.isPassive()) {
+        if (dragon.hasInfiniteMaterials() && !isPassive()) {
             cooldown = NO_COOLDOWN;
         } else {
             cooldown = ability.value().activation().getCooldown(level);
+        }
+
+        if (isPassive() && dragon instanceof ServerPlayer serverPlayer) {
+            // Active abilities already set the client-side cooldown through 'release' when the player stops pressing the button
+            // Such a behavior doesn't exist for passive abilities though - therefore, we synchronize manually
+            PacketDistributor.sendToPlayer(serverPlayer, new SyncCooldown(key(), cooldown));
         }
     }
 
     /** This does not sync the change to the client */
     public void tickCooldown(final Player player) {
+        if (cooldown == NO_COOLDOWN) {
+            return;
+        }
+
         // Passive abilities keep their cooldown since some effects can affect creative mode gameplay in a confusing way
         // (e.g. a revival effect - since the player does not actively cast it, it may seem like there is a bug)
-        if (player.hasInfiniteMaterials() && !this.isPassive()) {
+        if (player.hasInfiniteMaterials() && !isPassive()) {
             cooldown = NO_COOLDOWN;
         } else {
             cooldown = Math.max(NO_COOLDOWN, cooldown - 1);
@@ -353,17 +400,28 @@ public class DragonAbilityInstance {
      * Afterward its active status will be updated
      */
     public void setDisabled(final Player player, boolean isDisabled, boolean isManual) {
+        boolean wasEnabled = isEnabled();
+
         if (isManual) {
             this.isManuallyDisabled = isDisabled;
         } else {
             this.isAutomaticallyDisabled = isDisabled;
         }
 
-        if (isActive && !isEnabled(player)) {
+        if (isActive && !isEnabled()) {
             setActive(player, false);
-        } else if (!isActive && isEnabled(player) && isPassive()) {
+        } else if (!isActive && isEnabled() && isPassive()) {
             // Passive abilities need to be re-activated automatically
             setActive(player, true);
+        }
+
+        // We calculate the reserved mana per tick, but we still need to immediately apply adjustments when abilities are (de)activated
+        // Otherwise we may activate 2 reserved abilities and in the tick they realize they need to disable themselves
+        // Causing them to constantly switch between enabled and disabled
+        float manaCost = getContinuousManaCost(ManaCost.ManaCostType.RESERVED);
+
+        if (manaCost > 0 && wasEnabled != isEnabled()) {
+            MagicData.getData(player).adjustReservedMana(isActive ? manaCost : -manaCost);
         }
     }
 
@@ -371,11 +429,7 @@ public class DragonAbilityInstance {
         return player != null && player.hasEffect(DSEffects.MAGIC_DISABLED);
     }
 
-    public boolean isDisabled(boolean isManual, Player player) {
-        if (hasAbilityDisablingEffect(player)) {
-            return true;
-        }
-
+    public boolean isDisabled(boolean isManual) {
         if (isManual) {
             return isManuallyDisabled;
         } else {
@@ -383,19 +437,7 @@ public class DragonAbilityInstance {
         }
     }
 
-    public boolean isDisabled(boolean isManual) {
-        return isDisabled(isManual, null);
-    }
-
-    public boolean isEnabled(Player player) {
-        if (hasAbilityDisablingEffect(player)) {
-            return false;
-        }
-
-        return !isManuallyDisabled && !isAutomaticallyDisabled;
-    }
-
     public boolean isEnabled() {
-        return isEnabled(null);
+        return !isManuallyDisabled && !isAutomaticallyDisabled;
     }
 }

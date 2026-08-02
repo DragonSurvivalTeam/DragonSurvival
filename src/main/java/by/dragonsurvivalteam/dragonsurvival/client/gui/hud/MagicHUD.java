@@ -1,6 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.client.gui.hud;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.client.util.RenderingUtils;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscResources;
@@ -33,6 +34,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import org.jetbrains.annotations.NotNull;
 
+import java.text.NumberFormat;
 import java.util.Objects;
 
 import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
@@ -82,6 +84,11 @@ public class MagicHUD {
     @ConfigOption(side = ConfigSide.CLIENT, category = {"ui", "magic"}, key = "mana_bar_y_offset")
     public static Integer manabarYOffset = 0;
 
+    @ConfigRange
+    @Translation(key = "show_mana_text", type = Translation.Type.CONFIGURATION, comments = "Shows the available (non-reserved) mana in text form above the mana icons")
+    @ConfigOption(side = ConfigSide.CLIENT, category = {"ui", "magic"}, key = "show_mana_text")
+    public static boolean showManaText = false;
+
     public static final Identifier ID = DragonSurvival.res("magic_hud");
 
     // 1.20.6 moved a bunch of widgets around, so to keep compatibility with older versions, we need to use the old widgets texture
@@ -89,6 +96,13 @@ public class MagicHUD {
 
     private static final Identifier VANILLA_WIDGETS = Identifier.fromNamespaceAndPath(MODID, "textures/gui/pre-1.20.1-widgets.png");
     private static final Identifier CAST_BAR_FILL = Identifier.fromNamespaceAndPath(MODID, "textures/gui/cast_bar_fill.png");
+
+    private static final NumberFormat FORMATTER = NumberFormat.getInstance();
+
+    static {
+        FORMATTER.setMinimumFractionDigits(2);
+        FORMATTER.setMaximumFractionDigits(2);
+    }
 
     public static class OutlineColorData {
         private int color;
@@ -142,7 +156,7 @@ public class MagicHUD {
         if (localPlayer.experienceLevel > 0) {
             Profiler.get().push("expLevel");
 
-            String s = "" + localPlayer.experienceLevel;
+            String s = String.valueOf(localPlayer.experienceLevel);
             int width = (guiScaledWidth - Minecraft.getInstance().font.width(s)) / 2;
             int height = guiScaledHeight - 31 - 4;
 
@@ -242,8 +256,8 @@ public class MagicHUD {
         int sizeX = 20;
         int sizeY = 20;
 
-        int i1 = graphics.guiWidth() - sizeX * MagicData.HOTBAR_SLOTS - 20;
-        int posX = i1;
+        int hotbarX = graphics.guiWidth() - sizeX * MagicData.HOTBAR_SLOTS - 20;
+        int posX = hotbarX;
         int posY = graphics.guiHeight() - sizeY;
 
         posX += skillbarXOffset;
@@ -255,7 +269,7 @@ public class MagicHUD {
                     DragonAbilityInstance ability = magic.fromSlot(x);
 
                     if (ability != null) {
-                        if (!ability.isEnabled(player)) {
+                        if (!ability.isEnabled()) {
                             // TODO :: what color is this and what is this check for?
                             if (colors[x].pastDelay && colors[x].color == 0) {
                                 colors[x].delay = disabledColorDelay;
@@ -324,11 +338,10 @@ public class MagicHUD {
                 );
             }
 
-            float reservedMana = ManaHandler.getReservedMana(player);
             float maxMana = ManaHandler.getMaxMana(player);
-            float currentMana = Math.min(maxMana, ManaHandler.getCurrentMana(player));
+            float currentMana = magic.getAvailableMana();
 
-            int manaX = i1;
+            int manaX = hotbarX;
             int manaY = graphics.guiHeight() - sizeY;
 
             manaX += manabarXOffset;
@@ -355,35 +368,62 @@ public class MagicHUD {
                 blue = color.blue();
             }
 
+            int maxIcons = 9;
+            int iconSize = 9;
+            int y = 0;
+
             // Render up to 3 rows with 9 mana icons max.
             for (int row = 0; row < 3; row++) {
-                for (int point = 0; point < 9; point++) {
-                    int slot = row * 9 + point;
+                if (row * maxIcons > maxMana + magic.getReservedMana()) {
+                    break;
+                }
 
-                    if (slot + 0.5 > currentMana) {
-                        int x = manaX + point * 9;
-                        int y = manaY - 13 - row * 10;
+                for (int point = 0; point < maxIcons; point++) {
+                    int slot = row * iconSize + point;
 
-                        if (maxMana > 0 && maxMana >= slot + 0.5) {
-                            if (magic.isCasting()) {
-                                // No mana regeneration
-                                blit(graphics, manaSprites.empty(), x, y, 9, 1, 1, 1, 1);
-                            } else if (player.getAttributeValue(DSAttributes.MANA_REGENERATION) > player.getAttributeBaseValue(DSAttributes.MANA_REGENERATION)) {
-                                // Fast mana regeneration
-                                blit(graphics, manaSprites.recovery(), x, y, 9, 1, red, green, blue);
-                            } else {
-                                // Slow mana regeneration
-                                blit(graphics, manaSprites.empty(), x, y, 9, 1, 1, 1, 1);
-                                blit(graphics, manaSprites.recovery(), x, y, 9, deltaCounter, red, green, blue);
-                            }
-                        } else if (reservedMana > 0 && reservedMana >= slot + 0.5 - maxMana) {
-                            // Reserved mana
-                            blit(graphics, manaSprites.reserved(), x, y, 9, 1, red, green, blue);
+                    if (slot > maxMana + magic.getReservedMana()) {
+                        break;
+                    }
+
+                    int x = manaX + point * iconSize;
+                    y = manaY - 13 - row * (iconSize + 1);
+
+                    if (maxMana > 0 && maxMana > slot) {
+                        if (magic.isCasting()) {
+                            // No mana regeneration
+                            blit(graphics, manaSprites.empty(), x, y, iconSize, 1, 1, 1, 1);
+                        } else if (player.getAttributeValue(DSAttributes.MANA_REGENERATION) > player.getAttributeBaseValue(DSAttributes.MANA_REGENERATION)) {
+                            // Fast mana regeneration
+                            blit(graphics, manaSprites.recovery(), x, y, iconSize, 1, red, green, blue);
+                        } else {
+                            // Slow mana regeneration
+                            blit(graphics, manaSprites.empty(), x, y, iconSize, 1, 1, 1, 1);
+                            blit(graphics, manaSprites.recovery(), x, y, iconSize, deltaCounter, red, green, blue);
                         }
-                    } else {
-                        blit(graphics, manaSprites.full(), manaX + point * 9, manaY - 13 - row * 10, 9, 1, red, green, blue);
+                    } else if (magic.getReservedMana() > 0 && magic.getReservedMana() > slot - maxMana) {
+                        // Reserved mana (as long as at least half of the slot is reserved)
+                        blit(graphics, manaSprites.reserved(), x, y, iconSize, 1, red, green, blue);
+                    }
+
+                    if (currentMana > slot) {
+                        float percentage = Math.min(currentMana - slot, 1);
+
+                        if (percentage < 1) {
+                            // We can't do it precise in decimals because the relevant methods work in integers
+                            graphics.enableScissor(x, y, x + (int) (iconSize * percentage + /* Round up */ 0.5), y + iconSize);
+                            blit(graphics, manaSprites.full(), x, y, iconSize, 1, red, green, blue);
+                            graphics.disableScissor();
+                        } else {
+                            blit(graphics, manaSprites.full(), x, y, iconSize, 1, red, green, blue);
+                        }
                     }
                 }
+            }
+
+            if (showManaText) {
+                String manaText = FORMATTER.format(magic.getAvailableMana()) + " / " + FORMATTER.format(ManaHandler.getMaxMana(player));
+                int drawX = hotbarX + (iconSize * maxIcons) / 2 - Minecraft.getInstance().font.width(manaText) / 2;
+                RenderingUtils.renderTextWithOutline(graphics, manaText, drawX, y - 10);
             }
         }
 

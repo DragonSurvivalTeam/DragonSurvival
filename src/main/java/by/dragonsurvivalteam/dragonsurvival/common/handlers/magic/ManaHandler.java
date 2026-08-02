@@ -2,11 +2,9 @@ package by.dragonsurvivalteam.dragonsurvival.common.handlers.magic;
 
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ManaHandling;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.ManaCost;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAttributes;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import by.dragonsurvivalteam.dragonsurvival.util.ExperienceUtils;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
@@ -26,12 +24,22 @@ public class ManaHandler {
         }
 
         MagicData magic = MagicData.getData(player);
+        float maxMana = ManaHandler.getRawMaxMana(player);
+
+        if (magic.getCurrentMana() > maxMana) {
+            // There doesn't seem to be a good point to listen to attribute value changes
+            // So we have to manually check and adjust, because otherwise current mana is not properly set
+            // (Causing visual issues and reserved abilities to switch between enabled and disabled)
+            magic.setCurrentMana(player, maxMana);
+        }
 
         if (magic.isCasting()) {
             return;
         }
 
-        if (magic.getCurrentMana() < getMaxMana(player)) {
+        if (magic.getAvailableMana() < getMaxMana(player)) {
+            // FIXME :: Mana may still be out of sync by about ~0.03
+            //          Potentially we have to send a sync packet every tick and let the server fully handle mana amount
             replenishMana(player, (float) player.getAttributeValue(DSAttributes.MANA_REGENERATION));
         }
     }
@@ -41,25 +49,42 @@ public class ManaHandler {
             return true;
         }
 
-        if (getMaxMana(player) == 0) {
-            // The player does not have any mana or reserved too much of it
-            return false;
+        MagicData magic = MagicData.getData(player);
+
+        // Prevent the usage of abilities if the mana cost would cause reserved abilities to be disabled
+        // Due to losing the mana bonus from experience levels
+        if (magic.getReservedMana() > 0 && magic.getAvailableMana() < manaCost) {
+            ManaHandling manaHandling = DragonStateProvider.getData(player).species().value().manaHandling();
+
+            if (manaHandling.manaXpConversion() > 0 && manaHandling.maxManaFromLevels() > 0) {
+                int experienceCost = convertMana(magic.getAvailableMana() - manaCost, manaHandling.manaXpConversion());
+                int newLevel = ExperienceUtils.getLevel(ExperienceUtils.getTotalExperience(player) + experienceCost);
+                float manaBonus = (float) Math.min(manaHandling.maxManaFromLevels(), newLevel * manaHandling.manaPerLevel());
+
+                if (player.getAttributeValue(DSAttributes.MANA) + manaBonus < magic.getReservedMana()) {
+                    return false;
+                }
+            }
         }
 
-        return getCurrentMana(player) + getManaFromExperience(player) - manaCost >= 0;
+        return MagicData.getData(player).getAvailableMana() + getManaFromExperience(player) - manaCost >= 0;
     }
 
+    /** Returns the current maximum mana (after subtracting reserved mana) */
     public static float getMaxMana(final Player player) {
+        return Math.max(0, getRawMaxMana(player) - MagicData.getData(player).getReservedMana());
+    }
+
+    /** Returns the current maximum mana */
+    public static float getRawMaxMana(final Player player) {
         float mana = (float) player.getAttributeValue(DSAttributes.MANA);
         mana += getBonusManaFromExperience(player);
-        mana -= getReservedMana(player);
-
         return Math.max(0, mana);
     }
 
     public static void replenishMana(final Player player, float mana) {
         MagicData data = MagicData.getData(player);
-        data.setCurrentMana(Math.min(getMaxMana(player), data.getCurrentMana() + mana));
+        data.adjustMana(player, mana);
     }
 
     public static void consumeMana(final Player player, float manaCost) {
@@ -67,46 +92,28 @@ public class ManaHandler {
             return;
         }
 
-        float pureMana = getCurrentMana(player);
+        MagicData magic = MagicData.getData(player);
+        float pureMana = magic.getAvailableMana();
         ManaHandling manaHandling = DragonStateProvider.getData(player).species().value().manaHandling();
 
         if (manaHandling.manaXpConversion() > 0 && player.level().isClientSide()) {
             // Check if experience would be consumed as part of the mana cost
-            if (pureMana < manaCost && getCurrentMana(player) + getManaFromExperience(player) >= manaCost) {
+            if (pureMana < manaCost && pureMana + getManaFromExperience(player) >= manaCost) {
                 player.playSound(SoundEvents.EXPERIENCE_ORB_PICKUP, 0.01F, 0.01F);
             }
         }
-
-        MagicData magic = MagicData.getData(player);
 
         if (manaHandling.manaXpConversion() > 0) {
             if (pureMana < manaCost) {
                 float missingMana = pureMana - manaCost;
                 player.giveExperiencePoints(convertMana(missingMana, manaHandling.manaXpConversion()));
-                magic.setCurrentMana(0);
+                magic.setCurrentMana(player, 0);
             } else {
-                magic.setCurrentMana(pureMana - manaCost);
+                magic.adjustMana(player, -manaCost);
             }
         } else {
-            magic.setCurrentMana(pureMana - manaCost);
+            magic.adjustMana(player, -manaCost);
         }
-    }
-
-    public static float getReservedMana(final Player player) {
-        float reservedMana = 0;
-        MagicData magic = MagicData.getData(player);
-
-        for (DragonAbilityInstance ability : magic.getAbilities().values()) {
-            if (ability.isApplyingEffects()) {
-                reservedMana += ability.getContinuousManaCost(ManaCost.ManaCostType.RESERVED);
-            }
-        }
-
-        return reservedMana;
-    }
-
-    public static float getCurrentMana(final Player player) {
-        return Math.min(MagicData.getData(player).getCurrentMana(), getMaxMana(player));
     }
 
     public static float getBonusManaFromExperience(final Player player) {

@@ -2,12 +2,15 @@ package by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons;
 
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.DragonAbilityScreen;
 import by.dragonsurvivalteam.dragonsurvival.client.render.AbilityAndPenaltyTooltipRenderer;
+import by.dragonsurvivalteam.dragonsurvival.client.util.RenderingUtils;
 import by.dragonsurvivalteam.dragonsurvival.mixins.client.ScreenAccessor;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncDisableAbility;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncSlotAssignment;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.UpgradeType;
+import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
+import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Renderable;
@@ -16,6 +19,7 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
+import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.client.gui.widget.ExtendedButton;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
@@ -64,7 +68,7 @@ public class AbilityButton extends ExtendedButton {
             return;
         }
 
-        leftLevelButton = new LevelButton(LevelButton.Type.DOWNGRADE, ability, x - width / 2 + 0, y + 9);
+        leftLevelButton = new LevelButton(LevelButton.Type.DOWNGRADE, ability, x - width / 2, y + 9);
         rightLevelButton = new LevelButton(LevelButton.Type.UPGRADE, ability, x + width / 2 + 18, y + 9);
         ((ScreenAccessor) screen).dragonSurvival$addRenderableWidget(leftLevelButton);
         ((ScreenAccessor) screen).dragonSurvival$addRenderableWidget(rightLevelButton);
@@ -145,7 +149,7 @@ public class AbilityButton extends ExtendedButton {
     @Override
     public void onClick(@NotNull MouseButtonEvent event, boolean isDoubleClick) {
         if (!isHotbar && ability != null && ability.value().canBeManuallyDisabled() && event.hasControlDown()) {
-            boolean isDisabled = !ability.isDisabled(true, Minecraft.getInstance().player);
+            boolean isDisabled = !ability.isDisabled(true);
             ability.setDisabled(Minecraft.getInstance().player, isDisabled, true);
             ClientPacketDistributor.sendToServer(new SyncDisableAbility(ability.key(), isDisabled, true));
             return;
@@ -227,7 +231,7 @@ public class AbilityButton extends ExtendedButton {
             return;
         }
 
-        if (!ability.isEnabled(Minecraft.getInstance().player)) {
+        if (ability.isDisabled(true) || ability.isDisabled(false) && ability.level() > 0) {
             blit(graphics, DISABLED_BACKGROUND, getX() - 2, getY() - 2, ORNAMENTATION_SIZE);
         } else {
             if (ability.isPassive()) {
@@ -249,6 +253,19 @@ public class AbilityButton extends ExtendedButton {
 
         if (!isHotbar || !isDragging) {
             blit(graphics, ability.getIcon(), getX(), getY(), SIZE);
+            float cooldown = ability.value().activation().getCooldown(ability.level());
+
+            if (cooldown > 0 && ability.cooldown() > 0) {
+                float percentage = Mth.clamp(ability.cooldown() / cooldown, 0, 1);
+                int offset = SIZE - (int) (SIZE - (percentage * SIZE));
+                graphics.fill(getX(), getY(), getX() + SIZE, getY() + offset, DSColors.withAlpha(DSColors.DARK_GRAY, 0.75f));
+
+                String cooldownText = String.valueOf((int) Functions.ticksToSeconds(ability.cooldown()));
+                int drawX = getX() + SIZE / 2 - Minecraft.getInstance().font.width(cooldownText) / 2;
+                int drawY = getY() + SIZE / 2 - Minecraft.getInstance().font.lineHeight / 2;
+
+                RenderingUtils.renderTextWithOutline(graphics, cooldownText, drawX, drawY);
+            }
         }
 
         graphics.pose().popMatrix();

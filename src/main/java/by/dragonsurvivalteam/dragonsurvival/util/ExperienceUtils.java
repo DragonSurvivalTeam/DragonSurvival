@@ -3,7 +3,6 @@ package by.dragonsurvivalteam.dragonsurvival.util;
 import net.minecraft.world.entity.player.Player;
 
 public class ExperienceUtils {
-
     /** See {@link Player#getXpNeededForNextLevel()} */
     public static int getExperienceForLevelAfter(int level) {
         if (level >= 30) {

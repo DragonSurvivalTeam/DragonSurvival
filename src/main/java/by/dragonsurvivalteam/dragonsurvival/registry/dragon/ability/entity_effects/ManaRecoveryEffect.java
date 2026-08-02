@@ -63,9 +63,9 @@ public record ManaRecoveryEffect(ActionType actionType, AdjustmentType adjustmen
             case FLAT -> amount;
         };
 
-        magic.setCurrentMana(Math.min(max, base + adjustment));
+        magic.setCurrentMana(player, base + adjustment);
         // Usually there is no need to sync since mana related logic occurs on both sides
-        PacketDistributor.sendToPlayer(dragon, new SyncMana(magic.getCurrentMana()));
+        PacketDistributor.sendToPlayer(dragon, new SyncMana(adjustment, false));
     }
 
     @Override

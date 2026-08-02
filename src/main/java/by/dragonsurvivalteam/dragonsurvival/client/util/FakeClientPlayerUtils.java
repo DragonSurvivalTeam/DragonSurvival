@@ -11,10 +11,13 @@ import com.geckolib.animation.object.PlayState;
 import net.minecraft.world.entity.Entity.RemovalReason;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
+import net.neoforged.neoforge.client.event.RenderFrameEvent;
 
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
@@ -23,6 +26,7 @@ import java.util.function.Consumer;
 public class FakeClientPlayerUtils {
     private static final ConcurrentHashMap<Integer, FakeClientPlayer> FAKE_PLAYERS = new ConcurrentHashMap<>();
     private static final ConcurrentHashMap<Integer, DragonEntity> FAKE_DRAGONS = new ConcurrentHashMap<>();
+    private static final Set<Integer> ACTIVE_FAKE_PLAYERS = ConcurrentHashMap.newKeySet();
 
     public static DragonEntity getFakeDragon(int index, final DragonStateHandler handler) {
         FakeClientPlayer fakePlayer = getFakePlayer(index, handler);
@@ -64,10 +68,11 @@ public class FakeClientPlayerUtils {
     }
 
     public static FakeClientPlayer getFakePlayer(int index, final DragonStateHandler handler) {
-        FAKE_PLAYERS.computeIfAbsent(index, FakeClientPlayer::new);
-        FAKE_PLAYERS.get(index).handler = handler;
-        FAKE_PLAYERS.get(index).lastAccessed = System.currentTimeMillis();
-        return FAKE_PLAYERS.get(index);
+        FakeClientPlayer fakePlayer = FAKE_PLAYERS.computeIfAbsent(index, FakeClientPlayer::new);
+        fakePlayer.handler = handler;
+        fakePlayer.lastAccessed = System.currentTimeMillis();
+        ACTIVE_FAKE_PLAYERS.add(index);
+        return fakePlayer;
     }
 
     public static int getNextIndex() {
@@ -85,6 +90,21 @@ public class FakeClientPlayerUtils {
         FAKE_DRAGONS.values().forEach(processor);
     }
 
+    public static void processActivePlayers(final Consumer<FakeClientPlayer> processor) {
+        ACTIVE_FAKE_PLAYERS.forEach(index -> {
+            FakeClientPlayer player = FAKE_PLAYERS.get(index);
+
+            if (player != null) {
+                processor.accept(player);
+            }
+        });
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public static void clearActivePlayers(final RenderFrameEvent.Pre event) {
+        ACTIVE_FAKE_PLAYERS.clear();
+    }
+
     @SubscribeEvent
     public static void clientTick(final ClientTickEvent.Pre event) {
         FAKE_PLAYERS.forEach((index, player) -> {
@@ -100,6 +120,7 @@ public class FakeClientPlayerUtils {
                 }
 
                 FAKE_PLAYERS.remove(index);
+                ACTIVE_FAKE_PLAYERS.remove(index);
             }
         });
     }

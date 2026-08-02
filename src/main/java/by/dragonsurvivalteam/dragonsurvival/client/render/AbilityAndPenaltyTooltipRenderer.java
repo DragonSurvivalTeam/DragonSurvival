@@ -9,6 +9,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.Ab
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.UpgradeType;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty.DragonPenalty;
 import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
+import com.mojang.blaze3d.platform.Window;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -38,6 +39,9 @@ public class AbilityAndPenaltyTooltipRenderer {
 
     @Translation(comments = "§4Manually disabled§r")
     private static final String MANUALLY_DISABLED = Translation.Type.GUI.wrap("general.manually_disabled");
+
+    @Translation(comments = "§4Disabled due to ability conditions§r")
+    private static final String AUTOMATICALLY_DISABLED = Translation.Type.GUI.wrap("general.automatically_disabled");
 
     private static final Identifier EFFECT_HEADER = DragonSurvival.res("ability_effect_header");
     private static final Identifier BARS = DragonSurvival.res("textures/gui/widget_bars.png");
@@ -89,17 +93,44 @@ public class AbilityAndPenaltyTooltipRenderer {
         // That's why we use this check to skip the first header line
         boolean skipFirstLine = !lines.isEmpty() && isEffectHeader(lines.getFirst());
 
-        // '65' is roughly the amount of space needed for the other components so that the name and level can be centered without overlap
-        int backgroundWidth = Math.max(150, Minecraft.getInstance().font.width(name) + 65);
-        List<FormattedCharSequence> description = Minecraft.getInstance().font.split(rawDescription, backgroundWidth - 7);
+        Window window = Minecraft.getInstance().getWindow();
+        int maxHeight = (int) (window.getHeight() / window.getGuiScale());
+        int maxWidth = (int) (window.getWidth() / window.getGuiScale()) - maxLineWidth;
 
-        int backgroundHeight = /* Size of the horizontal colored bar */ 20 + /* Line breaks between bar, title and bottom info */ 27 + /* Extra padding to account for word wrap */ 8  + (description.size() + bottomInfoLines.size()) * 9;
+        // '65' is roughly the amount of space needed for the other components so that the name and level can be centered without overlap
+        int backgroundWidth = Math.max(maxLineWidth, Minecraft.getInstance().font.width(name) + 65);
+        int backgroundHeight;
+
+        int offset = /* Size of the horizontal colored bar */ 20 + /* Line breaks between bar, title and bottom info */ 27 + /* Extra padding to account for word wrap */ 8;
+        List<FormattedCharSequence> description;
+
+        // There will still be issues if the description is way too long (side-info not being visible e.g.)
+        // But at that point it's just a problem of the description content
+        while (true) {
+            description = Minecraft.getInstance().font.split(rawDescription, backgroundWidth - 7);
+            backgroundHeight = offset + (description.size() + bottomInfoLines.size()) * 9;
+
+            if (backgroundHeight <= maxHeight) {
+                break;
+            }
+
+            // Preferably, we wrap the lines into the compact default width - but if the description is too long, we need to it
+            backgroundWidth = backgroundWidth + 10;
+
+            if (Minecraft.getInstance().hasShiftDown() && backgroundWidth > maxWidth) {
+                // Forcefully show the side-info when requested
+                backgroundWidth = maxWidth;
+                break;
+            }
+        }
+
+        // The side-info doesn't need dynamic width adjustments (scroll support when Shift is pressed)
         boolean hasShiftDown = Minecraft.getInstance().hasShiftDown();
         int sideWidth = hasShiftDown ? maxLineWidth : 15;
         int sideHeight = hasShiftDown ? 36 + Math.min(skipFirstLine ? lines.size() - 1 : lines.size(), MAX_SHOWN_LINES) * 9 : backgroundHeight - 10;
 
         ClientTooltipPositioner positioner = new AbilityTooltipPositioner(hasShiftDown ? sideWidth : 0);
-        Vector2ic position = positioner.positionTooltip(graphics.guiWidth(), graphics.guiHeight(), x, y, maxLineWidth + 5, Math.max(sideHeight, backgroundHeight));
+        Vector2ic position = positioner.positionTooltip(graphics.guiWidth(), graphics.guiHeight(), x, y, backgroundWidth, Math.max(sideHeight, backgroundHeight));
 
         int trueX = position.x();
         int trueY = position.y();
@@ -268,11 +299,14 @@ public class AbilityAndPenaltyTooltipRenderer {
 
         var player = Minecraft.getInstance().player;
 
-        if (!ability.isEnabled(player) && ability.isDisabled(true, player)) {
-            if (DragonAbilityInstance.hasAbilityDisablingEffect(player)) {
+        if (ability.isDisabled(true) || ability.isDisabled(false) && ability.level() > 0) {
+            if (!ability.isPassive() && DragonAbilityInstance.hasAbilityDisablingEffect(player)) {
+                // Only active abilities can be disabled by magic effects
                 rawDescription = Component.translatable(DISABLED_BY_EFFECTS).append("\n\n").append(abilityDescription);
-            } else {
+            } else if (ability.isDisabled(true)) {
                 rawDescription = Component.translatable(MANUALLY_DISABLED).append("\n\n").append(abilityDescription);
+            } else {
+                rawDescription = Component.translatable(AUTOMATICALLY_DISABLED).append("\n\n").append(abilityDescription);
             }
         } else {
             rawDescription = abilityDescription;

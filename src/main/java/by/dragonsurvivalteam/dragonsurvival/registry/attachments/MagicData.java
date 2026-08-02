@@ -7,11 +7,13 @@ import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvide
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.DragonAbilityHolder;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.ActionContainer;
+import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.ManaHandler;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncAbilityLevel;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncMagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAdvancementTriggers;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSSounds;
 import by.dragonsurvivalteam.dragonsurvival.registry.data_components.DSDataComponents;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.BuiltInDragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbility;
@@ -63,12 +65,17 @@ public class MagicData implements ValueIOSerializable {
     public static final int HOTBAR_SLOTS = 4;
     public static final int NO_SLOT = -1;
 
+    @Translation(comments = "Your ability is disabled due to a magic effect")
+    public static final String ABILITY_DISABLED = Translation.Type.GUI.wrap("message.ability_disabled.effect");
+
     private final Map<ResourceKey<DragonSpecies>, Map<ResourceKey<DragonAbility>, DragonAbilityInstance>> abilities = new HashMap<>();
     private final Map<ResourceKey<DragonSpecies>, Map<Integer, ResourceKey<DragonAbility>>> hotbar = new HashMap<>();
     private @Nullable ResourceKey<DragonSpecies> currentSpecies; // TODO :: are we storing this in two data attachments now?
     private boolean renderAbilities = true;
     private int selectedAbilitySlot;
+
     private float currentMana;
+    private float reservedMana;
 
     private boolean errorMessageSent;
     private boolean isCasting;
@@ -79,12 +86,26 @@ public class MagicData implements ValueIOSerializable {
         return player.getData(DSDataAttachments.MAGIC);
     }
 
+    /** Returns the mana that can be used to cast abilities */
+    public float getAvailableMana() {
+        return Math.max(0, currentMana - reservedMana);
+    }
+
+    /** Used when setting the new amount of mana (Also see {@link MagicData#getAvailableMana()}) */
     public float getCurrentMana() {
         return currentMana;
     }
 
-    public void setCurrentMana(float currentMana) {
-        this.currentMana = Math.max(0, currentMana);
+    public void adjustMana(final Player player, float delta) {
+        setCurrentMana(player, currentMana + delta);
+    }
+
+    public void setCurrentMana(final Player player, float currentMana) {
+        // We keep the reserved mana so that the player can enable / disable reserved mana abilities
+        // Without constantly losing said mana
+        this.currentMana = Math.max(reservedMana, currentMana);
+        // Make sure that we are still within the actual max. mana amount
+        this.currentMana = Math.min(ManaHandler.getRawMaxMana(player), this.currentMana);
     }
 
     public void setSelectedAbilitySlot(int newSlot) {
@@ -179,6 +200,8 @@ public class MagicData implements ValueIOSerializable {
         MagicData magic = optional.get();
         InputData experienceLevels = InputData.experienceLevels(event.getEntity().experienceLevel);
 
+        float reservedMana = 0;
+
         for (DragonAbilityInstance ability : magic.getAbilities().values()) {
             if (event.getEntity() instanceof ServerPlayer serverPlayer) {
                 ability.value().upgrade().ifPresent(upgrade -> {
@@ -211,7 +234,13 @@ public class MagicData implements ValueIOSerializable {
             }
 
             ability.tick(event.getEntity());
+
+            // Need to check the reserved cost after the tick in case the ability enabled or disabled itself
+            float manaCost = ability.getReservedCost();
+            reservedMana += manaCost;
         }
+
+        magic.setReservedMana(reservedMana);
 
         if (event.getEntity().level().isClientSide() && magic.isCasting()) {
             if (magic.castTimer == 0) {
@@ -386,15 +415,21 @@ public class MagicData implements ValueIOSerializable {
 
     /** Also sends the error message (if present) when the ability is automatically blocked or the player doesn't have enough mana */
     private boolean checkCast(final Player dragon, final DragonAbilityInstance instance) {
-        if (instance.isDisabled(false, dragon)) {
+        if (instance.isDisabled(false)) {
             if (dragon.level().isClientSide()) {
                 MagicData magic = MagicData.getData(dragon);
                 magic.setErrorMessageSent(true);
+
+                if (DragonAbilityInstance.hasAbilityDisablingEffect(dragon)) {
+                    MagicHUD.castingError(Component.translatable(ABILITY_DISABLED));
+                    return false;
+                }
 
                 Optional<Component> message = instance.value().activation().notification().usageBlocked();
 
                 if (message.isPresent() && message.get().getContents() != PlainTextContents.EMPTY) {
                     MagicHUD.castingError(message.get());
+                    return false;
                 }
             }
 
@@ -494,6 +529,7 @@ public class MagicData implements ValueIOSerializable {
         int slot = 0;
 
         getAbilities().clear();
+        Map<Integer, ResourceKey<DragonAbility>> hotbar = getHotbar();
 
         for (Holder<DragonAbility> ability : currentSpecies.value().abilities()) {
             UpgradeType<?> upgrade = ability.value().upgrade().orElse(null);
@@ -507,12 +543,14 @@ public class MagicData implements ValueIOSerializable {
             }
 
             if (slot < HOTBAR_SLOTS && !instance.isPassive()) {
-                getHotbar().put(slot, ability.getKey());
+                hotbar.put(slot, ability.getKey());
                 slot++;
             }
 
             getAbilities().put(ability.getKey(), instance);
         }
+
+        validateHotbar();
     }
 
     public List<DragonAbilityInstance> getActiveAbilities() {
@@ -573,6 +611,37 @@ public class MagicData implements ValueIOSerializable {
         }
 
         return false;
+    }
+
+    public void validateHotbar() {
+        Map<Integer, ResourceKey<DragonAbility>> hotbar = getHotbar();
+        Map<ResourceKey<DragonAbility>, DragonAbilityInstance> abilities = getAbilities();
+
+        for (int slot = 0; slot < HOTBAR_SLOTS; slot++) {
+            ResourceKey<DragonAbility> key = hotbar.get(slot);
+
+            if (key == null) {
+                continue;
+            }
+
+            DragonAbilityInstance ability = abilities.get(key);
+
+            if (ability == null || ability.isPassive()) {
+                hotbar.remove(slot);
+            }
+        }
+    }
+
+    public void adjustReservedMana(float adjustment) {
+        this.reservedMana = Math.max(0, reservedMana + adjustment);
+    }
+
+    private void setReservedMana(float reservedMana) {
+        this.reservedMana = Math.max(0, reservedMana);
+    }
+
+    public float getReservedMana() {
+        return reservedMana;
     }
 
     public enum AbilityCheck {
@@ -640,6 +709,7 @@ public class MagicData implements ValueIOSerializable {
         }
 
         valueOutput.putFloat(CURRENT_MANA, currentMana);
+        valueOutput.putFloat(RESERVED_MANA, reservedMana);
         valueOutput.putInt(SELECTED_SLOT, selectedAbilitySlot);
         valueOutput.putBoolean(RENDER_ABILITIES, renderAbilities);
 
@@ -716,6 +786,7 @@ public class MagicData implements ValueIOSerializable {
         }
 
         currentMana = valueInput.getFloatOr(CURRENT_MANA, 0.0f);
+        reservedMana = valueInput.getFloatOr(RESERVED_MANA, 0.0f);
         selectedAbilitySlot = valueInput.getIntOr(SELECTED_SLOT, 0);
         renderAbilities = valueInput.getBooleanOr(RENDER_ABILITIES, false);
 
@@ -737,6 +808,7 @@ public class MagicData implements ValueIOSerializable {
     private final String ABILITIES = "abilities";
     private final String CURRENT_SPECIES = "current_species";
     private final String CURRENT_MANA = "current_mana";
+    private final String RESERVED_MANA = "reserved_mana";
     private final String SELECTED_SLOT = "selected_slot";
     private final String RENDER_ABILITIES = "render_abilities";
 }

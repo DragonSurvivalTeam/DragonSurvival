@@ -26,11 +26,9 @@ public interface ILivingEntityExtensionMixin {
     @ModifyReturnValue(method = "canDrownInFluidType", at = @At("RETURN"))
     private boolean dragonSurvival$handleUnlimitedOxygen(boolean canDrownIn, @Local(argsOnly = true) final FluidType fluid) {
         if (self() instanceof Player player) {
-            SwimData data = SwimData.getData(player);
-
-            if (data.canSwimIn(fluid)) {
-                return data.getMaxOxygen(player, fluid) != SwimData.UNLIMITED_OXYGEN;
-            }
+            // TODO :: early return needed if already false? since this may change that to true
+            //         if not (in case we allow players to apply negative bonus, also don't early-return for "can swim in"?
+            return SwimData.getData(player).getMaxOxygen(player, fluid) != SwimData.UNLIMITED_OXYGEN;
         }
 
         return canDrownIn;

@@ -24,15 +24,15 @@ public record SyncDisableAbility(ResourceKey<DragonAbility> ability, boolean isD
 
     public static void handleServer(final SyncDisableAbility packet, final IPayloadContext context) {
         context.enqueueWork(() -> {
-            MagicData data = MagicData.getData(context.player());
-            DragonAbilityInstance ability = data.getAbility(packet.ability());
+            MagicData magic = MagicData.getData(context.player());
+            DragonAbilityInstance ability = magic.getAbility(packet.ability());
 
             if (ability == null) {
                 return;
             }
 
-            if (packet.isDisabled() && ability.isApplyingEffects() && ability == data.getCurrentlyCasting()) {
-                data.stopCasting(context.player(), ability, true);
+            if (packet.isDisabled() && ability.isApplyingEffects() && ability == magic.getCurrentlyCasting()) {
+                magic.stopCasting(context.player(), ability, true);
             }
 
             ability.setDisabled(context.player(), packet.isDisabled(), packet.isManual());

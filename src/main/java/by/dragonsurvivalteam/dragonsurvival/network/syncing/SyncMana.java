@@ -9,16 +9,27 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
-public record SyncMana(float currentMana) implements CustomPacketPayload {
+// Since the client manually adjusts the mana as well it's probably safer to send the delta from the server
+// Instead of overriding it completely, in case the server data is a couple of ticks older
+public record SyncMana(float amount, boolean fullSync) implements CustomPacketPayload {
     public static final Type<SyncMana> TYPE = new Type<>(DragonSurvival.res("sync_mana"));
 
     public static final StreamCodec<FriendlyByteBuf, SyncMana> STREAM_CODEC = StreamCodec.composite(
-            ByteBufCodecs.FLOAT, SyncMana::currentMana,
+            ByteBufCodecs.FLOAT, SyncMana::amount,
+            ByteBufCodecs.BOOL, SyncMana::fullSync,
             SyncMana::new
     );
 
     public static void handleClient(final SyncMana packet, final IPayloadContext context) {
-        context.enqueueWork(() -> MagicData.getData(context.player()).setCurrentMana(packet.currentMana()));
+        context.enqueueWork(() -> {
+            MagicData magic = MagicData.getData(context.player());
+
+            if (packet.fullSync()) {
+                magic.setCurrentMana(context.player(), packet.amount());
+            } else {
+                magic.adjustMana(context.player(), packet.amount());
+            }
+        });
     }
 
     @Override

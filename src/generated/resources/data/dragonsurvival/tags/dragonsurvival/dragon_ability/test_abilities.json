@@ -9,6 +9,8 @@
     "dragonsurvival:test_heal",
     "dragonsurvival:test_on_key_pressed",
     "dragonsurvival:test_ore_vision_outline",
+    "dragonsurvival:test_reserve_mana",
+    "dragonsurvival:test_reserve_mana_second",
     "dragonsurvival:test_smelt",
     "dragonsurvival:test_summon",
     "dragonsurvival:test_teleport",

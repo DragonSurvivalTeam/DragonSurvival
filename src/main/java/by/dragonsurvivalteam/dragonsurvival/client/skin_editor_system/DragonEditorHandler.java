@@ -2,13 +2,17 @@ package by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.models.DragonModel;
+import by.dragonsurvivalteam.dragonsurvival.client.render.ClientDragonRenderer;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.loader.DefaultPartLoader;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.loader.DragonPartLoader;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.DragonPart;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.DragonStageCustomization;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.LayerSettings;
+import by.dragonsurvivalteam.dragonsurvival.client.util.FakeClientPlayer;
+import by.dragonsurvivalteam.dragonsurvival.client.util.FakeClientPlayerUtils;
 import by.dragonsurvivalteam.dragonsurvival.client.util.RenderingUtils;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
+import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import com.mojang.blaze3d.buffers.GpuBuffer;
 import com.mojang.blaze3d.buffers.Std140Builder;
 import com.mojang.blaze3d.buffers.Std140SizeCalculator;
@@ -65,6 +69,36 @@ public class DragonEditorHandler {
             return;
         }
 
+        generateAndMarkSkinTextures(player, handler);
+    }
+
+    private static void ensureSkinTexturesAvailable(final Player player, final DragonStateHandler handler) {
+        if (player == null || handler == null || !handler.isDragon() || handler.body() == null
+            || handler.getSkinData().blankSkin || handler.getCurrentStageCustomization().defaultSkin) {
+            return;
+        }
+
+        Identifier normalTexture = DragonModel.dynamicTexture(player, handler, false);
+
+        if (handler.needsSkinRecompilation() || !generatedSkinTextures.contains(normalTexture)) {
+            generateAndMarkSkinTextures(player, handler);
+        }
+    }
+
+    private static void prepareFakePlayerSkinTextures(final FakeClientPlayer player) {
+        DragonStateHandler handler = player.handler;
+
+        if (handler == null || !handler.isDragon() || handler.body() == null
+            || handler.getSkinData().blankSkin || handler.getCurrentStageCustomization().defaultSkin) {
+            return;
+        }
+
+        ensureSkinTexturesAvailable(player, handler);
+        markSkinTextureUsed(DragonModel.dynamicTexture(player, handler, false));
+        markSkinTextureUsed(DragonModel.dynamicTexture(player, handler, true));
+    }
+
+    private static void generateAndMarkSkinTextures(final Player player, final DragonStateHandler handler) {
         generateSkinTextures(player, handler);
         handler.getSkinData().markSkinCompiled(handler.stageKey());
     }
@@ -77,10 +111,12 @@ public class DragonEditorHandler {
         RenderSystem.assertOnRenderThread();
 
         var textureSize = handler.body().value().textureSize();
-        TextureTarget normalTarget = new TextureTarget("Dragon Skin Normal", textureSize.width(), textureSize.height(), false);
-        TextureTarget glowTarget = new TextureTarget("Dragon Skin Glow", textureSize.width(), textureSize.height(), false);
+        TextureTarget normalTarget = null;
+        TextureTarget glowTarget = null;
 
         try {
+            normalTarget = new TextureTarget("Dragon Skin Normal", textureSize.width(), textureSize.height(), false);
+            glowTarget = new TextureTarget("Dragon Skin Glow", textureSize.width(), textureSize.height(), false);
             clearTarget(normalTarget);
             clearTarget(glowTarget);
 
@@ -118,8 +154,13 @@ public class DragonEditorHandler {
             generatedSkinTextures.add(normalTexture);
             generatedSkinTextures.add(glowTexture);
         } finally {
-            glowTarget.destroyBuffers();
-            normalTarget.destroyBuffers();
+            if (glowTarget != null) {
+                glowTarget.destroyBuffers();
+            }
+
+            if (normalTarget != null) {
+                normalTarget.destroyBuffers();
+            }
         }
     }
 
@@ -153,6 +194,26 @@ public class DragonEditorHandler {
             return true;
         });
         usedSkinTextures.clear();
+
+        FakeClientPlayerUtils.processActivePlayers(DragonEditorHandler::prepareFakePlayerSkinTextures);
+
+        ClientDragonRenderer.process(dragonEntity -> {
+            Player player = dragonEntity.getPlayer();
+            if (player == null) {
+                return;
+            }
+
+            DragonStateHandler handler;
+            if (player instanceof FakeClientPlayer fakeClientPlayer) {
+                handler = fakeClientPlayer.handler;
+            } else {
+                handler = DragonStateProvider.getData(player);
+            }
+
+            if (handler != null && handler.isDragon()) {
+                ensureSkinTexturesGenerated(player, handler);
+            }
+        });
     }
 
     private static void renderPartToTarget(

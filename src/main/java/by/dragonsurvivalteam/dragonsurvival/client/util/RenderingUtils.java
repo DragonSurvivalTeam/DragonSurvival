@@ -6,6 +6,7 @@ import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
 import by.dragonsurvivalteam.dragonsurvival.mixins.client.TextureManagerAccessor;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
+import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
 import com.mojang.blaze3d.pipeline.BlendFunction;
 import com.mojang.blaze3d.pipeline.ColorTargetState;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
@@ -249,6 +250,15 @@ public class RenderingUtils {
         ));
     }
 
+    /** Renders a white text with a black outline for better readability */
+    public static void renderTextWithOutline(final GuiGraphicsExtractor graphics, final String text, final int x, final int y) {
+        graphics.text(Minecraft.getInstance().font, text, x + 1, y, DSColors.BLACK, false);
+        graphics.text(Minecraft.getInstance().font, text, x - 1, y, DSColors.BLACK, false);
+        graphics.text(Minecraft.getInstance().font, text, x, y + 1, DSColors.BLACK, false);
+        graphics.text(Minecraft.getInstance().font, text, x, y - 1, DSColors.BLACK, false);
+        graphics.text(Minecraft.getInstance().font, text, x, y, DSColors.WHITE, false);
+    }
+
     public static float getNearPlane(float original) {
         // There are some cases where mods call this function when the player is still null.
         // We can't provide anything valid in this situation anyways, so just give the original and don't crash.
@@ -367,4 +377,5 @@ public class RenderingUtils {
             return scissorArea != null ? scissorArea.intersection(bounds) : bounds;
         }
     }
+
 }
