@@ -1,86 +1,78 @@
-//package by.dragonsurvivalteam.dragonsurvival.client.render.entity.creatures;
-//
-//import by.dragonsurvivalteam.dragonsurvival.common.entity.creatures.KnightEntity;
-//import com.mojang.blaze3d.vertex.PoseStack;
-//import com.mojang.math.Axis;
-//import net.minecraft.client.Minecraft;
-//import net.minecraft.client.renderer.MultiBufferSource;
-//import net.minecraft.client.renderer.entity.state.EntityRenderState;
-//import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
-//import net.minecraft.world.entity.Entity;
-//import net.minecraft.world.entity.LivingEntity;
-//import net.minecraft.world.item.ItemDisplayContext;
-//import net.minecraft.world.item.ItemStack;
-//import org.jetbrains.annotations.Nullable;
-//import com.geckolib.animatable.GeoAnimatable;
-//import com.geckolib.cache.model.BakedGeoModel;
-//import com.geckolib.renderer.base.GeoRenderState;
-//import com.geckolib.renderer.base.GeoRenderer;
-//import com.geckolib.renderer.layer.builtin.BlockAndItemGeoLayer;
-//
-//import java.util.List;
-//
-//public class CustomBlockAndItemGeoLayer<R extends EntityRenderState & GeoRenderState> extends BlockAndItemGeoLayer<Entity, R> {
-//    public CustomBlockAndItemGeoLayer(final GeoRenderer<T> renderer) {
-//        super(renderer);
-//    }
-//
-//    @Override
-//    protected void renderStackForBone(final PoseStack poseStack, final GeoBone bone, final ItemStack stack, final T animatable, final MultiBufferSource bufferSource, float partialTick, int packedLight, int packedOverlay) {
-//        poseStack.pushMatrix();
-//
-//        if (animatable instanceof KnightEntity) {
-//            if (bone.getName().equalsIgnoreCase("left_item")) {
-//                // Shield
-//                poseStack.mulPose(Axis.ZP.rotationDegrees(180)); // Turn shield around (handle towards entity body)
-//                poseStack.mulPose(Axis.XP.rotationDegrees(-90));
-//                poseStack.translate(0, 0, -1);
-//            } else {
-//                // Sword
-//                poseStack.mulPose(Axis.XP.rotationDegrees(-90));
-//            }
-//        }
-//
-//        if (animatable instanceof LivingEntity livingEntity) {
-//            Minecraft.getInstance().getItemRenderer().renderStatic(livingEntity, stack, getTransformTypeForStack(bone, stack, animatable), false, poseStack, bufferSource, livingEntity.level(), packedLight, packedOverlay, livingEntity.getId());
-//        } else {
-//            Minecraft.getInstance().getItemRenderer().renderStatic(stack, getTransformTypeForStack(bone, stack, animatable), packedLight, packedOverlay, poseStack, bufferSource, Minecraft.getInstance().level, (int) this.renderer.getInstanceId(animatable));
-//        }
-//
-//        poseStack.popMatrix();
-//    }
-//
-//    @Override
-//    protected ItemDisplayContext getTransformTypeForStack(final GeoBone bone, final ItemStack stack, final T animatable) {
-//        if (bone.getName().equalsIgnoreCase("left_item")) {
-//            return ItemDisplayContext.THIRD_PERSON_LEFT_HAND;
-//        } else if (bone.getName().equalsIgnoreCase("right_item")) {
-//            return ItemDisplayContext.THIRD_PERSON_RIGHT_HAND;
-//        }
-//
-//        return ItemDisplayContext.NONE;
-//    }
-//
-//    @Override
-//    protected @Nullable ItemStack getStackForBone(final GeoBone bone, final T animatable) {
-//        if (bone != null && animatable instanceof LivingEntity livingEntity) {
-//            if (bone.getName().equalsIgnoreCase("left_item")) {
-//                return livingEntity.getOffhandItem();
-//            } else if (bone.getName().equalsIgnoreCase("right_item")) {
-//                return livingEntity.getMainHandItem();
-//            }
-//        }
-//
-//        return null;
-//    }
-//
-//    @Override
-//    protected List<RenderData> getRelevantBones(GeoRenderState renderState, BakedGeoModel model) {
-//        return List.of();
-//    }
-//
-//    @Override
-//    public void addRenderData(GeoAnimatable animatable, @Nullable Object relatedObject, GeoRenderState renderState, float partialTick) {
-//
-//    }
-//}
+package by.dragonsurvivalteam.dragonsurvival.client.render.entity.creatures;
+
+import by.dragonsurvivalteam.dragonsurvival.common.entity.creatures.KnightEntity;
+import com.geckolib.cache.model.GeoBone;
+import com.geckolib.constant.dataticket.DataTicket;
+import com.geckolib.renderer.base.GeoRenderState;
+import com.geckolib.renderer.base.GeoRenderer;
+import com.geckolib.renderer.layer.builtin.BlockAndItemGeoLayer;
+import com.geckolib.util.RenderUtil;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
+import net.minecraft.client.renderer.item.ItemStackRenderState;
+import net.minecraft.world.item.ItemDisplayContext;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ShieldItem;
+import org.jspecify.annotations.Nullable;
+
+import java.util.List;
+
+public class CustomBlockAndItemGeoLayer<R extends LivingEntityRenderState & GeoRenderState> extends BlockAndItemGeoLayer<KnightEntity, Void, R> {
+    private static final String RIGHT_ITEM_BONE = "right_item";
+    private static final DataTicket<Boolean> IS_SHIELD = DataTicket.create("knight_right_hand_shield", Boolean.class);
+
+    public CustomBlockAndItemGeoLayer(final EntityRendererProvider.Context context, final GeoRenderer<KnightEntity, Void, R> renderer) {
+        super(context, renderer);
+    }
+
+    @Override
+    protected List<RenderData> getRelevantBones(final KnightEntity animatable, final @Nullable Void relatedObject, final R renderState, final float partialTick) {
+        ItemStack stack = animatable.getOffhandItem();
+
+        if (stack.isEmpty()) {
+            return List.of();
+        }
+
+        renderState.addGeckolibData(IS_SHIELD, stack.getItem() instanceof ShieldItem);
+
+        return List.of(RenderData.item(
+            RIGHT_ITEM_BONE,
+            ItemDisplayContext.THIRD_PERSON_RIGHT_HAND,
+            RenderUtil.createRenderStateForItem(stack, this.itemModelResolver, ItemDisplayContext.THIRD_PERSON_RIGHT_HAND, animatable)
+        ));
+    }
+
+    @Override
+    public void addRenderData(final KnightEntity animatable, final @Nullable Void relatedObject, final R renderState, final float partialTick) {
+        List<RenderData> contents = getRelevantBones(animatable, relatedObject, renderState, partialTick);
+
+        if (!contents.isEmpty()) {
+            renderState.addGeckolibData(CONTENTS, contents);
+        }
+    }
+
+    @Override
+    protected void submitItemStackRender(
+        final PoseStack poseStack,
+        final GeoBone bone,
+        final ItemStackRenderState stackState,
+        final ItemDisplayContext displayContext,
+        final R renderState,
+        final SubmitNodeCollector renderTasks,
+        final int packedLight
+    ) {
+        poseStack.pushPose();
+        poseStack.mulPose(Axis.XN.rotationDegrees(90));
+        poseStack.translate(0, 0.125, -0.0625);
+
+        if (renderState.getOrDefaultGeckolibData(IS_SHIELD, false)) {
+            poseStack.translate(0, 0.125, -0.25);
+        }
+
+        super.submitItemStackRender(poseStack, bone, stackState, displayContext, renderState, renderTasks, packedLight);
+        poseStack.popPose();
+    }
+}

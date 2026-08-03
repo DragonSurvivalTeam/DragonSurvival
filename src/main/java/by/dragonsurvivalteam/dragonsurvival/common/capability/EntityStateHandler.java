@@ -7,6 +7,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachmen
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSProfessionTags;
 import net.minecraft.core.Holder;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.entity.Entity;
@@ -25,6 +26,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.UUID;
 
 @EventBusSubscriber
 public class EntityStateHandler implements ValueIOSerializable {
@@ -43,6 +45,8 @@ public class EntityStateHandler implements ValueIOSerializable {
     public int chainCount;
 
     public int pillageCooldown;
+
+    public UUID projectileBatchID;
 
     public static boolean cannotPillageProfession(final Villager villager) {
         Holder<VillagerProfession> profession = villager.getVillagerData().profession();
@@ -106,6 +110,9 @@ public class EntityStateHandler implements ValueIOSerializable {
             valueOutput.putDouble(LAST_POSITION_Y, lastPos.y);
             valueOutput.putDouble(LAST_POSITION_Z, lastPos.z);
         }
+        if (projectileBatchID != null) {
+            valueOutput.store(PROJECTILE_BATCH_ID, UUIDUtil.CODEC, projectileBatchID);
+        }
     }
 
     @Override
@@ -117,6 +124,8 @@ public class EntityStateHandler implements ValueIOSerializable {
         if (!readLastPos.equals(Vec3.ZERO)) {
             lastPos = readLastPos;
         }
+
+        projectileBatchID = valueInput.read(PROJECTILE_BATCH_ID, UUIDUtil.CODEC).orElse(null);
     }
 
     private static final String LAST_POSITION_X = "last_position_x";
@@ -124,4 +133,5 @@ public class EntityStateHandler implements ValueIOSerializable {
     private static final String LAST_POSITION_Z = "last_position_z";
     private static final String CHAIN_COUNT = "chain_count";
     private static final String PILLAGE_COOLDOWN_KEY = "pillage_cooldown";
+    private static final String PROJECTILE_BATCH_ID = "projectile_batch_id";
 }

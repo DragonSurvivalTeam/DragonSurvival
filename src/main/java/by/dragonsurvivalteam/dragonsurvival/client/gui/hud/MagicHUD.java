@@ -477,7 +477,6 @@ public class MagicHUD {
         }
     }
 
-    @SuppressWarnings("SameParameterValue") // ignore
     private static void blit(final GuiGraphicsExtractor graphics, final Identifier resource, int x, int y, int size, float alpha, float red, float green, float blue) {
         graphics.blit(
                 RenderPipelines.GUI_TEXTURED,
