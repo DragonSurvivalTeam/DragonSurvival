@@ -18,8 +18,7 @@ import org.jspecify.annotations.Nullable;
 public class KnightRenderer<R extends LivingEntityRenderState & GeoRenderState> extends GeoEntityRenderer<KnightEntity, R> {
     public KnightRenderer(final EntityRendererProvider.Context context, final GeoModel<KnightEntity> model) {
         super(context, model);
-        // FIXME
-        //getRenderLayers().add(new CustomBlockAndItemGeoLayer<>(this));
+        withRenderLayer(new CustomBlockAndItemGeoLayer<>(context, this));
     }
 
     @Override
