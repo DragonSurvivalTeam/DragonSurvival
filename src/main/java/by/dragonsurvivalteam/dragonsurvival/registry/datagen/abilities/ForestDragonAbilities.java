@@ -400,7 +400,7 @@ public class ForestDragonAbilities {
                                         .or(Condition.thisEntity(EntityCondition.isInSunlight(10))).build(),
                                 ModifierEffect.only(new ModifierWithDuration(
                                         DurationInstanceBase.create(DragonSurvival.res("good_mana_condition")).removeAutomatically().hidden().build(),
-                                        List.of(Modifier.per(DSAttributes.MANA_REGENERATION, 0.01f, AttributeModifier.Operation.ADD_VALUE))
+                                        List.of(Modifier.per(DSAttributes.MANA_REGENERATION, 0.002f, AttributeModifier.Operation.ADD_VALUE))
                                 )),
                                 TargetingMode.ALLIES_AND_SELF
                         )), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(1))

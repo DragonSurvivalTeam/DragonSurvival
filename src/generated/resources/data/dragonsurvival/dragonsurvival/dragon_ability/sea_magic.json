@@ -50,8 +50,8 @@
                     {
                       "amount": {
                         "type": "minecraft:linear",
-                        "base": 0.02,
-                        "per_level_above_first": 0.02
+                        "base": 0.002,
+                        "per_level_above_first": 0.002
                       },
                       "attribute": "dragonsurvival:mana_regeneration",
                       "operation": "add_value"
