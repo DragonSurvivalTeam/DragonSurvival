@@ -1,7 +1,7 @@
 {
-  "parent": "minecraft:builtin/entity",
+  "parent": "minecraft:item/generated",
   "textures": {
-    "particle": "minecraft:item/egg"
+    "layer0": "dragonsurvival:item/ambusher_spawn_egg"
   },
   "gui_light": "front"
 }
