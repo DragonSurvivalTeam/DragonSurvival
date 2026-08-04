@@ -730,7 +730,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity, EntityScale
 
             animationController.transitionLength(2);
         } else if (animationTickTimer.getDuration(DragonAnimations.FLY_LAND_END.getAnimation()) > 0) {
-            // Don't add any animation
+            state.setAnimation(DragonAnimations.FLY_LAND_END.getAnimation());
         } else if (player.onClimbable()) {
             if (movement.deltaMovement.y() < 0) {
                 state.setAnimation(DragonAnimations.CLIMBING_DOWN.getAnimation());
@@ -750,8 +750,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity, EntityScale
         } else if (animationTickTimer.isPresent(DragonAnimations.JUMP.getAnimation()) && DRAGONS_JUMPING.getOrDefault(this.playerId, true)) {
             // We test here if the jump animation has been flagged with a false value; if this is the case, that means cancel any ongoing jumps that are occurring
             // This happens if we hit the ground
-            //
-            // Let the jump animation complete
+            state.setAnimation(DragonAnimations.JUMP.getAnimation());
         } else if (!player.onGround()) {
             state.setAnimation(DragonAnimations.FALL_LOOP.getAnimation());
             animationController.transitionLength(5);
