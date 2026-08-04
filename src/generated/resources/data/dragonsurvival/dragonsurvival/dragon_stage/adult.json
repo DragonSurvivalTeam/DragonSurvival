@@ -27,7 +27,7 @@
   "modifiers": [
     {
       "amount": 0.5,
-      "attribute": "forge:step_height",
+      "attribute": "forge:step_height_addition",
       "operation": "add_value"
     },
     {

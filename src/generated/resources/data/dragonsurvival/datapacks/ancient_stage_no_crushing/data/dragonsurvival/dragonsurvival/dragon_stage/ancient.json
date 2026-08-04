@@ -116,7 +116,7 @@
         "base": 0.515,
         "per_level_above_first": 0.015
       },
-      "attribute": "forge:step_height",
+      "attribute": "forge:step_height_addition",
       "operation": "add_value"
     }
   ],

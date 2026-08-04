@@ -35,7 +35,6 @@ import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 
 public class DragonAbilityScreen extends Screen {
     @Translation(comments = {
-            "§f■ §cUSE THE MOUSE WHEEL TO SCROLL THROUGH THE SKILL COLUMNS.",
             "§f■ §6Active skills§r§f are used in combat or to apply buffs.",
             "§f- §9Skill power§r§8 scales off your current experience level.",
             "§f- §9Experience or mana§r§8 points are used to cast spells.",
@@ -47,7 +46,6 @@ public class DragonAbilityScreen extends Screen {
     private static final String HELP_PASSIVE_ACTIVE = Translation.Type.GUI.wrap("help.passive_active_abilities");
 
     @Translation(comments = {
-            "■ §cUSE THE MOUSE WHEEL TO SCROLL THROUGH THE SKILL COLUMNS.",
             "§f■ §dAbility assignment§r§f - drag and drop §6Active skills§r§f from right to the §9left column§r§f.",
             "§f- §9Left Column§r§8 is used to quickly access your active skills via magic hotbar.",
             "§f- §8Check in-game Minecraft §r§9control§r§8 settings!"
