@@ -26,6 +26,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.MinecraftForge;
@@ -63,6 +64,21 @@ public abstract class EntityMixin implements AttachmentStorage {
     @Inject(method = "tick", at = @At("TAIL"))
     private void dragonSurvival$postEntityTick(final CallbackInfo callback) {
         MinecraftForge.EVENT_BUS.post(new EntityTickEvent.Post((Entity) (Object) this));
+    }
+
+    /** Make sure to consider the actual dragon hitbox when doing checks like these */
+    @ModifyReturnValue(method = "canEnterPose", at = @At("RETURN"))
+    private boolean dragonSurvival$checkDragonHitbox(boolean canEnterPose, final Pose pose) {
+        //noinspection ConstantValue -> statement is not always true
+        if (!((Object) this instanceof Player player)) {
+            return canEnterPose;
+        }
+
+        if (DragonStateProvider.isDragon(player) && !Compat.hasModelSwapOrDoesNotUseModel(player)) {
+            return DragonSizeHandler.canPoseFit(player, pose);
+        } else {
+            return canEnterPose;
+        }
     }
 
     // FIXME :: 1.21.1 backport issue? -> method does not exist

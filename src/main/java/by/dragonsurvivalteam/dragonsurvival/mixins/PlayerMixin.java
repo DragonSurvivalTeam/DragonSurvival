@@ -66,19 +66,6 @@ public abstract class PlayerMixin extends LivingEntity {
         return DragonStateProvider.isDragon(player) && TreasureRestData.getData(player).canSleep();
     }
 
-    // FIXME :: 1.21.1 backport issue? -> method does not exist, nor does similar named
-//    /** Make sure to consider the actual dragon hitbox when doing checks like these */
-//    @ModifyReturnValue(method = "canPlayerFitWithinBlocksAndEntitiesWhen", at = @At("RETURN"))
-//    private boolean dragonSurvival$checkDragonHitbox(boolean returnValue, @Local(argsOnly = true) Pose pose) {
-//        Player self = (Player) (Object) this;
-//
-//        if (DragonStateProvider.isDragon(self) && !Compat.hasModelSwapOrDoesNotUseModel(self)) {
-//            return DragonSizeHandler.canPoseFit(self, pose);
-//        } else {
-//            return returnValue;
-//        }
-//    }
-
     @ModifyExpressionValue(method = "aiStep", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;isSwimming()Z"))
     private boolean dragonSurvival$consideredSwimmingEvenWhenGroundedInWater(boolean isSwimming) {
         if (isSwimming) {
