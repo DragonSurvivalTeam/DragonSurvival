@@ -33,6 +33,11 @@
                       "amount": 1.0,
                       "attribute": "neoforge:swim_speed",
                       "operation": "add_value"
+                    },
+                    {
+                      "amount": 50.0,
+                      "attribute": "minecraft:oxygen_bonus",
+                      "operation": "add_value"
                     }
                   ]
                 }

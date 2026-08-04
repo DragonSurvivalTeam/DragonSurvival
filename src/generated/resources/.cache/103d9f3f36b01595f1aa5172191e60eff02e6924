@@ -1,4 +1,4 @@
-// 26.1.2	2026-08-03T16:21:35.1509276	Registries
+// 26.1.2	2026-08-04T10:32:05.7755549	Registries
 011b2ee382ec961722c100bbf059b4aa460f44b0 data/dragonsurvival/damage_type/anti_dragon.json
 d8c3135ecd1879e98a21e83ec1bcfd68c5fc3296 data/dragonsurvival/damage_type/ball_lightning.json
 3bca57c58e2307adb52a4b6e18ea88aae7e2d8d7 data/dragonsurvival/damage_type/blast_dust.json
@@ -15,7 +15,7 @@ f717feefd2d7a55830cc59619d955b3e7974390d data/dragonsurvival/damage_type/forest_
 76c95def2b1f6ce0901e837d1f93fa7740a10384 data/dragonsurvival/damage_type/rain_burn.json
 7ba4f0731722f846b406544f9eb9a351ca90e6d2 data/dragonsurvival/damage_type/spike.json
 3f23f53780e47cb3f324226b6427baef314125d5 data/dragonsurvival/damage_type/water_burn.json
-515b9f6e75b5be8eb079ac46239e98989f32414a data/dragonsurvival/dragonsurvival/dragon_ability/amphibious.json
+70636ffb1b0e68c93e7b87f09a80fb394f0f3cff data/dragonsurvival/dragonsurvival/dragon_ability/amphibious.json
 21806fc2c56bc32ee6b014f6aa829c0ed63313b7 data/dragonsurvival/dragonsurvival/dragon_ability/ball_lightning.json
 124716b5b517f78033bee3d886a78bbc9a196cd0 data/dragonsurvival/dragonsurvival/dragon_ability/burn.json
 4786698d90bce164ccedb14bcd154a85657adbef data/dragonsurvival/dragonsurvival/dragon_ability/cave_athletics.json

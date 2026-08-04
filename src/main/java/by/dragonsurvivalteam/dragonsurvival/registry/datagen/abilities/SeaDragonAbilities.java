@@ -672,7 +672,10 @@ public class SeaDragonAbilities {
                         new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                                 ModifierEffect.only(new ModifierWithDuration(
                                         DurationInstanceBase.create(DragonSurvival.res("amphibious")).removeAutomatically().hidden().build(),
-                                        List.of(Modifier.constant(NeoForgeMod.SWIM_SPEED, 1, AttributeModifier.Operation.ADD_VALUE))
+                                        List.of(
+                                                Modifier.constant(NeoForgeMod.SWIM_SPEED, 1, AttributeModifier.Operation.ADD_VALUE),
+                                                Modifier.constant(Attributes.OXYGEN_BONUS, 50, AttributeModifier.Operation.ADD_VALUE) //temporary fix for the drowning issue
+                                        )
                                 )),
                                 TargetingMode.ALL
                         )), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(1)),
