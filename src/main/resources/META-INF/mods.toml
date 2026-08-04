@@ -18,7 +18,7 @@ logoFile = "dragonsurvival.png"
 [[dependencies.${mod_id}]]
     modId = "forge"
     mandatory = true
-    versionRange = "${neo_version_range}"
+    versionRange = "${forge_version_range}"
     ordering = "NONE"
     side = "BOTH"
 

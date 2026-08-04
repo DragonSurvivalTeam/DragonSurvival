@@ -44,13 +44,13 @@ public class EditorPartComponent implements ScrollableComponent {
 
         partButton = new HoverButton(xPos, yPos, 110, 19, 149, 22, DROPDOWN_BUTTON_BACKGROUND, DROPDOWN_BUTTON_BACKGROUND, button -> { /* Nothing to do*/ }) {
             @Override
-            public boolean isValidClickButton(int button) {
-                return button == 1 && skinLayer != SkinLayer.BASE;
-            }
+            public boolean mouseClicked(double mouseX, double mouseY, int button) {
+                if (button == 1 && skinLayer != SkinLayer.BASE && isMouseOver(mouseX, mouseY)) {
+                    setSelectedPartInternal(DefaultPartLoader.NO_PART);
+                    return true;
+                }
 
-            @Override
-            public void onClick(double mouseX, double mouseY, int button) {
-                setSelectedPartInternal(DefaultPartLoader.NO_PART);
+                return super.mouseClicked(mouseX, mouseY, button);
             }
         };
 

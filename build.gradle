@@ -2,7 +2,7 @@ plugins {
 	id 'eclipse'
 	id 'idea'
 	id 'maven-publish'
-	id 'net.neoforged.gradle' version '[6.0.18,6.2)'
+	id 'net.minecraftforge.gradle' version '[6.0,6.2)'
 	id 'org.parchmentmc.librarian.forgegradle' version '1.+'
 	id 'org.spongepowered.mixin' version '0.7.+'
 	id 'com.diffplug.spotless' version '7.0.0'
@@ -66,6 +66,7 @@ minecraft {
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 repositories {
+	maven { /* Forge */ url "https://maven.minecraftforge.net" }
 	maven { /* GeckoLib */ url "https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/" }
 	maven { /* JEI */ url "https://maven.blamejared.com" }
 	maven { /* Curios */ url "https://maven.theillusivec4.top/" }
@@ -85,7 +86,7 @@ repositories {
 }
 
 dependencies {
-	minecraft "net.neoforged:forge:${minecraft_version}-${neo_version}"
+	minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
 	// Dependencies
 	implementation fg.deobf("software.bernie.geckolib:geckolib-forge-${minecraft_version}:${geckolib_version}")
@@ -131,7 +132,7 @@ dependencies {
 	// Mixin
 	annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 
-	// MixinExtras (we can remove this once we update to a newer version of NeoForge)
+	// MixinExtras
 	compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:0.3.6"))
 	implementation group: 'io.github.llamalad7', name: 'mixinextras-common', version: '0.3.6'
 	implementation(jarJar("io.github.llamalad7:mixinextras-forge:0.3.6")) {
@@ -151,8 +152,8 @@ tasks.withType(ProcessResources).configureEach {
 	var replaceProperties = [
 			minecraft_version           : minecraft_version,
 			minecraft_version_range     : minecraft_version_range,
-			neo_version                 : neo_version,
-			neo_version_range           : neo_version_range,
+			forge_version               : forge_version,
+			forge_version_range         : forge_version_range,
 			loader_version_range        : loader_version_range,
 			geckolib_version_range      : geckolib_version_range,
 			mod_id                      : mod_id,

@@ -12,9 +12,7 @@ import org.spongepowered.asm.mixin.injection.At;
 
 import java.util.List;
 
-/**
- * Forge's enchantment-level event is not called while vanilla reads tooltip NBT.
- */
+/** Permanent enchantments are computed for gameplay and are not stored in item NBT. */
 @Mixin(ItemStack.class)
 public abstract class ItemStackMixin {
     @WrapOperation(

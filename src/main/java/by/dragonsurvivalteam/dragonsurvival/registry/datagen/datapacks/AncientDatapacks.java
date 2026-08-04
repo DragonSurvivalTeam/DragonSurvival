@@ -52,7 +52,7 @@ public class AncientDatapacks {
                         Modifier.per(DSAttributes.BLOCK_BREAK_RADIUS, 0.01f, AttributeOperation.ADD_VALUE),
                         Modifier.perWithBase(ForgeMod.ENTITY_REACH, 1, 0.05f, AttributeOperation.ADD_VALUE),
                         Modifier.perWithBase(ForgeMod.BLOCK_REACH, 1, 0.05f, AttributeOperation.ADD_VALUE),
-                        Modifier.perWithBase(ForgeMod.STEP_HEIGHT, 0.5f, 0.015f, AttributeOperation.ADD_VALUE)
+                        Modifier.perWithBase(ForgeMod.STEP_HEIGHT_ADDITION, 0.5f, 0.015f, AttributeOperation.ADD_VALUE)
                 ),
                 List.of(
                         GrowthItem.create(Functions.hoursToTicks(1), DSItems.ELDER_DRAGON_HEART.get()),

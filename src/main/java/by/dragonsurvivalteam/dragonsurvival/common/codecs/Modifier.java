@@ -58,7 +58,7 @@ public record Modifier(Holder<Attribute> attribute, Either<LevelBasedValue, Prec
                     return DataResult.success(BuiltInRegistries.ATTRIBUTE.wrapAsHolder(ForgeMod.ENTITY_GRAVITY.get()));
                 }
                 if (id.equals(GENERIC_STEP_HEIGHT_ID)) {
-                    return DataResult.success(BuiltInRegistries.ATTRIBUTE.wrapAsHolder(ForgeMod.STEP_HEIGHT.get()));
+                    return DataResult.success(BuiltInRegistries.ATTRIBUTE.wrapAsHolder(ForgeMod.STEP_HEIGHT_ADDITION.get()));
                 }
                 if (id.equals(PLAYER_BLOCK_INTERACTION_RANGE_ID)) {
                     return DataResult.success(BuiltInRegistries.ATTRIBUTE.wrapAsHolder(ForgeMod.BLOCK_REACH.get()));

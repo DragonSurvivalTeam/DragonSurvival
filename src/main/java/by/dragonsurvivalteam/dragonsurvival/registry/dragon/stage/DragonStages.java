@@ -103,7 +103,7 @@ public class DragonStages {
                 Functions.hoursToTicks(24),
                 List.of(
                         /* Constant */
-                        Modifier.constant(ForgeMod.STEP_HEIGHT, 0.5f, AttributeOperation.ADD_VALUE),
+                        Modifier.constant(ForgeMod.STEP_HEIGHT_ADDITION, 0.5f, AttributeOperation.ADD_VALUE),
                         Modifier.constant(Attributes.ATTACK_DAMAGE, 3, AttributeOperation.ADD_VALUE),
                         Modifier.constant(DSAttributes.JUMP_STRENGTH, 0.1f, AttributeOperation.ADD_VALUE),
                         Modifier.constant(DSAttributes.SAFE_FALL_DISTANCE, 1, AttributeOperation.ADD_VALUE),
