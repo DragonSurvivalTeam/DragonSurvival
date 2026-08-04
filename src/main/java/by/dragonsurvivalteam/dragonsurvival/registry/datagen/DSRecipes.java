@@ -80,7 +80,7 @@ public class DSRecipes extends RecipeProvider {
                 .unlockedBy(getHasName(DSItems.ELDER_DRAGON_DUST.get()), has(DSItems.ELDER_DRAGON_DUST.get()))
                 .save(output);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.FOOD, DSItems.CHARGED_COAL.get(), 4)
+        ShapedRecipeBuilder.shaped(RecipeCategory.FOOD, DSItems.CHARGED_COAL.get(), 3)
                 .pattern("RRR")
                 .pattern("CCR")
                 .pattern("CCR")
