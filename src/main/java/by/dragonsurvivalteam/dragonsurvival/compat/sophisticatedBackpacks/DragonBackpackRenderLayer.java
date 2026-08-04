@@ -12,7 +12,6 @@ import com.geckolib.renderer.base.PerBoneRender;
 import com.geckolib.renderer.base.RenderPassInfo;
 import com.geckolib.renderer.layer.GeoRenderLayer;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
@@ -26,6 +25,8 @@ import net.minecraft.world.phys.Vec3;
 import net.p3pp3rf1y.sophisticatedbackpacks.backpack.BackpackItem;
 import net.p3pp3rf1y.sophisticatedbackpacks.client.render.BackpackBlockModel;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Math;
+import org.joml.Quaternionf;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.SlotResult;
 
@@ -34,6 +35,7 @@ import java.util.function.BiConsumer;
 
 public class DragonBackpackRenderLayer<R extends LivingEntityRenderState & GeoRenderState> extends GeoRenderLayer<DragonEntity, Void, R> {
     private static final String BONE = "BackpackBone";
+    private static final double BACKPACK_SURFACE_OFFSET = 1.0 / 16.0;
     private static final DragonBody.BackpackOffsets DEFAULT_OFFSETS = DragonBody.BackpackOffsets.of(Vec3.ZERO, Vec3.ZERO, new Vec3(1, 1, 1));
 
     public DragonBackpackRenderLayer(final DragonRenderer<R> renderer) {
@@ -101,12 +103,13 @@ public class DragonBackpackRenderLayer<R extends LivingEntityRenderState & GeoRe
     }
 
     private static void transformModel(final PoseStack poseStack, final Vec3 posOffset, final Vec3 rotOffset, final Vec3 scale) {
-        poseStack.mulPose(Axis.ZP.rotationDegrees((float)rotOffset.z + 180.0F));
-        poseStack.mulPose(Axis.YP.rotationDegrees((float)rotOffset.y));
-        poseStack.mulPose(Axis.XP.rotationDegrees((float)rotOffset.x));
-
-        // Sophisticated Backpacks models are centered for humanoid backs; the dragon bone marks the attachment point.
-        poseStack.translate(posOffset.x, -posOffset.y + 0.5, -posOffset.z - 0.1);
+        Quaternionf rotation = new Quaternionf().rotationZYX(
+            (float)Math.toRadians(rotOffset.z),
+            (float)Math.toRadians(rotOffset.y),
+            (float)Math.toRadians(rotOffset.x)
+        );
+        poseStack.rotateAround(rotation, 0, 0, 0);
+        poseStack.translate(posOffset.x, posOffset.y, -posOffset.z);
         poseStack.scale((float)scale.x, (float)scale.y, (float)scale.z);
     }
 
