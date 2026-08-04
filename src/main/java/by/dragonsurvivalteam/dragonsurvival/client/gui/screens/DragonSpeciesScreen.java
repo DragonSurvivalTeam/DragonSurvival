@@ -113,8 +113,14 @@ public class DragonSpeciesScreen extends Screen {
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+        for (Renderable renderable : renderables) {
+            if (renderable instanceof GrowthCrystalButton crystal && crystal.mouseScrolled(mouseX, mouseY, scrollX, scrollY)) {
+                return true;
+            }
+        }
+
         for (ScrollableComponent component : scrollableComponents) {
-            // Ignore scrolling on the crystal bar; we need scrolling to be available for the tooltip to work
+            // Crystal scrolling is handled above so the wheel changes its tooltip instead of moving the bar.
             if (component == crystalBar) {
                 continue;
             }

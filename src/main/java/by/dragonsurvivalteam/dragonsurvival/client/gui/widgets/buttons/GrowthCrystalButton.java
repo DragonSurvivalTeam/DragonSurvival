@@ -40,18 +40,17 @@ public class GrowthCrystalButton extends ExtendedButton {
         DragonStateHandler handler = DragonStateProvider.getData(Minecraft.getInstance().player);
         double percentageFull = stage.value().getProgress(handler.getGrowth());
 
-        if (percentageFull > 1) {
+        if (percentageFull >= 1) {
             graphics.blit(RenderPipelines.GUI_TEXTURED, handler.species().value().miscResources().growthCrystal().full(), getX(), getY(), 0, 0, width, height, 8, 16);
-            return;
-        }
+        } else {
+            graphics.blit(RenderPipelines.GUI_TEXTURED, handler.species().value().miscResources().growthCrystal().empty(), getX(), getY(), 0, 0, width, height, 8, 16);
 
-        graphics.blit(RenderPipelines.GUI_TEXTURED, handler.species().value().miscResources().growthCrystal().empty(), getX(), getY(), 0, 0, width, height, 8, 16);
-
-        if (percentageFull > 0) {
-            int scissorHeight = (int) (percentageFull * height);
-            graphics.enableScissor(getX(), getY() + (height - scissorHeight), getX() + width, getY() + height);
-            graphics.blit(RenderPipelines.GUI_TEXTURED, handler.species().value().miscResources().growthCrystal().full(), getX(), getY(), 0, 0, width, height, 8, 16);
-            graphics.disableScissor();
+            if (percentageFull > 0) {
+                int scissorHeight = (int) (percentageFull * height);
+                graphics.enableScissor(getX(), getY() + (height - scissorHeight), getX() + width, getY() + height);
+                graphics.blit(RenderPipelines.GUI_TEXTURED, handler.species().value().miscResources().growthCrystal().full(), getX(), getY(), 0, 0, width, height, 8, 16);
+                graphics.disableScissor();
+            }
         }
 
         if (super.isHovered()) {
@@ -61,11 +60,12 @@ public class GrowthCrystalButton extends ExtendedButton {
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
-        if (isHovered()) {
+        if (isMouseOver(mouseX, mouseY)) {
             int oldScrollAmount = scrollAmount;
 
             // invert the value so that scrolling down shows further entries
-            scrollAmount = Math.clamp(scrollAmount + (int) -scrollY, 0, maxScroll());
+            int scrollStep = Double.compare(0, scrollY);
+            scrollAmount = Math.clamp(scrollAmount + scrollStep, 0, maxScroll());
 
             if (oldScrollAmount != scrollAmount) {
                 updateTooltip();
