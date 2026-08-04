@@ -6,7 +6,6 @@ import by.dragonsurvivalteam.dragonsurvival.common.compat.attachments.Attachment
 import by.dragonsurvivalteam.dragonsurvival.common.compat.event.EntityTickEvent;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.DragonSizeHandler;
-import by.dragonsurvivalteam.dragonsurvival.common.handlers.EntityScale;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.HunterHandler;
 import by.dragonsurvivalteam.dragonsurvival.compat.Compat;
 import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
@@ -19,7 +18,6 @@ import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MovementData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SummonedEntities;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SwimData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSEntityTypeTags;
-import by.dragonsurvivalteam.dragonsurvival.server.handlers.DragonRidingHandler;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.sugar.Local;
@@ -67,54 +65,56 @@ public abstract class EntityMixin implements AttachmentStorage {
         MinecraftForge.EVENT_BUS.post(new EntityTickEvent.Post((Entity) (Object) this));
     }
 
-    /** Correctly position the passenger when riding a player dragon */
-    @ModifyReturnValue(method = "getPassengerAttachmentPoint", at = @At("RETURN"))
-    protected Vec3 dragonSurvival$modifyPassengerAttachmentPoint(Vec3 original, @Local(argsOnly = true, index = 0) Entity entity) {
-        Entity mount = (Entity) (Object) this;
-        if (!(entity instanceof Player passenger) || !hasPassenger(passenger)) {
-            return original;
-        }
+    // FIXME :: 1.21.1 backport issue? -> method does not exist
+//    /** Correctly position the passenger when riding a player dragon */
+//    @ModifyReturnValue(method = "getPassengerAttachmentPoint", at = @At("RETURN"))
+//    protected Vec3 dragonSurvival$modifyPassengerAttachmentPoint(Vec3 original, @Local(argsOnly = true, index = 0) Entity entity) {
+//        Entity mount = (Entity) (Object) this;
+//        if (!(entity instanceof Player passenger) || !hasPassenger(passenger)) {
+//            return original;
+//        }
+//
+//        if (mount instanceof Player player && DragonStateProvider.isDragon(player)) {
+//            DragonStateHandler handler = DragonStateProvider.getData(player);
+//            MovementData movement = MovementData.getData(player);
+//            if (handler.body().value().mountingOffsets().isEmpty()) {
+//                return original;
+//            }
+//            Vec3 offset = DragonStateProvider.isDragon(passenger) ? handler.body().value().mountingOffsets().get().dragonOffset() : handler.body().value().mountingOffsets().get().humanOffset();
+//            Vec3 offsetPerScaleAboveOne = handler.body().value().mountingOffsets().get().scale();
+//            float scale = EntityScale.get(player);
+//            offset = offset.add(offsetPerScaleAboveOne.scale(scale - 1));
+//            original = original.add(offset);
+//            original = original.xRot((float) Math.toRadians(movement.prevXRot * 1.5)).zRot(-(float) Math.toRadians(movement.prevZRot * 90));
+//            original = original.add(offset).yRot(-(float) Math.toRadians(movement.bodyYawLastFrame));
+//            return original;
+//        } else if (DragonStateProvider.isDragon(passenger) && !DragonStateProvider.isDragon(mount)) {
+//            // FIXME :: I did this is both places since different entities seem to possibly use either path... not sure how to reconcile this
+//            // Handle dragon riding normal mounts (e.g. boats)
+//            // The vanilla player hitbox actually clips through most mounts, but the dragon player does not.
+//            // So we need to push it up such that it meets the point at which the vanilla player's actual model starts
+//            return original.add(DragonRidingHandler.getMountingOffsetForEntity(mount));
+//        }
+//
+//        return original;
+//    }
 
-        if (mount instanceof Player player && DragonStateProvider.isDragon(player)) {
-            DragonStateHandler handler = DragonStateProvider.getData(player);
-            MovementData movement = MovementData.getData(player);
-            if (handler.body().value().mountingOffsets().isEmpty()) {
-                return original;
-            }
-            Vec3 offset = DragonStateProvider.isDragon(passenger) ? handler.body().value().mountingOffsets().get().dragonOffset() : handler.body().value().mountingOffsets().get().humanOffset();
-            Vec3 offsetPerScaleAboveOne = handler.body().value().mountingOffsets().get().scale();
-            float scale = EntityScale.get(player);
-            offset = offset.add(offsetPerScaleAboveOne.scale(scale - 1));
-            original = original.add(offset);
-            original = original.xRot((float) Math.toRadians(movement.prevXRot * 1.5)).zRot(-(float) Math.toRadians(movement.prevZRot * 90));
-            original = original.add(offset).yRot(-(float) Math.toRadians(movement.bodyYawLastFrame));
-            return original;
-        } else if (DragonStateProvider.isDragon(passenger) && !DragonStateProvider.isDragon(mount)) {
-            // FIXME :: I did this is both places since different entities seem to possibly use either path... not sure how to reconcile this
-            // Handle dragon riding normal mounts (e.g. boats)
-            // The vanilla player hitbox actually clips through most mounts, but the dragon player does not.
-            // So we need to push it up such that it meets the point at which the vanilla player's actual model starts
-            return original.add(DragonRidingHandler.getMountingOffsetForEntity(mount));
-        }
-
-        return original;
-    }
-
+    // FIXME :: 1.21.1 backport issue? -> method does not exist
     // TODO :: might be enough to add our offset only to this one (since 'getPassengerAttachmentPoint' seems to only be called by it and nowhere else)
-    @ModifyReturnValue(method = "getPassengerRidingPosition", at = @At("RETURN"))
-    protected Vec3 dragonSurvival$modifyPassengerRidingPosition(Vec3 original, @Local(argsOnly = true) Entity entity) {
-        Entity mount = (Entity) (Object) this;
-
-        if (entity instanceof Player passenger && hasPassenger(passenger) && DragonStateProvider.isDragon(passenger) && !DragonStateProvider.isDragon(mount)) {
-            // FIXME :: I did this is both places since different entities seem to possibly use either path... not sure how to reconcile this
-            // Handle dragon riding normal mounts (e.g. boats)
-            // The vanilla player hitbox actually clips through most mounts, but the dragon player does not.
-            // So we need to push it up such that it meets the point at which the vanilla player's actual model starts
-            return original.add(DragonRidingHandler.getMountingOffsetForEntity(mount));
-        }
-
-        return original;
-    }
+//    @ModifyReturnValue(method = "getPassengerRidingPosition", at = @At("RETURN"))
+//    protected Vec3 dragonSurvival$modifyPassengerRidingPosition(Vec3 original, @Local(argsOnly = true) Entity entity) {
+//        Entity mount = (Entity) (Object) this;
+//
+//        if (entity instanceof Player passenger && hasPassenger(passenger) && DragonStateProvider.isDragon(passenger) && !DragonStateProvider.isDragon(mount)) {
+//            // FIXME :: I did this is both places since different entities seem to possibly use either path... not sure how to reconcile this
+//            // Handle dragon riding normal mounts (e.g. boats)
+//            // The vanilla player hitbox actually clips through most mounts, but the dragon player does not.
+//            // So we need to push it up such that it meets the point at which the vanilla player's actual model starts
+//            return original.add(DragonRidingHandler.getMountingOffsetForEntity(mount));
+//        }
+//
+//        return original;
+//    }
 
     /** Correctly rotate the passenger when riding a dragon */
     @SuppressWarnings("ConstantValue") // the if statement checks are valid

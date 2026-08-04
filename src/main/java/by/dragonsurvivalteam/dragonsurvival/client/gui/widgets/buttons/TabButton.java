@@ -8,7 +8,6 @@ import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.DragonSkinsScreen
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.DragonSpeciesScreen;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.InventoryScreenHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
-import by.dragonsurvivalteam.dragonsurvival.mixins.client.ScreenAccessor;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AttachmentManager;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
@@ -111,7 +110,7 @@ public class TabButton extends Button {
                 y -= 2;
             }
 
-            ((ScreenAccessor) screen).dragonSurvival$addRenderableWidget(new TabButton(x, y, tabButton, screen));
+            screen.addRenderableWidget(new TabButton(x, y, tabButton, screen));
             visibleTabIndex++;
         }
     }

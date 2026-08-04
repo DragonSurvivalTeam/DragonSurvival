@@ -5,7 +5,6 @@ import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvide
 import by.dragonsurvivalteam.dragonsurvival.common.compat.damage.DamageContainer;
 import by.dragonsurvivalteam.dragonsurvival.common.compat.event.LivingIncomingDamageEvent;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.DragonFoodHandler;
-import by.dragonsurvivalteam.dragonsurvival.common.handlers.DragonSizeHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.EnchantmentEffectHandler;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAttributes;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
@@ -31,7 +30,6 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -131,7 +129,7 @@ public abstract class LivingEntityMixin extends Entity {
     }
 
     /** Happens here so that the trigger can occur after the loot has been dropped */
-    @Inject(method = "die", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;dropAllDeathLoot(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/damagesource/DamageSource;)V", shift = At.Shift.AFTER))
+    @Inject(method = "die", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;dropAllDeathLoot(Lnet/minecraft/world/damagesource/DamageSource;)V", shift = At.Shift.AFTER))
     private void dragonSurvival$triggerOnTargetKilled(final DamageSource source, final CallbackInfo callback) {
         OnTargetKilled.trigger((LivingEntity) (Object) this, source);
     }
@@ -165,15 +163,16 @@ public abstract class LivingEntityMixin extends Entity {
         return !HunterData.hasMaxHunterStacks((LivingEntity) (Object) this);
     }
 
-    @ModifyExpressionValue(method = "getPassengerRidingPosition", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;getDimensions(Lnet/minecraft/world/entity/Pose;)Lnet/minecraft/world/entity/EntityDimensions;"))
-    public EntityDimensions dragonSurvival$useCorrectDimensionsForPassengerRidingCalculation(EntityDimensions original) {
-        LivingEntity self = (LivingEntity) (Object) this;
-        if (DragonStateProvider.isDragon(self) && self instanceof Player player) {
-            return DragonSizeHandler.calculateDimensions(DragonStateProvider.getData(player), player, DragonSizeHandler.getOverridePose(player));
-        } else {
-            return original;
-        }
-    }
+    // FIXME :: 1.21.1 backport issue? -> method does not exist
+//    @ModifyExpressionValue(method = "getPassengerRidingPosition", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;getDimensions(Lnet/minecraft/world/entity/Pose;)Lnet/minecraft/world/entity/EntityDimensions;"))
+//    public EntityDimensions dragonSurvival$useCorrectDimensionsForPassengerRidingCalculation(EntityDimensions original) {
+//        LivingEntity self = (LivingEntity) (Object) this;
+//        if (DragonStateProvider.isDragon(self) && self instanceof Player player) {
+//            return DragonSizeHandler.calculateDimensions(DragonStateProvider.getData(player), player, DragonSizeHandler.getOverridePose(player));
+//        } else {
+//            return original;
+//        }
+//    }
 
     @Unique private int dragonSurvival$getHumanOrDragonUseDuration(final ItemStack stack, int original) {
         if (!DragonFoodHandler.dragonFoodHandlingIsDisabled() && (Object) this instanceof Player player) {

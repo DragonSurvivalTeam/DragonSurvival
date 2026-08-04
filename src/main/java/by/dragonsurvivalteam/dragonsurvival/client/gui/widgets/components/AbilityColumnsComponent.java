@@ -2,7 +2,6 @@ package by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components;
 
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.DragonAbilityScreen;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.AbilityButton;
-import by.dragonsurvivalteam.dragonsurvival.mixins.client.ScreenAccessor;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
@@ -47,7 +46,7 @@ public class AbilityColumnsComponent implements ScrollableComponent {
                 columns.add(new ArrayList<>());
             }
 
-            columns.get(column).add(((ScreenAccessor) parentScreen).dragonSurvival$addRenderableWidget(new AbilityButton(xPos, y, abilities.get(i), parentScreen, sideColumnScale)));
+            columns.get(column).add(parentScreen.addRenderableWidget(new AbilityButton(xPos, y, abilities.get(i), parentScreen, sideColumnScale)));
         }
 
         // Calculate the positions of the buttons for all columns

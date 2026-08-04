@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ReloadableServerResources.class)
 public class ReloadableServerResourcesMixin {
-    @Shadow @Final private ICondition.IContext context;
+    @Shadow(/* Forge field */ remap = false) @Final private ICondition.IContext context;
 
     @Inject(method = "<init>", at = @At("RETURN"))
     private void dragonSurvival$setRegistryAccess(final RegistryAccess.Frozen registryAccess, final FeatureFlagSet enabledFeatures, final Commands.CommandSelection commandSelection, final int functionCompilationLevel, final CallbackInfo callback) {

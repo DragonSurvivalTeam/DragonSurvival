@@ -37,13 +37,14 @@ import java.util.List;
 
 @Mixin(Villager.class)
 public abstract class VillagerMixin extends AbstractVillager {
-    @Shadow public boolean increaseProfessionLevelOnUpdate;
-    @Shadow public int updateMerchantTimer;
+    @Shadow private boolean increaseProfessionLevelOnUpdate;
+    @Shadow private int updateMerchantTimer;
 
     public VillagerMixin(final EntityType<? extends AbstractVillager> entityType, final Level level) {
         super(entityType, level);
     }
 
+    // TODO :: unable to locate method mapping?
     @Inject(method = "mobInteract", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/trading/MerchantOffers;isEmpty()Z", shift = At.Shift.BY, by = 2))
     private void dragonSurvival$displayPillageInfo(final Player player, final InteractionHand hand, final CallbackInfoReturnable<InteractionResult> callback, @Local boolean hasNoOffers) {
         if (hasNoOffers && player.hasEffect(DSEffects.HUNTER_OMEN.get())) {

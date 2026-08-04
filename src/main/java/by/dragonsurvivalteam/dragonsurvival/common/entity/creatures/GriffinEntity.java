@@ -199,10 +199,11 @@ public class GriffinEntity extends Hunter {
         return GriffinAttackTypes.values()[this.entityData.get(CURRENT_ATTACK)];
     }
 
-    @Override
-    public int getCurrentSwingDuration() {
-        return 30;
-    }
+    // FIXME :: 1.21.1 backport issue? -> override does not exist
+//    @Override
+//    public int getCurrentSwingDuration() {
+//        return 30;
+//    }
 
     @Override
     public void swing(@NotNull InteractionHand pHand) {

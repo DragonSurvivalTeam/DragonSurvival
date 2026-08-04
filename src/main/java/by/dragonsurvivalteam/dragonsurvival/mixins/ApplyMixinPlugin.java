@@ -33,7 +33,7 @@ public class ApplyMixinPlugin implements IMixinConfigPlugin {
             return ModCheck.isModLoaded(modid);
         }
 
-        if (mixinClassName.equals(PREFIX + "HolderSetCodecMixin") || mixinClassName.equals(PREFIX + "Holder$ReferenceAccess")) {
+        if (mixinClassName.equals(PREFIX + "HolderSetCodecMixin")) {
             // 'null' in production or when not started from our run configuration
             return System.getProperty("dragonsurvival.data_generation", "false").equals("true");
         }

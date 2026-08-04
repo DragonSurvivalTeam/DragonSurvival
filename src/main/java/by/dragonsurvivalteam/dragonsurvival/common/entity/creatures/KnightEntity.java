@@ -174,10 +174,11 @@ public class KnightEntity extends Hunter {
         return state.setAndContinue(HEAD_BLEND);
     }
 
-    @Override
-    public int getCurrentSwingDuration() {
-        return 17;
-    }
+    // FIXME :: 1.21.1 backport issue? -> override does not exist
+//    @Override
+//    public int getCurrentSwingDuration() {
+//        return 17;
+//    }
 
     public double getRunThreshold() {
         return 0.15;

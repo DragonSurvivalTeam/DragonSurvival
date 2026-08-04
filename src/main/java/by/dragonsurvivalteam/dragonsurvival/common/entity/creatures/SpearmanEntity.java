@@ -162,10 +162,11 @@ public class SpearmanEntity extends Hunter {
         return attackBox.inflate(DEFAULT_ATTACK_REACH, 0, DEFAULT_ATTACK_REACH);
     }
 
-    @Override
-    public int getCurrentSwingDuration() {
-        return 17;
-    }
+    // FIXME :: 1.21.1 backport issue? -> override does not exist
+//    @Override
+//    public int getCurrentSwingDuration() {
+//        return 17;
+//    }
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {

@@ -18,7 +18,7 @@ public class ServerPlayerGameModeMixin {
 
     /** Additional check for mods which do not use the forge harvest check event (mostly relevant for MCreator) */
     @ModifyExpressionValue(method = "destroyBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/state/BlockState;canHarvestBlock(Lnet/minecraft/world/level/BlockGetter;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/entity/player/Player;)Z"))
-    private boolean dragonSurvival$canHarvestBlock(boolean original, @Local(ordinal = 1) final BlockState state) {
+    private boolean dragonSurvival$canHarvestBlock(boolean original, @Local(ordinal = 0) final BlockState state) {
         if (!original) {
             DragonStateHandler handler = DragonStateProvider.getData(player);
 

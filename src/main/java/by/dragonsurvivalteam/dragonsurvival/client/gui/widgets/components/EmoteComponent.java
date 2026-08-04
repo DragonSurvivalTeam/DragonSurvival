@@ -5,7 +5,6 @@ import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.DragonEmoteScreen
 import by.dragonsurvivalteam.dragonsurvival.client.render.ClientDragonRenderer;
 import by.dragonsurvivalteam.dragonsurvival.client.util.TextRenderUtil;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
-import by.dragonsurvivalteam.dragonsurvival.mixins.client.ScreenAccessor;
 import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
 import by.dragonsurvivalteam.dragonsurvival.network.emotes.SyncEmote;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEmoteKeybindings;
@@ -108,9 +107,9 @@ public class EmoteComponent {
         };
         refreshKeybinding();
 
-        ((ScreenAccessor) screen).dragonSurvival$addRenderableWidget(isPlayingButton);
-        ((ScreenAccessor) screen).dragonSurvival$addRenderableWidget(keybindingButton);
-        ((ScreenAccessor) screen).dragonSurvival$addRenderableWidget(emoteButton);
+        screen.addRenderableWidget(isPlayingButton);
+        screen.addRenderableWidget(keybindingButton);
+        screen.addRenderableWidget(emoteButton);
     }
 
     public void refreshKeybinding() {

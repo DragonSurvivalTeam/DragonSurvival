@@ -23,7 +23,6 @@
     "FileToIdConverterMixin",
     "FluidPredicateMixin",
     "FoodDataMixin",
-    "Holder$ReferenceAccess",
     "HolderSet$NamedAccess",
     "HolderSetCodecMixin",
     "IItemExtensionMixin",
@@ -105,7 +104,7 @@
     "curios.CuriosButtonMixin",
     "iris.GameRendererMixin",
     "multimine.MultiMineClientMixin",
-    "sodium.ClientNeoForgeModMixin",
+    "sodium.ClientForgeModMixin",
     "tool_swap.MultiPlayerGameModeEndMixin",
     "tool_swap.MultiPlayerGameModeStartMixin"
   ],

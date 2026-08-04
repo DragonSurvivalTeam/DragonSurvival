@@ -4,7 +4,6 @@ import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.DragonAbilityScreen;
 import by.dragonsurvivalteam.dragonsurvival.client.render.AbilityAndPenaltyTooltipRenderer;
 import by.dragonsurvivalteam.dragonsurvival.client.util.RenderingUtils;
-import by.dragonsurvivalteam.dragonsurvival.mixins.client.ScreenAccessor;
 import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncDisableAbility;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncSlotAssignment;
@@ -64,8 +63,8 @@ public class AbilityButton extends ExtendedButton {
 
         leftLevelButton = new LevelButton(LevelButton.Type.DOWNGRADE, ability, x - width / 2, y + 9);
         rightLevelButton = new LevelButton(LevelButton.Type.UPGRADE, ability, x + width / 2 + 18, y + 9);
-        ((ScreenAccessor) screen).dragonSurvival$addRenderableWidget(leftLevelButton);
-        ((ScreenAccessor) screen).dragonSurvival$addRenderableWidget(rightLevelButton);
+        screen.addRenderableWidget(leftLevelButton);
+        screen.addRenderableWidget(rightLevelButton);
     }
 
     public AbilityButton(int x, int y, @Nullable final DragonAbilityInstance ability, final DragonAbilityScreen screen, float scale) {

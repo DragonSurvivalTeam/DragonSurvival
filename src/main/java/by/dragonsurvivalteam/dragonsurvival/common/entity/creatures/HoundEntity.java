@@ -124,10 +124,11 @@ public class HoundEntity extends Hunter {
         this.goalSelector.addGoal(8, new FollowSpecificMobGoal(this, 0.6, 10, 20, target -> target instanceof KnightEntity));
     }
 
-    @Override
-    public int getCurrentSwingDuration() {
-        return 8;
-    }
+    // FIXME :: 1.21.1 backport issue? -> override does not exist
+//    @Override
+//    public int getCurrentSwingDuration() {
+//        return 8;
+//    }
 
     public double getRunThreshold() {
         return 0.15;

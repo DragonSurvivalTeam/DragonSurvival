@@ -2,8 +2,6 @@ package by.dragonsurvivalteam.dragonsurvival.mixins;
 
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
-import by.dragonsurvivalteam.dragonsurvival.common.handlers.DragonSizeHandler;
-import by.dragonsurvivalteam.dragonsurvival.compat.Compat;
 import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SwimData;
@@ -12,11 +10,9 @@ import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Mixin;
@@ -70,17 +66,18 @@ public abstract class PlayerMixin extends LivingEntity {
         return DragonStateProvider.isDragon(player) && TreasureRestData.getData(player).canSleep();
     }
 
-    /** Make sure to consider the actual dragon hitbox when doing checks like these */
-    @ModifyReturnValue(method = "canPlayerFitWithinBlocksAndEntitiesWhen", at = @At("RETURN"))
-    private boolean dragonSurvival$checkDragonHitbox(boolean returnValue, @Local(argsOnly = true) Pose pose) {
-        Player self = (Player) (Object) this;
-
-        if (DragonStateProvider.isDragon(self) && !Compat.hasModelSwapOrDoesNotUseModel(self)) {
-            return DragonSizeHandler.canPoseFit(self, pose);
-        } else {
-            return returnValue;
-        }
-    }
+    // FIXME :: 1.21.1 backport issue? -> method does not exist, nor does similar named
+//    /** Make sure to consider the actual dragon hitbox when doing checks like these */
+//    @ModifyReturnValue(method = "canPlayerFitWithinBlocksAndEntitiesWhen", at = @At("RETURN"))
+//    private boolean dragonSurvival$checkDragonHitbox(boolean returnValue, @Local(argsOnly = true) Pose pose) {
+//        Player self = (Player) (Object) this;
+//
+//        if (DragonStateProvider.isDragon(self) && !Compat.hasModelSwapOrDoesNotUseModel(self)) {
+//            return DragonSizeHandler.canPoseFit(self, pose);
+//        } else {
+//            return returnValue;
+//        }
+//    }
 
     @ModifyExpressionValue(method = "aiStep", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;isSwimming()Z"))
     private boolean dragonSurvival$consideredSwimmingEvenWhenGroundedInWater(boolean isSwimming) {

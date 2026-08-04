@@ -7,7 +7,6 @@ import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components.Scroll
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.SkinLayer;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.loader.DefaultPartLoader;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.DragonPart;
-import by.dragonsurvivalteam.dragonsurvival.mixins.client.ScreenAccessor;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.gui.components.Tooltip;
@@ -56,15 +55,15 @@ public class EditorPartComponent implements ScrollableComponent {
 
         partButton.setMessage(translatePart(partKey));
         partButton.setTooltip(Tooltip.create(Component.translatable(skinLayer.getTranslatedName())));
-        ((ScreenAccessor) screen).dragonSurvival$addRenderableWidget(partButton);
+        screen.addRenderableWidget(partButton);
 
         // Left arrow
-        ((ScreenAccessor) screen).dragonSurvival$addRenderableWidget(new HoverButton(xPos - 7, yPos + 2, 10, 16, 10, 16, SMALL_LEFT_ARROW_MAIN, SMALL_LEFT_ARROW_HOVER, button -> previousPart()));
+        screen.addRenderableWidget(new HoverButton(xPos - 7, yPos + 2, 10, 16, 10, 16, SMALL_LEFT_ARROW_MAIN, SMALL_LEFT_ARROW_HOVER, button -> previousPart()));
         // Right arrow
-        ((ScreenAccessor) screen).dragonSurvival$addRenderableWidget(new HoverButton(xPos + 108, yPos + 2, 10, 16, 10, 16, SMALL_RIGHT_ARROW_MAIN, SMALL_RIGHT_ARROW_HOVER, button -> nextPart()));
+        screen.addRenderableWidget(new HoverButton(xPos + 108, yPos + 2, 10, 16, 10, 16, SMALL_RIGHT_ARROW_MAIN, SMALL_RIGHT_ARROW_HOVER, button -> nextPart()));
 
         colorSelectorButton = new ColorSelectorButton(screen, skinLayer, isLeft ? xPos - 23 : xPos + 120, yPos + 3, 15, 15, isLeft, isTop);
-        ((ScreenAccessor) screen).dragonSurvival$addRenderableWidget(colorSelectorButton);
+        screen.addRenderableWidget(colorSelectorButton);
     }
 
     public boolean colorSelectorIsToggled() {

@@ -1,7 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components;
 
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic.HoverButton;
-import by.dragonsurvivalteam.dragonsurvival.mixins.client.ScreenAccessor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.resources.ResourceLocation;
@@ -29,13 +28,13 @@ public class BarComponent implements ScrollableComponent {
         this.widgets.addAll(widgets);
 
         for (AbstractWidget widget : widgets) {
-            ((ScreenAccessor) screen).dragonSurvival$addRenderableWidget(widget);
+            screen.addRenderableWidget(widget);
         }
 
         leftArrow = new HoverButton(xPos + arrowLeftX, yPos + arrowY, arrowWidth, arrowHeight, arrowWidth, arrowHeight, leftArrowMain, leftArrowHover, button -> scroll(false));
         rightArrow = new HoverButton(xPos + arrowRightX, yPos + arrowY, arrowWidth, arrowHeight, arrowWidth, arrowHeight, rightArrowMain, rightArrowHover, button -> scroll(true));
-        ((ScreenAccessor) screen).dragonSurvival$addRenderableWidget(leftArrow);
-        ((ScreenAccessor) screen).dragonSurvival$addRenderableWidget(rightArrow);
+        screen.addRenderableWidget(leftArrow);
+        screen.addRenderableWidget(rightArrow);
 
         leftArrow.visible = false;
         rightArrow.visible = widgets.size() > displayAmount;

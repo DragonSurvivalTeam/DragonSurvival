@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.At;
 /** Increase brightness when water vision is active */
 @Mixin(LightTexture.class)
 public abstract class LightTextureMixin {
-    @ModifyExpressionValue(method = "updateLightTexture", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;hasEffect(Lnet/minecraft/core/Holder;)Z", ordinal = 1))
+    @ModifyExpressionValue(method = "updateLightTexture", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;hasEffect(Lnet/minecraft/world/effect/MobEffect;)Z", ordinal = 1))
     private boolean dragonSurvival$handleWaterVision(boolean original) {
         return original || VisionHandler.hasWaterVision();
     }
