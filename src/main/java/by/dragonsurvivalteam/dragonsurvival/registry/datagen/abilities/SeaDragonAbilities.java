@@ -674,7 +674,7 @@ public class SeaDragonAbilities {
                                         DurationInstanceBase.create(DragonSurvival.res("amphibious")).removeAutomatically().hidden().build(),
                                         List.of(
                                                 Modifier.constant(NeoForgeMod.SWIM_SPEED, 1, AttributeModifier.Operation.ADD_VALUE),
-                                                Modifier.constant(Attributes.OXYGEN_BONUS, 50, AttributeModifier.Operation.ADD_VALUE) //temporary fix for the drowning issue
+                                                Modifier.constant(Attributes.OXYGEN_BONUS, 50, AttributeModifier.Operation.ADD_VALUE) // FIXME :: temporary fix for the drowning issue
                                         )
                                 )),
                                 TargetingMode.ALL
