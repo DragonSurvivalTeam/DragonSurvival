@@ -2,6 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.mixins.client;
 
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAttributes;
+import by.dragonsurvivalteam.dragonsurvival.registry.DSModifiers;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.multiplayer.ClientPacketListener;
@@ -22,6 +23,7 @@ public abstract class ClientPacketListenerMixin {
             return;
         }
 
+        DSModifiers.restoreSyncedGrowthModifierNames(player, DragonStateProvider.getData(player));
         boolean scaleChanged = packet.getValues().stream().anyMatch(snapshot -> snapshot.getAttribute() == DSAttributes.SCALE.get());
 
         if (scaleChanged) {
