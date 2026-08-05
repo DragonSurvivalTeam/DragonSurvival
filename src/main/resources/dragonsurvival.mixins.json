@@ -55,6 +55,7 @@
     "client.EffectsInInventoryAccessor",
     "client.EffectsInInventoryMixin",
     "client.EntityRenderDispatcherMixin",
+    "client.EntityRendererMixin",
     "client.EntityRendererAccessor",
     "client.GameRendererMixin",
     "client.GuiMixin",
