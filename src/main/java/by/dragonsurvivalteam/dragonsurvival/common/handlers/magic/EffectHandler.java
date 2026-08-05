@@ -6,6 +6,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.DSItems;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.EffectsMaintainedThroughDeath;
 import by.dragonsurvivalteam.dragonsurvival.util.AdditionalEffectData;
 import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -84,6 +85,10 @@ public class EffectHandler {
         double y = entity.getY() + d1;
         double z = entity.getZ() + d2 - entity.getBbWidth() / 2;
 
-        entity.level().addParticle(particle, x, y, z, 0, 0, 0);
+        if (entity.level() instanceof ServerLevel serverLevel) {
+            serverLevel.sendParticles(particle, x, y, z, 1, 0, 0, 0, 0);
+        } else {
+            entity.level().addParticle(particle, x, y, z, 0, 0, 0);
+        }
     }
 }

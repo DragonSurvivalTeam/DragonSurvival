@@ -1,10 +1,14 @@
 package by.dragonsurvivalteam.dragonsurvival.common.effects;
 
+import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.EntityStateHandler;
+import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.EffectHandler;
+import by.dragonsurvivalteam.dragonsurvival.common.particles.SmallFireParticleOption;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSDamageTypes;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.util.AdditionalEffectData;
+import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
@@ -36,14 +40,13 @@ public class BurnEffect extends ModifiableMobEffect {
             data.lastPos = entity.position();
         }
 
-        // FIXME :: applyEffectTick is now serverside, this needs to be sent to the client or done elsewhere.
-        /*if (!DragonStateProvider.isDragon(entity)) {
+        if (!DragonStateProvider.isDragon(entity)) {
             ParticleOptions particle = new SmallFireParticleOption(37F, false);
 
             for (int i = 0; i < 4; i++) {
                 EffectHandler.renderEffectParticle(entity, particle);
             }
-        }*/
+        }
 
         double distance = entity.distanceToSqr(data.lastPos);
         float damage = (amplifier + 1) * Mth.clamp((float) distance, 0, 10);

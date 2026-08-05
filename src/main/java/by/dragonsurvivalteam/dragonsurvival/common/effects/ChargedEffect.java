@@ -1,7 +1,10 @@
 package by.dragonsurvivalteam.dragonsurvival.common.effects;
 
+import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.EntityStateHandler;
+import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.EffectHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.particles.LargeLightningParticleOption;
+import by.dragonsurvivalteam.dragonsurvival.common.particles.SmallLightningParticleOption;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigRange;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
@@ -13,6 +16,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSEntityTypeTags;
 import by.dragonsurvivalteam.dragonsurvival.util.AdditionalEffectData;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
+import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectCategory;
@@ -71,14 +75,13 @@ public class ChargedEffect extends ModifiableMobEffect {
     public boolean applyEffectTick(@NotNull ServerLevel level, final LivingEntity entity, int amplifier) {
         entity.hurt(new DamageSource(DSDamageTypes.get(entity.level(), DSDamageTypes.ELECTRIC)), damage * (amplifier + 1));
 
-        // FIXME :: applyEffectTick is now serverside, this needs to be sent to the client or done elsewhere.
-        /*if (!DragonStateProvider.isDragon(entity)) {
+        if (!DragonStateProvider.isDragon(entity)) {
             ParticleOptions particle = new SmallLightningParticleOption(37F, false);
 
             for (int i = 0; i < 4; i++) {
                 EffectHandler.renderEffectParticle(entity, particle);
             }
-        }*/
+        }
 
         chargedEffectChain(level, entity, damage * amplifier + 1);
         return super.applyEffectTick(level, entity, amplifier);
@@ -117,8 +120,7 @@ public class ChargedEffect extends ModifiableMobEffect {
             effectApplier = ((AdditionalEffectData) source.getEffect(DSEffects.CHARGED)).dragonSurvival$getApplier(serverLevel);
 
             target.hurt(new DamageSource(DSDamageTypes.get(target.level(), DSDamageTypes.ELECTRIC), effectApplier), damage);
-            // FIXME :: applyEffectTick is now serverside, this needs to be sent to the client or done elsewhere.
-            //drawParticleLine(source, target);
+            drawParticleLine(source, target);
 
             if (target.level().isClientSide()) {
                 return;
