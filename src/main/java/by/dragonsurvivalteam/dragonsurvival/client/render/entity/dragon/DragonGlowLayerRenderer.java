@@ -15,6 +15,8 @@ import com.geckolib.renderer.layer.builtin.AutoGlowingGeoLayer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.Nullable;
@@ -32,6 +34,18 @@ public class DragonGlowLayerRenderer<R extends LivingEntityRenderState & GeoRend
         }
 
         super.submitRenderTask(renderPassInfo, renderTasks);
+    }
+
+    @Override
+    protected @Nullable RenderType getRenderType(final R renderState) {
+        if (renderState.isInvisible) {
+            return super.getRenderType(renderState);
+        }
+
+        // The dragon model has zero-thickness, separately textured wing faces. GeckoLib's Windows
+        // emissive pipeline disables culling, unlike the EYES render state used by the 1.21.1 renderer.
+        Identifier glowTexture = getGlowTexture(renderState);
+        return glowTexture == null ? null : RenderTypes.eyes(glowTexture);
     }
 
     @Override
