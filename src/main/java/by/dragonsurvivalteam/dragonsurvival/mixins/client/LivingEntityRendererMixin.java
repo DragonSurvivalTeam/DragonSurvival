@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.mixins.client;
 
+import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.HunterHandler;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.HunterData;
 import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.client.model.EntityModel;
@@ -28,13 +29,13 @@ public abstract class LivingEntityRendererMixin<T extends LivingEntity, M extend
         return true;
     }
 
-    // FIXME :: 1.21.1 backport issue? -> need to check what to do here now
-//    @ModifyArg(method = "render(Lnet/minecraft/world/entity/LivingEntity;FFLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/model/EntityModel;renderToBuffer(Lcom/mojang/blaze3d/vertex/PoseStack;Lcom/mojang/blaze3d/vertex/VertexConsumer;III)V"), index = 4)
-//    private int dragonSurvival$modifyAlpha(int color, @Local(argsOnly = true) final T entity) {
-//        if (/* Don't make invisible players slightly visible */ !entity.isInvisible()) {
-//            return HunterHandler.modifyAlpha(entity, color);
-//        }
-//
-//        return color;
-//    }
+    @ModifyArg(method = "render(Lnet/minecraft/world/entity/LivingEntity;FFLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/model/EntityModel;renderToBuffer(Lcom/mojang/blaze3d/vertex/PoseStack;Lcom/mojang/blaze3d/vertex/VertexConsumer;IIFFFF)V"), index = 7)
+    private float dragonSurvival$modifyAlpha(final float original, @Local(argsOnly = true) final T entity) {
+        if (entity.isInvisible()) {
+            return original;
+        }
+
+        float alpha = HunterHandler.calculateAlphaAsFloat(entity);
+        return alpha == HunterHandler.UNMODIFIED ? original : alpha;
+    }
 }

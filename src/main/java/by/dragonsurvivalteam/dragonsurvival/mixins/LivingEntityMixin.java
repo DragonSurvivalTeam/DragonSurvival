@@ -163,17 +163,6 @@ public abstract class LivingEntityMixin extends Entity {
         return !HunterData.hasMaxHunterStacks((LivingEntity) (Object) this);
     }
 
-    // FIXME :: 1.21.1 backport issue? -> method does not exist
-//    @ModifyExpressionValue(method = "getPassengerRidingPosition", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;getDimensions(Lnet/minecraft/world/entity/Pose;)Lnet/minecraft/world/entity/EntityDimensions;"))
-//    public EntityDimensions dragonSurvival$useCorrectDimensionsForPassengerRidingCalculation(EntityDimensions original) {
-//        LivingEntity self = (LivingEntity) (Object) this;
-//        if (DragonStateProvider.isDragon(self) && self instanceof Player player) {
-//            return DragonSizeHandler.calculateDimensions(DragonStateProvider.getData(player), player, DragonSizeHandler.getOverridePose(player));
-//        } else {
-//            return original;
-//        }
-//    }
-
     @Unique private int dragonSurvival$getHumanOrDragonUseDuration(final ItemStack stack, int original) {
         if (!DragonFoodHandler.dragonFoodHandlingIsDisabled() && (Object) this instanceof Player player) {
             DragonStateHandler handler = DragonStateProvider.getData(player);

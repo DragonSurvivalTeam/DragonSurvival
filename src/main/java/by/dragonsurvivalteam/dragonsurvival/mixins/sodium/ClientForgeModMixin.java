@@ -1,18 +1,31 @@
 package by.dragonsurvivalteam.dragonsurvival.mixins.sodium;
 
-import net.minecraftforge.client.ClientForgeMod;
+import by.dragonsurvivalteam.dragonsurvival.client.render.VisionHandler;
+import by.dragonsurvivalteam.dragonsurvival.client.util.ClientFluidTypeExtensionsWrapper;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.minecraftforge.fluids.FluidType;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
 
-@Mixin(ClientForgeMod.class)
+import java.util.function.Consumer;
+
+@Mixin(value = FluidType.class, remap = false)
 public abstract class ClientForgeModMixin {
-    // FIXME 1.21.1 backport issue? -> methods do not exist anymore but it's probably not even needed in 1.20.1?
-//    @ModifyArg(method = "onRegisterClientExtensions", at = @At(value = "INVOKE", target = "Lnet/minecraftforge/client/extensions/common/RegisterClientExtensionsEvent;registerFluidType(Lnet/minecraftforge/client/extensions/common/IClientFluidTypeExtensions;[Lnet/minecraftforge/fluids/FluidType;)V", ordinal = 0))
-//    private static IClientFluidTypeExtensions dragonSurvival$modifyWater(final IClientFluidTypeExtensions original) {
-//        return new ClientFluidTypeExtensionsWrapper(original, VisionHandler.VisionType.WATER);
-//    }
-//
-//    @ModifyArg(method = "onRegisterClientExtensions", at = @At(value = "INVOKE", target = "Lnet/minecraftforge/client/extensions/common/RegisterClientExtensionsEvent;registerFluidType(Lnet/minecraftforge/client/extensions/common/IClientFluidTypeExtensions;[Lnet/minecraftforge/fluids/FluidType;)V", ordinal = 1))
-//    private static IClientFluidTypeExtensions dragonSurvival$modifyLava(final IClientFluidTypeExtensions original) {
-//        return new ClientFluidTypeExtensionsWrapper(original, VisionHandler.VisionType.LAVA);
-//    }
+    @WrapOperation(method = "initClient", at = @At(value = "INVOKE", target = "Lnet/minecraftforge/fluids/FluidType;initializeClient(Ljava/util/function/Consumer;)V"))
+    private void dragonSurvival$wrapVanillaFluidExtensions(final FluidType instance, final Consumer<IClientFluidTypeExtensions> consumer, final Operation<Void> original) {
+        VisionHandler.VisionType visionType = switch (instance.getDescriptionId()) {
+            case "block.minecraft.water" -> VisionHandler.VisionType.WATER;
+            case "block.minecraft.lava" -> VisionHandler.VisionType.LAVA;
+            default -> null;
+        };
+
+        if (visionType == null) {
+            original.call(instance, consumer);
+            return;
+        }
+
+        original.call(instance, (Consumer<IClientFluidTypeExtensions>) extensions -> consumer.accept(new ClientFluidTypeExtensionsWrapper(extensions, visionType)));
+    }
 }
