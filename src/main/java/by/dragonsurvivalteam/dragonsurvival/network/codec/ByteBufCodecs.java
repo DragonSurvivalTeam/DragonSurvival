@@ -325,12 +325,13 @@ public interface ByteBufCodecs {
         byte current;
 
         do {
-            current = buffer.readByte();
-            value |= (current & 0x7F) << position;
-            position += 7;
             if (position >= 35) {
                 throw new DecoderException("VarInt is too big");
             }
+
+            current = buffer.readByte();
+            value |= (current & 0x7F) << position;
+            position += 7;
         } while ((current & 0x80) != 0);
 
         return value;

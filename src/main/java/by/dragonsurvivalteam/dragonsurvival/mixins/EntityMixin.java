@@ -86,7 +86,6 @@ public abstract class EntityMixin implements AttachmentStorage {
         }
     }
 
-    // TODO :: 1.21.1 backport -> verify
     /** Correctly position the passenger when riding a dragon */
     @WrapOperation(method = "positionRider(Lnet/minecraft/world/entity/Entity;Lnet/minecraft/world/entity/Entity$MoveFunction;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity$MoveFunction;accept(Lnet/minecraft/world/entity/Entity;DDD)V"))
     public void dragonSurvival$positionRider(final Entity.MoveFunction instance, final Entity entity, final double x, final double y, final double z, final Operation<Void> original) {
@@ -96,23 +95,26 @@ public abstract class EntityMixin implements AttachmentStorage {
             DragonStateHandler handler = DragonStateProvider.getData(player);
             MovementData movement = MovementData.getData(player);
 
-            EntityDimensions dragonDims = DragonSizeHandler.calculateDimensions(handler, player, DragonSizeHandler.getOverridePose(player));
-            double baseRidingOffset = dragonDims.height * 0.75D;
-            Vec3 pos = new Vec3(0, baseRidingOffset + entity.getMyRidingOffset(), 0);
+            // Pose changes shrink the collision box, but the seat must remain anchored to the dragon model.
+            EntityDimensions dragonDims = DragonSizeHandler.calculateDimensions(handler, player,  DragonSizeHandler.getOverridePose(player));
+            // TODO :: This is a bad approximation to get the right mounting height, not really sure what is best to do here without having to tweak the 1.21.1 values for mounting offsets
+            Vec3 pos = new Vec3(0, dragonDims.height * 0.85D, 0);
+            Vec3 mountingOffset = Vec3.ZERO;
 
             if (handler.body().value().mountingOffsets().isPresent()) {
                 DragonBody.MountingOffsets mountingOffsets = handler.body().value().mountingOffsets().get();
-                Vec3 offset = DragonStateProvider.isDragon(entity) ? mountingOffsets.dragonOffset() : mountingOffsets.humanOffset();
+                mountingOffset = DragonStateProvider.isDragon(entity) ? mountingOffsets.dragonOffset() : mountingOffsets.humanOffset();
                 Vec3 offsetPerScaleAboveOne = mountingOffsets.scale();
                 float scale = EntityScale.get(player);
-                offset = offset.add(offsetPerScaleAboveOne.scale(scale - 1));
+                mountingOffset = mountingOffset.add(offsetPerScaleAboveOne.scale(scale - 1));
 
-                pos = pos.add(offset);
+                pos = pos.add(mountingOffset);
             }
 
             pos = pos.xRot((float) Math.toRadians(movement.prevXRot * 1.5)).zRot(-(float) Math.toRadians(movement.prevZRot * 90));
             pos = pos.multiply(1, Math.signum(pos.y), 1);
-            pos = pos.yRot(-(float) Math.toRadians(movement.bodyYawLastFrame));
+            // The mounting offset brackets the pitch/roll transform so the rider stays aligned with the model origin.
+            pos = pos.add(mountingOffset).yRot(-(float) Math.toRadians(movement.bodyYawLastFrame));
 
             original.call(instance, entity, mount.getX() + pos.x, mount.getY() + pos.y, mount.getZ() + pos.z);
         } else if (DragonStateProvider.isDragon(entity) && !DragonStateProvider.isDragon(mount)) {
