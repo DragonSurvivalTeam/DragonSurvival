@@ -167,14 +167,14 @@ public record ProjectileEffect(
         BiConsumer<Projectile, Float> shootLogic;
 
         if (targetDirection.direction().left().orElse(null) == TargetDirection.Type.LOOKING_AT) {
-            shootLogic = (arrow, spread) -> arrow.shootFromRotation(entity, entity.getXRot(), entity.getYRot(), 0, speed, spread);
+            shootLogic = (projectile, spread) -> projectile.shootFromRotation(entity, entity.getXRot(), entity.getYRot(), 0, speed, spread);
         } else if (targetDirection.direction().right().isPresent()) {
             Direction direction = targetDirection.direction().right().get();
-            shootLogic = (arrow, spread) -> arrow.shoot(direction.getStepX(), direction.getStepY(), direction.getStepZ(), speed, spread);
+            shootLogic = (projectile, spread) -> projectile.shoot(direction.getStepX(), direction.getStepY(), direction.getStepZ(), speed, spread);
         } else {
-            shootLogic = (arrow, spread) -> {
+            shootLogic = (projectile, spread) -> {
                 Vec3 target = dragon.position().vectorTo(entity.position());
-                arrow.shoot(target.x(), target.y(), target.z(), speed, spread);
+                projectile.shoot(target.x(), target.y(), target.z(), speed, spread);
             };
         }
 
