@@ -64,7 +64,7 @@ public record WeatherPredicate(Optional<Boolean> isRaining, Optional<Boolean> is
             return false;
         }
 
-        if(level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING, position).getY() > position.getY()) {
+        if (level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING, position).getY() > position.getY()) {
             return false;
         }
 

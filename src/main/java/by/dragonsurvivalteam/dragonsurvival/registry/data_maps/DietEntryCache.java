@@ -2,6 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.registry.data_maps;
 
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.DietEntry;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.DragonFood;
+import by.dragonsurvivalteam.dragonsurvival.common.handlers.DragonFoodHandler;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSDataMaps;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import net.minecraft.core.Holder;
@@ -29,14 +30,26 @@ public class DietEntryCache {
     }
 
     public static boolean isEmpty(final Holder<DragonSpecies> species) {
+        if (DragonFoodHandler.dragonFoodHandlingIsDisabled()) {
+            return true;
+        }
+
         return CACHE.computeIfAbsent(species.getKey(), key -> generate(species)).isEmpty();
     }
 
     public static @Nullable DragonFood getDiet(final Holder<DragonSpecies> species, final Item item) {
+        if (DragonFoodHandler.dragonFoodHandlingIsDisabled()) {
+            return null;
+        }
+
         return CACHE.computeIfAbsent(species.getKey(), key -> generate(species)).get(item);
     }
 
     public static List<Item> getDietItems(final Holder<DragonSpecies> species) {
+        if (DragonFoodHandler.dragonFoodHandlingIsDisabled()) {
+            return List.of();
+        }
+
         return List.copyOf(CACHE.computeIfAbsent(species.getKey(), key -> generate(species)).keySet());
     }
 
