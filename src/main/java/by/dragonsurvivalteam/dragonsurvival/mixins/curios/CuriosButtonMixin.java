@@ -14,7 +14,7 @@ import top.theillusivec4.curios.client.gui.CuriosButton;
 
 @Mixin(value = CuriosButton.class, remap = false)
 public abstract class CuriosButtonMixin {
-    @Inject(method = "lambda$new$0", at = @At("HEAD"), remap = false)
+    @Inject(method = "lambda$new$0", at = @At(value = "INVOKE", target = "Lnet/minecraftforge/network/simple/SimpleChannel;send(Lnet/minecraftforge/network/PacketDistributor$PacketTarget;Ljava/lang/Object;)V", ordinal = 1, shift = At.Shift.BEFORE), remap = false)
     private static void dragonSurvival$rememberParent(final AbstractContainerScreen<?> parent, final Button button, final CallbackInfo callback) {
         if (parent instanceof DragonInventoryScreen screen) {
             MouseHandler handler = Minecraft.getInstance().mouseHandler;
