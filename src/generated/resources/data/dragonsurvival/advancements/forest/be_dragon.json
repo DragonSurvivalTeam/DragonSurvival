@@ -1,0 +1,38 @@
+{
+  "parent": "dragonsurvival:place_altar",
+  "criteria": {
+    "criterion_0": {
+      "conditions": {
+        "dragon": {
+          "dragon_species": "dragonsurvival:forest_dragon"
+        }
+      },
+      "trigger": "dragonsurvival:be_dragon"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "dragonsurvival.advancement.forest/be_dragon.desc"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "dragonsurvival:dragon_soul",
+      "nbt": "{CustomModelData:1}"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "dragonsurvival.advancement.forest/be_dragon"
+    }
+  },
+  "requirements": [
+    [
+      "criterion_0"
+    ]
+  ],
+  "rewards": {
+    "experience": 12
+  },
+  "sends_telemetry_event": true
+}

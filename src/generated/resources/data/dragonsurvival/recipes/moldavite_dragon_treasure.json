@@ -1,0 +1,28 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "silentgems"
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shapeless",
+        "category": "misc",
+        "ingredients": [
+          {
+            "tag": "dragonsurvival:compat/silentgems/moldavite"
+          },
+          {
+            "item": "dragonsurvival:elder_dragon_dust"
+          }
+        ],
+        "result": {
+          "item": "dragonsurvival:moldavite_dragon_treasure"
+        }
+      }
+    }
+  ]
+}

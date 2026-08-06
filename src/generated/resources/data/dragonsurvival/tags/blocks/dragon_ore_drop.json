@@ -1,0 +1,11 @@
+{
+  "values": [
+    "#forge:ores/quartz",
+    "#forge:ores/coal",
+    "#forge:ores/redstone",
+    "#forge:ores/lapis",
+    "minecraft:nether_gold_ore",
+    "#forge:ores/diamond",
+    "#forge:ores/emerald"
+  ]
+}

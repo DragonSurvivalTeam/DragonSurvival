@@ -1,0 +1,79 @@
+{
+  "parent": "dragonsurvival:collect_dust",
+  "criteria": {
+    "find_cave_dragon_bones": {
+      "conditions": {
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "location": {
+                "structure": "dragonsurvival:dragon_skeleton_cave"
+              }
+            }
+          }
+        ]
+      },
+      "trigger": "minecraft:location"
+    },
+    "find_forest_dragon_bones": {
+      "conditions": {
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "location": {
+                "structure": "dragonsurvival:dragon_skeleton_forest"
+              }
+            }
+          }
+        ]
+      },
+      "trigger": "minecraft:location"
+    },
+    "find_sea_dragon_bones": {
+      "conditions": {
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "location": {
+                "structure": "dragonsurvival:dragon_skeleton_sea"
+              }
+            }
+          }
+        ]
+      },
+      "trigger": "minecraft:location"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "dragonsurvival.advancement.find_bones.desc"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "dragonsurvival:star_bone"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "dragonsurvival.advancement.find_bones"
+    }
+  },
+  "requirements": [
+    [
+      "find_cave_dragon_bones",
+      "find_forest_dragon_bones",
+      "find_sea_dragon_bones"
+    ]
+  ],
+  "rewards": {
+    "experience": 12
+  },
+  "sends_telemetry_event": true
+}

@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "redstone",
+  "ingredients": [
+    {
+      "item": "dragonsurvival:oak_dragon_door"
+    }
+  ],
+  "result": {
+    "item": "dragonsurvival:skyrim_dragon_door"
+  }
+}

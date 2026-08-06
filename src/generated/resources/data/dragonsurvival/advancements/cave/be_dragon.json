@@ -1,0 +1,38 @@
+{
+  "parent": "dragonsurvival:place_altar",
+  "criteria": {
+    "be_cave_dragon": {
+      "conditions": {
+        "dragon": {
+          "dragon_species": "dragonsurvival:cave_dragon"
+        }
+      },
+      "trigger": "dragonsurvival:be_dragon"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "dragonsurvival.advancement.cave/be_dragon.desc"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "dragonsurvival:dragon_soul",
+      "nbt": "{CustomModelData:2}"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "dragonsurvival.advancement.cave/be_dragon"
+    }
+  },
+  "requirements": [
+    [
+      "be_cave_dragon"
+    ]
+  ],
+  "rewards": {
+    "experience": 12
+  },
+  "sends_telemetry_event": true
+}

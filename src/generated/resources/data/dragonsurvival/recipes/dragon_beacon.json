@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "dragonsurvival:star_heart"
+    },
+    {
+      "tag": "dragonsurvival:activates_dragon_beacon"
+    }
+  ],
+  "result": {
+    "item": "dragonsurvival:dragon_beacon"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "minecraft:quartz_block"
+    },
+    {
+      "item": "dragonsurvival:elder_dragon_bone"
+    }
+  ],
+  "result": {
+    "item": "dragonsurvival:quartz_dragon_altar"
+  }
+}

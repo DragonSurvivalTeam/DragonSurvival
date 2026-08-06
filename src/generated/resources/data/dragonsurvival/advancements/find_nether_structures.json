@@ -1,0 +1,79 @@
+{
+  "parent": "dragonsurvival:find_overworld_structures",
+  "criteria": {
+    "find_angry_cave_treasure": {
+      "conditions": {
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "location": {
+                "structure": "dragonsurvival:treasure_angry_cave"
+              }
+            }
+          }
+        ]
+      },
+      "trigger": "minecraft:location"
+    },
+    "find_angry_forest_treasure": {
+      "conditions": {
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "location": {
+                "structure": "dragonsurvival:treasure_angry_forest"
+              }
+            }
+          }
+        ]
+      },
+      "trigger": "minecraft:location"
+    },
+    "find_angry_sea_treasure": {
+      "conditions": {
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "location": {
+                "structure": "dragonsurvival:treasure_angry_sea"
+              }
+            }
+          }
+        ]
+      },
+      "trigger": "minecraft:location"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "dragonsurvival.advancement.find_nether_structures.desc"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "minecraft:netherrack"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "dragonsurvival.advancement.find_nether_structures"
+    }
+  },
+  "requirements": [
+    [
+      "find_angry_cave_treasure",
+      "find_angry_forest_treasure",
+      "find_angry_sea_treasure"
+    ]
+  ],
+  "rewards": {
+    "experience": 36
+  },
+  "sends_telemetry_event": true
+}

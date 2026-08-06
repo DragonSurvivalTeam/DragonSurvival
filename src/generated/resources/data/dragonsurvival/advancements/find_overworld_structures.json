@@ -1,0 +1,79 @@
+{
+  "parent": "dragonsurvival:find_bones",
+  "criteria": {
+    "find_friendly_cave_treasure": {
+      "conditions": {
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "location": {
+                "structure": "dragonsurvival:treasure_friendly_cave"
+              }
+            }
+          }
+        ]
+      },
+      "trigger": "minecraft:location"
+    },
+    "find_friendly_forest_treasure": {
+      "conditions": {
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "location": {
+                "structure": "dragonsurvival:treasure_friendly_forest"
+              }
+            }
+          }
+        ]
+      },
+      "trigger": "minecraft:location"
+    },
+    "find_friendly_sea_treasure": {
+      "conditions": {
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "location": {
+                "structure": "dragonsurvival:treasure_friendly_sea"
+              }
+            }
+          }
+        ]
+      },
+      "trigger": "minecraft:location"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "dragonsurvival.advancement.find_overworld_structures.desc"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "minecraft:grass_block"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "dragonsurvival.advancement.find_overworld_structures"
+    }
+  },
+  "requirements": [
+    [
+      "find_friendly_cave_treasure",
+      "find_friendly_forest_treasure",
+      "find_friendly_sea_treasure"
+    ]
+  ],
+  "rewards": {
+    "experience": 24
+  },
+  "sends_telemetry_event": true
+}

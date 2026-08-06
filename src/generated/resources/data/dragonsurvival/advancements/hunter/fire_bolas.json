@@ -1,0 +1,44 @@
+{
+  "parent": "dragonsurvival:hunter/collect_key",
+  "criteria": {
+    "fire_bolas": {
+      "conditions": {
+        "item": {
+          "enchantments": [
+            {
+              "enchantment": "dragonsurvival:bolas",
+              "levels": {
+                "min": 1
+              }
+            }
+          ],
+          "items": [
+            "minecraft:crossbow"
+          ]
+        }
+      },
+      "trigger": "minecraft:shot_crossbow"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "description": {
+      "translate": "dragonsurvival.advancement.hunter/fire_bolas.desc"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "dragonsurvival:bolas"
+    },
+    "show_toast": false,
+    "title": {
+      "translate": "dragonsurvival.advancement.hunter/fire_bolas"
+    }
+  },
+  "requirements": [
+    [
+      "fire_bolas"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

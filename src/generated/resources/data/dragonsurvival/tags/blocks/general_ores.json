@@ -1,0 +1,18 @@
+{
+  "remove": [
+    "#forge:ores/quartz",
+    "#forge:ores/netherite_scrap",
+    "#forge:ores/coal",
+    "#forge:ores/copper",
+    "#forge:ores/iron",
+    "#forge:ores/gold",
+    "#forge:ores/redstone",
+    "#forge:ores/lapis",
+    "#forge:ores/emerald",
+    "#forge:ores/diamond"
+  ],
+  "values": [
+    "#forge:ores",
+    "minecraft:gilded_blackstone"
+  ]
+}

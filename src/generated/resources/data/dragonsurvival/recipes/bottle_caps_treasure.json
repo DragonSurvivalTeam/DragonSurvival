@@ -1,0 +1,62 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "desert_monster_ds"
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shapeless",
+        "category": "misc",
+        "ingredients": [
+          {
+            "item": "dragonsurvival:elder_dragon_dust"
+          },
+          {
+            "item": "minecraft:iron_nugget"
+          },
+          {
+            "item": "minecraft:iron_nugget"
+          },
+          {
+            "item": "minecraft:iron_nugget"
+          },
+          {
+            "item": "minecraft:blue_dye"
+          },
+          {
+            "item": "minecraft:blue_dye"
+          },
+          {
+            "item": "minecraft:blue_dye"
+          },
+          {
+            "item": "minecraft:green_dye"
+          },
+          {
+            "item": "minecraft:green_dye"
+          },
+          {
+            "item": "minecraft:green_dye"
+          },
+          {
+            "item": "minecraft:red_dye"
+          },
+          {
+            "item": "minecraft:red_dye"
+          },
+          {
+            "item": "minecraft:red_dye"
+          }
+        ],
+        "result": {
+          "count": 3,
+          "item": "dragonsurvival:bottle_caps_treasure"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "parent": "dragonsurvival:stop_natural_growth",
+  "criteria": {
+    "use_dragon_soul": {
+      "trigger": "dragonsurvival:use_dragon_soul"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "dragonsurvival.advancement.use_dragon_soul.desc"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "dragonsurvival:dragon_soul"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "dragonsurvival.advancement.use_dragon_soul"
+    }
+  },
+  "requirements": [
+    [
+      "use_dragon_soul"
+    ]
+  ],
+  "rewards": {
+    "experience": 120
+  },
+  "sends_telemetry_event": true
+}

@@ -1,0 +1,43 @@
+{
+  "parent": "dragonsurvival:collect_heart_from_monster",
+  "criteria": {
+    "be_fully_grown_adult": {
+      "conditions": {
+        "dragon": {
+          "dragon_species": "dragonsurvival:cave_dragon",
+          "stage_specific": {
+            "dragon_stage": "dragonsurvival:adult",
+            "growth_percentage": {
+              "min": 1
+            }
+          }
+        }
+      },
+      "trigger": "dragonsurvival:be_dragon"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "dragonsurvival.advancement.cave/be_old_dragon.desc"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "dragonsurvival:cave_beacon"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "dragonsurvival.advancement.cave/be_old_dragon"
+    }
+  },
+  "requirements": [
+    [
+      "be_fully_grown_adult"
+    ]
+  ],
+  "rewards": {
+    "experience": 120
+  },
+  "sends_telemetry_event": true
+}

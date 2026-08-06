@@ -1,0 +1,10 @@
+{
+  "values": [
+    "#minecraft:wooden_slabs",
+    "#minecraft:planks",
+    "#minecraft:logs",
+    "#minecraft:dirt",
+    "#dragonsurvival:is_grassy",
+    "minecraft:grass_block"
+  ]
+}

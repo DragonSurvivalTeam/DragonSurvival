@@ -1,0 +1,32 @@
+{
+  "parent": "dragonsurvival:be_dragon",
+  "criteria": {
+    "stop_natural_growth": {
+      "trigger": "dragonsurvival:stop_natural_growth"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "dragonsurvival.advancement.stop_natural_growth.desc"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "dragonsurvival:star_heart"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "dragonsurvival.advancement.stop_natural_growth"
+    }
+  },
+  "requirements": [
+    [
+      "stop_natural_growth"
+    ]
+  ],
+  "rewards": {
+    "experience": 30
+  },
+  "sends_telemetry_event": true
+}

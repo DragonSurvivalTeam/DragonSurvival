@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "minecraft:blackstone"
+    },
+    {
+      "item": "dragonsurvival:elder_dragon_bone"
+    }
+  ],
+  "result": {
+    "item": "dragonsurvival:blackstone_dragon_altar"
+  }
+}

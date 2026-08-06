@@ -1,0 +1,42 @@
+{
+  "parent": "dragonsurvival:root",
+  "criteria": {
+    "place_dragon_altar": {
+      "conditions": {
+        "location": [
+          {
+            "condition": "minecraft:match_tool",
+            "predicate": {
+              "tag": "dragonsurvival:dragon_altars"
+            }
+          }
+        ]
+      },
+      "trigger": "minecraft:placed_block"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "description": {
+      "translate": "dragonsurvival.advancement.place_altar.desc"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "dragonsurvival:stone_dragon_altar"
+    },
+    "show_toast": false,
+    "title": {
+      "translate": "dragonsurvival.advancement.place_altar"
+    }
+  },
+  "requirements": [
+    [
+      "place_dragon_altar"
+    ]
+  ],
+  "rewards": {
+    "experience": 6
+  },
+  "sends_telemetry_event": true
+}

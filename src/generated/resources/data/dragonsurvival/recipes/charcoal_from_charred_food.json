@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "tag": "dragonsurvival:charred_food"
+    }
+  ],
+  "result": {
+    "item": "minecraft:charcoal"
+  }
+}

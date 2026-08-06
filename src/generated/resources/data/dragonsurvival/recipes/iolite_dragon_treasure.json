@@ -1,0 +1,28 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "silentgems"
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shapeless",
+        "category": "misc",
+        "ingredients": [
+          {
+            "tag": "dragonsurvival:compat/silentgems/iolite"
+          },
+          {
+            "item": "dragonsurvival:elder_dragon_dust"
+          }
+        ],
+        "result": {
+          "item": "dragonsurvival:iolite_dragon_treasure"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "parent": "dragonsurvival:sleep_on_treasure",
+  "criteria": {
+    "sleep_on_treasure_hoard": {
+      "conditions": {
+        "nearby_treasure_amount": 100
+      },
+      "trigger": "dragonsurvival:sleep_on_treasure"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "dragonsurvival.advancement.sleep_on_hoard.desc"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "minecraft:gold_ingot"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "dragonsurvival.advancement.sleep_on_hoard"
+    }
+  },
+  "requirements": [
+    [
+      "sleep_on_treasure_hoard"
+    ]
+  ],
+  "rewards": {
+    "experience": 40
+  },
+  "sends_telemetry_event": true
+}

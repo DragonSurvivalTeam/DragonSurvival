@@ -1,0 +1,23 @@
+{
+  "values": [
+    "#minecraft:fire",
+    "minecraft:magma_block",
+    "dragonsurvival:cave_source_of_magic",
+    {
+      "id": "#immersive_weathering:charred_blocks",
+      "required": false
+    },
+    {
+      "id": "#regions_unexplored:ash",
+      "required": false
+    },
+    {
+      "id": "netherdepthsupgrade:wet_lava_sponge",
+      "required": false
+    },
+    {
+      "id": "regions_unexplored:brimwood_log_magma",
+      "required": false
+    }
+  ]
+}

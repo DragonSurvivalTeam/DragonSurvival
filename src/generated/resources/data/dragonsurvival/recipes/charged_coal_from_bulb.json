@@ -1,0 +1,34 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "regions_unexplored"
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "category": "misc",
+        "key": {
+          "C": {
+            "tag": "minecraft:coals"
+          },
+          "R": {
+            "tag": "dragonsurvival:compat/regions_unexplored/redstone_bulb"
+          }
+        },
+        "pattern": [
+          "RRR",
+          "CCR",
+          "CCR"
+        ],
+        "result": {
+          "item": "dragonsurvival:charged_coal"
+        },
+        "show_notification": true
+      }
+    }
+  ]
+}

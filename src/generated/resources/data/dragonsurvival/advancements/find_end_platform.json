@@ -1,0 +1,45 @@
+{
+  "parent": "dragonsurvival:find_nether_structures",
+  "criteria": {
+    "enter_end_as_dragon": {
+      "conditions": {
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "location": {
+                "dimension": "minecraft:the_end"
+              }
+            }
+          }
+        ]
+      },
+      "trigger": "dragonsurvival:be_dragon"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "dragonsurvival.advancement.find_end_platform.desc"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "minecraft:ender_pearl"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "dragonsurvival.advancement.find_end_platform"
+    }
+  },
+  "requirements": [
+    [
+      "enter_end_as_dragon"
+    ]
+  ],
+  "rewards": {
+    "experience": 32
+  },
+  "sends_telemetry_event": true
+}

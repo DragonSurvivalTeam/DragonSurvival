@@ -1,0 +1,65 @@
+{
+  "values": [
+    "#minecraft:flowers",
+    "#minecraft:leaves",
+    "minecraft:brown_mushroom_block",
+    "minecraft:red_mushroom_block",
+    "minecraft:sweet_berry_bush",
+    "minecraft:brown_mushroom",
+    "minecraft:red_mushroom",
+    "minecraft:moss_carpet",
+    "minecraft:grass_block",
+    "minecraft:moss_block",
+    "minecraft:mycelium",
+    "minecraft:lily_pad",
+    "dragonsurvival:forest_source_of_magic",
+    {
+      "id": "regions_unexplored:spanish_moss",
+      "required": false
+    },
+    {
+      "id": "regions_unexplored:mycotoxic_mushrooms",
+      "required": false
+    },
+    {
+      "id": "regions_unexplored:alpha_grass_block",
+      "required": false
+    },
+    {
+      "id": "regions_unexplored:chalk_grass_block",
+      "required": false
+    },
+    {
+      "id": "regions_unexplored:peat_grass_block",
+      "required": false
+    },
+    {
+      "id": "regions_unexplored:silt_grass_block",
+      "required": false
+    },
+    {
+      "id": "regions_unexplored:argillite_grass_block",
+      "required": false
+    },
+    {
+      "id": "regions_unexplored:stone_grass_block",
+      "required": false
+    },
+    {
+      "id": "regions_unexplored:deepslate_grass_block",
+      "required": false
+    },
+    {
+      "id": "regions_unexplored:rooted_grass_block",
+      "required": false
+    },
+    {
+      "id": "phantasm:vivid_nihilium_grass",
+      "required": false
+    },
+    {
+      "id": "vinery:grass_slab",
+      "required": false
+    }
+  ]
+}

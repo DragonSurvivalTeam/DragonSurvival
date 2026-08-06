@@ -1,0 +1,28 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "create"
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shapeless",
+        "category": "misc",
+        "ingredients": [
+          {
+            "tag": "dragonsurvival:compat/create/bar_of_chocolate"
+          },
+          {
+            "item": "dragonsurvival:elder_dragon_dust"
+          }
+        ],
+        "result": {
+          "item": "dragonsurvival:chocolate_dragon_treasure"
+        }
+      }
+    }
+  ]
+}

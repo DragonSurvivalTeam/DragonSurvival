@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "redstone",
+  "ingredients": [
+    {
+      "item": "dragonsurvival:gothic_dragon_door"
+    }
+  ],
+  "result": {
+    "count": 3,
+    "item": "dragonsurvival:small_gothic_dragon_door"
+  }
+}

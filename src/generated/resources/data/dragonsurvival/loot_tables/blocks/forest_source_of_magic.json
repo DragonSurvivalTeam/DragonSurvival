@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "block": "dragonsurvival:forest_source_of_magic",
+              "condition": "minecraft:block_state_property",
+              "properties": {
+                "primary": "true"
+              }
+            }
+          ],
+          "name": "dragonsurvival:forest_source_of_magic"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "dragonsurvival:blocks/forest_source_of_magic"
+}

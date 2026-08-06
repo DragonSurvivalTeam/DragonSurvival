@@ -1,0 +1,28 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "bee_queen_ds"
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shapeless",
+        "category": "misc",
+        "ingredients": [
+          {
+            "tag": "dragonsurvival:compat/bee_queen_ds/caramelized_nectar"
+          },
+          {
+            "item": "dragonsurvival:elder_dragon_dust"
+          }
+        ],
+        "result": {
+          "item": "dragonsurvival:bee_honey_treasure"
+        }
+      }
+    }
+  ]
+}

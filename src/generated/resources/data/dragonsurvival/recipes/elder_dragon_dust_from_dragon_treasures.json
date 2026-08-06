@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "tag": "dragonsurvival:dragon_treasures"
+    }
+  ],
+  "result": {
+    "item": "dragonsurvival:elder_dragon_dust"
+  }
+}

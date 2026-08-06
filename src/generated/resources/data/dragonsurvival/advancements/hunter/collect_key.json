@@ -1,0 +1,38 @@
+{
+  "parent": "dragonsurvival:hunter/promotion",
+  "criteria": {
+    "collect_hunter_key": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "dragonsurvival:hunter_key"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "dragonsurvival.advancement.hunter/collect_key.desc"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "dragonsurvival:hunter_key"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "dragonsurvival.advancement.hunter/collect_key"
+    }
+  },
+  "requirements": [
+    [
+      "collect_hunter_key"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

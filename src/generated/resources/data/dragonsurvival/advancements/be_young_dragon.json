@@ -1,0 +1,39 @@
+{
+  "parent": "dragonsurvival:collect_dust",
+  "criteria": {
+    "reach_young_stage": {
+      "conditions": {
+        "dragon": {
+          "stage_specific": {
+            "dragon_stage": "dragonsurvival:young"
+          }
+        }
+      },
+      "trigger": "dragonsurvival:be_dragon"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "dragonsurvival.advancement.be_young_dragon.desc"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "dragonsurvival:heart_element"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "dragonsurvival.advancement.be_young_dragon"
+    }
+  },
+  "requirements": [
+    [
+      "reach_young_stage"
+    ]
+  ],
+  "rewards": {
+    "experience": 12
+  },
+  "sends_telemetry_event": true
+}

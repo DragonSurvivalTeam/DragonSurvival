@@ -1,0 +1,38 @@
+{
+  "parent": "dragonsurvival:dark/affected_by_hunter_omen",
+  "criteria": {
+    "collect_dark_key": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "dragonsurvival:dark_key"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "dragonsurvival.advancement.dark/collect_key.desc"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "dragonsurvival:dark_key"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "dragonsurvival.advancement.dark/collect_key"
+    }
+  },
+  "requirements": [
+    [
+      "collect_dark_key"
+    ]
+  ],
+  "sends_telemetry_event": true
+}
