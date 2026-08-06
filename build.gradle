@@ -120,6 +120,10 @@ dependencies {
 
 	// Test
 	implementation fg.deobf("curse.maven:jei-238222:6075247") // 15.20.0.106
+
+//	runtimeOnly fg.deobf("curse.maven:terrafirmacraft-302973:8242625")
+//	runtimeOnly fg.deobf("curse.maven:patchouli-306770:7731017")
+
 	testImplementation platform("org.junit:junit-bom:5.10.2")
 	testImplementation "org.junit.jupiter:junit-jupiter"
 

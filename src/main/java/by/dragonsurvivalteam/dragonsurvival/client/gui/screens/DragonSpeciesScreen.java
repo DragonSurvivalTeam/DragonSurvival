@@ -159,7 +159,6 @@ public class DragonSpeciesScreen extends Screen {
         int startX = guiLeft + 23;
         int startY = guiTop - 13;
 
-        DragonStateHandler data = DragonStateProvider.getData(minecraft.player);
         graphics.blit(BACKGROUND_MAIN, startX, startY, 0, 0, 256, 256);
 
         for (ScrollableComponent component : scrollableComponents) {
@@ -186,8 +185,9 @@ public class DragonSpeciesScreen extends Screen {
     @Override
     public void init() {
         //noinspection DataFlowIssue -> player is present
-        species = DragonStateProvider.getData(minecraft.player).species();
-        stage = DragonStateProvider.getData(minecraft.player).stage();
+        DragonStateHandler data = DragonStateProvider.getData(minecraft.player);
+        species = data.species();
+        stage = data.stage();
 
         int xSize = 256;
         int ySize = 256;
@@ -199,7 +199,6 @@ public class DragonSpeciesScreen extends Screen {
         int startY = guiTop + 17;
 
         TabButton.addTabButtonsToScreen(this, startX + 17, startY - 56, TabButton.TabButtonType.SPECIES_TAB);
-        DragonStateHandler data = DragonStateProvider.getData(minecraft.player);
 
         if (DietEntryCache.isEmpty(species)) {
             ExtendedButton noDietText = new ExtendedButton(startX + 77, startY + 30, 140, 20, Component.empty(), button -> {}) {
@@ -228,7 +227,6 @@ public class DragonSpeciesScreen extends Screen {
                 if (isHovered() && isTop(mouseY)) {
                     graphics.blit(data.species().value().miscResources().altarBanner(), getX(), getY(), 0, 0, 49, 147, 49, 294);
                     List<Either<FormattedText, TooltipComponent>> components = new ArrayList<>();
-                    //noinspection DataFlowIssue -> key is present
                     components.add(0, Either.left(Component.translatable(Translation.Type.DRAGON_SPECIES_INVENTORY_DESCRIPTION.wrap(species.unwrapKey().orElseThrow().location()))));
                     TooltipRenderUtils.renderTooltipFromElements(graphics, Minecraft.getInstance().font, components, mouseX, mouseY, ItemStack.EMPTY);
                 } else {
@@ -270,7 +268,7 @@ public class DragonSpeciesScreen extends Screen {
         // Growth stage button
         StageResources.GrowthIcon growthIcon = StageResources.getGrowthIcon(data.species(), data.stageKey());
         growthButton = new HoverButton(startX + 99, startY - 21, 20, growthIcon.icon(), growthIcon.hoverIcon(), () -> {
-            DragonStateHandler handler = DragonStateProvider.getData(minecraft.player);
+            DragonStateHandler handler = data;
             Pair<List<Either<FormattedText, TooltipComponent>>, Integer> growthDescriptionResult = handler.getGrowthDescription(growthTooltipScroll);
             List<Either<FormattedText, TooltipComponent>> components = growthDescriptionResult.getFirst();
             growthTooltipScroll = growthDescriptionResult.getSecond();
