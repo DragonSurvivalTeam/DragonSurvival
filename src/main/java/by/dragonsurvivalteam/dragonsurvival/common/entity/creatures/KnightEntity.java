@@ -201,7 +201,7 @@ public class KnightEntity extends Hunter {
     }
 
     private void applyMagicDisabledDebuff() {
-        double detectionRadius = 12.0;
+        double detectionRadius = 16.0;
         List<Player> players = this.level().getEntitiesOfClass(Player.class, this.getBoundingBox().inflate(detectionRadius));
 
         for (Player player : players) {

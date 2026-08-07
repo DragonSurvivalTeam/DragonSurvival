@@ -109,12 +109,12 @@ public class SpearmanEntity extends Hunter {
     @ConfigRange(min = 0, max = 256)
     @Translation(key = "spearman_bonus_horizontal_reach", type = Translation.Type.CONFIGURATION, comments = "Additional horizontal reach for the spearman")
     @ConfigOption(side = ConfigSide.SERVER, category = {"dragon_hunters", "spearman"}, key = "spearman_bonus_horizontal_reach")
-    public static double HORIZONTAL_REACH = 0.5;
+    public static double HORIZONTAL_REACH = 2.0;
 
     @ConfigRange(min = 0, max = 256)
     @Translation(key = "spearman_bonus_vertical_reach", type = Translation.Type.CONFIGURATION, comments = "Additional vertical reach for the spearman")
     @ConfigOption(side = ConfigSide.SERVER, category = {"dragon_hunters", "spearman"}, key = "spearman_bonus_vertical_reach")
-    public static double VERTICAL_REACH = 2.5;
+    public static double VERTICAL_REACH = 3.0;
 
     public SpearmanEntity(EntityType<? extends PathfinderMob> entityType, Level world) {
         super(entityType, world);
@@ -126,7 +126,7 @@ public class SpearmanEntity extends Hunter {
     @Override
     protected void registerGoals() {
         super.registerGoals();
-        this.goalSelector.addGoal(3, new WindupMeleeAttackGoal(this, 1.0, 13));
+        this.goalSelector.addGoal(3, new WindupMeleeAttackGoal(this, 1.0, 25));
         this.goalSelector.addGoal(8, new FollowSpecificMobGoal(this, 0.6, 10, 20, target -> target instanceof KnightEntity));
     }
 
