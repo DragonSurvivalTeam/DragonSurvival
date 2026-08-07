@@ -236,6 +236,7 @@ public abstract class EntityMixin implements AttachmentStorage {
         }
     }
 
+    // TODO :: maybe handle this in movement goals or somewhere else so they can still be pushed by game mechanics?
     @ModifyReturnValue(method = "getDeltaMovement", at = @At("RETURN"))
     private Vec3 dragonSurvival$handleSummonStay(final Vec3 deltaMovement) {
         Entity self = (Entity) (Object) this;
