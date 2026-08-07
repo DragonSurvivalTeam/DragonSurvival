@@ -133,6 +133,24 @@ public abstract class LivingEntityMixin extends Entity {
         setDeltaMovement(deltaMovement.add(0.0D, (lookY - deltaMovement.y) * Math.abs(verticalSpeed), 0.0D));
     }
 
+    @ModifyExpressionValue(
+            method = "travelInFluid(Lnet/minecraft/world/phys/Vec3;Lnet/minecraft/world/level/material/FluidState;)V",
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;getEffectiveGravity()D")
+    )
+    private double dragonSurvival$handleStableSwim(final double gravity) {
+        if ((Object) this instanceof Player player) {
+            if (player.isInWater() && SwimData.getData(player).hasStableSwim(NeoForgeMod.WATER_TYPE.value())) {
+                return 0.0D;
+            }
+
+            if (player.isInLava() && SwimData.getData(player).hasStableSwim(NeoForgeMod.LAVA_TYPE.value())) {
+                return 0.0D;
+            }
+        }
+
+        return gravity;
+    }
+
     @ModifyExpressionValue(method = "travelInAir", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;getEffect(Lnet/minecraft/core/Holder;)Lnet/minecraft/world/effect/MobEffectInstance;"))
     private MobEffectInstance dragonSurvival$disableLevitationWhenTrapped(MobEffectInstance original) {
         if (hasEffect(DSEffects.TRAPPED)) {
