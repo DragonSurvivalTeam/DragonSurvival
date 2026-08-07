@@ -89,6 +89,7 @@ public abstract class LivingEntityMixin extends Entity {
     @ModifyExpressionValue(method = "getPassengerRidingPosition", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;getDimensions(Lnet/minecraft/world/entity/Pose;)Lnet/minecraft/world/entity/EntityDimensions;"))
     public EntityDimensions dragonSurvival$useCorrectDimensionsForPassengerRidingCalculation(EntityDimensions original) {
         LivingEntity self = (LivingEntity) (Object) this;
+
         if (DragonStateProvider.isDragon(self) && self instanceof Player player) {
             return DragonSizeHandler.calculateDimensions(DragonStateProvider.getData(player), player, DragonSizeHandler.getOverridePose(player));
         } else {
@@ -96,7 +97,9 @@ public abstract class LivingEntityMixin extends Entity {
         }
     }
 
-    @Unique private int dragonSurvival$getHumanOrDragonUseDuration(int original) {
+    @Unique
+    private int dragonSurvival$getHumanOrDragonUseDuration(int original) {
+        //noinspection ConstantValue -> statement is not always true
         if (!DragonFoodHandler.dragonFoodHandlingIsDisabled() && (Object) this instanceof Player player) {
             DragonStateHandler handler = DragonStateProvider.getData(player);
 
@@ -120,6 +123,7 @@ public abstract class LivingEntityMixin extends Entity {
 
     @ModifyExpressionValue(method = "triggerItemUseEffects", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;getUseAnimation()Lnet/minecraft/world/item/UseAnim;"))
     private UseAnim dragonSurvival$replaceEatAndDrinkAnimation(UseAnim original, ItemStack stack, int amount) {
+        //noinspection ConstantValue -> statement is not always true
         if (!DragonFoodHandler.dragonFoodHandlingIsDisabled() && (Object) this instanceof Player player) {
             DragonStateHandler handler = DragonStateProvider.getData(player);
 
@@ -268,8 +272,9 @@ public abstract class LivingEntityMixin extends Entity {
         boolean isCrouching = player.isCrouching();
         boolean isFalling = getDeltaMovement().y <= 0;
 
-        // Don't move the player up or down if they're not currently moving
-        if (jumping || isCrouching || travelVector.horizontalDistance() > 0.05) {
+        // Don't move the player up or down if they're not currently moving forward or backward
+        // At this point 'z' corresponds to forward / backward input, so it works for all axes (west, south, etc.)
+        if (jumping || isCrouching || Math.abs(travelVector.z()) > 0.05) {
             float lookY = (float) getLookAngle().y;
 
             float minSpeed = 0.04f;
@@ -283,10 +288,10 @@ public abstract class LivingEntityMixin extends Entity {
             }
 
             if (jumping || isCrouching || Math.abs(lookY) > 0.1) {
-                // Jumping should always result in going up and crouching should always result in going down
+                // Jumping should always result in going up, and crouching should always result in going down
                 if (jumping && lookY < 0 || isCrouching && lookY > 0) {
                     lookY *= -1; // Reverse direction of movement
-                    yModifier = minSpeed; // Since we are moving in the opposite direction we're looking, use the minimum speed bonus
+                    yModifier = minSpeed; // Since we are moving in the opposite direction we're looking at, use the minimum speed bonus
                 }
 
                 // Move the player up or down, depending on where they look
