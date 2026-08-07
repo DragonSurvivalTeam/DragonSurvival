@@ -666,7 +666,7 @@ public class SeaDragonAbilities {
                 Optional.empty(),
                 List.of(
                         new ActionContainer(new SelfTarget(AbilityTargeting.entity(
-                                List.of(new SwimEffect(LevelBasedValue.constant(SwimData.UNLIMITED_OXYGEN), ForgeMod.WATER_TYPE.getHolder().orElseThrow())),
+                                List.of(new SwimEffect(LevelBasedValue.constant(SwimData.UNLIMITED_OXYGEN), true, ForgeMod.WATER_TYPE.getHolder().orElseThrow())),
                                 TargetingMode.ALL
                         )), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(1)),
                         new ActionContainer(new SelfTarget(AbilityTargeting.entity(
@@ -676,11 +676,6 @@ public class SeaDragonAbilities {
                                 )),
                                 TargetingMode.ALL
                         )), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(1)),
-                        // FIXME :: Put in a separate ability? Put in a different ability from this one? Just needed to move it since we deleted built in modifiers for dragon species
-                        //  unlock the first level of the resistance abilities? (i.e. set it to exp 0)
-                        //  would also need auto leveling logic? only for 0 experience though
-                        //  meaning you could only de-level up to the first non-0 experience level of the ability
-                        //  (since you can manually disable it that should be fine)
                         new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                                 ModifierEffect.only(new ModifierWithDuration(
                                         DurationInstanceBase.create(DragonSurvival.res("amphibious_penalty_resistance")).removeAutomatically().hidden().build(),

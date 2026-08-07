@@ -3,6 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.util;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Modifier;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.DSLanguageProvider;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
@@ -59,6 +60,15 @@ public class Functions {
     public record Time(int hours, int minutes, int seconds) {
         private static final NumberFormat FORMAT = NumberFormat.getInstance();
 
+        public enum TimeType {
+            @Translation(comments = "Hours")
+            HOURS,
+            @Translation(comments = "Minutes")
+            MINUTES,
+            @Translation(comments = "Seconds")
+            SECONDS
+        }
+
         static {
             FORMAT.setMinimumIntegerDigits(2);
         }
@@ -76,6 +86,14 @@ public class Functions {
 
         public String format() {
             return format(hours) + ":" + format(minutes) + ":" + format(seconds);
+        }
+
+        public String format(final TimeType type) {
+            return switch (type) {
+                case HOURS -> format(hours) + ":" + format(minutes) + ":" + format(seconds) + " " + DSLanguageProvider.enumValue(TimeType.HOURS).getString();
+                case MINUTES -> format(minutes) + ":" + format(seconds) + " " + DSLanguageProvider.enumValue(TimeType.MINUTES).getString();
+                case SECONDS -> format(seconds) + " " + DSLanguageProvider.enumValue(TimeType.SECONDS).getString();
+            };
         }
 
         public String format(int number) {

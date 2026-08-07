@@ -43,8 +43,9 @@ public class DSDataAttachments {
     public static final RegistryObject<AttachmentType<HunterData>> HUNTER = REGISTRY.register("hunter_data", () -> AttachmentType.serializable(HunterData::new).build());
     public static final RegistryObject<AttachmentType<PenaltySupply>> PENALTY_SUPPLY = REGISTRY.register("penalty_supply", () -> AttachmentType.serializable(PenaltySupply::new).build());
     public static final RegistryObject<AttachmentType<MagicData>> MAGIC = REGISTRY.register("magic_data", () -> AttachmentType.serializable(MagicData::new).copyOnDeath().build());
+    // Not serialized because these effects should not persist after logout.
     public static final RegistryObject<AttachmentType<OnAttackEffects>> ON_ATTACK_EFFECTS = REGISTRY.register("on_attack_effects", () -> AttachmentType.builder(OnAttackEffects::new).build());
-    public static final RegistryObject<AttachmentType<SwimData>> SWIM = REGISTRY.register("swim_data", () -> AttachmentType.builder(SwimData::new).build());
+    public static final RegistryObject<AttachmentType<SwimData>> SWIM = REGISTRY.register("swim_data", () -> AttachmentType.serializable(SwimData::new).build());
 
     // Storage types
     public static final RegistryObject<AttachmentType<ModifiersWithDuration>> MODIFIERS_WITH_DURATION = REGISTRY.register("modifiers_with_duration", () -> AttachmentType.serializable(ModifiersWithDuration::new).build());
@@ -52,7 +53,7 @@ public class DSDataAttachments {
     public static final RegistryObject<AttachmentType<EffectModifications>> EFFECT_MODIFICATIONS = REGISTRY.register("effect_modifications", () -> AttachmentType.serializable(EffectModifications::new).build());
     public static final RegistryObject<AttachmentType<HarvestBonuses>> HARVEST_BONUSES = REGISTRY.register("harvest_bonuses", () -> AttachmentType.serializable(HarvestBonuses::new).build());
     public static final RegistryObject<AttachmentType<SummonedEntities>> SUMMONED_ENTITIES = REGISTRY.register("summoned_entities", () -> AttachmentType.serializable(SummonedEntities::new).build());
-    public static final RegistryObject<AttachmentType<GlowData>> GLOW = REGISTRY.register("glow_data", () -> AttachmentType.builder(GlowData::new).build());
+    public static final RegistryObject<AttachmentType<GlowData>> GLOW = REGISTRY.register("glow_data", () -> AttachmentType.serializable(GlowData::new).build());
     public static final RegistryObject<AttachmentType<OxygenBonuses>> OXYGEN_BONUSES = REGISTRY.register("oxygen_bonuses", () -> AttachmentType.serializable(OxygenBonuses::new).build());
     public static final RegistryObject<AttachmentType<BlockVisionData>> BLOCK_VISION = REGISTRY.register("block_vision_data", () -> AttachmentType.serializable(BlockVisionData::new).build());
     public static final RegistryObject<AttachmentType<FearData>> FEAR = REGISTRY.register("fear_data", () -> AttachmentType.serializable(FearData::new).build());

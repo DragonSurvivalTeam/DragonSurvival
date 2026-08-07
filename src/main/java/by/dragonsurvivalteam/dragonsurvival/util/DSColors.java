@@ -1,6 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.util;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
@@ -65,6 +66,10 @@ public class DSColors {
     public static MutableComponent withColor(final Object value, int color) {
         if (value instanceof MutableComponent mutable) {
             return mutable.withStyle(Style.EMPTY.withColor(color));
+        }
+
+        if (I18n.exists(value.toString())) {
+            return Component.translatable(value.toString()).withStyle(Style.EMPTY.withColor(color));
         }
 
         return Component.literal(String.valueOf(value)).withStyle(Style.EMPTY.withColor(color));

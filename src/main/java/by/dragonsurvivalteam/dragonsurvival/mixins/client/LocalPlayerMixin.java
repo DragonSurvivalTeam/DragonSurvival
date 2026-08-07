@@ -3,6 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.mixins.client;
 import by.dragonsurvivalteam.dragonsurvival.client.render.VisionHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.FlightData;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SwimData;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import net.minecraft.client.player.LocalPlayer;
 import org.spongepowered.asm.mixin.Mixin;
@@ -23,10 +24,26 @@ public abstract class LocalPlayerMixin {
     @ModifyExpressionValue(method = "aiStep", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;isShiftKeyDown()Z", ordinal = 0))
     private boolean dragonSurvival$DisallowCrouchingWhenFlying(boolean original) {
         LocalPlayer self = (LocalPlayer) (Object) this;
+
         if (DragonStateProvider.isDragon(self) && FlightData.getData(self).isWingsSpread() && !self.onGround()) {
             return false;
         }
 
         return original;
+    }
+
+    @ModifyExpressionValue(method = "aiStep", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;isInWater()Z", ordinal = 3))
+    private boolean dragonSurvival$shouldSinkInWater(boolean isInWater) {
+        if (!isInWater) {
+            return false;
+        }
+
+        LocalPlayer self = (LocalPlayer) (Object) this;
+
+        if (SwimData.getData(self).hasStableSwim(self.getMaxHeightFluidType())) {
+            return false;
+        }
+
+        return isInWater;
     }
 }
