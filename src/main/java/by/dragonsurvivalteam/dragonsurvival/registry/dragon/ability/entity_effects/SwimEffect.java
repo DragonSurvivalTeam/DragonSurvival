@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects;
 
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.LevelBasedBoolean;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.LevelBasedValue;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscCodecs;
 import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
@@ -25,7 +26,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import java.util.ArrayList;
 import java.util.List;
 
-public record SwimEffect(LevelBasedValue maxOxygen, boolean hasStableSwim, Holder<FluidType> fluidType) implements AbilityEntityEffect {
+public record SwimEffect(LevelBasedValue maxOxygen, LevelBasedBoolean hasStableSwim, Holder<FluidType> fluidType) implements AbilityEntityEffect {
     @Translation(comments = "§6■ Allows you to breathe in %s for %s")
     private static final String BONUS = Translation.Type.GUI.wrap("swim_effect.bonus");
 
@@ -38,7 +39,7 @@ public record SwimEffect(LevelBasedValue maxOxygen, boolean hasStableSwim, Holde
     public static final MapCodec<SwimEffect> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             // TODO :: Consider fluid-specific speed bonus
             LevelBasedValue.CODEC.optionalFieldOf("max_oxygen", LevelBasedValue.constant(0)).forGetter(SwimEffect::maxOxygen),
-            Codec.BOOL.optionalFieldOf("has_stable_swim", false).forGetter(SwimEffect::hasStableSwim),
+            LevelBasedBoolean.CODEC.optionalFieldOf("has_stable_swim", LevelBasedBoolean.constant(false)).forGetter(SwimEffect::hasStableSwim),
             MiscCodecs.forgeRegistryHolderCodec(ForgeRegistries.FLUID_TYPES).fieldOf("fluid_type").forGetter(SwimEffect::fluidType)
     ).apply(instance, SwimEffect::new));
 
@@ -91,7 +92,7 @@ public record SwimEffect(LevelBasedValue maxOxygen, boolean hasStableSwim, Holde
 
         description.add(Component.translatable(BONUS, DSColors.dynamicValue(fluidType.value().getDescriptionId()), value));
 
-        if (hasStableSwim) {
+        if (hasStableSwim.calculate(ability.level())) {
             description.add(Component.translatable(STABLE_SWIM, DSColors.dynamicValue(fluidType.value().getDescriptionId())));
         }
 
@@ -111,7 +112,7 @@ public record SwimEffect(LevelBasedValue maxOxygen, boolean hasStableSwim, Holde
         ).apply(instance, Entry::new));
 
         public static Entry calculate(final SwimEffect effect, int level) {
-            return new Entry((int) effect.maxOxygen().calculate(level), effect.hasStableSwim(), effect.fluidType().unwrapKey().orElseThrow());
+            return new Entry((int) effect.maxOxygen().calculate(level), effect.hasStableSwim().calculate(level), effect.fluidType().unwrapKey().orElseThrow());
         }
     }
 }

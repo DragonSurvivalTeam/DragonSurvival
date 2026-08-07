@@ -7,7 +7,14 @@
             {
               "effect_type": "dragonsurvival:swim",
               "fluid_type": "minecraft:lava",
-              "has_stable_swim": true,
+              "has_stable_swim": {
+                "entries": [
+                  {
+                    "from_level": 2,
+                    "value": true
+                  }
+                ]
+              },
               "max_oxygen": {
                 "type": "minecraft:linear",
                 "base": 3600.0,
@@ -36,5 +43,14 @@
         "texture_resource": "dragonsurvival:abilities/cave/lava_swimming_1"
       }
     ]
+  },
+  "upgrade": {
+    "level_requirement": {
+      "type": "minecraft:linear",
+      "base": 0.0,
+      "per_level_above_first": 15.0
+    },
+    "maximum_level": 2,
+    "upgrade_type": "dragonsurvival:experience_levels"
   }
 }

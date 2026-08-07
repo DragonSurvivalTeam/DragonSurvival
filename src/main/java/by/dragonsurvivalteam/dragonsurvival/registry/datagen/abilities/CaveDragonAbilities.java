@@ -5,6 +5,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.AttributeOperation;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.DamageModification;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.HarvestBonus;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.LevelBasedBoolean;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.LevelBasedResource;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.LevelBasedTier;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.LevelBasedValue;
@@ -593,10 +594,10 @@ public class CaveDragonAbilities {
 
         context.register(LAVA_SWIMMING, new DragonAbility(
                 PassiveActivation.DEFAULT,
-                Optional.empty(),
+                Optional.of(new ExperienceLevelUpgrade(2, LevelBasedValue.perLevel(0, 15))),
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
-                        List.of(new SwimEffect(LevelBasedValue.perLevel(Functions.secondsToTicks(180), Functions.secondsToTicks(60)), true, ForgeMod.LAVA_TYPE.getHolder().orElseThrow())),
+                        List.of(new SwimEffect(LevelBasedValue.perLevel(Functions.secondsToTicks(180), Functions.secondsToTicks(60)), LevelBasedBoolean.atLevel(true, 2), ForgeMod.LAVA_TYPE.getHolder().orElseThrow())),
                         TargetingMode.ALLIES_AND_SELF
                 )), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(1))),
                 false, // To prevent regaining oxygen
