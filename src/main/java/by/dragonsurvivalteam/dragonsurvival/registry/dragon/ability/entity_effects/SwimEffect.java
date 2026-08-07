@@ -2,23 +2,42 @@ package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effe
 
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncSwimDataEntry;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SwimData;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
+import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
+import by.dragonsurvivalteam.dragonsurvival.util.Functions;
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
-public record SwimEffect(LevelBasedValue maxOxygen, Holder<FluidType> fluidType) implements AbilityEntityEffect {
+import java.util.ArrayList;
+import java.util.List;
+
+public record SwimEffect(LevelBasedValue maxOxygen, boolean hasStableSwim, Holder<FluidType> fluidType) implements AbilityEntityEffect {
+    @Translation(comments = "§6■ Allows you to breathe in %s for %s")
+    private static final String BONUS = Translation.Type.GUI.wrap("swim_effect.bonus");
+
+    @Translation(comments = "an unlimited time")
+    private static final String FOREVER = Translation.Type.GUI.wrap("swim_effect.unlimited_time");
+
+    @Translation(comments = "§6■ Prevents you from automatically sinking in %s")
+    private static final String STABLE_SWIM = Translation.Type.GUI.wrap("swim_effect.stable_swim");
+
     public static final MapCodec<SwimEffect> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            // TODO :: also handle the movement speed bonus here?
-            //  so that a different speed can be applied to different fluids
-            LevelBasedValue.CODEC.fieldOf("max_oxygen").forGetter(SwimEffect::maxOxygen),
-            // TODO :: holderset?
+            // TODO :: Consider fluid-specific speed bonus
+            LevelBasedValue.CODEC.optionalFieldOf("max_oxygen", LevelBasedValue.constant(0)).forGetter(SwimEffect::maxOxygen),
+            Codec.BOOL.optionalFieldOf("has_stable_swim", false).forGetter(SwimEffect::hasStableSwim),
             NeoForgeRegistries.FLUID_TYPES.holderByNameCodec().fieldOf("fluid_type").forGetter(SwimEffect::fluidType)
     ).apply(instance, SwimEffect::new));
 
@@ -29,11 +48,11 @@ public record SwimEffect(LevelBasedValue maxOxygen, Holder<FluidType> fluidType)
         }
 
         SwimData data = SwimData.getData(player);
-        int maxOxygen = (int) this.maxOxygen.calculate(ability.level());
-        Integer previous = data.add(maxOxygen, fluidType);
+        Entry entry = Entry.calculate(this, ability.level());
+        SwimData.Entry previous = data.add(entry);
 
-        if (previous == null || previous != maxOxygen) {
-            PacketDistributor.sendToPlayer(player, new SyncSwimDataEntry(maxOxygen, fluidType, false));
+        if (previous == null || previous.maxOxygen() != entry.maxOxygen() || previous.hasStableSwim() != entry.hasStableSwim()) {
+            PacketDistributor.sendToPlayer(player, new SyncSwimDataEntry(entry, false));
         }
     }
 
@@ -48,12 +67,49 @@ public record SwimEffect(LevelBasedValue maxOxygen, Holder<FluidType> fluidType)
         }
 
         SwimData data = SwimData.getData(player);
-        data.remove(fluidType);
-        PacketDistributor.sendToPlayer(player, new SyncSwimDataEntry(0, fluidType, true));
+        SwimData.Entry removed = data.remove(fluidType.getKey());
+
+        if (removed != null) {
+            PacketDistributor.sendToPlayer(player, new SyncSwimDataEntry(removed.convert(fluidType.getKey()), true));
+        }
+    }
+
+    @Override
+    public List<MutableComponent> getDescription(final Player dragon, final DragonAbilityInstance ability) {
+        List<MutableComponent> description = new ArrayList<>();
+
+        int bonus = (int) maxOxygen.calculate(ability.level());
+        Component value;
+
+        if (bonus == SwimData.UNLIMITED_OXYGEN) {
+            value = DSColors.dynamicValue(FOREVER);
+        } else {
+            value = DSColors.dynamicValue(Functions.Time.fromTicks(bonus).format(Functions.Time.TimeType.MINUTES));
+        }
+
+        description.add(Component.translatable(BONUS, DSColors.dynamicValue(fluidType.value().getDescriptionId()), value));
+
+        if (hasStableSwim) {
+            description.add(Component.translatable(STABLE_SWIM, DSColors.dynamicValue(fluidType.value().getDescriptionId())));
+        }
+
+        return description;
     }
 
     @Override
     public MapCodec<? extends AbilityEntityEffect> entityCodec() {
         return CODEC;
+    }
+
+    public record Entry(int maxOxygen, boolean hasStableSwim, ResourceKey<FluidType> fluidType) {
+        public static final Codec<Entry> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+                Codec.INT.fieldOf("max_oxygen").forGetter(Entry::maxOxygen),
+                Codec.BOOL.fieldOf("has_stable_swim").forGetter(Entry::hasStableSwim),
+                ResourceKey.codec(NeoForgeRegistries.FLUID_TYPES.key()).fieldOf("fluid_type").forGetter(Entry::fluidType)
+        ).apply(instance, Entry::new));
+
+        public static Entry calculate(final SwimEffect effect, int level) {
+            return new Entry((int) effect.maxOxygen().calculate(level), effect.hasStableSwim(), effect.fluidType().getKey());
+        }
     }
 }
