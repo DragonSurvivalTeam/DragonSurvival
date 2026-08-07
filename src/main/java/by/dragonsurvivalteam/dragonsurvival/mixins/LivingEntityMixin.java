@@ -106,7 +106,8 @@ public abstract class LivingEntityMixin extends Entity {
     private void dragonSurvival$applyVerticalFluidSwimMovement(final Player player, final Vec3 travelVector) {
         boolean isCrouching = player.isCrouching();
 
-        if (!jumping && !isCrouching && travelVector.horizontalDistance() <= 0.05D) {
+        // At this point z is forward/backward input regardless of the player's facing direction.
+        if (!jumping && !isCrouching && Math.abs(travelVector.z()) <= 0.05D) {
             return;
         }
 
