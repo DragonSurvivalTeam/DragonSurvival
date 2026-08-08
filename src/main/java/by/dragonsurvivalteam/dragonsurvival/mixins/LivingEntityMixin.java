@@ -244,7 +244,7 @@ public abstract class LivingEntityMixin extends Entity {
     @ModifyVariable(method = "travel", at = @At(value = "STORE", ordinal = 1))
     private double dragonSurvival$handleStableSwim(final double gravity) {
         //noinspection ConstantValue -> statement is not always true
-        if ((Object) this instanceof Player player && SwimData.getData(player).hasStableSwim(player.getMaxHeightFluidType())) {
+        if ((Object) this instanceof Player player && AttachmentManager.getExistingData(player, DSDataAttachments.SWIM).map(data -> data.hasStableSwim(player.getMaxHeightFluidType())).orElse(false)) {
             return 0;
         }
 

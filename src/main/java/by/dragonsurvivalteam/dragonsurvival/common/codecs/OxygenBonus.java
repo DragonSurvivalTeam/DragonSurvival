@@ -38,7 +38,7 @@ import java.util.Optional;
 
 @SuppressWarnings("OptionalUsedAsFieldOrParameterType") // ignore
 public class OxygenBonus extends DurationInstanceBase<OxygenBonuses, OxygenBonus.Instance> {
-    @Translation(comments = "Can breathe in %s for %s additional seconds")
+    @Translation(comments = "Can breathe in %s for additional %s")
     private static final String BONUS = Translation.Type.GUI.wrap("oxygen_bonus.bonus");
 
     @Translation(comments = "Can breathe in %s indefinitely")
@@ -73,20 +73,21 @@ public class OxygenBonus extends DurationInstanceBase<OxygenBonuses, OxygenBonus
             fluids = Functions.translateHolderSet(this.fluids.get(), fluid -> fluid.value().getDescriptionId());
         }
 
-        float bonus = oxygenBonus.calculate(abilityLevel);
-        MutableComponent description;
+        int bonus = (int) oxygenBonus.calculate(abilityLevel);
+        MutableComponent description = null;
 
         if (bonus == SwimData.UNLIMITED_OXYGEN) {
             description = Component.translatable(UNLIMITED, fluids);
-        } else {
-            description = Component.translatable(BONUS, fluids, (int) bonus);
+        } else if (bonus > 0) {
+            Functions.Time time = Functions.Time.fromTicks(bonus);
+            description = Component.translatable(BONUS, fluids, DSColors.dynamicValue(time.handleFormat()));
         }
 
-        if (duration().calculate(abilityLevel) != DurationInstance.INFINITE_DURATION) {
+        if (description != null && duration().calculate(abilityLevel) != DurationInstance.INFINITE_DURATION) {
             description.append(Component.translatable(LangKey.ABILITY_EFFECT_DURATION, (int) duration().calculate(abilityLevel)));
         }
 
-        return description;
+        return description == null ? Component.empty() : description;
     }
 
     @Override

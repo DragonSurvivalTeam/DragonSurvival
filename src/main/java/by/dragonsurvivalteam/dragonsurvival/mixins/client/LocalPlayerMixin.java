@@ -2,8 +2,9 @@ package by.dragonsurvivalteam.dragonsurvival.mixins.client;
 
 import by.dragonsurvivalteam.dragonsurvival.client.render.VisionHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AttachmentManager;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.FlightData;
-import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SwimData;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import net.minecraft.client.player.LocalPlayer;
 import org.spongepowered.asm.mixin.Mixin;
@@ -32,6 +33,7 @@ public abstract class LocalPlayerMixin {
         return original;
     }
 
+    // TODO :: Verify whether this means it needs to synchronized to other clients
     @ModifyExpressionValue(method = "aiStep", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;isInWater()Z", ordinal = 3))
     private boolean dragonSurvival$shouldSinkInWater(boolean isInWater) {
         if (!isInWater) {
@@ -40,7 +42,7 @@ public abstract class LocalPlayerMixin {
 
         LocalPlayer self = (LocalPlayer) (Object) this;
 
-        if (SwimData.getData(self).hasStableSwim(self.getMaxHeightFluidType())) {
+        if (AttachmentManager.getExistingData(self, DSDataAttachments.SWIM).map(data -> data.hasStableSwim(self.getMaxHeightFluidType())).orElse(false)) {
             return false;
         }
 
