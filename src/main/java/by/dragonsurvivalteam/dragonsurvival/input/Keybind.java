@@ -16,7 +16,7 @@ import org.lwjgl.glfw.GLFW;
 import java.util.Locale;
 
 /** Implementation is inspired from Create */
-@EventBusSubscriber(value = Dist.CLIENT)
+@EventBusSubscriber(value = Dist.CLIENT, bus = EventBusSubscriber.Bus.MOD)
 public enum Keybind {
     @Translation(type = Translation.Type.KEYBIND, comments = "Toggle flight")
     TOGGLE_FLIGHT(KeyConflictContext.IN_GAME, GLFW.GLFW_KEY_G),
