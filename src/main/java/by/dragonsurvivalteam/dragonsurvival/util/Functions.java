@@ -88,12 +88,28 @@ public class Functions {
             return format(hours) + ":" + format(minutes) + ":" + format(seconds);
         }
 
+        public String handleFormat() {
+            if (hours() > 0) {
+                return format(TimeType.HOURS);
+            } else if (minutes() > 0) {
+                return format(TimeType.MINUTES);
+            }
+
+            return format(TimeType.SECONDS);
+        }
+
         public String format(final TimeType type) {
-            return switch (type) {
-                case HOURS -> format(hours) + ":" + format(minutes) + ":" + format(seconds) + " " + DSLanguageProvider.enumValue(TimeType.HOURS).getString();
-                case MINUTES -> format(minutes) + ":" + format(seconds) + " " + DSLanguageProvider.enumValue(TimeType.MINUTES).getString();
-                case SECONDS -> format(seconds) + " " + DSLanguageProvider.enumValue(TimeType.SECONDS).getString();
-            };
+            String time = "";
+
+            if (hours > 0) {
+                time = format(hours) + ":" + format(minutes) + ":" + format(seconds);
+            } else if (minutes > 0) {
+                time = format(minutes) + ":" + format(seconds);
+            } else if (seconds > 0) {
+                time = format(seconds);
+            }
+
+            return time + " " + DSLanguageProvider.enumValue(type).getString();
         }
 
         public String format(int number) {

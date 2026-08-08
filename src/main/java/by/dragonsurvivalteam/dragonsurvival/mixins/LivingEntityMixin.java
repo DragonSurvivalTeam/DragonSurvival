@@ -139,11 +139,17 @@ public abstract class LivingEntityMixin extends Entity {
     )
     private double dragonSurvival$handleStableSwim(final double gravity) {
         if ((Object) this instanceof Player player) {
-            if (player.isInWater() && SwimData.getData(player).hasStableSwim(NeoForgeMod.WATER_TYPE.value())) {
+            SwimData swimData = player.getExistingData(DSDataAttachments.SWIM).orElse(null);
+
+            if (swimData == null) {
+                return gravity;
+            }
+
+            if (player.isInWater() && swimData.hasStableSwim(NeoForgeMod.WATER_TYPE.value())) {
                 return 0.0D;
             }
 
-            if (player.isInLava() && SwimData.getData(player).hasStableSwim(NeoForgeMod.LAVA_TYPE.value())) {
+            if (player.isInLava() && swimData.hasStableSwim(NeoForgeMod.LAVA_TYPE.value())) {
                 return 0.0D;
             }
         }

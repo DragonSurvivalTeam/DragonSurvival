@@ -5,6 +5,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.DamageModification;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Glow;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.LevelBasedResource;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.OxygenBonus;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ParticleData;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.SpawnParticles;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.TargetDirection;
@@ -45,6 +46,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effec
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.GlowEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.HealEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.ItemConversionEffect;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.OxygenBonusEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.ProjectileEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.SmeltItemEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.TeleportEffect;
@@ -75,7 +77,9 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
+import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.common.Tags;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
 import java.util.List;
 import java.util.Optional;
@@ -88,6 +92,25 @@ public class DragonAbilities {
         CaveDragonAbilities.registerAbilities(context);
         ForestDragonAbilities.registerAbilities(context);
         SeaDragonAbilities.registerAbilities(context);
+
+        // --- Oxygen bonus --- //
+
+        //noinspection DataFlowIssue -> key is present
+        context.register(ResourceKey.create(DragonAbility.REGISTRY, DragonSurvival.res(TEST_PREFIX + "oxygen_bonus")), new DragonAbility(
+                new PassiveActivation(Optional.of(ManaCost.reserved(LevelBasedValue.constant(6))), Optional.empty(), ConstantTrigger.INSTANCE),
+                Optional.of(new ExperiencePointsUpgrade(10, LevelBasedValue.constant(10))),
+                Optional.empty(),
+                List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
+                        OxygenBonusEffect.only(new OxygenBonus(
+                                DurationInstanceBase.create(DragonSurvival.res(TEST_PREFIX + "oxygen_bonus")).removeAutomatically().build(),
+                                Optional.of(HolderSet.direct(NeoForgeRegistries.FLUID_TYPES.getOrThrow(NeoForgeMod.WATER_TYPE.getKey()))),
+                                LevelBasedValue.perLevel(Functions.secondsToTicks(60))
+                        )),
+                        TargetingMode.ALL
+                )), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(1))),
+                true,
+                new LevelBasedResource(List.of(new LevelBasedResource.Entry(DragonSurvival.res("test"), 0)))
+        ));
 
         // --- Entity projectile --- //
 

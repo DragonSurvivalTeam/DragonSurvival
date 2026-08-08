@@ -21,9 +21,9 @@ public class OxygenBonuses extends Storage<OxygenBonus.Instance> {
         Holder<FluidType> fluid = fluidKey != null ? NeoForgeRegistries.FLUID_TYPES.getOrThrow(fluidKey) : NeoForgeMod.EMPTY_TYPE;
         float bonus = OxygenBonus.NONE;
 
-        float instanceBonus;
         for (OxygenBonus.Instance instance : all()) {
-            instanceBonus = instance.getOxygenBonus(fluid);
+            float instanceBonus = instance.getOxygenBonus(fluid);
+
             if (instanceBonus == SwimData.UNLIMITED_OXYGEN) {
                 return SwimData.UNLIMITED_OXYGEN;
             }

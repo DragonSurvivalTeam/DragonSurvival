@@ -37,6 +37,7 @@ public record SwimEffect(LevelBasedValue maxOxygen, LevelBasedBoolean hasStableS
 
     public static final MapCodec<SwimEffect> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             // TODO :: Consider fluid-specific speed bonus
+            // FIXME :: 26.1 -> should be called 'base_oxygen'
             LevelBasedValue.CODEC.optionalFieldOf("max_oxygen", LevelBasedValue.constant(0)).forGetter(SwimEffect::maxOxygen),
             LevelBasedBoolean.CODEC.optionalFieldOf("has_stable_swim", LevelBasedBoolean.constant(false)).forGetter(SwimEffect::hasStableSwim),
             NeoForgeRegistries.FLUID_TYPES.holderByNameCodec().fieldOf("fluid_type").forGetter(SwimEffect::fluidType)
