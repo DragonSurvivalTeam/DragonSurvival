@@ -1218,7 +1218,7 @@
   "dragonsurvival.gui.mobeffect_removal_effect.remove_multiple": "Removes %s status effects",
   "dragonsurvival.gui.mobeffect_removal_effect.remove_one": "Removes %s effect",
   "dragonsurvival.gui.oxygen_bonus.all_fluids": "all fluids",
-  "dragonsurvival.gui.oxygen_bonus.bonus": "Can breathe in %s for %s additional seconds",
+  "dragonsurvival.gui.oxygen_bonus.bonus": "Can breathe in %s for additional %s",
   "dragonsurvival.gui.oxygen_bonus.unlimited": "Can breathe in %s indefinitely",
   "dragonsurvival.gui.penalty.supply_trigger": " every %s seconds",
   "dragonsurvival.gui.penalty.supply_trigger.constant": " on every game tick",
