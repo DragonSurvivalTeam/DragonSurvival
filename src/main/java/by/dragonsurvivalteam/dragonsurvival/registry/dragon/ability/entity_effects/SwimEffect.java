@@ -88,7 +88,7 @@ public record SwimEffect(LevelBasedValue maxOxygen, LevelBasedBoolean hasStableS
         if (bonus == SwimData.UNLIMITED_OXYGEN) {
             value = DSColors.dynamicValue(FOREVER);
         } else {
-            value = DSColors.dynamicValue(Functions.Time.fromTicks(bonus).format(Functions.Time.TimeType.MINUTES));
+            value = DSColors.dynamicValue(Functions.Time.fromTicks(bonus).handleFormat());
         }
 
         description.add(Component.translatable(BONUS, DSColors.dynamicValue(fluidType.value().getDescriptionId()), value));

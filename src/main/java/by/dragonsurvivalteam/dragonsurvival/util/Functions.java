@@ -98,7 +98,7 @@ public class Functions {
             return format(TimeType.SECONDS);
         }
 
-        public String format(final TimeType type) {
+        private String format(final TimeType type) {
             String time = "";
 
             if (hours > 0) {
@@ -112,7 +112,7 @@ public class Functions {
             return time + " " + DSLanguageProvider.enumValue(type).getString();
         }
 
-        public String format(int number) {
+        private String format(int number) {
             return FORMAT.format(Math.abs(number));
         }
     }
