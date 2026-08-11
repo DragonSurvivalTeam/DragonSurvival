@@ -12,7 +12,6 @@ import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
 import by.dragonsurvivalteam.dragonsurvival.compat.car.CosmeticArmorReworkedHelper;
 import by.dragonsurvivalteam.dragonsurvival.compat.curios.CurioAPIHelper;
 import by.dragonsurvivalteam.dragonsurvival.compat.iris.InnerWrappedRenderType;
-import by.dragonsurvivalteam.dragonsurvival.compat.iris.LayeringStates;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ClawInventoryData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSItemTags;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
@@ -30,6 +29,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.client.renderer.texture.AbstractTexture;
@@ -102,7 +102,7 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
 
         if (type != null) {
             // Ensure that the armor is rendering on top of all the other layers
-            InnerWrappedRenderType wrappedType = new InnerWrappedRenderType("dragon_armor", type, LayeringStates.VIEW_OFFSET_Z_LAYERING_FORWARD);
+            InnerWrappedRenderType wrappedType = new InnerWrappedRenderType("dragon_armor", type, RenderStateShard.VIEW_OFFSET_Z_LAYERING);
             VertexConsumer vertexConsumer = bufferSource.getBuffer(wrappedType);
             var renderColor = renderer.getRenderColor(animatable, partialTick, packedLight);
             renderer.actuallyRender(poseStack, animatable, bakedModel, wrappedType, bufferSource, vertexConsumer, true, partialTick, packedLight, OverlayTexture.NO_OVERLAY,
