@@ -19,7 +19,6 @@ import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.pipeline.TextureTarget;
 import com.mojang.blaze3d.platform.GlConst;
 import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.BufferUploader;
@@ -35,7 +34,6 @@ import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -260,8 +258,8 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
 
         AbstractTexture armorTexture = Minecraft.getInstance().getTextureManager().getTexture(armorLocation);
 
-        if (!(stack.getItem() instanceof ArmorItem)) {
-            renderTextureToTarget(target, armorTexture, armorTexture, armorTexture, false, false, 0.0F, 0.0F, 0.0F, 0.0F);
+        if (!(stack.getItem() instanceof ArmorItem armorItem)) {
+            renderTextureToTarget(target, armorTexture, armorTexture, armorTexture, armorTexture, false, false, 0.0F, 0.0F);
             return;
         }
 
@@ -274,9 +272,8 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
 
         AbstractTexture maskTexture = Minecraft.getInstance().getTextureManager().getTexture(maskLocation);
         AbstractTexture trimTexture = armorTexture;
+        AbstractTexture trimPaletteTexture = armorTexture;
         boolean hasTrim = false;
-        float trimHue = 0.0F;
-        float trimSaturation = 0.0F;
         ArmorTrim trim = stack.get(DataComponents.TRIM);
 
         if (trim != null) {
@@ -284,12 +281,11 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
                 handler.getModel().getNamespace(),
                 "textures/armor/" + handler.getModel().getPath() + "/armor_trims/" + trim.pattern().value().assetId().getPath() + ".png"
             );
+            ResourceLocation paletteLocation = getTrimPaletteResourceLocation(trim, armorItem.getMaterial());
 
-            if (hasResource(trimLocation)) {
-                float[] trimBaseHSB = extractTrimBaseHSB(trim);
+            if (hasResource(trimLocation) && hasResource(paletteLocation)) {
                 trimTexture = Minecraft.getInstance().getTextureManager().getTexture(trimLocation);
-                trimHue = trimBaseHSB[0];
-                trimSaturation = trimBaseHSB[1];
+                trimPaletteTexture = Minecraft.getInstance().getTextureManager().getTexture(paletteLocation);
                 hasTrim = true;
             }
         }
@@ -309,7 +305,7 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
             dyeSaturation = dyeHSB[1];
         }
 
-        renderTextureToTarget(target, armorTexture, maskTexture, trimTexture, true, hasTrim, dyeHue, dyeSaturation, trimHue, trimSaturation);
+        renderTextureToTarget(target, armorTexture, maskTexture, trimTexture, trimPaletteTexture, true, hasTrim, dyeHue, dyeSaturation);
     }
 
     private static void renderOptionalTexture(final RenderTarget target, final ResourceLocation textureLocation) {
@@ -318,7 +314,7 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
         }
 
         AbstractTexture texture = Minecraft.getInstance().getTextureManager().getTexture(textureLocation);
-        renderTextureToTarget(target, texture, texture, texture, false, false, 0.0F, 0.0F, 0.0F, 0.0F);
+        renderTextureToTarget(target, texture, texture, texture, texture, false, false, 0.0F, 0.0F);
     }
 
     private static void renderTextureToTarget(
@@ -326,12 +322,11 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
         final AbstractTexture armorTexture,
         final AbstractTexture maskTexture,
         final AbstractTexture trimTexture,
+        final AbstractTexture trimPaletteTexture,
         final boolean hasMask,
         final boolean hasTrim,
         final float dyeHue,
-        final float dyeSaturation,
-        final float trimHue,
-        final float trimSaturation
+        final float dyeSaturation
     ) {
         target.bindWrite(true);
         RenderSystem.enableBlend();
@@ -349,13 +344,12 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
         armorGenerationShader.setSampler("ArmorTexture", armorTexture);
         armorGenerationShader.setSampler("MaskTexture", maskTexture);
         armorGenerationShader.setSampler("TrimTexture", trimTexture);
+        armorGenerationShader.setSampler("TrimPalette", trimPaletteTexture);
         armorGenerationShader.getUniform("HasMask").set(hasMask ? 1.0F : 0.0F);
         armorGenerationShader.getUniform("ApplyDye").set(dyeHue != 0.0F || dyeSaturation != 0.0F ? 1.0F : 0.0F);
         armorGenerationShader.getUniform("HasTrim").set(hasTrim ? 1.0F : 0.0F);
         armorGenerationShader.getUniform("DyeHue").set(dyeHue);
         armorGenerationShader.getUniform("DyeSaturation").set(dyeSaturation);
-        armorGenerationShader.getUniform("TrimHue").set(trimHue);
-        armorGenerationShader.getUniform("TrimSaturation").set(trimSaturation);
         armorGenerationShader.apply();
 
         BufferBuilder buffer = RenderSystem.renderThreadTesselator().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.BLIT_SCREEN);
@@ -369,46 +363,12 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
         target.unbindWrite();
     }
 
-    private static float[] extractTrimBaseHSB(final ArmorTrim trim) {
-        ResourceLocation paletteResource = ResourceLocation.withDefaultNamespace("textures/trims/color_palettes/" + trim.material().value().assetName() + ".png");
-        NativeImage colorPalette = RenderingUtils.getImageFromResource(paletteResource);
-
-        if (colorPalette != null) {
-            int red = 0;
-            int green = 0;
-            int blue = 0;
-            int count = 0;
-
-            try {
-                for (int x = 0; x < colorPalette.getWidth(); x++) {
-                    for (int y = 0; y < colorPalette.getHeight(); y++) {
-                        Color color = new Color(colorPalette.getPixelRGBA(x, y), true);
-
-                        if (color.getAlpha() != 0) {
-                            red += color.getRed();
-                            green += color.getGreen();
-                            blue += color.getBlue();
-                            count++;
-                        }
-                    }
-                }
-            } finally {
-                colorPalette.close();
-            }
-
-            if (count > 0) {
-                return Color.RGBtoHSB(red / count, green / count, blue / count, null);
-            }
-        }
-
-        TextColor textColor = trim.material().value().description().getStyle().getColor();
-
-        if (textColor != null) {
-            int color = textColor.getValue();
-            return Color.RGBtoHSB((color >> 16) & 0xFF, (color >> 8) & 0xFF, color & 0xFF, null);
-        }
-
-        return new float[3];
+    private static ResourceLocation getTrimPaletteResourceLocation(final ArmorTrim trim, final Holder<ArmorMaterial> armorMaterial) {
+        String palette = trim.material().value().overrideArmorMaterials().getOrDefault(armorMaterial, trim.material().value().assetName());
+        String namespace = trim.material().unwrapKey()
+            .map(key -> key.location().getNamespace())
+            .orElse(ResourceLocation.DEFAULT_NAMESPACE);
+        return ResourceLocation.fromNamespaceAndPath(namespace, "textures/trims/color_palettes/" + palette + ".png");
     }
 
     private static ResourceLocation getArmorMaskResourceLocation(final ResourceLocation model, final EquipmentSlot slot) {
