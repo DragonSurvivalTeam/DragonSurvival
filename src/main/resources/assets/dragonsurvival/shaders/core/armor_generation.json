@@ -4,15 +4,14 @@
   "samplers": [
     { "name": "ArmorTexture" },
     { "name": "MaskTexture" },
-    { "name": "TrimTexture" }
+    { "name": "TrimTexture" },
+    { "name": "TrimPalette" }
   ],
   "uniforms": [
     { "name": "HasMask", "type": "float", "count": 1, "values": [ 0.0 ] },
     { "name": "ApplyDye", "type": "float", "count": 1, "values": [ 0.0 ] },
     { "name": "HasTrim", "type": "float", "count": 1, "values": [ 0.0 ] },
     { "name": "DyeHue", "type": "float", "count": 1, "values": [ 0.0 ] },
-    { "name": "DyeSaturation", "type": "float", "count": 1, "values": [ 0.0 ] },
-    { "name": "TrimHue", "type": "float", "count": 1, "values": [ 0.0 ] },
-    { "name": "TrimSaturation", "type": "float", "count": 1, "values": [ 0.0 ] }
+    { "name": "DyeSaturation", "type": "float", "count": 1, "values": [ 0.0 ] }
   ]
 }
