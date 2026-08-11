@@ -10,8 +10,7 @@ layout(std140) uniform ArmorGenerationInfo {
     float HasTrim;
     float DyeHue;
     float DyeSaturation;
-    float TrimHue;
-    float TrimSaturation;
+    vec4 TrimPalette[8];
 } armorGenerationInfo;
 
 in vec2 texCoord;
@@ -37,14 +36,10 @@ void main() {
         vec4 trimPixel = texture(TrimTexture, texCoord);
 
         if (trimPixel.a != 0.0) {
-            vec3 trimHSB = getHSB(trimPixel.rgb);
-
-            if (trimHSB.g == 0.0) {
-                fragColor = vec4(getRGB(vec3(armorGenerationInfo.TrimHue, armorGenerationInfo.TrimSaturation, trimHSB.b)), 1.0);
-            } else {
-                fragColor = vec4(0.0);
-            }
-
+            float brightness = dot(trimPixel.rgb, vec3(0.299, 0.587, 0.114));
+            int paletteIndex = int(clamp(round((224.0 - brightness * 255.0) / 32.0), 0.0, 7.0));
+            vec4 palettePixel = armorGenerationInfo.TrimPalette[paletteIndex];
+            fragColor = vec4(palettePixel.rgb, trimPixel.a * palettePixel.a);
             return;
         }
     }

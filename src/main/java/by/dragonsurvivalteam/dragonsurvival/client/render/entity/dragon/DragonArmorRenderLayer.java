@@ -36,7 +36,6 @@ import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.ARGB;
@@ -84,8 +83,14 @@ public class DragonArmorRenderLayer<R extends LivingEntityRenderState & GeoRende
         .putFloat()
         .putFloat()
         .putFloat()
-        .putFloat()
-        .putFloat()
+        .putVec4()
+        .putVec4()
+        .putVec4()
+        .putVec4()
+        .putVec4()
+        .putVec4()
+        .putVec4()
+        .putVec4()
         .get();
 
     private static MappableRingBuffer armorGenerationUniformBuffer;
@@ -271,10 +276,10 @@ public class DragonArmorRenderLayer<R extends LivingEntityRenderState & GeoRende
         final int height
     ) {
         float[] dyeHSB = new float[3];
-        float[] trimBaseHSB = new float[3];
         boolean applyDye = false;
         boolean hasTrim = false;
         AbstractTexture trimTexture = getTransparentTexture();
+        float[] trimPalette = new float[8 * 4];
         DyedItemColor dyedColor = stack.get(DataComponents.DYED_COLOR);
 
         if (dyedColor != null) {
@@ -287,19 +292,21 @@ public class DragonArmorRenderLayer<R extends LivingEntityRenderState & GeoRende
         if (trim != null) {
             String patternPath = trim.pattern().value().assetId().getPath();
             Identifier trimLocation = Identifier.fromNamespaceAndPath(handler.getModel().getNamespace(), "textures/armor/" + handler.getModel().getPath() + "/armor_trims/" + patternPath + ".png");
+            Identifier paletteLocation = getTrimPaletteIdentifier(trim, equipmentAssetId);
 
-            if (hasResource(trimLocation)) {
+            if (hasResource(trimLocation) && hasResource(paletteLocation)) {
                 AbstractTexture loadedTrimTexture = Minecraft.getInstance().getTextureManager().getTexture(trimLocation);
+                float[] loadedTrimPalette = loadTrimPalette(paletteLocation);
 
-                if (isTextureSizedForTarget(loadedTrimTexture, width, height, trimLocation)) {
-                    extractTrimBaseHSB(trim, equipmentAssetId, trimBaseHSB);
+                if (loadedTrimPalette != null && isTextureSizedForTarget(loadedTrimTexture, width, height, trimLocation)) {
                     trimTexture = loadedTrimTexture;
+                    trimPalette = loadedTrimPalette;
                     hasTrim = true;
                 }
             }
         }
 
-        return new ArmorGenerationSettings(applyDye, hasTrim, dyeHSB[0], dyeHSB[1], trimBaseHSB[0], trimBaseHSB[1], trimTexture);
+        return new ArmorGenerationSettings(applyDye, hasTrim, dyeHSB[0], dyeHSB[1], trimTexture, trimPalette);
     }
 
     private static void renderOptionalTexture(final TextureTarget target, final @Nullable Identifier textureLocation, final int width, final int height) {
@@ -327,14 +334,22 @@ public class DragonArmorRenderLayer<R extends LivingEntityRenderState & GeoRende
         CommandEncoder commandEncoder = RenderSystem.getDevice().createCommandEncoder();
 
         try (GpuBuffer.MappedView view = commandEncoder.mapBuffer(getArmorGenerationUniformBuffer().currentBuffer(), false, true)) {
-            Std140Builder.intoBuffer(view.data())
+            Std140Builder builder = Std140Builder.intoBuffer(view.data())
                 .putFloat(hasMask ? 1.0F : 0.0F)
                 .putFloat(settings.applyDye() ? 1.0F : 0.0F)
                 .putFloat(settings.hasTrim() ? 1.0F : 0.0F)
                 .putFloat(settings.dyeHue())
-                .putFloat(settings.dyeSaturation())
-                .putFloat(settings.trimHue())
-                .putFloat(settings.trimSaturation());
+                .putFloat(settings.dyeSaturation());
+
+            for (int index = 0; index < 8; index++) {
+                int offset = index * 4;
+                builder.putVec4(
+                    settings.trimPalette()[offset],
+                    settings.trimPalette()[offset + 1],
+                    settings.trimPalette()[offset + 2],
+                    settings.trimPalette()[offset + 3]
+                );
+            }
         }
 
         try (RenderPass renderPass = commandEncoder.createRenderPass(() -> "Dragon armor generation", target.getColorTextureView(), java.util.OptionalInt.empty())) {
@@ -350,46 +365,41 @@ public class DragonArmorRenderLayer<R extends LivingEntityRenderState & GeoRende
         getArmorGenerationUniformBuffer().rotate();
     }
 
-    private static void extractTrimBaseHSB(final ArmorTrim trim, final ResourceKey<EquipmentAsset> equipmentAssetId, final float[] trimBaseHSB) {
+    private static Identifier getTrimPaletteIdentifier(final ArmorTrim trim, final ResourceKey<EquipmentAsset> equipmentAssetId) {
         String paletteName = trim.material().value().assets().assetId(equipmentAssetId).suffix();
-        Identifier paletteResource = Identifier.withDefaultNamespace("textures/trims/color_palettes/" + paletteName + ".png");
-        NativeImage colorPalette = RenderingUtils.getImageFromResource(paletteResource);
+        String namespace = trim.material().unwrapKey()
+            .map(key -> key.identifier().getNamespace())
+            .orElse(Identifier.DEFAULT_NAMESPACE);
+        return Identifier.fromNamespaceAndPath(namespace, "textures/trims/color_palettes/" + paletteName + ".png");
+    }
 
-        if (colorPalette != null) {
-            int red = 0;
-            int green = 0;
-            int blue = 0;
-            int count = 0;
+    private static float @Nullable [] loadTrimPalette(final Identifier paletteLocation) {
+        NativeImage image = RenderingUtils.getImageFromResource(paletteLocation);
 
-            try {
-                for (int x = 0; x < colorPalette.getWidth(); x++) {
-                    for (int y = 0; y < colorPalette.getHeight(); y++) {
-                        int pixel = colorPalette.getPixel(x, y);
-
-                        if (ARGB.alpha(pixel) == 0) {
-                            continue;
-                        }
-
-                        red += ARGB.red(pixel);
-                        green += ARGB.green(pixel);
-                        blue += ARGB.blue(pixel);
-                        count++;
-                    }
-                }
-            } finally {
-                colorPalette.close();
-            }
-
-            if (count > 0) {
-                Color.RGBtoHSB(red / count, green / count, blue / count, trimBaseHSB);
-                return;
-            }
+        if (image == null) {
+            return null;
         }
 
-        TextColor textColor = trim.material().value().description().getStyle().getColor();
+        try {
+            if (image.getWidth() < 8 || image.getHeight() < 1) {
+                DragonSurvival.LOGGER.error("Armor trim palette {} must contain at least 8 pixels", paletteLocation);
+                return null;
+            }
 
-        if (textColor != null) {
-            Color.RGBtoHSB(ARGB.red(textColor.getValue()), ARGB.green(textColor.getValue()), ARGB.blue(textColor.getValue()), trimBaseHSB);
+            float[] palette = new float[8 * 4];
+
+            for (int index = 0; index < 8; index++) {
+                int pixel = image.getPixel(index, 0);
+                int offset = index * 4;
+                palette[offset] = ARGB.red(pixel) / 255.0F;
+                palette[offset + 1] = ARGB.green(pixel) / 255.0F;
+                palette[offset + 2] = ARGB.blue(pixel) / 255.0F;
+                palette[offset + 3] = ARGB.alpha(pixel) / 255.0F;
+            }
+
+            return palette;
+        } finally {
+            image.close();
         }
     }
 
@@ -558,12 +568,11 @@ public class DragonArmorRenderLayer<R extends LivingEntityRenderState & GeoRende
         boolean hasTrim,
         float dyeHue,
         float dyeSaturation,
-        float trimHue,
-        float trimSaturation,
-        AbstractTexture trimTexture
+        AbstractTexture trimTexture,
+        float[] trimPalette
     ) {
         private static ArmorGenerationSettings plain() {
-            return new ArmorGenerationSettings(false, false, 0.0F, 0.0F, 0.0F, 0.0F, getTransparentTexture());
+            return new ArmorGenerationSettings(false, false, 0.0F, 0.0F, getTransparentTexture(), new float[8 * 4]);
         }
     }
 }
