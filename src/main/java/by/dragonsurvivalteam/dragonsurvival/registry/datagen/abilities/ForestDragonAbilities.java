@@ -194,7 +194,7 @@ public class ForestDragonAbilities {
                                         new DamageEffect(context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.FOREST_BREATH), LevelBasedValue.perLevel(2), DSAttributes.DRAGON_ABILITY_DAMAGE, DamageEffect.DEFAULT_EXPRESSION, false),
                                         new PotionEffect(PotionData.create(DSEffects.DRAIN).duration(10).probability(0.3f).build())
                                 ),
-                                TargetingMode.NON_ALLIES
+                                TargetingMode.NON_ALLIES, true
                         ), LevelBasedValue.constant(1)), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(10)),
                         new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                                 List.of(new BreathParticlesEffect(

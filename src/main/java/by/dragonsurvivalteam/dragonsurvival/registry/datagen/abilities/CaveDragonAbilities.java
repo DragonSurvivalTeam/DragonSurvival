@@ -208,7 +208,7 @@ public class CaveDragonAbilities {
                                         new IgniteEffect(LevelBasedValue.perLevel(Functions.secondsToTicks(5))),
                                         new PotionEffect(PotionData.create(DSEffects.BURN).duration(10).probability(0.3f).build())
                                 ),
-                                TargetingMode.NON_ALLIES
+                                TargetingMode.NON_ALLIES, true
                         ), LevelBasedValue.constant(1)), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(10)),
                         new ActionContainer(new DragonBreathTarget(AbilityTargeting.block(List.of(
                                 new FireEffect(LevelBasedValue.constant(0.05f)),
@@ -261,7 +261,7 @@ public class CaveDragonAbilities {
                                         new DamageEffect(context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.FIRE_BREATH), LevelBasedValue.perLevel(0.5f), DSAttributes.DRAGON_ABILITY_DAMAGE, DamageEffect.DEFAULT_EXPRESSION, false),
                                         new IgniteEffect(LevelBasedValue.perLevel(Functions.secondsToTicks(1)))
                                 ),
-                                TargetingMode.NON_ALLIES
+                                TargetingMode.NON_ALLIES, true
                         ), LevelBasedValue.constant(1)), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(10)),
                         new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                                 List.of(new BreathParticlesEffect(
