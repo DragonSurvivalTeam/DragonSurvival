@@ -34,7 +34,7 @@ public record DragonBreathTarget(Either<BlockTargeting, EntityTargeting> target,
 
     @Override
     public void apply(final ServerPlayer dragon, final DragonAbilityInstance ability) {
-        target().ifLeft(blockTarget -> {
+        target.ifLeft(blockTarget -> {
             // Used by 'BlockGetter#clip' to determine the direction
             // 'Entity#pick' -> from: 'getEyePosition' / to: 'getEyePosition + getViewVector'
             Vec3 eyePosition = dragon.getEyePosition();
@@ -47,7 +47,7 @@ public record DragonBreathTarget(Either<BlockTargeting, EntityTargeting> target,
             });
         }).ifRight(entityTarget -> {
             dragon.serverLevel().getEntities(EntityTypeTest.forClass(Entity.class), calculateBreathArea(dragon, ability),
-                    entity -> entityTarget.targetingMode().isEntityRelevant(dragon, entity) && entityTarget.matches(dragon, entity, entity.position())
+                    entity -> entityTarget.targetingMode().isEntityRelevant(dragon, entity, entityTarget.isHarmful()) && entityTarget.matches(dragon, entity, entity.position())
             ).forEach(entity -> entityTarget.effects().forEach(target -> target.apply(dragon, ability, entity)));
         });
     }

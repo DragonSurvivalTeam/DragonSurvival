@@ -55,7 +55,11 @@ public interface AbilityTargeting {
     }
 
     static Either<BlockTargeting, EntityTargeting> entity(final LootItemCondition targetConditions, final List<AbilityEntityEffect> effects, final TargetingMode targetingMode) {
-        return Either.right(new EntityTargeting(Optional.ofNullable(targetConditions), effects, targetingMode));
+        return Either.right(new EntityTargeting(Optional.ofNullable(targetConditions), effects, targetingMode, false));
+    }
+
+    static Either<BlockTargeting, EntityTargeting> entity(final LootItemCondition targetConditions, final List<AbilityEntityEffect> effects, final TargetingMode targetingMode, boolean isHarmful) {
+        return Either.right(new EntityTargeting(Optional.ofNullable(targetConditions), effects, targetingMode, isHarmful));
     }
 
     default float getDistance(final Player dragon, final DragonAbilityInstance instance) {
@@ -73,11 +77,12 @@ public interface AbilityTargeting {
         }
     }
 
-    record EntityTargeting(Optional<LootItemCondition> targetConditions, List<AbilityEntityEffect> effects, TargetingMode targetingMode) {
+    record EntityTargeting(Optional<LootItemCondition> targetConditions, List<AbilityEntityEffect> effects, TargetingMode targetingMode, boolean isHarmful) {
         public static final Codec<EntityTargeting> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             MiscCodecs.conditional(MiscCodecs.LOOT_ITEM_CONDITION_CODEC).optionalFieldOf("target_conditions").forGetter(EntityTargeting::targetConditions),
                 ConditionalOps.decodeListWithElementConditions(AbilityEntityEffect.CODEC).fieldOf("entity_effect").forGetter(EntityTargeting::effects),
-                TargetingMode.CODEC.fieldOf("targeting_mode").forGetter(EntityTargeting::targetingMode)
+                TargetingMode.CODEC.fieldOf("targeting_mode").forGetter(EntityTargeting::targetingMode),
+                Codec.BOOL.optionalFieldOf("is_harmful", false).forGetter(EntityTargeting::isHarmful)
         ).apply(instance, EntityTargeting::new));
 
         public boolean matches(final ServerPlayer dragon, final Entity entity, final Vec3 position) {
