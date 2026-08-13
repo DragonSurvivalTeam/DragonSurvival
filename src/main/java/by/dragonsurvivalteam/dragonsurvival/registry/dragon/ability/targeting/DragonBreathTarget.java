@@ -51,7 +51,7 @@ public record DragonBreathTarget(Either<BlockTargeting, EntityTargeting> target,
             });
         }).ifRight(entityTarget -> {
             dragon.level().getEntities(EntityTypeTest.forClass(Entity.class), breathArea,
-                    entity -> entityTarget.targetingMode().isEntityRelevant(dragon, entity)
+                    entity -> entityTarget.targetingMode().isEntityRelevant(dragon, entity, entityTarget.isHarmful())
                         && intersectsBreath(entity.getBoundingBox(), startPosition, endPosition, radius)
                         && entityTarget.matches(dragon, entity, entity.position())
             ).forEach(entity -> entityTarget.effects().forEach(target -> target.apply(dragon, ability, entity)));

@@ -23,6 +23,7 @@
               }
             }
           ],
+          "is_harmful": true,
           "target_conditions": {
             "condition": "minecraft:entity_properties",
             "entity": "this",

@@ -30,7 +30,7 @@ public record AreaTarget(Either<BlockTargeting, EntityTargeting> target, LevelBa
 
     @Override
     public void apply(final ServerPlayer dragon, final DragonAbilityInstance ability) {
-        target().ifLeft(blockTarget -> {
+        target.ifLeft(blockTarget -> {
             BlockPos.betweenClosedStream(calculateAffectedArea(dragon, ability)).forEach(position -> {
                 if (blockTarget.matches(dragon, position)) {
                     blockTarget.effects().forEach(target -> target.apply(dragon, ability, position, null));
@@ -38,7 +38,7 @@ public record AreaTarget(Either<BlockTargeting, EntityTargeting> target, LevelBa
             });
         }).ifRight(entityTarget -> { // TODO :: for auto removal the search for relevant entities would have to be different
             dragon.level().getEntities(EntityTypeTest.forClass(Entity.class), calculateAffectedArea(dragon, ability),
-                    entity -> entityTarget.targetingMode().isEntityRelevant(dragon, entity) && entityTarget.matches(dragon, entity, entity.position())
+                    entity -> entityTarget.targetingMode().isEntityRelevant(dragon, entity, entityTarget.isHarmful()) && entityTarget.matches(dragon, entity, entity.position())
             ).forEach(entity -> entityTarget.effects().forEach(target -> target.apply(dragon, ability, entity)));
         });
     }
