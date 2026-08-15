@@ -56,6 +56,7 @@ public class DragonRidingHandler {
     @Translation(comments = "The creature you are trying to ride must be crouching for you to mount them.")
     private static final String NOT_CROUCHING = Translation.Type.GUI.wrap("message.not_crouching");
 
+    public static final String MOUNTING_BONE = "MountingBone";
     public static final int NO_PASSENGER = -1;
 
     public static final Vec3 BASE_MOUNTING_OFFSET = new Vec3(0, 0.63, 0);
@@ -89,7 +90,7 @@ public class DragonRidingHandler {
 
         DragonStateHandler mountData = DragonStateProvider.getData(mount);
 
-        if (!mountData.isDragon() || mountData.body().value().mountingOffsets().isEmpty()) {
+        if (!mountData.isDragon() || mountData.body().value().noDragonModelRendering()) {
             return DragonRideAttemptResult.OTHER;
         }
 
