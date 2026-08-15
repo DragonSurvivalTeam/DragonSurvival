@@ -53,12 +53,11 @@ public abstract class PlayerRendererMixin {
             DragonStateHandler handler = DragonStateProvider.getData(mount);
 
             if (handler.body().value().mountingOffsets().isEmpty() && !handler.body().value().noDragonModelRendering()) {
-                Vec3 mountingPosition = DragonRenderer.getBonePositionOrNull(mount, DragonRidingHandler.MOUNTING_BONE);
+                Vec3 mountingOffset = DragonRenderer.getBoneOffsetOrNull(mount, DragonRidingHandler.MOUNTING_BONE);
                 Quaternionf rotation = DragonRenderer.getBoneRotationOrNull(mount, DragonRidingHandler.MOUNTING_BONE);
 
-                if (mountingPosition != null) {
+                if (mountingOffset != null) {
                     Vec3 pivot = rider.getVehicleAttachmentPoint(mount);
-                    Vec3 mountingOffset = mountingPosition.subtract(mount.position());
                     Vec3 targetRiderPosition = mount.getPosition(state.partialTick).add(mountingOffset).subtract(pivot);
                     Vec3 positionCorrection = targetRiderPosition.subtract(rider.getPosition(state.partialTick));
 

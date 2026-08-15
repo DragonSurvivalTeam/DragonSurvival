@@ -4,10 +4,12 @@ import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscCodecs;
+import by.dragonsurvivalteam.dragonsurvival.server.handlers.DragonRidingHandler;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
@@ -26,23 +28,46 @@ public record SyncMountingBonePosition(int mountId, Vec3 offset) implements Cust
 
     public static void handleServer(final SyncMountingBonePosition packet, final IPayloadContext context) {
         context.enqueueWork(() -> {
-            Player rider = context.player();
+            Player sender = context.player();
+            Player mount;
+            Player rider;
+            boolean sentByMount;
 
-            if (!(rider.getVehicle() instanceof Player mount) || mount.getId() != packet.mountId() || !mount.hasPassenger(rider)) {
+            if (sender.getId() == packet.mountId()) {
+                mount = sender;
+                Entity passenger = mount.getFirstPassenger();
+
+                if (!(passenger instanceof Player playerPassenger)) {
+                    return;
+                }
+
+                rider = playerPassenger;
+                sentByMount = true;
+            } else if (sender.getVehicle() instanceof Player vehicle && vehicle.getId() == packet.mountId()) {
+                mount = vehicle;
+                rider = sender;
+                sentByMount = false;
+            } else {
+                return;
+            }
+
+            if (rider.getVehicle() != mount || !mount.hasPassenger(rider)) {
                 return;
             }
 
             DragonStateHandler handler = DragonStateProvider.getData(mount);
+            boolean trackedPassenger = handler.getPassengerId() == rider.getId();
+            boolean untrackedMountPassenger = sentByMount && handler.getPassengerId() == DragonRidingHandler.NO_PASSENGER;
 
             if (!handler.isDragon()
-                    || handler.getPassengerId() != rider.getId()
+                    || (!trackedPassenger && !untrackedMountPassenger)
                     || handler.body().value().noDragonModelRendering()
                     || handler.body().value().mountingOffsets().isPresent()
                     || !isValidOffset(packet.offset())) {
                 return;
             }
 
-            handler.setMountingBoneOffset(packet.offset());
+            handler.updateMountingBoneOffset(packet.offset(), mount.level().getGameTime(), sentByMount);
         });
     }
 

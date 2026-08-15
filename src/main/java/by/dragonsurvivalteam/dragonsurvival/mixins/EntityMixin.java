@@ -52,12 +52,13 @@ public abstract class EntityMixin {
                 }
 
                 if (mount.level().isClientSide()) {
-                    Vec3 mountingPosition = DragonSurvival.PROXY.getDragonBonePosition(player, DragonRidingHandler.MOUNTING_BONE);
+                    Vec3 mountingOffset = DragonSurvival.PROXY.getDragonBoneOffset(player, DragonRidingHandler.MOUNTING_BONE);
 
-                    if (mountingPosition != null) {
-                        Vec3 mountingOffset = mountingPosition.subtract(player.position());
+                    if (mountingOffset != null) {
+                        Player localPlayer = DragonSurvival.PROXY.getLocalPlayer();
+                        boolean localParticipant = player == localPlayer || passenger == localPlayer;
 
-                        if (passenger == DragonSurvival.PROXY.getLocalPlayer()) {
+                        if (localParticipant && DragonSurvival.PROXY.isDragonBonePositionFresh(player, DragonRidingHandler.MOUNTING_BONE)) {
                             ClientPacketDistributor.sendToServer(new SyncMountingBonePosition(player.getId(), mountingOffset));
                         }
 

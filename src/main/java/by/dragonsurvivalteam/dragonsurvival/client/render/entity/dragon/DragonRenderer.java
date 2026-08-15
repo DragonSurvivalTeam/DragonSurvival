@@ -76,7 +76,9 @@ import java.util.function.ToDoubleFunction;
 @EventBusSubscriber(Dist.CLIENT)
 public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> extends GeoEntityRenderer<DragonEntity, R> {
     public static final Map<Integer, Map<String, Vec3>> BONE_POSITIONS = new HashMap<>();
+    private static final Map<Integer, Map<String, Vec3>> BONE_OFFSETS = new HashMap<>();
     private static final Map<Integer, Map<String, Quaternionf>> BONE_ROTATIONS = new HashMap<>();
+    private static final Map<Integer, Map<String, Long>> BONE_UPDATE_TICKS = new HashMap<>();
     private static final List<String> BONES = List.of("BreathSource", DragonRidingHandler.MOUNTING_BONE);
     private static final Map<Integer, DragonAnimationState> ANIMATION_STATES = new HashMap<>();
     private static final Map<Long, Map<String, BonePose>> LAST_RENDERED_BONE_POSES = new HashMap<>();
@@ -587,13 +589,17 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
 
     public static void clearRenderState(final int dragonId) {
         BONE_POSITIONS.remove(dragonId);
+        BONE_OFFSETS.remove(dragonId);
         BONE_ROTATIONS.remove(dragonId);
+        BONE_UPDATE_TICKS.remove(dragonId);
         clearAnimationState(dragonId);
     }
 
     public static void clearRenderStates() {
         BONE_POSITIONS.clear();
+        BONE_OFFSETS.clear();
         BONE_ROTATIONS.clear();
+        BONE_UPDATE_TICKS.clear();
         clearAnimationStates();
         UI_RENDER_DRAGONS.clear();
     }
@@ -828,13 +834,19 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
             if (renderData.inUI()) return;
             Vec3 position = transformBonePosition(renderData, new Vec3(worldPos.x(), worldPos.y(), worldPos.z()));
             BONE_POSITIONS.computeIfAbsent(renderData.dragonId(), key -> new HashMap<>()).put(boneName, position);
+            BONE_OFFSETS.computeIfAbsent(renderData.dragonId(), key -> new HashMap<>()).put(boneName, position.subtract(renderData.dragon().position()));
+            BONE_UPDATE_TICKS.computeIfAbsent(renderData.dragonId(), key -> new HashMap<>()).put(boneName, renderData.dragon().level().getGameTime());
         };
 
         final RenderPassInfo.BoneUpdater<R> addTrackedBoneListeners = (renderPassInfoForBones, snapshots) -> {
             // Need to store the positions per entity ourselves
             // Since the model is a singleton, and it stores the bones
-            BONES.forEach(name -> snapshots.get(name).ifPresent(bone -> {
+            BONES.forEach(name -> snapshots.get(name).ifPresentOrElse(bone -> {
                 renderPassInfo.addBonePositionListener(bone.getBone(), bonePositionListenerCreator.apply(bone.getBone().name()));
+            }, () -> {
+                BONE_POSITIONS.computeIfAbsent(renderData.dragonId(), key -> new HashMap<>()).remove(name);
+                BONE_OFFSETS.computeIfAbsent(renderData.dragonId(), key -> new HashMap<>()).remove(name);
+                BONE_UPDATE_TICKS.computeIfAbsent(renderData.dragonId(), key -> new HashMap<>()).remove(name);
             }));
         };
 
@@ -1004,6 +1016,40 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
         }
 
         return positions.get(name);
+    }
+
+    public static @Nullable Vec3 getBoneOffsetOrNull(final Player player, final String name) {
+        DragonEntity dragon = ClientDragonRenderer.getDragon(player);
+
+        if (dragon == null) {
+            return null;
+        }
+
+        Map<String, Vec3> offsets = BONE_OFFSETS.get(dragon.getId());
+
+        if (offsets == null) {
+            return null;
+        }
+
+        return offsets.get(name);
+    }
+
+    public static boolean isBonePositionFresh(final Player player, final String name) {
+        DragonEntity dragon = ClientDragonRenderer.getDragon(player);
+
+        if (dragon == null) {
+            return false;
+        }
+
+        Map<String, Long> updateTicks = BONE_UPDATE_TICKS.get(dragon.getId());
+        Long updateTick = updateTicks == null ? null : updateTicks.get(name);
+
+        if (updateTick == null) {
+            return false;
+        }
+
+        long age = dragon.level().getGameTime() - updateTick;
+        return age >= 0 && age <= 1;
     }
 
     public static @Nullable Quaternionf getBoneRotationOrNull(final Player player, final String name) {
