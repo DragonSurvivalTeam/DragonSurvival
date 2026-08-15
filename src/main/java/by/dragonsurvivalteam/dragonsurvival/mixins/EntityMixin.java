@@ -104,12 +104,13 @@ public abstract class EntityMixin implements AttachmentStorage {
 
                 Vec3 mountingOffset = null;
                 if (mount.level().isClientSide()) {
-                    Vec3 mountingPosition = DragonSurvival.PROXY.getDragonBonePosition(player, DragonRidingHandler.MOUNTING_BONE);
+                    mountingOffset = DragonSurvival.PROXY.getDragonBoneOffset(player, DragonRidingHandler.MOUNTING_BONE);
 
-                    if (mountingPosition != null) {
-                        mountingOffset = mountingPosition.subtract(player.position());
+                    if (mountingOffset != null) {
+                        Player localPlayer = DragonSurvival.PROXY.getLocalPlayer();
+                        boolean localParticipant = player == localPlayer || entity == localPlayer;
 
-                        if (entity == DragonSurvival.PROXY.getLocalPlayer()) {
+                        if (localParticipant && DragonSurvival.PROXY.isDragonBonePositionFresh(player, DragonRidingHandler.MOUNTING_BONE)) {
                             NetworkHandler.sendToServer(new SyncMountingBonePosition(player.getId(), mountingOffset));
                         }
                     }

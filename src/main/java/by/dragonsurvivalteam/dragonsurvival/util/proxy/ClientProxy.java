@@ -216,6 +216,16 @@ public class ClientProxy implements Proxy {
     }
 
     @Override
+    public @Nullable Vec3 getDragonBoneOffset(final Player player, final String boneName) {
+        return DragonRenderer.getBoneOffsetOrNull(player, boneName);
+    }
+
+    @Override
+    public boolean isDragonBonePositionFresh(final Player player, final String boneName) {
+        return DragonRenderer.isBonePositionFresh(player, boneName);
+    }
+
+    @Override
     public boolean updateDragonSoulBlockAnimation(final DragonSoulBlockEntity soul, final String animation) {
         DragonEntity dragon = FakeClientPlayerUtils.getFakeDragon(soul.fakePlayerIndex, soul.getHandler());
 
