@@ -123,6 +123,7 @@ public class DragonStateHandler extends EntityStateHandler {
     private Holder<DragonStage> dragonStage;
 
     private int passengerId = DragonRidingHandler.NO_PASSENGER;
+    private @Nullable Vec3 mountingBoneOffset;
     private double growth = NO_GROWTH;
     private double visualGrowth = NO_GROWTH;
     private double visualGrowthLastTick = NO_GROWTH;
@@ -480,6 +481,10 @@ public class DragonStateHandler extends EntityStateHandler {
         this.dragonBody = dragonBody;
         boolean isSameBody = DragonUtils.isBody(oldBody, this.dragonBody);
 
+        if (!isSameBody) {
+            mountingBoneOffset = null;
+        }
+
         if (this.dragonBody != null && !isSameBody) {
             refreshBody = true;
 
@@ -512,7 +517,19 @@ public class DragonStateHandler extends EntityStateHandler {
     }
 
     public void setPassengerId(int passengerId) {
+        if (this.passengerId != passengerId) {
+            mountingBoneOffset = null;
+        }
+
         this.passengerId = passengerId;
+    }
+
+    public @Nullable Vec3 getMountingBoneOffset() {
+        return mountingBoneOffset;
+    }
+
+    public void setMountingBoneOffset(final Vec3 mountingBoneOffset) {
+        this.mountingBoneOffset = mountingBoneOffset;
     }
 
     public double getVisualScale(final Player player, float partialTick) {

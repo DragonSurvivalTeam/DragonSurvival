@@ -16,6 +16,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.DSEntities;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.HunterData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MovementData;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
+import by.dragonsurvivalteam.dragonsurvival.server.handlers.DragonRidingHandler;
 import by.dragonsurvivalteam.dragonsurvival.server.handlers.ServerFlightHandler;
 import by.dragonsurvivalteam.dragonsurvival.util.AnimationUtils;
 import by.dragonsurvivalteam.dragonsurvival.util.DragonAnimations;
@@ -71,7 +72,7 @@ import java.util.function.ToDoubleFunction;
 @EventBusSubscriber(Dist.CLIENT)
 public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> extends GeoEntityRenderer<DragonEntity, R> {
     public static final Map<Integer, Map<String, Vec3>> BONE_POSITIONS = new HashMap<>();
-    private static final List<String> BONES = List.of("BreathSource");
+    private static final List<String> BONES = List.of("BreathSource", DragonRidingHandler.MOUNTING_BONE);
     private static final Map<Integer, DragonAnimationState> ANIMATION_STATES = new HashMap<>();
     private static final Map<Long, Map<String, BonePose>> LAST_RENDERED_BONE_POSES = new HashMap<>();
     private static final Map<Long, InterruptedTransitionBlend> INTERRUPTED_TRANSITION_BLENDS = new HashMap<>();
@@ -822,7 +823,7 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
             BONE_POSITIONS.computeIfAbsent(renderData.dragonId(), key -> new HashMap<>()).put(boneName, position);
         };
 
-        final RenderPassInfo.BoneUpdater<R> addBreathBoneListener = (renderPassInfoForBones, snapshots) -> {
+        final RenderPassInfo.BoneUpdater<R> addTrackedBoneListeners = (renderPassInfoForBones, snapshots) -> {
             // Need to store the positions per entity ourselves
             // Since the model is a singleton, and it stores the bones
             BONES.forEach(name -> snapshots.get(name).ifPresent(bone -> {
@@ -830,7 +831,7 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
             }));
         };
 
-        renderPassInfo.addBoneUpdater(addBreathBoneListener);
+        renderPassInfo.addBoneUpdater(addTrackedBoneListeners);
 
         final RenderPassInfo.BoneUpdater<R> wingBoneHider = (renderPassInfoForBones, snapshots) -> {
             for (String boneName : renderData.bonesToHideForToggle()) {
@@ -958,19 +959,24 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
      * - Even if it is enabled the position won't be correct - unsure as to why
      */
     public static Vec3 getBonePosition(final Player player, final String name) {
+        Vec3 position = getBonePositionOrNull(player, name);
+        return position == null ? Vec3.ZERO : position;
+    }
+
+    public static @Nullable Vec3 getBonePositionOrNull(final Player player, final String name) {
         DragonEntity dragon = ClientDragonRenderer.getDragon(player);
 
         if (dragon == null) {
-            return Vec3.ZERO;
+            return null;
         }
 
         Map<String, Vec3> positions = BONE_POSITIONS.get(dragon.getId());
 
         if (positions == null) {
-            return Vec3.ZERO;
+            return null;
         }
 
-        return positions.getOrDefault(name, Vec3.ZERO);
+        return positions.get(name);
     }
 
     @Override

@@ -2,6 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.util.proxy;
 
 import by.dragonsurvivalteam.dragonsurvival.client.DragonSurvivalClient;
 import by.dragonsurvivalteam.dragonsurvival.client.render.ClientDragonRenderer;
+import by.dragonsurvivalteam.dragonsurvival.client.render.entity.dragon.DragonRenderer;
 import by.dragonsurvivalteam.dragonsurvival.client.sounds.FollowEntitySound;
 import by.dragonsurvivalteam.dragonsurvival.client.util.FakeClientPlayer;
 import by.dragonsurvivalteam.dragonsurvival.client.util.FakeClientPlayerUtils;
@@ -195,6 +196,11 @@ public class ClientProxy implements Proxy {
         }
 
         return dragon.renderingWasCancelled;
+    }
+
+    @Override
+    public @Nullable Vec3 getDragonBonePosition(final Player player, final String boneName) {
+        return DragonRenderer.getBonePositionOrNull(player, boneName);
     }
 
     @Override

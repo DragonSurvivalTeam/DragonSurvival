@@ -1,11 +1,13 @@
 package by.dragonsurvivalteam.dragonsurvival.mixins;
 
+import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.DragonSizeHandler;
 import by.dragonsurvivalteam.dragonsurvival.compat.Compat;
 import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
+import by.dragonsurvivalteam.dragonsurvival.network.player.SyncMountingBonePosition;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DamageModifications;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MovementData;
@@ -22,6 +24,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -43,10 +46,35 @@ public abstract class EntityMixin {
 
         if (mount instanceof Player player && DragonStateProvider.isDragon(player)) {
             DragonStateHandler handler = DragonStateProvider.getData(player);
-            MovementData movement = MovementData.getData(player);
             if (handler.body().value().mountingOffsets().isEmpty()) {
+                if (handler.body().value().noDragonModelRendering()) {
+                    return original;
+                }
+
+                if (mount.level().isClientSide()) {
+                    Vec3 mountingPosition = DragonSurvival.PROXY.getDragonBonePosition(player, DragonRidingHandler.MOUNTING_BONE);
+
+                    if (mountingPosition != null) {
+                        Vec3 mountingOffset = mountingPosition.subtract(player.position());
+
+                        if (passenger == DragonSurvival.PROXY.getLocalPlayer()) {
+                            PacketDistributor.sendToServer(new SyncMountingBonePosition(player.getId(), mountingOffset));
+                        }
+
+                        return mountingOffset;
+                    }
+                } else {
+                    Vec3 mountingOffset = handler.getMountingBoneOffset();
+
+                    if (mountingOffset != null) {
+                        return mountingOffset;
+                    }
+                }
+
                 return original;
             }
+
+            MovementData movement = MovementData.getData(player);
             Vec3 offset = DragonStateProvider.isDragon(passenger) ? handler.body().value().mountingOffsets().get().dragonOffset() : handler.body().value().mountingOffsets().get().humanOffset();
             Vec3 offsetPerScaleAboveOne = handler.body().value().mountingOffsets().get().scale();
             float scale = player.getScale();

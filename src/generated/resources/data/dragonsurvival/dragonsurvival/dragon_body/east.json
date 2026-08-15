@@ -79,23 +79,6 @@
       "operation": "add_multiplied_total"
     }
   ],
-  "mounting_offset": {
-    "dragon_offset": [
-      0.0,
-      0.05,
-      -0.5
-    ],
-    "human_offset": [
-      0.0,
-      -0.15,
-      -0.5
-    ],
-    "offset_per_scale_above_one": [
-      0.0,
-      -0.25,
-      -0.5
-    ]
-  },
   "scaling_proportions": {
     "eye_height": 1.8,
     "height": 2.0,
