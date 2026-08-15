@@ -148,7 +148,7 @@ public class ClientDragonRenderer {
             DragonEntity dragon = PLAYER_DRAGON_MAP.remove(player.getId());
 
             if (dragon != null) {
-                DragonRenderer.BONE_POSITIONS.remove(dragon.getId());
+                DragonRenderer.removeBoneData(dragon.getId());
             }
         }
     }
@@ -156,7 +156,7 @@ public class ClientDragonRenderer {
     @SubscribeEvent
     public static void clearEntries(final LevelEvent.Unload event) {
         PLAYER_DRAGON_MAP.clear();
-        DragonRenderer.BONE_POSITIONS.clear();
+        DragonRenderer.clearBoneData();
     }
 
     @SubscribeEvent
