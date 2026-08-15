@@ -100,8 +100,7 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
             return null;
         }
 
-        Vec3 pivot = rider.getVehicleAttachmentPoint(mount);
-        Vec3 targetRiderPosition = mount.getPosition(partialTick).add(mountingOffset).subtract(pivot);
+        Vec3 targetRiderPosition = mount.getPosition(partialTick).add(mountingOffset);
         return targetRiderPosition.subtract(rider.getPosition(partialTick));
     }
 

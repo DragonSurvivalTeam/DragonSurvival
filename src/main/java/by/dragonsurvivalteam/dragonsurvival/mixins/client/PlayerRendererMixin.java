@@ -43,15 +43,12 @@ public abstract class PlayerRendererMixin {
 
             if (positionCorrection != null) {
                 Quaternionf rotation = DragonRenderer.getBoneRotationOrNull(mount, DragonRidingHandler.MOUNTING_BONE);
-                Vec3 pivot = rider.getVehicleAttachmentPoint(mount);
 
                 poseStack.pushPose();
                 poseStack.translate(positionCorrection.x(), positionCorrection.y(), positionCorrection.z());
 
                 if (rotation != null) {
-                    poseStack.translate(pivot.x(), pivot.y(), pivot.z());
                     poseStack.mulPose(rotation);
-                    poseStack.translate(-pivot.x(), -pivot.y(), -pivot.z());
                 }
 
                 changedPose = true;

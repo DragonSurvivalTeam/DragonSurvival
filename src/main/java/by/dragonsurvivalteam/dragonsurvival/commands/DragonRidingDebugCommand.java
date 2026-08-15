@@ -7,6 +7,7 @@ import by.dragonsurvivalteam.dragonsurvival.commands.arguments.DragonStageArgume
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.mixins.EntityAccessor;
+import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
 import by.dragonsurvivalteam.dragonsurvival.network.syncing.SyncComplete;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
@@ -26,14 +27,13 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.common.util.FakePlayer;
-import net.neoforged.neoforge.event.RegisterCommandsEvent;
-import net.neoforged.neoforge.event.entity.player.PlayerEvent;
-import net.neoforged.neoforge.event.server.ServerStoppedEvent;
-import net.neoforged.neoforge.event.tick.ServerTickEvent;
-import net.neoforged.neoforge.network.PacketDistributor;
+import net.minecraftforge.common.util.FakePlayer;
+import net.minecraftforge.event.RegisterCommandsEvent;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.server.ServerStoppedEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import org.jetbrains.annotations.Nullable;
 
 import java.nio.charset.StandardCharsets;
@@ -110,7 +110,7 @@ public class DragonRidingDebugCommand {
         level.getChunkSource().broadcastAndSend(owner, new ClientboundSetPassengersPacket(owner));
 
         DragonStateHandler handler = DragonStateProvider.getData(rider);
-        PacketDistributor.sendToPlayersTrackingEntityAndSelf(rider, new SyncComplete(rider.getId(), handler.serializeNBT(rider.registryAccess())));
+        PacketDistributor.sendToPlayersTrackingEntityAndSelf(rider, new SyncComplete(rider.getId(), handler.serializeNBT(rider.level().registryAccess())));
 
         String form = handler.isDragon() ? "dragon" : "human";
         source.sendSuccess(() -> Component.literal("Spawned a " + form + " riding debug player."), false);
@@ -144,10 +144,10 @@ public class DragonRidingDebugCommand {
 
         DragonStateHandler handler = DragonStateProvider.getData(rider);
         handler.setSpecies(rider, species);
-        handler.setBody(rider, body == null ? DragonBody.getRandom(rider.registryAccess(), species) : body);
+        handler.setBody(rider, body == null ? DragonBody.getRandom(rider.level().registryAccess(), species) : body);
 
         if (stage == null) {
-            handler.setGrowth(rider, species.value().getStartingGrowth(rider.registryAccess()));
+            handler.setGrowth(rider, species.value().getStartingGrowth(rider.level().registryAccess()));
         } else {
             handler.setStage(rider, stage);
         }
@@ -215,7 +215,11 @@ public class DragonRidingDebugCommand {
     }
 
     @SubscribeEvent
-    public static void removeExpiredRiders(final ServerTickEvent.Post event) {
+    public static void removeExpiredRiders(final TickEvent.ServerTickEvent event) {
+        if (event.phase != TickEvent.Phase.END) {
+            return;
+        }
+
         int currentTick = event.getServer().getTickCount();
         Iterator<Map.Entry<UUID, PendingRemoval>> iterator = PENDING_REMOVALS.entrySet().iterator();
 
