@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.mixins;
 
+import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.compat.attachments.AttachmentType;
@@ -10,6 +11,8 @@ import by.dragonsurvivalteam.dragonsurvival.common.handlers.EntityScale;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.HunterHandler;
 import by.dragonsurvivalteam.dragonsurvival.compat.Compat;
 import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
+import by.dragonsurvivalteam.dragonsurvival.network.NetworkHandler;
+import by.dragonsurvivalteam.dragonsurvival.network.player.SyncMountingBonePosition;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AttachmentManager;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AttachmentStorage;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
@@ -93,6 +96,35 @@ public abstract class EntityMixin implements AttachmentStorage {
 
         if (mount instanceof Player player && DragonStateProvider.isDragon(player)) {
             DragonStateHandler handler = DragonStateProvider.getData(player);
+            if (handler.body().value().mountingOffsets().isEmpty()) {
+                if (handler.body().value().noDragonModelRendering()) {
+                    original.call(instance, entity, x, y, z);
+                    return;
+                }
+
+                Vec3 mountingOffset = null;
+                if (mount.level().isClientSide()) {
+                    Vec3 mountingPosition = DragonSurvival.PROXY.getDragonBonePosition(player, DragonRidingHandler.MOUNTING_BONE);
+
+                    if (mountingPosition != null) {
+                        mountingOffset = mountingPosition.subtract(player.position());
+
+                        if (entity == DragonSurvival.PROXY.getLocalPlayer()) {
+                            NetworkHandler.sendToServer(new SyncMountingBonePosition(player.getId(), mountingOffset));
+                        }
+                    }
+                } else {
+                    mountingOffset = handler.getMountingBoneOffset();
+                }
+
+                if (mountingOffset != null) {
+                    original.call(instance, entity, mount.getX() + mountingOffset.x, mount.getY() + mountingOffset.y, mount.getZ() + mountingOffset.z);
+                } else {
+                    original.call(instance, entity, x, y, z);
+                }
+                return;
+            }
+
             MovementData movement = MovementData.getData(player);
 
             // Pose changes shrink the collision box, but the seat must remain anchored to the dragon model.

@@ -11,6 +11,7 @@ import by.dragonsurvivalteam.dragonsurvival.compat.Compat;
 import by.dragonsurvivalteam.dragonsurvival.compat.ModID;
 import by.dragonsurvivalteam.dragonsurvival.compat.sophisticatedBackpacks.DragonBackpackRenderLayer;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MovementData;
+import by.dragonsurvivalteam.dragonsurvival.server.handlers.DragonRidingHandler;
 import by.dragonsurvivalteam.dragonsurvival.server.handlers.ServerFlightHandler;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -24,6 +25,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3d;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.core.object.Color;
@@ -36,7 +38,7 @@ import java.util.Map;
 
 public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
     public static final Map<Integer, Map<String, Vec3>> BONE_POSITIONS = new HashMap<>();
-    private static final List<String> BONES = List.of("BreathSource");
+    private static final List<String> BONES = List.of("BreathSource", DragonRidingHandler.MOUNTING_BONE);
 
     private static final Color RENDER_COLOR = Color.ofRGB(255, 255, 255);
     private static final Color TRANSPARENT_RENDER_COLOR = Color.ofRGBA(1, 1, 1, HunterHandler.MIN_ALPHA);
@@ -71,25 +73,32 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
      * - Even if it is enabled the position won't be correct - unsure as to why
      */
     public static Vec3 getBonePosition(final Player player, final String name) {
+        Vec3 position = getBonePositionOrNull(player, name);
+        return position == null ? Vec3.ZERO : position;
+    }
+
+    public static @Nullable Vec3 getBonePositionOrNull(final Player player, final String name) {
         DragonEntity dragon = ClientDragonRenderer.getDragon(player);
 
         if (dragon == null) {
-            return Vec3.ZERO;
+            return null;
         }
 
         Map<String, Vec3> positions = BONE_POSITIONS.get(dragon.getId());
 
         if (positions == null) {
-            return Vec3.ZERO;
+            return null;
         }
 
-        return positions.getOrDefault(name, Vec3.ZERO);
+        return positions.get(name);
     }
 
     @Override
     public void preRender(final PoseStack poseStack, final DragonEntity animatable, final BakedGeoModel model, final MultiBufferSource bufferSource, final VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
         Minecraft.getInstance().getProfiler().push("player_dragon");
         Player player = animatable.getPlayer();
+
+        BONES.forEach(name -> model.getBone(name).ifPresent(bone -> bone.setTrackingMatrices(true)));
 
         resetNeckVisibility = model.getBone("Neck").map(bone -> {
             if (bone.isHidden()) {
@@ -121,13 +130,16 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
             resetNeckVisibility = false;
         }
 
-        // Need to store the positions per entity ourselves
-        // Since the model is a singleton, and it stores the bones
-        BONES.forEach(name -> model.getBone(name).ifPresent(bone -> {
-            Vector3d worldPosition = bone.getWorldPosition();
-            Vec3 position = new Vec3(worldPosition.x(), worldPosition.y(), worldPosition.z()).subtract(getModelOffset(animatable, 1));
-            BONE_POSITIONS.computeIfAbsent(animatable.getId(), key -> new HashMap<>()).put(bone.getName(), position);
-        }));
+        if (!animatable.isInInventory) {
+            // Need to store the positions per entity ourselves since the model and its bones are singletons.
+            Map<String, Vec3> positions = BONE_POSITIONS.computeIfAbsent(animatable.getId(), key -> new HashMap<>());
+
+            BONES.forEach(name -> model.getBone(name).ifPresentOrElse(bone -> {
+                Vector3d worldPosition = bone.getWorldPosition();
+                Vec3 position = new Vec3(worldPosition.x(), worldPosition.y(), worldPosition.z()).subtract(getModelOffset(animatable, 1));
+                positions.put(bone.getName(), position);
+            }, () -> positions.remove(name)));
+        }
 
         Minecraft.getInstance().getProfiler().pop();
     }

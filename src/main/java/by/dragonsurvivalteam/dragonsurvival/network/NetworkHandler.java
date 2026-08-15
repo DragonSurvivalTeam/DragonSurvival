@@ -65,6 +65,7 @@ import by.dragonsurvivalteam.dragonsurvival.network.player.SyncDragonPassengerID
 import by.dragonsurvivalteam.dragonsurvival.network.player.SyncGrowth;
 import by.dragonsurvivalteam.dragonsurvival.network.player.SyncGrowthState;
 import by.dragonsurvivalteam.dragonsurvival.network.player.SyncLargeDragonDestruction;
+import by.dragonsurvivalteam.dragonsurvival.network.player.SyncMountingBonePosition;
 import by.dragonsurvivalteam.dragonsurvival.network.player.SyncPitchAndYaw;
 import by.dragonsurvivalteam.dragonsurvival.network.sound.StartTickingSound;
 import by.dragonsurvivalteam.dragonsurvival.network.sound.StopTickingSound;
@@ -121,6 +122,7 @@ public class NetworkHandler {
         registrar.playToServer(RequestOpenDragonInventory.TYPE, RequestOpenDragonInventory.STREAM_CODEC, RequestOpenDragonInventory::handleServer);
         registrar.playToServer(RequestOpenVanillaInventory.TYPE, RequestOpenVanillaInventory.STREAM_CODEC, RequestOpenVanillaInventory::handleServer);
         registrar.playToServer(SyncLargeDragonDestruction.TYPE, SyncLargeDragonDestruction.STREAM_CODEC, SyncLargeDragonDestruction::handleServer);
+        registrar.playToServer(SyncMountingBonePosition.TYPE, SyncMountingBonePosition.STREAM_CODEC, SyncMountingBonePosition::handleServer);
         registrar.playToServer(RequestDragonSoulData.TYPE, RequestDragonSoulData.STREAM_CODEC, RequestDragonSoulData::handleServer);
 
         registrar.playBidirectional(OpenDragonEditor.TYPE, OpenDragonEditor.STREAM_CODEC, new DirectionalPayloadHandler<>(OpenDragonEditor::handleClient, OpenDragonEditor::handleServer));
@@ -224,7 +226,6 @@ public class NetworkHandler {
                 .add();
         initialized = true;
     }
-
     public static void send(
             final net.minecraftforge.network.PacketDistributor.PacketTarget target,
             final CustomPacketPayload payload
