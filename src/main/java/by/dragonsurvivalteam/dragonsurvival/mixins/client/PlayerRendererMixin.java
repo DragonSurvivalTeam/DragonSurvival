@@ -1,15 +1,14 @@
 package by.dragonsurvivalteam.dragonsurvival.mixins.client;
 
 import by.dragonsurvivalteam.dragonsurvival.client.render.entity.dragon.DragonRenderer;
-import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.HunterHandler;
 import by.dragonsurvivalteam.dragonsurvival.server.handlers.DragonRidingHandler;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.player.PlayerModel;
 import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.player.AvatarRenderer;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
@@ -50,28 +49,22 @@ public abstract class PlayerRendererMixin {
             && minecraft.level.getEntity(state.id) instanceof Player rider
             && rider.getVehicle() instanceof Player mount
             && DragonStateProvider.isDragon(mount)) {
-            DragonStateHandler handler = DragonStateProvider.getData(mount);
+            Vec3 positionCorrection = DragonRenderer.getMountingBonePositionCorrection(rider, state.partialTick);
 
-            if (handler.body().value().mountingOffsets().isEmpty() && !handler.body().value().noDragonModelRendering()) {
-                Vec3 mountingOffset = DragonRenderer.getBoneOffsetOrNull(mount, DragonRidingHandler.MOUNTING_BONE);
+            if (positionCorrection != null) {
                 Quaternionf rotation = DragonRenderer.getBoneRotationOrNull(mount, DragonRidingHandler.MOUNTING_BONE);
+                Vec3 pivot = rider.getVehicleAttachmentPoint(mount);
 
-                if (mountingOffset != null) {
-                    Vec3 pivot = rider.getVehicleAttachmentPoint(mount);
-                    Vec3 targetRiderPosition = mount.getPosition(state.partialTick).add(mountingOffset).subtract(pivot);
-                    Vec3 positionCorrection = targetRiderPosition.subtract(rider.getPosition(state.partialTick));
+                poseStack.pushPose();
+                poseStack.translate(positionCorrection.x(), positionCorrection.y(), positionCorrection.z());
 
-                    poseStack.pushPose();
-                    poseStack.translate(positionCorrection.x(), positionCorrection.y(), positionCorrection.z());
-
-                    if (rotation != null) {
-                        poseStack.translate(pivot.x(), pivot.y(), pivot.z());
-                        poseStack.mulPose(rotation);
-                        poseStack.translate(-pivot.x(), -pivot.y(), -pivot.z());
-                    }
-
-                    changedPose = true;
+                if (rotation != null) {
+                    poseStack.translate(pivot.x(), pivot.y(), pivot.z());
+                    poseStack.mulPose(rotation);
+                    poseStack.translate(-pivot.x(), -pivot.y(), -pivot.z());
                 }
+
+                changedPose = true;
             }
         }
 

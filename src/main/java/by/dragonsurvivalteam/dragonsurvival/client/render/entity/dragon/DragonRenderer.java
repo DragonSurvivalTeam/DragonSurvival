@@ -1035,6 +1035,26 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
         return tick - startTick + 200;
     }
 
+    public static @Nullable Vec3 getMountingBonePositionCorrection(final Player rider, final float partialTick) {
+        if (!(rider.getVehicle() instanceof Player mount) || !DragonStateProvider.isDragon(mount)) {
+            return null;
+        }
+
+        DragonStateHandler handler = DragonStateProvider.getData(mount);
+        if (handler.body().value().mountingOffsets().isPresent() || handler.body().value().noDragonModelRendering()) {
+            return null;
+        }
+
+        Vec3 mountingOffset = getBoneOffsetOrNull(mount, DragonRidingHandler.MOUNTING_BONE);
+        if (mountingOffset == null) {
+            return null;
+        }
+
+        Vec3 pivot = rider.getVehicleAttachmentPoint(mount);
+        Vec3 targetRiderPosition = mount.getPosition(partialTick).add(mountingOffset).subtract(pivot);
+        return targetRiderPosition.subtract(rider.getPosition(partialTick));
+    }
+
     public static @Nullable Vec3 getBonePositionOrNull(final Player player, final String name) {
         DragonEntity dragon = getDragonWithFreshBoneData(player, name);
 
