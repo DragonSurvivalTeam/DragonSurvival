@@ -89,7 +89,7 @@ public class ClientProxy implements Proxy {
 
     @Override
     public void setCurrentAbilityAnimation(final Player player, final Pair<AbilityAnimation, AnimationType> animation) {
-        DragonEntity dragon = ClientDragonRenderer.getDragon(player);
+        DragonEntity dragon = animation == null ? ClientDragonRenderer.getDragon(player) : ClientDragonRenderer.getOrCreateDragon(player);
 
         if (dragon == null) {
             return;
