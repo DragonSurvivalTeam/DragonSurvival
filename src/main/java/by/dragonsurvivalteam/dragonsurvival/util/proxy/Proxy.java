@@ -76,6 +76,14 @@ public interface Proxy {
         return null;
     }
 
+    default @Nullable Vec3 getDragonBoneOffset(final Player player, final String boneName) {
+        return null;
+    }
+
+    default boolean isDragonBonePositionFresh(final Player player, final String boneName) {
+        return false;
+    }
+
     default boolean updateDragonSoulBlockAnimation(final DragonSoulBlockEntity soul, final String animation) {
         return false;
     }

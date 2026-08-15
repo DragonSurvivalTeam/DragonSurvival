@@ -79,6 +79,7 @@ public class DragonStateHandler extends EntityStateHandler {
 
     private static final double AGE_LERP_SPEED = 0.1; // 10% per tick
     private static final double AGE_EPSILON = 0.01;
+    private static final int MOUNTING_BONE_MOUNT_SOURCE_GRACE_TICKS = 2;
 
     public MultiMining multiMining = MultiMining.ENABLED;
     public LargeDragonDestruction largeDragonDestruction = LargeDragonDestruction.ENABLED;
@@ -114,6 +115,8 @@ public class DragonStateHandler extends EntityStateHandler {
 
     private int passengerId = DragonRidingHandler.NO_PASSENGER;
     private @Nullable Vec3 mountingBoneOffset;
+    private long mountingBoneOffsetUpdateTick = Long.MIN_VALUE;
+    private boolean mountingBoneOffsetFromMount;
     private double growth = NO_GROWTH;
     private double visualGrowth = NO_GROWTH;
     private double visualGrowthLastTick = NO_GROWTH;
@@ -469,7 +472,7 @@ public class DragonStateHandler extends EntityStateHandler {
         boolean isSameBody = DragonUtils.isBody(oldBody, this.dragonBody);
 
         if (!isSameBody) {
-            mountingBoneOffset = null;
+            clearMountingBoneOffset();
         }
 
         if (this.dragonBody != null && !isSameBody) {
@@ -505,7 +508,7 @@ public class DragonStateHandler extends EntityStateHandler {
 
     public void setPassengerId(int passengerId) {
         if (this.passengerId != passengerId) {
-            mountingBoneOffset = null;
+            clearMountingBoneOffset();
         }
 
         this.passengerId = passengerId;
@@ -515,8 +518,24 @@ public class DragonStateHandler extends EntityStateHandler {
         return mountingBoneOffset;
     }
 
-    public void setMountingBoneOffset(final Vec3 mountingBoneOffset) {
+    public void updateMountingBoneOffset(final Vec3 mountingBoneOffset, long updateTick, boolean fromMount) {
+        // The mount's sample shares a connection and timeline with its movement packets. Keep it ahead of the rider's delayed view.
+        if (!fromMount && mountingBoneOffsetFromMount) {
+            long mountSampleAge = updateTick - mountingBoneOffsetUpdateTick;
+            if (mountSampleAge >= 0 && mountSampleAge <= MOUNTING_BONE_MOUNT_SOURCE_GRACE_TICKS) {
+                return;
+            }
+        }
+
         this.mountingBoneOffset = mountingBoneOffset;
+        this.mountingBoneOffsetUpdateTick = updateTick;
+        this.mountingBoneOffsetFromMount = fromMount;
+    }
+
+    private void clearMountingBoneOffset() {
+        mountingBoneOffset = null;
+        mountingBoneOffsetUpdateTick = Long.MIN_VALUE;
+        mountingBoneOffsetFromMount = false;
     }
 
     public double getVisualScale(final Player player, float partialTick) {

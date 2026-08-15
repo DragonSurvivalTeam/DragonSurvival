@@ -40,7 +40,9 @@ import java.util.Map;
 
 public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
     public static final Map<Integer, Map<String, Vec3>> BONE_POSITIONS = new HashMap<>();
+    private static final Map<Integer, Map<String, Vec3>> BONE_OFFSETS = new HashMap<>();
     private static final Map<Integer, Map<String, Quaternionf>> BONE_ROTATIONS = new HashMap<>();
+    private static final Map<Integer, Map<String, Long>> BONE_UPDATE_TICKS = new HashMap<>();
     private static final List<String> BONES = List.of("BreathSource", DragonRidingHandler.MOUNTING_BONE);
 
     private static final Color RENDER_COLOR = Color.ofRGB(255, 255, 255);
@@ -95,6 +97,40 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
         return positions.get(name);
     }
 
+    public static @Nullable Vec3 getBoneOffsetOrNull(final Player player, final String name) {
+        DragonEntity dragon = ClientDragonRenderer.getDragon(player);
+
+        if (dragon == null) {
+            return null;
+        }
+
+        Map<String, Vec3> offsets = BONE_OFFSETS.get(dragon.getId());
+
+        if (offsets == null) {
+            return null;
+        }
+
+        return offsets.get(name);
+    }
+
+    public static boolean isBonePositionFresh(final Player player, final String name) {
+        DragonEntity dragon = ClientDragonRenderer.getDragon(player);
+
+        if (dragon == null) {
+            return false;
+        }
+
+        Map<String, Long> updateTicks = BONE_UPDATE_TICKS.get(dragon.getId());
+        Long updateTick = updateTicks == null ? null : updateTicks.get(name);
+
+        if (updateTick == null) {
+            return false;
+        }
+
+        long age = dragon.level().getGameTime() - updateTick;
+        return age >= 0 && age <= 1;
+    }
+
     public static @Nullable Quaternionf getBoneRotationOrNull(final Player player, final String name) {
         DragonEntity dragon = ClientDragonRenderer.getDragon(player);
 
@@ -114,12 +150,16 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
 
     public static void removeBoneData(int dragonId) {
         BONE_POSITIONS.remove(dragonId);
+        BONE_OFFSETS.remove(dragonId);
         BONE_ROTATIONS.remove(dragonId);
+        BONE_UPDATE_TICKS.remove(dragonId);
     }
 
     public static void clearBoneData() {
         BONE_POSITIONS.clear();
+        BONE_OFFSETS.clear();
         BONE_ROTATIONS.clear();
+        BONE_UPDATE_TICKS.clear();
     }
 
     @Override
@@ -162,12 +202,16 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
         if (!animatable.isInInventory) {
             // Need to store the positions per entity ourselves since the model and its bones are singletons.
             Map<String, Vec3> positions = BONE_POSITIONS.computeIfAbsent(animatable.getId(), key -> new HashMap<>());
+            Map<String, Vec3> offsets = BONE_OFFSETS.computeIfAbsent(animatable.getId(), key -> new HashMap<>());
             Map<String, Quaternionf> rotations = BONE_ROTATIONS.computeIfAbsent(animatable.getId(), key -> new HashMap<>());
+            Map<String, Long> updateTicks = BONE_UPDATE_TICKS.computeIfAbsent(animatable.getId(), key -> new HashMap<>());
 
             BONES.forEach(name -> model.getBone(name).ifPresentOrElse(bone -> {
                 Vector3d worldPosition = bone.getWorldPosition();
                 Vec3 position = new Vec3(worldPosition.x(), worldPosition.y(), worldPosition.z()).subtract(getModelOffset(animatable, 1));
                 positions.put(bone.getName(), position);
+                offsets.put(bone.getName(), position.subtract(animatable.position()));
+                updateTicks.put(bone.getName(), animatable.level().getGameTime());
 
                 Quaternionf rotation = calculateBoneTilt(bone.getWorldSpaceMatrix());
                 if (rotation == null) {
@@ -177,7 +221,9 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
                 }
             }, () -> {
                 positions.remove(name);
+                offsets.remove(name);
                 rotations.remove(name);
+                updateTicks.remove(name);
             }));
         }
 
