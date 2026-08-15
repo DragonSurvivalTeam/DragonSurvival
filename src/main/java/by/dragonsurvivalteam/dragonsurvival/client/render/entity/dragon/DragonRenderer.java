@@ -25,7 +25,10 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix4fc;
+import org.joml.Quaternionf;
 import org.joml.Vector3d;
+import org.joml.Vector3f;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.model.GeoModel;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
@@ -37,6 +40,7 @@ import java.util.Map;
 
 public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
     public static final Map<Integer, Map<String, Vec3>> BONE_POSITIONS = new HashMap<>();
+    private static final Map<Integer, Map<String, Quaternionf>> BONE_ROTATIONS = new HashMap<>();
     private static final List<String> BONES = List.of("BreathSource", DragonRidingHandler.MOUNTING_BONE);
 
     private static final Color RENDER_COLOR = Color.ofRGB(255, 255, 255);
@@ -91,6 +95,33 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
         return positions.get(name);
     }
 
+    public static @Nullable Quaternionf getBoneRotationOrNull(final Player player, final String name) {
+        DragonEntity dragon = ClientDragonRenderer.getDragon(player);
+
+        if (dragon == null) {
+            return null;
+        }
+
+        Map<String, Quaternionf> rotations = BONE_ROTATIONS.get(dragon.getId());
+
+        if (rotations == null) {
+            return null;
+        }
+
+        Quaternionf rotation = rotations.get(name);
+        return rotation == null ? null : new Quaternionf(rotation);
+    }
+
+    public static void removeBoneData(int dragonId) {
+        BONE_POSITIONS.remove(dragonId);
+        BONE_ROTATIONS.remove(dragonId);
+    }
+
+    public static void clearBoneData() {
+        BONE_POSITIONS.clear();
+        BONE_ROTATIONS.clear();
+    }
+
     @Override
     public void preRender(final PoseStack poseStack, final DragonEntity animatable, final BakedGeoModel model, final MultiBufferSource bufferSource, final VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, int color) {
         Minecraft.getInstance().getProfiler().push("player_dragon");
@@ -131,12 +162,23 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
         if (!animatable.isInInventory) {
             // Need to store the positions per entity ourselves since the model and its bones are singletons.
             Map<String, Vec3> positions = BONE_POSITIONS.computeIfAbsent(animatable.getId(), key -> new HashMap<>());
+            Map<String, Quaternionf> rotations = BONE_ROTATIONS.computeIfAbsent(animatable.getId(), key -> new HashMap<>());
 
             BONES.forEach(name -> model.getBone(name).ifPresentOrElse(bone -> {
                 Vector3d worldPosition = bone.getWorldPosition();
                 Vec3 position = new Vec3(worldPosition.x(), worldPosition.y(), worldPosition.z()).subtract(getModelOffset(animatable, 1));
                 positions.put(bone.getName(), position);
-            }, () -> positions.remove(name)));
+
+                Quaternionf rotation = calculateBoneTilt(bone.getWorldSpaceMatrix());
+                if (rotation == null) {
+                    rotations.remove(name);
+                } else {
+                    rotations.put(bone.getName(), rotation);
+                }
+            }, () -> {
+                positions.remove(name);
+                rotations.remove(name);
+            }));
         }
 
         Minecraft.getInstance().getProfiler().pop();
@@ -178,12 +220,35 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
 
         pose.mulPose(Axis.YN.rotationDegrees((float) movement.bodyYaw));
 
-        if (ServerFlightHandler.isGliding(player) || (player.isPassenger() && DragonStateProvider.isDragon(player.getVehicle()) && ServerFlightHandler.isGliding((Player) player.getVehicle()))) {
+        boolean useLegacyPassengerRotation = player.getVehicle() instanceof Player vehicle
+                && DragonStateProvider.isDragon(vehicle)
+                && DragonStateProvider.getData(vehicle).body().value().mountingOffsets().isPresent()
+                && ServerFlightHandler.isGliding(vehicle);
+
+        if (ServerFlightHandler.isGliding(player) || useLegacyPassengerRotation) {
             // Responsible for the pitch (rotating entity downward / upward)
             pose.mulPose(Axis.XN.rotationDegrees(dragon.prevXRot));
             // Responsible for the roll (rotating entity to the side)
             pose.mulPose(Axis.ZP.rotation(dragon.prevZRot));
         }
+    }
+
+    static @Nullable Quaternionf calculateBoneTilt(final Matrix4fc boneTransform) {
+        Vector3f up = boneTransform.transformDirection(new Vector3f(0, 1, 0));
+        float lengthSquared = up.lengthSquared();
+
+        if (!Float.isFinite(lengthSquared) || lengthSquared < 1.0E-8F) {
+            return null;
+        }
+
+        up.div((float) Math.sqrt(lengthSquared));
+        Quaternionf rotation = new Quaternionf().rotationTo(0, 1, 0, up.x(), up.y(), up.z());
+
+        if (!Float.isFinite(rotation.x()) || !Float.isFinite(rotation.y()) || !Float.isFinite(rotation.z()) || !Float.isFinite(rotation.w())) {
+            return null;
+        }
+
+        return rotation.normalize();
     }
 
     private Vec3 getModelOffset(final DragonEntity dragon, float partialTicks) {
