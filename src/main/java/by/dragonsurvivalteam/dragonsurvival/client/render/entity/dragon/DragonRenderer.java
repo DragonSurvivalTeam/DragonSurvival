@@ -35,6 +35,7 @@ import com.geckolib.renderer.base.GeoRenderState;
 import com.geckolib.renderer.base.RenderPassInfo;
 import com.geckolib.util.RenderUtil;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.SubmitNodeCollector;
@@ -90,6 +91,48 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
 
     private static final int RENDER_COLOR = ARGB.color(255, 255, 255);
     private static final int TRANSPARENT_RENDER_COLOR = ARGB.colorFromFloat(HunterHandler.MIN_ALPHA, 1, 1, 1);
+
+    private static final VertexConsumer BONE_CALCULATION_BUFFER = new VertexConsumer() {
+        @Override
+        public VertexConsumer addVertex(float x, float y, float z) {
+            return this;
+        }
+
+        @Override
+        public VertexConsumer setColor(int red, int green, int blue, int alpha) {
+            return this;
+        }
+
+        @Override
+        public VertexConsumer setColor(int color) {
+            return this;
+        }
+
+        @Override
+        public VertexConsumer setUv(float u, float v) {
+            return this;
+        }
+
+        @Override
+        public VertexConsumer setUv1(int u, int v) {
+            return this;
+        }
+
+        @Override
+        public VertexConsumer setUv2(int u, int v) {
+            return this;
+        }
+
+        @Override
+        public VertexConsumer setNormal(float normalX, float normalY, float normalZ) {
+            return this;
+        }
+
+        @Override
+        public VertexConsumer setLineWidth(float width) {
+            return this;
+        }
+    };
 
     /** Factor to multiply the delta yaw and pitch by, needed for scaling for the animations */
     private static final double DELTA_YAW_PITCH_FACTOR = 0.2;
@@ -846,7 +889,7 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
             }, () -> {
                 BONE_POSITIONS.computeIfAbsent(renderData.dragonId(), key -> new HashMap<>()).remove(name);
                 BONE_OFFSETS.computeIfAbsent(renderData.dragonId(), key -> new HashMap<>()).remove(name);
-                BONE_UPDATE_TICKS.computeIfAbsent(renderData.dragonId(), key -> new HashMap<>()).remove(name);
+                BONE_UPDATE_TICKS.computeIfAbsent(renderData.dragonId(), key -> new HashMap<>()).put(name, renderData.dragon().level().getGameTime());
             }));
         };
 
@@ -992,18 +1035,8 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
         return tick - startTick + 200;
     }
 
-    /**
-     * Note: Position does not work in first person <br>
-     * - GeckoLib cannot update the bone positions if ClientDragonRenderer#renderInFirstPerson is not enabled <br>
-     * - Even if it is enabled the position won't be correct - unsure as to why
-     */
-    public static Vec3 getBonePosition(final Player player, final String name) {
-        Vec3 position = getBonePositionOrNull(player, name);
-        return position == null ? Vec3.ZERO : position;
-    }
-
     public static @Nullable Vec3 getBonePositionOrNull(final Player player, final String name) {
-        DragonEntity dragon = ClientDragonRenderer.getDragon(player);
+        DragonEntity dragon = getDragonWithFreshBoneData(player, name);
 
         if (dragon == null) {
             return null;
@@ -1019,7 +1052,7 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
     }
 
     public static @Nullable Vec3 getBoneOffsetOrNull(final Player player, final String name) {
-        DragonEntity dragon = ClientDragonRenderer.getDragon(player);
+        DragonEntity dragon = getDragonWithFreshBoneData(player, name);
 
         if (dragon == null) {
             return null;
@@ -1037,10 +1070,21 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
     public static boolean isBonePositionFresh(final Player player, final String name) {
         DragonEntity dragon = ClientDragonRenderer.getDragon(player);
 
-        if (dragon == null) {
-            return false;
+        return dragon != null && hasFreshBoneData(dragon, name);
+    }
+
+    private static @Nullable DragonEntity getDragonWithFreshBoneData(final Player player, final String name) {
+        DragonEntity dragon = ClientDragonRenderer.getDragon(player);
+
+        if (dragon == null || !hasFreshBoneData(dragon, name)) {
+            ClientDragonRenderer.updateDragonBoneData(player);
+            dragon = ClientDragonRenderer.getDragon(player);
         }
 
+        return dragon;
+    }
+
+    private static boolean hasFreshBoneData(final DragonEntity dragon, final String name) {
         Map<String, Long> updateTicks = BONE_UPDATE_TICKS.get(dragon.getId());
         Long updateTick = updateTicks == null ? null : updateTicks.get(name);
 
@@ -1049,11 +1093,11 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
         }
 
         long age = dragon.level().getGameTime() - updateTick;
-        return age >= 0 && age <= 1;
+        return age == 0;
     }
 
     public static @Nullable Quaternionf getBoneRotationOrNull(final Player player, final String name) {
-        DragonEntity dragon = ClientDragonRenderer.getDragon(player);
+        DragonEntity dragon = getDragonWithFreshBoneData(player, name);
 
         if (dragon == null) {
             return null;
@@ -1069,12 +1113,51 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
         return rotation == null ? null : new Quaternionf(rotation);
     }
 
+    public void calculateBoneTransforms(final DragonEntity dragon, final float partialTick) {
+        R renderState = createRenderState(dragon, partialTick);
+        DragonRenderData renderData = renderState.getGeckolibData(DRAGON_RENDER_DATA);
+
+        if (renderData == null || renderData.player() == null || renderData.spectator()) {
+            return;
+        }
+
+        PoseStack poseStack = new PoseStack();
+        poseStack.pushPose();
+        setupRender(renderData, poseStack);
+        poseStack.pushPose();
+
+        RenderType renderType = getRenderType(renderState, getTextureLocation(renderState));
+        CameraRenderState cameraState = Minecraft.getInstance().gameRenderer.getGameRenderState().levelRenderState.cameraRenderState;
+        RenderPassInfo<R> renderPassInfo = RenderPassInfo.create(this, renderState, poseStack, cameraState, renderType != null);
+
+        try {
+            preRenderPass(renderPassInfo, null);
+            scaleModelForRender(renderPassInfo, 1, 1);
+            adjustRenderPose(renderPassInfo);
+            renderPassInfo.captureModelRenderPose();
+            renderPassInfo.renderPosed(() -> renderPassInfo.model().render(
+                renderPassInfo,
+                BONE_CALCULATION_BUFFER,
+                renderPassInfo.packedLight(),
+                renderPassInfo.packedOverlay(),
+                renderPassInfo.renderColor()
+            ));
+        } finally {
+            finishRenderPass(renderData);
+            poseStack.popPose();
+            poseStack.popPose();
+        }
+    }
+
     @Override
     public void postRenderPass(@NotNull RenderPassInfo<@NotNull R> renderPassInfo, @NotNull SubmitNodeCollector renderTasks) {
         super.postRenderPass(renderPassInfo, renderTasks);
 
         DragonRenderData renderData = renderPassInfo.getGeckolibData(DRAGON_RENDER_DATA);
+        finishRenderPass(renderData);
+    }
 
+    private static void finishRenderPass(final @Nullable DragonRenderData renderData) {
         if (renderData == null || renderData.handler() == null) {
             return;
         }

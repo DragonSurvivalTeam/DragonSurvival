@@ -307,11 +307,7 @@ public class ClientDragonRenderer {
         var cameraRenderState = Minecraft.getInstance().gameRenderer.getGameRenderState().levelRenderState.cameraRenderState;
 
         if (player != Minecraft.getInstance().player || !Minecraft.getInstance().options.getCameraType().isFirstPerson() || !ServerFlightHandler.isGliding(player) || renderFirstPersonFlight) {
-            ClientDragonRenderer.setDragonMovementData(player, Minecraft.getInstance().getDeltaTracker().getRealtimeDeltaTicks());
-
-            MovementData movement = MovementData.getData(player);
-            handleFlightMovement(player, dragon, movement, partialTick);
-            syncDragonRenderState(player, dragon);
+            prepareDragonRenderState(player, dragon, partialTick);
 
             var dispatcher = Minecraft.getInstance().getEntityRenderDispatcher();
             try {
@@ -345,6 +341,30 @@ public class ClientDragonRenderer {
                 event.setCanceled(false);
             }
         }
+    }
+
+    public static void updateDragonBoneData(final Player player) {
+        DragonStateHandler handler = DragonStateProvider.getData(player);
+
+        if (!handler.isDragon() || handler.body().value().noDragonModelRendering()) {
+            return;
+        }
+
+        DragonEntity dragon = getOrCreateDragon(player);
+        float partialTick = Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(false);
+        prepareDragonRenderState(player, dragon, partialTick);
+
+        if (Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(dragon) instanceof DragonRenderer renderer) {
+            renderer.calculateBoneTransforms(dragon, partialTick);
+        }
+    }
+
+    private static void prepareDragonRenderState(final Player player, final DragonEntity dragon, final float partialTick) {
+        setDragonMovementData(player, Minecraft.getInstance().getDeltaTracker().getRealtimeDeltaTicks());
+
+        MovementData movement = MovementData.getData(player);
+        handleFlightMovement(player, dragon, movement, partialTick);
+        syncDragonRenderState(player, dragon);
     }
 
     private static void syncDragonRenderState(final Player player, final DragonEntity dragon) {
