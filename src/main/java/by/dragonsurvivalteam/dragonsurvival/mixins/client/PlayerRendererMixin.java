@@ -36,7 +36,7 @@ public abstract class PlayerRendererMixin {
     @Unique private final Deque<Boolean> dragonSurvival$mountingBonePoseChanges = new ArrayDeque<>();
 
     @Inject(method = "submit", at = @At("HEAD"))
-    private void dragonSurvival$applyMountingBoneRotation(
+    private void dragonSurvival$applyMountingBoneTransform(
         final AvatarRenderState state,
         final PoseStack poseStack,
         final SubmitNodeCollector submitNodeCollector,
@@ -53,14 +53,24 @@ public abstract class PlayerRendererMixin {
             DragonStateHandler handler = DragonStateProvider.getData(mount);
 
             if (handler.body().value().mountingOffsets().isEmpty() && !handler.body().value().noDragonModelRendering()) {
+                Vec3 mountingPosition = DragonRenderer.getBonePositionOrNull(mount, DragonRidingHandler.MOUNTING_BONE);
                 Quaternionf rotation = DragonRenderer.getBoneRotationOrNull(mount, DragonRidingHandler.MOUNTING_BONE);
 
-                if (rotation != null) {
+                if (mountingPosition != null) {
                     Vec3 pivot = rider.getVehicleAttachmentPoint(mount);
+                    Vec3 mountingOffset = mountingPosition.subtract(mount.position());
+                    Vec3 targetRiderPosition = mount.getPosition(state.partialTick).add(mountingOffset).subtract(pivot);
+                    Vec3 positionCorrection = targetRiderPosition.subtract(rider.getPosition(state.partialTick));
+
                     poseStack.pushPose();
-                    poseStack.translate(pivot.x(), pivot.y(), pivot.z());
-                    poseStack.mulPose(rotation);
-                    poseStack.translate(-pivot.x(), -pivot.y(), -pivot.z());
+                    poseStack.translate(positionCorrection.x(), positionCorrection.y(), positionCorrection.z());
+
+                    if (rotation != null) {
+                        poseStack.translate(pivot.x(), pivot.y(), pivot.z());
+                        poseStack.mulPose(rotation);
+                        poseStack.translate(-pivot.x(), -pivot.y(), -pivot.z());
+                    }
+
                     changedPose = true;
                 }
             }
