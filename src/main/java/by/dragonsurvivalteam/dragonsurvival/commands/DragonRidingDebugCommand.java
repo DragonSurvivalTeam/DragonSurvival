@@ -8,6 +8,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.mixins.EntityAccessor;
 import by.dragonsurvivalteam.dragonsurvival.network.syncing.SyncComplete;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
@@ -54,7 +55,7 @@ public class DragonRidingDebugCommand {
 
     public static void register(final RegisterCommandsEvent event) {
         LiteralCommandNode<CommandSourceStack> command = Commands.literal(COMMAND)
-                .requires(source -> source.hasPermission(Commands.LEVEL_GAMEMASTERS))
+                .requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
                 .build();
         LiteralCommandNode<CommandSourceStack> start = Commands.literal("start")
                 .executes(context -> start(context.getSource(), null, null, null))
@@ -90,10 +91,10 @@ public class DragonRidingDebugCommand {
             return 0;
         }
 
-        ServerLevel level = owner.serverLevel();
+        ServerLevel level = owner.level();
         GameProfile profile = new GameProfile(createProfileId(owner.getUUID()), createProfileName(owner));
         FakePlayer rider = new FakePlayer(level, profile);
-        rider.moveTo(owner.getX(), owner.getY(), owner.getZ(), owner.getYRot(), owner.getXRot());
+        rider.snapTo(owner.getX(), owner.getY(), owner.getZ(), owner.getYRot(), owner.getXRot());
         configureDragon(rider, species, body, stage);
 
         forceMount(rider, owner);
@@ -107,10 +108,10 @@ public class DragonRidingDebugCommand {
         }
 
         ACTIVE_RIDERS.put(owner.getUUID(), rider);
-        level.getChunkSource().broadcastAndSend(owner, new ClientboundSetPassengersPacket(owner));
+        level.getChunkSource().sendToTrackingPlayersAndSelf(owner, new ClientboundSetPassengersPacket(owner));
 
         DragonStateHandler handler = DragonStateProvider.getData(rider);
-        PacketDistributor.sendToPlayersTrackingEntityAndSelf(rider, new SyncComplete(rider.getId(), handler.serializeNBT(rider.registryAccess())));
+        PacketDistributor.sendToPlayersTrackingEntityAndSelf(rider, new SyncComplete(rider.getId(), DSDataAttachments.serializeToCompoundTag(handler, rider.registryAccess())));
 
         String form = handler.isDragon() ? "dragon" : "human";
         source.sendSuccess(() -> Component.literal("Spawned a " + form + " riding debug player."), false);
@@ -132,7 +133,7 @@ public class DragonRidingDebugCommand {
         }
 
         forceDismount(rider);
-        PENDING_REMOVALS.put(ownerId, new PendingRemoval(rider, owner.getServer().getTickCount() + REMOVAL_DELAY_TICKS));
+        PENDING_REMOVALS.put(ownerId, new PendingRemoval(rider, owner.level().getServer().getTickCount() + REMOVAL_DELAY_TICKS));
         source.sendSuccess(() -> Component.literal("Dismounted the riding debug player; it will be removed in 1.5 seconds."), false);
         return 1;
     }
@@ -172,7 +173,7 @@ public class DragonRidingDebugCommand {
         ((EntityAccessor) vehicle).dragonSurvival$removePassenger(rider);
 
         if (vehicle.level() instanceof ServerLevel level) {
-            level.getChunkSource().broadcastAndSend(vehicle, new ClientboundSetPassengersPacket(vehicle));
+            level.getChunkSource().sendToTrackingPlayersAndSelf(vehicle, new ClientboundSetPassengersPacket(vehicle));
         }
     }
 
@@ -193,7 +194,7 @@ public class DragonRidingDebugCommand {
         if (!rider.isRemoved()) {
             rider.discard();
         }
-        removePlayerInfo(rider.serverLevel().getServer(), rider);
+        removePlayerInfo(rider.level().getServer(), rider);
     }
 
     private static UUID createProfileId(final UUID ownerId) {
@@ -202,7 +203,7 @@ public class DragonRidingDebugCommand {
     }
 
     private static String createProfileName(final ServerPlayer owner) {
-        String name = "DSRider_" + owner.getGameProfile().getName();
+        String name = "DSRider_" + owner.getGameProfile().name();
         return name.substring(0, Math.min(name.length(), 16));
     }
 

@@ -33,6 +33,7 @@ import com.geckolib.renderer.GeoEntityRenderer;
 import com.geckolib.renderer.base.BoneSnapshots;
 import com.geckolib.renderer.base.GeoRenderState;
 import com.geckolib.renderer.base.RenderPassInfo;
+import com.geckolib.util.RenderUtil;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
@@ -58,6 +59,9 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RenderFrameEvent;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Matrix4fc;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 import org.joml.Vector4f;
 import org.jspecify.annotations.Nullable;
 
@@ -72,6 +76,7 @@ import java.util.function.ToDoubleFunction;
 @EventBusSubscriber(Dist.CLIENT)
 public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> extends GeoEntityRenderer<DragonEntity, R> {
     public static final Map<Integer, Map<String, Vec3>> BONE_POSITIONS = new HashMap<>();
+    private static final Map<Integer, Map<String, Quaternionf>> BONE_ROTATIONS = new HashMap<>();
     private static final List<String> BONES = List.of("BreathSource", DragonRidingHandler.MOUNTING_BONE);
     private static final Map<Integer, DragonAnimationState> ANIMATION_STATES = new HashMap<>();
     private static final Map<Long, Map<String, BonePose>> LAST_RENDERED_BONE_POSES = new HashMap<>();
@@ -582,11 +587,13 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
 
     public static void clearRenderState(final int dragonId) {
         BONE_POSITIONS.remove(dragonId);
+        BONE_ROTATIONS.remove(dragonId);
         clearAnimationState(dragonId);
     }
 
     public static void clearRenderStates() {
         BONE_POSITIONS.clear();
+        BONE_ROTATIONS.clear();
         clearAnimationStates();
         UI_RENDER_DRAGONS.clear();
     }
@@ -843,6 +850,7 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
 
         if (!renderData.inUI()) {
             renderPassInfo.addBoneUpdater((renderPassInfoForBones, snapshots) -> smoothInterruptedAnimationTransition(renderData, renderPassInfoForBones, snapshots));
+            renderPassInfo.addBoneUpdater((renderPassInfoForBones, snapshots) -> updateBoneRotations(renderData, snapshots));
         }
 
         super.preRenderPass(renderPassInfo, renderTasks);
@@ -904,6 +912,25 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
 
             renderedPoses.put(boneName, currentPose);
         }));
+    }
+
+    private void updateBoneRotations(final DragonRenderData renderData, final BoneSnapshots snapshots) {
+        Map<String, Quaternionf> rotations = BONE_ROTATIONS.computeIfAbsent(renderData.dragonId(), key -> new HashMap<>());
+
+        for (String name : BONES) {
+            snapshots.get(name).ifPresentOrElse(snapshot -> {
+                PoseStack bonePose = new PoseStack();
+                setupRender(renderData, bonePose);
+                RenderUtil.transformToBone(bonePose, snapshot.getBone());
+
+                Quaternionf rotation = calculateBoneTilt(bonePose.last().pose());
+                if (rotation == null) {
+                    rotations.remove(name);
+                } else {
+                    rotations.put(name, rotation);
+                }
+            }, () -> rotations.remove(name));
+        }
     }
 
     @Override
@@ -979,6 +1006,23 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
         return positions.get(name);
     }
 
+    public static @Nullable Quaternionf getBoneRotationOrNull(final Player player, final String name) {
+        DragonEntity dragon = ClientDragonRenderer.getDragon(player);
+
+        if (dragon == null) {
+            return null;
+        }
+
+        Map<String, Quaternionf> rotations = BONE_ROTATIONS.get(dragon.getId());
+
+        if (rotations == null) {
+            return null;
+        }
+
+        Quaternionf rotation = rotations.get(name);
+        return rotation == null ? null : new Quaternionf(rotation);
+    }
+
     @Override
     public void postRenderPass(@NotNull RenderPassInfo<@NotNull R> renderPassInfo, @NotNull SubmitNodeCollector renderTasks) {
         super.postRenderPass(renderPassInfo, renderTasks);
@@ -1043,12 +1087,36 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
 
         Player player = renderData.player();
 
-        if (player != null && (ServerFlightHandler.isGliding(player) || (player.isPassenger() && DragonStateProvider.isDragon(player.getVehicle()) && ServerFlightHandler.isGliding((Player) player.getVehicle())))) {
+        boolean useLegacyPassengerRotation = player != null
+            && player.getVehicle() instanceof Player vehicle
+            && DragonStateProvider.isDragon(vehicle)
+            && DragonStateProvider.getData(vehicle).body().value().mountingOffsets().isPresent()
+            && ServerFlightHandler.isGliding(vehicle);
+
+        if (player != null && (ServerFlightHandler.isGliding(player) || useLegacyPassengerRotation)) {
             // Responsible for the pitch (rotating entity downward / upward)
             pose.mulPose(Axis.XN.rotationDegrees(renderData.prevXRot()));
             // Responsible for the roll (rotating entity to the side)
             pose.mulPose(Axis.ZP.rotation(renderData.prevZRot()));
         }
+    }
+
+    static @Nullable Quaternionf calculateBoneTilt(final Matrix4fc boneTransform) {
+        Vector3f up = boneTransform.transformDirection(new Vector3f(0, 1, 0));
+        float lengthSquared = up.lengthSquared();
+
+        if (!Float.isFinite(lengthSquared) || lengthSquared < 1.0E-8F) {
+            return null;
+        }
+
+        up.div((float) Math.sqrt(lengthSquared));
+        Quaternionf rotation = new Quaternionf().rotationTo(0, 1, 0, up.x(), up.y(), up.z());
+
+        if (!Float.isFinite(rotation.x()) || !Float.isFinite(rotation.y()) || !Float.isFinite(rotation.z()) || !Float.isFinite(rotation.w())) {
+            return null;
+        }
+
+        return rotation.normalize();
     }
 
     @Override
