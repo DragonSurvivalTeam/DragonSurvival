@@ -9,6 +9,7 @@ import by.dragonsurvivalteam.dragonsurvival.commands.DragonBodyCommand;
 import by.dragonsurvivalteam.dragonsurvival.commands.DragonCommand;
 import by.dragonsurvivalteam.dragonsurvival.commands.DragonEditorCommand;
 import by.dragonsurvivalteam.dragonsurvival.commands.DragonGrowthCommand;
+import by.dragonsurvivalteam.dragonsurvival.commands.DragonRidingDebugCommand;
 import by.dragonsurvivalteam.dragonsurvival.commands.arguments.DragonAbilityArgument;
 import by.dragonsurvivalteam.dragonsurvival.commands.arguments.DragonBodyArgument;
 import by.dragonsurvivalteam.dragonsurvival.commands.arguments.DragonGrowthArgument;
@@ -59,5 +60,6 @@ public class DSCommands {
 
         DragonCommand.register(event);
         DragonGrowthCommand.register(event);
+        DragonRidingDebugCommand.register(event);
     }
 }
