@@ -33,25 +33,34 @@ import java.util.Deque;
 /** Render the human player translucent in first person if they have hunter stacks */
 @Mixin(PlayerRenderer.class)
 public abstract class PlayerRendererMixin {
-    @Unique
-    private final Deque<Boolean> dragonSurvival$mountingBonePoseChanges = new ArrayDeque<>();
+    @Unique private final Deque<Boolean> dragonSurvival$mountingBonePoseChanges = new ArrayDeque<>();
 
     @Inject(method = "render(Lnet/minecraft/client/player/AbstractClientPlayer;FFLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V", at = @At("HEAD"))
-    private void dragonSurvival$applyMountingBoneRotation(final AbstractClientPlayer rider, float entityYaw, float partialTicks, final PoseStack poseStack, final MultiBufferSource buffer, int packedLight, final CallbackInfo callback) {
+    private void dragonSurvival$applyMountingBoneTransform(final AbstractClientPlayer rider, float entityYaw, float partialTicks, final PoseStack poseStack, final MultiBufferSource buffer, int packedLight, final CallbackInfo callback) {
         boolean changedPose = false;
 
         if (rider.getVehicle() instanceof Player mount && DragonStateProvider.isDragon(mount)) {
             DragonStateHandler handler = DragonStateProvider.getData(mount);
 
             if (handler.body().value().mountingOffsets().isEmpty() && !handler.body().value().noDragonModelRendering()) {
+                Vec3 mountingPosition = DragonRenderer.getBonePositionOrNull(mount, DragonRidingHandler.MOUNTING_BONE);
                 Quaternionf rotation = DragonRenderer.getBoneRotationOrNull(mount, DragonRidingHandler.MOUNTING_BONE);
 
-                if (rotation != null) {
+                if (mountingPosition != null) {
                     Vec3 pivot = rider.getVehicleAttachmentPoint(mount);
+                    Vec3 mountingOffset = mountingPosition.subtract(mount.position());
+                    Vec3 targetRiderPosition = mount.getPosition(partialTicks).add(mountingOffset).subtract(pivot);
+                    Vec3 positionCorrection = targetRiderPosition.subtract(rider.getPosition(partialTicks));
+
                     poseStack.pushPose();
-                    poseStack.translate(pivot.x(), pivot.y(), pivot.z());
-                    poseStack.mulPose(rotation);
-                    poseStack.translate(-pivot.x(), -pivot.y(), -pivot.z());
+                    poseStack.translate(positionCorrection.x(), positionCorrection.y(), positionCorrection.z());
+
+                    if (rotation != null) {
+                        poseStack.translate(pivot.x(), pivot.y(), pivot.z());
+                        poseStack.mulPose(rotation);
+                        poseStack.translate(-pivot.x(), -pivot.y(), -pivot.z());
+                    }
+
                     changedPose = true;
                 }
             }
