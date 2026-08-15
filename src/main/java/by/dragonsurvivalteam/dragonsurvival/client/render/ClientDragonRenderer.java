@@ -306,15 +306,35 @@ public class ClientDragonRenderer {
         }
 
         if (player != Minecraft.getInstance().player || !Minecraft.getInstance().options.getCameraType().isFirstPerson() || !ServerFlightHandler.isGliding(player) || renderFirstPersonFlight) {
-            if (!dragon.isInInventory) {
-                ClientDragonRenderer.setDragonMovementData(player, Minecraft.getInstance().getTimer().getRealtimeDeltaTicks());
-            }
-
-            MovementData movement = MovementData.getData(player);
-            handleFlightMovement(player, dragon, movement, partialTick);
+            prepareDragonRenderState(player, dragon, partialTick);
 
             Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(dragon).render(dragon, player.getViewYRot(partialTick), partialTick, event.getPoseStack(), event.getMultiBufferSource(), event.getPackedLight());
         }
+    }
+
+    public static void updateDragonBoneData(final Player player) {
+        DragonStateHandler handler = DragonStateProvider.getData(player);
+
+        if (!handler.isDragon() || handler.body().value().noDragonModelRendering()) {
+            return;
+        }
+
+        DragonEntity dragon = getOrCreateDragon(player);
+        float partialTick = Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(false);
+        prepareDragonRenderState(player, dragon, partialTick);
+
+        if (Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(dragon) instanceof DragonRenderer renderer) {
+            renderer.calculateBoneTransforms(dragon, partialTick);
+        }
+    }
+
+    private static void prepareDragonRenderState(final Player player, final DragonEntity dragon, float partialTick) {
+        if (!dragon.isInInventory) {
+            setDragonMovementData(player, Minecraft.getInstance().getTimer().getRealtimeDeltaTicks());
+        }
+
+        MovementData movement = MovementData.getData(player);
+        handleFlightMovement(player, dragon, movement, partialTick);
     }
 
     private static void handleFlightMovement(final Player player, final DragonEntity dragon, final MovementData movement, final float partialTick) {

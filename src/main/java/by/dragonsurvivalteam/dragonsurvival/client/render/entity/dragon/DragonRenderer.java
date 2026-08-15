@@ -16,23 +16,29 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix4f;
 import org.joml.Matrix4fc;
 import org.joml.Quaternionf;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
+import software.bernie.geckolib.cache.object.GeoBone;
+import software.bernie.geckolib.loading.math.MolangQueries;
 import software.bernie.geckolib.model.GeoModel;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
 import software.bernie.geckolib.util.Color;
+import software.bernie.geckolib.util.RenderUtil;
 
 import java.util.HashMap;
 import java.util.List;
@@ -48,9 +54,45 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
     private static final Color RENDER_COLOR = Color.ofRGB(255, 255, 255);
     private static final Color TRANSPARENT_RENDER_COLOR = Color.ofRGBA(1, 1, 1, HunterHandler.MIN_ALPHA);
 
+    // Dummy VertexConsumer/MultiBufferSource to feed to geckolib when we only want bone calculations to occur
+    private static final VertexConsumer BONE_CALCULATION_BUFFER = new VertexConsumer() {
+        @Override
+        public VertexConsumer addVertex(float x, float y, float z) {
+            return this;
+        }
+
+        @Override
+        public VertexConsumer setColor(int red, int green, int blue, int alpha) {
+            return this;
+        }
+
+        @Override
+        public VertexConsumer setUv(float u, float v) {
+            return this;
+        }
+
+        @Override
+        public VertexConsumer setUv1(int u, int v) {
+            return this;
+        }
+
+        @Override
+        public VertexConsumer setUv2(int u, int v) {
+            return this;
+        }
+
+        @Override
+        public VertexConsumer setNormal(float normalX, float normalY, float normalZ) {
+            return this;
+        }
+    };
+    private static final MultiBufferSource BONE_CALCULATION_BUFFERS = renderType -> BONE_CALCULATION_BUFFER;
+
     public ResourceLocation glowTexture;
 
     private boolean resetNeckVisibility;
+    private boolean calculatingBonesOnly;
+    private boolean trackedBoneMatricesUpdated;
 
     public DragonRenderer(final EntityRendererProvider.Context context, final GeoModel<DragonEntity> model) {
         super(context, model);
@@ -71,18 +113,8 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
         }
     }
 
-    /**
-     * Note: Position does not work in first person <br>
-     * - GeckoLib cannot update the bone positions if ClientDragonRenderer#renderInFirstPerson is not enabled <br>
-     * - Even if it is enabled the position won't be correct - unsure as to why
-     */
-    public static Vec3 getBonePosition(final Player player, final String name) {
-        Vec3 position = getBonePositionOrNull(player, name);
-        return position == null ? Vec3.ZERO : position;
-    }
-
     public static @Nullable Vec3 getBonePositionOrNull(final Player player, final String name) {
-        DragonEntity dragon = ClientDragonRenderer.getDragon(player);
+        DragonEntity dragon = getDragonWithFreshBoneData(player, name);
 
         if (dragon == null) {
             return null;
@@ -98,7 +130,7 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
     }
 
     public static @Nullable Vec3 getBoneOffsetOrNull(final Player player, final String name) {
-        DragonEntity dragon = ClientDragonRenderer.getDragon(player);
+        DragonEntity dragon = getDragonWithFreshBoneData(player, name);
 
         if (dragon == null) {
             return null;
@@ -116,10 +148,21 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
     public static boolean isBonePositionFresh(final Player player, final String name) {
         DragonEntity dragon = ClientDragonRenderer.getDragon(player);
 
-        if (dragon == null) {
-            return false;
+        return dragon != null && hasFreshBoneData(dragon, name);
+    }
+
+    private static @Nullable DragonEntity getDragonWithFreshBoneData(final Player player, final String name) {
+        DragonEntity dragon = ClientDragonRenderer.getDragon(player);
+
+        if (dragon == null || !hasFreshBoneData(dragon, name)) {
+            ClientDragonRenderer.updateDragonBoneData(player);
+            dragon = ClientDragonRenderer.getDragon(player);
         }
 
+        return dragon;
+    }
+
+    private static boolean hasFreshBoneData(final DragonEntity dragon, final String name) {
         Map<String, Long> updateTicks = BONE_UPDATE_TICKS.get(dragon.getId());
         Long updateTick = updateTicks == null ? null : updateTicks.get(name);
 
@@ -128,11 +171,11 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
         }
 
         long age = dragon.level().getGameTime() - updateTick;
-        return age >= 0 && age <= 1;
+        return age == 0;
     }
 
     public static @Nullable Quaternionf getBoneRotationOrNull(final Player player, final String name) {
-        DragonEntity dragon = ClientDragonRenderer.getDragon(player);
+        DragonEntity dragon = getDragonWithFreshBoneData(player, name);
 
         if (dragon == null) {
             return null;
@@ -162,8 +205,36 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
         BONE_UPDATE_TICKS.clear();
     }
 
+    public void calculateBoneTransforms(final DragonEntity dragon, float partialTick) {
+        BakedGeoModel model = getGeoModel().getBakedModel(getGeoModel().getModelResource(dragon, this));
+        PoseStack poseStack = new PoseStack();
+        DragonEntity previousAnimatable = animatable;
+        boolean previousCalculationState = calculatingBonesOnly;
+        boolean previousMatrixState = trackedBoneMatricesUpdated;
+        boolean previousNeckState = resetNeckVisibility;
+
+        calculatingBonesOnly = true;
+        animatable = dragon;
+
+        try {
+            preRender(poseStack, dragon, model, BONE_CALCULATION_BUFFERS, BONE_CALCULATION_BUFFER, false, partialTick, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, RENDER_COLOR.argbInt());
+            actuallyRender(poseStack, dragon, model, null, BONE_CALCULATION_BUFFERS, BONE_CALCULATION_BUFFER, false, partialTick, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, RENDER_COLOR.argbInt());
+            postRender(poseStack, dragon, model, BONE_CALCULATION_BUFFERS, BONE_CALCULATION_BUFFER, false, partialTick, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, RENDER_COLOR.argbInt());
+        } finally {
+            MolangQueries.clearActor();
+            animatable = previousAnimatable;
+            calculatingBonesOnly = previousCalculationState;
+            trackedBoneMatricesUpdated = previousMatrixState;
+            resetNeckVisibility = previousNeckState;
+        }
+    }
+
     @Override
     public void preRender(final PoseStack poseStack, final DragonEntity animatable, final BakedGeoModel model, final MultiBufferSource bufferSource, final VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, int color) {
+        if (!isReRender) {
+            trackedBoneMatricesUpdated = false;
+        }
+
         Minecraft.getInstance().getProfiler().push("player_dragon");
         Player player = animatable.getPlayer();
 
@@ -199,7 +270,7 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
             resetNeckVisibility = false;
         }
 
-        if (!animatable.isInInventory) {
+        if (!animatable.isInInventory && trackedBoneMatricesUpdated) {
             // Need to store the positions per entity ourselves since the model and its bones are singletons.
             Map<String, Vec3> positions = BONE_POSITIONS.computeIfAbsent(animatable.getId(), key -> new HashMap<>());
             Map<String, Vec3> offsets = BONE_OFFSETS.computeIfAbsent(animatable.getId(), key -> new HashMap<>());
@@ -223,7 +294,7 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
                 positions.remove(name);
                 offsets.remove(name);
                 rotations.remove(name);
-                updateTicks.remove(name);
+                updateTicks.put(name, animatable.level().getGameTime());
             }));
         }
 
@@ -235,7 +306,7 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
         Player player = animatable.getPlayer();
 
         //noinspection DataFlowIssue -> player is present
-        if (player == null || player.isSpectator() || player.isInvisibleTo(Minecraft.getInstance().player)) {
+        if (player == null || player.isSpectator() || !calculatingBonesOnly && player.isInvisibleTo(Minecraft.getInstance().player)) {
             return;
         }
 
@@ -254,6 +325,35 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
         // If a body refresh was requested, all the animations will have been reset once we are post-render
         handler.refreshBody = false;
 
+        poseStack.popPose();
+    }
+
+    @Override
+    public void renderRecursively(final PoseStack poseStack, final DragonEntity animatable, final GeoBone bone, final RenderType renderType, final MultiBufferSource bufferSource, final VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, int color) {
+        if (!calculatingBonesOnly) {
+            super.renderRecursively(poseStack, animatable, bone, renderType, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, color);
+            trackedBoneMatricesUpdated |= bone.isTrackingMatrices();
+            return;
+        }
+
+        poseStack.pushPose();
+        RenderUtil.translateMatrixToBone(poseStack, bone);
+        RenderUtil.translateToPivotPoint(poseStack, bone);
+        RenderUtil.rotateMatrixAroundBone(poseStack, bone);
+        RenderUtil.scaleMatrixForBone(poseStack, bone);
+
+        if (bone.isTrackingMatrices()) {
+            Matrix4f poseState = new Matrix4f(poseStack.last().pose());
+            Matrix4f localMatrix = RenderUtil.invertAndMultiplyMatrices(poseState, entityRenderTranslations);
+
+            bone.setModelSpaceMatrix(RenderUtil.invertAndMultiplyMatrices(poseState, modelRenderTranslations));
+            bone.setLocalSpaceMatrix(RenderUtil.translateMatrix(localMatrix, getRenderOffset(animatable, 1).toVector3f()));
+            bone.setWorldSpaceMatrix(RenderUtil.translateMatrix(new Matrix4f(localMatrix), animatable.position().toVector3f()));
+            trackedBoneMatricesUpdated = true;
+        }
+
+        RenderUtil.translateAwayFromPivotPoint(poseStack, bone);
+        renderChildBones(poseStack, animatable, bone, renderType, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, color);
         poseStack.popPose();
     }
 
