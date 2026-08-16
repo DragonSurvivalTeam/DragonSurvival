@@ -121,7 +121,7 @@ public class DragonRidingHandler {
             return DragonRideAttemptResult.SELF_TOO_BIG;
         } else if (mount.getPose() != Pose.CROUCHING) {
             return DragonRideAttemptResult.NOT_CROUCHING;
-        } else if (!(mountData.body().value().noDragonModelRendering() || !mountData.body().value().rideable())) {
+        } else if (mountData.body().value().noDragonModelRendering() || !mountData.body().value().rideable()) {
             return DragonRideAttemptResult.NOT_RIDEABLE;
         }
 
@@ -156,7 +156,7 @@ public class DragonRidingHandler {
                 self.sendSystemMessage(Component.translatable(SELF_TOO_BIG, NumberFormat.getPercentInstance().format(ridingScaleRatio), String.format("%.2f", EntityScale.get(self)), String.format("%.2f", EntityScale.get(target))));
             } else if (result == DragonRideAttemptResult.NOT_CROUCHING) {
                 self.sendSystemMessage(Component.translatable(NOT_CROUCHING));
-            } else if  (result == DragonRideAttemptResult.NOT_RIDEABLE) {
+            } else if (result == DragonRideAttemptResult.NOT_RIDEABLE) {
                 self.sendSystemMessage(Component.translatable(NOT_RIDEABLE));
             }
         }
