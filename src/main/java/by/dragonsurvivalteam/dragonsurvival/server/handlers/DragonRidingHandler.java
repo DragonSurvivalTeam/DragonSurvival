@@ -66,6 +66,7 @@ public class DragonRidingHandler {
     public static final int NO_PASSENGER = -1;
 
     public static final Vec3 BASE_MOUNTING_OFFSET = new Vec3(0, 0.63, 0);
+    private static final Vec3 PLAYER_VEHICLE_ATTACHMENT = new Vec3(0, 0.6, 0);
     public static final float PLAYER_RIDING_SCALE_RATIO = playerRidingScale;
     public static final float DRAGON_RIDING_SCALE_RATIO = dragonRidingScale;
 
@@ -87,6 +88,15 @@ public class DragonRidingHandler {
         }
 
         return BASE_MOUNTING_OFFSET;
+    }
+
+    /** Reconstructs the vehicle attachment point introduced after 1.20.1. */
+    public static Vec3 getVehicleAttachmentPoint(final Entity entity) {
+        if (entity instanceof Player) {
+            return PLAYER_VEHICLE_ATTACHMENT;
+        }
+
+        return new Vec3(0, -entity.getMyRidingOffset(), 0);
     }
 
     private static DragonRideAttemptResult playerCanRideDragon(Player rider, Player mount) {
