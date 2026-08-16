@@ -51,10 +51,10 @@ public record DragonBody(
         Holder<DragonEmoteSet> emotes,
         ScalingProportions scalingProportions,
         double crouchHeightRatio,
-        Optional<MountingOffsets> mountingOffsets,
         Optional<BackpackOffsets> backpackOffsets,
         double betterCombatWeaponOffset,
-        boolean noDragonModelRendering
+        boolean noDragonModelRendering,
+        boolean rideable
 ) implements AttributeModifierSupplier {
     public static final ResourceKey<Registry<DragonBody>> REGISTRY = ResourceKey.createRegistryKey(DragonSurvival.res("dragon_body"));
     public static final Identifier DEFAULT_MODEL = DragonSurvival.res("dragon_model");
@@ -77,9 +77,9 @@ public record DragonBody(
             DragonEmoteSet.CODEC.fieldOf("emotes").forGetter(DragonBody::emotes),
             ScalingProportions.CODEC.fieldOf("scaling_proportions").forGetter(DragonBody::scalingProportions),
             MiscCodecs.doubleRange(0, 100).fieldOf("crouch_height_ratio").forGetter(DragonBody::crouchHeightRatio),
-            MountingOffsets.CODEC.optionalFieldOf("mounting_offset").forGetter(DragonBody::mountingOffsets),
             BackpackOffsets.CODEC.optionalFieldOf("backpack_offset").forGetter(DragonBody::backpackOffsets),
-            Codec.DOUBLE.optionalFieldOf("bettercombat_weapon_offset", 0d).forGetter(DragonBody::betterCombatWeaponOffset)
+            Codec.DOUBLE.optionalFieldOf("bettercombat_weapon_offset", 0d).forGetter(DragonBody::betterCombatWeaponOffset),
+            Codec.BOOL.optionalFieldOf("rideable", true).forGetter(DragonBody::rideable)
     ).apply(instance, instance.stable(DragonBody::new)));
 
     private static final Codec<DragonBody> NO_MODEL_CODEC = RecordCodecBuilder.create(instance -> instance.group(
@@ -112,11 +112,11 @@ public record DragonBody(
             final Holder<DragonEmoteSet> emotes,
             final ScalingProportions scalingProportions,
             final double crouchHeightRatio,
-            final Optional<MountingOffsets> mountingOffsets,
             final Optional<BackpackOffsets> backpackOffsets,
-            final double betterCombatWeaponOffset
+            final double betterCombatWeaponOffset,
+            final boolean rideable
     ) {
-        this(isDefault, unlockableBehavior, modifiers, canHideWings, model, textureSize, animation, defaultIcon, bonesToHideForToggle, emotes, scalingProportions, crouchHeightRatio, mountingOffsets, backpackOffsets, betterCombatWeaponOffset, false);
+        this(isDefault, unlockableBehavior, modifiers, canHideWings, model, textureSize, animation, defaultIcon, bonesToHideForToggle, emotes, scalingProportions, crouchHeightRatio, backpackOffsets, betterCombatWeaponOffset, false, rideable);
     }
 
     public static DragonBody withoutDragonModel(
@@ -125,7 +125,7 @@ public record DragonBody(
             final List<Modifier> modifiers,
             final Optional<Identifier> defaultIcon
     ) {
-        return new DragonBody(isDefault, unlockableBehavior, modifiers, false, DEFAULT_MODEL, DEFAULT_TEXTURE_SIZE, DEFAULT_ANIMATION, defaultIcon, List.of(), NO_EMOTES, NO_MODEL_SCALING, 0.83333333, Optional.empty(), Optional.empty(), 0, true);
+        return new DragonBody(isDefault, unlockableBehavior, modifiers, false, DEFAULT_MODEL, DEFAULT_TEXTURE_SIZE, DEFAULT_ANIMATION, defaultIcon, List.of(), NO_EMOTES, NO_MODEL_SCALING, 0.83333333, Optional.empty(), 0, true, false);
     }
 
     public record TextureSize(int width, int height) {
@@ -146,18 +146,6 @@ public record DragonBody(
 
         public static ScalingProportions of(final double width, final double height, final double eyeHeight, final double offset, final double shadowOffset) {
             return new ScalingProportions(width, height, eyeHeight, offset, shadowOffset);
-        }
-    }
-
-    public record MountingOffsets(Vec3 humanOffset, Vec3 dragonOffset, Vec3 scale) {
-        public static final Codec<MountingOffsets> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                Vec3.CODEC.optionalFieldOf("human_offset", Vec3.ZERO).forGetter(MountingOffsets::humanOffset),
-                Vec3.CODEC.optionalFieldOf("dragon_offset", Vec3.ZERO).forGetter(MountingOffsets::dragonOffset),
-                Vec3.CODEC.optionalFieldOf("offset_per_scale_above_one", Vec3.ZERO).forGetter(MountingOffsets::scale)
-        ).apply(instance, MountingOffsets::new));
-
-        public static MountingOffsets of(final Vec3 humanOffset, final Vec3 dragonOffset, final Vec3 scale) {
-            return new MountingOffsets(humanOffset, dragonOffset, scale);
         }
     }
 

@@ -57,6 +57,9 @@ public class DragonRidingHandler {
     @Translation(comments = "The creature you are trying to ride must be crouching for you to mount them.")
     private static final String NOT_CROUCHING = Translation.Type.GUI.wrap("message.not_crouching");
 
+    @Translation(comments = "The creature is not rideable.")
+    private static final String NOT_RIDEABLE = Translation.Type.GUI.wrap("message.not_rideable");
+
     public static final String MOUNTING_BONE = "MountingBone";
     public static final int NO_PASSENGER = -1;
 
@@ -67,6 +70,7 @@ public class DragonRidingHandler {
     private enum DragonRideAttemptResult {
         SELF_TOO_BIG,
         NOT_CROUCHING,
+        NOT_RIDEABLE,
         OTHER,
         SUCCESS
     }
@@ -91,7 +95,7 @@ public class DragonRidingHandler {
 
         DragonStateHandler mountData = DragonStateProvider.getData(mount);
 
-        if (!mountData.isDragon() || mountData.body().value().noDragonModelRendering()) {
+        if (!mountData.isDragon()) {
             return DragonRideAttemptResult.OTHER;
         }
 
@@ -102,6 +106,8 @@ public class DragonRidingHandler {
             return DragonRideAttemptResult.SELF_TOO_BIG;
         } else if (mount.getPose() != Pose.CROUCHING) {
             return DragonRideAttemptResult.NOT_CROUCHING;
+        } else if (mountData.body().value().noDragonModelRendering() || !mountData.body().value().rideable()) {
+            return DragonRideAttemptResult.NOT_RIDEABLE;
         }
 
         return DragonRideAttemptResult.SUCCESS;
@@ -135,6 +141,8 @@ public class DragonRidingHandler {
                 PlayerMessageUtil.sendSystemMessage(self, Component.translatable(SELF_TOO_BIG, NumberFormat.getPercentInstance().format(ridingScaleRatio), String.format("%.2f", self.getScale()), String.format("%.2f", target.getScale())), false);
             } else if (result == DragonRideAttemptResult.NOT_CROUCHING) {
                 PlayerMessageUtil.sendSystemMessage(self, Component.translatable(NOT_CROUCHING), false);
+            } else if  (result == DragonRideAttemptResult.NOT_RIDEABLE) {
+                PlayerMessageUtil.sendSystemMessage(self, Component.translatable(NOT_RIDEABLE), false);
             }
         }
     }
