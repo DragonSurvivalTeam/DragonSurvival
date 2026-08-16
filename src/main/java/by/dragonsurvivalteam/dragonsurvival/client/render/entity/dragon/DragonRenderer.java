@@ -119,7 +119,7 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
         }
 
         DragonStateHandler handler = DragonStateProvider.getData(mount);
-        if (handler.body().value().mountingOffsets().isPresent() || handler.body().value().noDragonModelRendering()) {
+        if (handler.body().value().noDragonModelRendering()) {
             return null;
         }
 
@@ -386,12 +386,7 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
 
         pose.mulPose(Axis.YN.rotationDegrees((float) movement.bodyYaw));
 
-        boolean useLegacyPassengerRotation = player.getVehicle() instanceof Player vehicle
-                && DragonStateProvider.isDragon(vehicle)
-                && DragonStateProvider.getData(vehicle).body().value().mountingOffsets().isPresent()
-                && ServerFlightHandler.isGliding(vehicle);
-
-        if (ServerFlightHandler.isGliding(player) || useLegacyPassengerRotation) {
+        if (ServerFlightHandler.isGliding(player)) {
             // Responsible for the pitch (rotating entity downward / upward)
             pose.mulPose(Axis.XN.rotationDegrees(dragon.prevXRot));
             // Responsible for the roll (rotating entity to the side)

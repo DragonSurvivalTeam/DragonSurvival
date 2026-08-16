@@ -297,7 +297,7 @@ public class DragonSpeciesScreen extends Screen {
 
         // Riding button
         HoverButton ridingButton = new HoverButton(startX + 186, startY - 18, 16, RIDING_MAIN, RIDING_HOVER);
-        if (!data.body().value().noDragonModelRendering()) {
+        if (!(data.body().value().noDragonModelRendering() || !data.body().value().rideable())) {
             ridingButton.setTooltip(Tooltip.create(Component.translatable(RIDING_INFO, String.format("%.2f", (minecraft.player.getScale() * DragonRidingHandler.PLAYER_RIDING_SCALE_RATIO)), String.format("%.2f", (minecraft.player.getScale() * DragonRidingHandler.DRAGON_RIDING_SCALE_RATIO)))));
         } else {
             ridingButton.setTooltip(Tooltip.create(Component.translatable(RIDING_DISABLED)));

@@ -48,44 +48,30 @@ public abstract class EntityMixin {
 
         if (mount instanceof Player player && DragonStateProvider.isDragon(player)) {
             DragonStateHandler handler = DragonStateProvider.getData(player);
-            if (handler.body().value().mountingOffsets().isEmpty()) {
-                if (handler.body().value().noDragonModelRendering()) {
-                    return original;
-                }
-
-                if (mount.level().isClientSide()) {
-                    Vec3 mountingOffset = DragonSurvival.PROXY.getDragonBoneOffset(player, DragonRidingHandler.MOUNTING_BONE);
-
-                    if (mountingOffset != null) {
-                        Player localPlayer = DragonSurvival.PROXY.getLocalPlayer();
-                        boolean localParticipant = player == localPlayer || passenger == localPlayer;
-
-                        if (localParticipant && DragonSurvival.PROXY.isDragonBonePositionFresh(player, DragonRidingHandler.MOUNTING_BONE)) {
-                            PacketDistributor.sendToServer(new SyncMountingBonePosition(player.getId(), mountingOffset));
-                        }
-
-                        return mountingOffset;
-                    }
-                } else {
-                    Vec3 mountingOffset = handler.getMountingBoneOffset();
-
-                    if (mountingOffset != null) {
-                        return mountingOffset;
-                    }
-                }
-
+            if (handler.body().value().noDragonModelRendering()) {
                 return original;
             }
 
-            MovementData movement = MovementData.getData(player);
-            Vec3 offset = DragonStateProvider.isDragon(passenger) ? handler.body().value().mountingOffsets().get().dragonOffset() : handler.body().value().mountingOffsets().get().humanOffset();
-            Vec3 offsetPerScaleAboveOne = handler.body().value().mountingOffsets().get().scale();
-            float scale = player.getScale();
-            offset = offset.add(offsetPerScaleAboveOne.scale(scale - 1));
-            original = original.add(offset);
-            original = original.xRot((float) Math.toRadians(movement.prevXRot * 1.5)).zRot(-(float) Math.toRadians(movement.prevZRot * 90));
-            original = original.add(offset).yRot(-(float) Math.toRadians(movement.bodyYawLastFrame));
-            return original;
+            if (mount.level().isClientSide()) {
+                Vec3 mountingOffset = DragonSurvival.PROXY.getDragonBoneOffset(player, DragonRidingHandler.MOUNTING_BONE);
+
+                if (mountingOffset != null) {
+                    Player localPlayer = DragonSurvival.PROXY.getLocalPlayer();
+                    boolean localParticipant = player == localPlayer || passenger == localPlayer;
+
+                    if (localParticipant && DragonSurvival.PROXY.isDragonBonePositionFresh(player, DragonRidingHandler.MOUNTING_BONE)) {
+                        PacketDistributor.sendToServer(new SyncMountingBonePosition(player.getId(), mountingOffset));
+                    }
+
+                    return mountingOffset;
+                }
+            } else {
+                Vec3 mountingOffset = handler.getMountingBoneOffset();
+
+                if (mountingOffset != null) {
+                    return mountingOffset;
+                }
+            }
         } else if (DragonStateProvider.isDragon(passenger) && !DragonStateProvider.isDragon(mount)) {
             // FIXME :: I did this is both places since different entities seem to possibly use either path... not sure how to reconcile this
             // Handle dragon riding normal mounts (e.g. boats)
