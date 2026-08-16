@@ -12,6 +12,8 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.StageResources;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
+import by.dragonsurvivalteam.dragonsurvival.server.handlers.DragonRidingHandler;
+import com.geckolib.cache.model.BakedGeoModel;
 import com.geckolib.model.GeoModel;
 import com.geckolib.renderer.base.GeoRenderState;
 import net.minecraft.core.Holder;
@@ -19,11 +21,15 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class DragonModel extends GeoModel<DragonEntity> {
     private static final Identifier DEFAULT_ANIMATION = DragonSurvival.res("dragon_center.animation");
 
     // TODO :: 'dragon_dragon'?
     private final Identifier defaultTexture = DragonSurvival.res("textures/dragon_dragon/newborn.png");
+    private final Set<Identifier> validatedMountingBoneModels = new HashSet<>();
 
     @Override
     public @NotNull Identifier getModelResource(@NotNull GeoRenderState renderState) {
@@ -31,7 +37,11 @@ public class DragonModel extends GeoModel<DragonEntity> {
         Identifier model = renderData == null ? DragonBody.DEFAULT_MODEL : renderData.modelResource();
 
         try {
-            getBakedModel(model);
+            BakedGeoModel bakedModel = getBakedModel(model);
+
+            if (renderData != null && renderData.handler() != null && renderData.handler().body() != null) {
+                validateMountingBone(renderData.handler().body(), model, bakedModel);
+            }
         } catch (Exception e) {
             if (renderData != null && renderData.handler() != null) {
                 DragonSurvival.LOGGER.error("Model not found for dragon species: {}", Translation.Type.DRAGON_SPECIES.wrap(renderData.handler().speciesKey().identifier()));
@@ -40,6 +50,17 @@ public class DragonModel extends GeoModel<DragonEntity> {
         }
 
         return model;
+    }
+
+    private void validateMountingBone(final Holder<DragonBody> body, final Identifier modelResource, final BakedGeoModel bakedModel) {
+        if (!body.value().rideable() || !validatedMountingBoneModels.add(modelResource)) {
+            return;
+        }
+
+        if (bakedModel.getBone(DragonRidingHandler.MOUNTING_BONE).isEmpty()) {
+            String bodyId = body.unwrapKey().map(key -> key.identifier().toString()).orElse("<direct>");
+            DragonSurvival.LOGGER.error("Dragon body [{}] is marked as rideable, but model [{}] does not contain the required mounting bone [{}].", bodyId, modelResource, DragonRidingHandler.MOUNTING_BONE);
+        }
     }
 
     @Override
