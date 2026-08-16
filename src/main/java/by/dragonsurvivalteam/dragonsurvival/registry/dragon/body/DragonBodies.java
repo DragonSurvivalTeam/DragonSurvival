@@ -103,7 +103,6 @@ public class DragonBodies {
                 context.lookup(DragonEmoteSet.REGISTRY).getOrThrow(DragonEmoteSets.DEFAULT_EMOTES),
                 DragonBody.ScalingProportions.of(0.6, 2.0, 1.8, 1.0, 1.0),
                 0.83333333,
-                Optional.empty(),
                 Optional.of(DragonBody.BackpackOffsets.of(new Vec3(0, 0, 0.1), new Vec3(180, 0, 180), new Vec3(0.9, 0.9, 0.9))),
                 -3
         ));
@@ -125,7 +124,6 @@ public class DragonBodies {
                 context.lookup(DragonEmoteSet.REGISTRY).getOrThrow(DragonEmoteSets.DEFAULT_EMOTES),
                 DragonBody.ScalingProportions.of(0.6, 1.1, 0.99, 1.0, 1.0),
                 0.5,
-                Optional.empty(),
                 Optional.of(DragonBody.BackpackOffsets.of(new Vec3(0, 0, 0.1), new Vec3(180, 0, 180), new Vec3(0.85, 0.85, 0.85))),
                 8
         ));
@@ -148,7 +146,6 @@ public class DragonBodies {
                 context.lookup(DragonEmoteSet.REGISTRY).getOrThrow(DragonEmoteSets.DEFAULT_EMOTES),
                 DragonBody.ScalingProportions.of(0.6, 2.0, 1.8, 1.0, 1.0),
                 0.83333333,
-                Optional.empty(),
                 Optional.of(DragonBody.BackpackOffsets.of(new Vec3(0, 0, 0.1), new Vec3(180, 0, 180), new Vec3(0.9, 0.9, 0.9))),
                 -3
         ));
@@ -170,7 +167,6 @@ public class DragonBodies {
                 context.lookup(DragonEmoteSet.REGISTRY).getOrThrow(DragonEmoteSets.DEFAULT_EMOTES),
                 DragonBody.ScalingProportions.of(0.6, 2.0, 1.8, 1.0, 1.0),
                 0.83333333,
-                Optional.empty(),
                 Optional.of(DragonBody.BackpackOffsets.of(new Vec3(0, 0, 0.1), new Vec3(180, 0, 180), new Vec3(0.9, 0.9, 0.9))),
                 -3
         ));

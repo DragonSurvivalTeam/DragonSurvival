@@ -62,7 +62,6 @@ public record SyncMountingBonePosition(int mountId, Vec3 offset) implements Cust
             if (!handler.isDragon()
                     || (!trackedPassenger && !untrackedMountPassenger)
                     || handler.body().value().noDragonModelRendering()
-                    || handler.body().value().mountingOffsets().isPresent()
                     || !isValidOffset(packet.offset())) {
                 return;
             }

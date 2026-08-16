@@ -7,7 +7,6 @@ import by.dragonsurvivalteam.dragonsurvival.common.compat.attachments.Attachment
 import by.dragonsurvivalteam.dragonsurvival.common.compat.event.EntityTickEvent;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.DragonSizeHandler;
-import by.dragonsurvivalteam.dragonsurvival.common.handlers.EntityScale;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.HunterHandler;
 import by.dragonsurvivalteam.dragonsurvival.compat.Compat;
 import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
@@ -22,7 +21,6 @@ import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MovementData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SummonedEntities;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SwimData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSEntityTypeTags;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import by.dragonsurvivalteam.dragonsurvival.server.handlers.DragonRidingHandler;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
@@ -96,61 +94,34 @@ public abstract class EntityMixin implements AttachmentStorage {
 
         if (mount instanceof Player player && DragonStateProvider.isDragon(player)) {
             DragonStateHandler handler = DragonStateProvider.getData(player);
-            if (handler.body().value().mountingOffsets().isEmpty()) {
-                if (handler.body().value().noDragonModelRendering()) {
-                    original.call(instance, entity, x, y, z);
-                    return;
-                }
-
-                Vec3 mountingOffset = null;
-                if (mount.level().isClientSide()) {
-                    mountingOffset = DragonSurvival.PROXY.getDragonBoneOffset(player, DragonRidingHandler.MOUNTING_BONE);
-
-                    if (mountingOffset != null) {
-                        Player localPlayer = DragonSurvival.PROXY.getLocalPlayer();
-                        boolean localParticipant = player == localPlayer || entity == localPlayer;
-
-                        if (localParticipant && DragonSurvival.PROXY.isDragonBonePositionFresh(player, DragonRidingHandler.MOUNTING_BONE)) {
-                            NetworkHandler.sendToServer(new SyncMountingBonePosition(player.getId(), mountingOffset));
-                        }
-                    }
-                } else {
-                    mountingOffset = handler.getMountingBoneOffset();
-                }
-
-                if (mountingOffset != null) {
-                    Vec3 riderPosition = mountingOffset.subtract(DragonRidingHandler.getVehicleAttachmentPoint(entity));
-                    original.call(instance, entity, mount.getX() + riderPosition.x, mount.getY() + riderPosition.y, mount.getZ() + riderPosition.z);
-                } else {
-                    original.call(instance, entity, x, y, z);
-                }
+            if (handler.body().value().noDragonModelRendering()) {
+                original.call(instance, entity, x, y, z);
                 return;
             }
 
-            MovementData movement = MovementData.getData(player);
+            Vec3 mountingOffset = null;
+            if (mount.level().isClientSide()) {
+                mountingOffset = DragonSurvival.PROXY.getDragonBoneOffset(player, DragonRidingHandler.MOUNTING_BONE);
 
-            // Pose changes shrink the collision box, but the seat must remain anchored to the dragon model.
-            EntityDimensions dragonDims = DragonSizeHandler.calculateDimensions(handler, player,  DragonSizeHandler.getOverridePose(player));
-            // TODO :: This is a bad approximation to get the right mounting height, not really sure what is best to do here without having to tweak the 1.21.1 values for mounting offsets
-            Vec3 pos = new Vec3(0, dragonDims.height * 0.85D, 0);
-            Vec3 mountingOffset = Vec3.ZERO;
+                if (mountingOffset != null) {
+                    Player localPlayer = DragonSurvival.PROXY.getLocalPlayer();
+                    boolean localParticipant = player == localPlayer || entity == localPlayer;
 
-            if (handler.body().value().mountingOffsets().isPresent()) {
-                DragonBody.MountingOffsets mountingOffsets = handler.body().value().mountingOffsets().get();
-                mountingOffset = DragonStateProvider.isDragon(entity) ? mountingOffsets.dragonOffset() : mountingOffsets.humanOffset();
-                Vec3 offsetPerScaleAboveOne = mountingOffsets.scale();
-                float scale = EntityScale.get(player);
-                mountingOffset = mountingOffset.add(offsetPerScaleAboveOne.scale(scale - 1));
-
-                pos = pos.add(mountingOffset);
+                    if (localParticipant && DragonSurvival.PROXY.isDragonBonePositionFresh(player, DragonRidingHandler.MOUNTING_BONE)) {
+                        NetworkHandler.sendToServer(new SyncMountingBonePosition(player.getId(), mountingOffset));
+                    }
+                }
+            } else {
+                mountingOffset = handler.getMountingBoneOffset();
             }
 
-            pos = pos.xRot((float) Math.toRadians(movement.prevXRot * 1.5)).zRot(-(float) Math.toRadians(movement.prevZRot * 90));
-            pos = pos.multiply(1, Math.signum(pos.y), 1);
-            // The mounting offset brackets the pitch/roll transform so the rider stays aligned with the model origin.
-            pos = pos.add(mountingOffset).yRot(-(float) Math.toRadians(movement.bodyYawLastFrame));
-
-            original.call(instance, entity, mount.getX() + pos.x, mount.getY() + pos.y, mount.getZ() + pos.z);
+            if (mountingOffset != null) {
+                Vec3 riderPosition = mountingOffset.subtract(DragonRidingHandler.getVehicleAttachmentPoint(entity));
+                original.call(instance, entity, mount.getX() + riderPosition.x, mount.getY() + riderPosition.y, mount.getZ() + riderPosition.z);
+            } else {
+                original.call(instance, entity, x, y, z);
+            }
+            return;
         } else if (DragonStateProvider.isDragon(entity) && !DragonStateProvider.isDragon(mount)) {
             // Handle dragon riding normal mounts (e.g. boats)
             // The vanilla player hitbox actually clips through most mounts, but the dragon player does not.
