@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.network.client;
 
+import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.DragonAltarScreen;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.dragon_editor.DragonEditorScreen;
 import by.dragonsurvivalteam.dragonsurvival.client.render.ClientDragonRenderer;
@@ -103,7 +104,9 @@ public class ClientProxy {
         if (entity instanceof Player player) {
             DragonStateHandler handler = DragonStateProvider.getData(player);
 
-            if (handler.isDragon()) {
+            // If we are first person and this is the local player, just generate the particles from the eye,
+            // it feels more natural in first person
+            if (handler.isDragon() && !(player == DragonSurvival.PROXY.getLocalPlayer() && DragonSurvival.PROXY.isFirstPerson())) {
                 speedMultiplier = handler.getGrowth();
                 position = DragonRenderer.getBonePositionOrNull(player, DragonRenderer.BREATH_SOURCE);
             }

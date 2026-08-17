@@ -242,4 +242,8 @@ public class ClientProxy implements Proxy {
     public Component getDragonSoulPlacementKeybind() {
         return Keybind.TOGGLE_DRAGON_SOUL_PLACEMENT.get().getTranslatedKeyMessage();
     }
+
+    public boolean isFirstPerson() {
+        return Minecraft.getInstance().options.getCameraType().isFirstPerson();
+    }
 }
