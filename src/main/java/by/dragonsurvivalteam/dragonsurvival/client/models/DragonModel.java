@@ -73,6 +73,9 @@ public class DragonModel extends GeoModel<DragonEntity> {
         double gravity = player.getAttributeValue(Attributes.GRAVITY);
         MathParser.setVariable("query.gravity", () -> gravity);
 
+        double growth = DragonStateProvider.getData(player).getGrowth();
+        MathParser.setVariable("query.ds_growth", () -> growth);
+
         double bodyYawAvg;
         double headYawAvg;
         double headPitchAvg;
