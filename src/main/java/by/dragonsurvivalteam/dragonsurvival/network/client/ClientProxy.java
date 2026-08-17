@@ -105,7 +105,7 @@ public class ClientProxy {
 
             if (handler.isDragon()) {
                 speedMultiplier = handler.getGrowth();
-                position = DragonRenderer.getBonePositionOrNull(player, "BreathSource");
+                position = DragonRenderer.getBonePositionOrNull(player, DragonRenderer.BREATH_SOURCE);
             }
         }
 

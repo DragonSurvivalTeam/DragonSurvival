@@ -80,7 +80,8 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
     private static final Map<Integer, Map<String, Vec3>> BONE_OFFSETS = new HashMap<>();
     private static final Map<Integer, Map<String, Quaternionf>> BONE_ROTATIONS = new HashMap<>();
     private static final Map<Integer, Map<String, Long>> BONE_UPDATE_TICKS = new HashMap<>();
-    private static final List<String> BONES = List.of("BreathSource", DragonRidingHandler.MOUNTING_BONE);
+    public static final String BREATH_SOURCE = "BreathSource";
+    private static final List<String> BONES = List.of(BREATH_SOURCE, DragonRidingHandler.MOUNTING_BONE);
     private static final Map<Integer, DragonAnimationState> ANIMATION_STATES = new HashMap<>();
     private static final Map<Long, Map<String, BonePose>> LAST_RENDERED_BONE_POSES = new HashMap<>();
     private static final Map<Long, InterruptedTransitionBlend> INTERRUPTED_TRANSITION_BLENDS = new HashMap<>();
