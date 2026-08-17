@@ -176,6 +176,7 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
         private double headYaw;
         private double headPitch;
         private double gravity;
+        private double growth;
         private double currentBodyYawChange;
         private double currentHeadYawChange;
         private double currentHeadPitchChange;
@@ -230,6 +231,7 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
             renderData.headYaw = MovementData.getData(player).headYaw;
             renderData.headPitch = MovementData.getData(player).headPitch;
             renderData.gravity = player.getAttributeValue(Attributes.GRAVITY);
+            renderData.growth = handler.getGrowth();
             renderData.currentBodyYawChange = animationState.currentBodyYawChange;
             renderData.currentHeadYawChange = animationState.currentHeadYawChange;
             renderData.currentHeadPitchChange = animationState.currentHeadPitchChange;
@@ -292,6 +294,7 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
             renderData.headYaw = this.headYaw;
             renderData.headPitch = this.headPitch;
             renderData.gravity = this.gravity;
+            renderData.growth = this.growth;
             renderData.currentBodyYawChange = this.currentBodyYawChange;
             renderData.currentHeadYawChange = this.currentHeadYawChange;
             renderData.currentHeadPitchChange = this.currentHeadPitchChange;
@@ -325,6 +328,7 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
         public double headYaw() { return headYaw; }
         public double headPitch() { return headPitch; }
         public double gravity() { return gravity; }
+        public double growth() { return growth; }
         public double currentBodyYawChange() { return currentBodyYawChange; }
         public double currentHeadYawChange() { return currentHeadYawChange; }
         public double currentHeadPitchChange() { return currentHeadPitchChange; }
@@ -808,6 +812,7 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
         setDragonQueryValue("query.head_yaw", DragonRenderData::headYaw, DragonRenderData::neckLocked);
         setDragonQueryValue("query.head_pitch", DragonRenderData::headPitch, DragonRenderData::neckLocked);
         setDragonQueryValue("query.gravity", DragonRenderData::gravity);
+        setDragonQueryValue("query.ds_growth", DragonRenderData::growth);
         setDragonQueryValue("query.body_yaw_change", DragonRenderData::currentBodyYawChange, DragonRenderData::tailLocked);
         setDragonQueryValue("query.tail_motion_up", DragonRenderData::currentTailMotionUp, DragonRenderData::tailLocked);
         setDragonQueryValue("query.head_yaw_change", DragonRenderData::currentHeadYawChange);
