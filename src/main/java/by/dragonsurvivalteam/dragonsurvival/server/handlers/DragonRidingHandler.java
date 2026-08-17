@@ -103,6 +103,11 @@ public class DragonRidingHandler {
         return new Vec3(0, -entity.getMyRidingOffset(), 0);
     }
 
+    public static boolean dragonIsRideable(final Player player) {
+        DragonStateHandler data = DragonStateProvider.getData(player);
+        return !data.body().value().noDragonModelRendering() && data.body().value().rideable();
+    }
+
     private static DragonRideAttemptResult playerCanRideDragon(Player rider, Player mount) {
         if (rider.isSpectator() || mount.isSpectator() || rider.isSleeping() || mount.isSleeping()) {
             return DragonRideAttemptResult.OTHER;
@@ -121,7 +126,7 @@ public class DragonRidingHandler {
             return DragonRideAttemptResult.SELF_TOO_BIG;
         } else if (mount.getPose() != Pose.CROUCHING) {
             return DragonRideAttemptResult.NOT_CROUCHING;
-        } else if (mountData.body().value().noDragonModelRendering() || !mountData.body().value().rideable()) {
+        } else if (!dragonIsRideable(mount)) {
             return DragonRideAttemptResult.NOT_RIDEABLE;
         }
 
