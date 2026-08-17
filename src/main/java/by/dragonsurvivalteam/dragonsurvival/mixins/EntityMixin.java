@@ -97,6 +97,19 @@ public abstract class EntityMixin {
         return original;
     }
 
+    /** Dragon riders stand on the mounting bone instead of using the seated humanoid attachment point. */
+    @ModifyReturnValue(method = "getVehicleAttachmentPoint", at = @At("RETURN"))
+    private Vec3 dragonSurvival$useDragonFeetAsVehicleAttachmentPoint(Vec3 original, @Local(argsOnly = true) Entity vehicle) {
+        Entity rider = (Entity) (Object) this;
+
+        if (rider instanceof Player playerRider && vehicle instanceof Player playerVehicle
+                && DragonStateProvider.isDragon(playerRider) && DragonStateProvider.isDragon(playerVehicle)) {
+            return new Vec3(original.x, 0, original.z);
+        }
+
+        return original;
+    }
+
     /** Correctly rotate the passenger when riding a dragon */
     @SuppressWarnings("ConstantValue") // the if statement checks are valid
     @Inject(method = "onPassengerTurned(Lnet/minecraft/world/entity/Entity;)V", at = @At("HEAD"))
