@@ -42,8 +42,10 @@ import software.bernie.geckolib.renderer.GeoEntityRenderer;
 import software.bernie.geckolib.util.RenderUtils;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
     public static final Map<Integer, Map<String, Vec3>> BONE_POSITIONS = new HashMap<>();
@@ -65,7 +67,7 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
 
     private boolean resetNeckVisibility;
     private boolean calculatingBonesOnly;
-    private boolean trackedBoneMatricesUpdated;
+    private final Set<String> updatedTrackedBones = new HashSet<>();
 
     public DragonRenderer(final EntityRendererProvider.Context context, final GeoModel<DragonEntity> model) {
         super(context, model);
@@ -205,7 +207,7 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
         RenderType renderType = getRenderType(dragon, getTextureLocation(dragon), BONE_CALCULATION_BUFFERS, partialTick);
         DragonEntity previousAnimatable = animatable;
         boolean previousCalculationState = calculatingBonesOnly;
-        boolean previousMatrixState = trackedBoneMatricesUpdated;
+        Set<String> previouslyUpdatedTrackedBones = Set.copyOf(updatedTrackedBones);
         boolean previousNeckState = resetNeckVisibility;
 
         calculatingBonesOnly = true;
@@ -221,7 +223,8 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
         } finally {
             animatable = previousAnimatable;
             calculatingBonesOnly = previousCalculationState;
-            trackedBoneMatricesUpdated = previousMatrixState;
+            updatedTrackedBones.clear();
+            updatedTrackedBones.addAll(previouslyUpdatedTrackedBones);
             resetNeckVisibility = previousNeckState;
         }
     }
@@ -229,7 +232,7 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
     @Override
     public void preRender(final PoseStack poseStack, final DragonEntity animatable, final BakedGeoModel model, final MultiBufferSource bufferSource, final VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
         if (!isReRender) {
-            trackedBoneMatricesUpdated = false;
+            updatedTrackedBones.clear();
         }
 
         Minecraft.getInstance().getProfiler().push("player_dragon");
@@ -242,7 +245,7 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
                 return false;
             }
 
-            if (animatable.isInInventory || Compat.displayNeck()) {
+            if (animatable.isInInventory || calculatingBonesOnly || Compat.displayNeck()) {
                 return false;
             }
 
@@ -267,7 +270,7 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
             resetNeckVisibility = false;
         }
 
-        if (!animatable.isInInventory && trackedBoneMatricesUpdated) {
+        if (!animatable.isInInventory) {
             // Need to store the positions per entity ourselves since the model and its bones are singletons.
             Map<String, Vec3> positions = BONE_POSITIONS.computeIfAbsent(animatable.getId(), key -> new HashMap<>());
             Map<String, Vec3> offsets = BONE_OFFSETS.computeIfAbsent(animatable.getId(), key -> new HashMap<>());
@@ -275,6 +278,10 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
             Map<String, Long> updateTicks = BONE_UPDATE_TICKS.computeIfAbsent(animatable.getId(), key -> new HashMap<>());
 
             BONES.forEach(name -> model.getBone(name).ifPresentOrElse(bone -> {
+                if (!updatedTrackedBones.contains(name)) {
+                    return;
+                }
+
                 Vector3d worldPosition = bone.getWorldPosition();
                 Vec3 position = new Vec3(worldPosition.x(), worldPosition.y(), worldPosition.z()).subtract(getModelOffset(animatable, 1));
                 positions.put(bone.getName(), position);
@@ -331,7 +338,9 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
     public void renderRecursively(final PoseStack poseStack, final DragonEntity animatable, final GeoBone bone, final RenderType renderType, final MultiBufferSource bufferSource, final VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
         if (!calculatingBonesOnly) {
             super.renderRecursively(poseStack, animatable, bone, renderType, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, red, green, blue, alpha);
-            trackedBoneMatricesUpdated |= bone.isTrackingMatrices();
+            if (bone.isTrackingMatrices()) {
+                updatedTrackedBones.add(bone.getName());
+            }
             return;
         }
 
@@ -348,7 +357,7 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
             bone.setModelSpaceMatrix(RenderUtils.invertAndMultiplyMatrices(poseState, modelRenderTranslations));
             bone.setLocalSpaceMatrix(RenderUtils.translateMatrix(localMatrix, getRenderOffset(animatable, 1).toVector3f()));
             bone.setWorldSpaceMatrix(RenderUtils.translateMatrix(new Matrix4f(localMatrix), animatable.position().toVector3f()));
-            trackedBoneMatricesUpdated = true;
+            updatedTrackedBones.add(bone.getName());
         }
 
         RenderUtils.translateAwayFromPivotPoint(poseStack, bone);
