@@ -94,6 +94,9 @@ public class DragonModel extends GeoModel<DragonEntity> {
         double gravity = player.getAttributeValue(ForgeMod.ENTITY_GRAVITY.get());
         MolangParser.INSTANCE.setValue("query.gravity", () -> gravity);
 
+        double growth = DragonStateProvider.getData(player).getGrowth();
+        MolangParser.INSTANCE.setValue("query.ds_growth", () -> growth);
+
         double bodyYawAvg;
         double headYawAvg;
         double headPitchAvg;
