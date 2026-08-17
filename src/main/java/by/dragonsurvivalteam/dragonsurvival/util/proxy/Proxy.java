@@ -100,6 +100,8 @@ public interface Proxy {
         return Component.empty();
     }
 
+    default boolean isFirstPerson() { return false; }
+
     @Nullable RegistryAccess getAccess();
 
     boolean isMining(final Player player);
