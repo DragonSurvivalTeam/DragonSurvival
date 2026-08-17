@@ -50,7 +50,9 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
     private static final Map<Integer, Map<String, Vec3>> BONE_OFFSETS = new HashMap<>();
     private static final Map<Integer, Map<String, Quaternionf>> BONE_ROTATIONS = new HashMap<>();
     private static final Map<Integer, Map<String, Long>> BONE_UPDATE_TICKS = new HashMap<>();
-    private static final List<String> BONES = List.of("BreathSource", DragonRidingHandler.MOUNTING_BONE);
+
+    public static final String BREATH_SOURCE = "BreathSource";
+    private static final List<String> BONES = List.of(BREATH_SOURCE, DragonRidingHandler.MOUNTING_BONE);
 
     private static final Color RENDER_COLOR = Color.ofRGB(255, 255, 255);
     private static final Color TRANSPARENT_RENDER_COLOR = Color.ofRGBA(1, 1, 1, HunterHandler.MIN_ALPHA);
