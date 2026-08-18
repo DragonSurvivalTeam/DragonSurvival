@@ -10,6 +10,7 @@ public enum ModID {
     CURIOS("curios"),
     CREATE("create"),
     BETTER_COMBAT("bettercombat"),
+    DO_A_BARREL_ROLL("do_a_barrel_roll"),
     BEE_ADDON("bee_queen_ds"),
     DESERT_ADDON("desert_monster_ds"),
     FREECAM("freecam"),

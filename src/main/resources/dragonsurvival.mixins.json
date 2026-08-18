@@ -104,6 +104,7 @@
     "client.SmithingScreenMixin",
     "create.PlayerSkyhookRendererAccessor",
     "curios.CuriosButtonMixin",
+    "do_a_barrel_roll.DoABarrelRollClientMixin",
     "iris.GameRendererMixin",
     "multimine.MultiMineClientMixin",
     "sodium.ClientForgeModMixin",
