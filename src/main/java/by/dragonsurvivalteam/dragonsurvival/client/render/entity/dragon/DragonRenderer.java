@@ -162,6 +162,7 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
          * - Does not hide the head when in first person
          */
         private boolean inUI;
+        private boolean calculatingBonesOnly;
 
         private boolean neckLocked;
         private boolean tailLocked;
@@ -281,6 +282,7 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
             renderData.textureOverride = this.textureOverride;
             renderData.glowTextureOverride = this.glowTextureOverride;
             renderData.inUI = this.inUI;
+            renderData.calculatingBonesOnly = this.calculatingBonesOnly;
             renderData.neckLocked = this.neckLocked;
             renderData.tailLocked = this.tailLocked;
             renderData.spectator = this.spectator;
@@ -315,6 +317,7 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
         public @Nullable Identifier textureOverride() { return textureOverride; }
         public @Nullable Identifier glowTextureOverride() { return glowTextureOverride; }
         public boolean inUI() { return inUI; }
+        public boolean calculatingBonesOnly() { return calculatingBonesOnly; }
         public boolean neckLocked() { return neckLocked; }
         public boolean tailLocked() { return tailLocked; }
         public boolean spectator() { return spectator; }
@@ -869,7 +872,7 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
 
         final RenderPassInfo.BoneUpdater<R> neckVisibilitySetter = (renderPassInfoForBones, snapshots) -> {
             snapshots.get("Neck").map(bone -> {
-                boolean hideNeckAndHead = !(renderData.inUI() || Compat.displayNeck()) && RenderingUtils.isFirstPerson(player);
+                boolean hideNeckAndHead = !(renderData.inUI() || renderData.calculatingBonesOnly() || Compat.displayNeck()) && RenderingUtils.isFirstPerson(player);
                 bone.skipRender(hideNeckAndHead);
                 bone.skipChildrenRender(hideNeckAndHead);
                 return null;
@@ -1146,6 +1149,8 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
         if (renderData == null || renderData.player() == null || renderData.spectator()) {
             return;
         }
+
+        renderData.calculatingBonesOnly = true;
 
         PoseStack poseStack = new PoseStack();
         poseStack.pushPose();
