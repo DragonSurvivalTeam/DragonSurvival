@@ -103,6 +103,15 @@ public class DragonRidingHandler {
         return new Vec3(0, -entity.getMyRidingOffset(), 0);
     }
 
+    /** Dragon riders stand on the mounting bone instead of using the seated humanoid attachment point. */
+    public static Vec3 getVehicleAttachmentPoint(final Entity rider, final Entity vehicle) {
+        if (DragonStateProvider.isDragon(rider) && DragonStateProvider.isDragon(vehicle)) {
+            return Vec3.ZERO;
+        }
+
+        return getVehicleAttachmentPoint(rider);
+    }
+
     public static boolean dragonIsRideable(final Player player) {
         DragonStateHandler data = DragonStateProvider.getData(player);
         return !data.body().value().noDragonModelRendering() && data.body().value().rideable();

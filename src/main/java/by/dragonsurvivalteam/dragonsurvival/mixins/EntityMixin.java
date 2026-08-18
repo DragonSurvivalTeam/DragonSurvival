@@ -116,9 +116,7 @@ public abstract class EntityMixin implements AttachmentStorage {
             }
 
             if (mountingOffset != null) {
-                Vec3 vehicleAttachmentPoint = DragonStateProvider.isDragon(entity)
-                        ? Vec3.ZERO
-                        : DragonRidingHandler.getVehicleAttachmentPoint(entity);
+                Vec3 vehicleAttachmentPoint = DragonRidingHandler.getVehicleAttachmentPoint(entity, mount);
                 Vec3 riderPosition = mountingOffset.subtract(vehicleAttachmentPoint);
                 original.call(instance, entity, mount.getX() + riderPosition.x, mount.getY() + riderPosition.y, mount.getZ() + riderPosition.z);
             } else {
