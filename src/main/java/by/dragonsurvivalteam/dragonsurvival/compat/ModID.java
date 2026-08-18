@@ -9,6 +9,7 @@ public enum ModID {
     SOPHISTICATED_BACKPACKS("sophisticatedbackpacks"),
     CURIOS("curios"),
     CREATE("create"),
+    DO_A_BARREL_ROLL("do_a_barrel_roll"),
     BEE_ADDON("bee_queen_ds"),
     DESERT_ADDON("desert_monster_ds"),
     FREECAM("freecam"),

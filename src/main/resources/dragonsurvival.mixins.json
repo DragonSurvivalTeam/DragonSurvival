@@ -80,6 +80,7 @@
     "client.ScreenAccessor",
     "client.SmithingScreenMixin",
     "client.TextureManagerAccessor",
+    "do_a_barrel_roll.DoABarrelRollClientMixin",
     "iris.GameRendererMixin",
     "sodium.DefaultFluidRendererMixin",
     "tool_swap.MultiPlayerGameModeEndMixin",

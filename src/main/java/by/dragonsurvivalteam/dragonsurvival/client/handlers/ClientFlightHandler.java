@@ -4,6 +4,7 @@ import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.sounds.FastGlideSound;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
+import by.dragonsurvivalteam.dragonsurvival.compat.do_a_barrel_roll.DoABarrelRollCompat;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigRange;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
@@ -78,6 +79,10 @@ public class ClientFlightHandler {
     @Translation(key = "flight_camera_movement", type = Translation.Type.CONFIGURATION, comments = "Enable / Disable camera movement while gliding as a dragon")
     @ConfigOption(side = ConfigSide.CLIENT, category = "flight", key = "flight_camera_movement")
     public static Boolean flightCameraMovement = true;
+
+    @Translation(key = "barrel_roll_compatibility", type = Translation.Type.CONFIGURATION, comments = "If enabled, Do a Barrel Roll replaces Dragon Survival's normal gliding controls and camera orientation")
+    @ConfigOption(side = ConfigSide.CLIENT, category = "flight", key = "barrel_roll_compatibility")
+    public static Boolean barrelRollCompatibility = true;
 
     @Translation(key = "spin_camera_effect", type = Translation.Type.CONFIGURATION, comments = "Enable / Disable camera punch and FOV changes while using spin as a dragon")
     @ConfigOption(side = ConfigSide.CLIENT, category = "flight", key = "spin_camera_effect")
@@ -235,6 +240,11 @@ public class ClientFlightHandler {
                         info.move(0.0F, spinCameraOffset, 0.0F);
                     }
                 }
+            }
+
+            if (DoABarrelRollCompat.isActive(currentPlayer)) {
+                shouldApplyZoom = false;
+                zoomLerpFactor = 1.0F;
             }
 
             if (shouldApplyZoom) {

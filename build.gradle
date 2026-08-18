@@ -238,6 +238,9 @@ dependencies {
 	// EMI
 //	compileOnly "curse.maven:emi-580555:6420931" // 1.1.22
 
+	// Do a Barrel Roll (Fabric artifact used only for its shared API; no NeoForge 26.1 release exists)
+	compileOnly "maven.modrinth:do-a-barrel-roll:3.8.4+26.1-fabric"
+
 //	compileOnly "curse.maven:multi-mine-227887:8102429" // 26.1.2.2NF
 
 	// --- Testing --- //
