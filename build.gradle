@@ -280,7 +280,7 @@ dependencies {
 	// EMI
 //	compileOnly "curse.maven:emi-580555:6420931" // 1.1.22
 
-	// Do a Barrel Roll shared API; the compatibility code is bundled, but the mod is not.
+	// Do a Barrel Roll
 	compileOnly "maven.modrinth:do-a-barrel-roll:3.8.4+26.1-fabric"
 	// Testing for do a barrel roll, uncomment with testing stuff above
 //	add(doABarrelRollFabric.name, "maven.modrinth:do-a-barrel-roll:3.8.4+26.1-fabric")
