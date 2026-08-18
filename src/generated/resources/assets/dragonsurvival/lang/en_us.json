@@ -580,6 +580,8 @@
   "dragonsurvival.configuration.backpack_slot.tooltip": "The curios slot which may contain the backpack (if Curios is installed)",
   "dragonsurvival.configuration.bad_food_poison_chance": "Bad Food Poison Chance",
   "dragonsurvival.configuration.bad_food_poison_chance.tooltip": "Chance of getting poisoned from eating non-dragon food",
+  "dragonsurvival.configuration.barrel_roll_compatibility": "Barrel Roll Compatibility",
+  "dragonsurvival.configuration.barrel_roll_compatibility.tooltip": "If enabled, Do a Barrel Roll replaces Dragon Survival's normal gliding controls and camera orientation",
   "dragonsurvival.configuration.base_dragon_camera_offset": "Base Dragon Camera Offset",
   "dragonsurvival.configuration.base_dragon_camera_offset.tooltip": "Base offset for the dragon's third person camera (is multiplied and scaled by the other factors)",
   "dragonsurvival.configuration.blast_dust_explosion_multiplier": "Blast Dust Explosion Multiplier",

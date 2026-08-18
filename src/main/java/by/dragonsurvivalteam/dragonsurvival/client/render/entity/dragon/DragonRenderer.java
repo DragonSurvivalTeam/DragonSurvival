@@ -8,6 +8,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.HunterHandler;
 import by.dragonsurvivalteam.dragonsurvival.compat.Compat;
 import by.dragonsurvivalteam.dragonsurvival.compat.ModID;
+import by.dragonsurvivalteam.dragonsurvival.compat.do_a_barrel_roll.DoABarrelRollCompat;
 import by.dragonsurvivalteam.dragonsurvival.compat.sophisticatedBackpacks.DragonBackpackRenderLayer;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MovementData;
 import by.dragonsurvivalteam.dragonsurvival.server.handlers.DragonRidingHandler;
@@ -390,18 +391,22 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
 
     private void setupRender(final DragonEntity dragon, final Player player, final PoseStack pose, final float partialTick) {
         MovementData movement = MovementData.getData(player);
+        boolean doABarrelRollActive = DoABarrelRollCompat.isActive(player);
 
         // This is normally used in 'EntityRenderDispatcher#render', but that isn't triggered for 'DragonEntity'
         Vec3 offset = getRenderOffset(dragon, partialTick);
         pose.translate(-offset.x(), -offset.y(), -offset.z());
 
-        pose.mulPose(Axis.YN.rotationDegrees((float) movement.bodyYaw));
+        float bodyYaw = doABarrelRollActive ? player.getViewYRot(partialTick) : (float) movement.bodyYaw;
+        pose.mulPose(Axis.YN.rotationDegrees(bodyYaw));
 
         if (ServerFlightHandler.isGliding(player)) {
             // Responsible for the pitch (rotating entity downward / upward)
-            pose.mulPose(Axis.XN.rotationDegrees(dragon.prevXRot));
+            float pitch = doABarrelRollActive ? -player.getViewXRot(partialTick) : dragon.prevXRot;
+            pose.mulPose(Axis.XN.rotationDegrees(pitch));
             // Responsible for the roll (rotating entity to the side)
-            pose.mulPose(Axis.ZP.rotation(dragon.prevZRot));
+            float roll = doABarrelRollActive ? DoABarrelRollCompat.getRollRadians(player, partialTick) : dragon.prevZRot;
+            pose.mulPose(Axis.ZP.rotation(roll));
         }
     }
 

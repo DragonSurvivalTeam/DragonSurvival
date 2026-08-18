@@ -90,6 +90,7 @@
     "client.ScreenAccessor",
     "client.SmithingScreenMixin",
     "curios.CuriosButtonMixin",
+    "do_a_barrel_roll.DoABarrelRollClientMixin",
     "iris.GameRendererMixin",
     "multimine.MultiMineClientMixin",
     "sodium.ClientNeoForgeModMixin",
