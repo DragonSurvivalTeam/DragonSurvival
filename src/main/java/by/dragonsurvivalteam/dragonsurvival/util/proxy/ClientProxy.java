@@ -2,6 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.util.proxy;
 
 import by.dragonsurvivalteam.dragonsurvival.client.DragonSurvivalClient;
 import by.dragonsurvivalteam.dragonsurvival.client.render.ClientDragonRenderer;
+import by.dragonsurvivalteam.dragonsurvival.client.render.entity.dragon.DragonRenderer;
 import by.dragonsurvivalteam.dragonsurvival.client.sounds.FollowEntitySound;
 import by.dragonsurvivalteam.dragonsurvival.client.util.FakeClientPlayer;
 import by.dragonsurvivalteam.dragonsurvival.client.util.FakeClientPlayerUtils;
@@ -84,7 +85,7 @@ public class ClientProxy implements Proxy {
 
     @Override
     public void setCurrentAbilityAnimation(final Player player, final Pair<AbilityAnimation, AnimationType> animation) {
-        DragonEntity dragon = ClientDragonRenderer.getDragon(player);
+        DragonEntity dragon = animation == null ? ClientDragonRenderer.getDragon(player) : ClientDragonRenderer.getOrCreateDragon(player);
 
         if (dragon == null) {
             return;
@@ -198,6 +199,21 @@ public class ClientProxy implements Proxy {
     }
 
     @Override
+    public @Nullable Vec3 getDragonBonePosition(final Player player, final String boneName) {
+        return DragonRenderer.getBonePositionOrNull(player, boneName);
+    }
+
+    @Override
+    public @Nullable Vec3 getDragonBoneOffset(final Player player, final String boneName) {
+        return DragonRenderer.getBoneOffsetOrNull(player, boneName);
+    }
+
+    @Override
+    public boolean isDragonBonePositionFresh(final Player player, final String boneName) {
+        return DragonRenderer.isBonePositionFresh(player, boneName);
+    }
+
+    @Override
     public boolean updateDragonSoulBlockAnimation(final DragonSoulBlockEntity soul, final String animation) {
         DragonEntity dragon = FakeClientPlayerUtils.getFakeDragon(soul.fakePlayerIndex, soul.getHandler());
 
@@ -225,5 +241,9 @@ public class ClientProxy implements Proxy {
     @Override
     public Component getDragonSoulPlacementKeybind() {
         return Keybind.TOGGLE_DRAGON_SOUL_PLACEMENT.get().getTranslatedKeyMessage();
+    }
+
+    public boolean isFirstPerson() {
+        return Minecraft.getInstance().options.getCameraType().isFirstPerson();
     }
 }

@@ -32,7 +32,7 @@ public record LookingAtTarget(Either<BlockTargeting, EntityTargeting> target, Le
 
     @Override
     public void apply(final ServerPlayer dragon, final DragonAbilityInstance ability) {
-        target().ifLeft(blockTarget -> {
+        target.ifLeft(blockTarget -> {
             HitResult result = getBlockHitResult(dragon, ability);
 
             if (result.getType() == HitResult.Type.MISS || !(result instanceof BlockHitResult blockHitResult)) {
@@ -45,7 +45,7 @@ public record LookingAtTarget(Either<BlockTargeting, EntityTargeting> target, Le
 
             blockTarget.effects().forEach(target -> target.apply(dragon, ability, blockHitResult.getBlockPos(), blockHitResult.getDirection()));
         }).ifRight(entityTarget -> {
-            Predicate<Entity> filter = entity -> entityTarget.targetingMode().isEntityRelevant(dragon, entity) && entityTarget.matches(dragon, entity, entity.position());
+            Predicate<Entity> filter = entity -> entityTarget.targetingMode().isEntityRelevant(dragon, entity, entityTarget.isHarmful()) && entityTarget.matches(dragon, entity, entity.position());
             HitResult result = getEntityHitResult(dragon, filter, ability);
 
             if (result.getType() == HitResult.Type.MISS || !(result instanceof EntityHitResult entityHitResult)) {

@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.mixins;
 
+import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
@@ -7,6 +8,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.handlers.DragonSizeHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.HunterHandler;
 import by.dragonsurvivalteam.dragonsurvival.compat.Compat;
 import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
+import by.dragonsurvivalteam.dragonsurvival.network.player.SyncMountingBonePosition;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DamageModifications;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.HunterData;
@@ -24,6 +26,7 @@ import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -45,18 +48,30 @@ public abstract class EntityMixin {
 
         if (mount instanceof Player player && DragonStateProvider.isDragon(player)) {
             DragonStateHandler handler = DragonStateProvider.getData(player);
-            MovementData movement = MovementData.getData(player);
-            if (handler.body().value().mountingOffsets().isEmpty()) {
+            if (handler.body().value().noDragonModelRendering()) {
                 return original;
             }
-            Vec3 offset = DragonStateProvider.isDragon(passenger) ? handler.body().value().mountingOffsets().get().dragonOffset() : handler.body().value().mountingOffsets().get().humanOffset();
-            Vec3 offsetPerScaleAboveOne = handler.body().value().mountingOffsets().get().scale();
-            float scale = player.getScale();
-            offset = offset.add(offsetPerScaleAboveOne.scale(scale - 1));
-            original = original.add(offset);
-            original = original.xRot((float) Math.toRadians(movement.prevXRot * 1.5)).zRot(-(float) Math.toRadians(movement.prevZRot * 90));
-            original = original.add(offset).yRot(-(float) Math.toRadians(movement.bodyYawLastFrame));
-            return original;
+
+            if (mount.level().isClientSide()) {
+                Vec3 mountingOffset = DragonSurvival.PROXY.getDragonBoneOffset(player, DragonRidingHandler.MOUNTING_BONE);
+
+                if (mountingOffset != null) {
+                    Player localPlayer = DragonSurvival.PROXY.getLocalPlayer();
+                    boolean localParticipant = player == localPlayer || passenger == localPlayer;
+
+                    if (localParticipant && DragonSurvival.PROXY.isDragonBonePositionFresh(player, DragonRidingHandler.MOUNTING_BONE)) {
+                        PacketDistributor.sendToServer(new SyncMountingBonePosition(player.getId(), mountingOffset));
+                    }
+
+                    return mountingOffset;
+                }
+            } else {
+                Vec3 mountingOffset = handler.getMountingBoneOffset();
+
+                if (mountingOffset != null) {
+                    return mountingOffset;
+                }
+            }
         } else if (DragonStateProvider.isDragon(passenger) && !DragonStateProvider.isDragon(mount)) {
             // FIXME :: I did this is both places since different entities seem to possibly use either path... not sure how to reconcile this
             // Handle dragon riding normal mounts (e.g. boats)
@@ -79,6 +94,19 @@ public abstract class EntityMixin {
             // The vanilla player hitbox actually clips through most mounts, but the dragon player does not.
             // So we need to push it up such that it meets the point at which the vanilla player's actual model starts
             return original.add(DragonRidingHandler.getMountingOffsetForEntity(mount));
+        }
+
+        return original;
+    }
+
+    /** Dragon riders stand on the mounting bone instead of using the seated humanoid attachment point. */
+    @ModifyReturnValue(method = "getVehicleAttachmentPoint", at = @At("RETURN"))
+    private Vec3 dragonSurvival$useDragonFeetAsVehicleAttachmentPoint(Vec3 original, @Local(argsOnly = true) Entity vehicle) {
+        Entity rider = (Entity) (Object) this;
+
+        if (rider instanceof Player playerRider && vehicle instanceof Player playerVehicle
+                && DragonStateProvider.isDragon(playerRider) && DragonStateProvider.isDragon(playerVehicle)) {
+            return new Vec3(original.x, 0, original.z);
         }
 
         return original;
@@ -192,6 +220,7 @@ public abstract class EntityMixin {
         }
     }
 
+    // TODO :: maybe handle this in movement goals or somewhere else so they can still be pushed by game mechanics?
     @ModifyReturnValue(method = "getDeltaMovement", at = @At("RETURN"))
     private Vec3 dragonSurvival$handleSummonStay(final Vec3 deltaMovement) {
         Entity self = (Entity) (Object) this;

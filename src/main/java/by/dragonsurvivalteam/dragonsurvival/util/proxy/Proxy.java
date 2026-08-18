@@ -14,6 +14,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.util.FakePlayer;
 import org.jetbrains.annotations.Nullable;
 
@@ -71,6 +72,18 @@ public interface Proxy {
         return false;
     }
 
+    default @Nullable Vec3 getDragonBonePosition(final Player player, final String boneName) {
+        return null;
+    }
+
+    default @Nullable Vec3 getDragonBoneOffset(final Player player, final String boneName) {
+        return null;
+    }
+
+    default boolean isDragonBonePositionFresh(final Player player, final String boneName) {
+        return false;
+    }
+
     default boolean updateDragonSoulBlockAnimation(final DragonSoulBlockEntity soul, final String animation) {
         return false;
     }
@@ -86,6 +99,8 @@ public interface Proxy {
     default Component getDragonSoulPlacementKeybind() {
         return Component.empty();
     }
+
+    default boolean isFirstPerson() { return false; }
 
     @Nullable RegistryAccess getAccess();
 

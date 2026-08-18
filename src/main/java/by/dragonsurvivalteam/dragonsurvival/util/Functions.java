@@ -3,6 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.util;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Modifier;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.DSLanguageProvider;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
@@ -59,6 +60,15 @@ public class Functions {
     public record Time(int hours, int minutes, int seconds) {
         private static final NumberFormat FORMAT = NumberFormat.getInstance();
 
+        public enum TimeType {
+            @Translation(comments = "Hours")
+            HOURS,
+            @Translation(comments = "Minutes")
+            MINUTES,
+            @Translation(comments = "Seconds")
+            SECONDS
+        }
+
         static {
             FORMAT.setMinimumIntegerDigits(2);
         }
@@ -78,7 +88,31 @@ public class Functions {
             return format(hours) + ":" + format(minutes) + ":" + format(seconds);
         }
 
-        public String format(int number) {
+        public String handleFormat() {
+            if (hours() > 0) {
+                return format(TimeType.HOURS);
+            } else if (minutes() >= 0) {
+                return format(TimeType.MINUTES);
+            }
+
+            return format(TimeType.SECONDS);
+        }
+
+        private String format(final TimeType type) {
+            String time = "";
+
+            if (hours > 0) {
+                time = format(hours) + ":" + format(minutes) + ":" + format(seconds);
+            } else if (minutes > 0) {
+                time = format(minutes) + ":" + format(seconds);
+            } else if (seconds > 0) {
+                time = format(seconds);
+            }
+
+            return time + " " + DSLanguageProvider.enumValue(type).getString();
+        }
+
+        private String format(int number) {
             return FORMAT.format(Math.abs(number));
         }
     }

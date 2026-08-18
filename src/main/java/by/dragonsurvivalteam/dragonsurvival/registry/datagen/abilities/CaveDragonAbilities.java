@@ -4,6 +4,7 @@ import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.DamageModification;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.HarvestBonus;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.LevelBasedBoolean;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.LevelBasedResource;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.LevelBasedTier;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Modifier;
@@ -207,7 +208,7 @@ public class CaveDragonAbilities {
                                         new IgniteEffect(LevelBasedValue.perLevel(Functions.secondsToTicks(5))),
                                         new PotionEffect(PotionData.create(DSEffects.BURN).duration(10).probability(0.3f).build())
                                 ),
-                                TargetingMode.NON_ALLIES
+                                TargetingMode.NON_ALLIES, true
                         ), LevelBasedValue.constant(1)), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(10)),
                         new ActionContainer(new DragonBreathTarget(AbilityTargeting.block(List.of(
                                 new FireEffect(LevelBasedValue.constant(0.05f)),
@@ -260,7 +261,7 @@ public class CaveDragonAbilities {
                                         new DamageEffect(context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.FIRE_BREATH), LevelBasedValue.perLevel(0.5f), DSAttributes.DRAGON_ABILITY_DAMAGE, DamageEffect.DEFAULT_EXPRESSION, false),
                                         new IgniteEffect(LevelBasedValue.perLevel(Functions.secondsToTicks(1)))
                                 ),
-                                TargetingMode.NON_ALLIES
+                                TargetingMode.NON_ALLIES, true
                         ), LevelBasedValue.constant(1)), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(10)),
                         new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                                 List.of(new BreathParticlesEffect(
@@ -594,10 +595,10 @@ public class CaveDragonAbilities {
 
         context.register(LAVA_SWIMMING, new DragonAbility(
                 PassiveActivation.DEFAULT,
-                Optional.empty(),
+                Optional.of(new ExperienceLevelUpgrade(2, LevelBasedValue.perLevel(0, 15))),
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
-                        List.of(new SwimEffect(LevelBasedValue.perLevel(Functions.secondsToTicks(180), Functions.secondsToTicks(60)), NeoForgeMod.LAVA_TYPE)),
+                        List.of(new SwimEffect(LevelBasedValue.perLevel(Functions.secondsToTicks(180), Functions.secondsToTicks(60)), LevelBasedBoolean.atLevel(true, 2), NeoForgeMod.LAVA_TYPE)),
                         TargetingMode.ALLIES_AND_SELF
                 )), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(1))),
                 false, // To prevent regaining oxygen

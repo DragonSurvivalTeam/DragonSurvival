@@ -65,8 +65,6 @@ public class DragonBodies {
 
     public static final ResourceKey<DragonBody> NO_MODEL = key("no_model");
 
-    private static final DragonBody.MountingOffsets DEFAULT_MOUNTING_OFFSETS = DragonBody.MountingOffsets.of(new Vec3(0, -0.15, -0.5), new Vec3(0, 0.05, -0.5), new Vec3(0, -0.25, -0.5));
-
     public static void registerBodies(final BootstrapContext<DragonBody> context) {
         context.register(CENTER, new DragonBody(true, Optional.empty(), List.of(
                 Modifier.constant(DSAttributes.FLIGHT_SPEED, 0.2f, AttributeModifier.Operation.ADD_VALUE)
@@ -79,9 +77,9 @@ public class DragonBodies {
                 context.lookup(DragonEmoteSet.REGISTRY).getOrThrow(DragonEmoteSets.DEFAULT_EMOTES),
                 DragonBody.ScalingProportions.of(0.6, 2.0, 1.8, 1.0, 1.0),
                 0.83333333,
-                Optional.of(DEFAULT_MOUNTING_OFFSETS),
                 Optional.of(DragonBody.BackpackOffsets.of(new Vec3(0, 0, 0.1), new Vec3(180, 0, 180), new Vec3(0.9, 0.9, 0.9))),
-                -3
+                -3,
+                true
         ));
 
         context.register(EAST, new DragonBody(true, Optional.empty(), List.of(
@@ -105,9 +103,9 @@ public class DragonBodies {
                 context.lookup(DragonEmoteSet.REGISTRY).getOrThrow(DragonEmoteSets.DEFAULT_EMOTES),
                 DragonBody.ScalingProportions.of(0.6, 2.0, 1.8, 1.0, 1.0),
                 0.83333333,
-                Optional.of(DEFAULT_MOUNTING_OFFSETS),
                 Optional.of(DragonBody.BackpackOffsets.of(new Vec3(0, 0, 0.1), new Vec3(180, 0, 180), new Vec3(0.9, 0.9, 0.9))),
-                -3
+                -3,
+                true
         ));
 
         context.register(NORTH, new DragonBody(true, Optional.empty(), List.of(
@@ -127,9 +125,9 @@ public class DragonBodies {
                 context.lookup(DragonEmoteSet.REGISTRY).getOrThrow(DragonEmoteSets.DEFAULT_EMOTES),
                 DragonBody.ScalingProportions.of(0.6, 1.1, 0.99, 1.0, 1.0),
                 0.5,
-                Optional.of(DEFAULT_MOUNTING_OFFSETS),
                 Optional.of(DragonBody.BackpackOffsets.of(new Vec3(0, 0, 0.1), new Vec3(180, 0, 180), new Vec3(0.85, 0.85, 0.85))),
-                8
+                8,
+                true
         ));
 
         context.register(SOUTH, new DragonBody(true, Optional.empty(), List.of(
@@ -150,9 +148,9 @@ public class DragonBodies {
                 context.lookup(DragonEmoteSet.REGISTRY).getOrThrow(DragonEmoteSets.DEFAULT_EMOTES),
                 DragonBody.ScalingProportions.of(0.6, 2.0, 1.8, 1.0, 1.0),
                 0.83333333,
-                Optional.of(DEFAULT_MOUNTING_OFFSETS),
                 Optional.of(DragonBody.BackpackOffsets.of(new Vec3(0, 0, 0.1), new Vec3(180, 0, 180), new Vec3(0.9, 0.9, 0.9))),
-                -3
+                -3,
+                true
         ));
 
         context.register(WEST, new DragonBody(true, Optional.empty(), List.of(
@@ -172,9 +170,9 @@ public class DragonBodies {
                 context.lookup(DragonEmoteSet.REGISTRY).getOrThrow(DragonEmoteSets.DEFAULT_EMOTES),
                 DragonBody.ScalingProportions.of(0.6, 2.0, 1.8, 1.0, 1.0),
                 0.83333333,
-                Optional.of(DEFAULT_MOUNTING_OFFSETS),
                 Optional.of(DragonBody.BackpackOffsets.of(new Vec3(0, 0, 0.1), new Vec3(180, 0, 180), new Vec3(0.9, 0.9, 0.9))),
-                -3
+                -3,
+                true
         ));
 
         context.register(NO_MODEL, DragonBody.withoutDragonModel(

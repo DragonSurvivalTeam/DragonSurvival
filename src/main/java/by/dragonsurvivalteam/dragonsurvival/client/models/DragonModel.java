@@ -15,6 +15,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MovementData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
+import by.dragonsurvivalteam.dragonsurvival.server.handlers.DragonRidingHandler;
 import by.dragonsurvivalteam.dragonsurvival.util.AnimationUtils;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import net.minecraft.client.Minecraft;
@@ -26,8 +27,12 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import software.bernie.geckolib.animation.AnimationState;
+import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.loading.math.MathParser;
 import software.bernie.geckolib.model.GeoModel;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class DragonModel extends GeoModel<DragonEntity> {
     /** Factor to multiply the delta yaw and pitch by, needed for scaling for the animations */
@@ -40,6 +45,7 @@ public class DragonModel extends GeoModel<DragonEntity> {
     private final ResourceLocation defaultTexture = DragonSurvival.res("textures/dragon_dragon/newborn.png");
 
     private ResourceLocation overrideTexture;
+    private final Set<ResourceLocation> validatedMountingBoneModels = new HashSet<>();
 
     @Override
     public void applyMolangQueries(final AnimationState<DragonEntity> animationState, double currentTick) {
@@ -66,6 +72,9 @@ public class DragonModel extends GeoModel<DragonEntity> {
 
         double gravity = player.getAttributeValue(Attributes.GRAVITY);
         MathParser.setVariable("query.gravity", () -> gravity);
+
+        double growth = DragonStateProvider.getData(player).getGrowth();
+        MathParser.setVariable("query.ds_growth", () -> growth);
 
         double bodyYawAvg;
         double headYawAvg;
@@ -171,24 +180,40 @@ public class DragonModel extends GeoModel<DragonEntity> {
 
     @Override
     public ResourceLocation getModelResource(final DragonEntity dragon) {
+        Player player = dragon.getPlayer();
         ResourceLocation model;
 
-        if (dragon.getPlayer() == null) {
+        if (player == null) {
             model = DragonBody.DEFAULT_MODEL;
         } else {
-            model = DragonStateProvider.getData(dragon.getPlayer()).getModel();
+            model = DragonStateProvider.getData(player).getModel();
         }
 
         model = model.withPrefix("geo/").withSuffix(".geo.json");
 
         try {
-            getBakedModel(model);
+            BakedGeoModel bakedModel = getBakedModel(model);
+
+            if (player != null) {
+                validateMountingBone(DragonStateProvider.getData(player).body(), model, bakedModel);
+            }
         } catch (Exception e) {
-            DragonSurvival.LOGGER.error("Model not found for dragon species: {}", Translation.Type.DRAGON_SPECIES.wrap(DragonStateProvider.getData(dragon.getPlayer()).speciesKey().location()));
+            DragonSurvival.LOGGER.error("Model not found for dragon species: {}", Translation.Type.DRAGON_SPECIES.wrap(DragonStateProvider.getData(player).speciesKey().location()));
             return DragonBody.DEFAULT_MODEL;
         }
 
         return model;
+    }
+
+    private void validateMountingBone(final Holder<DragonBody> body, final ResourceLocation modelResource, final BakedGeoModel bakedModel) {
+        if (!body.value().rideable() || !validatedMountingBoneModels.add(modelResource)) {
+            return;
+        }
+
+        if (bakedModel.getBone(DragonRidingHandler.MOUNTING_BONE).isEmpty()) {
+            String bodyId = body.unwrapKey().map(key -> key.location().toString()).orElse("<direct>");
+            DragonSurvival.LOGGER.error("Dragon body [{}] is marked as rideable, but model [{}] does not contain the required mounting bone [{}].", bodyId, modelResource, DragonRidingHandler.MOUNTING_BONE);
+        }
     }
 
     @Override

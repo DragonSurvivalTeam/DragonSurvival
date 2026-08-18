@@ -3,13 +3,12 @@
 uniform sampler2D ArmorTexture;
 uniform sampler2D MaskTexture;
 uniform sampler2D TrimTexture;
+uniform sampler2D TrimPalette;
 uniform float HasMask;
 uniform float ApplyDye;
 uniform float HasTrim;
 uniform float DyeHue;
 uniform float DyeSaturation;
-uniform float TrimHue;
-uniform float TrimSaturation;
 
 in vec2 texCoord;
 
@@ -34,14 +33,10 @@ void main() {
         vec4 trimPixel = texture(TrimTexture, texCoord);
 
         if (trimPixel.a != 0.0) {
-            vec3 trimHSB = getHSB(trimPixel.rgb);
-
-            if (trimHSB.g == 0.0) {
-                fragColor = vec4(getRGB(vec3(TrimHue, TrimSaturation, trimHSB.b)), 1.0);
-            } else {
-                fragColor = vec4(0.0);
-            }
-
+            float brightness = dot(trimPixel.rgb, vec3(0.299, 0.587, 0.114));
+            int paletteIndex = int(clamp(round((224.0 - brightness * 255.0) / 32.0), 0.0, 7.0));
+            vec4 palettePixel = texelFetch(TrimPalette, ivec2(paletteIndex, 0), 0);
+            fragColor = vec4(palettePixel.rgb, trimPixel.a * palettePixel.a);
             return;
         }
     }

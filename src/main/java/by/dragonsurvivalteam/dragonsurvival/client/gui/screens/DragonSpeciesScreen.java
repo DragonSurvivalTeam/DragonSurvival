@@ -186,8 +186,9 @@ public class DragonSpeciesScreen extends Screen {
     @Override
     public void init() {
         //noinspection DataFlowIssue -> player is present
-        species = DragonStateProvider.getData(minecraft.player).species();
-        stage = DragonStateProvider.getData(minecraft.player).stage();
+        DragonStateHandler data = DragonStateProvider.getData(minecraft.player);
+        species = data.species();
+        stage = data.stage();
 
         int xSize = 256;
         int ySize = 256;
@@ -199,7 +200,6 @@ public class DragonSpeciesScreen extends Screen {
         int startY = guiTop + 17;
 
         TabButton.addTabButtonsToScreen(this, startX + 17, startY - 56, TabButton.TabButtonType.SPECIES_TAB);
-        DragonStateHandler data = DragonStateProvider.getData(minecraft.player);
 
         if (DietEntryCache.isEmpty(species)) {
             ExtendedButton noDietText = new ExtendedButton(startX + 77, startY + 30, 140, 20, Component.empty(), button -> {}) {
@@ -270,7 +270,7 @@ public class DragonSpeciesScreen extends Screen {
         // Growth stage button
         StageResources.GrowthIcon growthIcon = StageResources.getGrowthIcon(data.species(), data.stageKey());
         growthButton = new HoverButton(startX + 99, startY - 21, 20, growthIcon.icon(), growthIcon.hoverIcon(), () -> {
-            DragonStateHandler handler = DragonStateProvider.getData(minecraft.player);
+            DragonStateHandler handler = data;
             Pair<List<Either<FormattedText, TooltipComponent>>, Integer> growthDescriptionResult = handler.getGrowthDescription(growthTooltipScroll);
             List<Either<FormattedText, TooltipComponent>> components = growthDescriptionResult.getFirst();
             growthTooltipScroll = growthDescriptionResult.getSecond();
@@ -297,7 +297,7 @@ public class DragonSpeciesScreen extends Screen {
 
         // Riding button
         HoverButton ridingButton = new HoverButton(startX + 186, startY - 18, 16, RIDING_MAIN, RIDING_HOVER);
-        if (data.body().value().mountingOffsets().isPresent()) {
+        if (DragonRidingHandler.dragonIsRideable(minecraft.player)) {
             ridingButton.setTooltip(Tooltip.create(Component.translatable(RIDING_INFO, String.format("%.2f", (minecraft.player.getScale() * DragonRidingHandler.PLAYER_RIDING_SCALE_RATIO)), String.format("%.2f", (minecraft.player.getScale() * DragonRidingHandler.DRAGON_RIDING_SCALE_RATIO)))));
         } else {
             ridingButton.setTooltip(Tooltip.create(Component.translatable(RIDING_DISABLED)));

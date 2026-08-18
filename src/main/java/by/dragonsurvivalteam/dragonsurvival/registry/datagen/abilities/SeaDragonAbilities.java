@@ -4,6 +4,7 @@ import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.DamageModification;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.HarvestBonus;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.LevelBasedBoolean;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.LevelBasedResource;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.LevelBasedTier;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Modifier;
@@ -188,7 +189,7 @@ public class SeaDragonAbilities {
                                         new DamageEffect(context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.LIGHTNING_BREATH), LevelBasedValue.perLevel(1), DSAttributes.DRAGON_ABILITY_DAMAGE, DamageEffect.DEFAULT_EXPRESSION, false),
                                         new PotionEffect(PotionData.create(DSEffects.CHARGED).duration(30).probability(0.5f).build())
                                 ),
-                                TargetingMode.NON_ALLIES
+                                TargetingMode.NON_ALLIES, true
                         ), LevelBasedValue.constant(1)), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(10)),
                         new ActionContainer(new DragonBreathTarget(AbilityTargeting.block(
                                 List.of(new AreaCloudEffect(
@@ -663,11 +664,11 @@ public class SeaDragonAbilities {
 
         context.register(AMPHIBIOUS, new DragonAbility(
                 PassiveActivation.DEFAULT,
-                Optional.empty(),
+                Optional.of(new ExperienceLevelUpgrade(2, LevelBasedValue.perLevel(0, 15))),
                 Optional.empty(),
                 List.of(
                         new ActionContainer(new SelfTarget(AbilityTargeting.entity(
-                                List.of(new SwimEffect(LevelBasedValue.constant(SwimData.UNLIMITED_OXYGEN), NeoForgeMod.WATER_TYPE)),
+                                List.of(new SwimEffect(LevelBasedValue.constant(SwimData.UNLIMITED_OXYGEN), LevelBasedBoolean.atLevel(true, 2), NeoForgeMod.WATER_TYPE)),
                                 TargetingMode.ALL
                         )), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(1)),
                         new ActionContainer(new SelfTarget(AbilityTargeting.entity(
@@ -677,11 +678,6 @@ public class SeaDragonAbilities {
                                 )),
                                 TargetingMode.ALL
                         )), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(1)),
-                        // FIXME :: Put in a separate ability? Put in a different ability from this one? Just needed to move it since we deleted built in modifiers for dragon species
-                        //  unlock the first level of the resistance abilities? (i.e. set it to exp 0)
-                        //  would also need auto leveling logic? only for 0 experience though
-                        //  meaning you could only de-level up to the first non-0 experience level of the ability
-                        //  (since you can manually disable it that should be fine)
                         new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                                 ModifierEffect.only(new ModifierWithDuration(
                                         DurationInstanceBase.create(DragonSurvival.res("amphibious_penalty_resistance")).removeAutomatically().hidden().build(),

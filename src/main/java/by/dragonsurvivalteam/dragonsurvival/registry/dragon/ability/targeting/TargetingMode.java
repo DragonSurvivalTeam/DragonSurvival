@@ -6,6 +6,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.DSLanguageProvider;
 import com.mojang.serialization.Codec;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ExperienceOrb;
@@ -62,7 +63,7 @@ public enum TargetingMode implements StringRepresentable {
         this.name = name;
     }
 
-    public boolean isEntityRelevant(final Player player, final Entity target) {
+    public boolean isEntityRelevant(final ServerPlayer player, final Entity target, boolean isHarmful) {
         if (this == TargetingMode.ALL) {
             return true;
         }
@@ -85,6 +86,10 @@ public enum TargetingMode implements StringRepresentable {
 
         if (isEnemy(player, target)) {
             return this == TargetingMode.ENEMIES || this == TargetingMode.NON_ALLIES || this == TargetingMode.ALL_EXCEPT_SELF;
+        }
+
+        if (isHarmful && target instanceof Player otherPlayer) {
+            return canAttackPlayer(player, otherPlayer);
         }
 
         return this == TargetingMode.NEUTRAL || this == TargetingMode.NON_ALLIES || this == TargetingMode.NON_ENEMIES || this == TargetingMode.ALL_EXCEPT_SELF;
@@ -110,18 +115,22 @@ public enum TargetingMode implements StringRepresentable {
         }
 
         if (target instanceof Player otherPlayer && (PLAYER_FLAG & ALWAYS_ENEMY) != 0) {
-            // Returns true if friendly fire is enabled for the team
-            boolean canHarmPlayer = player.canHarmPlayer(otherPlayer);
-
-            if (!canHarmPlayer) {
-                return false;
-            }
-
-            // They're not allied or the flag for team safety is not present
-            return !player.isAlliedTo(otherPlayer) || (PLAYER_FLAG & SAFE_IN_TEAM) == 0;
+            return canAttackPlayer(player, otherPlayer);
         }
 
         return false;
+    }
+
+    private boolean canAttackPlayer(final Player dragon, final Player otherPlayer) {
+        // Returns true if friendly fire is enabled for the team
+        boolean canHarmPlayer = dragon.canHarmPlayer(otherPlayer);
+
+        if (!canHarmPlayer) {
+            return false;
+        }
+
+        // They're not allied or the flag for team safety is not present
+        return !dragon.isAlliedTo(otherPlayer) || (PLAYER_FLAG & SAFE_IN_TEAM) == 0;
     }
 
     public Component translation() {

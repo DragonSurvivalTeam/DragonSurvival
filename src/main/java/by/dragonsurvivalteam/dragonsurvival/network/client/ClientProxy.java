@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.network.client;
 
+import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.DragonAltarScreen;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.dragon_editor.DragonEditorScreen;
 import by.dragonsurvivalteam.dragonsurvival.client.render.ClientDragonRenderer;
@@ -16,7 +17,6 @@ import by.dragonsurvivalteam.dragonsurvival.network.particle.SyncBreathParticles
 import by.dragonsurvivalteam.dragonsurvival.network.particle.SyncParticleTrail;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.util.ResourceHelper;
-import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ParticleOptions;
@@ -99,12 +99,11 @@ public class ClientProxy {
         if (entity instanceof Player player) {
             DragonStateHandler handler = DragonStateProvider.getData(player);
 
-            if (handler.isDragon()) {
+            // If we are first person and this is the local player, just generate the particles from the eye,
+            // it feels more natural in first person
+            if (handler.isDragon() && !(player == DragonSurvival.PROXY.getLocalPlayer() && DragonSurvival.PROXY.isFirstPerson())) {
                 speedMultiplier = handler.getGrowth();
-
-                if (player != Minecraft.getInstance().player || Minecraft.getInstance().options.getCameraType() != CameraType.FIRST_PERSON) {
-                    position = DragonRenderer.getBonePosition(player, "BreathSource");
-                }
+                position = DragonRenderer.getBonePositionOrNull(player, DragonRenderer.BREATH_SOURCE);
             }
         }
 
@@ -117,7 +116,7 @@ public class ClientProxy {
         double movement = 1 + entity.getDeltaMovement().horizontalDistanceSqr();
         Vec3 angle = entity.getLookAngle();
 
-        if (position == null || position == Vec3.ZERO) {
+        if (position == null) {
             position = entity.getEyePosition().add(angle.scale(movement));
         } else {
             position = position.subtract(angle).add(angle.scale(movement));

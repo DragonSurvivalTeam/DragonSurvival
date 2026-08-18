@@ -1,0 +1,51 @@
+{
+  "actions": [
+    {
+      "target_selection": {
+        "applied_effects": {
+          "entity_effect": [
+            {
+              "bonuses": [
+                {
+                  "base": {
+                    "id": "dragonsurvival:test_oxygen_bonus",
+                    "should_remove_automatically": true
+                  },
+                  "fluid_types": "minecraft:water",
+                  "oxygen_bonus": {
+                    "type": "minecraft:linear",
+                    "base": 1200.0,
+                    "per_level_above_first": 1200.0
+                  }
+                }
+              ],
+              "effect_type": "dragonsurvival:oxygen_bonus"
+            }
+          ],
+          "targeting_mode": "all"
+        },
+        "target_type": "dragonsurvival:self"
+      }
+    }
+  ],
+  "activation": {
+    "activation_type": "dragonsurvival:passive",
+    "continuous_mana_cost": {
+      "type": "reserved",
+      "amount": 6.0
+    }
+  },
+  "icon": {
+    "texture_entries": [
+      {
+        "from_level": 0,
+        "texture_resource": "dragonsurvival:test"
+      }
+    ]
+  },
+  "upgrade": {
+    "experience_cost": 10.0,
+    "maximum_level": 10,
+    "upgrade_type": "dragonsurvival:experience_points"
+  }
+}
