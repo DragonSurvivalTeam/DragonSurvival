@@ -81,6 +81,7 @@
     "client.SmithingScreenMixin",
     "client.TextureManagerAccessor",
     "do_a_barrel_roll.DoABarrelRollClientMixin",
+    "do_a_barrel_roll.NeoForgeCameraMixin",
     "iris.GameRendererMixin",
     "sodium.DefaultFluidRendererMixin",
     "tool_swap.MultiPlayerGameModeEndMixin",

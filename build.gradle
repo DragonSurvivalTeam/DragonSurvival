@@ -172,6 +172,48 @@ repositories {
 	maven { url "https://api.modrinth.com/maven" }
 }
 
+/*
+ * Stuff needed to test Sinytra connector + Do a barrel roll locally
+def doABarrelRollFabric = configurations.create("doABarrelRollFabric") {
+	canBeConsumed = false
+	canBeResolved = true
+	transitive = false
+}
+
+def doABarrelRollConnectorMetadata = layout.buildDirectory.file("generated/connector/do-a-barrel-roll/fabric.mod.json")
+
+def prepareDoABarrelRollConnectorMetadata = tasks.register("prepareDoABarrelRollConnectorMetadata") {
+	inputs.files(doABarrelRollFabric)
+	outputs.file(doABarrelRollConnectorMetadata)
+	doLast {
+		def inputJar = new java.util.zip.ZipFile(doABarrelRollFabric.singleFile)
+		try {
+			def metadataEntry = inputJar.getEntry("fabric.mod.json")
+			def metadata = new groovy.json.JsonSlurper().parse(inputJar.getInputStream(metadataEntry))
+			metadata.jars = metadata.jars.findAll { it.file != "META-INF/jars/mixinsquared-fabric-0.1.2-beta.4.jar" }
+
+			def outputFile = doABarrelRollConnectorMetadata.get().asFile
+			outputFile.parentFile.mkdirs()
+			outputFile.text = groovy.json.JsonOutput.prettyPrint(groovy.json.JsonOutput.toJson(metadata)) + System.lineSeparator()
+		} finally {
+			inputJar.close()
+		}
+	}
+}
+
+def prepareDoABarrelRollForConnector = tasks.register("prepareDoABarrelRollForConnector", Zip) {
+	dependsOn prepareDoABarrelRollConnectorMetadata
+	archiveFileName = "do-a-barrel-roll-3.8.4+26.1-fabric-connector.jar"
+	destinationDirectory = layout.buildDirectory.dir("connector")
+	from({ zipTree(doABarrelRollFabric.singleFile) }) {
+		exclude "fabric.mod.json", "META-INF/neoforge.mods.toml", "META-INF/jars/mixinsquared-fabric-0.1.2-beta.4.jar"
+	}
+	from doABarrelRollConnectorMetadata
+	preserveFileTimestamps = false
+	reproducibleFileOrder = true
+}
+*/
+
 dependencies {
 	implementation "net.neoforged:neoforge:${neo_version}"
 
@@ -238,8 +280,16 @@ dependencies {
 	// EMI
 //	compileOnly "curse.maven:emi-580555:6420931" // 1.1.22
 
-	// Do a Barrel Roll (Fabric artifact used only for its shared API; no NeoForge 26.1 release exists)
+	// Do a Barrel Roll shared API; the compatibility code is bundled, but the mod is not.
 	compileOnly "maven.modrinth:do-a-barrel-roll:3.8.4+26.1-fabric"
+	// Testing for do a barrel roll, uncomment with testing stuff above
+//	add(doABarrelRollFabric.name, "maven.modrinth:do-a-barrel-roll:3.8.4+26.1-fabric")
+//	implementation files(prepareDoABarrelRollForConnector.flatMap { it.archiveFile })
+//	implementation "maven.modrinth:cicada:0.15.2+26.1"
+//	runtimeOnly "maven.modrinth:connector:3.0.0-beta.2+26.1.2"
+//	runtimeOnly "maven.modrinth:launchpad:1.7.1+26.1.2"
+//	runtimeOnly "maven.modrinth:forgified-fabric-api:0.154.0+3.2.3+26.1.2"
+//	runtimeOnly "maven.modrinth:yacl:3.9.6+26.1-neoforge"
 
 //	compileOnly "curse.maven:multi-mine-227887:8102429" // 26.1.2.2NF
 
