@@ -216,18 +216,22 @@ public abstract class LivingEntityMixin extends Entity {
     }
 
     @ModifyReturnValue(method = "isSuppressingSlidingDownLadder", at = @At("RETURN"))
-    private boolean dragonSurvival$canStickToWall(final boolean original) {
-        if (!(this.level() instanceof WorldGenLevel level)) {
-            return original;
-        }
-
-        ClimbableData data = this.getExistingData(DSDataAttachments.CLIMBABLE_DATA).orElse(null);
+    private boolean dragonSurvival$canStickToWalls(final boolean original) {
+        ClimbableData data = getExistingData(DSDataAttachments.CLIMBABLE_DATA).orElse(null);
 
         if (data == null || data.climbPosition == null) {
             return original;
         }
 
-        return data.canStickToWall(level);
+        if (/* We use this to allow players to move down */ isShiftKeyDown()) {
+            return false;
+        }
+
+        if (level() instanceof WorldGenLevel level) {
+            return data.canStickToWalls(level);
+        }
+
+        return data.isApprovedClimbPosition(data.climbPosition);
     }
     @Shadow
     public abstract double getAttributeValue(Holder<Attribute> attribute);

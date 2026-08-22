@@ -32,6 +32,7 @@ import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncAbilityLevel;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncAddPenaltySupply;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncBeginCast;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncBlockVision;
+import by.dragonsurvivalteam.dragonsurvival.network.magic.ClimbCheck;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncClimbableInstance;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncDamageModification;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncData;
@@ -186,6 +187,7 @@ public class NetworkHandler {
         registrar.playBidirectional(SyncData.TYPE, SyncData.STREAM_CODEC, SyncData::handleCommon);
         registrar.playBidirectional(SyncStopCast.TYPE, SyncStopCast.STREAM_CODEC, SyncStopCast::handleServer);
         registrar.playBidirectional(SyncDisableAbility.TYPE, SyncDisableAbility.STREAM_CODEC, SyncDisableAbility::handleServer);
+        registrar.playBidirectional(ClimbCheck.TYPE, ClimbCheck.STREAM_CODEC, ClimbCheck::handleServer);
 
         // Emote packets
         registrar.playBidirectional(SyncEmote.TYPE, SyncEmote.STREAM_CODEC, SyncEmote::handleServer);
@@ -240,6 +242,7 @@ public class NetworkHandler {
         event.register(SyncSummonedEntity.TYPE,  SyncSummonedEntity::handleClient);
         event.register(SyncGlowInstance.TYPE, SyncGlowInstance::handleClient);
         event.register(SyncBlockVision.TYPE, SyncBlockVision::handleClient);
+        event.register(ClimbCheck.TYPE, ClimbCheck::handleClient);
 
         // Potion sync
         event.register(SyncVisualEffectRemoval.TYPE, SyncVisualEffectRemoval::handleClient);

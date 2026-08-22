@@ -30,7 +30,7 @@ public class Climbable extends DurationInstanceBase<ClimbableData, Climbable.Ins
     public static final Codec<Climbable> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             DurationInstanceBase.CODEC.fieldOf("base").forGetter(identity -> identity),
             LevelBasedBlockPredicate.CODEC.fieldOf("blocks").forGetter(Climbable::blocks),
-            LevelBasedBoolean.CODEC.fieldOf("ca_stick_to_wall").forGetter(Climbable::canStickToWall)
+            LevelBasedBoolean.CODEC.optionalFieldOf("can_stick_to_walls", LevelBasedBoolean.constant(false)).forGetter(Climbable::canStickToWall)
     ).apply(instance, Climbable::new));
 
     private final LevelBasedBlockPredicate blocks;
@@ -78,8 +78,7 @@ public class Climbable extends DurationInstanceBase<ClimbableData, Climbable.Ins
             return baseData().blocks.matches(appliedAbilityLevel(), level, position);
         }
 
-        public boolean canStickToWall(final WorldGenLevel level, final BlockPos climbPosition) {
-            // TODO :: Cache the position (but also update it if anything happens on that position)
+        public boolean canStickToWalls(final WorldGenLevel level, final BlockPos climbPosition) {
             return baseData().blocks.matches(appliedAbilityLevel(), level, climbPosition);
         }
 

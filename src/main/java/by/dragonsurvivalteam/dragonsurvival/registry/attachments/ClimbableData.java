@@ -12,19 +12,60 @@ import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
+
+import java.util.Collection;
 
 @EventBusSubscriber
 public class ClimbableData extends Storage<Climbable.Instance> {
-    /** Temporarily kept to check whether 'canStickToWall' is allowed */
+    // The core problem as to why this whole client / server setup is needed:
+    // - The client calculates and stores the horizontal collision
+    // - On the client-side the "blocking sliding down on ladders" part is handled
+    // - Block predicates can only be evaluated on the server-side (i.e., is climbing allowed on that position)
+    // Meaning the client needs to collect the relevant positions and the server has to approve them
+
+    /** Temporarily kept to check whether 'canStickToWalls' is allowed */
     public @Nullable BlockPos climbPosition;
+
+    /**
+     * Client-only: positions the server has confirmed as climbable </br>
+     * Used to actually check (on the client-side) whether climbing is allowed
+     */
+    private @Nullable @Unmodifiable Collection<BlockPos> approvedClimbPositions;
+
+    /**
+     * Last set of (unfiltered in regard to climbable) positions collected by the client and sent to the server </br>
+     * On the server-side they may be updated through the 'LevelMixin' (causing a refresh to be sent to the client)
+     */
+    public @Nullable @Unmodifiable Collection<BlockPos> trackedClimbPositions;
+
+    public boolean isApprovedClimbPosition(final BlockPos position) {
+        return approvedClimbPositions != null && approvedClimbPositions.contains(position);
+    }
+
+    public void setApprovedClimbPositions(@Unmodifiable final Collection<BlockPos> positions) {
+        if (positions.isEmpty()) {
+            approvedClimbPositions = null;
+        } else {
+            approvedClimbPositions = positions;
+        }
+    }
+
+    public void setTrackedClimbPositions(@Unmodifiable final Collection<BlockPos> positions) {
+        if (positions.isEmpty()) {
+            trackedClimbPositions = null;
+        } else {
+            trackedClimbPositions = positions;
+        }
+    }
 
     public boolean canClimb(final WorldGenLevel level, final BlockPos position) {
         if (storage == null) {
             return false;
         }
 
-        for (final Climbable.Instance modification : storage.values()) {
-            if (modification.canClimb(level, position)) {
+        for (final Climbable.Instance instance : storage.values()) {
+            if (instance.canClimb(level, position)) {
                 return true;
             }
         }
@@ -32,13 +73,13 @@ public class ClimbableData extends Storage<Climbable.Instance> {
         return false;
     }
 
-    public boolean canStickToWall(final WorldGenLevel level) {
+    public boolean canStickToWalls(final WorldGenLevel level) {
         if (storage == null || climbPosition == null) {
             return false;
         }
 
-        for (final Climbable.Instance modification : storage.values()) {
-            if (modification.canStickToWall(level, climbPosition)) {
+        for (final Climbable.Instance instance : storage.values()) {
+            if (instance.canStickToWalls(level, climbPosition)) {
                 return true;
             }
         }
