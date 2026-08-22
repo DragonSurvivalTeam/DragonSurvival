@@ -25,6 +25,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.Optional;
 
+// FIXME :: add description
 public record ItemConversionEffect(List<ItemConversionData> itemConversions, LevelBasedValue probability) implements AbilityEntityEffect {
     public static final MapCodec<ItemConversionEffect> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             ItemConversionData.CODEC.listOf().fieldOf("item_conversions").forGetter(ItemConversionEffect::itemConversions),
@@ -41,7 +42,9 @@ public record ItemConversionEffect(List<ItemConversionData> itemConversions, Lev
     public record ItemTo(Holder<Item> item, double conversionRate, int weight, Optional<ParticleData> particles) implements WeightedEntry {
         public static final Codec<ItemTo> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 BuiltInRegistries.ITEM.holderByNameCodec().fieldOf("item").forGetter(ItemTo::item),
+                // TODO :: make it a levelbasedvalue
                 Codec.DOUBLE.optionalFieldOf("conversion_rate", 1.0).forGetter(ItemTo::conversionRate),
+                // TODO :: make it a levelbasedvalue to increase weight of e.g. rare conversions with level
                 Codec.INT.fieldOf("weight").forGetter(ItemTo::weight),
                 ParticleData.CODEC.optionalFieldOf("particles").forGetter(ItemTo::particles)
         ).apply(instance, ItemTo::new));

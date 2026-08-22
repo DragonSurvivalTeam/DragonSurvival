@@ -1,9 +1,12 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.Climbable;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.DamageModification;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Glow;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.LevelBasedBlockPredicate;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.LevelBasedBoolean;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.LevelBasedResource;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.LevelBasedValue;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.OxygenBonus;
@@ -40,6 +43,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.common_effec
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.common_effects.RunFunctionEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.common_effects.SummonEntityEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.BlockVisionEffect;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.ClimbEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.CooldownRecoveryEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.DamageEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.DamageModificationEffect;
@@ -81,6 +85,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.Tags;
+import net.minecraft.world.level.levelgen.blockpredicates.BlockPredicate;
 
 import java.util.List;
 import java.util.Optional;
@@ -93,6 +98,29 @@ public class DragonAbilities {
         CaveDragonAbilities.registerAbilities(context);
         ForestDragonAbilities.registerAbilities(context);
         SeaDragonAbilities.registerAbilities(context);
+
+        // --- Climbable --- //
+
+        context.register(ResourceKey.create(DragonAbility.REGISTRY, DragonSurvival.res(TEST_PREFIX + "climbable")), new DragonAbility(
+                new PassiveActivation(Optional.of(ManaCost.reserved(LevelBasedValue.constant(6))), Optional.empty(), ConstantTrigger.INSTANCE),
+                Optional.empty(),
+                Optional.empty(),
+                List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
+                        ClimbEffect.only(new Climbable(
+                                DurationInstanceBase.create(DragonSurvival.res(TEST_PREFIX + "climbable")).removeAutomatically().build(),
+                                LevelBasedBlockPredicate.constant(
+                                        BlockPredicate.anyOf(
+                                                BlockPredicate.matchesBlocks(Blocks.BLACK_WOOL),
+                                                BlockPredicate.matchesTag(BlockTags.LOGS)
+                                        )
+                                ),
+                                LevelBasedBoolean.constant(true)
+                        )),
+                        TargetingMode.ALL
+                )), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(1))),
+                true,
+                new LevelBasedResource(List.of(new LevelBasedResource.Entry(DragonSurvival.res("test"), 0)))
+        ));
 
         // --- Oxygen bonus --- //
 

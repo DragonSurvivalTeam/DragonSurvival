@@ -9,6 +9,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.handlers.EnchantmentEffectHan
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAttributes;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AttachmentManager;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ClimbableData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.EffectModifications;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.HunterData;
@@ -38,6 +39,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.ForgeMod;
@@ -343,6 +345,21 @@ public abstract class LivingEntityMixin extends Entity {
             player.calculateEntityAnimation(false);
             callback.cancel();
         }
+    }
+
+    @ModifyReturnValue(method = "isSuppressingSlidingDownLadder", at = @At("RETURN"))
+    private boolean dragonSurvival$canStickToWall(final boolean original) {
+        if (!(this.level() instanceof WorldGenLevel level)) {
+            return original;
+        }
+
+        ClimbableData data = AttachmentManager.getExistingData(this, DSDataAttachments.CLIMBABLE_DATA).orElse(null);
+
+        if (data == null || data.climbPosition == null) {
+            return original;
+        }
+
+        return data.canStickToWall(level);
     }
 
     @Shadow
