@@ -412,7 +412,8 @@ public class ClientFlightHandler {
                                         player.setDeltaMovement(deltaMovement);
                                         ay = player.getDeltaMovement().y;
                                     }
-                                } else if (!ServerFlightHandler.isGliding(player)) { //only run this if the gliding code is not already handling deceleration/transition to hover
+                                //only run this if the gliding code is not already handling deceleration/transition to hover
+                                } else if (!ServerFlightHandler.isGliding(player)) { 
                                     wasGliding = false;
                                     double maxForward = 0.5 * flightSpeedMultiplier * 2;
 
