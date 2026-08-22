@@ -97,6 +97,8 @@ public class ServerFlightHandler {
     @ConfigOption(side = ConfigSide.SERVER, category = "wings", key = "no_speed_requirement_for_vertical_acceleration")
     public static Boolean noSpeedRequirementForVerticalAcceleration = false;
 
+    public static int foldWingsDelay=20; //how long a player must be landed before flight mode is disabled
+
     @SubscribeEvent(receiveCanceled = true) // Unsure if this is needed
     public static void handleLanding(final LivingFallEvent event) {
         if (event.getEntity() instanceof Player player) {
@@ -104,6 +106,25 @@ public class ServerFlightHandler {
         }
     }
 
+    @SubscribeEvent
+    public void handleGracefulLanding(PlayerTickEvent.Pre event) {
+        Player player = event.getEntity();
+        if (player instanceof ServerPlayer && DragonStateProvider.isDragon(player)) {
+            DragonStateHandler handler = DragonStateProvider.getData(player);
+            if (player.onGround() && foldWingsOnLand) {
+                if (handler.foldWingsTimer > 0)
+                    handler.foldWingsTimer--;
+                else if (handler.foldWingsTimer == 0) {
+                    FlightData.getData(player).areWingsSpread = false;
+                    PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new SyncWingsSpread(player.getId(), false), new CustomPacketPayload[0]);
+                    handler.foldWingsTimer = -1;
+                }
+            } else {
+                handler.foldWingsTimer = foldWingsDelay;
+            }
+        }
+    }
+    
     @SubscribeEvent
     public static void handleLanding(final PlayerFlyableFallEvent event) {
         if (event.getEntity() instanceof Player player) {
