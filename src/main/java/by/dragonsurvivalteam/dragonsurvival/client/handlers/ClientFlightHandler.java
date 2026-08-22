@@ -307,8 +307,7 @@ public class ClientFlightHandler {
                             Vec3 deltaMovement = player.getDeltaMovement();
 
                             double maxFlightSpeed = ServerFlightHandler.maxFlightSpeed;
-                            ax = Mth.clamp(ax, -0.4 * maxFlightSpeed, 0.4 * maxFlightSpeed);
-                            az = Mth.clamp(az, -0.4 * maxFlightSpeed, 0.4 * maxFlightSpeed);
+                            limitSpeed(speedLimit); //properly limit the 3D speed vector
 
                             // Increase acceleration depending on how sharply the player turns their character
                             ax += Math.cos(yaw) / 500 * 50 * 2;
@@ -386,8 +385,8 @@ public class ClientFlightHandler {
                                     }
 
                                     double speedLimit = ServerFlightHandler.maxFlightSpeed * flightSpeedMultiplier;
-                                    ax = Mth.clamp(ax, -0.4 * speedLimit, 0.4 * speedLimit);
-                                    az = Mth.clamp(az, -0.4 * speedLimit, 0.4 * speedLimit);
+                                    limitSpeed(speedLimit); //properly limit the 3D speed vector
+                                   
 
                                     if (ServerFlightHandler.isSpin(player)) {
                                         ax += (Math.cos(yaw) * flightSpeedMultiplier * 100 * 2) / 500;
@@ -495,6 +494,16 @@ public class ClientFlightHandler {
         }
     }
 
+     private static void limitSpeed(double speedLimit){
+        Vec3 velocity = new Vec3(ax,ay,az);
+        double factor = speedLimit/velocity.length();
+        if (factor < 1){
+            ax *= factor;
+            ay *= factor;
+            az *= factor;
+        }
+    }
+    
     public static void toggleWings(@Nullable final Pair<Player, DragonStateHandler> data) {
         if (data == null) {
             return;
