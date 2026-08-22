@@ -18,6 +18,7 @@ import net.minecraft.tags.FluidTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -41,6 +42,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @EventBusSubscriber
 public class ClawToolHandler {
@@ -52,31 +54,40 @@ public class ClawToolHandler {
             return;
         }
 
-        ArrayList<ItemStack> stacks = new ArrayList<>();
+        ArrayList<ItemStack> tools = new ArrayList<>();
         SimpleContainer clawInventory = ClawInventoryData.getData(player).getContainer();
 
         for (int i = 0; i < ClawInventoryData.Slot.size(); i++) {
-            ItemStack clawStack = clawInventory.getItem(i);
+            ItemStack tool = clawInventory.getItem(i);
 
-            if (clawStack.isDamaged() && EnchantmentHelper.getItemEnchantmentLevel(Enchantments.MENDING, clawStack) > 0) {
-                stacks.add(clawStack);
+            if (tool.isDamaged() && EnchantmentHelper.getItemEnchantmentLevel(Enchantments.MENDING, tool) > 0) {
+                tools.add(tool);
             }
         }
 
-        if (stacks.isEmpty()) {
+        repairClawTools(player, tools, event.getOrb());
+    }
+
+    private static void repairClawTools(final Player player, final List<ItemStack> tools, final ExperienceOrb orb) {
+        if (tools.isEmpty()) {
             return;
         }
 
-        ItemStack repairTime = stacks.get(player.getRandom().nextInt(stacks.size()));
+        ItemStack tool = tools.remove(player.getRandom().nextInt(tools.size()));
+        int availableRepairAmount = (int) (orb.value * tool.getXpRepairRatio());
 
-        if (!repairTime.isEmpty() && repairTime.isDamaged()) {
-            int i = Math.min((int) (event.getOrb().value * repairTime.getXpRepairRatio()), repairTime.getDamageValue());
-            event.getOrb().value -= i * 2;
-            repairTime.setDamageValue(repairTime.getDamageValue() - i);
+        int damageValue = tool.getDamageValue();
+        int repairedDamage = Math.min(availableRepairAmount, damageValue);
+
+        if (repairedDamage > 0 && availableRepairAmount > 0) {
+            tool.setDamageValue(damageValue - repairedDamage);
+            orb.value = Math.max(0, orb.value - repairedDamage * orb.value / availableRepairAmount);
+            player.detectEquipmentUpdates();
         }
 
-        event.getOrb().value = Math.max(0, event.getOrb().value);
-        player.detectEquipmentUpdates();
+        if (orb.value > 0) {
+            repairClawTools(player, tools, orb);
+        }
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST) // In order to add the drops early for other mods (e.g. grave mods)
