@@ -31,6 +31,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.enchantment.Enchantments;
@@ -152,6 +154,37 @@ public class ClientFlightHandler {
     private static final TickedCooldown jumpFlyCooldown = new TickedCooldown(7);
     private static boolean lastJumpInputState; // We need to track the rising edge manually
 
+    // 26.1's event distance can include a ridden entity's larger camera
+    // distance. 1.21.1 always based this calculation on the player.
+    private static float calculateCameraDistance(@Nullable Entity entity, float distance, float scalingFactor, boolean isDetached) {
+        if (entity == null) return 0;
+
+        if (entity instanceof Player player) {
+            if (entity == DragonSurvival.PROXY.getLocalPlayer()) {
+                if (DragonSurvival.PROXY.dragonRenderingWasCancelled(DragonSurvival.PROXY.getLocalPlayer())) {
+                    return distance * scalingFactor;
+                }
+            }
+
+            DragonStateHandler handler = DragonStateProvider.getData(player);
+            float visualScale = (float) handler.getVisualScale(DragonSurvival.PROXY.getLocalPlayer(), Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(false));
+
+            if (disableSizeCameraModifications) {
+                return distance * visualScale;
+            } else {
+                float finalDistance = (distance + baseDragonCameraOffset) * Math.max(visualScale, dragonCameraMinimumScale) * dragonCameraScaleFactor + flatDragonCameraOffset;
+                if (spinCameraEffect && isDetached) {
+                    return finalDistance + SpinFlightPresentation.getDetachedCameraOffset();
+                } else {
+                    return finalDistance;
+                }
+            }
+        }
+
+        // Vanilla behavior
+        return distance * scalingFactor;
+    }
+
     // Run this somewhat early, but not extremely early so that if another mod messes with camera rendering, it will recieve DS's changes first.
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void flightCamera(CalculateDetachedCameraDistanceEvent event) {
@@ -159,20 +192,10 @@ public class ClientFlightHandler {
             return;
         }
 
-        DragonStateProvider.getOptional(DragonSurvival.PROXY.getLocalPlayer()).ifPresent(handler -> {
-            if (handler.isDragon()) {
-                float visualScale = (float) handler.getVisualScale(DragonSurvival.PROXY.getLocalPlayer(), Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(false));
-                if (disableSizeCameraModifications) {
-                    event.setDistance((event.getDistance()) / event.getEntityScalingFactor() * visualScale);
-                } else {
-                    event.setDistance((event.getDistance() + baseDragonCameraOffset) / event.getEntityScalingFactor() * Math.max(visualScale, dragonCameraMinimumScale) * dragonCameraScaleFactor + flatDragonCameraOffset);
-                }
+        float mountDistance = calculateCameraDistance(event.getCamera().entity().getVehicle(), event.getVehicleEntityDistance(), event.getVehicleEntityScalingFactor(), event.getCamera().isDetached());
+        float riderDistance = calculateCameraDistance(event.getCamera().entity(), event.getEntityDistance(), event.getEntityScalingFactor(), event.getCamera().isDetached());
 
-                if (spinCameraEffect && event.getCamera().isDetached()) {
-                    event.setDistance(event.getDistance() + SpinFlightPresentation.getDetachedCameraOffset());
-                }
-            }
-        });
+        event.setDistance(Math.max(mountDistance, riderDistance));
     }
 
     // Run this somewhat early, but not extremely early so that if another mod messes with camera rendering, it will recieve DS's changes first.
@@ -184,7 +207,6 @@ public class ClientFlightHandler {
 
         Minecraft minecraft = Minecraft.getInstance();
         LocalPlayer currentPlayer = minecraft.player;
-        Camera info = setup.getCamera();
 
         if (currentPlayer != null && currentPlayer.isAddedToLevel() && DragonStateProvider.isDragon(currentPlayer)) {
             boolean shouldApplyZoom = false;
@@ -198,7 +220,6 @@ public class ClientFlightHandler {
                         Vec3 lookVec = currentPlayer.getLookAngle();
                         float increase = (float) Mth.clamp(lookVec.y * 10, 0, lookVec.y * 5);
                         float gradualIncrease = Mth.lerp(0.25f, lastIncrease, increase);
-                        info.move(0, gradualIncrease, 0);
                         lastIncrease = gradualIncrease;
                     }
                 }
@@ -216,7 +237,6 @@ public class ClientFlightHandler {
                 if (lastIncrease > 0) {
                     if (flightCameraMovement) {
                         lastIncrease = Mth.lerp(0.25f, lastIncrease, 0);
-                        info.move(0, lastIncrease, 0);
                     }
                 }
             }
@@ -233,13 +253,6 @@ public class ClientFlightHandler {
                 setup.setPitch(setup.getPitch() + SpinFlightPresentation.getPitchOffset(currentPlayer, partialTick));
                 setup.setRoll(setup.getRoll() + SpinFlightPresentation.getRollOffset(currentPlayer, partialTick));
 
-                if (setup.getCamera().isDetached() && flightCameraMovement) {
-                    float spinCameraOffset = SpinFlightPresentation.getCameraLift() + SpinFlightPresentation.getCameraBobOffset(currentPlayer, partialTick);
-
-                    if (spinCameraOffset != 0.0F) {
-                        info.move(0.0F, spinCameraOffset, 0.0F);
-                    }
-                }
             }
 
             if (DoABarrelRollCompat.isActive(currentPlayer)) {
