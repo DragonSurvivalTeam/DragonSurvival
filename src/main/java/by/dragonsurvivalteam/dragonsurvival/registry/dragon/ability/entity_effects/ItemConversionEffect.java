@@ -21,6 +21,7 @@ import net.minecraft.world.phys.Vec3;
 import java.util.List;
 import java.util.Optional;
 
+// FIXME :: add description
 public record ItemConversionEffect(List<ItemConversionData> itemConversions, LevelBasedValue probability) implements AbilityEntityEffect {
     public static final MapCodec<ItemConversionEffect> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             ItemConversionData.CODEC.listOf().fieldOf("item_conversions").forGetter(ItemConversionEffect::itemConversions),
@@ -34,24 +35,27 @@ public record ItemConversionEffect(List<ItemConversionData> itemConversions, Lev
         ).apply(instance, ItemConversionData::new));
     }
 
-    public record ItemTo(Holder<Item> item, double conversionRate, Optional<ParticleData> particles) {
+    public record ItemTo(Holder<Item> item, double conversionRate, int weight, Optional<ParticleData> particles) {
         public static final MapCodec<ItemTo> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
                 BuiltInRegistries.ITEM.holderByNameCodec().fieldOf("item").forGetter(ItemTo::item),
+                // TODO :: make it a levelbasedvalue
                 Codec.DOUBLE.optionalFieldOf("conversion_rate", 1.0).forGetter(ItemTo::conversionRate),
+                // TODO :: make it a levelbasedvalue to increase weight of e.g. rare conversions with level
+                Codec.INT.fieldOf("weight").forGetter(ItemTo::weight),
                 ParticleData.CODEC.optionalFieldOf("particles").forGetter(ItemTo::particles)
         ).apply(instance, ItemTo::new));
 
-        public static ItemTo of(final Item item) {
-            return of(item, 1.0, null);
-        }
+    public static ItemTo of(final Item item) {
+            return of(item, 1.0, 1, null);
+    }
 
-        public static ItemTo of(final Item item, final double conversionRate) {
-            return of(item, conversionRate, null);
-        }
+    public static ItemTo of(final Item item, final int weight) {
+            return of(item, 1.0, weight, null);
+    }
 
-        public static ItemTo of(final Item item, final double conversionRate, final ParticleData particles) {
+        public static ItemTo of(final Item item, final double conversionRate, final int weight, final ParticleData particles) {
             //noinspection deprecation -> ignore
-            return new ItemTo(item.builtInRegistryHolder(), conversionRate, Optional.ofNullable(particles));
+            return new ItemTo(item.builtInRegistryHolder(), conversionRate, weight, Optional.ofNullable(particles));
         }
     }
 
