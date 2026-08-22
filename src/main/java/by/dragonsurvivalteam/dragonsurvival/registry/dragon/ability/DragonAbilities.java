@@ -115,6 +115,7 @@ public class DragonAbilities {
                                                 BlockPredicate.matchesTag(BlockTags.LOGS)
                                         )
                                 ),
+                                LevelBasedBoolean.constant(true),
                                 LevelBasedBoolean.constant(true)
                         )),
                         TargetingMode.ALL

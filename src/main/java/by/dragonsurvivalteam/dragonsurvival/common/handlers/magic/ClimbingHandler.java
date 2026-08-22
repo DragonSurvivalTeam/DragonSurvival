@@ -20,24 +20,61 @@ import java.util.Set;
 public class ClimbingHandler {
     public static boolean canClimb(final LivingEntity entity, final ClimbableData data) {
         if (entity.level() instanceof WorldGenLevel level) {
-            if (data.trackedClimbPositions == null) {
-                return false;
-            }
+            return handleServer(entity, data, level);
+        }
 
-            for (BlockPos position : data.trackedClimbPositions) {
-                if (data.canClimb(level, position)) {
-                    data.climbPosition = position;
-                    return true;
-                }
-            }
+        return handleClient(entity, data);
+    }
 
+    /** Checks whether the supplied positions are climbable */
+    public static Set<BlockPos> filterPositions(@Nullable final ClimbableData data, final WorldGenLevel level, final LivingEntity entity, @Unmodifiable final Collection<BlockPos> positions) {
+        if (data == null || data.isEmpty() || positions.isEmpty()) {
+            return Set.of();
+        }
+
+        Set<BlockPos> climbablePositions = new HashSet<>(positions);
+        climbablePositions.removeIf(position -> !data.canClimb(level, position, entity));
+
+        return climbablePositions;
+    }
+
+    private static boolean handleServer(final LivingEntity entity, final ClimbableData data, final WorldGenLevel level) {
+        if (data.trackedClimbPositions == null) {
             return false;
         }
 
+        BlockPos ceilingMatch = null;
+        BlockPos wallMatch = null;
+
+        for (BlockPos position : data.trackedClimbPositions) {
+            if (!data.canClimb(level, position, entity)) {
+                continue;
+            }
+
+            if (position.getY() > entity.getBlockY()) {
+                ceilingMatch = position;
+                break;
+            } else if (wallMatch == null) {
+                wallMatch = position;
+            }
+        }
+
+        // Prioritize ceiling so a transition from wall-climbing to ceiling-climbing is possible
+        BlockPos climbPosition = ceilingMatch != null ? ceilingMatch : wallMatch;
+
+        if (climbPosition != null) {
+            data.climbPosition = climbPosition;
+            return true;
+        }
+
+        return false;
+    }
+
+    /** Server does not store the relevant variables */
+    private static boolean handleClient(final LivingEntity entity, final ClimbableData data) {
         Direction facing = entity.getDirection();
         Set<BlockPos> climbablePositions = new HashSet<>();
 
-        // The server does not store this collision check nor the xxa / zza values, making this a client-only check
         if (entity.horizontalCollision) {
             if (Math.signum(entity.xxa) != 0) {
                 Direction inputDirection = entity.xxa > 0
@@ -56,12 +93,18 @@ public class ClimbingHandler {
             }
         }
 
+        // Handles the sticking to the wall part / sliding down
+        // Since in those cases there will be no active collision / xxa or zza change
         if (climbablePositions.isEmpty() && !entity.onGround()) {
             BlockPos base = entity.blockPosition();
 
             for (Direction direction : Direction.Plane.HORIZONTAL) {
                 climbablePositions.add(base.relative(direction));
             }
+        }
+
+        if (data.canClimbCeilings() && !entity.onGround()) {
+            climbablePositions.add(BlockPos.containing(entity.getX(), entity.getBoundingBox().getMaxPosition().y() + 0.01, entity.getZ()));
         }
 
         if (!climbablePositions.equals(Objects.requireNonNullElse(data.trackedClimbPositions, Set.of()))) {
@@ -73,25 +116,30 @@ public class ClimbingHandler {
             return false;
         }
 
+        BlockPos ceilingPosition = null;
+        BlockPos wallPosition = null;
+
         for (BlockPos position : climbablePositions) {
-            if (data.isApprovedClimbPosition(position)) {
-                data.climbPosition = position;
-                return true;
+            if (!data.isApprovedClimbPosition(position)) {
+                continue;
+            }
+
+            if (position.getY() > entity.getBlockY()) {
+                ceilingPosition = position;
+                break;
+            } else if (wallPosition == null) {
+                wallPosition = position;
             }
         }
 
-        return false;
-    }
+        // Prioritize ceiling so a transition from wall-climbing to ceiling-climbing is possible
+        BlockPos climbingPosition = ceilingPosition != null ? ceilingPosition : wallPosition;
 
-    /** Checks whether the supplied positions are climbable */
-    public static Set<BlockPos> filterPositions(@Nullable final ClimbableData data, final WorldGenLevel level, @Unmodifiable final Collection<BlockPos> positions) {
-        if (data == null || data.isEmpty() || positions.isEmpty()) {
-            return Set.of();
+        if (climbingPosition != null) {
+            data.climbPosition = climbingPosition;
+            return true;
         }
 
-        Set<BlockPos> climbablePositions = new HashSet<>(positions);
-        climbablePositions.removeIf(position -> !data.canClimb(level, position));
-
-        return climbablePositions;
+        return false;
     }
 }

@@ -27,6 +27,10 @@
                       ]
                     }
                   },
+                  "can_climb_ceilings": {
+                    "entries": [],
+                    "fallback": true
+                  },
                   "can_stick_to_walls": {
                     "entries": [],
                     "fallback": true
