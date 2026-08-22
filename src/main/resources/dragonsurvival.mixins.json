@@ -10,6 +10,7 @@
     "AttributeMapAccessor",
     "BlockMixin",
     "ConsumableMixin",
+    "DisplayMixin",
     "EnderDragonFightAccessor",
     "EndPortalBlockMixin",
     "EntityAccessor",
