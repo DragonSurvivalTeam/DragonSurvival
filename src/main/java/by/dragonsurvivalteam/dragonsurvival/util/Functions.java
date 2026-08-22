@@ -11,6 +11,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.DSLanguageProvider;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -18,8 +19,9 @@ import net.minecraft.nbt.DoubleTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.util.ARGB;
 import net.minecraft.resources.Identifier;
+import net.minecraft.tags.TagKey;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.attribute.EnvironmentAttributes;
@@ -371,7 +373,7 @@ public class Functions {
 
     public static <T> MutableComponent translateHolderSet(final HolderSet<T> set, final Function<Holder<T>, String> translationKey) {
         if (set instanceof HolderSet.Named<T> named) {
-            return DSColors.dynamicValue(Component.translatable(Tags.getTagTranslationKey(named.key())));
+            return DSColors.dynamicValue(translateTagWithFallback(named.key()));
         }
 
         MutableComponent list = null;
@@ -389,6 +391,16 @@ public class Functions {
         return Objects.requireNonNullElse(list, Component.empty());
     }
 
+    public static MutableComponent translateTagWithFallback(final TagKey<?> tag) {
+        String tagKey = Tags.getTagTranslationKey(tag);
+
+        if (I18n.exists(tagKey)) {
+            return Component.translatable(tagKey);
+        } else {
+            return Component.literal(DSLanguageProvider.capitalize(tag.location().getPath()));
+        }
+    }
+
     /** Attempt to make the content of a block predicate readable */
     public static MutableComponent translateBlockPredicate(final BlockPredicate predicate) {
         BlockPredicateType<?> type = predicate.type();
@@ -398,7 +410,7 @@ public class Functions {
         }
 
         if (type == BlockPredicateType.MATCHING_BLOCK_TAG) {
-            return DSColors.dynamicValue(Component.translatable(Tags.getTagTranslationKey(((MatchingBlockTagPredicateAccess) predicate).dragonSurvival$tag())));
+            return DSColors.dynamicValue(translateTagWithFallback(((MatchingBlockTagPredicateAccess) predicate).dragonSurvival$tag()));
         }
 
         if (type == BlockPredicateType.MATCHING_FLUIDS) {
