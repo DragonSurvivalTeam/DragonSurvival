@@ -39,6 +39,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -1011,6 +1012,29 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
         }
 
         return RenderTypes.entityCutoutCull(texture);
+    }
+
+    @Override
+    public void submitRenderTasks(final RenderPassInfo<R> renderPassInfo, final OrderedSubmitNodeCollector renderTasks, final @Nullable RenderType renderType) {
+        super.submitRenderTasks(renderPassInfo, renderTasks, renderType);
+
+        int outlineColor = renderPassInfo.renderState().outlineColor;
+
+        if (renderType == null || outlineColor == 0 || renderPassInfo.model().isMissingno()) {
+            return;
+        }
+
+        int packedLight = renderPassInfo.packedLight();
+        int packedOverlay = renderPassInfo.packedOverlay();
+        RenderType outlineRenderType = RenderTypes.outline(getTextureLocation(renderPassInfo.renderState()));
+
+        renderTasks.submitCustomGeometry(renderPassInfo.poseStack(), outlineRenderType, (pose, vertexConsumer) -> {
+            PoseStack poseStack = renderPassInfo.poseStack();
+            poseStack.pushPose();
+            poseStack.last().set(pose);
+            renderPassInfo.renderPosed(() -> renderPassInfo.model().render(renderPassInfo, vertexConsumer, packedLight, packedOverlay, outlineColor));
+            poseStack.popPose();
+        });
     }
 
     // Also used by the layers
