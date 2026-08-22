@@ -79,7 +79,7 @@ public abstract class LivingEntityRendererMixin<T extends LivingEntity, S extend
 
         ClimbableData data = player.getExistingData(DSDataAttachments.CLIMBABLE_DATA).orElse(null);
 
-        if (data == null || !data.isClimbingCeiling(player)) {
+        if (data == null || !data.isCeilingClimbing()) {
             return;
         }
 
