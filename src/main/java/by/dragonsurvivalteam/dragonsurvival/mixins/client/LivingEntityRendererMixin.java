@@ -59,6 +59,7 @@ public abstract class LivingEntityRendererMixin<T extends LivingEntity, M extend
             return;
         }
 
+//        poseStack.translate(0, entity.getBbHeight(), 0);
         poseStack.mulPose(Axis.XP.rotationDegrees(-90));
         // Need to invert the facing direction for movement since the model is inverted
         poseStack.mulPose(Axis.ZP.rotationDegrees(-180));

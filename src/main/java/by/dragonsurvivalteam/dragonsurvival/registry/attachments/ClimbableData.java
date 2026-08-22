@@ -47,6 +47,18 @@ public class ClimbableData extends Storage<Climbable.Instance> {
         return approvedClimbPositions != null && approvedClimbPositions.contains(position);
     }
 
+    public boolean canStillClimb(final LivingEntity entity) {
+        if (climbPosition == null) {
+            return false;
+        }
+
+        if (entity.level() instanceof WorldGenLevel level) {
+            return canClimb(level, climbPosition, entity);
+        }
+
+        return isApprovedClimbPosition(climbPosition);
+    }
+
     public void setApprovedClimbPositions(@Unmodifiable final Collection<BlockPos> positions) {
         if (positions.isEmpty()) {
             approvedClimbPositions = null;
@@ -61,20 +73,6 @@ public class ClimbableData extends Storage<Climbable.Instance> {
         } else {
             trackedClimbPositions = positions;
         }
-    }
-
-    public boolean canClimb(final WorldGenLevel level, final BlockPos position) {
-        if (storage == null) {
-            return false;
-        }
-
-        for (final Climbable.Instance instance : storage.values()) {
-            if (instance.canClimb(level, position)) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     public boolean canClimb(final WorldGenLevel level, final BlockPos position, final LivingEntity entity) {
@@ -115,7 +113,7 @@ public class ClimbableData extends Storage<Climbable.Instance> {
         return false;
     }
 
-    public boolean canStickToWalls(final WorldGenLevel level, final LivingEntity entity) {
+    public boolean canStickToWalls(final WorldGenLevel level) {
         if (storage == null || climbPosition == null) {
             return false;
         }
@@ -137,20 +135,24 @@ public class ClimbableData extends Storage<Climbable.Instance> {
 
     @SubscribeEvent
     public static void tickData(final EntityTickEvent.Post event) {
-        event.getEntity().getExistingData(DSDataAttachments.CLIMBABLE_DATA).ifPresent(data -> {
-            if (!data.isApprovedClimbPosition(data.climbPosition)) {
+        if (!(event.getEntity() instanceof LivingEntity livingEntity)) {
+            return;
+        }
+
+        livingEntity.getExistingData(DSDataAttachments.CLIMBABLE_DATA).ifPresent(data -> {
+            if (!data.canStillClimb(livingEntity)) {
                 data.climbPosition = null;
                 data.isCeilingClimbing = false;
             }
 
-            if (event.getEntity().level().isClientSide()) {
+            if (livingEntity.level().isClientSide()) {
                 return;
             }
 
-            data.tick(event.getEntity());
+            data.tick(livingEntity);
 
             if (data.isEmpty()) {
-                event.getEntity().removeData(DSDataAttachments.CLIMBABLE_DATA);
+                livingEntity.removeData(DSDataAttachments.CLIMBABLE_DATA);
             }
         });
     }
