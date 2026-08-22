@@ -9,6 +9,7 @@ import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
 import by.dragonsurvivalteam.dragonsurvival.network.player.SyncDragonPassengerID;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.util.PlayerMessageUtil;
+import by.dragonsurvivalteam.dragonsurvival.mixins.EntityAccessor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSetPassengersPacket;
 import net.minecraft.server.level.ServerPlayer;
@@ -75,6 +76,16 @@ public class DragonRidingHandler {
         SUCCESS
     }
 
+    private static void forceMount(final Player rider, final ServerPlayer mount) {
+        if (rider.isPassenger()) {
+            rider.stopRiding();
+        }
+
+        rider.setPose(Pose.STANDING);
+        ((EntityAccessor) rider).dragonSurvival$setVehicle(mount);
+        ((EntityAccessor) mount).dragonSurvival$addPassenger(rider);
+    }
+
     public static Vec3 getMountingOffsetForEntity(final Entity entity) {
         for (OffsetConfig config : DragonRidingHandler.OFFSETS) {
             //noinspection deprecation -> ignore
@@ -132,8 +143,10 @@ public class DragonRidingHandler {
         DragonRideAttemptResult result = playerCanRideDragon(self, target);
 
         if (result == DragonRideAttemptResult.SUCCESS && !target.isVehicle()) {
-            self.startRiding(target);
-            target.connection.send(new ClientboundSetPassengersPacket(target));
+            // ServerPlayer cannot be serialized as a vehicle, so Entity.startRiding always rejects it.
+            // This mirrors the low-level mount attachment used by the riding debug command.
+            forceMount(self, target);
+            target.level().getChunkSource().sendToTrackingPlayersAndSelf(target, new ClientboundSetPassengersPacket(target));
 
             DragonStateProvider.getData(target).setPassengerId(self.getId());
             PacketDistributor.sendToPlayersTrackingEntityAndSelf(target, new SyncDragonPassengerID(target.getId(), self.getId()));
@@ -169,7 +182,7 @@ public class DragonRidingHandler {
                     if (passenger != null) {
                         passenger.stopRiding();
                     }
-                    player.connection.send(new ClientboundSetPassengersPacket(player));
+                    player.level().getChunkSource().sendToTrackingPlayersAndSelf(player, new ClientboundSetPassengersPacket(player));
                     return;
                 }
 
@@ -183,7 +196,7 @@ public class DragonRidingHandler {
                     dragonStateHandler.setPassengerId(NO_PASSENGER);
                     PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new SyncDragonPassengerID(player.getId(), NO_PASSENGER));
                     passenger.stopRiding();
-                    player.connection.send(new ClientboundSetPassengersPacket(player));
+                    player.level().getChunkSource().sendToTrackingPlayersAndSelf(player, new ClientboundSetPassengersPacket(player));
                 }
             });
         }
@@ -194,7 +207,7 @@ public class DragonRidingHandler {
         if (event.getEntity() instanceof ServerPlayer player && player.getVehicle() instanceof ServerPlayer vehicle) {
             DragonStateProvider.getOptional(vehicle).ifPresent(handler -> {
                 player.stopRiding();
-                vehicle.connection.send(new ClientboundSetPassengersPacket(vehicle));
+                vehicle.level().getChunkSource().sendToTrackingPlayersAndSelf(vehicle, new ClientboundSetPassengersPacket(vehicle));
                 handler.setPassengerId(NO_PASSENGER);
                 PacketDistributor.sendToPlayersTrackingEntityAndSelf(vehicle, new SyncDragonPassengerID(vehicle.getId(), NO_PASSENGER));
             });
