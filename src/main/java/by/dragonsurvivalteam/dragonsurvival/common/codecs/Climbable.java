@@ -7,6 +7,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.duration_instance.Dura
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncClimbableInstance;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ClimbableData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import com.mojang.serialization.Codec;
@@ -27,6 +28,18 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class Climbable extends DurationInstanceBase<ClimbableData, Climbable.Instance> {
+    @Translation(comments = "§6■ Allows climbing on %s")
+    private static final String ALLOWS_CLIMBING = Translation.Type.GUI.wrap("climbable.allowed");
+
+    @Translation(comments = " with the ability to §6stick to walls§r")
+    private static final String CAN_STICK_TO_WALLS = Translation.Type.GUI.wrap("climbable.walls");
+
+    @Translation(comments = " with the ability to §6climb ceilings§r")
+    private static final String CAN_CLIMB_CEILINGS = Translation.Type.GUI.wrap("climbable.ceiling");
+
+    @Translation(comments = " and")
+    private static final String AND = Translation.Type.GUI.wrap("climbable.and");
+
     public static final Codec<Climbable> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             DurationInstanceBase.CODEC.fieldOf("base").forGetter(identity -> identity),
             LevelBasedBlockPredicate.CODEC.fieldOf("blocks").forGetter(Climbable::blocks),
@@ -46,8 +59,24 @@ public class Climbable extends DurationInstanceBase<ClimbableData, Climbable.Ins
     }
 
     public MutableComponent getDescription(final int abilityLevel) {
-        // FIXME :: add prefix sentence "Allows climbing on ..." + add stick to wall flag
-        return Functions.translateBlockPredicate(blocks.get(abilityLevel));
+        MutableComponent description = Component.translatable(ALLOWS_CLIMBING, Functions.translateBlockPredicate(blocks.get(abilityLevel)));
+
+        boolean canStickToWalls = canStickToWall.calculate(abilityLevel);
+        boolean canClimbCeilings = this.canClimbCeilings.calculate(abilityLevel);
+
+        if (canStickToWalls) {
+            description.append(Component.translatable(CAN_STICK_TO_WALLS));
+        }
+
+        if (canStickToWalls && canClimbCeilings) {
+            description.append(Component.translatable(AND));
+        }
+
+        if (canClimbCeilings) {
+            description.append(Component.translatable(CAN_CLIMB_CEILINGS));
+        }
+
+        return description;
     }
 
     @Override
