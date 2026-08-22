@@ -48,7 +48,7 @@ public abstract class LivingEntityRendererMixin<T extends LivingEntity, M extend
     }
 
     @Inject(method = "setupRotations", at = @At("TAIL"))
-    private void dragonSurvival$hangOnCeiling(final LivingEntity entity, final PoseStack poseStack, final float bob, final float yBodyRot, final float partialTick, final float scale, final CallbackInfo callback) {
+    private void dragonSurvival$hangOnCeiling(final LivingEntity entity, final PoseStack poseStack, final float bob, final float yBodyRot, final float partialTick, final CallbackInfo callback) {
         LivingEntity target = entity instanceof DragonEntity dragon ? dragon.getPlayer() : entity;
 
         if (target == null) {
