@@ -25,6 +25,7 @@ public class ClawMendingHandler {
     @SubscribeEvent
     public void playerXPPickUp(PlayerXpEvent.PickupXp evt) {
         Player player = evt.getEntity();
+        //ensure we are on server
         if (player instanceof ServerPlayer p) {
             handleClawMending(p, evt);
         }
@@ -34,15 +35,21 @@ public class ClawMendingHandler {
         ExperienceOrb orb = evt.getOrb();
         player.takeXpDelay = 2;
         player.take(orb, 1);
+        
+        //repair method returns the XP remaining in the orb after mending
         orb.value = repairClawItems(player, orb.value);
 
+        //if orb has no XP left, discard it and mark the event as canceled
         if (orb.value <= 0) {
             evt.isCanceled();
             orb.discard();
         }
     }
 
+    //based on a modified version of Minecraft 1.21.1's
+    //ExperienceOrb.class repairPlayerItems() method
     private static int repairClawItems(ServerPlayer player, int value) {
+        //make list of all Claw slot Items with Mending which are also damaged
         Holder<Enchantment> mendingHolder = player.level().registryAccess().lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.MENDING);
         NonNullList<ItemStack> clawItems = ClawInventoryData.getData(player).getContainer().getItems();
         List<ItemStack> mendable = new ArrayList<>();
@@ -52,21 +59,27 @@ public class ClawMendingHandler {
             }
         }
 
+        //pick a random item to mend
         Optional<ItemStack> optional = Util.getRandomSafe(mendable, player.getRandom());
+        
+        //use the Vanilla Mending algorithm on the selected item
         if (optional.isPresent()) {
             ItemStack itemstack = optional.get();
-            int i = EnchantmentHelper.modifyDurabilityToRepairFromXp(player.serverLevel(), itemstack, (int)((float)value * itemstack.getXpRepairRatio()));
-            int j = Math.min(i, itemstack.getDamageValue());
-            itemstack.setDamageValue(itemstack.getDamageValue() - j);
-            if (j > 0) {
-                int k = value - j * value / i;
+            int canRepairAmt = EnchantmentHelper.modifyDurabilityToRepairFromXp(player.serverLevel(), itemstack, (int)((float)value * itemstack.getXpRepairRatio()));
+            int actualRepairAmt = Math.min(canRepairAmt, itemstack.getDamageValue());
+            itemstack.setDamageValue(itemstack.getDamageValue() - actualRepairAmt);
+            if (actualRepairAmt > 0) {
+                //subtract actualRepairAmt/canRepairAmt from value
+                int k = value - value * actualRepairAmt / canRepairAmt;
                 if (k > 0) {
+                    //call recursively until we run out of either XP or Items to mend
                     return repairClawItems(player, k);
                 }
             }
-
+            //we ran out of XP
             return 0;
         } else {
+            //if no more items to mend, return remaining XP value
             return value;
         }
     }
