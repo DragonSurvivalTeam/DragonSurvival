@@ -281,6 +281,18 @@ public abstract class EntityMixin {
         }
     }
 
+    //increase frustum culling bounding box if player is a dragon
+    @ModifyReturnValue(
+            method = {"getBoundingBoxForCulling()Lnet/minecraft/world/phys/AABB;"},
+            at = {@At("RETURN")}
+    )
+    public @NotNull AABB getBoundingBoxForCulling(AABB box) {
+        if (DragonStateProvider.isDragon((Entity) (Object) this))
+            box = box.inflate(10 * box.getXsize(), 2 * box.getYsize(), 10 * box.getZsize());
+        return box;
+    }
+    
+
     @Shadow
     public abstract double getX();
 
