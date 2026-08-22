@@ -442,7 +442,7 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
         ArrayList<ItemStack> visibleCurios = CurioAPIHelper.getVisibleCurioItems(player);
         if (visibleCurios != null) {
             for (ItemStack curio : visibleCurios) {
-                armorTotal.append(separator).append(curio.getDisplayName());
+                armorTotal.append(separator).append(curio.getDisplayName().getString()); //use getString() for unformatted name (fixes armor flickering due to constantly-changing UUID from curios with "animated" name colors)
             }
         }
 
