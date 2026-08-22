@@ -359,8 +359,10 @@ public abstract class LivingEntityMixin extends Entity {
             return false;
         }
 
+        LivingEntity self = (LivingEntity) (Object) this;
+
         if (level() instanceof WorldGenLevel level) {
-            return data.canStickToWalls(level);
+            return data.canStickToWalls(level, self);
         }
 
         return data.isApprovedClimbPosition(data.climbPosition);

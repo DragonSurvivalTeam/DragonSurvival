@@ -16,15 +16,8 @@ public interface IBlocksExtensionMixin {
     default boolean isLadder(boolean original, @Local(argsOnly = true) final LivingEntity entity) {
         ClimbableData data = entity.getExistingData(DSDataAttachments.CLIMBABLE_DATA).orElse(null);
 
-        if (data == null) {
+        if (data == null || original) {
             return original;
-        }
-
-        // Make sure to always reset at the start since it is referenced at other points
-        data.climbPosition = null;
-
-        if (original) {
-            return true;
         }
 
         return ClimbingHandler.canClimb(entity, data);

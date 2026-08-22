@@ -1,8 +1,13 @@
 package by.dragonsurvivalteam.dragonsurvival.mixins.client;
 
+import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.HunterHandler;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ClimbableData;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.HunterData;
 import com.llamalad7.mixinextras.sugar.Local;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -11,7 +16,9 @@ import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.world.entity.LivingEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 /** Render the human player translucent if they have hunter stacks */
 @Mixin(LivingEntityRenderer.class) // In < 1.21 this was doable by adding a layer which does a translucent render - maybe it still is but has to be done in a different way?
@@ -37,5 +44,24 @@ public abstract class LivingEntityRendererMixin<T extends LivingEntity, M extend
 
         float alpha = HunterHandler.calculateAlphaAsFloat(entity);
         return alpha == HunterHandler.UNMODIFIED ? original : alpha;
+    }
+
+    @Inject(method = "setupRotations", at = @At("TAIL"))
+    private void dragonSurvival$hangOnCeiling(final LivingEntity entity, final PoseStack poseStack, final float bob, final float yBodyRot, final float partialTick, final float scale, final CallbackInfo callback) {
+        LivingEntity target = entity instanceof DragonEntity dragon ? dragon.getPlayer() : entity;
+
+        if (target == null) {
+            return;
+        }
+
+        ClimbableData data = target.getExistingData(DSDataAttachments.CLIMBABLE_DATA).orElse(null);
+
+        if (data == null || !data.isClimbingCeiling(target)) {
+            return;
+        }
+
+        poseStack.mulPose(Axis.XP.rotationDegrees(-90));
+        // Need to invert the facing direction for movement since the model is inverted
+        poseStack.mulPose(Axis.ZP.rotationDegrees(-180));
     }
 }
