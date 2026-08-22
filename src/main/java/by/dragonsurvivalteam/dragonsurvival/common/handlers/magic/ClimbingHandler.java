@@ -43,8 +43,8 @@ public class ClimbingHandler {
             return false;
         }
 
-        BlockPos ceilingMatch = null;
-        BlockPos wallMatch = null;
+        BlockPos ceilingPosition = null;
+        BlockPos wallPosition = null;
 
         for (BlockPos position : data.trackedClimbPositions) {
             if (!data.canClimb(level, position, entity)) {
@@ -52,19 +52,19 @@ public class ClimbingHandler {
             }
 
             if (position.getY() > entity.getBlockY()) {
-                ceilingMatch = position;
+                ceilingPosition = position;
                 break;
-            } else if (wallMatch == null) {
-                wallMatch = position;
+            } else if (wallPosition == null) {
+                wallPosition = position;
             }
         }
 
         // Prioritize ceiling so a transition from wall-climbing to ceiling-climbing is possible
-        BlockPos climbPosition = ceilingMatch != null ? ceilingMatch : wallMatch;
+        BlockPos climbPosition = ceilingPosition != null ? ceilingPosition : wallPosition;
 
         if (climbPosition != null) {
             data.climbPosition = climbPosition;
-            data.isCeilingClimbing = ceilingMatch != null;
+            data.isCeilingClimbing = ceilingPosition != null;
             return true;
         }
 
@@ -76,13 +76,21 @@ public class ClimbingHandler {
         Direction facing = entity.getDirection();
         Set<BlockPos> climbablePositions = new HashSet<>();
 
+        // Allows for a better transition back to wall-climbing
+        boolean attemptedWallClimb = false;
+
         if (entity.horizontalCollision) {
             if (Math.signum(entity.xxa) != 0) {
                 Direction inputDirection = entity.xxa > 0
                         ? facing.getCounterClockWise()
                         : facing.getClockWise();
 
-                climbablePositions.add(entity.blockPosition().relative(inputDirection));
+                BlockPos position = entity.blockPosition().relative(inputDirection);
+                climbablePositions.add(position);
+
+                if (data.isApprovedClimbPosition(position)) {
+                    attemptedWallClimb = true;
+                }
             }
 
             if (Math.signum(entity.zza) != 0) {
@@ -90,7 +98,12 @@ public class ClimbingHandler {
                         ? facing
                         : facing.getOpposite();
 
-                climbablePositions.add(entity.blockPosition().relative(inputDirection));
+                BlockPos position = entity.blockPosition().relative(inputDirection);
+                climbablePositions.add(position);
+
+                if (data.isApprovedClimbPosition(position)) {
+                    attemptedWallClimb = true;
+                }
             }
         }
 
@@ -104,7 +117,7 @@ public class ClimbingHandler {
             }
         }
 
-        if (data.canClimbCeilings() && !entity.onGround()) {
+        if (!attemptedWallClimb && data.canClimbCeilings() && !entity.onGround()) {
             climbablePositions.add(BlockPos.containing(entity.getX(), entity.getBoundingBox().getMaxPosition().y() + 0.01, entity.getZ()));
         }
 

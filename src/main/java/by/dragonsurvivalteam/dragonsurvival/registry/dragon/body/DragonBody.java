@@ -135,17 +135,30 @@ public record DragonBody(
         ).apply(instance, TextureSize::new));
     }
 
-    public record ScalingProportions(double width, double height, double eyeHeight, double scaleMultiplier, double shadowMultiplier) { // TODO :: scaling_offset
+    public record ScalingProportions(double width, double height, double eyeHeight, double scaleMultiplier, double shadowMultiplier, double ceilingClimbingOffsetMultiplier) {
         public static final Codec<ScalingProportions> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 MiscCodecs.doubleRange(0, Double.MAX_VALUE).fieldOf("width").forGetter(ScalingProportions::width),
                 MiscCodecs.doubleRange(0, Double.MAX_VALUE).fieldOf("height").forGetter(ScalingProportions::height),
                 MiscCodecs.doubleRange(0, Double.MAX_VALUE).fieldOf("eye_height").forGetter(ScalingProportions::eyeHeight),
                 MiscCodecs.doubleRange(0, Double.MAX_VALUE).optionalFieldOf("scale_multiplier", 1.0).forGetter(ScalingProportions::scaleMultiplier),
-                MiscCodecs.doubleRange(0, Double.MAX_VALUE).optionalFieldOf("shadow_multiplier", 1.0).forGetter(ScalingProportions::shadowMultiplier)
+                MiscCodecs.doubleRange(0, Double.MAX_VALUE).optionalFieldOf("shadow_multiplier", 1.0).forGetter(ScalingProportions::shadowMultiplier),
+                MiscCodecs.doubleRange(-10, 10).optionalFieldOf("ceiling_climbing_offset_multiplier", 1.0).forGetter(ScalingProportions::ceilingClimbingOffsetMultiplier)
         ).apply(instance, ScalingProportions::new));
 
+        public static ScalingProportions of(final double width, final double height, final double eyeHeight) {
+            return of(width, height, eyeHeight, 1, 1, 1);
+        }
+
+        public static ScalingProportions of(final double width, final double height, final double eyeHeight, final double offset) {
+            return of(width, height, eyeHeight, offset, 1, 1);
+        }
+
         public static ScalingProportions of(final double width, final double height, final double eyeHeight, final double offset, final double shadowOffset) {
-            return new ScalingProportions(width, height, eyeHeight, offset, shadowOffset);
+            return of(width, height, eyeHeight, offset, shadowOffset, 1);
+        }
+
+        public static ScalingProportions of(final double width, final double height, final double eyeHeight, final double offset, final double shadowOffset, final double ceilingClimbingOffsetMultiplier) {
+            return new ScalingProportions(width, height, eyeHeight, offset, shadowOffset, ceilingClimbingOffsetMultiplier);
         }
     }
 
