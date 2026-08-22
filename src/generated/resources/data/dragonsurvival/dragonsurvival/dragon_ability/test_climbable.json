@@ -27,7 +27,7 @@
                       ]
                     }
                   },
-                  "ca_stick_to_wall": {
+                  "can_stick_to_walls": {
                     "entries": [],
                     "fallback": true
                   }

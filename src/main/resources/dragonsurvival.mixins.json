@@ -23,6 +23,7 @@
     "ItemCooldownsMixin",
     "ItemEntityMixin",
     "ItemStackMixin",
+    "LevelMixin",
     "LightningBoltMixin",
     "LivingEntityMixin",
     "MaceItemMixin",
