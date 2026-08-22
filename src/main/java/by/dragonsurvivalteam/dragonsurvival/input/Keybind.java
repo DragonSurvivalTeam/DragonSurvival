@@ -79,7 +79,7 @@ public enum Keybind {
     @Translation(type = Translation.Type.KEYBIND, comments = "Toggle dragon soul placement")
     TOGGLE_DRAGON_SOUL_PLACEMENT(KeyConflictContext.IN_GAME, GLFW.GLFW_KEY_UNKNOWN);
 
-    // FIXME :: Add translation key
+    @Translation(type = Translation.Type.KEY_CATEGORY, key = "category", comments = "Dragon Survival")
     private static final KeyMapping.Category CATEGORY = new KeyMapping.Category(DragonSurvival.res("category"));
 
     private final IKeyConflictContext keyConflictContext;

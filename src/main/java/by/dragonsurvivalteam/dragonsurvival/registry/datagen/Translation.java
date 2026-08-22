@@ -73,6 +73,7 @@ public @interface Translation {
         DESCRIPTION_ADDITION(DragonSurvival.MODID + ".description.addition.", ""),
         GUI(DragonSurvival.MODID + ".gui.", ""),
         KEYBIND(DragonSurvival.MODID + ".keybind.", ""),
+        KEY_CATEGORY("key.category." + DragonSurvival.MODID + ".", ""),
 
         ADVANCEMENT(DragonSurvival.MODID + ".advancement.", ""),
         ADVANCEMENT_DESCRIPTION(DragonSurvival.MODID + ".advancement.", ".desc"),
