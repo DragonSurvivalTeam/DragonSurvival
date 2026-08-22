@@ -15,6 +15,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -38,6 +39,7 @@ import net.neoforged.neoforge.event.entity.player.PlayerXpEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @EventBusSubscriber
 public class ClawToolHandler {
@@ -45,35 +47,46 @@ public class ClawToolHandler {
     public static void experiencePickup(final PlayerXpEvent.PickupXp event) {
         Player player = event.getEntity();
 
-        if (!DragonStateProvider.isDragon(player)) {
+        if (!(player.level() instanceof ServerLevel serverLevel) || !DragonStateProvider.isDragon(player)) {
+            // Level check only for safe cast, event should only be triggered on the server-side
             return;
         }
 
-        ArrayList<ItemStack> stacks = new ArrayList<>();
+        ArrayList<ItemStack> tools = new ArrayList<>();
         SimpleContainer clawInventory = ClawInventoryData.getData(player).getContainer();
 
         for (int i = 0; i < ClawInventoryData.Slot.size(); i++) {
-            ItemStack clawStack = clawInventory.getItem(i);
+            ItemStack tool = clawInventory.getItem(i);
 
-            if (clawStack.isDamaged() && EnchantmentHelper.has(clawStack, EnchantmentEffectComponents.REPAIR_WITH_XP)) {
-                stacks.add(clawStack);
+            if (tool.isDamaged() && EnchantmentHelper.has(tool, EnchantmentEffectComponents.REPAIR_WITH_XP)) {
+                tools.add(tool);
             }
         }
 
-        if (stacks.isEmpty()) {
+        repairClawTools(serverLevel, player, tools, event.getOrb());
+    }
+
+    private static void repairClawTools(final ServerLevel level, final Player player, final List<ItemStack> tools, final ExperienceOrb orb) {
+        if (tools.isEmpty()) {
             return;
         }
 
-        ItemStack repairTime = stacks.get(player.getRandom().nextInt(stacks.size()));
+        ItemStack tool = tools.remove(player.getRandom().nextInt(tools.size()));
+        int availableRepairAmount = EnchantmentHelper.modifyDurabilityToRepairFromXp(level, tool, (int) (orb.getValue() * tool.getXpRepairRatio()));
 
-        if (!repairTime.isEmpty() && repairTime.isDamaged()) {
-            int i = Math.min((int) (event.getOrb().getValue() * repairTime.getXpRepairRatio()), repairTime.getDamageValue());
-            event.getOrb().setValue(event.getOrb().getValue() - i * 2);
-            repairTime.setDamageValue(repairTime.getDamageValue() - i);
+        int damageValue = tool.getDamageValue();
+        int repairedDamage = Math.min(availableRepairAmount, damageValue);
+
+        if (repairedDamage > 0) {
+            tool.setDamageValue(damageValue - repairedDamage);
+            // See 'ExperienceOrb#repairPlayerItems' (1.21.1)
+            orb.setValue(Math.max(0, orb.getValue() - repairedDamage * orb.getValue() / availableRepairAmount));
+            player.detectEquipmentUpdates();
         }
 
-        event.getOrb().setValue(Math.max(0, event.getOrb().getValue()));
-        player.detectEquipmentUpdates();
+        if (orb.getValue() > 0) {
+            repairClawTools(level, player, tools, orb);
+        }
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST) // In order to add the drops early for other mods (e.g. grave mods)
