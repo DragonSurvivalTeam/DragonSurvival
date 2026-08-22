@@ -64,6 +64,7 @@ public class ClimbingHandler {
 
         if (climbPosition != null) {
             data.climbPosition = climbPosition;
+            data.isCeilingClimbing = ceilingMatch != null;
             return true;
         }
 
@@ -137,6 +138,7 @@ public class ClimbingHandler {
 
         if (climbingPosition != null) {
             data.climbPosition = climbingPosition;
+            data.isCeilingClimbing = ceilingPosition != null;
             return true;
         }
 

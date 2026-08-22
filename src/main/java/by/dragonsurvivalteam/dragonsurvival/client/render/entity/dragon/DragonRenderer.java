@@ -413,7 +413,7 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
 
         ClimbableData climbData = player.getExistingData(DSDataAttachments.CLIMBABLE_DATA).orElse(null);
 
-        if (climbData != null && climbData.isClimbingCeiling(player)) {
+        if (climbData != null && climbData.isCeilingClimbing()) {
             pose.mulPose(Axis.XP.rotationDegrees(-90));
             // Need to invert the facing direction for movement since the model is inverted
             pose.mulPose(Axis.ZP.rotationDegrees(-180));

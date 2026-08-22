@@ -25,8 +25,11 @@ public class ClimbableData extends Storage<Climbable.Instance> {
     // - Block predicates can only be evaluated on the server-side (i.e., is climbing allowed on that position)
     // Meaning the client needs to collect the relevant positions and the server has to approve them
 
-    /** Temporarily kept to check whether 'canStickToWalls' is allowed */
+    /** Temporarily kept to handle 'canStickToWalls' and ceiling climbing */
     public @Nullable BlockPos climbPosition;
+
+    /** Retains whether the current {@link #climbPosition} was set from ceiling climbing */
+    public boolean isCeilingClimbing;
 
     /**
      * Client-only: positions the server has confirmed as climbable </br>
@@ -94,8 +97,8 @@ public class ClimbableData extends Storage<Climbable.Instance> {
         return false;
     }
 
-    public boolean isClimbingCeiling(final LivingEntity entity) {
-        return climbPosition != null && climbPosition.getY() > entity.getBlockY();
+    public boolean isCeilingClimbing() {
+        return climbPosition != null && isCeilingClimbing;
     }
 
     public boolean canClimbCeilings() {
@@ -117,7 +120,7 @@ public class ClimbableData extends Storage<Climbable.Instance> {
             return false;
         }
 
-        boolean isCeilingCandidate = climbPosition.getY() > entity.getBlockY();
+        boolean isCeilingCandidate = isCeilingClimbing;
 
         for (final Climbable.Instance instance : storage.values()) {
             if (isCeilingCandidate && !instance.canClimbCeilings()) {
@@ -137,6 +140,7 @@ public class ClimbableData extends Storage<Climbable.Instance> {
         event.getEntity().getExistingData(DSDataAttachments.CLIMBABLE_DATA).ifPresent(data -> {
             if (!data.isApprovedClimbPosition(data.climbPosition)) {
                 data.climbPosition = null;
+                data.isCeilingClimbing = false;
             }
 
             if (event.getEntity().level().isClientSide()) {
