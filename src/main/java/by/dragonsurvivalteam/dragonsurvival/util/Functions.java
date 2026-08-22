@@ -11,6 +11,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.DSLanguageProvider;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -361,7 +362,7 @@ public class Functions {
 
     public static <T> MutableComponent translateHolderSet(final HolderSet<T> set, final Function<Holder<T>, String> translationKey) {
         if (set instanceof HolderSet.Named<T> named) {
-            return DSColors.dynamicValue(Component.translatable(tagTranslationKey(named.key())));
+            return DSColors.dynamicValue(translateTagWithFallback(named.key()));
         }
 
         MutableComponent list = null;
@@ -383,6 +384,16 @@ public class Functions {
         return start + delta * Mth.wrapDegrees(end - start);
     }
 
+    public static MutableComponent translateTagWithFallback(final TagKey<?> tag) {
+        String tagKey = tagTranslationKey(tag);
+
+        if (I18n.exists(tagKey)) {
+            return Component.translatable(tagKey);
+        }
+
+        return Component.literal(DSLanguageProvider.capitalize(tag.location().getPath()));
+    }
+
     private static String tagTranslationKey(final TagKey<?> tag) {
         ResourceLocation registry = tag.registry().location();
         ResourceLocation location = tag.location();
@@ -400,7 +411,7 @@ public class Functions {
         }
 
         if (type == BlockPredicateType.MATCHING_BLOCK_TAG) {
-            return DSColors.dynamicValue(Component.translatable(tagTranslationKey(((MatchingBlockTagPredicateAccess) predicate).dragonSurvival$tag())));
+            return DSColors.dynamicValue(translateTagWithFallback(((MatchingBlockTagPredicateAccess) predicate).dragonSurvival$tag()));
         }
 
         if (type == BlockPredicateType.MATCHING_FLUIDS) {
