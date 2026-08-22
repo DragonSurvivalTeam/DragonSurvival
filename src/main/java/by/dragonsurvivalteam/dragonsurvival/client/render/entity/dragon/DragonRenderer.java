@@ -14,6 +14,8 @@ import by.dragonsurvivalteam.dragonsurvival.compat.ModID;
 import by.dragonsurvivalteam.dragonsurvival.compat.do_a_barrel_roll.DoABarrelRollCompat;
 import by.dragonsurvivalteam.dragonsurvival.compat.sophisticatedBackpacks.DragonBackpackRenderLayer;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEntities;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ClimbableData;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.HunterData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MovementData;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
@@ -1281,6 +1283,16 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
             pose.mulPose(Axis.XN.rotationDegrees(renderData.prevXRot()));
             // Responsible for the roll (rotating entity to the side)
             pose.mulPose(Axis.ZP.rotation(renderData.prevZRot()));
+        }
+
+        if (player != null) {
+            ClimbableData climbData = player.getExistingData(DSDataAttachments.CLIMBABLE_DATA).orElse(null);
+
+            if (climbData != null && climbData.isClimbingCeiling(player)) {
+                pose.mulPose(Axis.XP.rotationDegrees(-90));
+                // Need to invert the facing direction for movement since the model is inverted
+                pose.mulPose(Axis.ZP.rotationDegrees(-180));
+            }
         }
     }
 

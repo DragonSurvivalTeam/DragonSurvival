@@ -5,6 +5,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.WorldGenLevel;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -73,12 +74,56 @@ public class ClimbableData extends Storage<Climbable.Instance> {
         return false;
     }
 
-    public boolean canStickToWalls(final WorldGenLevel level) {
-        if (storage == null || climbPosition == null) {
+    public boolean canClimb(final WorldGenLevel level, final BlockPos position, final LivingEntity entity) {
+        if (storage == null) {
+            return false;
+        }
+
+        boolean isCeiling = position.getY() > entity.getBlockY();
+
+        for (final Climbable.Instance instance : storage.values()) {
+            if (isCeiling && !instance.canClimbCeilings()) {
+                continue;
+            }
+
+            if (instance.canClimb(level, position)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public boolean isClimbingCeiling(final LivingEntity entity) {
+        return climbPosition != null && climbPosition.getY() > entity.getBlockY();
+    }
+
+    public boolean canClimbCeilings() {
+        if (storage == null) {
             return false;
         }
 
         for (final Climbable.Instance instance : storage.values()) {
+            if (instance.canClimbCeilings()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public boolean canStickToWalls(final WorldGenLevel level, final LivingEntity entity) {
+        if (storage == null || climbPosition == null) {
+            return false;
+        }
+
+        boolean isCeilingCandidate = climbPosition.getY() > entity.getBlockY();
+
+        for (final Climbable.Instance instance : storage.values()) {
+            if (isCeilingCandidate && !instance.canClimbCeilings()) {
+                continue;
+            }
+
             if (instance.canStickToWalls(level, climbPosition)) {
                 return true;
             }
@@ -89,11 +134,15 @@ public class ClimbableData extends Storage<Climbable.Instance> {
 
     @SubscribeEvent
     public static void tickData(final EntityTickEvent.Post event) {
-        if (event.getEntity().level().isClientSide()) {
-            return;
-        }
-
         event.getEntity().getExistingData(DSDataAttachments.CLIMBABLE_DATA).ifPresent(data -> {
+            if (!data.isApprovedClimbPosition(data.climbPosition)) {
+                data.climbPosition = null;
+            }
+
+            if (event.getEntity().level().isClientSide()) {
+                return;
+            }
+
             data.tick(event.getEntity());
 
             if (data.isEmpty()) {

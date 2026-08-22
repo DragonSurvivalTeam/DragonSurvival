@@ -30,16 +30,19 @@ public class Climbable extends DurationInstanceBase<ClimbableData, Climbable.Ins
     public static final Codec<Climbable> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             DurationInstanceBase.CODEC.fieldOf("base").forGetter(identity -> identity),
             LevelBasedBlockPredicate.CODEC.fieldOf("blocks").forGetter(Climbable::blocks),
-            LevelBasedBoolean.CODEC.optionalFieldOf("can_stick_to_walls", LevelBasedBoolean.constant(false)).forGetter(Climbable::canStickToWall)
+            LevelBasedBoolean.CODEC.optionalFieldOf("can_stick_to_walls", LevelBasedBoolean.constant(false)).forGetter(Climbable::canStickToWall),
+            LevelBasedBoolean.CODEC.optionalFieldOf("can_climb_ceilings", LevelBasedBoolean.constant(false)).forGetter(Climbable::canClimbCeilings)
     ).apply(instance, Climbable::new));
 
     private final LevelBasedBlockPredicate blocks;
     private final LevelBasedBoolean canStickToWall;
+    private final LevelBasedBoolean canClimbCeilings;
 
-    public Climbable(final DurationInstanceBase<?, ?> base, final LevelBasedBlockPredicate blocks, final LevelBasedBoolean canStickToWall) {
+    public Climbable(final DurationInstanceBase<?, ?> base, final LevelBasedBlockPredicate blocks, final LevelBasedBoolean canStickToWall, final LevelBasedBoolean canClimbCeilings) {
         super(base);
         this.blocks = blocks;
         this.canStickToWall = canStickToWall;
+        this.canClimbCeilings = canClimbCeilings;
     }
 
     public MutableComponent getDescription(final int abilityLevel) {
@@ -65,6 +68,10 @@ public class Climbable extends DurationInstanceBase<ClimbableData, Climbable.Ins
         return canStickToWall;
     }
 
+    public LevelBasedBoolean canClimbCeilings() {
+        return canClimbCeilings;
+    }
+
     public static class Instance extends DurationInstance<Climbable> {
         public static final Codec<Instance> CODEC = RecordCodecBuilder.create(instance -> DurationInstance.codecStart(
                 instance, () -> Climbable.CODEC).apply(instance, Instance::new)
@@ -80,6 +87,10 @@ public class Climbable extends DurationInstanceBase<ClimbableData, Climbable.Ins
 
         public boolean canStickToWalls(final WorldGenLevel level, final BlockPos climbPosition) {
             return baseData().blocks.matches(appliedAbilityLevel(), level, climbPosition);
+        }
+
+        public boolean canClimbCeilings() {
+            return baseData().canClimbCeilings.calculate(appliedAbilityLevel());
         }
 
         @Override

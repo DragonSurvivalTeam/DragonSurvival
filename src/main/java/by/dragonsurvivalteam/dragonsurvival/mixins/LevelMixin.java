@@ -37,7 +37,7 @@ public abstract class LevelMixin {
                 continue;
             }
 
-            PacketDistributor.sendToPlayer(player, new ClimbCheck(ClimbingHandler.filterPositions(data, level, data.trackedClimbPositions)));
+            PacketDistributor.sendToPlayer(player, new ClimbCheck(ClimbingHandler.filterPositions(data, level, player, data.trackedClimbPositions)));
         }
     }
 }

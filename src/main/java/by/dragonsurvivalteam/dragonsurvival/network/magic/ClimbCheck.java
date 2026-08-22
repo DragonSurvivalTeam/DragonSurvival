@@ -43,7 +43,7 @@ public record ClimbCheck(Set<BlockPos> positions) implements CustomPacketPayload
                 data.setTrackedClimbPositions(packet.positions());
             }
 
-            context.reply(new ClimbCheck(ClimbingHandler.filterPositions(data, level, packet.positions())));
+            context.reply(new ClimbCheck(ClimbingHandler.filterPositions(data, level, player, packet.positions())));
         });
     }
 
