@@ -494,7 +494,7 @@ public class DragonArmorRenderLayer<R extends LivingEntityRenderState & GeoRende
         }
 
         for (ItemStack curio : CurioAPIHelper.getVisibleCurioItems(player)) {
-            armorTotal.append(separator).append(curio.getDisplayName().getString());
+            armorTotal.append(separator).append(curio.getDisplayName().getString()); //use getString() for unformatted name (fixes armor flickering due to constantly-changing UUID from curios with "animated" name colors)
         }
 
         return UUID.nameUUIDFromBytes(armorTotal.toString().getBytes()).toString();
