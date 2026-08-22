@@ -2,11 +2,22 @@ package by.dragonsurvivalteam.dragonsurvival.util;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Modifier;
+import by.dragonsurvivalteam.dragonsurvival.mixins.CombiningPredicateAccess;
+import by.dragonsurvivalteam.dragonsurvival.mixins.MatchingBlockTagPredicateAccess;
+import by.dragonsurvivalteam.dragonsurvival.mixins.MatchingBlocksPredicateAccess;
+import by.dragonsurvivalteam.dragonsurvival.mixins.MatchingFluidsPredicateAccess;
+import by.dragonsurvivalteam.dragonsurvival.mixins.NotPredicateAccess;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.DSLanguageProvider;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.levelgen.blockpredicates.BlockPredicate;
+import net.minecraft.world.level.levelgen.blockpredicates.BlockPredicateType;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraft.nbt.DoubleTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
@@ -368,6 +379,90 @@ public class Functions {
         }
 
         return Objects.requireNonNullElse(list, Component.empty());
+    }
+
+    /** Attempt to make the content of a block predicate readable */
+    public static MutableComponent translateBlockPredicate(final BlockPredicate predicate) {
+        BlockPredicateType<?> type = predicate.type();
+
+        if (type == BlockPredicateType.MATCHING_BLOCKS) {
+            return translateHolderSet(((MatchingBlocksPredicateAccess) predicate).dragonSurvival$blocks(), holder -> holder.value().getDescriptionId());
+        }
+
+        if (type == BlockPredicateType.MATCHING_BLOCK_TAG) {
+            return DSColors.dynamicValue(Component.translatable(Tags.getTagTranslationKey(((MatchingBlockTagPredicateAccess) predicate).dragonSurvival$tag())));
+        }
+
+        if (type == BlockPredicateType.MATCHING_FLUIDS) {
+            //noinspection DataFlowIssue -> key is present
+            return translateHolderSet(((MatchingFluidsPredicateAccess) predicate).dragonSurvival$fluids(), holder -> "block." + holder.getKey().location().getNamespace() + "." + holder.getKey().location().getPath());
+        }
+
+        if (type == BlockPredicateType.SOLID) {
+            return DSColors.dynamicValue(Component.translatable(LangKey.BLOCK_PREDICATE_SOLID));
+        }
+
+        if (type == BlockPredicateType.REPLACEABLE) {
+            return DSColors.dynamicValue(Component.translatable(LangKey.BLOCK_PREDICATE_REPLACEABLE));
+        }
+
+        if (type == BlockPredicateType.HAS_STURDY_FACE) {
+            return DSColors.dynamicValue(Component.translatable(LangKey.BLOCK_PREDICATE_STURDY_FACE));
+        }
+
+        if (type == BlockPredicateType.WOULD_SURVIVE) {
+            return DSColors.dynamicValue(Component.translatable(LangKey.BLOCK_PREDICATE_WOULD_SURVIVE));
+        }
+
+        if (type == BlockPredicateType.INSIDE_WORLD_BOUNDS) {
+            return DSColors.dynamicValue(Component.translatable(LangKey.BLOCK_PREDICATE_INSIDE_WORLD));
+        }
+
+        if (type == BlockPredicateType.UNOBSTRUCTED) {
+            return DSColors.dynamicValue(Component.translatable(LangKey.BLOCK_PREDICATE_UNOBSTRUCTED));
+        }
+
+        if (type == BlockPredicateType.TRUE) {
+            return DSColors.dynamicValue(Component.translatable(LangKey.BLOCK_PREDICATE_ANY));
+        }
+
+        if (type == BlockPredicateType.NOT) {
+            MutableComponent inner = translateBlockPredicate(((NotPredicateAccess) predicate).dragonSurvival$predicate());
+            return Component.translatable(LangKey.BLOCK_PREDICATE_NOT, inner);
+        }
+
+        if (type == BlockPredicateType.ALL_OF) {
+            return joinPredicates(((CombiningPredicateAccess) predicate).dragonSurvival$predicates(), LangKey.BLOCK_PREDICATE_AND);
+        }
+
+        if (type == BlockPredicateType.ANY_OF) {
+            return joinPredicates(((CombiningPredicateAccess) predicate).dragonSurvival$predicates(), LangKey.BLOCK_PREDICATE_OR);
+        }
+
+        // Modded predicates, can't really handle those
+        ResourceLocation key = BuiltInRegistries.BLOCK_PREDICATE_TYPE.getKey(type);
+
+        if (key != null) {
+            return DSColors.dynamicValue(Component.literal(key.toString()));
+        }
+
+        return DSColors.dynamicValue(Component.translatable(LangKey.BLOCK_PREDICATE_UNKNOWN));
+    }
+
+    private static MutableComponent joinPredicates(final List<BlockPredicate> predicates, final String separatorKey) {
+        MutableComponent result = null;
+
+        for (BlockPredicate predicate : predicates) {
+            MutableComponent name = translateBlockPredicate(predicate);
+
+            if (result == null) {
+                result = name;
+            } else {
+                result.append(Component.translatable(separatorKey).withStyle(ChatFormatting.GRAY)).append(name);
+            }
+        }
+
+        return Objects.requireNonNullElse(result, Component.empty());
     }
 
     public static NumberFormat getFormat(final int decimals) {

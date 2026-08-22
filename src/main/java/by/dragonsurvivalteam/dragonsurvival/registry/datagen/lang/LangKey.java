@@ -130,6 +130,41 @@ public class LangKey {
     @Translation(comments = "None")
     public static final String NONE = Translation.Type.GUI.wrap("ability.none");
 
+    // --- Block predicate --- //
+
+    @Translation(comments = "any block")
+    public static final String BLOCK_PREDICATE_ANY = Translation.Type.GUI.wrap("block_predicate.any");
+
+    @Translation(comments = "any solid block")
+    public static final String BLOCK_PREDICATE_SOLID = Translation.Type.GUI.wrap("block_predicate.solid");
+
+    @Translation(comments = "any replaceable block")
+    public static final String BLOCK_PREDICATE_REPLACEABLE = Translation.Type.GUI.wrap("block_predicate.replaceable");
+
+    @Translation(comments = "any block with a sturdy face")
+    public static final String BLOCK_PREDICATE_STURDY_FACE = Translation.Type.GUI.wrap("block_predicate.sturdy_face");
+
+    @Translation(comments = "any block where placement would survive")
+    public static final String BLOCK_PREDICATE_WOULD_SURVIVE = Translation.Type.GUI.wrap("block_predicate.would_survive");
+
+    @Translation(comments = "any block inside world bounds")
+    public static final String BLOCK_PREDICATE_INSIDE_WORLD = Translation.Type.GUI.wrap("block_predicate.inside_world");
+
+    @Translation(comments = "any unobstructed block")
+    public static final String BLOCK_PREDICATE_UNOBSTRUCTED = Translation.Type.GUI.wrap("block_predicate.unobstructed");
+
+    @Translation(comments = "not %s")
+    public static final String BLOCK_PREDICATE_NOT = Translation.Type.GUI.wrap("block_predicate.not");
+
+    @Translation(comments = " and ")
+    public static final String BLOCK_PREDICATE_AND = Translation.Type.GUI.wrap("block_predicate.and");
+
+    @Translation(comments = " or ")
+    public static final String BLOCK_PREDICATE_OR = Translation.Type.GUI.wrap("block_predicate.or");
+
+    @Translation(comments = "certain blocks")
+    public static final String BLOCK_PREDICATE_UNKNOWN = Translation.Type.GUI.wrap("block_predicate.unknown");
+
     // --- Projectile effects --- //
 
     @Translation(comments = " §6Projectile ")

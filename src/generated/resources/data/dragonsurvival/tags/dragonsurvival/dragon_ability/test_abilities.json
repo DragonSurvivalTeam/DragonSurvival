@@ -1,5 +1,6 @@
 {
   "values": [
+    "dragonsurvival:test_climbable",
     "dragonsurvival:test_convert_items",
     "dragonsurvival:test_cooldown_recovery",
     "dragonsurvival:test_damage_expression",

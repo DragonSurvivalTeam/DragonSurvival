@@ -38,8 +38,8 @@ import org.jetbrains.annotations.Nullable;
 import java.text.NumberFormat;
 import java.util.Optional;
 
-// We store the damage type as optional instead considering an empty holder set as "all damage types"
-// Since the holderset may be empty due to specified damage types / tags not being present (optional ones)
+// We store the damage type as optional, instead of considering an empty holder set as "all damage types"
+// Since the HolderSet may be empty due to specified damage types / tags not being present (optional ones)
 @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 public class DamageModification extends DurationInstanceBase<DamageModifications, DamageModification.Instance> {
     @Translation(comments = "§6■ Immune§r to %s")
