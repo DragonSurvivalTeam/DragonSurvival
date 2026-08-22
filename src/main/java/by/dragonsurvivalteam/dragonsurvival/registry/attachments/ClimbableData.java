@@ -1,16 +1,16 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.attachments;
 
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Climbable;
+import by.dragonsurvivalteam.dragonsurvival.common.compat.attachments.AttachmentType;
+import by.dragonsurvivalteam.dragonsurvival.common.compat.event.EntityTickEvent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.WorldGenLevel;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.attachment.AttachmentType;
-import net.neoforged.neoforge.event.tick.EntityTickEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
@@ -139,7 +139,7 @@ public class ClimbableData extends Storage<Climbable.Instance> {
             return;
         }
 
-        livingEntity.getExistingData(DSDataAttachments.CLIMBABLE_DATA).ifPresent(data -> {
+        AttachmentManager.getExistingData(livingEntity, DSDataAttachments.CLIMBABLE_DATA).ifPresent(data -> {
             if (!data.canStillClimb(livingEntity)) {
                 data.climbPosition = null;
                 data.isCeilingClimbing = false;
@@ -152,7 +152,7 @@ public class ClimbableData extends Storage<Climbable.Instance> {
             data.tick(livingEntity);
 
             if (data.isEmpty()) {
-                livingEntity.removeData(DSDataAttachments.CLIMBABLE_DATA);
+                AttachmentManager.removeData(livingEntity, DSDataAttachments.CLIMBABLE_DATA);
             }
         });
     }

@@ -1,7 +1,9 @@
 package by.dragonsurvivalteam.dragonsurvival.mixins;
 
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.ClimbingHandler;
+import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.ClimbCheck;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AttachmentManager;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ClimbableData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import net.minecraft.core.BlockPos;
@@ -9,7 +11,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.network.PacketDistributor;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -31,7 +32,7 @@ public abstract class LevelMixin {
         }
 
         for (ServerPlayer player : level.players()) {
-            ClimbableData data = player.getExistingData(DSDataAttachments.CLIMBABLE_DATA).orElse(null);
+            ClimbableData data = AttachmentManager.getExistingData(player, DSDataAttachments.CLIMBABLE_DATA).orElse(null);
 
             if (data == null || data.trackedClimbPositions == null || !data.trackedClimbPositions.contains(position)) {
                 continue;

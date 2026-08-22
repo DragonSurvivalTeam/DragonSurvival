@@ -27,8 +27,9 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.levelgen.blockpredicates.BlockPredicate;
+import net.minecraft.world.level.levelgen.blockpredicates.BlockPredicateType;
 import net.minecraftforge.fml.loading.FMLLoader;
-import net.minecraftforge.common.Tags;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -399,12 +400,15 @@ public class Functions {
         }
 
         if (type == BlockPredicateType.MATCHING_BLOCK_TAG) {
-            return DSColors.dynamicValue(Component.translatable(Tags.getTagTranslationKey(((MatchingBlockTagPredicateAccess) predicate).dragonSurvival$tag())));
+            return DSColors.dynamicValue(Component.translatable(tagTranslationKey(((MatchingBlockTagPredicateAccess) predicate).dragonSurvival$tag())));
         }
 
         if (type == BlockPredicateType.MATCHING_FLUIDS) {
             //noinspection DataFlowIssue -> key is present
-            return translateHolderSet(((MatchingFluidsPredicateAccess) predicate).dragonSurvival$fluids(), holder -> "block." + holder.getKey().location().getNamespace() + "." + holder.getKey().location().getPath());
+            return translateHolderSet(((MatchingFluidsPredicateAccess) predicate).dragonSurvival$fluids(), holder -> {
+                ResourceLocation key = holder.unwrapKey().orElseThrow().location();
+                return "block." + key.getNamespace() + "." + key.getPath();
+            });
         }
 
         if (type == BlockPredicateType.SOLID) {
@@ -425,10 +429,6 @@ public class Functions {
 
         if (type == BlockPredicateType.INSIDE_WORLD_BOUNDS) {
             return DSColors.dynamicValue(Component.translatable(LangKey.BLOCK_PREDICATE_INSIDE_WORLD));
-        }
-
-        if (type == BlockPredicateType.UNOBSTRUCTED) {
-            return DSColors.dynamicValue(Component.translatable(LangKey.BLOCK_PREDICATE_UNOBSTRUCTED));
         }
 
         if (type == BlockPredicateType.TRUE) {

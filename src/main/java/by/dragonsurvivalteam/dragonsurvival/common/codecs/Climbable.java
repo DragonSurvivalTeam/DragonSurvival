@@ -4,6 +4,8 @@ import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.duration_instance.CommonData;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.duration_instance.DurationInstance;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.duration_instance.DurationInstanceBase;
+import by.dragonsurvivalteam.dragonsurvival.common.compat.attachments.AttachmentType;
+import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncClimbableInstance;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ClimbableData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
@@ -18,11 +20,10 @@ import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.RegistryOps;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.WorldGenLevel;
-import net.neoforged.neoforge.attachment.AttachmentType;
-import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -57,7 +58,7 @@ public class Climbable extends DurationInstanceBase<ClimbableData, Climbable.Ins
 
     @Override
     public AttachmentType<ClimbableData> type() {
-        return DSDataAttachments.CLIMBABLE_DATA.value();
+        return DSDataAttachments.CLIMBABLE_DATA.get();
     }
 
     public LevelBasedBlockPredicate blocks() {
@@ -113,11 +114,11 @@ public class Climbable extends DurationInstanceBase<ClimbableData, Climbable.Ins
         }
 
         public Tag save(@NotNull final HolderLookup.Provider provider) {
-            return CODEC.encodeStart(provider.createSerializationContext(NbtOps.INSTANCE), this).getOrThrow();
+            return CODEC.encodeStart(RegistryOps.create(NbtOps.INSTANCE, provider), this).getOrThrow(false, DragonSurvival.LOGGER::error);
         }
 
         public static @Nullable Instance load(@NotNull final HolderLookup.Provider provider, final CompoundTag nbt) {
-            return CODEC.parse(provider.createSerializationContext(NbtOps.INSTANCE), nbt).resultOrPartial(DragonSurvival.LOGGER::error).orElse(null);
+            return CODEC.parse(RegistryOps.create(NbtOps.INSTANCE, provider), nbt).resultOrPartial(DragonSurvival.LOGGER::error).orElse(null);
         }
     }
 }

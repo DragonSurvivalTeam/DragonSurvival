@@ -20,7 +20,8 @@ public record LevelBasedBlockPredicate(BlockPredicate fallback, List<Entry> entr
             LevelBasedBlockPredicate.Entry.CODEC.listOf().xmap(list -> {
                 List<LevelBasedBlockPredicate.Entry> sorted = new ArrayList<>(list);
                 Collections.sort(sorted);
-                return sorted.reversed();
+                Collections.reverse(sorted);
+                return sorted;
             }, Function.identity()).fieldOf("entries").forGetter(LevelBasedBlockPredicate::entries)
     ).apply(instance, LevelBasedBlockPredicate::new));
 

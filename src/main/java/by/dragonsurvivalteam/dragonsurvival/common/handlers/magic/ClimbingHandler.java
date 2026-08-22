@@ -1,12 +1,12 @@
 package by.dragonsurvivalteam.dragonsurvival.common.handlers.magic;
 
+import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.ClimbCheck;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ClimbableData;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.WorldGenLevel;
-import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 
@@ -105,7 +105,7 @@ public class ClimbingHandler {
         }
 
         if (data.canClimbCeilings() && !entity.onGround()) {
-            climbablePositions.add(BlockPos.containing(entity.getX(), entity.getBoundingBox().getMaxPosition().y() + 0.01, entity.getZ()));
+            climbablePositions.add(BlockPos.containing(entity.getX(), entity.getBoundingBox().maxY + 0.01, entity.getZ()));
         }
 
         if (!climbablePositions.equals(Objects.requireNonNullElse(data.trackedClimbPositions, Set.of()))) {

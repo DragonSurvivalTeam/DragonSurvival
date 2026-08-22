@@ -2,6 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.mixins.client;
 
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.HunterHandler;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AttachmentManager;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ClimbableData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.HunterData;
@@ -54,7 +55,7 @@ public abstract class LivingEntityRendererMixin<T extends LivingEntity, M extend
             return;
         }
 
-        ClimbableData data = target.getExistingData(DSDataAttachments.CLIMBABLE_DATA).orElse(null);
+        ClimbableData data = AttachmentManager.getExistingData(target, DSDataAttachments.CLIMBABLE_DATA).orElse(null);
 
         if (data == null || !data.isCeilingClimbing()) {
             return;
