@@ -116,8 +116,9 @@ public class ServerFlightHandler {
         if (player instanceof ServerPlayer && DragonStateProvider.isDragon(player)) {
             DragonStateHandler handler = DragonStateProvider.getData(player);
             if (player.onGround() && foldWingsOnLand) {
-                if (handler.foldWingsTimer > 0)
+                if (handler.foldWingsTimer > 0) {
                     handler.foldWingsTimer--;
+                }
                 else if (handler.foldWingsTimer == 0) {
                     FlightData.getData(player).areWingsSpread = false;
                     PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new SyncWingsSpread(player.getId(), false));
