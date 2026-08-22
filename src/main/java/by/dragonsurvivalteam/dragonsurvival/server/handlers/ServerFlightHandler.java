@@ -64,6 +64,11 @@ public class ServerFlightHandler {
     public static Boolean foldWingsOnLand = false;
 
     @ConfigRange(min = 0)
+    @Translation(key = "fold_wings_delay", type = Translation.Type.CONFIGURATION, comments = "How long (in ticks) a Dragon must be on the ground before flight mode is disabled")
+    @ConfigOption(side = ConfigSide.SERVER, category = "wings", key = "fold_wings_delay")
+    public static int foldWingsDelay=20;
+    
+    @ConfigRange(min = 0)
     @Translation(key = "flight_spin_cooldown", type = Translation.Type.CONFIGURATION, comments = "Cooldown (in seconds) of the spin attack during flight")
     @ConfigOption(side = ConfigSide.SERVER, category = "wings", key = "flight_spin_cooldown")
     public static Integer flightSpinCooldown = 5;
@@ -97,7 +102,6 @@ public class ServerFlightHandler {
     @ConfigOption(side = ConfigSide.SERVER, category = "wings", key = "no_speed_requirement_for_vertical_acceleration")
     public static Boolean noSpeedRequirementForVerticalAcceleration = false;
 
-    public static int foldWingsDelay=20; //how long a player must be landed before flight mode is disabled
 
     @SubscribeEvent(receiveCanceled = true) // Unsure if this is needed
     public static void handleLanding(final LivingFallEvent event) {
@@ -116,7 +120,7 @@ public class ServerFlightHandler {
                     handler.foldWingsTimer--;
                 else if (handler.foldWingsTimer == 0) {
                     FlightData.getData(player).areWingsSpread = false;
-                    PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new SyncWingsSpread(player.getId(), false), new CustomPacketPayload[0]);
+                    PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new SyncWingsSpread(player.getId(), false));
                     handler.foldWingsTimer = -1;
                 }
             } else {
