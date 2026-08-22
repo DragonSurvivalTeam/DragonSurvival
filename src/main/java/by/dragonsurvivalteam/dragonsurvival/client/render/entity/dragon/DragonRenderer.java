@@ -392,9 +392,9 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
         ClimbableData climbData = AttachmentManager.getExistingData(player, DSDataAttachments.CLIMBABLE_DATA).orElse(null);
 
         if (climbData != null && climbData.isCeilingClimbing()) {
-            // FIXME :: unsure - need to calc. model height with current animation
-            //          and subtract that from the height to translate the dragon is properly attached to the ceiling?
-//            pose.translate(0, player.getBbHeight(), 0);
+            // For a proper dynamic way we'd have to translate based on the difference between height and model with current animation
+            double multiplier = DragonStateProvider.getData(player).body().value().scalingProportions().ceilingClimbingOffsetMultiplier();
+            pose.translate(0, player.getBbHeight() * multiplier, 0);
             pose.mulPose(Axis.XP.rotationDegrees(-90));
             // Need to invert the facing direction for movement since the model is inverted
             pose.mulPose(Axis.ZP.rotationDegrees(-180));
