@@ -13,6 +13,7 @@ import com.mojang.blaze3d.platform.Window;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
@@ -64,8 +65,8 @@ public class SpinHUD {
             y += spinCooldownYOffset;
 
             int width = (int) (cooldownProgress * 62);
-            graphics.blit(SPIN_COOLDOWN, x, y, 0, 0, 66, 21, 256, 256);
-            graphics.blit(SPIN_COOLDOWN, x + 4, y + 1, 4, 21, width, 21, 256, 256);
+            graphics.blit(RenderPipelines.GUI_TEXTURED, SPIN_COOLDOWN, x, y, 0, 0, 66, 21, 256, 256);
+            graphics.blit(RenderPipelines.GUI_TEXTURED, SPIN_COOLDOWN, x + 4, y + 1, 4, 21, width, 21, 256, 256);
         }
     }
 }
