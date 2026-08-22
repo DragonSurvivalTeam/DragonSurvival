@@ -60,6 +60,7 @@
     }
   ],
   "scaling_proportions": {
+    "ceiling_climbing_offset_multiplier": -0.05,
     "eye_height": 0.99,
     "height": 1.1,
     "width": 0.6
