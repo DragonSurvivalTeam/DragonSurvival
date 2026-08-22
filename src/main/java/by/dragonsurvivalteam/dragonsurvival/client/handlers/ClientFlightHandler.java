@@ -307,7 +307,8 @@ public class ClientFlightHandler {
                             Vec3 deltaMovement = player.getDeltaMovement();
 
                             double maxFlightSpeed = ServerFlightHandler.maxFlightSpeed;
-                            limitSpeed(speedLimit); //properly limit the 3D speed vector
+                            //properly limit the 3D speed vector
+                            limitSpeed(maxFlightSpeed); 
 
                             // Increase acceleration depending on how sharply the player turns their character
                             ax += Math.cos(yaw) / 500 * 50 * 2;
@@ -385,7 +386,8 @@ public class ClientFlightHandler {
                                     }
 
                                     double speedLimit = ServerFlightHandler.maxFlightSpeed * flightSpeedMultiplier;
-                                    limitSpeed(speedLimit); //properly limit the 3D speed vector
+                                    //properly limit the 3D speed vector
+                                    limitSpeed(maxFlightSpeed); 
                                    
 
                                     if (ServerFlightHandler.isSpin(player)) {
