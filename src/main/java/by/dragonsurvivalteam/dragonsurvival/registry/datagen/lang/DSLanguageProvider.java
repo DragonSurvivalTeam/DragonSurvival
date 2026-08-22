@@ -308,12 +308,12 @@ public class DSLanguageProvider extends LanguageProvider {
     }
 
     /** See {@link DSLanguageProvider#format(String...)} */
-    private String format(final List<String> comments) {
+    public static String format(final List<String> comments) {
         return format(comments.toArray(new String[0]));
     }
 
     /** Separates the comment elements by a new line */
-    private String format(final String... comments) {
+    public static String format(final String... comments) {
         StringBuilder comment = new StringBuilder();
 
         for (int line = 0; line < comments.length; line++) {
@@ -329,13 +329,13 @@ public class DSLanguageProvider extends LanguageProvider {
     }
 
     /** See {@link DSLanguageProvider#capitalize(String...)} */
-    private String capitalize(final String snakeCaseString) {
+    public static String capitalize(final String snakeCaseString) {
         return capitalize(snakeCaseString.split("_"));
     }
 
     /** Formats the parts from 'some, string, parts' into 'Some String Parts' */
     @SuppressWarnings("deprecation") // ignore
-    private String capitalize(final String... components) {
+    public static String capitalize(final String... components) {
         if (components.length == 1) {
             return WordUtils.capitalize(components[0]);
         }
