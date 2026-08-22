@@ -6,7 +6,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.WorldGenLevel;
-import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 
@@ -110,7 +110,7 @@ public class ClimbingHandler {
 
         if (!climbablePositions.equals(Objects.requireNonNullElse(data.trackedClimbPositions, Set.of()))) {
             data.trackedClimbPositions = climbablePositions.isEmpty() ? null : climbablePositions;
-            PacketDistributor.sendToServer(new ClimbCheck(climbablePositions));
+            ClientPacketDistributor.sendToServer(new ClimbCheck(climbablePositions));
         }
 
         if (climbablePositions.isEmpty()) {

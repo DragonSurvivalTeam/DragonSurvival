@@ -2,11 +2,10 @@ package by.dragonsurvivalteam.dragonsurvival.registry.attachments;
 
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Climbable;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.attachment.AttachmentType;
@@ -158,13 +157,13 @@ public class ClimbableData extends Storage<Climbable.Instance> {
     }
 
     @Override
-    protected Tag save(@NotNull final HolderLookup.Provider provider, final Climbable.Instance entry) {
-        return entry.save(provider);
+    protected void save(@NotNull final ValueOutput valueOutput, final Climbable.Instance entry, final String key) {
+        entry.save(valueOutput, key);
     }
 
     @Override
-    protected Climbable.Instance load(@NotNull final HolderLookup.Provider provider, final CompoundTag tag) {
-        return Climbable.Instance.load(provider, tag);
+    protected Climbable.Instance load(@NotNull final ValueInput valueInput, final String key) {
+        return Climbable.Instance.load(valueInput, key);
     }
 
     @Override

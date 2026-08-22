@@ -19,7 +19,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.ARGB;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.attribute.EnvironmentAttributes;
@@ -403,7 +403,7 @@ public class Functions {
 
         if (type == BlockPredicateType.MATCHING_FLUIDS) {
             //noinspection DataFlowIssue -> key is present
-            return translateHolderSet(((MatchingFluidsPredicateAccess) predicate).dragonSurvival$fluids(), holder -> "block." + holder.getKey().location().getNamespace() + "." + holder.getKey().location().getPath());
+            return translateHolderSet(((MatchingFluidsPredicateAccess) predicate).dragonSurvival$fluids(), holder -> "block." + holder.getKey().identifier().getNamespace() + "." + holder.getKey().identifier().getPath());
         }
 
         if (type == BlockPredicateType.SOLID) {
@@ -448,7 +448,7 @@ public class Functions {
         }
 
         // Modded predicates, can't really handle those
-        ResourceLocation key = BuiltInRegistries.BLOCK_PREDICATE_TYPE.getKey(type);
+        Identifier key = BuiltInRegistries.BLOCK_PREDICATE_TYPE.getKey(type);
 
         if (key != null) {
             return DSColors.dynamicValue(Component.literal(key.toString()));
