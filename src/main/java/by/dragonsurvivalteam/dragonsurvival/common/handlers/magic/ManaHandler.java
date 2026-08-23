@@ -117,6 +117,8 @@ public class ManaHandler {
     }
 
     public static float getBonusManaFromExperience(final Player player) {
+        if (!DragonStateProvider.isDragon(player)) return 0;
+
         ManaHandling manaHandling = DragonStateProvider.getData(player).species().value().manaHandling();
 
         if (manaHandling.maxManaFromLevels() == 0) {
