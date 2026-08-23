@@ -10,8 +10,6 @@ import net.xolt.freecam.Freecam;
 public class Compat {
     private static final String AERONAUTICS_DIAGRAM_SCREEN = "dev.simulated_team.simulated.content.entities.diagram.screen.DiagramScreen";
 
-    private static final String AERONAUTICS_DIAGRAM_SCREEN = "dev.simulated_team.simulated.content.entities.diagram.screen.DiagramScreen";
-
     /**
      * Generic in case compatibility for other mods will be added <br>
      * (Which have the ability to swap the player's model)
