@@ -3,10 +3,15 @@ package by.dragonsurvivalteam.dragonsurvival.compat;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import net.irisshaders.iris.api.v0.IrisApi;
+import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
 import net.xolt.freecam.Freecam;
 
 public class Compat {
+    private static final String AERONAUTICS_DIAGRAM_SCREEN = "dev.simulated_team.simulated.content.entities.diagram.screen.DiagramScreen";
+
+    private static final String AERONAUTICS_DIAGRAM_SCREEN = "dev.simulated_team.simulated.content.entities.diagram.screen.DiagramScreen";
+
     /**
      * Generic in case compatibility for other mods will be added <br>
      * (Which have the ability to swap the player's model)
@@ -28,6 +33,11 @@ public class Compat {
         }
 
         if (ModID.FREECAM.isLoaded() && Freecam.isEnabled()) {
+            return true;
+        }
+
+        if (Minecraft.getInstance().screen != null
+                && Minecraft.getInstance().screen.getClass().getName().equals(AERONAUTICS_DIAGRAM_SCREEN)) {
             return true;
         }
 
