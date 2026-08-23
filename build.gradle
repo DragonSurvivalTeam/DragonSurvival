@@ -101,7 +101,7 @@ dependencies {
 	compileOnly "curse.maven:cosmetic-armor-reworked-237307:5610814" // v1
 
 	// Create
-	implementation "curse.maven:create-328085:7408951" // 6.0.9
+	implementation "maven.modrinth:create:6.0.10+mc1.21.1"
 
 	// Better Combat
 	compileOnly "curse.maven:better-combat-by-daedelus-639842:6097296" // 2.1.3
@@ -120,8 +120,8 @@ dependencies {
 	compileOnly "curse.maven:irisshaders-455508:6661598" // 1.8.12
 
 	// Create: Aeronautics
-//	implementation "maven.modrinth:sable:1.0.6+mc1.21.1"
-	//runtimeOnly "maven.modrinth:create-aeronautics:1.0.3+mc1.21.1"
+//	runtimeOnly "maven.modrinth:sable:2.0.5+mc1.21.1"
+//	runtimeOnly "maven.modrinth:create-aeronautics:1.3.1+mc1.21.1"
 
 //	implementation "curse.maven:embeddium-908741:6118392" // 1.0.15
 //	implementation "curse.maven:neoculus-1200907:6394928" // 1.8.6
