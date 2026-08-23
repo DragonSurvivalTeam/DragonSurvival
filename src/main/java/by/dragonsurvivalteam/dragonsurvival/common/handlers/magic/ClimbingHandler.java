@@ -2,6 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.common.handlers.magic;
 
 import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.ClimbCheck;
+import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncClimbFlag;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ClimbableData;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -20,7 +21,15 @@ import java.util.Set;
 public class ClimbingHandler {
     public static boolean canClimb(final LivingEntity entity, final ClimbableData data) {
         if (entity.level() instanceof WorldGenLevel level) {
-            return handleServer(entity, data, level);
+            SyncClimbFlag.ClimbingType previous = data.climbingType;
+
+            boolean canClimb = handleServer(entity, data, level);
+
+            if (previous != data.climbingType) {
+                PacketDistributor.sendToPlayersTrackingEntity(entity, new SyncClimbFlag(entity.getId(), data.climbingType));
+            }
+
+            return canClimb;
         }
 
         return handleClient(entity, data);
@@ -40,6 +49,7 @@ public class ClimbingHandler {
 
     private static boolean handleServer(final LivingEntity entity, final ClimbableData data, final WorldGenLevel level) {
         if (data.trackedClimbPositions == null) {
+            data.climbingType = SyncClimbFlag.ClimbingType.NONE;
             return false;
         }
 
@@ -51,7 +61,7 @@ public class ClimbingHandler {
                 continue;
             }
 
-            if (position.getY() > entity.getBlockY()) {
+            if (position.getY() >= entity.getBoundingBox().getMaxPosition().y()) {
                 ceilingPosition = position;
                 break;
             } else if (wallPosition == null) {
@@ -65,9 +75,11 @@ public class ClimbingHandler {
         if (climbPosition != null) {
             data.climbPosition = climbPosition;
             data.isCeilingClimbing = ceilingPosition != null;
+            data.climbingType = data.isCeilingClimbing ? SyncClimbFlag.ClimbingType.CEILING : SyncClimbFlag.ClimbingType.WALL;
             return true;
         }
 
+        data.climbingType = SyncClimbFlag.ClimbingType.NONE;
         return false;
     }
 
@@ -138,7 +150,7 @@ public class ClimbingHandler {
                 continue;
             }
 
-            if (position.getY() > entity.getBlockY()) {
+            if (position.getY() >= entity.getBoundingBox().getMaxPosition().y()) {
                 ceilingPosition = position;
                 break;
             } else if (wallPosition == null) {

@@ -11,6 +11,7 @@ import by.dragonsurvivalteam.dragonsurvival.compat.Compat;
 import by.dragonsurvivalteam.dragonsurvival.compat.ModID;
 import by.dragonsurvivalteam.dragonsurvival.compat.do_a_barrel_roll.DoABarrelRollCompat;
 import by.dragonsurvivalteam.dragonsurvival.compat.sophisticatedBackpacks.DragonBackpackRenderLayer;
+import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncClimbFlag;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AttachmentManager;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ClimbableData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
@@ -391,7 +392,7 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
 
         ClimbableData climbData = AttachmentManager.getExistingData(player, DSDataAttachments.CLIMBABLE_DATA).orElse(null);
 
-        if (climbData != null && climbData.isCeilingClimbing()) {
+        if (climbData != null && (climbData.climbingType == SyncClimbFlag.ClimbingType.CEILING || climbData.isCeilingClimbing())) {
             // For a proper dynamic way we'd have to translate based on the difference between height and model with current animation
             double multiplier = DragonStateProvider.getData(player).body().value().scalingProportions().ceilingClimbingOffsetMultiplier();
             pose.translate(0, player.getBbHeight() * multiplier, 0);

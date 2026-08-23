@@ -6,6 +6,7 @@ import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
 import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
 import by.dragonsurvivalteam.dragonsurvival.network.animation.StopAbilityAnimation;
 import by.dragonsurvivalteam.dragonsurvival.network.container.OpenDragonAltar;
+import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncClimbFlag;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncData;
 import by.dragonsurvivalteam.dragonsurvival.network.sound.StopTickingSound;
 import by.dragonsurvivalteam.dragonsurvival.network.syncing.SyncComplete;
@@ -21,6 +22,7 @@ import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
@@ -166,6 +168,20 @@ public class PlayerLoginHandler {
             // Same for MOVEMENT data
             AttachmentManager.getExistingData(syncFrom, DSDataAttachments.MOVEMENT).ifPresent(data -> data.sync(source, target));
         }
+
+        if (!(syncFrom instanceof LivingEntity entity)) {
+            return;
+        }
+
+        entity.getExistingData(DSDataAttachments.CLIMBABLE_DATA).ifPresent(data -> {
+            if (data.isCeilingClimbing()) {
+                PacketDistributor.sendToPlayersTrackingEntity(entity, new SyncClimbFlag(entity.getId(), SyncClimbFlag.ClimbingType.CEILING));
+            } else if (data.climbPosition != null) {
+                PacketDistributor.sendToPlayersTrackingEntity(entity, new SyncClimbFlag(entity.getId(), SyncClimbFlag.ClimbingType.WALL));
+            } else {
+                PacketDistributor.sendToPlayersTrackingEntity(entity, new SyncClimbFlag(entity.getId(), SyncClimbFlag.ClimbingType.NONE));
+            }
+        });
     }
 
     /**

@@ -311,7 +311,4 @@ public abstract class EntityMixin implements AttachmentStorage {
 
     @Shadow
     public abstract double getZ();
-
-    @Shadow
-    public abstract boolean hasPassenger(Entity entity);
 }

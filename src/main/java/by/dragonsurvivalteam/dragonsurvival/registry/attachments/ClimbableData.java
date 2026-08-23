@@ -1,6 +1,8 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.attachments;
 
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Climbable;
+import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
+import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncClimbFlag;
 import by.dragonsurvivalteam.dragonsurvival.common.compat.attachments.AttachmentType;
 import by.dragonsurvivalteam.dragonsurvival.common.compat.event.EntityTickEvent;
 import net.minecraft.core.BlockPos;
@@ -25,6 +27,12 @@ public class ClimbableData extends Storage<Climbable.Instance> {
     // - Block predicates can only be evaluated on the server-side (i.e., is climbing allowed on that position)
     // Meaning the client needs to collect the relevant positions and the server has to approve them
 
+    /**
+     * Purely for other players to know what the other client is doing </br>
+     * On the server-side it is used to check whether a sync is required (i.e., type changed)
+     */
+    public SyncClimbFlag.ClimbingType climbingType = SyncClimbFlag.ClimbingType.NONE;
+
     /** Temporarily kept to handle 'canStickToWalls' and ceiling climbing */
     public @Nullable BlockPos climbPosition;
 
@@ -32,16 +40,16 @@ public class ClimbableData extends Storage<Climbable.Instance> {
     public boolean isCeilingClimbing;
 
     /**
-     * Client-only: positions the server has confirmed as climbable </br>
-     * Used to actually check (on the client-side) whether climbing is allowed
-     */
-    private @Nullable @Unmodifiable Collection<BlockPos> approvedClimbPositions;
-
-    /**
      * Last set of (unfiltered in regard to climbable) positions collected by the client and sent to the server </br>
      * On the server-side they may be updated through the 'LevelMixin' (causing a refresh to be sent to the client)
      */
     public @Nullable @Unmodifiable Collection<BlockPos> trackedClimbPositions;
+
+    /**
+     * Client-only: positions the server has confirmed as climbable </br>
+     * Used to actually check (on the client-side) whether climbing is allowed
+     */
+    private @Nullable @Unmodifiable Collection<BlockPos> approvedClimbPositions;
 
     public boolean isApprovedClimbPosition(final BlockPos position) {
         return approvedClimbPositions != null && approvedClimbPositions.contains(position);
@@ -133,6 +141,10 @@ public class ClimbableData extends Storage<Climbable.Instance> {
         return false;
     }
 
+    public void setClimbingType(final SyncClimbFlag.ClimbingType climbingType) {
+        this.climbingType = climbingType;
+    }
+
     @SubscribeEvent
     public static void tickData(final EntityTickEvent.Post event) {
         if (!(event.getEntity() instanceof LivingEntity livingEntity)) {
@@ -143,6 +155,10 @@ public class ClimbableData extends Storage<Climbable.Instance> {
             if (!data.canStillClimb(livingEntity)) {
                 data.climbPosition = null;
                 data.isCeilingClimbing = false;
+
+                if (event.getEntity() instanceof LivingEntity entity && !entity.level().isClientSide()) {
+                    PacketDistributor.sendToPlayersTrackingEntity(entity, new SyncClimbFlag(entity.getId(), SyncClimbFlag.ClimbingType.NONE));
+                }
             }
 
             if (livingEntity.level().isClientSide()) {
