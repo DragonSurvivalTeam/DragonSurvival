@@ -4,6 +4,7 @@ import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.duration_instance.CommonData;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.duration_instance.DurationInstance;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.duration_instance.DurationInstanceBase;
+import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncClimbFlag;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncClimbableInstance;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ClimbableData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
@@ -21,6 +22,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.WorldGenLevel;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -138,6 +140,10 @@ public class Climbable extends DurationInstanceBase<ClimbableData, Climbable.Ins
         public void onRemovalFromStorage(final Entity storageHolder) {
             if (storageHolder instanceof ServerPlayer player) {
                 PacketDistributor.sendToPlayer(player, new SyncClimbableInstance(player.getId(), this, true));
+            }
+
+            if (storageHolder instanceof LivingEntity entity && !entity.level().isClientSide()) {
+                PacketDistributor.sendToPlayersTrackingEntity(entity, new SyncClimbFlag(entity.getId(), SyncClimbFlag.ClimbingType.NONE));
             }
         }
 
