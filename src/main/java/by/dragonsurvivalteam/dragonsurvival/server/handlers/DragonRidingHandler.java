@@ -38,7 +38,9 @@ public class DragonRidingHandler {
     @ConfigOption(side = ConfigSide.SERVER, category = "riding", key = "riding_offsets")
     public static List<OffsetConfig> OFFSETS = List.of(
             // To avoid touching the water
-            OffsetConfig.create(Tags.EntityTypes.BOATS, new Vec3(0, 0.9, 0))
+            OffsetConfig.create(Tags.EntityTypes.BOATS, new Vec3(0, 0.9, 0)),
+            // Create seats already position their passenger at the sitting height.
+            OffsetConfig.create("create:seat", new Vec3(0, 0.35, 0))
     );
     @ConfigRange(min = -1000, max = 1000)
     @Translation(key = "player_riding_scale", type = Translation.Type.CONFIGURATION, comments = "Maximum human-rider size compared to mount dragon. Default: 0.7 (70%).")
