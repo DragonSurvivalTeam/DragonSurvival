@@ -521,7 +521,9 @@ public class ClientFlightHandler {
             return;
         }
 
-        if (player.isInLava() || player.isInWater()) {
+        //check if eye is in fluid, rather than isInWater()/isInLava(), which checks feet
+        //this allows jumpToFly to work from the surface of the water
+        if (player.getEyeInFluidType() != (FluidType)NeoForgeMod.EMPTY_TYPE.value()) {
             return;
         }
 
