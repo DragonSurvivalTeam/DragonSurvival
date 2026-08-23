@@ -14,6 +14,11 @@ import org.spongepowered.asm.mixin.injection.At;
 public interface IBlocksExtensionMixin {
     @ModifyReturnValue(method = "isLadder", at = @At("RETURN"))
     default boolean isLadder(boolean original, @Local(argsOnly = true) final LivingEntity entity) {
+        if (entity == null) {
+            // MineColonies may cause this to be null
+            return original;
+        }
+
         ClimbableData data = entity.getExistingData(DSDataAttachments.CLIMBABLE_DATA).orElse(null);
 
         if (data == null || original) {
