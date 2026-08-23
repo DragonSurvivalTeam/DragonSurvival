@@ -42,6 +42,12 @@ public abstract class CameraMixin {
             return;
         }
 
+        // Don't run this code if we are a passenger, can cause issues with certain mods that have custom
+        // camera views when mounted (e.g. Create Aeronautics)
+        if (player.isPassenger()) {
+            return;
+        }
+
         // Check in 5 places: 1 in the center, 4 around the player
         for (int i = 0; i < 5; i++) {
             float scale = Math.min(1, player.getScale());
