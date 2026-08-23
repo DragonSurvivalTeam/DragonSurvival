@@ -12,6 +12,8 @@ import by.dragonsurvivalteam.dragonsurvival.common.handlers.DragonFoodHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.DragonSizeHandler;
 import by.dragonsurvivalteam.dragonsurvival.compat.create.SkyhookRendererHelper;
 import by.dragonsurvivalteam.dragonsurvival.config.ClientConfig;
+import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncClimbFlag;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MovementData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SwimData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.TreasureRestData;
@@ -753,7 +755,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
             }
         } else if (animationTickTimer.getDuration(DragonAnimations.FLY_LAND_END.getAnimation()) > 0) {
             animationToChangeTo = DragonAnimations.FLY_LAND_END.getAnimation();
-        } else if (player.onClimbable()) {
+        } else if (player.getExistingData(DSDataAttachments.CLIMBABLE_DATA).map(data -> data.climbingType != SyncClimbFlag.ClimbingType.NONE).orElse(false) || player.onClimbable()) {
             if (movement.deltaMovement.y() < 0) {
                 animationToChangeTo = DragonAnimations.CLIMBING_DOWN.getAnimation();
             } else {

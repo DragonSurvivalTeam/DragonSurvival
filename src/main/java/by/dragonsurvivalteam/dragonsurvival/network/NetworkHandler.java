@@ -33,6 +33,7 @@ import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncAbilityLevel;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncAddPenaltySupply;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncBeginCast;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncBlockVision;
+import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncClimbFlag;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncClimbableInstance;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncDamageModification;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncData;
@@ -118,6 +119,7 @@ public class NetworkHandler {
         // Ability packets
         registrar.playToClient(SyncMagicData.TYPE, SyncMagicData.STREAM_CODEC);
         registrar.playToClient(SyncClimbableInstance.TYPE, SyncClimbableInstance.STREAM_CODEC);
+        registrar.playToClient(SyncClimbFlag.TYPE, SyncClimbFlag.STREAM_CODEC);
         registrar.playToClient(SyncHunterStacksRemoval.TYPE, SyncHunterStacksRemoval.STREAM_CODEC);
         registrar.playToClient(StartTickingSound.TYPE, StartTickingSound.STREAM_CODEC);
         registrar.playToClient(StopTickingSound.TYPE, StopTickingSound.STREAM_CODEC);
