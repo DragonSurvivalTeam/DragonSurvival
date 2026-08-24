@@ -22,6 +22,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SummonedEntitie
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SwimData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSEntityTypeTags;
 import by.dragonsurvivalteam.dragonsurvival.server.handlers.DragonRidingHandler;
+import by.dragonsurvivalteam.dragonsurvival.util.IBoundingBoxOffset;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
@@ -34,6 +35,7 @@ import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.MinecraftForge;
 import org.spongepowered.asm.mixin.Mixin;
@@ -48,9 +50,10 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 
 @Mixin(Entity.class)
-public abstract class EntityMixin implements AttachmentStorage {
+public abstract class EntityMixin implements AttachmentStorage, IBoundingBoxOffset {
     @Shadow private EntityDimensions dimensions;
     @Unique private final Map<AttachmentType<?>, Object> dragonSurvival$attachments = new IdentityHashMap<>();
+    @Unique private double dragonSurvival$boundingBoxOffset;
 
     @Override
     public Map<AttachmentType<?>, Object> dragonSurvival$getAttachments() {
@@ -301,6 +304,22 @@ public abstract class EntityMixin implements AttachmentStorage {
         } else {
             return original;
         }
+    }
+
+    /** Keep a reduced ceiling-climb hitbox anchored to the ceiling rather than the ground. */
+    @ModifyReturnValue(method = "makeBoundingBox", at = @At("RETURN"))
+    private AABB dragonSurvival$anchorToCeiling(final AABB original) {
+        return dragonSurvival$boundingBoxOffset == 0 ? original : original.move(0, dragonSurvival$boundingBoxOffset, 0);
+    }
+
+    @Override
+    public double dragonSurvival$getBoundingBoxOffset() {
+        return dragonSurvival$boundingBoxOffset;
+    }
+
+    @Override
+    public void dragonSurvival$setBoundingBoxOffset(final double offset) {
+        dragonSurvival$boundingBoxOffset = offset;
     }
 
     @Shadow

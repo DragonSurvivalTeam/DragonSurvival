@@ -7,6 +7,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AttachmentManag
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ClimbableData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.HunterData;
+import by.dragonsurvivalteam.dragonsurvival.util.CeilingClimbDimensions;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
@@ -58,14 +59,17 @@ public abstract class LivingEntityRendererMixin<T extends LivingEntity, M extend
 
         ClimbableData data = AttachmentManager.getExistingData(target, DSDataAttachments.CLIMBABLE_DATA).orElse(null);
 
-        if (data == null || !(data.climbingType == SyncClimbFlag.ClimbingType.CEILING || data.isCeilingClimbing())) {
+        if (data == null || !(data.getClimbingType() == SyncClimbFlag.ClimbingType.CEILING || data.isCeilingClimbing())) {
             return;
         }
 
-        // TODO :: Need to check how much the player model has to be translated
-        //         Potentially needs a config in case player model is changed (client config tells server which keeps a map?)
-//        poseStack.translate(0, entity.getBbHeight(), 0);
-        poseStack.mulPose(Axis.XP.rotationDegrees(-90));
+        // The hitbox is usually re-sized to the bottom part - but to keep to the ceiling we need to inverse that behaviour
+        // Which also means we need to move the model up to be at the hitbox again
+        double unmodifiedHeight = CeilingClimbDimensions.getUnmodifiedHeight(entity);
+
+        // Due to the rotation, the model has basically "fallen over" so we move it back to keep the head at the hitbox
+        poseStack.translate(0, unmodifiedHeight, unmodifiedHeight);
+        poseStack.mulPose(Axis.XP.rotationDegrees(90));
         // Need to invert the facing direction for movement since the model is inverted
         poseStack.mulPose(Axis.ZP.rotationDegrees(-180));
     }

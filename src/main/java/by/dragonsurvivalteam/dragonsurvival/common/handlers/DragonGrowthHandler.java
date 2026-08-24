@@ -8,6 +8,9 @@ import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
 import by.dragonsurvivalteam.dragonsurvival.network.player.SyncGrowthState;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAdvancementTriggers;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAttributes;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AttachmentManager;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ClimbableData;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
@@ -158,6 +161,10 @@ public class DragonGrowthHandler {
     }
 
     public static boolean isGrowthAllowed(final Player player, final DragonStateHandler handler, final double desiredGrowth) {
+        if (AttachmentManager.getExistingData(player, DSDataAttachments.CLIMBABLE_DATA).map(ClimbableData::isCeilingClimbing).orElse(false)) {
+            return false;
+        }
+
         float currentScale = EntityScale.get(player);
         float newScale = handler.calculateScale(player.getAttribute(DSAttributes.SCALE.get()), desiredGrowth);
         float difference = newScale - currentScale;

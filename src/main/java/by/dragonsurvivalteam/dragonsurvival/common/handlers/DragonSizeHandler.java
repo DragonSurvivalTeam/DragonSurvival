@@ -7,6 +7,7 @@ import by.dragonsurvivalteam.dragonsurvival.compat.Compat;
 import by.dragonsurvivalteam.dragonsurvival.mixins.EntityAccessor;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAttributes;
 import by.dragonsurvivalteam.dragonsurvival.server.handlers.ServerFlightHandler;
+import by.dragonsurvivalteam.dragonsurvival.util.CeilingClimbDimensions;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
@@ -66,11 +67,14 @@ public class DragonSizeHandler {
         }
 
         Pose sizePose = Compat.hasModelSwapOrDoesNotUseModel(player) ? event.getPose() : handler.previousPose;
-        EntityDimensions newDimensions = calculateDimensions(handler, player, sizePose);
+        EntityDimensions baseDimensions = calculateDimensions(handler, player, sizePose);
+        EntityDimensions newDimensions = CeilingClimbDimensions.apply(player, baseDimensions, true);
         event.setNewSize(event.getOldSize().fixed
                 ? EntityDimensions.fixed(newDimensions.width, newDimensions.height)
                 : newDimensions);
-        event.setNewEyeHeight((float) calculateDragonEyeHeight(handler, player, sizePose));
+        event.setNewEyeHeight((float) (CeilingClimbDimensions.isCeilingClimbing(player)
+                ? baseDimensions.height - 0.1F
+                : calculateDragonEyeHeight(handler, player, sizePose)));
     }
 
     public static double calculateDragonEyeHeight(final DragonStateHandler handler, final Player player) {
@@ -219,7 +223,13 @@ public class DragonSizeHandler {
     }
 
     public static boolean canPoseFit(final Player player, @Nullable final Pose pose) {
-        return player.level().noCollision(calculateDimensions(DragonStateProvider.getData(player), player, pose).makeBoundingBox(player.position()).deflate(Shapes.EPSILON));
+        EntityDimensions dimensions = calculateDimensions(DragonStateProvider.getData(player), player, pose);
+
+        if (CeilingClimbDimensions.isCeilingClimbing(player)) {
+            dimensions = CeilingClimbDimensions.adjust(player, dimensions);
+        }
+
+        return player.level().noCollision(dimensions.makeBoundingBox(player.position()).deflate(Shapes.EPSILON));
     }
 
     @SubscribeEvent

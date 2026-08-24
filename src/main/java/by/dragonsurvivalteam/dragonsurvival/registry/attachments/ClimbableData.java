@@ -31,8 +31,6 @@ public class ClimbableData extends Storage<Climbable.Instance> {
      * Purely for other players to know what the other client is doing </br>
      * On the server-side it is used to check whether a sync is required (i.e., type changed)
      */
-    public SyncClimbFlag.ClimbingType climbingType = SyncClimbFlag.ClimbingType.NONE;
-
     /** Temporarily kept to handle 'canStickToWalls' and ceiling climbing */
     public @Nullable BlockPos climbPosition;
 
@@ -50,6 +48,9 @@ public class ClimbableData extends Storage<Climbable.Instance> {
      * Used to actually check (on the client-side) whether climbing is allowed
      */
     private @Nullable @Unmodifiable Collection<BlockPos> approvedClimbPositions;
+
+    /** The synchronized climb state for the entity. */
+    private SyncClimbFlag.ClimbingType climbingType = SyncClimbFlag.ClimbingType.NONE;
 
     public boolean isApprovedClimbPosition(final BlockPos position) {
         return approvedClimbPositions != null && approvedClimbPositions.contains(position);
@@ -107,6 +108,10 @@ public class ClimbableData extends Storage<Climbable.Instance> {
         return climbPosition != null && isCeilingClimbing;
     }
 
+    public SyncClimbFlag.ClimbingType getClimbingType() {
+        return climbingType;
+    }
+
     public boolean canClimbCeilings() {
         if (storage == null) {
             return false;
@@ -143,6 +148,7 @@ public class ClimbableData extends Storage<Climbable.Instance> {
 
     public void setClimbingType(final SyncClimbFlag.ClimbingType climbingType) {
         this.climbingType = climbingType;
+        isCeilingClimbing = climbingType == SyncClimbFlag.ClimbingType.CEILING;
     }
 
     @SubscribeEvent
@@ -152,9 +158,15 @@ public class ClimbableData extends Storage<Climbable.Instance> {
         }
 
         AttachmentManager.getExistingData(livingEntity, DSDataAttachments.CLIMBABLE_DATA).ifPresent(data -> {
+            // Re-evaluate invalid climb positions even when the client has not sent a new collision update.
             if (!data.canStillClimb(livingEntity)) {
+                boolean wasCeilingClimbing = data.isCeilingClimbing();
                 data.climbPosition = null;
                 data.isCeilingClimbing = false;
+
+                if (wasCeilingClimbing) {
+                    livingEntity.refreshDimensions();
+                }
 
                 if (event.getEntity() instanceof LivingEntity entity && !entity.level().isClientSide()) {
                     PacketDistributor.sendToPlayersTrackingEntity(entity, new SyncClimbFlag(entity.getId(), SyncClimbFlag.ClimbingType.NONE));
