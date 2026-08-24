@@ -173,7 +173,7 @@ public class PlayerLoginHandler {
             return;
         }
 
-        entity.getExistingData(DSDataAttachments.CLIMBABLE_DATA).ifPresent(data -> {
+        AttachmentManager.getExistingData(entity, DSDataAttachments.CLIMBABLE_DATA).ifPresent(data -> {
             if (data.isCeilingClimbing()) {
                 PacketDistributor.sendToPlayersTrackingEntity(entity, new SyncClimbFlag(entity.getId(), SyncClimbFlag.ClimbingType.CEILING));
             } else if (data.climbPosition != null) {

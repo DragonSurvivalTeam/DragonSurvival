@@ -1,16 +1,18 @@
 package by.dragonsurvivalteam.dragonsurvival.network.magic;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.network.codec.ByteBufCodecs;
+import by.dragonsurvivalteam.dragonsurvival.network.codec.StreamCodec;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.CustomPacketPayload;
+import by.dragonsurvivalteam.dragonsurvival.network.compat.PayloadContext;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AttachmentManager;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ClimbableData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import com.mojang.serialization.Codec;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.LivingEntity;
-import net.neoforged.neoforge.network.handling.IPayloadContext;
+import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
 
 public record SyncClimbFlag(int entityId, ClimbingType climbingType) implements CustomPacketPayload {
@@ -22,10 +24,12 @@ public record SyncClimbFlag(int entityId, ClimbingType climbingType) implements 
             SyncClimbFlag::new
     );
 
-    public static void handleClient(final SyncClimbFlag packet, final IPayloadContext context) {
+    public static void handleClient(final SyncClimbFlag packet, final PayloadContext context) {
         context.enqueueWork(() -> {
-            if (context.player().level().getEntity(packet.entityId()) instanceof LivingEntity entity) {
-                ClimbableData data = entity.getData(DSDataAttachments.CLIMBABLE_DATA);
+            Player player = context.player();
+
+            if (player != null && player.level().getEntity(packet.entityId()) instanceof LivingEntity entity) {
+                ClimbableData data = AttachmentManager.getData(entity, DSDataAttachments.CLIMBABLE_DATA);
                 data.setClimbingType(packet.climbingType());
             }
         });
@@ -36,7 +40,7 @@ public record SyncClimbFlag(int entityId, ClimbingType climbingType) implements 
         CEILING("ceiling"),
         NONE("none");
 
-        public static final Codec<ClimbingType> CODEC = StringRepresentable.fromValues(ClimbingType::values);
+        public static final Codec<ClimbingType> CODEC = StringRepresentable.fromEnum(ClimbingType::values);
 
         private final String name;
 

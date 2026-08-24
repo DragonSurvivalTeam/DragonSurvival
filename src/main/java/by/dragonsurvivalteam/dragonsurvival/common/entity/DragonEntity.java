@@ -14,6 +14,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.handlers.EntityScale;
 import by.dragonsurvivalteam.dragonsurvival.compat.create.SkyhookRendererHelper;
 import by.dragonsurvivalteam.dragonsurvival.config.ClientConfig;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncClimbFlag;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AttachmentManager;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MovementData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.TreasureRestData;
@@ -733,7 +734,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity, EntityScale
             animationController.transitionLength(2);
         } else if (animationTickTimer.getDuration(DragonAnimations.FLY_LAND_END.getAnimation()) > 0) {
             state.setAnimation(DragonAnimations.FLY_LAND_END.getAnimation());
-        } else if (player.getExistingData(DSDataAttachments.CLIMBABLE_DATA).map(data -> data.climbingType != SyncClimbFlag.ClimbingType.NONE).orElse(false) || player.onClimbable()) {
+        } else if (AttachmentManager.getExistingData(player, DSDataAttachments.CLIMBABLE_DATA).map(data -> data.climbingType != SyncClimbFlag.ClimbingType.NONE).orElse(false) || player.onClimbable()) {
             if (movement.deltaMovement.y() < 0) {
                 state.setAnimation(DragonAnimations.CLIMBING_DOWN.getAnimation());
             } else {

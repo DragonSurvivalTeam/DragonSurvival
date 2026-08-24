@@ -61,7 +61,7 @@ public class ClimbingHandler {
                 continue;
             }
 
-            if (position.getY() >= entity.getBoundingBox().getMaxPosition().y()) {
+            if (position.getY() >= entity.getBoundingBox().maxY) {
                 ceilingPosition = position;
                 break;
             } else if (wallPosition == null) {
@@ -150,7 +150,7 @@ public class ClimbingHandler {
                 continue;
             }
 
-            if (position.getY() >= entity.getBoundingBox().getMaxPosition().y()) {
+            if (position.getY() >= entity.getBoundingBox().maxY) {
                 ceilingPosition = position;
                 break;
             } else if (wallPosition == null) {
