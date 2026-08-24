@@ -5,6 +5,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvide
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.DragonFoodHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.DragonSizeHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.EnchantmentEffectHandler;
+import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.ClimbingHandler;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAttributes;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ClimbableData;
@@ -14,6 +15,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.attachments.HunterData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SummonedEntities;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SwimData;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.trigger.OnTargetKilled;
+import by.dragonsurvivalteam.dragonsurvival.util.CeilingClimbDimensions;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.sugar.Local;
@@ -28,6 +30,7 @@ import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -275,7 +278,9 @@ public abstract class LivingEntityMixin extends Entity {
             return original;
         }
 
-        if (/* We use this to allow players to move down */ isShiftKeyDown()) {
+        if (ClimbingHandler.canDescend((LivingEntity) (Object) this, data)) {
+            // SHIFT is usually used to stay in place, but in this case it's the opposite
+            // Also prevent going down if it could cause clipping (after the hitbox is reverted to its original height)
             return false;
         }
 
@@ -284,6 +289,19 @@ public abstract class LivingEntityMixin extends Entity {
         }
 
         return data.isApprovedClimbPosition(data.climbPosition);
+    }
+
+    @ModifyReturnValue(method = "getDimensions", at = @At("RETURN"))
+    private EntityDimensions dragonSurvival$ceilingClimbingDimensions(final EntityDimensions original, @Local(argsOnly = true) final Pose pose) {
+        LivingEntity self = (LivingEntity) (Object) this;
+
+        if (DragonStateProvider.isDragon(self)) {
+            // Handled in 'DragonSizeHandler#getDragonSize' instead
+            return original;
+        }
+
+        // Only keep track of the offset for the current active pose
+        return CeilingClimbDimensions.apply(self, original, pose == getPose());
     }
 
     @Shadow

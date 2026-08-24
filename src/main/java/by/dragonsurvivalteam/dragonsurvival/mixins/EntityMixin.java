@@ -17,6 +17,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SummonedEntitie
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SwimData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSEntityTypeTags;
 import by.dragonsurvivalteam.dragonsurvival.server.handlers.DragonRidingHandler;
+import by.dragonsurvivalteam.dragonsurvival.util.IBoundingBoxOffset;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.sugar.Local;
@@ -25,22 +26,27 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(Entity.class)
-public abstract class EntityMixin {
+public abstract class EntityMixin implements IBoundingBoxOffset {
     @Shadow private EntityDimensions dimensions;
+
+    /** To keep track of the current height modification (difference) */
+    @Unique private double dragonSurvival$boundingBoxOffset;
 
     /** Correctly position the passenger when riding a player dragon */
     @ModifyReturnValue(method = "getPassengerAttachmentPoint", at = @At("RETURN"))
-    protected Vec3 dragonSurvival$modifyPassengerAttachmentPoint(Vec3 original, @Local(argsOnly = true, index = 0) Entity entity) {
+    protected Vec3 dragonSurvival$modifyPassengerAttachmentPoint(Vec3 original, @Local(argsOnly = true) Entity entity) {
         Entity mount = (Entity) (Object) this;
         if (!(entity instanceof Player passenger) || !hasPassenger(passenger)) {
             return original;
@@ -279,6 +285,29 @@ public abstract class EntityMixin {
         } else {
             return original;
         }
+    }
+
+    /**
+     * When a hitbox shrinks, it usually "lowers", reducing the maxY </br>
+     * However, to keep sticking on the ceiling, we need to "shrink" from the bottom, hence the offset
+     */
+    @ModifyReturnValue(method = "makeBoundingBox", at = @At("RETURN"))
+    private AABB dragonSurvival$anchorToCeiling(final AABB original) {
+        if (dragonSurvival$boundingBoxOffset == 0) {
+            return original;
+        }
+
+        return original.move(0, dragonSurvival$boundingBoxOffset, 0);
+    }
+
+    @Override
+    public double dragonSurvival$getBoundingBoxOffset() {
+        return dragonSurvival$boundingBoxOffset;
+    }
+
+    @Override
+    public void dragonSurvival$setBoundingBoxOffset(final double offset) {
+        dragonSurvival$boundingBoxOffset = offset;
     }
 
     @Shadow

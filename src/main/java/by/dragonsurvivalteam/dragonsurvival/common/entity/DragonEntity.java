@@ -730,7 +730,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
             animationController.transitionLength(2);
         } else if (animationTickTimer.getDuration(DragonAnimations.FLY_LAND_END.getAnimation()) > 0) {
             state.setAnimation(DragonAnimations.FLY_LAND_END.getAnimation());
-        } else if (player.getExistingData(DSDataAttachments.CLIMBABLE_DATA).map(data -> data.climbingType != SyncClimbFlag.ClimbingType.NONE).orElse(false) || player.onClimbable()) {
+        } else if (player.getExistingData(DSDataAttachments.CLIMBABLE_DATA).map(data -> data.getClimbingType() != SyncClimbFlag.ClimbingType.NONE).orElse(false) || player.onClimbable()) {
             if (movement.deltaMovement.y() < 0) {
                 state.setAnimation(DragonAnimations.CLIMBING_DOWN.getAnimation());
             } else {

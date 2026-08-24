@@ -174,11 +174,11 @@ public class PlayerLoginHandler {
 
         entity.getExistingData(DSDataAttachments.CLIMBABLE_DATA).ifPresent(data -> {
             if (data.isCeilingClimbing()) {
-                PacketDistributor.sendToPlayersTrackingEntity(entity, new SyncClimbFlag(entity.getId(), SyncClimbFlag.ClimbingType.CEILING));
+                PacketDistributor.sendToPlayersTrackingEntityAndSelf(entity, new SyncClimbFlag(entity.getId(), SyncClimbFlag.ClimbingType.CEILING));
             } else if (data.climbPosition != null) {
-                PacketDistributor.sendToPlayersTrackingEntity(entity, new SyncClimbFlag(entity.getId(), SyncClimbFlag.ClimbingType.WALL));
+                PacketDistributor.sendToPlayersTrackingEntityAndSelf(entity, new SyncClimbFlag(entity.getId(), SyncClimbFlag.ClimbingType.WALL));
             } else {
-                PacketDistributor.sendToPlayersTrackingEntity(entity, new SyncClimbFlag(entity.getId(), SyncClimbFlag.ClimbingType.NONE));
+                PacketDistributor.sendToPlayersTrackingEntityAndSelf(entity, new SyncClimbFlag(entity.getId(), SyncClimbFlag.ClimbingType.NONE));
             }
         });
     }

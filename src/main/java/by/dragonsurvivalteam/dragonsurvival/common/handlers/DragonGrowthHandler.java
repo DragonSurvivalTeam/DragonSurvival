@@ -6,6 +6,8 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.GrowthItem;
 import by.dragonsurvivalteam.dragonsurvival.mixins.EntityAccessor;
 import by.dragonsurvivalteam.dragonsurvival.network.player.SyncGrowthState;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAdvancementTriggers;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ClimbableData;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
@@ -154,6 +156,10 @@ public class DragonGrowthHandler {
     }
 
     public static boolean isGrowthAllowed(final Player player, final DragonStateHandler handler, final double desiredGrowth) {
+        if (player.getExistingData(DSDataAttachments.CLIMBABLE_DATA).map(ClimbableData::isCeilingClimbing).orElse(false)) {
+            return false;
+        }
+
         float currentScale = player.getScale();
         float newScale = handler.calculateScale(player.getAttribute(Attributes.SCALE), desiredGrowth);
         float difference = newScale - currentScale;

@@ -4,8 +4,8 @@ import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import com.simibubi.create.content.equipment.armor.CardboardArmorHandler;
 import net.irisshaders.iris.api.v0.IrisApi;
-import net.minecraft.client.Minecraft;
 import net.mehvahdjukaar.vista.client.renderer.VistaLevelRenderer;
+import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
 import net.xolt.freecam.Freecam;
 
