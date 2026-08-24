@@ -27,6 +27,7 @@ public record SyncClimbFlag(int entityId, ClimbingType climbingType) implements 
             if (context.player().level().getEntity(packet.entityId()) instanceof LivingEntity entity) {
                 ClimbableData data = entity.getData(DSDataAttachments.CLIMBABLE_DATA);
                 data.setClimbingType(packet.climbingType());
+                entity.refreshDimensions();
             }
         });
     }

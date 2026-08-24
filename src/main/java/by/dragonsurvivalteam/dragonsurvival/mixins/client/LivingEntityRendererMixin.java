@@ -4,6 +4,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.HunterHandler;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncClimbFlag;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ClimbableData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
+import by.dragonsurvivalteam.dragonsurvival.util.CeilingClimbDimensions;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import net.minecraft.client.Minecraft;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -80,14 +81,13 @@ public abstract class LivingEntityRendererMixin<T extends LivingEntity, S extend
 
         ClimbableData data = player.getExistingData(DSDataAttachments.CLIMBABLE_DATA).orElse(null);
 
-        if (data == null || !(data.climbingType == SyncClimbFlag.ClimbingType.CEILING || data.isCeilingClimbing())) {
+        if (data == null || !(data.getClimbingType() == SyncClimbFlag.ClimbingType.CEILING || data.isCeilingClimbing())) {
             return;
         }
 
-        // TODO :: Need to check how much the player model has to be translated
-        //         Potentially needs a config in case player model is changed (client config tells server which keeps a map?)
-//        poseStack.translate(0, entity.getBbHeight(), 0);
-        poseStack.mulPose(Axis.XP.rotationDegrees(-90));
+        double unmodifiedHeight = CeilingClimbDimensions.getUnmodifiedHeight(player);
+        poseStack.translate(0, unmodifiedHeight, unmodifiedHeight);
+        poseStack.mulPose(Axis.XP.rotationDegrees(90));
         // Need to invert the facing direction for movement since the model is inverted
         poseStack.mulPose(Axis.ZP.rotationDegrees(-180));
     }

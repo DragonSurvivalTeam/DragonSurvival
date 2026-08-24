@@ -110,9 +110,13 @@ public class DragonAbilities {
                         ClimbEffect.only(new Climbable(
                                 DurationInstanceBase.create(DragonSurvival.res(TEST_PREFIX + "climbable")).removeAutomatically().build(),
                                 LevelBasedBlockPredicate.constant(
-                                        BlockPredicate.anyOf(
-                                                BlockPredicate.matchesBlocks(Blocks.BLACK_WOOL),
-                                                BlockPredicate.matchesTag(BlockTags.LOGS)
+                                        BlockPredicate.allOf(
+                                                BlockPredicate.not(BlockPredicate.matchesTag(BlockTags.AIR)),
+                                                BlockPredicate.noFluid(),
+                                                BlockPredicate.not(BlockPredicate.matchesTag(BlockTags.ICE)),
+                                                BlockPredicate.not(BlockPredicate.matchesTag(Tags.Blocks.GLASS_BLOCKS)),
+                                                BlockPredicate.not(BlockPredicate.matchesTag(Tags.Blocks.GLASS_PANES)),
+                                                BlockPredicate.solid()
                                         )
                                 ),
                                 LevelBasedBoolean.constant(true),

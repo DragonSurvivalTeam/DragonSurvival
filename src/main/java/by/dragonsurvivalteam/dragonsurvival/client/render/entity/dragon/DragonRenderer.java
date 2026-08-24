@@ -22,6 +22,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MovementData;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import by.dragonsurvivalteam.dragonsurvival.server.handlers.DragonRidingHandler;
 import by.dragonsurvivalteam.dragonsurvival.server.handlers.ServerFlightHandler;
+import by.dragonsurvivalteam.dragonsurvival.util.CeilingClimbDimensions;
 import by.dragonsurvivalteam.dragonsurvival.util.AnimationUtils;
 import by.dragonsurvivalteam.dragonsurvival.util.DragonAnimations;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
@@ -1289,10 +1290,10 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
         if (player != null) {
             ClimbableData climbData = player.getExistingData(DSDataAttachments.CLIMBABLE_DATA).orElse(null);
 
-            if (climbData != null && (climbData.climbingType == SyncClimbFlag.ClimbingType.CEILING || climbData.isCeilingClimbing())) {
+            if (climbData != null && (climbData.getClimbingType() == SyncClimbFlag.ClimbingType.CEILING || climbData.isCeilingClimbing())) {
                 // For a proper dynamic way we'd have to translate based on the difference between height and model with current animation.
                 double multiplier = DragonStateProvider.getData(player).body().value().scalingProportions().ceilingClimbingOffsetMultiplier();
-                pose.translate(0, player.getBbHeight() * multiplier, 0);
+                pose.translate(0, CeilingClimbDimensions.getUnmodifiedHeight(player) * multiplier, 0);
                 pose.mulPose(Axis.XP.rotationDegrees(-90));
                 // Need to invert the facing direction for movement since the model is inverted
                 pose.mulPose(Axis.ZP.rotationDegrees(-180));

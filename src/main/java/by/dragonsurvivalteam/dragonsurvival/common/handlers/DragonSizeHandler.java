@@ -6,6 +6,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
 import by.dragonsurvivalteam.dragonsurvival.compat.Compat;
 import by.dragonsurvivalteam.dragonsurvival.mixins.EntityAccessor;
 import by.dragonsurvivalteam.dragonsurvival.server.handlers.ServerFlightHandler;
+import by.dragonsurvivalteam.dragonsurvival.util.CeilingClimbDimensions;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
@@ -66,7 +67,7 @@ public class DragonSizeHandler {
         }
 
         Pose sizePose = Compat.hasModelSwapOrDoesNotUseModel(player) ? event.getPose() : handler.previousPose;
-        EntityDimensions newDimensions = calculateDimensions(handler, player, sizePose);
+        EntityDimensions newDimensions = CeilingClimbDimensions.apply(player, calculateDimensions(handler, player, sizePose), true);
         event.setNewSize(new EntityDimensions(newDimensions.width(), newDimensions.height(), newDimensions.eyeHeight(), event.getOldSize().attachments(), event.getOldSize().fixed()));
     }
 
@@ -215,7 +216,14 @@ public class DragonSizeHandler {
     }
 
     public static boolean canPoseFit(final Player player, @Nullable final Pose pose) {
-        return player.level().noCollision(calculateDimensions(DragonStateProvider.getData(player), player, pose).makeBoundingBox(player.position()).deflate(Shapes.EPSILON));
+        EntityDimensions dimensions = calculateDimensions(DragonStateProvider.getData(player), player, pose);
+
+        if (CeilingClimbDimensions.isCeilingClimbing(player)) {
+            // Consider the reduced hit box while climbing the ceiling
+            dimensions = CeilingClimbDimensions.adjust(player, dimensions);
+        }
+
+        return player.level().noCollision(dimensions.makeBoundingBox(player.position()).deflate(Shapes.EPSILON));
     }
 
     @SubscribeEvent

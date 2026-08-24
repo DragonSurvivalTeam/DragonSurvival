@@ -26,12 +26,6 @@ public class ClimbableData extends Storage<Climbable.Instance> {
     // - Block predicates can only be evaluated on the server-side (i.e., is climbing allowed on that position)
     // Meaning the client needs to collect the relevant positions and the server has to approve them
 
-    /**
-     * Purely for other players to know what the other client is doing </br>
-     * On the server-side it is used to check whether a sync is required (i.e., type changed)
-     */
-    public SyncClimbFlag.ClimbingType climbingType = SyncClimbFlag.ClimbingType.NONE;
-
     /** Temporarily kept to handle 'canStickToWalls' and ceiling climbing */
     public @Nullable BlockPos climbPosition;
 
@@ -49,6 +43,12 @@ public class ClimbableData extends Storage<Climbable.Instance> {
      * Used to actually check (on the client-side) whether climbing is allowed
      */
     private @Nullable @Unmodifiable Collection<BlockPos> approvedClimbPositions;
+
+    /**
+     * Purely for other players to know what the other client is doing </br>
+     * On the server-side it is used to check whether a sync is required (i.e., type changed)
+     */
+    private SyncClimbFlag.ClimbingType climbingType = SyncClimbFlag.ClimbingType.NONE;
 
     public boolean isApprovedClimbPosition(final BlockPos position) {
         return approvedClimbPositions != null && approvedClimbPositions.contains(position);
@@ -102,6 +102,15 @@ public class ClimbableData extends Storage<Climbable.Instance> {
         return false;
     }
 
+    public SyncClimbFlag.ClimbingType getClimbingType() {
+        return climbingType;
+    }
+
+    public void setClimbingType(final SyncClimbFlag.ClimbingType climbingType) {
+        this.climbingType = climbingType;
+        isCeilingClimbing = climbingType == SyncClimbFlag.ClimbingType.CEILING;
+    }
+
     public boolean isCeilingClimbing() {
         return climbPosition != null && isCeilingClimbing;
     }
@@ -140,10 +149,6 @@ public class ClimbableData extends Storage<Climbable.Instance> {
         return false;
     }
 
-    public void setClimbingType(final SyncClimbFlag.ClimbingType climbingType) {
-        this.climbingType = climbingType;
-    }
-
     @SubscribeEvent
     public static void tickData(final EntityTickEvent.Post event) {
         if (!(event.getEntity() instanceof LivingEntity livingEntity)) {
@@ -151,9 +156,16 @@ public class ClimbableData extends Storage<Climbable.Instance> {
         }
 
         livingEntity.getExistingData(DSDataAttachments.CLIMBABLE_DATA).ifPresent(data -> {
+            // TODO :: remove? might already be properly handled with climbing handler, making this just unneeded queries
             if (!data.canStillClimb(livingEntity)) {
+                boolean wasCeilingClimbing = data.isCeilingClimbing();
                 data.climbPosition = null;
                 data.isCeilingClimbing = false;
+
+                if (wasCeilingClimbing) {
+                    // The hit box depends on whether the entity is ceiling climbing
+                    livingEntity.refreshDimensions();
+                }
 
                 if (event.getEntity() instanceof LivingEntity entity && !entity.level().isClientSide()) {
                     PacketDistributor.sendToPlayersTrackingEntity(entity, new SyncClimbFlag(entity.getId(), SyncClimbFlag.ClimbingType.NONE));

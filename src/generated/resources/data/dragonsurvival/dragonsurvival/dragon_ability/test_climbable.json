@@ -14,15 +14,42 @@
                   "blocks": {
                     "entries": [],
                     "fallback": {
-                      "type": "minecraft:any_of",
+                      "type": "minecraft:all_of",
                       "predicates": [
                         {
-                          "type": "minecraft:matching_blocks",
-                          "blocks": "minecraft:black_wool"
+                          "type": "minecraft:not",
+                          "predicate": {
+                            "type": "minecraft:matching_block_tag",
+                            "tag": "minecraft:air"
+                          }
                         },
                         {
-                          "type": "minecraft:matching_block_tag",
-                          "tag": "minecraft:logs"
+                          "type": "minecraft:matching_fluids",
+                          "fluids": "minecraft:empty"
+                        },
+                        {
+                          "type": "minecraft:not",
+                          "predicate": {
+                            "type": "minecraft:matching_block_tag",
+                            "tag": "minecraft:ice"
+                          }
+                        },
+                        {
+                          "type": "minecraft:not",
+                          "predicate": {
+                            "type": "minecraft:matching_block_tag",
+                            "tag": "c:glass_blocks"
+                          }
+                        },
+                        {
+                          "type": "minecraft:not",
+                          "predicate": {
+                            "type": "minecraft:matching_block_tag",
+                            "tag": "c:glass_panes"
+                          }
+                        },
+                        {
+                          "type": "minecraft:solid"
                         }
                       ]
                     }
