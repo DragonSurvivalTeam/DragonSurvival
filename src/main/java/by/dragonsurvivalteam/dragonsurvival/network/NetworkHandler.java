@@ -118,7 +118,6 @@ public class NetworkHandler {
 
         // Ability packets
         registrar.playToClient(SyncMagicData.TYPE, SyncMagicData.STREAM_CODEC);
-        registrar.playToClient(SyncClimbableInstance.TYPE, SyncClimbableInstance.STREAM_CODEC);
         registrar.playToClient(SyncClimbFlag.TYPE, SyncClimbFlag.STREAM_CODEC);
         registrar.playToClient(SyncHunterStacksRemoval.TYPE, SyncHunterStacksRemoval.STREAM_CODEC);
         registrar.playToClient(StartTickingSound.TYPE, StartTickingSound.STREAM_CODEC);
@@ -137,6 +136,7 @@ public class NetworkHandler {
         registrar.playToClient(SyncSummonedEntity.TYPE, SyncSummonedEntity.STREAM_CODEC);
         registrar.playToClient(SyncGlowInstance.TYPE, SyncGlowInstance.STREAM_CODEC);
         registrar.playToClient(SyncBlockVision.TYPE, SyncBlockVision.STREAM_CODEC);
+        registrar.playToClient(SyncClimbableInstance.TYPE, SyncClimbableInstance.STREAM_CODEC);
 
         // Potion sync
         registrar.playToClient(SyncVisualEffectRemoval.TYPE, SyncVisualEffectRemoval.STREAM_CODEC);
@@ -226,7 +226,6 @@ public class NetworkHandler {
 
         // Ability packets
         event.register(SyncMagicData.TYPE, SyncMagicData::handleClient);
-        event.register(SyncClimbableInstance.TYPE, SyncClimbableInstance::handleClient);
         event.register(SyncHunterStacksRemoval.TYPE, SyncHunterStacksRemoval::handleClient);
         event.register(StartTickingSound.TYPE, StartTickingSound::handleClient);
         event.register(StopTickingSound.TYPE, StopTickingSound::handleClient);
@@ -244,7 +243,9 @@ public class NetworkHandler {
         event.register(SyncSummonedEntity.TYPE,  SyncSummonedEntity::handleClient);
         event.register(SyncGlowInstance.TYPE, SyncGlowInstance::handleClient);
         event.register(SyncBlockVision.TYPE, SyncBlockVision::handleClient);
+        event.register(SyncClimbableInstance.TYPE, SyncClimbableInstance::handleClient);
         event.register(ClimbCheck.TYPE, ClimbCheck::handleClient);
+        event.register(SyncClimbFlag.TYPE, SyncClimbFlag::handleClient);
 
         // Potion sync
         event.register(SyncVisualEffectRemoval.TYPE, SyncVisualEffectRemoval::handleClient);
