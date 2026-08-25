@@ -648,22 +648,22 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
         if (player.getAbilities().flying || ServerFlightHandler.isFlying(player)) {
             if (ServerFlightHandler.isGliding(player)) {
                 if (ServerFlightHandler.isSpin(player)) {
-                    animationSpeed = 2;
+                    animationSpeed = 1.4;
                     state.setAnimation(DragonAnimations.FLY_SPIN.getAnimation());
-                    animationController.transitionLength(5);
+                    animationController.transitionLength(8);
                 } else if (deltaMovement.y < -1) {
                     state.setAnimation(DragonAnimations.FLY_DIVE_ALT.getAnimation());
-                    animationController.transitionLength(4);
+                    animationController.transitionLength(7);
                 } else if (deltaMovement.y < -0.25) {
                     state.setAnimation(DragonAnimations.FLY_DIVE.getAnimation());
-                    animationController.transitionLength(4);
+                    animationController.transitionLength(8);
                 } else if (deltaMovement.y > 0.5) {
-                    animationSpeed = 1.5;
+                    animationSpeed = 1.3;
                     state.setAnimation(DragonAnimations.FLY.getAnimation());
-                    animationController.transitionLength(2);
+                    animationController.transitionLength(6);
                 } else {
                     state.setAnimation(DragonAnimations.FLY_SOARING.getAnimation());
-                    animationController.transitionLength(4);
+                    animationController.transitionLength(8);
                 }
             } else {
                 if (movement.desiredMoveVec.y < 0 && deltaMovement.y < 0 && distanceFromGround < 10 && deltaMovement.length() < 4) {
@@ -678,7 +678,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
                     }
 
                     state.setAnimation(DragonAnimations.FLY.getAnimation());
-                    animationController.transitionLength(2);
+                    animationController.transitionLength(6);
                 }
             }
         } else if (player.getPose() == Pose.SWIMMING) {
