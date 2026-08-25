@@ -674,22 +674,22 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
         if (player.getAbilities().flying || ServerFlightHandler.isFlying(player)) {
             if (ServerFlightHandler.isGliding(player)) {
                 if (ServerFlightHandler.isSpin(player)) {
-                    animationSpeed = 2;
+                    animationSpeed = 1.4;
                     animationToChangeTo = DragonAnimations.FLY_SPIN.getAnimation();
-                    transitionTicks = 5;
+                    transitionTicks = 8;
                 } else if (deltaMovement.y < -1) {
                     animationToChangeTo = DragonAnimations.FLY_DIVE_ALT.getAnimation();
-                    transitionTicks = 4;
+                    transitionTicks = 7;
                 } else if (deltaMovement.y < -0.25) {
                     animationToChangeTo = DragonAnimations.FLY_DIVE.getAnimation();
-                    transitionTicks = 4;
+                    transitionTicks = 8;
                 } else if (deltaMovement.y > 0.5) {
-                    animationSpeed = 1.5;
+                    animationSpeed = 1.3;
                     animationToChangeTo = DragonAnimations.FLY.getAnimation();
-                    transitionTicks = 2;
+                    transitionTicks = 6;
                 } else {
                     animationToChangeTo = DragonAnimations.FLY_SOARING.getAnimation();
-                    transitionTicks = 4;
+                    transitionTicks = 8;
                 }
             } else {
                 if (movement.desiredMoveVec.y < 0 && deltaMovement.y < 0 && distanceFromGround < 10 && deltaMovement.length() < 4) {
@@ -704,7 +704,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
                     }
 
                     animationToChangeTo = DragonAnimations.FLY.getAnimation();
-                    transitionTicks = 2;
+                    transitionTicks = 6;
                 }
             }
         } else if (player.getPose() == Pose.SWIMMING) {
