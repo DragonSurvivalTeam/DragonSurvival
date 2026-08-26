@@ -1279,7 +1279,7 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
 
         Player player = renderData.player();
 
-        if (player != null && ServerFlightHandler.isGliding(player)) {
+        if (player != null && (ServerFlightHandler.isGliding(player) || renderData.prevXRot() != 0 || renderData.prevZRot() != 0)) {
             // Responsible for the pitch (rotating entity downward / upward)
             pose.mulPose(Axis.XN.rotationDegrees(renderData.prevXRot()));
             // Responsible for the roll (rotating entity to the side)
