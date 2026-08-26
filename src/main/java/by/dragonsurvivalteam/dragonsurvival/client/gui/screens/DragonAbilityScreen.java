@@ -11,6 +11,7 @@ import by.dragonsurvivalteam.dragonsurvival.client.render.AbilityAndPenaltyToolt
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.mixins.HolderSet$NamedAccess;
+import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncExperienceManaConversion;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSDragonAbilityTags;
@@ -23,12 +24,15 @@ import by.dragonsurvivalteam.dragonsurvival.util.ExperienceUtils;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Renderable;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
+import net.neoforged.neoforge.client.gui.widget.ExtendedButton;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -56,6 +60,9 @@ public class DragonAbilityScreen extends Screen {
     })
     private static final String HELP_ABILITY_ASSIGNMENT = Translation.Type.GUI.wrap("help.ability_assignment");
 
+    @Translation(comments = "Use experience points as mana after your mana is depleted")
+    private static final String USE_EXPERIENCE_FOR_MANA = Translation.Type.GUI.wrap("ability_screen.use_experience_for_mana");
+
     private static final Identifier BACKGROUND_MAIN = Identifier.fromNamespaceAndPath(MODID, "textures/gui/ability_screen/background_main.png");
     private static final Identifier BACKGROUND_SIDE = Identifier.fromNamespaceAndPath(MODID, "textures/gui/ability_screen/background_side.png");
     private static final Identifier EXP_EMPTY = Identifier.fromNamespaceAndPath(MODID, "textures/gui/ability_screen/exp_empty.png");
@@ -65,6 +72,8 @@ public class DragonAbilityScreen extends Screen {
     private static final Identifier LEFT_PANEL_ARROW_MAIN = Identifier.fromNamespaceAndPath(MODID, "textures/gui/ability_screen/addition_arrow_left_main.png");
     private static final Identifier INFO_HOVER = Identifier.fromNamespaceAndPath(MODID, "textures/gui/ability_screen/info_hover.png");
     private static final Identifier INFO_MAIN = Identifier.fromNamespaceAndPath(MODID, "textures/gui/ability_screen/info_main.png");
+    private static final Identifier TOGGLE_ON = Identifier.fromNamespaceAndPath(MODID, "textures/gui/skin/skin_on.png");
+    private static final Identifier TOGGLE_OFF = Identifier.fromNamespaceAndPath(MODID, "textures/gui/skin/skin_off.png");
     private static final int EXPERIENCE_PREVIEW_DOWNGRADE_COLOR = ARGB.colorFromFloat(1.0f, 1.0f, 0.0f, 0.0f);
     private static final int EXPERIENCE_PREVIEW_UPGRADE_COLOR = ARGB.colorFromFloat(1.0f, 0.6f, 0.2f, 0.85f);
 
@@ -340,6 +349,20 @@ public class DragonAbilityScreen extends Screen {
         }
 
         addRenderableWidget(new HelpButton(guiLeft + 122, startY + 263 / 2 + 25, 12, 12, HELP_PASSIVE_ACTIVE));
+
+        ExtendedButton experienceManaConversion = new ExtendedButton(guiLeft + 196, startY + 263 / 2 + 25, 14, 14, Component.empty(), button -> {
+            boolean enabled = !data.usesExperienceForMana();
+            data.setUseExperienceForMana(enabled);
+            ClientPacketDistributor.sendToServer(new SyncExperienceManaConversion(enabled));
+        }) {
+            @Override
+            public void extractWidgetRenderState(@NotNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
+                graphics.blit(RenderPipelines.GUI_TEXTURED, data.usesExperienceForMana() ? TOGGLE_ON : TOGGLE_OFF, getX(), getY(), 0, 0, 14, 14, 14, 14);
+            }
+        };
+
+        experienceManaConversion.setTooltip(Tooltip.create(Component.translatable(USE_EXPERIENCE_FOR_MANA)));
+        addRenderableWidget(experienceManaConversion);
     }
 
 

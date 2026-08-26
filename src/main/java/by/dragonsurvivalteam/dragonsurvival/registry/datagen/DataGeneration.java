@@ -17,7 +17,6 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.data_maps.DragonBea
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.data_maps.EndPlatformProvider;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.data_maps.StageResourceProvider;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.datapacks.AncientDatapacks;
-import by.dragonsurvivalteam.dragonsurvival.registry.datagen.datapacks.DisableExperienceConversionDatapack;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.datapacks.NoPenaltiesAbilityProvider;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.datapacks.NoPenaltiesPenaltyProvider;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.datapacks.UnlockWingsDatapack;
@@ -102,11 +101,6 @@ public class DataGeneration {
     @Translation(comments = "Removes all penalties from the base dragon types")
     private static final String NO_PENALTIES_DATAPACK_DESCRIPTION = Translation.Type.GUI.wrap("datapack." + NO_PENALTIES_DATAPACK);
 
-    private static final String NO_EXPERIENCE_CONVERSION_DATAPACK = "no_experience_conversion";
-
-    @Translation(comments = "Disables converting experience to mana when out of mana")
-    private static final String NO_EXPERIENCE_CONVERSION_DATAPACK_DESCRIPTION = Translation.Type.GUI.wrap("datapack." + NO_EXPERIENCE_CONVERSION_DATAPACK);
-
     // --- Compatibility --- //
 
     private static final String SILENT_GEMS_DATAPACK = ModID.SILENTGEMS.value();
@@ -178,7 +172,6 @@ public class DataGeneration {
         addAncientStageDatapackNoCrushing(generator, lookup);
         addUnlockWingsDatapack(generator, lookup);
         addNoPenaltiesDatapack(generator, lookup);
-        addNoExperienceConversionDatapack(generator, lookup);
 
         BlockTagsProvider blockTagsProvider = new DSBlockTags(output, lookup);
         generator.addProvider(true /*Server*/, blockTagsProvider);
@@ -235,7 +228,6 @@ public class DataGeneration {
             // Feature datapacks (things that are not enabled by default)
             registerDataPack(event, Component.literal("DS - Ancient (no crushing)"), ANCIENT_STAGE_DATAPACK_NO_CRUSHING, PackSource.FEATURE, false);
             registerDataPack(event, Component.literal("DS - No Penalties"), NO_PENALTIES_DATAPACK, PackSource.FEATURE, false);
-            registerDataPack(event, Component.literal("DS - No Experience Conversion"), NO_EXPERIENCE_CONVERSION_DATAPACK, PackSource.FEATURE, false);
         }
     }
 
@@ -272,21 +264,6 @@ public class DataGeneration {
         datapack.addProvider(output -> PackMetadataGenerator.forFeaturePack(output, Component.translatable(NO_PENALTIES_DATAPACK_DESCRIPTION), FeatureFlagSet.of()));
         datapack.addProvider(output -> new NoPenaltiesPenaltyProvider(output, lookup));
         datapack.addProvider(output -> new NoPenaltiesAbilityProvider(output, lookup));
-    }
-
-    private static void addNoExperienceConversionDatapack(final DataGenerator generator, final CompletableFuture<HolderLookup.Provider> lookup) {
-        DataGenerator.PackGenerator datapack = generator.getBuiltinDatapack(true, DragonSurvival.MODID, NO_EXPERIENCE_CONVERSION_DATAPACK);
-        datapack.addProvider(output -> PackMetadataGenerator.forFeaturePack(output, Component.translatable(NO_EXPERIENCE_CONVERSION_DATAPACK_DESCRIPTION), FeatureFlagSet.of()));
-
-        // Only provide the abilities we need for context, otherwise it will generate data of all abilities for that datapack
-        CompletableFuture<RegistrySetBuilder.PatchedRegistries> patched = RegistryPatchGenerator
-                .createLookup(lookup, new RegistrySetBuilder()
-                        .add(DragonSpecies.REGISTRY, BuiltInDragonSpecies::registerTypes));
-
-        RegistrySetBuilder builder = new RegistrySetBuilder();
-        builder.add(DragonSpecies.REGISTRY, context -> DisableExperienceConversionDatapack.register(context, patched.join()));
-
-        datapack.addProvider(output -> new DatapackBuiltinEntriesProvider(output, lookup, builder, Set.of(DragonSurvival.MODID)));
     }
 
     private static void addUnlockWingsDatapack(final DataGenerator generator, final CompletableFuture<HolderLookup.Provider> lookup) {

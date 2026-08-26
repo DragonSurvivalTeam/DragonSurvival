@@ -72,6 +72,7 @@ public class MagicData implements ValueIOSerializable {
     private final Map<ResourceKey<DragonSpecies>, Map<Integer, ResourceKey<DragonAbility>>> hotbar = new HashMap<>();
     private @Nullable ResourceKey<DragonSpecies> currentSpecies; // TODO :: are we storing this in two data attachments now?
     private boolean renderAbilities = true;
+    private boolean useExperienceForMana = true;
     private int selectedAbilitySlot;
 
     private float currentMana;
@@ -452,6 +453,14 @@ public class MagicData implements ValueIOSerializable {
         this.renderAbilities = renderAbilities;
     }
 
+    public boolean usesExperienceForMana() {
+        return useExperienceForMana;
+    }
+
+    public void setUseExperienceForMana(boolean useExperienceForMana) {
+        this.useExperienceForMana = useExperienceForMana;
+    }
+
     /** This does not automatically synchronize the change to the client */
     public int clear(final ServerPlayer player) {
         int count = abilities.values().stream().mapToInt(Map::size).sum();
@@ -712,6 +721,7 @@ public class MagicData implements ValueIOSerializable {
         valueOutput.putFloat(RESERVED_MANA, reservedMana);
         valueOutput.putInt(SELECTED_SLOT, selectedAbilitySlot);
         valueOutput.putBoolean(RENDER_ABILITIES, renderAbilities);
+        valueOutput.putBoolean(USE_EXPERIENCE_FOR_MANA, useExperienceForMana);
 
         if (currentSpecies != null) {
             valueOutput.putString(CURRENT_SPECIES, currentSpecies.identifier().toString());
@@ -789,6 +799,7 @@ public class MagicData implements ValueIOSerializable {
         reservedMana = valueInput.getFloatOr(RESERVED_MANA, 0.0f);
         selectedAbilitySlot = valueInput.getIntOr(SELECTED_SLOT, 0);
         renderAbilities = valueInput.getBooleanOr(RENDER_ABILITIES, false);
+        useExperienceForMana = valueInput.getBooleanOr(USE_EXPERIENCE_FOR_MANA, true);
 
         if (valueInput.keySet().contains(CURRENT_SPECIES)) {
             String currentSpeciesId = valueInput.getStringOr(CURRENT_SPECIES, null);
@@ -811,4 +822,5 @@ public class MagicData implements ValueIOSerializable {
     private final String RESERVED_MANA = "reserved_mana";
     private final String SELECTED_SLOT = "selected_slot";
     private final String RENDER_ABILITIES = "render_abilities";
+    private final String USE_EXPERIENCE_FOR_MANA = "use_experience_for_mana";
 }

@@ -39,6 +39,7 @@ import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncDamageModification
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncData;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncDisableAbility;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncEffectModification;
+import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncExperienceManaConversion;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncGlowInstance;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncHarvestBonus;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncHunterStacksRemoval;
@@ -166,6 +167,7 @@ public class NetworkHandler {
         registrar.playToServer(SyncDragonClawMenuToggle.TYPE, SyncDragonClawMenuToggle.STREAM_CODEC, SyncDragonClawMenuToggle::handleServer);
 
         registrar.playToServer(SyncSlotAssignment.TYPE, SyncSlotAssignment.STREAM_CODEC, SyncSlotAssignment::handleServer);
+        registrar.playToServer(SyncExperienceManaConversion.TYPE, SyncExperienceManaConversion.STREAM_CODEC, SyncExperienceManaConversion::handleServer);
         registrar.playToServer(AttemptManualUpgrade.TYPE, AttemptManualUpgrade.STREAM_CODEC, AttemptManualUpgrade::handleServer);
         registrar.playToServer(SyncBeginCast.TYPE, SyncBeginCast.STREAM_CODEC, SyncBeginCast::handleServer);
         registrar.playToServer(SyncSummonedEntitiesBehaviour.TYPE, SyncSummonedEntitiesBehaviour.STREAM_CODEC, SyncSummonedEntitiesBehaviour::handleServer);
