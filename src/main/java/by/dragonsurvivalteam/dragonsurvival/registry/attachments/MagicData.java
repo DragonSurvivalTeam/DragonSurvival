@@ -72,6 +72,7 @@ public class MagicData implements INBTSerializable<CompoundTag> {
     private final Map<ResourceKey<DragonSpecies>, Map<Integer, ResourceKey<DragonAbility>>> hotbar = new HashMap<>();
     private @Nullable ResourceKey<DragonSpecies> currentSpecies; // TODO :: are we storing this in two data attachments now?
     private boolean renderAbilities = true;
+    private boolean useExperienceForMana = true;
     private int selectedAbilitySlot;
 
     private float currentMana;
@@ -456,6 +457,14 @@ public class MagicData implements INBTSerializable<CompoundTag> {
         this.renderAbilities = renderAbilities;
     }
 
+    public boolean usesExperienceForMana() {
+        return useExperienceForMana;
+    }
+
+    public void setUseExperienceForMana(boolean useExperienceForMana) {
+        this.useExperienceForMana = useExperienceForMana;
+    }
+
     /** This does not automatically synchronize the change to the client */
     public int clear(final ServerPlayer player) {
         int count = abilities.values().stream().mapToInt(Map::size).sum();
@@ -729,6 +738,7 @@ public class MagicData implements INBTSerializable<CompoundTag> {
         tag.putFloat(RESERVED_MANA, reservedMana);
         tag.putInt(SELECTED_SLOT, selectedAbilitySlot);
         tag.putBoolean(RENDER_ABILITIES, renderAbilities);
+        tag.putBoolean(USE_EXPERIENCE_FOR_MANA, useExperienceForMana);
 
         if (currentSpecies != null) {
             tag.putString(CURRENT_SPECIES, currentSpecies.location().toString());
@@ -796,6 +806,7 @@ public class MagicData implements INBTSerializable<CompoundTag> {
         reservedMana = tag.getFloat(RESERVED_MANA);
         selectedAbilitySlot = tag.getInt(SELECTED_SLOT);
         renderAbilities = tag.getBoolean(RENDER_ABILITIES);
+        useExperienceForMana = !tag.contains(USE_EXPERIENCE_FOR_MANA) || tag.getBoolean(USE_EXPERIENCE_FOR_MANA);
 
         if (tag.contains(CURRENT_SPECIES)) {
             currentSpecies = ResourceKey.create(DragonSpecies.REGISTRY, new ResourceLocation(tag.getString(CURRENT_SPECIES)));
@@ -814,4 +825,5 @@ public class MagicData implements INBTSerializable<CompoundTag> {
     private final String RESERVED_MANA = "reserved_mana";
     private final String SELECTED_SLOT = "selected_slot";
     private final String RENDER_ABILITIES = "render_abilities";
+    private final String USE_EXPERIENCE_FOR_MANA = "use_experience_for_mana";
 }
