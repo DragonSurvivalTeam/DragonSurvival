@@ -144,10 +144,9 @@ public class ClientFlightHandler {
     static double ax, ay, az;
     static float lastIncrease;
     static float lastZoom = 1f;
-    static float lastFlightFov = Float.NaN;
+    static float lastFlightBaseFov = Float.NaN;
 
-    private static final float FLIGHT_CAMERA_LERP_FACTOR = 0.10F;
-    private static final float FLIGHT_FOV_LERP_FACTOR = 0.20F;
+    private static final float FLIGHT_CAMERA_LERP_FACTOR = 0.40F;
 
     // These are the drag values from vanilla Elytra flying. See isFallFlying() section in LivingEntity#travel()
     private static final Vec3 ELYTRA_FLY_DRAG = new Vec3(0.99, 0.98, 0.99);
@@ -283,12 +282,12 @@ public class ClientFlightHandler {
     @SubscribeEvent(priority = EventPriority.LOW)
     public static void flightZoom(ViewportEvent.ComputeFov event) {
         if (!flightZoomEffect && !spinCameraEffect) {
-            lastFlightFov = Float.NaN;
+            lastFlightBaseFov = Float.NaN;
             return;
         }
 
         if (DragonSurvival.PROXY.dragonRenderingWasCancelled(DragonSurvival.PROXY.getLocalPlayer())) {
-            lastFlightFov = Float.NaN;
+            lastFlightBaseFov = Float.NaN;
             return;
         }
 
@@ -296,33 +295,25 @@ public class ClientFlightHandler {
         LocalPlayer currentPlayer = minecraft.player;
 
         if (currentPlayer == null || !currentPlayer.isAddedToLevel() || !DragonStateProvider.isDragon(currentPlayer) || minecraft.options.getCameraType().isFirstPerson()) {
-            lastFlightFov = Float.NaN;
+            lastFlightBaseFov = Float.NaN;
             return;
         }
 
-        if (lastZoom == 1.0F && !Float.isFinite(lastFlightFov)) {
+        if (lastZoom == 1.0F) {
+            lastFlightBaseFov = Float.NaN;
             return;
+        }
+
+        if (!Float.isFinite(lastFlightBaseFov)) {
+            lastFlightBaseFov = event.getFOV();
         }
 
         double zoom = Math.max(lastZoom, 0.01f);
 
         // Match the old projection-scale zoom by converting it to the equivalent FOV.
-        double halfFovRadians = Math.toRadians(event.getFOV()) / 2.0D;
+        double halfFovRadians = Math.toRadians(lastFlightBaseFov) / 2.0D;
         double zoomedFov = 2.0D * Math.atan(Math.tan(halfFovRadians) / zoom);
-        float targetFov = (float) Math.toDegrees(zoomedFov);
-
-        if (!Float.isFinite(lastFlightFov)) {
-            lastFlightFov = event.getFOV();
-        }
-
-        lastFlightFov = Mth.lerp(getFrameIndependentLerpFactor(FLIGHT_FOV_LERP_FACTOR), lastFlightFov, targetFov);
-
-        if (lastZoom == 1.0F && Math.abs(lastFlightFov - targetFov) < 0.01F) {
-            lastFlightFov = Float.NaN;
-            return;
-        }
-
-        event.setFOV(lastFlightFov);
+        event.setFOV((float) Math.toDegrees(zoomedFov));
     }
 
     @SubscribeEvent
