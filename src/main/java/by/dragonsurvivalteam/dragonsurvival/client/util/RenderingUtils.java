@@ -252,11 +252,11 @@ public class RenderingUtils {
 
     /** Renders a white text with a black outline for better readability */
     public static void renderTextWithOutline(final GuiGraphicsExtractor graphics, final String text, final int x, final int y) {
-        graphics.text(Minecraft.getInstance().font, text, x + 1, y, DSColors.BLACK, false);
-        graphics.text(Minecraft.getInstance().font, text, x - 1, y, DSColors.BLACK, false);
-        graphics.text(Minecraft.getInstance().font, text, x, y + 1, DSColors.BLACK, false);
-        graphics.text(Minecraft.getInstance().font, text, x, y - 1, DSColors.BLACK, false);
-        graphics.text(Minecraft.getInstance().font, text, x, y, DSColors.WHITE, false);
+        graphics.text(Minecraft.getInstance().font, text, x + 1, y, ARGB.color(0xFF, DSColors.BLACK), false);
+        graphics.text(Minecraft.getInstance().font, text, x - 1, y, ARGB.color(0xFF, DSColors.BLACK), false);
+        graphics.text(Minecraft.getInstance().font, text, x, y + 1, ARGB.color(0xFF, DSColors.BLACK), false);
+        graphics.text(Minecraft.getInstance().font, text, x, y - 1, ARGB.color(0xFF, DSColors.BLACK), false);
+        graphics.text(Minecraft.getInstance().font, text, x, y, ARGB.color(0xFF, DSColors.WHITE), false);
     }
 
     public static float getNearPlane(float original) {
