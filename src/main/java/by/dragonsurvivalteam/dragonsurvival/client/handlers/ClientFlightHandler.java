@@ -18,6 +18,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import by.dragonsurvivalteam.dragonsurvival.server.handlers.ServerFlightHandler;
 import by.dragonsurvivalteam.dragonsurvival.util.ActionWithTimedCooldown;
+import by.dragonsurvivalteam.dragonsurvival.util.AnimationUtils;
 import by.dragonsurvivalteam.dragonsurvival.util.EnchantmentUtils;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import by.dragonsurvivalteam.dragonsurvival.util.TickedCooldown;
@@ -142,6 +143,8 @@ public class ClientFlightHandler {
     static float lastIncrease;
     static float lastZoom = 1f;
 
+    private static final float FLIGHT_CAMERA_LERP_FACTOR = 0.10F;
+
     // These are the drag values from vanilla Elytra flying. See isFallFlying() section in LivingEntity#travel()
     private static final Vec3 ELYTRA_FLY_DRAG = new Vec3(0.99, 0.98, 0.99);
 
@@ -182,6 +185,15 @@ public class ClientFlightHandler {
         return distance;
     }
 
+    private static float getFrameIndependentLerpFactor(float lerpFactorPer60FpsFrame) {
+        if (lerpFactorPer60FpsFrame >= 1.0F) {
+            return 1.0F;
+        }
+
+        float normalizedLerpTime = Mth.clamp(AnimationUtils.getDeltaTickFor60FPS(), 0.0F, 5.0F);
+        return 1.0F - (float) Math.pow(1.0F - lerpFactorPer60FpsFrame, normalizedLerpTime);
+    }
+
     // Run this somewhat early, but not extremely early so that if another mod messes with camera rendering, it will recieve DS's changes first.
     @SubscribeEvent(priority = EventPriority.LOW)
     public static void flightCamera(ViewportEvent.ComputeCameraAngles setup) {
@@ -197,7 +209,8 @@ public class ClientFlightHandler {
             GameRenderer gameRenderer = minecraft.gameRenderer;
             boolean shouldApplyZoom = false;
             float targetZoom = 1.0F;
-            float zoomLerpFactor = 0.25F;
+            float cameraLerpFactor = getFrameIndependentLerpFactor(FLIGHT_CAMERA_LERP_FACTOR);
+            float zoomLerpFactor = cameraLerpFactor;
             float partialTick = (float) setup.getPartialTick();
 
             if (ServerFlightHandler.isGliding(currentPlayer)) {
@@ -205,9 +218,8 @@ public class ClientFlightHandler {
                     if (flightCameraMovement) {
                         Vec3 lookVec = currentPlayer.getLookAngle();
                         float increase = (float) Mth.clamp(lookVec.y * 10, 0, lookVec.y * 5);
-                        float gradualIncrease = Mth.lerp(0.25f, lastIncrease, increase);
-                        info.move(0, gradualIncrease, 0);
-                        lastIncrease = gradualIncrease;
+                        lastIncrease = Mth.lerp(cameraLerpFactor, lastIncrease, increase);
+                        info.move(0, lastIncrease, 0);
                     }
                 }
 
@@ -223,7 +235,7 @@ public class ClientFlightHandler {
             } else {
                 if (lastIncrease > 0) {
                     if (flightCameraMovement) {
-                        lastIncrease = Mth.lerp(0.25f, lastIncrease, 0);
+                        lastIncrease = Mth.lerp(cameraLerpFactor, lastIncrease, 0);
                         info.move(0, lastIncrease, 0);
                     }
                 }
@@ -238,7 +250,7 @@ public class ClientFlightHandler {
                     shouldApplyZoom = true;
                 }
 
-                zoomLerpFactor = Math.max(zoomLerpFactor, SpinFlightPresentation.getZoomLerpFactor());
+                zoomLerpFactor = Math.max(zoomLerpFactor, getFrameIndependentLerpFactor(SpinFlightPresentation.getZoomLerpFactor()));
                 setup.setPitch(setup.getPitch() + SpinFlightPresentation.getPitchOffset(currentPlayer, partialTick));
                 setup.setRoll(setup.getRoll() + SpinFlightPresentation.getRollOffset(currentPlayer, partialTick));
 
