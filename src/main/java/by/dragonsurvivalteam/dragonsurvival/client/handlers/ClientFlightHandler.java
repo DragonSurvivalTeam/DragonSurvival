@@ -143,7 +143,7 @@ public class ClientFlightHandler {
     static float lastIncrease;
     static float lastZoom = 1f;
 
-    private static final float FLIGHT_CAMERA_LERP_FACTOR = 0.10F;
+    private static final float FLIGHT_CAMERA_LERP_FACTOR = 0.40F;
 
     // These are the drag values from vanilla Elytra flying. See isFallFlying() section in LivingEntity#travel()
     private static final Vec3 ELYTRA_FLY_DRAG = new Vec3(0.99, 0.98, 0.99);
