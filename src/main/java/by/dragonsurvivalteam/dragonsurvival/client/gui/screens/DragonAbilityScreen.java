@@ -10,6 +10,7 @@ import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components.Scroll
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.mixins.HolderSet$NamedAccess;
+import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncExperienceManaConversion;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSDragonAbilityTags;
@@ -21,10 +22,13 @@ import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
 import by.dragonsurvivalteam.dragonsurvival.util.ExperienceUtils;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.client.gui.widget.ExtendedButton;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -52,6 +56,9 @@ public class DragonAbilityScreen extends Screen {
     })
     private static final String HELP_ABILITY_ASSIGNMENT = Translation.Type.GUI.wrap("help.ability_assignment");
 
+    @Translation(comments = "Use experience points as mana after your mana is depleted")
+    private static final String USE_EXPERIENCE_FOR_MANA = Translation.Type.GUI.wrap("ability_screen.use_experience_for_mana");
+
     private static final ResourceLocation BACKGROUND_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/ability_screen/background_main.png");
     private static final ResourceLocation BACKGROUND_SIDE = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/ability_screen/background_side.png");
     private static final ResourceLocation EXP_EMPTY = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/ability_screen/exp_empty.png");
@@ -61,6 +68,8 @@ public class DragonAbilityScreen extends Screen {
     private static final ResourceLocation LEFT_PANEL_ARROW_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/ability_screen/addition_arrow_left_main.png");
     private static final ResourceLocation INFO_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/ability_screen/info_hover.png");
     private static final ResourceLocation INFO_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/ability_screen/info_main.png");
+    private static final ResourceLocation TOGGLE_ON = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/skin/skin_on.png");
+    private static final ResourceLocation TOGGLE_OFF = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/skin/skin_off.png");
 
     public LevelButton lastHoveredLevelButton;
 
@@ -277,6 +286,20 @@ public class DragonAbilityScreen extends Screen {
         }
 
         addRenderableWidget(new HelpButton(guiLeft + 122, startY + 263 / 2 + 25, 12, 12, HELP_PASSIVE_ACTIVE));
+
+        ExtendedButton experienceManaConversion = new ExtendedButton(guiLeft + 196, startY + 263 / 2 + 25, 14, 14, Component.empty(), button -> {
+            boolean enabled = !data.usesExperienceForMana();
+            data.setUseExperienceForMana(enabled);
+            PacketDistributor.sendToServer(new SyncExperienceManaConversion(enabled));
+        }) {
+            @Override
+            public void renderWidget(@NotNull final GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+                graphics.blit(data.usesExperienceForMana() ? TOGGLE_ON : TOGGLE_OFF, getX(), getY(), 0, 0, 14, 14, 14, 14);
+            }
+        };
+
+        experienceManaConversion.setTooltip(Tooltip.create(Component.translatable(USE_EXPERIENCE_FOR_MANA)));
+        addRenderableWidget(experienceManaConversion);
     }
 
 

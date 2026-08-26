@@ -15,6 +15,8 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
 @EventBusSubscriber
 public class ManaHandler {
+    public static final double EXPERIENCE_TO_MANA_RATIO = 0.1;
+
     @SubscribeEvent
     public static void playerTick(final PlayerTickEvent.Post event) {
         Player player = event.getEntity();
@@ -56,8 +58,8 @@ public class ManaHandler {
         if (magic.getReservedMana() > 0 && magic.getAvailableMana() < manaCost) {
             ManaHandling manaHandling = DragonStateProvider.getData(player).species().value().manaHandling();
 
-            if (manaHandling.manaXpConversion() > 0 && manaHandling.maxManaFromLevels() > 0) {
-                int experienceCost = convertMana(magic.getAvailableMana() - manaCost, manaHandling.manaXpConversion());
+            if (magic.usesExperienceForMana() && manaHandling.maxManaFromLevels() > 0) {
+                int experienceCost = convertMana(magic.getAvailableMana() - manaCost);
                 int newLevel = ExperienceUtils.getLevel(ExperienceUtils.getTotalExperience(player) + experienceCost);
                 float manaBonus = (float) Math.min(manaHandling.maxManaFromLevels(), newLevel * manaHandling.manaPerLevel());
 
@@ -96,17 +98,17 @@ public class ManaHandler {
         float pureMana = magic.getAvailableMana();
         ManaHandling manaHandling = DragonStateProvider.getData(player).species().value().manaHandling();
 
-        if (manaHandling.manaXpConversion() > 0 && player.level().isClientSide()) {
+        if (magic.usesExperienceForMana() && player.level().isClientSide()) {
             // Check if experience would be consumed as part of the mana cost
             if (pureMana < manaCost && pureMana + getManaFromExperience(player) >= manaCost) {
                 player.playSound(SoundEvents.EXPERIENCE_ORB_PICKUP, 0.01F, 0.01F);
             }
         }
 
-        if (manaHandling.manaXpConversion() > 0) {
+        if (magic.usesExperienceForMana()) {
             if (pureMana < manaCost) {
                 float missingMana = pureMana - manaCost;
-                player.giveExperiencePoints(convertMana(missingMana, manaHandling.manaXpConversion()));
+                player.giveExperiencePoints(convertMana(missingMana));
                 magic.setCurrentMana(player, 0);
             } else {
                 magic.adjustMana(player, -manaCost);
@@ -129,17 +131,15 @@ public class ManaHandler {
     }
 
     public static float getManaFromExperience(final Player player) {
-        ManaHandling manaHandling = DragonStateProvider.getData(player).species().value().manaHandling();
-
-        if (manaHandling.manaXpConversion() == 0) {
+        if (!MagicData.getData(player).usesExperienceForMana()) {
             return 0;
         }
 
-        return (float) (ExperienceUtils.getTotalExperience(player) * manaHandling.manaXpConversion());
+        return (float) (ExperienceUtils.getTotalExperience(player) * EXPERIENCE_TO_MANA_RATIO);
     }
 
-    private static int convertMana(float mana, double manaXpConversion) {
-        double converted = mana / manaXpConversion;
+    private static int convertMana(float mana) {
+        double converted = mana / EXPERIENCE_TO_MANA_RATIO;
 
         if (converted > 0) {
             return Mth.ceil(converted);
