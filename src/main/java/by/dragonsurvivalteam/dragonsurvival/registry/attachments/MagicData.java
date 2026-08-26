@@ -68,6 +68,9 @@ public class MagicData implements INBTSerializable<CompoundTag> {
     @Translation(comments = "Your ability is disabled due to a magic effect")
     public static final String ABILITY_DISABLED = Translation.Type.GUI.wrap("message.ability_disabled.effect");
 
+    @Translation(comments = "This ability must be unlocked before it can be cast")
+    public static final String ABILITY_NOT_UNLOCKED = Translation.Type.GUI.wrap("message.ability_not_unlocked");
+
     private final Map<ResourceKey<DragonSpecies>, Map<ResourceKey<DragonAbility>, DragonAbilityInstance>> abilities = new HashMap<>();
     private final Map<ResourceKey<DragonSpecies>, Map<Integer, ResourceKey<DragonAbility>>> hotbar = new HashMap<>();
     private @Nullable ResourceKey<DragonSpecies> currentSpecies; // TODO :: are we storing this in two data attachments now?
@@ -420,6 +423,16 @@ public class MagicData implements INBTSerializable<CompoundTag> {
 
     /** Also sends the error message (if present) when the ability is automatically blocked or the player doesn't have enough mana */
     private boolean checkCast(final Player dragon, final DragonAbilityInstance instance) {
+        if (!instance.isPassive() && instance.level() == DragonAbilityInstance.MIN_LEVEL) {
+            if (dragon.level().isClientSide()) {
+                MagicData magic = MagicData.getData(dragon);
+                magic.setErrorMessageSent(true);
+                MagicHUD.castingError(Component.translatable(ABILITY_NOT_UNLOCKED));
+            }
+
+            return false;
+        }
+
         if (instance.isDisabled(false)) {
             if (dragon.level().isClientSide()) {
                 MagicData magic = MagicData.getData(dragon);
