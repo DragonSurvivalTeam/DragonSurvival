@@ -1204,6 +1204,7 @@
   "dragonsurvival.gui.mana_recovery.adjust_add": "§6■ Adjust current mana§r by adding %s to it",
   "dragonsurvival.gui.mana_recovery.adjust_set": "§6■ Adjust current mana§r by setting it to %s",
   "dragonsurvival.gui.message.ability_disabled.effect": "Your ability is disabled due to a magic effect",
+  "dragonsurvival.gui.message.ability_not_unlocked": "This ability must be unlocked before it can be cast",
   "dragonsurvival.gui.message.altar_cooldown": "The altar is on cooldown for: %s",
   "dragonsurvival.gui.message.beacon.use_activator": "You require a §6beacon activator§r to unlock the effects",
   "dragonsurvival.gui.message.cannot_pillage": "You cannot steal from this villager",
