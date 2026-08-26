@@ -68,8 +68,8 @@ public class DragonAbilityScreen extends Screen {
     private static final ResourceLocation LEFT_PANEL_ARROW_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/ability_screen/addition_arrow_left_main.png");
     private static final ResourceLocation INFO_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/ability_screen/info_hover.png");
     private static final ResourceLocation INFO_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/ability_screen/info_main.png");
-    private static final ResourceLocation TOGGLE_ON = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/skin/skin_on.png");
-    private static final ResourceLocation TOGGLE_OFF = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/skin/skin_off.png");
+    private static final ResourceLocation EXPERIENCE_FOR_MANA_TOGGLE_ON = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/skin/skin_on.png");
+    private static final ResourceLocation EXPERIENCE_FOR_MANA_TOGGLE_OFF = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/skin/skin_off.png");
 
     public LevelButton lastHoveredLevelButton;
 
@@ -294,7 +294,7 @@ public class DragonAbilityScreen extends Screen {
         }) {
             @Override
             public void renderWidget(@NotNull final GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-                graphics.blit(data.usesExperienceForMana() ? TOGGLE_ON : TOGGLE_OFF, getX(), getY(), 0, 0, 14, 14, 14, 14);
+                graphics.blit(data.usesExperienceForMana() ? EXPERIENCE_FOR_MANA_TOGGLE_ON : EXPERIENCE_FOR_MANA_TOGGLE_OFF, getX(), getY(), 0, 0, 14, 14, 14, 14);
             }
         };
 
