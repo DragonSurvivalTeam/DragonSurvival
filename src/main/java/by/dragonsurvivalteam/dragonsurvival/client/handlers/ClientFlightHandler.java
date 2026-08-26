@@ -294,7 +294,7 @@ public class ClientFlightHandler {
         }
 
         if (!Float.isFinite(lastFlightBaseFov)) {
-            lastFlightBaseFov = event.getFOV();
+            lastFlightBaseFov = (float) event.getFOV();
         }
 
         double zoom = Math.max(lastZoom, 0.01F);

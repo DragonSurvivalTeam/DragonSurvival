@@ -32,6 +32,7 @@ import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.scores.PlayerTeam;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -671,6 +672,9 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
                     animationController.transitionLength(2);
                 } else if (ServerFlightHandler.isSpin(player)) {
                     state.setAnimation(DragonAnimations.FLY_SPIN.getAnimation());
+                    animationController.transitionLength(2);
+                } else if (deltaMovement.length() < 4 && AnimationUtils.doesAnimationExist(DRAGON_MODEL, this, DragonAnimations.FLY_IDLE.getAnimation())) {
+                    state.setAnimation(DragonAnimations.FLY_IDLE.getAnimation());
                     animationController.transitionLength(2);
                 } else {
                     if (movement.desiredMoveVec.y > 0) {

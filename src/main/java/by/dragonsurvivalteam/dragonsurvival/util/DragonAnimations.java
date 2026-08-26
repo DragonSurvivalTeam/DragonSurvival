@@ -16,6 +16,7 @@ public enum DragonAnimations {
     SIT_ON_MAGIC_SOURCE("sit_on_magic_source", name -> RawAnimation.begin().thenLoop(name)),
     SLEEP("sleep_left", name -> RawAnimation.begin().thenLoop(name)),
     SIT("sit", name -> RawAnimation.begin().thenLoop(name)),
+    FLY_IDLE("fly_idle", name -> RawAnimation.begin().thenLoop(name)),
     FLY("fly", name -> RawAnimation.begin().thenLoop(name)),
     FLY_SOARING("fly_soaring", name -> RawAnimation.begin().thenLoop(name)),
     FLY_DIVE("fly_dive", name -> RawAnimation.begin().thenLoop(name)),
