@@ -16,6 +16,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import by.dragonsurvivalteam.dragonsurvival.server.handlers.ServerFlightHandler;
 import by.dragonsurvivalteam.dragonsurvival.util.ActionWithTimedCooldown;
+import by.dragonsurvivalteam.dragonsurvival.util.AnimationUtils;
 import by.dragonsurvivalteam.dragonsurvival.util.EnchantmentUtils;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import by.dragonsurvivalteam.dragonsurvival.util.TickedCooldown;
@@ -24,7 +25,6 @@ import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.Input;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
@@ -142,6 +142,10 @@ public class ClientFlightHandler {
     static double ax, ay, az;
     static float lastIncrease;
     static float lastZoom = 1f;
+    static float lastFlightFov = Float.NaN;
+
+    private static final float FLIGHT_CAMERA_LERP_FACTOR = 0.10F;
+    private static final float FLIGHT_FOV_LERP_FACTOR = 0.20F;
 
     // These are the drag values from vanilla Elytra flying. See isFallFlying() section in LivingEntity#travel()
     private static final Vec3 ELYTRA_FLY_DRAG = new Vec3(0.99, 0.98, 0.99);
@@ -150,6 +154,15 @@ public class ClientFlightHandler {
     // This ignores checking the ground, letting the dragon start flying even in tight spaces.
     private static final TickedCooldown jumpFlyCooldown = new TickedCooldown(7);
     private static boolean lastJumpInputState; // We need to track the rising edge manually
+
+    private static float getFrameIndependentLerpFactor(float lerpFactorPer60FpsFrame) {
+        if (lerpFactorPer60FpsFrame >= 1.0F) {
+            return 1.0F;
+        }
+
+        float normalizedLerpTime = Mth.clamp(AnimationUtils.getDeltaTickFor60FPS(), 0.0F, 5.0F);
+        return 1.0F - (float) Math.pow(1.0F - lerpFactorPer60FpsFrame, normalizedLerpTime);
+    }
 
     // Run this somewhat early, but not extremely early so that if another mod messes with camera rendering, it will recieve DS's changes first.
     @SubscribeEvent(priority = EventPriority.HIGHEST)
@@ -186,10 +199,10 @@ public class ClientFlightHandler {
         Camera info = setup.getCamera();
 
         if (currentPlayer != null && currentPlayer.isAddedToLevel() && DragonStateProvider.isDragon(currentPlayer)) {
-            GameRenderer gameRenderer = minecraft.gameRenderer;
             boolean shouldApplyZoom = false;
             float targetZoom = 1.0F;
-            float zoomLerpFactor = 0.25F;
+            float cameraLerpFactor = getFrameIndependentLerpFactor(FLIGHT_CAMERA_LERP_FACTOR);
+            float zoomLerpFactor = cameraLerpFactor;
             float partialTick = (float) setup.getPartialTick();
 
             if (ServerFlightHandler.isGliding(currentPlayer)) {
@@ -197,7 +210,7 @@ public class ClientFlightHandler {
                     if (flightCameraMovement) {
                         Vec3 lookVec = currentPlayer.getLookAngle();
                         float increase = (float) Mth.clamp(lookVec.y * 10, 0, lookVec.y * 5);
-                        float gradualIncrease = Mth.lerp(0.25f, lastIncrease, increase);
+                        float gradualIncrease = Mth.lerp(cameraLerpFactor, lastIncrease, increase);
                         info.move(0, gradualIncrease, 0);
                         lastIncrease = gradualIncrease;
                     }
@@ -215,7 +228,7 @@ public class ClientFlightHandler {
             } else {
                 if (lastIncrease > 0) {
                     if (flightCameraMovement) {
-                        lastIncrease = Mth.lerp(0.25f, lastIncrease, 0);
+                        lastIncrease = Mth.lerp(cameraLerpFactor, lastIncrease, 0);
                         info.move(0, lastIncrease, 0);
                     }
                 }
@@ -230,7 +243,7 @@ public class ClientFlightHandler {
                     shouldApplyZoom = true;
                 }
 
-                zoomLerpFactor = Math.max(zoomLerpFactor, SpinFlightPresentation.getZoomLerpFactor());
+                zoomLerpFactor = Math.max(zoomLerpFactor, getFrameIndependentLerpFactor(SpinFlightPresentation.getZoomLerpFactor()));
                 setup.setPitch(setup.getPitch() + SpinFlightPresentation.getPitchOffset(currentPlayer, partialTick));
                 setup.setRoll(setup.getRoll() + SpinFlightPresentation.getRollOffset(currentPlayer, partialTick));
 
@@ -249,14 +262,54 @@ public class ClientFlightHandler {
             }
 
             if (shouldApplyZoom) {
-                float newZoom = Mth.lerp(zoomLerpFactor, lastZoom, targetZoom);
-                gameRenderer.zoom = newZoom;
-                lastZoom = newZoom;
+                lastZoom = Mth.lerp(zoomLerpFactor, lastZoom, targetZoom);
             } else if (lastZoom != 1.0F) {
                 lastZoom = Mth.lerp(zoomLerpFactor, lastZoom, 1.0F);
-                gameRenderer.zoom = lastZoom;
             }
         }
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOW)
+    public static void flightZoom(ViewportEvent.ComputeFov event) {
+        if (!flightZoomEffect && !spinCameraEffect) {
+            lastFlightFov = Float.NaN;
+            return;
+        }
+
+        if (DragonSurvival.PROXY.dragonRenderingWasCancelled(DragonSurvival.PROXY.getLocalPlayer())) {
+            lastFlightFov = Float.NaN;
+            return;
+        }
+
+        Minecraft minecraft = Minecraft.getInstance();
+        LocalPlayer currentPlayer = minecraft.player;
+
+        if (currentPlayer == null || !currentPlayer.isAddedToLevel() || !DragonStateProvider.isDragon(currentPlayer) || minecraft.options.getCameraType().isFirstPerson()) {
+            lastFlightFov = Float.NaN;
+            return;
+        }
+
+        if (lastZoom == 1.0F && !Float.isFinite(lastFlightFov)) {
+            return;
+        }
+
+        double zoom = Math.max(lastZoom, 0.01F);
+        double halfFovRadians = Math.toRadians(event.getFOV()) / 2.0D;
+        double zoomedFov = 2.0D * Math.atan(Math.tan(halfFovRadians) / zoom);
+        float targetFov = (float) Math.toDegrees(zoomedFov);
+
+        if (!Float.isFinite(lastFlightFov)) {
+            lastFlightFov = event.getFOV();
+        }
+
+        lastFlightFov = Mth.lerp(getFrameIndependentLerpFactor(FLIGHT_FOV_LERP_FACTOR), lastFlightFov, targetFov);
+
+        if (lastZoom == 1.0F && Math.abs(lastFlightFov - targetFov) < 0.01F) {
+            lastFlightFov = Float.NaN;
+            return;
+        }
+
+        event.setFOV(lastFlightFov);
     }
 
     @SubscribeEvent
