@@ -203,8 +203,6 @@ public class ClientFlightHandler {
 
         Minecraft minecraft = Minecraft.getInstance();
         LocalPlayer currentPlayer = minecraft.player;
-        Camera info = setup.getCamera();
-
         if (currentPlayer != null && currentPlayer.isAddedToWorld() && DragonStateProvider.isDragon(currentPlayer)) {
             GameRenderer gameRenderer = minecraft.gameRenderer;
             boolean shouldApplyZoom = false;
@@ -219,7 +217,6 @@ public class ClientFlightHandler {
                         Vec3 lookVec = currentPlayer.getLookAngle();
                         float increase = (float) Mth.clamp(lookVec.y * 10, 0, lookVec.y * 5);
                         lastIncrease = Mth.lerp(cameraLerpFactor, lastIncrease, increase);
-                        info.move(0, lastIncrease, 0);
                     }
                 }
 
@@ -236,7 +233,6 @@ public class ClientFlightHandler {
                 if (lastIncrease > 0) {
                     if (flightCameraMovement) {
                         lastIncrease = Mth.lerp(cameraLerpFactor, lastIncrease, 0);
-                        info.move(0, lastIncrease, 0);
                     }
                 }
 
@@ -254,13 +250,6 @@ public class ClientFlightHandler {
                 setup.setPitch(setup.getPitch() + SpinFlightPresentation.getPitchOffset(currentPlayer, partialTick));
                 setup.setRoll(setup.getRoll() + SpinFlightPresentation.getRollOffset(currentPlayer, partialTick));
 
-                if (setup.getCamera().isDetached() && flightCameraMovement) {
-                    float spinCameraOffset = SpinFlightPresentation.getCameraLift() + SpinFlightPresentation.getCameraBobOffset(currentPlayer, partialTick);
-
-                    if (spinCameraOffset != 0.0F) {
-                        info.move(0.0F, spinCameraOffset, 0.0F);
-                    }
-                }
             }
 
             if (DoABarrelRollCompat.isActive(currentPlayer)) {
