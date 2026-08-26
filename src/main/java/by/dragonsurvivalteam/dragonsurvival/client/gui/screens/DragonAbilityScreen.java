@@ -72,8 +72,8 @@ public class DragonAbilityScreen extends Screen {
     private static final Identifier LEFT_PANEL_ARROW_MAIN = Identifier.fromNamespaceAndPath(MODID, "textures/gui/ability_screen/addition_arrow_left_main.png");
     private static final Identifier INFO_HOVER = Identifier.fromNamespaceAndPath(MODID, "textures/gui/ability_screen/info_hover.png");
     private static final Identifier INFO_MAIN = Identifier.fromNamespaceAndPath(MODID, "textures/gui/ability_screen/info_main.png");
-    private static final Identifier TOGGLE_ON = Identifier.fromNamespaceAndPath(MODID, "textures/gui/skin/skin_on.png");
-    private static final Identifier TOGGLE_OFF = Identifier.fromNamespaceAndPath(MODID, "textures/gui/skin/skin_off.png");
+    private static final Identifier EXPERIENCE_FOR_MANA_TOGGLE_ON = Identifier.fromNamespaceAndPath(MODID, "textures/gui/skin/skin_on.png");
+    private static final Identifier EXPERIENCE_FOR_MANA_TOGGLE_OFF = Identifier.fromNamespaceAndPath(MODID, "textures/gui/skin/skin_off.png");
     private static final int EXPERIENCE_PREVIEW_DOWNGRADE_COLOR = ARGB.colorFromFloat(1.0f, 1.0f, 0.0f, 0.0f);
     private static final int EXPERIENCE_PREVIEW_UPGRADE_COLOR = ARGB.colorFromFloat(1.0f, 0.6f, 0.2f, 0.85f);
 
@@ -357,7 +357,7 @@ public class DragonAbilityScreen extends Screen {
         }) {
             @Override
             public void extractWidgetRenderState(@NotNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
-                graphics.blit(RenderPipelines.GUI_TEXTURED, data.usesExperienceForMana() ? TOGGLE_ON : TOGGLE_OFF, getX(), getY(), 0, 0, 14, 14, 14, 14);
+                graphics.blit(RenderPipelines.GUI_TEXTURED, data.usesExperienceForMana() ? EXPERIENCE_FOR_MANA_TOGGLE_ON : EXPERIENCE_FOR_MANA_TOGGLE_OFF, getX(), getY(), 0, 0, 14, 14, 14, 14);
             }
         };
 
