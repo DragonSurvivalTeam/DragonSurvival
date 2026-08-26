@@ -424,6 +424,8 @@ public class ClientDragonRenderer {
             movement.prevXRot = dragon.prevXRot;
             movement.prevZRot = dragon.prevZRot;
         } else {
+            dragon.prevXRot = 0;
+            dragon.prevZRot = 0;
             movement.prevZRot = 0;
             movement.prevXRot = 0;
         }
