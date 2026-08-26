@@ -129,7 +129,7 @@ public class MagicHUD {
 
         DragonStateHandler handler = DragonStateProvider.getData(localPlayer);
 
-        if (!handler.isDragon() || !MagicData.getData(localPlayer).usesExperienceForMana()) {
+        if (!handler.isDragon() || !MagicData.getData(localPlayer).usesExperienceForMana() || handler.species().value().manaHandling().manaXpConversion() == 0) {
             return false;
         }
 
