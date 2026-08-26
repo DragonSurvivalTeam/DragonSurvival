@@ -414,7 +414,10 @@ public class ClientFlightHandler {
                                     }
                                 }
 
-                                if (ServerFlightHandler.isGliding(player) || ax != 0 || az != 0) {
+                                double speedThreshold = flightSpeedMultiplier;
+                                Vec3 velocity = new Vec3(ax,ay,az);
+                                // Use minimum speed threshold to properly handle transition from gliding to hovering
+                                if (ServerFlightHandler.isGliding(player) || velocity.length() > speedThreshold) {
                                     deltaMovement = player.getDeltaMovement().add(0.0D, gravity * (-1.0D + (double) verticalDelta * 0.75D), 0.0D);
 
                                     if (deltaMovement.y < 0 && horizontalView > 0) {
@@ -466,9 +469,8 @@ public class ClientFlightHandler {
                                         player.setDeltaMovement(deltaMovement);
                                         ay = player.getDeltaMovement().y;
                                     }
-                                }
-
-                                if (!ServerFlightHandler.isGliding(player)) {
+                                    // Only run this if the gliding code is not already handling deceleration/transition to hover
+                                } else if (!ServerFlightHandler.isGliding(player)) {
                                     wasGliding = false;
                                     double maxForward = 0.5 * flightSpeedMultiplier * 2;
 
