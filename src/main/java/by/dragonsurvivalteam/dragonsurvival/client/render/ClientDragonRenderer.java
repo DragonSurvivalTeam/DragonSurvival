@@ -33,6 +33,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.Dr
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.LookingAtTarget;
 import by.dragonsurvivalteam.dragonsurvival.server.handlers.ServerFlightHandler;
 import by.dragonsurvivalteam.dragonsurvival.util.AnimationUtils;
+import by.dragonsurvivalteam.dragonsurvival.util.AnimationUtils;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -77,6 +78,8 @@ import java.util.function.Consumer;
 
 @EventBusSubscriber(Dist.CLIENT)
 public class ClientDragonRenderer {
+    private static final float FLIGHT_TILT_LERP_FACTOR = 0.1F;
+    private static final float FLIGHT_TILT_EPSILON = 0.01F;
 
     // FIXME :: figure out at what point it can be called from other threads - that shouldn't happen but it does?
     //  See: https://github.com/DragonSurvivalTeam/DragonSurvival/issues/763
@@ -342,6 +345,7 @@ public class ClientDragonRenderer {
     private static void handleFlightMovement(final Player player, final DragonEntity dragon, final MovementData movement, final float partialTick) {
         boolean isPlayerGliding = ServerFlightHandler.isGliding(player);
         Entity playerVehicle = player.getVehicle();
+        float flightTiltLerpFactor = Mth.clamp(FLIGHT_TILT_LERP_FACTOR * AnimationUtils.getDeltaTickFor60FPS(), 0, 1);
 
         if (isPlayerGliding || (player.isPassenger() && DragonStateProvider.isDragon(playerVehicle) && ServerFlightHandler.isGliding((Player) playerVehicle))) {
             float upRot;
@@ -352,7 +356,7 @@ public class ClientDragonRenderer {
                 upRot = Mth.clamp((float) (playerVehicle.getDeltaMovement().y * 20), -80, 80);
             }
 
-            dragon.prevXRot = Mth.lerp(0.1F, dragon.prevXRot, upRot);
+            dragon.prevXRot = Mth.lerp(flightTiltLerpFactor, dragon.prevXRot, upRot);
             dragon.prevXRot = Mth.clamp(dragon.prevXRot, -80, 80);
 
             movement.prevXRot = dragon.prevXRot;
@@ -376,8 +380,6 @@ public class ClientDragonRenderer {
                 deltaVel = playerVehicle.getDeltaMovement();
             }
 
-            // Factor for interpolating to the target bank angle
-            final float ROLL_VEL_LERP_FACTOR = 0.1F;
             // Minimum velocity to begin banking
             final double ROLL_VEL_INFLUENCE_MIN = 0.5D;
             // Maximum velocity at which point the bank angle has full effect
@@ -420,14 +422,22 @@ public class ClientDragonRenderer {
             if (!Double.isFinite(dragon.prevZRot)) {
                 dragon.prevZRot = targetRollDeg;
             } else {
-                dragon.prevZRot = Mth.lerp(ROLL_VEL_LERP_FACTOR, dragon.prevZRot, targetRollDeg);
+                dragon.prevZRot = Mth.lerp(flightTiltLerpFactor, dragon.prevZRot, targetRollDeg);
             }
 
             movement.prevXRot = dragon.prevXRot;
             movement.prevZRot = dragon.prevZRot;
         } else {
-            dragon.prevXRot = 0;
-            dragon.prevZRot = 0;
+            dragon.prevXRot = Mth.lerp(flightTiltLerpFactor, dragon.prevXRot, 0);
+            dragon.prevZRot = Mth.lerp(flightTiltLerpFactor, dragon.prevZRot, 0);
+
+            if (Math.abs(dragon.prevXRot) < FLIGHT_TILT_EPSILON) {
+                dragon.prevXRot = 0;
+            }
+
+            if (Math.abs(dragon.prevZRot) < FLIGHT_TILT_EPSILON) {
+                dragon.prevZRot = 0;
+            }
             movement.prevZRot = 0;
             movement.prevXRot = 0;
         }

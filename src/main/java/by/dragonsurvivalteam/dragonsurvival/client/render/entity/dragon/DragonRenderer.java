@@ -382,7 +382,7 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
         float bodyYaw = doABarrelRollActive ? player.getViewYRot(partialTick) : (float) movement.bodyYaw;
         pose.mulPose(Axis.YN.rotationDegrees(bodyYaw));
 
-        if (ServerFlightHandler.isGliding(player)) {
+        if (ServerFlightHandler.isGliding(player) || dragon.prevXRot != 0 || dragon.prevZRot != 0) {
             // Responsible for the pitch (rotating entity downward / upward)
             float pitch = doABarrelRollActive ? -player.getViewXRot(partialTick) : dragon.prevXRot;
             pose.mulPose(Axis.XN.rotationDegrees(pitch));
