@@ -699,9 +699,9 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
                 } else if (ServerFlightHandler.isSpin(player)) {
                     animationToChangeTo = DragonAnimations.FLY_SPIN.getAnimation();
                     transitionTicks = 2;
-                } else if (deltaMovement.length() < 4 && AnimationUtils.doesAnimationExist(DRAGON_MODEL, this, DragonAnimations.FLY_IDLE.getAnimation())) {
+                } else if (deltaMovement.length() < 0.3 && AnimationUtils.doesAnimationExist(DRAGON_MODEL, this, DragonAnimations.FLY_IDLE.getAnimation())) {
                     animationToChangeTo = DragonAnimations.FLY_IDLE.getAnimation();
-                    transitionTicks = 2;
+                    transitionTicks = 8;
                 } else {
                     if (movement.desiredMoveVec.y > 0) {
                         animationSpeed = 2;
