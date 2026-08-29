@@ -82,7 +82,6 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.blockpredicates.BlockPredicate;
 import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.common.Tags;
@@ -214,24 +213,25 @@ public class DragonAbilities {
         // --- Ore Vision (Outline) --- //
 
         //noinspection deprecation -> ignore
-        context.register(ResourceKey.create(DragonAbility.REGISTRY, DragonSurvival.res(TEST_PREFIX + "ore_vision_outline")), new DragonAbility(
+        context.register(ResourceKey.create(DragonAbility.REGISTRY, DragonSurvival.res(TEST_PREFIX + "ore_vision_shader")), new DragonAbility(
                 PassiveActivation.DEFAULT,
                 Optional.empty(),
                 Optional.empty(),
                 List.of(
                         new ActionContainer(new SelfTarget(AbilityTargeting.entity(List.of(
                                 BlockVisionEffect.single(BlockVision.create(
-                                                        DurationInstanceBase.create(DragonSurvival.res("diamond_vision_outline"))
+                                                        DurationInstanceBase.create(DragonSurvival.res("diamond_vision_shader"))
                                                                 .hidden().build()
                                                 )
                                                 .blocks(context.lookup(Registries.BLOCK).getOrThrow(Tags.Blocks.ORES_DIAMOND))
                                                 .range(LevelBasedValue.constant(24))
-                                                .displayType(BlockVision.DisplayType.OUTLINE)
+                                                .displayType(BlockVision.DisplayType.SIMPLE_SHADER)
                                                 .colorEntries(List.of(
-                                                        BlockVision.color(TextColor.fromLegacyFormat(ChatFormatting.AQUA), 0.9f),
-                                                        BlockVision.color(TextColor.fromLegacyFormat(ChatFormatting.WHITE), 0.9f)
+                                                        BlockVision.color(TextColor.fromLegacyFormat(ChatFormatting.AQUA), 0.15f),
+                                                        BlockVision.color(TextColor.fromLegacyFormat(ChatFormatting.DARK_GREEN), 0.15f),
+                                                        BlockVision.color(TextColor.fromLegacyFormat(ChatFormatting.RED), 0.15f)
                                                 ))
-                                                .colorShiftRate(0.35)
+                                                .colorShiftRate(1)
                                                 .build()
                                 )
                         ), TargetingMode.ALLIES_AND_SELF)), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(1))

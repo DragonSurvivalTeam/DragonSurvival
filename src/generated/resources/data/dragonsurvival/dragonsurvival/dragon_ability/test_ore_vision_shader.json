@@ -8,22 +8,25 @@
               "block_visions": [
                 {
                   "base": {
-                    "id": "dragonsurvival:diamond_vision_outline",
+                    "id": "dragonsurvival:diamond_vision_shader",
                     "is_hidden": true
                   },
                   "blocks": "#c:ores/diamond",
-                  "color_shift_rate": 0.35,
                   "colors": [
                     {
-                      "alpha": 0.9,
+                      "alpha": 0.15,
                       "color": "aqua"
                     },
                     {
-                      "alpha": 0.9,
-                      "color": "white"
+                      "alpha": 0.15,
+                      "color": "dark_green"
+                    },
+                    {
+                      "alpha": 0.15,
+                      "color": "red"
                     }
                   ],
-                  "display_type": "outline",
+                  "display_type": "simple_shader",
                   "range": 24.0
                 }
               ],

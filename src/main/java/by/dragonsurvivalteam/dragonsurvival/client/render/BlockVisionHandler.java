@@ -2,6 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.client.render;
 
 import by.dragonsurvivalteam.dragonsurvival.client.render.block_vision.BlockVisionOutline;
 import by.dragonsurvivalteam.dragonsurvival.client.render.block_vision.BlockVisionParticle;
+import by.dragonsurvivalteam.dragonsurvival.client.render.block_vision.BlockVisionShaderSimple;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.block_vision.BlockVision;
 import by.dragonsurvivalteam.dragonsurvival.compat.Compat;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.BlockVisionData;
@@ -45,6 +46,8 @@ public final class BlockVisionHandler {
 
     private static final List<Data> renderData = new ArrayList<>();
     private static final List<BlockPos> removals = new ArrayList<>();
+    /** Collected during the outline pass to avoid switching between render types for every single block. */
+    private static final List<Data> shaderData = new ArrayList<>();
 
     private static volatile List<Data> pendingSearchResult = List.of();
     private static volatile boolean isSearching;
@@ -133,13 +136,26 @@ public final class BlockVisionHandler {
 
             switch (data.displayType()) {
                 case OUTLINE -> BlockVisionOutline.render(data, pose, lineBuffer, currentVision.getColor(data.state().getBlock()));
+                case SIMPLE_SHADER -> shaderData.add(data);
                 case PARTICLES -> BlockVisionParticle.spawnParticle(data, player);
                 case NONE -> { }
             }
         }
 
-        pose.popPose();
         bufferSource.endBatch(BlockVisionOutline.renderType());
+
+        if (!shaderData.isEmpty()) {
+            VertexConsumer blockBuffer = bufferSource.getBuffer(BlockVisionShaderSimple.renderType());
+
+            for (Data data : shaderData) {
+                BlockVisionShaderSimple.render(data, pose, blockBuffer, currentVision.getColor(data.state().getBlock()));
+            }
+
+            shaderData.clear();
+            bufferSource.endBatch(BlockVisionShaderSimple.renderType());
+        }
+
+        pose.popPose();
     }
 
     @SubscribeEvent
@@ -321,6 +337,7 @@ public final class BlockVisionHandler {
     private static void clear() {
         renderData.clear();
         removals.clear();
+        shaderData.clear();
         pendingSearchResult = List.of();
 
         lastScanCenter = null;

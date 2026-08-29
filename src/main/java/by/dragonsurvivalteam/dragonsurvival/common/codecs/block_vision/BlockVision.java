@@ -246,6 +246,7 @@ public class BlockVision extends DurationInstanceBase<BlockVisionData, BlockVisi
 
     public enum DisplayType implements StringRepresentable {
         OUTLINE("outline"),
+        SIMPLE_SHADER("simple_shader"),
         PARTICLES("particles"),
         NONE("none");
 
