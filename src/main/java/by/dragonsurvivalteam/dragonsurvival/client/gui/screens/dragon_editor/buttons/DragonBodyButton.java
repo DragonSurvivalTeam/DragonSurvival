@@ -42,7 +42,7 @@ public class DragonBodyButton extends ExtendedButton implements HoverDisableable
 
     private static final ResourceLocation SELECTED_BACKGROUND = new ResourceLocation(DragonSurvival.MODID, "textures/gui/skin/icon_skin_on.png");
     private static final ResourceLocation DESELECTED_BACKGROUND = new ResourceLocation(DragonSurvival.MODID, "textures/gui/skin/icon_skin_off.png");
-    @Translation(comments = "\\n\\u00A76--- Body Modifiers ---\\u00A7r\\u00A77")
+    @Translation(comments = "\n§6--- Body Modifiers ---§r§7")
     private static final String MODIFIERS = Translation.Type.GUI.wrap("dragon_body_button.modifiers");
 
     public static final int HOVERED = 1;
