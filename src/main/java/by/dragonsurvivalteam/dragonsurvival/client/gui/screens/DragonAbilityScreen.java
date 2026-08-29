@@ -176,7 +176,7 @@ public class DragonAbilityScreen extends Screen {
             }
 
             Component expectedLevel = DSColors.withColor(newLevel, color);
-            int expLevelXPos = ((rightBarX + leftBarX) / 2 + 48 - minecraft.font.width(expectedLevel) / 2) - 1;
+            int expLevelXPos = ((rightBarX + leftBarX) / 2 + 48 - minecraft.font.width(expectedLevel) / 2);
             int expLevelYPos = barYPos - 1;
             graphics.drawString(minecraft.font, expectedLevel, expLevelXPos, expLevelYPos, 0, false);
         }
@@ -285,7 +285,7 @@ public class DragonAbilityScreen extends Screen {
 
         addRenderableWidget(new HelpButton(guiLeft + 122, startY + 263 / 2 + 25, 12, 12, HELP_PASSIVE_ACTIVE));
 
-        ExtendedButton experienceManaConversion = new ExtendedButton(guiLeft + 196, startY + 263 / 2 + 25, 14, 14, Component.empty(), button -> {
+        ExtendedButton experienceManaConversion = new ExtendedButton(guiLeft + 123, guiTop - 10, 14, 14, Component.empty(), button -> {
             boolean enabled = !data.usesExperienceForMana();
             data.setUseExperienceForMana(enabled);
             PacketDistributor.sendToServer(new SyncExperienceManaConversion(enabled));
