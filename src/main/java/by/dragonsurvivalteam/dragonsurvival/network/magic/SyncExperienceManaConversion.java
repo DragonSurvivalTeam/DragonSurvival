@@ -27,7 +27,7 @@ public record SyncExperienceManaConversion(boolean enabled) implements CustomPac
 
             MagicData magic = MagicData.getData(player);
             magic.setUseExperienceForMana(packet.enabled());
-            PacketDistributor.sendToPlayer(player, new SyncMagicData(magic.serializeNBT(player.registryAccess())));
+            PacketDistributor.sendToPlayer(player, new SyncMagicData(magic.serializeNBT(player.level().registryAccess())));
         });
     }
 
