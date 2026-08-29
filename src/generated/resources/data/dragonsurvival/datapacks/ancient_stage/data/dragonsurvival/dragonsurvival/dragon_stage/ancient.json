@@ -96,15 +96,6 @@
     {
       "amount": {
         "type": "minecraft:linear",
-        "base": 0.011,
-        "per_level_above_first": 0.001
-      },
-      "attribute": "minecraft:movement_speed",
-      "operation": "add_value"
-    },
-    {
-      "amount": {
-        "type": "minecraft:linear",
         "base": 0.01,
         "per_level_above_first": 0.01
       },
