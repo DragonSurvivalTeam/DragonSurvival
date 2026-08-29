@@ -5,29 +5,40 @@ import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.DragonSkinsScreen
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.DragonSpeciesScreen;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.dragon_editor.DragonEditorScreen;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic.HoverDisableable;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.Modifier;
 import by.dragonsurvivalteam.dragonsurvival.registry.data_maps.BodyIcons;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import by.dragonsurvivalteam.dragonsurvival.util.DragonUtils;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FormattedCharSequence;
 import net.neoforged.neoforge.client.gui.widget.ExtendedButton;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class DragonBodyButton extends ExtendedButton implements HoverDisableable {
+    private static final int MAX_TOOLTIP_LINES = 14;
+
     @Translation(comments = "You can only change the body type in the altar when changing the dragon's species.")
     private static final String UNAVAILABLE = Translation.Type.GUI.wrap("dragon_body_button.unavailable");
 
     @Translation(comments = "This body type has not been unlocked yet.")
     private static final String NOT_UNLOCKED = Translation.Type.GUI.wrap("dragon_body_button.not_unlocked");
+
+    @Translation(comments = "\\n\\u00A76--- Body Modifiers ---\\u00A7r\\u00A77")
+    private static final String MODIFIERS = Translation.Type.GUI.wrap("dragon_body_button.modifiers");
 
     private static final ResourceLocation SELECTED_BACKGROUND = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/icon_skin_on.png");
     private static final ResourceLocation DESELECTED_BACKGROUND = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/icon_skin_off.png");
@@ -43,6 +54,9 @@ public class DragonBodyButton extends ExtendedButton implements HoverDisableable
     private boolean disableHover;
     private final boolean useBackground;
     private final boolean noTooltip;
+    private List<FormattedCharSequence> tooltip = List.of();
+    private int tooltipScroll;
+    private int tooltipLineCount;
 
     public enum LockedReason {
         NOT_UNLOCKED,
@@ -62,10 +76,6 @@ public class DragonBodyButton extends ExtendedButton implements HoverDisableable
 
     private DragonBodyButton(Screen screen, int x, int y, int xSize, int ySize, final Holder<DragonBody> dragonBody, final ResourceLocation location, LockedReason locked, OnPress action, boolean useBackground, boolean noTooltip) {
         super(x, y, xSize, ySize, Component.empty(), action, DEFAULT_NARRATION);
-
-        if (!noTooltip) {
-            setTooltip(Tooltip.create(Component.translatable(Translation.Type.BODY_DESCRIPTION.wrap(location))));
-        }
 
         ResourceKey<DragonSpecies> species = null;
 
@@ -87,6 +97,10 @@ public class DragonBodyButton extends ExtendedButton implements HoverDisableable
         this.lockedReason = locked;
         this.useBackground = useBackground;
         this.noTooltip = noTooltip;
+
+        if (!noTooltip && locked == LockedReason.NONE) {
+            updateTooltip();
+        }
     }
 
     public void disableHover() {
@@ -98,11 +112,34 @@ public class DragonBodyButton extends ExtendedButton implements HoverDisableable
     }
 
     public boolean isHovered() {
-        return !disableHover && super.isHovered();
+        boolean hovered = !disableHover && super.isHovered();
+
+        if (!hovered && tooltipScroll > 0) {
+            tooltipScroll = 0;
+            updateTooltip();
+        }
+
+        return hovered;
     }
 
     public boolean isFocused() {
         return !disableHover && super.isFocused();
+    }
+
+    @Override
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+        if (!noTooltip && isMouseOver(mouseX, mouseY) && lockedReason == LockedReason.NONE) {
+            int oldScroll = tooltipScroll;
+            tooltipScroll = Math.clamp(tooltipScroll + Double.compare(0, scrollY), 0, maxTooltipScroll());
+
+            if (oldScroll != tooltipScroll) {
+                updateTooltip();
+            }
+
+            return true;
+        }
+
+        return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
     }
 
     public LockedReason lockedReason() {
@@ -128,8 +165,8 @@ public class DragonBodyButton extends ExtendedButton implements HoverDisableable
                 } else if (lockedReason == LockedReason.NOT_UNLOCKED) {
                     setTooltip(Tooltip.create(Component.translatable(NOT_UNLOCKED)));
                 }
-            } else {
-                setTooltip(Tooltip.create(Component.translatable(Translation.Type.BODY_DESCRIPTION.wrap(bodyLocation))));
+            } else if (isHovered()) {
+                Minecraft.getInstance().screen.setTooltipForNextRenderPass(tooltip);
             }
         }
 
@@ -152,5 +189,40 @@ public class DragonBodyButton extends ExtendedButton implements HoverDisableable
         }
 
         return false;
+    }
+
+    private void updateTooltip() {
+        List<Component> components = new ArrayList<>();
+        components.add(Component.translatable(Translation.Type.BODY_DESCRIPTION.wrap(bodyLocation)));
+        components.add(Component.translatable(MODIFIERS));
+
+        for (Modifier modifier : dragonBody.value().modifiers()) {
+            components.add(modifier.getFormattedDescription(1, true));
+        }
+
+        MutableComponent tooltipComponent = Component.empty();
+
+        for (int i = 0; i < components.size(); i++) {
+            tooltipComponent.append(components.get(i));
+
+            if (i < components.size() - 1) {
+                tooltipComponent.append("\n");
+            }
+        }
+
+        List<FormattedCharSequence> lines = Minecraft.getInstance().font.split(tooltipComponent, 200);
+        List<FormattedCharSequence> shownTooltip = new ArrayList<>();
+        tooltipLineCount = lines.size();
+        tooltipScroll = Math.clamp(tooltipScroll, 0, maxTooltipScroll());
+
+        for (int line = tooltipScroll; line < lines.size() && line - tooltipScroll < MAX_TOOLTIP_LINES; line++) {
+            shownTooltip.add(lines.get(line));
+        }
+
+        tooltip = shownTooltip;
+    }
+
+    private int maxTooltipScroll() {
+        return Math.max(0, tooltipLineCount - MAX_TOOLTIP_LINES);
     }
 }
