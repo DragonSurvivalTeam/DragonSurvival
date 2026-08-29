@@ -83,6 +83,15 @@
     {
       "amount": {
         "type": "minecraft:linear",
+        "base": 0.003,
+        "per_level_above_first": 0.003
+      },
+      "attribute": "minecraft:movement_speed",
+      "operation": "add_value"
+    },
+    {
+      "amount": {
+        "type": "minecraft:linear",
         "base": 0.05,
         "per_level_above_first": 0.05
       },
