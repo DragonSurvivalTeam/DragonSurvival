@@ -416,6 +416,12 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double scrollY) {
+        for (Renderable renderable : renderables) {
+            if (renderable instanceof DragonBodyButton bodyButton && bodyButton.mouseScrolled(mouseX, mouseY, scrollY)) {
+                return true;
+            }
+        }
+
         for (ScrollableComponent component : scrollableComponents) {
             component.scroll(mouseX, mouseY, 0, scrollY);
         }
