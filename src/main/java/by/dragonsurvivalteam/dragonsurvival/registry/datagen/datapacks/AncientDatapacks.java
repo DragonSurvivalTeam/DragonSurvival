@@ -48,6 +48,7 @@ public class AncientDatapacks {
                         Modifier.perWithBase(Attributes.ATTACK_DAMAGE, 3.f, 0.05f, AttributeModifier.Operation.ADD_VALUE),
                         Modifier.perWithBase(Attributes.JUMP_STRENGTH, 0.1f, 0.0015f, AttributeModifier.Operation.ADD_VALUE),
                         Modifier.perWithBase(Attributes.SAFE_FALL_DISTANCE, 1, 0.015f, AttributeModifier.Operation.ADD_VALUE),
+                        Modifier.perWithBase(Attributes.MOVEMENT_SPEED, 0.01f, 0.001f, AttributeModifier.Operation.ADD_VALUE),
                         Modifier.per(DSAttributes.BLOCK_BREAK_RADIUS, 0.01f, AttributeModifier.Operation.ADD_VALUE),
                         Modifier.perWithBase(Attributes.ENTITY_INTERACTION_RANGE, 1, 0.05f, AttributeModifier.Operation.ADD_VALUE),
                         Modifier.perWithBase(Attributes.BLOCK_INTERACTION_RANGE, 1, 0.05f, AttributeModifier.Operation.ADD_VALUE),
