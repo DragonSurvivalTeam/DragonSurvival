@@ -112,7 +112,7 @@ public class DragonStages {
                         Modifier.perWithBase(Attributes.MAX_HEALTH, 10.0f, 0.5f, AttributeOperation.ADD_VALUE),
                         Modifier.perWithBase(DSAttributes.DRAGON_BREATH_RANGE, 5.5f, 0.05f, AttributeOperation.ADD_VALUE),
                         Modifier.per(ForgeMod.ENTITY_REACH, 0.05f, AttributeOperation.ADD_VALUE),
-                        Modifier.per(ForgeMod.BLOCK_REACH, 0.05f, AttributeOperation.ADD_VALUE)
+                Modifier.per(ForgeMod.BLOCK_REACH, 0.05f, AttributeOperation.ADD_VALUE)
                 ),
                 List.of(
                         GrowthItem.create(Functions.hoursToTicks(1), DSItems.ELDER_DRAGON_HEART.get()),
