@@ -1,10 +1,10 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.attachments;
 
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Climbable;
-import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
-import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncClimbFlag;
 import by.dragonsurvivalteam.dragonsurvival.common.compat.attachments.AttachmentType;
 import by.dragonsurvivalteam.dragonsurvival.common.compat.event.EntityTickEvent;
+import by.dragonsurvivalteam.dragonsurvival.network.PacketDistributor;
+import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncClimbFlag;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
