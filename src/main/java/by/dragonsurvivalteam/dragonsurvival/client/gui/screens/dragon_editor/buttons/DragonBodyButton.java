@@ -14,7 +14,6 @@ import by.dragonsurvivalteam.dragonsurvival.util.DragonUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
-import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.tooltip.MenuTooltipPositioner;
 import net.minecraft.core.Holder;
@@ -170,7 +169,7 @@ public class DragonBodyButton extends ExtendedButton implements HoverDisableable
             } else if (isHovered()) {
                 Minecraft.getInstance().screen.setTooltipForNextRenderPass(
                         tooltip,
-                        new MenuTooltipPositioner(new ScreenRectangle(getX(), getY(), width, height)),
+                        new MenuTooltipPositioner(this),
                         false
                 );
             }
