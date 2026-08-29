@@ -916,7 +916,11 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
 
         final RenderPassInfo.BoneUpdater<R> wingBoneHider = (renderPassInfoForBones, snapshots) -> {
             for (String boneName : renderData.bonesToHideForToggle()) {
-                snapshots.get(boneName).ifPresent(bone -> bone.skipRender(!renderData.hasWings()));
+                snapshots.get(boneName).ifPresent(bone -> {
+                    boolean hidden = !renderData.hasWings();
+                    bone.skipRender(hidden);
+                    bone.skipChildrenRender(hidden);
+                });
             }
         };
 
