@@ -1103,7 +1103,7 @@
   "dragonsurvival.gui.display.toggle_ability_bar.enabled": "Dragon ability bar enabled",
   "dragonsurvival.gui.display.toggle_dragon_soul_placement.disabled": "Dragon soul placement is now disabled",
   "dragonsurvival.gui.display.toggle_dragon_soul_placement.enabled": "Dragon soul placement is now enabled",
-  "dragonsurvival.gui.dragon_body_button.modifiers": "\n§6--- Body Modifiers ---§r§7",
+  "dragonsurvival.gui.dragon_body_button.modifiers": "\\n\\u00A76--- Body Modifiers ---\\u00A7r\\u00A77",
   "dragonsurvival.gui.dragon_body_button.not_unlocked": "This body type has not been unlocked yet.",
   "dragonsurvival.gui.dragon_body_button.unavailable": "You can only change the body type in the altar when changing the dragon's species.",
   "dragonsurvival.gui.dragon_editor.background_color": "Change the background color",
