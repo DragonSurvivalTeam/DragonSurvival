@@ -68,8 +68,8 @@ public class MagicData implements ValueIOSerializable {
     @Translation(comments = "Your ability is disabled due to a magic effect")
     public static final String ABILITY_DISABLED = Translation.Type.GUI.wrap("message.ability_disabled.effect");
 
-    @Translation(comments = "This ability must be unlocked before it can be cast")
-    public static final String ABILITY_NOT_UNLOCKED = Translation.Type.GUI.wrap("message.ability_not_unlocked");
+    @Translation(comments = "This ability needs to be leveled up before you can use it")
+    public static final String ABILITY_NOT_LEVELED = Translation.Type.GUI.wrap("message.ability_not_leveled");
 
     private final Map<ResourceKey<DragonSpecies>, Map<ResourceKey<DragonAbility>, DragonAbilityInstance>> abilities = new HashMap<>();
     private final Map<ResourceKey<DragonSpecies>, Map<Integer, ResourceKey<DragonAbility>>> hotbar = new HashMap<>();
@@ -423,7 +423,7 @@ public class MagicData implements ValueIOSerializable {
             if (dragon.level().isClientSide()) {
                 MagicData magic = MagicData.getData(dragon);
                 magic.setErrorMessageSent(true);
-                MagicHUD.castingError(Component.translatable(ABILITY_NOT_UNLOCKED));
+                MagicHUD.castingError(Component.translatable(ABILITY_NOT_LEVELED));
             }
 
             return false;
