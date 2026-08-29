@@ -67,7 +67,13 @@ public class ManaHandler {
             }
         }
 
-        return MagicData.getData(player).getAvailableMana() + getManaFromExperience(player) - manaCost >= 0;
+        float availableMana = magic.getAvailableMana();
+
+        if (magic.usesExperienceForMana()) {
+            availableMana += getManaFromExperience(player);
+        }
+
+        return availableMana >= manaCost;
     }
 
     /** Returns the current maximum mana (after subtracting reserved mana) */
