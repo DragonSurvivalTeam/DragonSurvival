@@ -66,6 +66,7 @@ import java.util.UUID;
 public class DragonArmorRenderLayer<R extends LivingEntityRenderState & GeoRenderState> extends GeoRenderLayer<DragonEntity, Void, R> {
     private static final Set<Identifier> generatedArmorTextures = new HashSet<>();
     private static final Set<Identifier> usedArmorTextures = new HashSet<>();
+    private static final Set<Identifier> missingArmorMasks = new HashSet<>();
     private static final Identifier ARMOR_GENERATION_SHADER = DragonSurvival.res("core/armor_generation");
     private static final RenderPipeline ARMOR_GENERATION_PIPELINE = RenderPipeline.builder(RenderPipelines.POST_PROCESSING_SNIPPET)
         .withLocation(DragonSurvival.res("pipeline/armor_generation"))
@@ -247,7 +248,9 @@ public class DragonArmorRenderLayer<R extends LivingEntityRenderState & GeoRende
         boolean hasMask = hasResource(maskLocation);
 
         if (!hasMask) {
-            DragonSurvival.LOGGER.error("Armor mask {} missing for model {}", maskLocation.getPath(), handler.getModel().getPath());
+            if (missingArmorMasks.add(maskLocation)) {
+                DragonSurvival.LOGGER.error("Armor mask {} missing for model {}", maskLocation.getPath(), handler.getModel().getPath());
+            }
             return;
         }
 
