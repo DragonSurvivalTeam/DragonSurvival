@@ -70,6 +70,9 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
     private static ShaderInstance armorGenerationShader;
     private static final Set<ResourceLocation> generatedArmorTextures = new HashSet<>();
     private static final Set<ResourceLocation> usedArmorTextures = new HashSet<>();
+    private static final Set<ResourceLocation> missingArmorMasks = new HashSet<>();
+    private static final Set<ResourceLocation> missingVanillaArmorTextures = new HashSet<>();
+    private static final Set<Item> unregisteredArmorMaterialItems = new HashSet<>();
 
     public DragonArmorRenderLayer(final GeoEntityRenderer<DragonEntity> renderer) {
         super(renderer);
@@ -269,7 +272,9 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
         ResourceLocation maskLocation = getArmorMaskResourceLocation(handler.getModel(), slot);
 
         if (!hasResource(maskLocation)) {
-            DragonSurvival.LOGGER.error("Armor mask {} missing for model {}", maskLocation.getPath(), handler.getModel().getPath());
+            if (missingArmorMasks.add(maskLocation)) {
+                DragonSurvival.LOGGER.error("Armor mask {} missing for model {}", maskLocation.getPath(), handler.getModel().getPath());
+            }
             return;
         }
 
@@ -477,10 +482,10 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
 
                 if (Minecraft.getInstance().getResourceManager().getResource(resource).isPresent()) {
                     return resource;
-                } else if (materialResource.getNamespace().equals(ResourceLocation.DEFAULT_NAMESPACE)) {
+                } else if (materialResource.getNamespace().equals(ResourceLocation.DEFAULT_NAMESPACE) && missingVanillaArmorTextures.add(resource)) {
                     DragonSurvival.LOGGER.warn("Missing vanilla armor texture for {} in model {}, falling back to generic armor.", resource.getPath(), handler.getModel().getPath());
                 }
-            } else {
+            } else if (unregisteredArmorMaterialItems.add(item)) {
                 DragonSurvival.LOGGER.warn("Armor item {} uses an invalid armor material, falling back to generic armor.", item.builtInRegistryHolder().unwrapKey().orElseThrow().location());
             }
 
