@@ -1224,5 +1224,8 @@
   "ds.gui.body_types.damagebonus": "■ 伤害加成: {0}",
   "ds.gui.body_types.stepbonus": "■ 迈步高度: {0}",
   "ds.gui.body_types.jumpbonus": "■ 跳跃高度: {0}",
-  "ds.keybind.category": "龙之生存"
+  "ds.keybind.category": "龙之生存",
+  "dragonsurvival.gui.ability_screen.use_experience_for_mana": "魔力值耗尽后使用经验值作为魔力",
+  "dragonsurvival.gui.dragon_body_button.modifiers": "\n§6--- 躯体修饰符 ---§r§7",
+  "dragonsurvival.gui.message.ability_not_leveled": "此能力需要先升级才能使用"
 }
