@@ -192,10 +192,11 @@ public class PlayerLoginHandler {
      */
     public static void syncComplete(final Entity entity) {
         if (entity instanceof ServerPlayer player) {
-            DragonStateProvider.getOptional(player).ifPresent(handler -> {
-                SyncComplete.handleDragonSync(player, true);
-                PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new SyncComplete(player.getId(), handler.serializeNBT(player.level().registryAccess())));
-            });
+            DragonStateHandler handler = DragonStateProvider.getData(player);
+            SyncComplete.handleDragonSync(player, true);
+            SyncComplete packet = new SyncComplete(player.getId(), handler.serializeNBT(player.level().registryAccess()));
+            PacketDistributor.sendToPlayer(player, packet);
+            PacketDistributor.sendToPlayersTrackingEntity(player, packet);
 
             syncDataAttachments(player);
         }
