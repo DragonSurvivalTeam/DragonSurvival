@@ -162,23 +162,25 @@ public class ClientFlightHandler {
         if (entity == null) return 0;
 
         if (entity instanceof Player player) {
-            if (entity == DragonSurvival.PROXY.getLocalPlayer()) {
-                if (DragonSurvival.PROXY.dragonRenderingWasCancelled(DragonSurvival.PROXY.getLocalPlayer())) {
-                    return distance * scalingFactor;
-                }
-            }
-
             DragonStateHandler handler = DragonStateProvider.getData(player);
-            float visualScale = (float) handler.getVisualScale(DragonSurvival.PROXY.getLocalPlayer(), Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(false));
+            if (handler.isDragon()) {
+                if (entity == DragonSurvival.PROXY.getLocalPlayer()) {
+                    if (DragonSurvival.PROXY.dragonRenderingWasCancelled(DragonSurvival.PROXY.getLocalPlayer())) {
+                        return distance * scalingFactor;
+                    }
+                }
 
-            if (disableSizeCameraModifications) {
-                return distance * visualScale;
-            } else {
-                float finalDistance = (distance + baseDragonCameraOffset) * Math.max(visualScale, dragonCameraMinimumScale) * dragonCameraScaleFactor + flatDragonCameraOffset;
-                if (spinCameraEffect && isDetached) {
-                    return finalDistance + SpinFlightPresentation.getDetachedCameraOffset();
+                float visualScale = (float) handler.getVisualScale(DragonSurvival.PROXY.getLocalPlayer(), Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(false));
+
+                if (disableSizeCameraModifications) {
+                    return distance * visualScale;
                 } else {
-                    return finalDistance;
+                    float finalDistance = (distance + baseDragonCameraOffset) * Math.max(visualScale, dragonCameraMinimumScale) * dragonCameraScaleFactor + flatDragonCameraOffset;
+                    if (spinCameraEffect && isDetached) {
+                        return finalDistance + SpinFlightPresentation.getDetachedCameraOffset();
+                    } else {
+                        return finalDistance;
+                    }
                 }
             }
         }

@@ -557,11 +557,6 @@ public class DragonStateHandler extends EntityStateHandler {
             return player.getAttributeValue(Attributes.SCALE);
         }
 
-        if (!isDragon()) {
-            // This method may be called from the client flight handler ('flightCamera' method), when in third-person mode
-            return player.getAttributeValue(Attributes.SCALE);
-        }
-
         // Missing attribute would result in an unstable environment / experience
         AttributeInstance instance = Objects.requireNonNull(player.getAttribute(Attributes.SCALE));
         double partialVisualGrowth = Mth.lerp(partialTick, visualGrowthLastTick, visualGrowth);
