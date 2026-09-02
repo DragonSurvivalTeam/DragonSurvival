@@ -100,8 +100,8 @@ public class ResourceLocationWrapper {
         fallbacks.add(new ResourceLocation("forge", tagId.getPath()));
         switch (tagId.getPath()) {
             case "foods/berry" -> fallbacks.add(new ResourceLocation("forge", "foods/berries"));
-            case "foods/raw_fish" -> fallbacks.add(new ResourceLocation("forge", "foods/raw_fishes"));
-            case "foods/raw_meat" -> fallbacks.add(new ResourceLocation("forge", "foods/raw_meats"));
+            case "foods/raw_fish" -> fallbacks.add(new ResourceLocation("forge", "raw_fishes"));
+            case "foods/raw_meat" -> fallbacks.add(new ResourceLocation("forge", "raw_meats"));
             case "tools/bow" -> fallbacks.add(new ResourceLocation("forge", "tools/bows"));
             case "tools/crossbow" -> fallbacks.add(new ResourceLocation("forge", "tools/crossbows"));
             case "tools/shield" -> fallbacks.add(new ResourceLocation("forge", "tools/shields"));

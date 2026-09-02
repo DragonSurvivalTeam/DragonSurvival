@@ -2,13 +2,13 @@
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
     {
-      "tag": "forge:foods/raw_meats"
+      "tag": "forge:raw_meats"
     },
     {
-      "tag": "forge:foods/raw_meats"
+      "tag": "forge:raw_meats"
     },
     {
-      "tag": "forge:foods/raw_meats"
+      "tag": "forge:raw_meats"
     },
     {
       "item": "minecraft:chorus_fruit"

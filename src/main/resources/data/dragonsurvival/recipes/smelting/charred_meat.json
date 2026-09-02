@@ -1,7 +1,7 @@
 {
   "type": "minecraft:smelting",
   "ingredient": {
-    "tag": "forge:foods/cooked_meat"
+    "tag": "forge:cooked_meats"
   },
   "result": {
     "item": "dragonsurvival:charred_meat"

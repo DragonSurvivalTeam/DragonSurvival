@@ -44,8 +44,10 @@ public abstract class IngredientMixin {
 
         return "forge:" + switch (tag.substring("c:".length())) {
             case "foods/berry" -> "foods/berries";
-            case "foods/raw_fish" -> "foods/raw_fishes";
-            case "foods/raw_meat" -> "foods/raw_meats";
+            case "foods/cooked_fish" -> "cooked_fishes";
+            case "foods/cooked_meat" -> "cooked_meats";
+            case "foods/raw_fish" -> "raw_fishes";
+            case "foods/raw_meat" -> "raw_meats";
             case "tools/bow" -> "tools/bows";
             case "tools/crossbow" -> "tools/crossbows";
             case "tools/shield" -> "tools/shields";

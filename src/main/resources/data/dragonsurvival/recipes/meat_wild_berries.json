@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
     {
-      "tag": "forge:foods/raw_meats"
+      "tag": "forge:raw_meats"
     },
     {
       "item": "minecraft:sweet_berries"
