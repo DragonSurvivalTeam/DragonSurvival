@@ -93,7 +93,7 @@ public class DragonBeacon extends Block implements SimpleWaterloggedBlock, Entit
     @Override
     public @NotNull InteractionResult useItemOn(@NotNull final ItemStack stack, @NotNull final BlockState state, @NotNull final Level level, @NotNull final BlockPos position, @NotNull final Player player, @NotNull final InteractionHand hand, @NotNull final BlockHitResult hitResult) {
         if (state.getValue(BlockStateProperties.LIT)) {
-            return InteractionResult.PASS;
+            return InteractionResult.TRY_WITH_EMPTY_HAND;
         }
 
         if (!stack.is(DSItemTags.ACTIVATES_DRAGON_BEACON)) {
