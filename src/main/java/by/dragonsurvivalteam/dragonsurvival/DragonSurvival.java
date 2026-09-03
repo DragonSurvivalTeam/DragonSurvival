@@ -87,6 +87,7 @@ public class DragonSurvival {
         MinecraftForge.EVENT_BUS.addListener(OnTargetHit::trigger);
         MinecraftForge.EVENT_BUS.addListener(OnDeath::trigger);
         MinecraftForge.EVENT_BUS.addListener(OnBlockBreak::trigger);
+        MinecraftForge.EVENT_BUS.addListener(ConfigHandler::synchronizeConfiguredServerConfig);
 
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> new DragonSurvivalClient(bus));
     }

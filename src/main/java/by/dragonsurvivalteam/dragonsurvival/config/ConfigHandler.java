@@ -33,6 +33,7 @@ import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.config.ModConfigEvent;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.fml.loading.FMLLoader;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.fml.loading.moddiscovery.ModAnnotation;
 import net.minecraftforge.forgespi.language.ModFileScanData;
 import org.apache.commons.lang3.tuple.Pair;
@@ -49,6 +50,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -61,7 +63,7 @@ import java.util.regex.Pattern;
  * Normally it's a one way setting from the {@link ForgeConfigSpec.ConfigValue} fields to the class fields <br>
  * (The exception being {@link ConfigHandler#updateConfigValue(String, Object)})
  */
-@EventBusSubscriber
+@EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
 public class ConfigHandler {
     /** Contains the default values (specified in-code) <br> The key is {@link ConfigOption#key()} */
     private static final HashMap<String, Object> DEFAULT_CONFIG_VALUES = new HashMap<>();
@@ -75,6 +77,9 @@ public class ConfigHandler {
     private static final HashMap<ConfigSide, Set<String>> CONFIG_KEYS = new HashMap<>();
     /** Contains all config values */
     private static final HashMap<String, ForgeConfigSpec.ConfigValue<?>> CONFIG_VALUES = new HashMap<>();
+    /** The active server config and its last observed values, used to support Configured's in-memory server updates. */
+    private static @Nullable ModConfig serverConfig;
+    private static volatile Map<String, Object> serverConfigSnapshot = Map.of();
     /** Mapping between from a registry entry like {@link Item} to its registry like {@link BuiltInRegistries#ITEM} */
     private static final HashMap<Class<?>, Registry<?>> REGISTRY_MAP = new HashMap<>();
 
@@ -535,17 +540,24 @@ public class ConfigHandler {
 
     @SubscribeEvent
     public static void handleConfigLoading(final ModConfigEvent.Loading event) {
-        handleConfigChange(event.getConfig().getType());
+        handleConfigChange(event.getConfig());
     }
 
     @SubscribeEvent
     public static void handleConfigReloading(final ModConfigEvent.Reloading event) {
-        handleConfigChange(event.getConfig().getType());
+        handleConfigChange(event.getConfig());
     }
 
     /** Sets the values of the config fields */
-    private static void handleConfigChange(final ModConfig.Type type) {
+    private static void handleConfigChange(final ModConfig config) {
+        ModConfig.Type type = config.getType();
         ConfigSide side = type == ModConfig.Type.SERVER ? ConfigSide.SERVER : ConfigSide.CLIENT;
+
+        if (type == ModConfig.Type.SERVER) {
+            serverConfig = config;
+            serverConfigSnapshot = getConfigValueSnapshot(side);
+        }
+
         Set<String> configKeys = CONFIG_KEYS.get(side);
 
         for (String configKey : configKeys) {
@@ -565,6 +577,35 @@ public class ConfigHandler {
                 DragonSurvival.LOGGER.error("An error occurred while setting the config [{}]", configKey, exception);
             }
         }
+    }
+
+    /**
+     * Configured updates server configs directly in memory, without firing a {@link ModConfigEvent.Reloading} event.
+     * Detect that update on the server thread so the config-backed fields and the world config file stay in sync.
+     */
+    public static void synchronizeConfiguredServerConfig(final TickEvent.ServerTickEvent event) {
+        if (event.phase != TickEvent.Phase.END || !ModList.get().isLoaded("configured") || serverConfig == null) {
+            return;
+        }
+
+        Map<String, Object> currentValues = getConfigValueSnapshot(ConfigSide.SERVER);
+
+        if (!currentValues.equals(serverConfigSnapshot)) {
+            handleConfigChange(serverConfig);
+            serverConfig.save();
+            serverConfigSnapshot = currentValues;
+        }
+    }
+
+    private static Map<String, Object> getConfigValueSnapshot(final ConfigSide side) {
+        HashMap<String, Object> values = new HashMap<>();
+
+        for (String configKey : CONFIG_KEYS.getOrDefault(side, Set.of())) {
+            Object value = CONFIG_VALUES.get(configKey).get();
+            values.put(configKey, value instanceof Collection<?> collection ? List.copyOf(collection) : value);
+        }
+
+        return Map.copyOf(values);
     }
 
     /**
