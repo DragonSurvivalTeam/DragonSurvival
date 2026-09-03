@@ -123,6 +123,13 @@ public class DragonArmorRenderLayer<R extends LivingEntityRenderState & GeoRende
             return;
         }
 
+        // UI previews use a fake player so they can include pending equipment (for example,
+        // the smithing result). Fake players are not in ClientLevel#players, which is where
+        // the normal per-frame texture preparation occurs.
+        if (renderData.inUI()) {
+            prepareArmorTexture(player);
+        }
+
         Optional<Identifier> armorTexture = constructTrimmedDragonArmorTexture(player);
 
         if (armorTexture.isEmpty() || !RenderingUtils.hasTexture(armorTexture.get())) {
