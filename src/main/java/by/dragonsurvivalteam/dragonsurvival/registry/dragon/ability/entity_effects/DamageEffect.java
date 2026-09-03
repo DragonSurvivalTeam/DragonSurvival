@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects;
 
+import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscCodecs;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.ClawToolHandler;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAttributes;
@@ -8,6 +9,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
+import by.dragonsurvivalteam.dragonsurvival.util.ExperienceUtils;
 import by.dragonsurvivalteam.dragonsurvival.util.Expression;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
@@ -51,10 +53,15 @@ public record DamageEffect(Holder<DamageType> damageType, LevelBasedValue amount
         }
     }
 
-    private float calculate(final Player player, final int abilityLevel) {
+    private float calculate(final Player dragon, final int abilityLevel) {
         // Sadly, we cannot re-use GeckoLib expressions since it calls 'MolangQueries' which loads client classes
         expression.setVariable("amount", new BigDecimal(amount.calculate(abilityLevel)));
-        expression.setVariable("scale", new BigDecimal(player.getAttributeValue(this.scale)));
+        expression.setVariable("scale", new BigDecimal(dragon.getAttributeValue(this.scale)));
+        expression.setVariable("ability_level", new BigDecimal(abilityLevel));
+        expression.setVariable("experience_level", new BigDecimal(dragon.experienceLevel));
+        expression.setVariable("experience_points", new BigDecimal(ExperienceUtils.getTotalExperience(dragon)));
+        expression.setVariable("growth", new BigDecimal(DragonStateProvider.getData(dragon).getGrowth()));
+        expression.setVariable("current_movement_speed", new BigDecimal(dragon.getDeltaMovement().length()));
         return expression.eval().floatValue();
     }
 
