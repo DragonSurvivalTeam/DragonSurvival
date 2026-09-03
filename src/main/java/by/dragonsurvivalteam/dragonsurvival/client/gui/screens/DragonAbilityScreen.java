@@ -23,6 +23,7 @@ import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
 import by.dragonsurvivalteam.dragonsurvival.util.ExperienceUtils;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.Holder;
@@ -92,6 +93,22 @@ public class DragonAbilityScreen extends Screen {
         }
 
         return super.mouseScrolled(mouseX, mouseY, scrollY);
+    }
+
+    @Override
+    public boolean mouseReleased(double mouseX, double mouseY, int button) {
+        boolean completedDrag = false;
+
+        if (button == 0) {
+            for (Renderable renderable : renderables) {
+                if (renderable instanceof AbilityButton abilityButton && abilityButton.completeDrag(mouseX, mouseY)) {
+                    completedDrag = true;
+                    break;
+                }
+            }
+        }
+
+        return super.mouseReleased(mouseX, mouseY, button) || completedDrag;
     }
 
     @Override

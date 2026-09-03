@@ -155,14 +155,23 @@ public class AbilityButton extends ExtendedButton {
     public void onRelease(double mouseX, double mouseY) {
         super.onRelease(mouseX, mouseY);
 
+        completeDrag(mouseX, mouseY);
+    }
+
+    /**
+     * Completes an active drag regardless of which widget receives the mouse-release event.
+     *
+     * @return whether this button had an active drag
+     */
+    public boolean completeDrag(double mouseX, double mouseY) {
         if (!isDragging) {
-            return;
+            return false;
         }
 
         isDragging = false;
 
         if (ability == null) {
-            return;
+            return true;
         }
 
         if (!ability.isPassive()) {
@@ -186,6 +195,8 @@ public class AbilityButton extends ExtendedButton {
                 data.moveAbilityToSlot(ability.key(), MagicData.NO_SLOT);
             }
         }
+
+        return true;
     }
 
     public void setScale(float scale) {
