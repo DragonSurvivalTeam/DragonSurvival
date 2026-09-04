@@ -5,7 +5,6 @@ import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEntities;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
 import net.minecraft.world.item.ItemStack;
@@ -36,18 +35,14 @@ public class Bolas extends AbstractArrow {
 
     @Override
     protected void onHitEntity(final EntityHitResult entityHitResult) {
-        Entity entity = entityHitResult.getEntity();
-
-        if (!entity.level().isClientSide()) {
-            if (entity instanceof LivingEntity living) {
-                living.hurt(damageSources().arrow(this, getOwner()), 1);
-
-                if (ServerConfig.hunterTrappedDebuffDuration > 0) {
-                    living.addEffect(new MobEffectInstance(DSEffects.TRAPPED, Functions.secondsToTicks(ServerConfig.hunterTrappedDebuffDuration), 0, false, false), getOwner());
-                }
+        if (!level().isClientSide() && entityHitResult.getEntity() instanceof LivingEntity living) {
+            if (ServerConfig.hunterTrappedDebuffDuration > 0) {
+                living.addEffect(new MobEffectInstance(DSEffects.TRAPPED, Functions.secondsToTicks(ServerConfig.hunterTrappedDebuffDuration), 0, false, false), getOwner());
             }
         }
 
+        // AbstractArrow applies the damage and discards the projectile. Damaging the target here
+        // first makes that vanilla hit fail due to the target's damage cooldown, which deflects it.
         super.onHitEntity(entityHitResult);
     }
 
