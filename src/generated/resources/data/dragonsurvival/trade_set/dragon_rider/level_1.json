@@ -1,5 +1,8 @@
 {
-  "amount": 1.0,
+  "amount": 2.0,
   "random_sequence": "dragonsurvival:trade_set/dragon_rider/level_1",
-  "trades": "dragonsurvival:dragon_rider/unbreakable_spirit"
+  "trades": [
+    "dragonsurvival:dragon_rider/saddle",
+    "dragonsurvival:dragon_rider/unbreakable_spirit"
+  ]
 }

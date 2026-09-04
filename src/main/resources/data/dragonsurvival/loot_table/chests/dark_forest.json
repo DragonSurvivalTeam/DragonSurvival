@@ -24,6 +24,31 @@
         }
       ]
     },
+		{
+			"rolls": 1,
+			"entries": [
+				{
+					"type": "minecraft:item",
+					"name": "minecraft:enchanted_book",
+					"functions": [
+						{
+							"function": "minecraft:enchant_randomly",
+							"options": [
+								"dragonsurvival:blood_siphon",
+								"dragonsurvival:draconic_superiority",
+								"dragonsurvival:murderers_cunning",
+								"dragonsurvival:overwhelming_might",
+								"dragonsurvival:curse_of_outlaw"
+							]
+						}
+					]
+				},
+				{
+					"type": "minecraft:empty",
+					"weight": 3
+				}
+			]
+		},
 	{
       "rolls": 3,
       "entries": [
