@@ -122,7 +122,7 @@ dependencies {
 	// Test
 	implementation fg.deobf("curse.maven:jei-238222:6075247") // 15.20.0.106
 
-	implementation fg.deobf("curse.maven:configured-457570:5180900") // 2.2.3
+//	implementation fg.deobf("curse.maven:configured-457570:5180900") // 2.2.3
 
 //	runtimeOnly fg.deobf("curse.maven:terrafirmacraft-302973:8242625")
 //	runtimeOnly fg.deobf("curse.maven:patchouli-306770:7731017")
