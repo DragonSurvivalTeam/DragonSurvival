@@ -209,6 +209,7 @@ public class DSTrades {
         if (event.getType() == DSTrades.DRAGON_RIDER_PROFESSION.get()) {
             Int2ObjectMap<List<VillagerTrades.ItemListing>> trades = event.getTrades();
 
+            trades.get(1).add(new ItemTrade(new ItemStack(Items.SADDLE), new ItemStack(Items.EMERALD, 4), 12, 1.0F, 30));
             trades.get(1).add(new EnchantBookForEmeralds(DSEnchantments.UNBREAKABLE_SPIRIT, 10));
             trades.get(2).add(new EnchantBookForEmeralds(DSEnchantments.COMBAT_RECOVERY, 20));
             trades.get(3).add(new EnchantBookForEmeralds(DSEnchantments.AERODYNAMIC_MASTERY, 20));

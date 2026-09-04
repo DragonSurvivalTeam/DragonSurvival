@@ -74,7 +74,7 @@ public class PrimordialAnchorBlock extends Block implements EntityBlock {
     @Translation(comments = "You must be a dragon to use the primordial anchor.")
     private static final String PRIMORDIAL_ANCHOR_MUST_BE_DRAGON_TO_USE = Translation.Type.GUI.wrap("primordial_anchor.must_be_dragon");
 
-    @Translation(comments = "The primordial anchor must be charged with %s (item tag) to use it.")
+    @Translation(comments = "The primordial anchor must be charged with Ender Pearl (%s tag) to use it.")
     private static final String PRIMORDIAL_ANCHOR_NEEDS_CHARGE = Translation.Type.GUI.wrap("primordial_anchor.needs_charge");
 
     @Translation(comments = "The primordial anchor cannot be used while the Ender Dragon is dead.")

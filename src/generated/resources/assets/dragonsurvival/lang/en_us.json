@@ -1243,7 +1243,7 @@
   "dragonsurvival.gui.primordial_anchor.flight_grant_gained": "The Ender Dragon has blessed you with the ability to spin through the air.",
   "dragonsurvival.gui.primordial_anchor.flight_spin_grant_gained": "The Ender Dragon has blessed you with the ability to fly and spin through the air.",
   "dragonsurvival.gui.primordial_anchor.must_be_dragon": "You must be a dragon to use the primordial anchor.",
-  "dragonsurvival.gui.primordial_anchor.needs_charge": "The primordial anchor must be charged with %s (item tag) to use it.",
+  "dragonsurvival.gui.primordial_anchor.needs_charge": "The primordial anchor must be charged with Ender Pearl (%s tag) to use it.",
   "dragonsurvival.gui.primordial_anchor.spin_grant_gained": "The Ender Dragon has blessed you with the ability to fly.",
   "dragonsurvival.gui.projectile.count": "§6■ Number of projectiles:§r %s",
   "dragonsurvival.gui.projectile.damage_effect": "§6■ %s §6Projectile Damage:§r %s",
