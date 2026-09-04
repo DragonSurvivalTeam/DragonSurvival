@@ -25,6 +25,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -33,7 +34,6 @@ import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.config.ModConfigEvent;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.fml.loading.FMLLoader;
-import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.fml.loading.moddiscovery.ModAnnotation;
 import net.minecraftforge.forgespi.language.ModFileScanData;
 import org.apache.commons.lang3.tuple.Pair;
@@ -77,7 +77,7 @@ public class ConfigHandler {
     private static final HashMap<ConfigSide, Set<String>> CONFIG_KEYS = new HashMap<>();
     /** Contains all config values */
     private static final HashMap<String, ForgeConfigSpec.ConfigValue<?>> CONFIG_VALUES = new HashMap<>();
-    /** The active server config and its last observed values, used to support Configured's in-memory server updates. */
+    /** The active server config and its last observed raw values, used to support Configured's in-memory server updates. */
     private static @Nullable ModConfig serverConfig;
     private static volatile Map<String, Object> serverConfigSnapshot = Map.of();
     /** Mapping between from a registry entry like {@link Item} to its registry like {@link BuiltInRegistries#ITEM} */
@@ -555,7 +555,7 @@ public class ConfigHandler {
 
         if (type == ModConfig.Type.SERVER) {
             serverConfig = config;
-            serverConfigSnapshot = getConfigValueSnapshot(side);
+            serverConfigSnapshot = getServerConfigSnapshot();
         }
 
         Set<String> configKeys = CONFIG_KEYS.get(side);
@@ -588,20 +588,31 @@ public class ConfigHandler {
             return;
         }
 
-        Map<String, Object> currentValues = getConfigValueSnapshot(ConfigSide.SERVER);
+        Map<String, Object> currentValues = getServerConfigSnapshot();
 
         if (!currentValues.equals(serverConfigSnapshot)) {
+            // Configured replaces entries in ModConfig's underlying data instead of using
+            // ConfigValue#set. Clear Forge's per-value caches so the field update reads
+            // the data Configured just received rather than the previous values.
+            CONFIG_KEYS.getOrDefault(ConfigSide.SERVER, Set.of()).forEach(
+                    configKey -> CONFIG_VALUES.get(configKey).clearCache()
+            );
             handleConfigChange(serverConfig);
             serverConfig.save();
             serverConfigSnapshot = currentValues;
         }
     }
 
-    private static Map<String, Object> getConfigValueSnapshot(final ConfigSide side) {
+    /**
+     * Uses the backing config data rather than {@link ForgeConfigSpec.ConfigValue#get()}.
+     * Forge caches values returned by {@code get()}, which would otherwise hide updates
+     * Configured makes directly to the backing data.
+     */
+    private static Map<String, Object> getServerConfigSnapshot() {
         HashMap<String, Object> values = new HashMap<>();
 
-        for (String configKey : CONFIG_KEYS.getOrDefault(side, Set.of())) {
-            Object value = CONFIG_VALUES.get(configKey).get();
+        for (String configKey : CONFIG_KEYS.getOrDefault(ConfigSide.SERVER, Set.of())) {
+            Object value = serverConfig.getConfigData().get(CONFIG_VALUES.get(configKey).getPath());
             values.put(configKey, value instanceof Collection<?> collection ? List.copyOf(collection) : value);
         }
 
