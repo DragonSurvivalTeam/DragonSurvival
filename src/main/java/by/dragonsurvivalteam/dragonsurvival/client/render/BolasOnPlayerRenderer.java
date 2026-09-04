@@ -22,6 +22,10 @@ import net.neoforged.neoforge.client.event.RenderPlayerEvent;
 
 @EventBusSubscriber(Dist.CLIENT)
 public final class BolasOnPlayerRenderer {
+    private static final float NORMAL_PLAYER_EYE_HEIGHT = 1.62F;
+    private static final float NORMAL_NET_SCALE = 1.6F + NORMAL_PLAYER_EYE_HEIGHT / 8.0F;
+    private static final float NORMAL_NET_Y_OFFSET = 0.9F + NORMAL_PLAYER_EYE_HEIGHT / 8.0F;
+
     private BolasOnPlayerRenderer() {
     }
 
@@ -56,9 +60,10 @@ public final class BolasOnPlayerRenderer {
         minecraft.getItemModelResolver().updateForLiving(renderState, createBolasStack(), ItemDisplayContext.GROUND, player);
 
         PoseStack poseStack = event.getPoseStack();
+        float sizeRatio = eyeHeight / NORMAL_PLAYER_EYE_HEIGHT;
         poseStack.pushPose();
-        poseStack.translate(0, 0.9F + eyeHeight / 8.0F, 0);
-        poseStack.scale(1.6F + eyeHeight / 8.0F, 1.6F + eyeHeight / 8.0F, 1.6F + eyeHeight / 8.0F);
+        poseStack.translate(0, NORMAL_NET_Y_OFFSET * sizeRatio, 0);
+        poseStack.scale(NORMAL_NET_SCALE * sizeRatio, NORMAL_NET_SCALE * sizeRatio, NORMAL_NET_SCALE * sizeRatio);
         renderState.submit(poseStack, event.getSubmitNodeCollector(), event.getRenderState().lightCoords, OverlayTexture.NO_OVERLAY, event.getRenderState().outlineColor);
         poseStack.popPose();
     }
