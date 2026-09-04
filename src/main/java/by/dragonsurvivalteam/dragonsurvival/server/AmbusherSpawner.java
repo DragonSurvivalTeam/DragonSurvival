@@ -62,7 +62,7 @@ public class AmbusherSpawner implements CustomSpawner {
             return;
         }
 
-        if (level.environmentAttributes().getValue(EnvironmentAttributes.CAN_PILLAGER_PATROL_SPAWN, spawnPosition)) {
+        if (!level.environmentAttributes().getValue(EnvironmentAttributes.CAN_PILLAGER_PATROL_SPAWN, spawnPosition)) {
             return;
         }
 

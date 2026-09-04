@@ -68,6 +68,7 @@ public class DSTrades {
     private static final ResourceKey<TradeSet> LEADER_LEVEL_4 = tradeSetKey("leader/level_4");
     private static final ResourceKey<TradeSet> LEADER_LEVEL_5 = tradeSetKey("leader/level_5");
 
+    private static final ResourceKey<VillagerTrade> DRAGON_RIDER_SADDLE = villagerTradeKey("dragon_rider/saddle");
     private static final ResourceKey<VillagerTrade> DRAGON_RIDER_UNBREAKABLE_SPIRIT = villagerTradeKey("dragon_rider/unbreakable_spirit");
     private static final ResourceKey<VillagerTrade> DRAGON_RIDER_COMBAT_RECOVERY = villagerTradeKey("dragon_rider/combat_recovery");
     private static final ResourceKey<VillagerTrade> DRAGON_RIDER_AERODYNAMIC_MASTERY = villagerTradeKey("dragon_rider/aerodynamic_mastery");
@@ -118,6 +119,7 @@ public class DSTrades {
         HolderGetter<Enchantment> enchantments = context.lookup(Registries.ENCHANTMENT);
         Optional<HolderSet<Enchantment>> doubleTradePrice = enchantments.get(EnchantmentTags.DOUBLE_TRADE_PRICE).map(named -> (HolderSet<Enchantment>) named);
 
+        registerTrade(context, DRAGON_RIDER_SADDLE, Items.SADDLE, 1, Items.EMERALD, 4, 12, 30, 1.0F);
         registerEnchantedBookTrade(context, items, enchantments, DRAGON_RIDER_UNBREAKABLE_SPIRIT, DSEnchantments.UNBREAKABLE_SPIRIT, 10, doubleTradePrice);
         registerEnchantedBookTrade(context, items, enchantments, DRAGON_RIDER_COMBAT_RECOVERY, DSEnchantments.COMBAT_RECOVERY, 20, doubleTradePrice);
         registerEnchantedBookTrade(context, items, enchantments, DRAGON_RIDER_AERODYNAMIC_MASTERY, DSEnchantments.AERODYNAMIC_MASTERY, 20, doubleTradePrice);
@@ -136,7 +138,7 @@ public class DSTrades {
     }
 
     public static void registerTradeSets(final BootstrapContext<TradeSet> context) {
-        registerTradeSet(context, DRAGON_RIDER_LEVEL_1, DRAGON_RIDER_UNBREAKABLE_SPIRIT);
+        registerTradeSet(context, DRAGON_RIDER_LEVEL_1, DRAGON_RIDER_SADDLE, DRAGON_RIDER_UNBREAKABLE_SPIRIT);
         registerTradeSet(context, DRAGON_RIDER_LEVEL_2, DRAGON_RIDER_COMBAT_RECOVERY);
         registerTradeSet(context, DRAGON_RIDER_LEVEL_3, DRAGON_RIDER_AERODYNAMIC_MASTERY);
         registerTradeSet(context, DRAGON_RIDER_LEVEL_4, DRAGON_RIDER_SACRED_SCALES);

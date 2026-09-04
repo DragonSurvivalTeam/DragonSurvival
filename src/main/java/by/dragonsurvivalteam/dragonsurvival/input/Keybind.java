@@ -26,7 +26,7 @@ public enum Keybind {
     USE_ABILITY(KeyConflictContext.IN_GAME, GLFW.GLFW_KEY_C),
 
     @Translation(type = Translation.Type.KEYBIND, comments = "Toggle ability bar")
-    TOGGLE_ABILITIES(KeyConflictContext.IN_GAME, GLFW.GLFW_KEY_X),
+    TOGGLE_ABILITIES(KeyConflictContext.IN_GAME, GLFW.GLFW_KEY_UNKNOWN),
 
     @Translation(type = Translation.Type.KEYBIND, comments = "Next ability")
     NEXT_ABILITY(KeyConflictContext.IN_GAME, GLFW.GLFW_KEY_R),
