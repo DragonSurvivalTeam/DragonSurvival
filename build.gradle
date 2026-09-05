@@ -63,7 +63,18 @@ minecraft {
 	}
 }
 
-sourceSets.main.resources { srcDir 'src/generated/resources' }
+// Exclude the Patchouli stuff until Aures is able to review and make it fully ready
+sourceSets.main.resources {
+	srcDir 'src/generated/resources'
+
+	exclude 'assets/dragonsurvival/items/dragonsurvival_guide_book.json'
+	exclude 'assets/dragonsurvival/models/item/dragonsurvival_guide_book.json'
+	exclude 'assets/dragonsurvival/textures/item/dragonsurvival_guide_book.png'
+	exclude 'assets/dragonsurvival/patchouli_books/dragon_guide/**'
+	exclude 'assets/dragonsurvival_guide_book/**'
+	exclude 'data/dragonsurvival/patchouli_books/dragon_guide/**'
+	exclude 'data/dragonsurvival/recipe/patchouli_book.json'
+}
 
 repositories {
 	maven { /* Forge */ url "https://maven.minecraftforge.net" }
@@ -125,7 +136,7 @@ dependencies {
 //	implementation fg.deobf("curse.maven:configured-457570:5180900") // 2.2.3
 
 //	runtimeOnly fg.deobf("curse.maven:terrafirmacraft-302973:8242625")
-//	runtimeOnly fg.deobf("curse.maven:patchouli-306770:7731017")
+//	implementation fg.deobf("curse.maven:patchouli-306770:7731017")
 
 	testImplementation platform("org.junit:junit-bom:5.10.2")
 	testImplementation "org.junit.jupiter:junit-jupiter"

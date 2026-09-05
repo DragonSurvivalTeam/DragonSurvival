@@ -29,9 +29,9 @@ logoFile = "dragonsurvival.png"
     ordering = "NONE"
     side = "CLIENT"
 
-[[dependencies.${mod_id}]]
-    modId = "patchouli"
-    mandatory = false
-    versionRange = "[85,)"
-    ordering = "AFTER"
-    side = "BOTH"
+#[[dependencies.${mod_id}]]
+#    modId = "patchouli"
+#    mandatory = false
+#    versionRange = "[1.20.1-85-FORGE,)"
+#    ordering = "AFTER"
+#    side = "BOTH"
