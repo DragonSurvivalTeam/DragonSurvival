@@ -1,0 +1,21 @@
+{
+	"name": "4. Обратно в Человека",
+	"category": "dragonsurvival:0_becoming_dragon",
+	"icon": "minecraft:player_head",
+	"pages": [
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/3_1_human.png",
+				"dragonsurvival_guide_book:textures/gui/sprites/book/3_2_human.png"
+			],
+			"text": "■ $(#610b27)Использование Пустой Души$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:text",
+			"text": "■ Dragon Survival всегда позиционировался как мод, который только $(#610b27)добавляет$() возможность стать драконом, но никак не заменяет и не влияет на геймплей других игроков-людей. Просто выберите дракона или человека в алтаре по желанию.$(br)$(br)■ Но при использовании алтаря вы будете терять свой прогресс. Чтобы этого не происходило используйте Пустую Душу Дракона."
+		}
+	],
+	"read_by_default": true
+}

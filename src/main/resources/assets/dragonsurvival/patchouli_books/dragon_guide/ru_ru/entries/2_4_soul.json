@@ -1,0 +1,35 @@
+{
+	"name": "4. Душа Дракона",
+	"category": "dragonsurvival:2_features",
+	"icon": "dragonsurvival:dragon_soul",
+	"pages": [
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/11_0.png",
+				"dragonsurvival_guide_book:textures/gui/sprites/book/11_1.png",
+				"dragonsurvival_guide_book:textures/gui/sprites/book/11_2.png"
+			],
+			"text": "■ $(#610b27)Структура в The End с пустой Душой и порталом в Верхний мир$().",
+			"border": false
+		},
+		{
+			"type": "patchouli:spotlight",
+			"item": "dragonsurvival:dragon_soul",
+			"text": "■ Это очень ценный предмет, который позволяет перенести весь ваш $(#610b27)драконий прогресс$() (навыки, вид, внешность, рост) внутрь предмета и передать его другому игроку.$(br)$(br)■ Другой дракон может использовать $(#610b27)Душу$(), чтобы поменяться местами с драконом, хранящимся внутри."
+		},
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/11_3.png"
+			],
+			"text": "■ $(#610b27)Душа Brain-Stealer как декорация$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:text",
+			"text": "■ Присядьте и нажмите $(#610b27)ПКМ по земле$(), чтобы установить заполненную Душу в мире в виде статуи. Она будет иметь такой же размер и окрас, как хранящийся внутри предмета дракон.$(br)$(br)■ Нажмите $(#610b27)правой кнопкой мыши по статуе$(), чтобы узнать о других интересных способах её использования.$(br)$(br)■ После установки Душу можно $(#610b27)безопасно собрать обратно$() или защитить от кражи другими игроками."
+		}
+	],
+	"read_by_default": true
+}

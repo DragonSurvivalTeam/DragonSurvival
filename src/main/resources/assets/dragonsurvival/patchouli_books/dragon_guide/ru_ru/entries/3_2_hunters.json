@@ -1,0 +1,108 @@
+{
+	"name": "3. Охотники на Драконов",
+	"category": "dragonsurvival:3_hunters_and_treasures",
+	"icon": "dragonsurvival:hunter_key",
+	"pages": [
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/14_8.png"
+			],
+			"text": "■ $(#610b27)Форт Охотников на Драконов.$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:text",
+			"text": "■ На поверхности в мире можно найти место, где не очень рады драконам. Здесь можно найти рыцарей, копейщиков и торговцев.$(br)$(br)■ В структуре есть сундуки с лутом и несколько секретов.$(br)$(br)■ Картограф продаёт карту к этому месту, если вы не смогли найти его самостоятельно."
+		},
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/14_0.png"
+			],
+			"text": "■ $(#610b27)Рыцарь верхом на коне$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:text",
+			"text": "■ Главный воин и охотник. Имеет большой запас здоровья и скорости. Атакует пилладжеров и некоторых злых монстров.$(br)$(br)■ Способен отключать магию драконам в радиусе.$(br)$(br)■ Остальные охотники следуют за ним.$(br)$(br)■ При смерти дропает ключ, который ведёт к тайному хранилищу в Незере."
+		},
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/14_1.png",
+				"dragonsurvival_guide_book:textures/gui/sprites/book/14_2.png"
+			],
+			"text": "■ $(#610b27)Предводитель Охотников$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:spotlight",
+			"item": "dragonsurvival:hunter_key",
+			"text": "■ Мастер над монетой и бухгалтерией форта охотников. Не участвует в сражениях, но это не мешает ему командовать остальными. По крайней мере на бумаге.$(br)$(br)■ Покупает части древнего дракона у мирных игроков.$(br)$(br)■ Продаёт ключ от хранилища охотников в верхнем мире и продаёт оружие для охоты на драконов."
+		},
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/14_7.png"
+			],
+			"text": "■ $(#610b27)Сокровищница Охотников$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:spotlight",
+			"item": "dragonsurvival:hunter_vault",
+			"text": "■ После покупки ключа, возьмите его и от первого лица следите за тем куда он указывает. Дойдя до указанного места, вы можете найти глубоко под землёй особую структуру с костями, спавнерами и сокровищницей, которую можно открыть этим ключом.$(br)$(br)■ Один игрок может использовать один ключ на одной сокровищнице. Отправляйтесь в путешествие, если хотите найти другие."
+		},
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/14_3.png"
+			],
+			"text": "■ $(#610b27)Копейщик, появившийся в Форте. Имеет спавнер в структуре.$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:crafting",
+			"recipe": "dragonsurvival:spearman_promotion",
+			"text": "■ Не имеет хорошей брони, но компенсирует это радиусом атаки.$(br)$(br)■ Если дать ему Листовку, превратится в лидера."
+		},
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/14_4.png"
+			],
+			"text": "■ $(#610b27)Охотник с Грифоном и арбалетом$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:text",
+			"text": "■ Изредка появляется в мире и ищет игроков за голову которых объявлена награда. Не беспокоит мирных игроков.$(br)$(br)■ Если подойти к нему слишком близко, выпустит грифона и позовёт других охотников.$(br)$(br)■ Стреляет из арбалета сетками и может сбить дракона."
+		},
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/14_5.png"
+			],
+			"text": "■ $(#610b27)Охотничий Грифон$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:text",
+			"text": "■ Выцарапает глаза при атаке, чтобы враги не могли ничего видеть.$(br)$(br)■ Имеет мало здоровья, но сбить его может быть довольно трудно.$(br)$(br)■ На Curseforge есть дополнение с играбельным грифоном."
+		},
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/14_6.png"
+			],
+			"text": "■ $(#610b27)Особая порода волков с очень сильными челюстями.$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:text",
+			"text": "■ Гончие замедляют жертву при укусе.$(br)$(br)■ Не приручаются.$(br)$(br)■ У гончих, которые заспавнились в форте, могут быть особые имена. Их давали подписчики на Патреоне в одном из голосований."
+		}
+	],
+	"read_by_default": true
+}
