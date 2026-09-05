@@ -1,0 +1,47 @@
+{
+	"name": "1. Полёт и Крылья",
+	"category": "dragonsurvival:2_features",
+	"icon": "dragonsurvival:wing_grant",
+	"pages": [
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/10_0.png"
+			],
+			"text": "■ $(#610b27)Полёт двух драконов$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:text",
+			"text": "■ По умолчанию драконы умеют летать и используют для этого $(#610b27)магию левитации$().$(br)$(br)■ Поэтому даже бескрылые драконы способны летать и держать предметы в воздухе, чтобы не покрывать их слюной во рту.$(br)$(br)■ При создании мира можно убрать датапак, который $(#610b27)включает полёт с самого начала$(), чтобы сделать игру сложнее."
+		},
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/10_1.png"
+			],
+			"text": "■ $(#610b27)Ускорение в полёте$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:text",
+			"text": "■ У полёта есть два режима:$(br)$(br) 1. $(#610b27)Медленный$() - вы просто взлетаете и постепенно спускаетесь вниз. Это тратит значительное количество еды.$(br)$(br) 2. $(#610b27)Быстрый$() - вы нажимаете клавишу ускорения (Ctrl или Shift), чтобы стремительно пикировать и ускоряться. Если врезаться в препятствие, полёт будет прерван.$(br)$(br)■ Чтобы перейти в режим полёта, нажмите G (по умолчанию)."
+		},
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/10_2.png",
+				"dragonsurvival_guide_book:textures/gui/sprites/book/10_3.png",
+				"dragonsurvival_guide_book:textures/gui/sprites/book/9_3.png"
+			],
+			"text": "■ $(#610b27)Структура в The End, которая хранит усиления для полёта$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:spotlight",
+			"item": "dragonsurvival:wing_grant,dragonsurvival:spin_grant",
+			"text": "■ Использовав $(#610b27)Spin Grant$(), дракон сможет крутиться в воде, лаве и воздухе. Это наносит урон врагам и усиливается зачарованиями. Например, Fire Aspect поджигает врагов. Проверьте настройки управления чтобы установить кнопку кручения.$(br)$(br)■ $(#610b27)Дар Полёта$() нужен для альтернативного получения крыльев. При стандартных настройках он бесполезен."
+		}
+	],
+	"read_by_default": true
+}

@@ -1,0 +1,21 @@
+{
+	"name": "3. Команды в Чате",
+	"category": "dragonsurvival:0_becoming_dragon",
+	"icon": "minecraft:command_block",
+	"pages": [
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/2_1_commands.png",
+				"dragonsurvival_guide_book:textures/gui/sprites/book/2_2_commands.png"
+			],
+			"text": "■ $(#610b27)Команды из Dragon Survival$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:text",
+			"text": "■ Вы можете использовать команду $(#610b27)/dragon$() и следовать подсказкам в чате для превращения в дракона себя или своих друзей.$(br)$(br)■ Если не указывать возраст в команде, то при смене вида дракон $(#610b27)сохранит свой рост$().$(br)$(br)■ Вы можете включить читы в одиночной игре через меню $(#610b27)Open to Lan -> Allow Commands -> Start$() или в настройках мира."
+		}
+	],
+	"read_by_default": true
+}

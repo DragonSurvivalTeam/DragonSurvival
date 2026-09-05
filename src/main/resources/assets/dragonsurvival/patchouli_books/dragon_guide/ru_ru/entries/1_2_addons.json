@@ -1,0 +1,47 @@
+{
+	"name": "3. Кастомные Драконы",
+	"category": "dragonsurvival:1_customization",
+	"icon": "minecraft:diamond_block",
+	"pages": [
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/7_0.png",
+				"dragonsurvival_guide_book:textures/gui/sprites/book/7_1.png",
+				"dragonsurvival_guide_book:textures/gui/sprites/book/7_5.png"
+			],
+			"text": "■ $(#610b27)Дополнения Crystcursed, Megarrian Typhus и Astral Dragons$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:text",
+			"text": "■ Трёх драконов для вас недостаточно, вам нужно отредактировать существующего или вы хотите $(#610b27)сделать своего собственного$()? Dragon Survival позволяет создавать любых кастомных существ с помощью системы $(l:https://minecraft.wiki/w/Tutorial:Creating_a_data_pack)датапаков$()$().$(br)$(br)■ Посмотреть все сделанные другими игроками дополнения (Addons) можно $(l:https://www.curseforge.com/minecraft/mc-mods/dragons-survival/relations/dependents?page=1&pageSize=20&type=RequiredDependency&sortBy=downloads&sortOrder=Desc)тут$()$().$(br)$(br)■ Чтобы появиться в этом списке автор должен указать свой мод как $(#610b27)Required Dependency$()."
+		},
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/7_2.png",
+				"dragonsurvival_guide_book:textures/gui/sprites/book/7_3.png"
+			],
+			"text": "■ $(#610b27)Кастомные навыки из аддонов Be Bee Queen и Dragon Spider Queen$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:text",
+			"text": "■ Для тех кто хочет попробовать сделать такое самостоятельно - подробная информация по созданию аддонов доступна $(l:https://github.com/DragonSurvivalTeam/DragonSurvival/wiki/RU-%E2%80%90-1.21.1-Create-your-own-Addons-for-Dragon-Survival)тут$()$().$(br)$(br)■ Мы всегда помогаем авторам на нашем $(l:https://discord.gg/rMgFyHrUmj)дискорд сервере$(), если у них возникают проблемы с созданием аддонов.$(br)$(br)■ Не стесняйтесь спрашивать, но не забывайте прикладывать $(#610b27)логи$() и свои датапаки вместе с вопросом."
+		},
+		{
+			"type": "patchouli:text",
+			"text": "■ Если вы хотите поддержать проект и просто получить готовый результат, вы можете $(l:https://forms.gle/UiFtbHqFRC9sDRbK9)заказать аддон$() у Black Aures или любого другого креатора.$(br)$(br)■ Мы не имеем ничего против, если вы как автор тоже хотите делать что-то на заказ и получать за это денюжку.$(br)$(br)■ Главное не пишите первыми с этим в личку юзерам, иначе это может быть расценено как $(#610b27)спам$(). Увы, в дискорде стало слишком много скаммеров подобного рода :("
+		},
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/7_4.png"
+			],
+			"text": "■ $(#610b27)И помните - придумывать идеи и реализовывать их это не одно и тоже :)$()",
+			"border": false
+		}
+	],
+	"read_by_default": true
+}
