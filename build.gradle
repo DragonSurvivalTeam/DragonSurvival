@@ -272,6 +272,9 @@ dependencies {
 	// Free Cam
 	compileOnly "curse.maven:free-cam-557076:8326163" // 1.4.1-beta.1+mc26.1.2
 
+	// Patchouli
+	//compileOnly "maven.modrinth:nU0bVIaL:2CsnFLom" // 26.1-94-beta
+
 	// Vista
 //	compileOnly "curse.maven:vista-1368607:8071509" // 4.3.0
 //	compileOnly "curse.maven:selene-499980:8065893" // 3.0.7
@@ -313,8 +316,6 @@ dependencies {
 //    implementation "curse.maven:additional-dragons-982609:7184517" // 1.2.8
 
 //    runtimeOnly "curse.maven:terrafirmacraft-302973:7150812" // 4.0.9
-//    runtimeOnly "curse.maven:patchouli-306770:6842247" // 92
-
 	testImplementation 'org.junit.jupiter:junit-jupiter:5.7.1'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
