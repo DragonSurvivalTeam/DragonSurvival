@@ -28,3 +28,10 @@ logoFile = "dragonsurvival.png"
     versionRange = "${geckolib_version_range}"
     ordering = "NONE"
     side = "CLIENT"
+
+[[dependencies.${mod_id}]]
+    modId = "patchouli"
+    mandatory = false
+    versionRange = "[85,)"
+    ordering = "AFTER"
+    side = "BOTH"
