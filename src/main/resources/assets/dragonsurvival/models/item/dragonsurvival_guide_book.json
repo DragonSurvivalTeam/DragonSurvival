@@ -1,0 +1,78 @@
+{
+	"format_version": "1.21.11",
+	"credit": "Made with Blockbench",
+	"texture_size": [32, 32],
+	"textures": {
+		"0": "dragonsurvival:item/dragonsurvival_guide_book",
+		"particle": "dragonsurvival:item/dragonsurvival_guide_book"
+	},
+	"elements": [
+		{
+			"from": [3, 0, 0],
+			"to": [13, 3, 16],
+			"rotation": {"x": -180, "y": 0, "z": 0, "origin": [8, 1.5, 8]},
+			"faces": {
+				"north": {"uv": [10, 9.5, 5, 11], "texture": "#0"},
+				"east": {"uv": [0, 8, 8, 9.5], "texture": "#0"},
+				"south": {"uv": [5, 9.5, 10, 11], "texture": "#0"},
+				"west": {"uv": [8, 8, 16, 9.5], "texture": "#0"},
+				"up": {"uv": [10, 8, 5, 0], "texture": "#0"},
+				"down": {"uv": [5, 0, 0, 8], "texture": "#0"}
+			}
+		}
+	],
+	"gui_light": "front",
+	"display": {
+		"thirdperson_righthand": {
+			"rotation": [83.72, 4.31, 14.64],
+			"translation": [-1, 2, 2.5],
+			"scale": [0.55, 0.55, 0.55]
+		},
+		"thirdperson_lefthand": {
+			"rotation": [66.01, -0.02, 179.51],
+			"translation": [0, 0.25, -5.5],
+			"scale": [0.55, 0.55, 0.55]
+		},
+		"firstperson_righthand": {
+			"rotation": [71.35, -20.49, 63.47],
+			"translation": [-1.25, 7.25, 1.75],
+			"scale": [0.4, 0.4, 0.4]
+		},
+		"firstperson_lefthand": {
+			"rotation": [79.37, -32, -102],
+			"translation": [-1.25, 5.5, 3.75],
+			"scale": [0.25, 0.28, 0.27]
+		},
+		"ground": {
+			"rotation": [90, 0, 0],
+			"translation": [0, 2, 4.75],
+			"scale": [0.5, 0.5, 0.5]
+		},
+		"gui": {
+			"rotation": [61.48, -12, 15],
+			"translation": [-1.75, 3.25, 0],
+			"scale": [0.99, 0.99, 0.99]
+		},
+		"head": {
+			"rotation": [93, 0, -180],
+			"translation": [0, 14.75, -6.25]
+		},
+		"fixed": {
+			"rotation": [90, 0, -180],
+			"translation": [0, 0, -7]
+		},
+		"on_shelf": {
+			"rotation": [90, 0, 180],
+			"translation": [0, 0, -9]
+		}
+	},
+	"groups": [
+		{
+			"name": "group",
+			"origin": [8, 1.5, 8],
+			"scope": 0,
+			"color": 0,
+			"children": [0]
+		}
+	]
+}

@@ -1,0 +1,35 @@
+{
+	"name": "2. Кастомные Скины",
+	"category": "dragonsurvival:1_customization",
+	"icon": "minecraft:raw_gold_block",
+	"pages": [
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/6_4.png"
+			],
+			"text": "■ $(#610b27)Интерфейс Blockbench$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:text",
+			"text": "■ Если у вас есть желание проявить полную свободу творчества - вы можете загрузить на наш гитхаб вашу кастомную текстуру для дракона$(br)$(br)■ В отличии от официального Майнкрафта и многих других модов, наша система скинов работает даже в $(#610b27)оффлайн режиме$() и другие игроки будут без проблем видеть ваш скин."
+		},
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/6_0.png",
+				"dragonsurvival_guide_book:textures/gui/sprites/book/6_1.png",
+				"dragonsurvival_guide_book:textures/gui/sprites/book/6_2.png",
+				"dragonsurvival_guide_book:textures/gui/sprites/book/6_3.png"
+			],
+			"text": "■ $(#610b27)Некоторые кастомные скины, нарисованные Black Aures$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:text",
+			"text": "■ Писать в столь малой книге подробный гайд по созданию скинов было бы неразумно, поэтому вся подробная информация о том как создавать, загружать и использовать скины доступна на $(l:https://github.com/DragonSurvivalTeam/DragonSurvival/wiki/3.-Customization)Github$()."
+		}
+	],
+	"read_by_default": true
+}

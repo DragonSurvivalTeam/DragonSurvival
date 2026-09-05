@@ -1,4 +1,4 @@
-// 26.1.2	2026-08-29T12:48:07.2184857	Registries
+// 26.1.2	2026-09-03T22:53:21.31892	Registries
 011b2ee382ec961722c100bbf059b4aa460f44b0 data/dragonsurvival/damage_type/anti_dragon.json
 d8c3135ecd1879e98a21e83ec1bcfd68c5fc3296 data/dragonsurvival/damage_type/ball_lightning.json
 3bca57c58e2307adb52a4b6e18ea88aae7e2d8d7 data/dragonsurvival/damage_type/blast_dust.json
@@ -104,7 +104,7 @@ a5fa436d963ed5a6bcb4ba63ce559a7f330f5717 data/dragonsurvival/dragonsurvival/proj
 a2e56696bc70273a2b4bbfc9797b8b53ad631924 data/dragonsurvival/dragonsurvival/projectile_data/spike.json
 5c15e3b0cbdd1d5065563153c03e97a0951a3b48 data/dragonsurvival/enchantment/bolas.json
 13dd3a236a232ebde50f74ed810a93d7b4a9a4ff data/dragonsurvival/enchantment/dragonsbane.json
-3dd0cef54cd756190d09ca17446214fa52a93518 data/dragonsurvival/trade_set/dragon_rider/level_1.json
+515249cd2f3724bba650d22f6477ad7fffe60a20 data/dragonsurvival/trade_set/dragon_rider/level_1.json
 add5b4916c195ce9a5cd8b14450cf877ef5fd1a0 data/dragonsurvival/trade_set/dragon_rider/level_2.json
 60fe28377adcdd6fdac15b9acc6d9543fc420907 data/dragonsurvival/trade_set/dragon_rider/level_3.json
 ff93617204178e5d6776296b3f20767448771369 data/dragonsurvival/trade_set/dragon_rider/level_4.json
@@ -119,6 +119,7 @@ f724f0e68036c25e4425741f8cc4433e7d9048bb data/dragonsurvival/trade_set/leader/le
 24f0ff908e7cf8ab29123107db794834507c6b31 data/dragonsurvival/villager_trade/dragon_rider/combat_recovery.json
 25b6fb03c161ebf317999dec41a229d6118e2380 data/dragonsurvival/villager_trade/dragon_rider/light_key.json
 783bf3a20283e39dae83af5ed6e4d284dc108c96 data/dragonsurvival/villager_trade/dragon_rider/sacred_scales.json
+f9c56969bc27e78f068ec06c5c19efbb534dcbf1 data/dragonsurvival/villager_trade/dragon_rider/saddle.json
 3366c272610b8d6a38ddedddb3ff85dc7859cfc6 data/dragonsurvival/villager_trade/dragon_rider/unbreakable_spirit.json
 aea6885ff9f28bb1ea60744cb1934ae59b7ee8a6 data/dragonsurvival/villager_trade/leader/dragon_heart_shard.json
 fe9930cd929500ecb53313485e99abc5e54980c6 data/dragonsurvival/villager_trade/leader/elder_dragon_heart.json

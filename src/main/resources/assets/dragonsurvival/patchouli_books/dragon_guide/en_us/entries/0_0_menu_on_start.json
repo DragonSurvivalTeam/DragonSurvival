@@ -1,0 +1,44 @@
+{
+	"name": "1. Стартовое Меню",
+	"category": "dragonsurvival:0_becoming_dragon",
+	"icon": "minecraft:book",
+	"pages": [
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/0_menu_on_start.png"
+			],
+			"text": "■ $(#610b27)Меню выбора вида дракона$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:text",
+			"text": "■ Спустя пару секунд после загрузки у игрока появится $(#610b27)список$() доступных драконов.$(br)$(br)■ Если вы хотите остаться $(#610b27)человеком$() - выберите самую правую иконку и это меню больше не будет появляться после повторного входа в мир.$(br)$(br)■ Вы можете изменить выбор в будущем через Алтарь, но ваш $(#610b27)прогресс будет потерян$()."
+		},
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/0_1_menu_on_start.png"
+			],
+			"text": "■ $(#610b27)dragonsurvival-server.toml$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:text",
+			"text": "■ Отключить появление этого меню и многое другое можно в $(#610b27)конфигах$(). Найдите пункт $(#610b27)start_with_dragon_choice$() и поменяйте true на false.$(br)$(br)■ Используйте $(#610b27)Сtrl+F$() внутри блокнота или любой другой программе для быстрого поиска."
+		},
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/0_2_menu_on_start.png"
+			],
+			"text": "■ $(#610b27)Иконка повторного выбора в выживании$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:text",
+			"text": "■ По ошибке закрыли меню выбора? Ничего страшного - возможность выбора останется у вас в $(#610b27)инвентаре$(). После выбора эта кнопка больше не будет доступна."
+		}
+	],
+	"read_by_default": true
+}

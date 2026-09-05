@@ -1,0 +1,5 @@
+{
+	"dragonsurvival.dragon_guide.book_name": "Dragon Survival",
+	"dragonsurvival.dragon_guide.subtitle": "Гайд Элементалей",
+	"dragonsurvival.dragon_guide.book_landing_text": "■ $(#610b27)$(playername)$(), прикасаясь к страницам этой книги в вашу душу попадает $(#610b27)память$() старых драконов, которые помогут вам освоиться в моде $(l:https://www.curseforge.com/minecraft/mc-mods/dragons-survival)Dragon Survival$().$(br)$(br)■ Посетите нашу $(l:https://github.com/DragonSurvivalTeam/DragonSurvival/wiki)Github Wiki$(), чтобы узнать больше. Формат книги имеет свои ограничения и написать что-то подробно довольно сложно."
+}
