@@ -42,12 +42,12 @@ side="BOTH"
     ordering = "NONE"
     side = "CLIENT"
 
-[[dependencies.${mod_id}]]
-    modId = "patchouli"
-    type = "optional"
-    versionRange = "[92,)"
-    ordering = "AFTER"
-    side = "BOTH"
+#[[dependencies.${mod_id}]]
+#    modId = "patchouli"
+#    type = "optional"
+#    versionRange = "[1.21.1-92-NEOFORGE,)"
+#    ordering = "AFTER"
+#    side = "BOTH"
 
 [[dependencies.${mod_id}]]
     modId = "geckoanimfix"

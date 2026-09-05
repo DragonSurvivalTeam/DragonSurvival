@@ -52,7 +52,18 @@ runs {
 	junit {}
 }
 
-sourceSets.main.resources { srcDir 'src/generated/resources' }
+// Exclude the Patchouli stuff until Aures is able to review and make it fully ready
+sourceSets.main.resources {
+	srcDir 'src/generated/resources'
+
+	exclude 'assets/dragonsurvival/items/dragonsurvival_guide_book.json'
+	exclude 'assets/dragonsurvival/models/item/dragonsurvival_guide_book.json'
+	exclude 'assets/dragonsurvival/textures/item/dragonsurvival_guide_book.png'
+	exclude 'assets/dragonsurvival/patchouli_books/dragon_guide/**'
+	exclude 'assets/dragonsurvival_guide_book/**'
+	exclude 'data/dragonsurvival/patchouli_books/dragon_guide/**'
+	exclude 'data/dragonsurvival/recipe/patchouli_book.json'
+}
 
 repositories {
 	maven {
@@ -134,7 +145,7 @@ dependencies {
 	compileOnly "curse.maven:free-cam-557076:5572364" // 1.3.0
 
 	// Patchouli
-//	compileOnly "curse.maven:patchouli-306770:6842247" // 92
+//	implementation "curse.maven:patchouli-306770:6842247" // 92
 
 	// Vista
 	compileOnly "curse.maven:vista-1368607:8071509" // 4.3.0
