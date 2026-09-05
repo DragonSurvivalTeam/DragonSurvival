@@ -1,6 +1,5 @@
 {
-  "type": "minecraft:crafting_shapeless",
-  "category": "misc",
+  "type": "patchouli:shapeless_book_recipe",
   "ingredients": [
     {
       "item": "minecraft:book"
@@ -9,11 +8,5 @@
       "item": "dragonsurvival:elder_dragon_dust"
     }
   ],
-  "result": {
-    "id": "patchouli:guide_book",
-    "count": 1,
-    "components": {
-      "patchouli:book": "dragonsurvival:dragon_guide"
-    }
-  }
+  "book": "dragonsurvival:dragon_guide"
 }
