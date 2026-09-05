@@ -1,0 +1,58 @@
+{
+	"name": "7. Источник Магии",
+	"category": "dragonsurvival:2_features",
+	"icon": "dragonsurvival:forest_source_of_magic",
+	"pages": [
+		{
+			"type": "patchouli:crafting",
+			"recipe": "dragonsurvival:source_of_magic_sea",
+			"recipe2": "dragonsurvival:source_of_magic_cave"
+		},
+		{
+			"type": "patchouli:crafting",
+			"recipe": "dragonsurvival:source_of_magic_forest",
+			"text": "■ Для использования способностей драконы расходуют $(#610b27)ману$() или $(#610b27)очки опыта$(), когда мана заканчивается.$(br)$(br)■ У каждого дракона есть свой $(#610b27)Источник Магии$(), из которого он черпает бесконечную ману."
+		},
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/17_4.png"
+			],
+			"text": "■ $(#610b27)Количество маны является дробным и отображается в правом нижнем углу$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/17_0.png"
+			],
+			"text": "■ $(#610b27)1. Установите блок на землю$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/17_1.png"
+			],
+			"text": "■ $(#610b27)2. Бросьте любые части Древнего Дракона на блок или поместите их в слот интерфейса$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/17_2.png"
+			],
+			"text": "■ $(#610b27)3. Подойдите близко к бассейну, и вы сядете рядом с ним$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/17_2.png"
+			],
+			"text": "■ $(#610b27)4. Побудьте некоторое время рядом с Источником и получите эффект$()",
+			"border": false
+		}
+	],
+	"read_by_default": true
+}

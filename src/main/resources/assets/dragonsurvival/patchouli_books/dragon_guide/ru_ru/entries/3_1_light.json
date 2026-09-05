@@ -1,0 +1,59 @@
+{
+	"name": "2. Путь Света",
+	"category": "dragonsurvival:3_hunters_and_treasures",
+	"icon": "dragonsurvival:light_key",
+	"pages": [
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/16_1.png"
+			],
+			"text": "■ $(#610b27)Житель с профессией Драконьего Всадника$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:crafting",
+			"recipe": "dragonsurvival:dragon_rider_workbench",
+			"text": "■ Поставьте рядом с жителем без профессии $(#610b27)Верстак Драконьего Всадника$(), чтобы получить возможность покупать у него Светлый Ключ и книги зачарований для дракона.$(br)$(br)■ К сожалению, Всадники не летают на драконах, хотя такая возможность планировалась в прошлом."
+		},
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/16_2.png"
+			],
+			"text": "■ $(#610b27)Одна из 15 разновидностей Светлой Сокровищницы$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:spotlight",
+			"item": "dragonsurvival:light_key",
+			"text": "■ После покупки ключа у Всадника смотрите от первого лица прямо по горизонту и следуйте в направлении, которое указывает конец ключа.$(br)$(br)■ Около драконьей статуи будут находиться хороший лут и улучшение для незеритовой брони. Примените его на кузнечном столе вместе с Древним Сердцем."
+		},
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/16_0.png"
+			],
+			"text": "■ $(#610b27)Дракон в Светлой Броне$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:spotlight",
+			"item": "dragonsurvival:light_upgrade",
+			"text": "■ Надев полный набор Светлой Брони, вы не сможете наносить урон жителям и охотникам на драконов. Больше никаких случайных атак!$(br)$(br)■ Если улучшать броню книгами со светлыми зачарованиями, то можно накладывать одинаковые зачарования друг на друга и получать 2-й уровень этих зачарований, что недоступно при зачаровании другой брони."
+		},
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/16_3.png"
+			],
+			"text": "■ $(#610b27)Сделки Всадника и книги зачарований$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:text",
+			"text": "■ $(#610b27)Aerodynamic Mastery$() - уменьшает потребление еды во время полёта и скорость полёта.$(br)$(br)■ $(#610b27)Combat Recovery$() - с вероятностью 20% при получении урона даёт эффект регенерации.$(br)$(br)■ $(#610b27)Unbreakable Spirit$() - уменьшает все наложенные уровни дебаффов на 1.$(br)$(br)■ $(#610b27)Sacred Scales$() - с вероятностью 20% значительно снижает получаемый урон."
+		}
+	],
+	"read_by_default": true
+}

@@ -1,0 +1,43 @@
+{
+	"name": "2. Стадии Роста",
+	"category": "dragonsurvival:2_features",
+	"icon": "dragonsurvival:elder_dragon_heart",
+	"pages": [
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/9_0.png",
+				"dragonsurvival_guide_book:textures/gui/sprites/book/9_3.png"
+			],
+			"text": "■ $(#610b27)Информация о предметах для роста и настройках разрушения$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:text",
+			"text": "■ Стандартные драконы растут со временем и могут использовать специальные предметы, чтобы $(#610b27)ускорить свой рост$().$(br)$(br)■ После достижения $(#610b27)120 размера$() драконы получают возможность разрушать блоки и раздавливать животных, наступая на них.$(br)$(br)■ Вы можете управлять этой особенностью в $(#610b27)настройках управления$(), включая и выключая её через горячую клавишу."
+		},
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/9_1.png"
+			],
+			"text": "■ $(#610b27)Информация о стадии роста$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:text",
+			"text": "■ Разные стадии роста имеют разные бонусы, и вы можете посмотреть их в $(#610b27)инвентаре дракона$(), наведя курсор на подсказки.$(br)$(br)■ Это не очевидно, но вы также можете использовать $(#610b27)колёсико мыши$() в некоторых больших подсказках, чтобы прокрутить статистику вниз."
+		},
+		{
+			"type": "patchouli:crafting",
+			"recipe": "dragonsurvival:dragon_heart_shard",
+			"recipe2": "dragonsurvival:weak_dragon_heart"
+		},
+		{
+			"type": "patchouli:crafting",
+			"recipe": "dragonsurvival:elder_dragon_heart",
+			"text": "■ Все эти предметы используются драконами для $(#610b27)ускорения роста$().$(br)$(br)■ Они выпадают из $(#610b27)руд, которые дают опыт$(), и с сильных монстров."
+		}
+	],
+	"read_by_default": true
+}

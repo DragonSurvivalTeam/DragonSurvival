@@ -1,0 +1,31 @@
+{
+	"name": "6. Маяки",
+	"category": "dragonsurvival:2_features",
+	"icon": "dragonsurvival:dragon_beacon",
+	"pages": [
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/13_0.png"
+			],
+			"text": "■ $(#610b27)Полностью активный Драконий Маяк, усиленный Блоком Памяти$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:crafting",
+			"recipe": "dragonsurvival:dragon_beacon",
+			"text": "■ Чтобы побороть свои слабости, драконы используют $(#610b27)Маяки$().$(br)$(br)■ В них можно покупать за очки опыта $(#610b27)безлимитное$() использование душ драконов, $(#610b27)отключение дебаффов$() и другие полезные бонусы."
+		},
+		{
+			"type": "patchouli:crafting",
+			"recipe": "dragonsurvival:beacon_activator",
+			"text": "■ Чтобы пустой Маяк заработал, его должен активировать дракон с помощью $(#610b27)Активатора Маяка$().$(br)$(br)■ Просто нажмите $(#610b27)ПКМ$(), держа этот предмет в руке, по Маяку."
+		},
+		{
+			"type": "patchouli:crafting",
+			"recipe": "dragonsurvival:dragon_memory_block",
+			"text": "■ Если под Маяком поставить $(#610b27)Блок Памяти$(), эффекты будут распространяться по площади.$(br)$(br)■ Разные драконы дают разные бонусы, поэтому желательно иметь на базе несколько Маяков, активированных разными драконами."
+		}
+	],
+	"read_by_default": true
+}

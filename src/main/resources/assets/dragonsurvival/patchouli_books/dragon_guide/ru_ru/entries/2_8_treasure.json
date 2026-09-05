@@ -1,0 +1,28 @@
+{
+	"name": "8. Сокровища",
+	"category": "dragonsurvival:2_features",
+	"icon": "dragonsurvival:gold_dragon_treasure",
+	"pages": [
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/18_2.png",
+				"dragonsurvival_guide_book:textures/gui/sprites/book/18_1.png",
+				"dragonsurvival_guide_book:textures/gui/sprites/book/18_0.png",
+				"dragonsurvival_guide_book:textures/gui/sprites/book/18_3.png",
+				"dragonsurvival_guide_book:textures/gui/sprites/book/18_4.png",
+				"dragonsurvival_guide_book:textures/gui/sprites/book/18_5.png",
+				"dragonsurvival_guide_book:textures/gui/sprites/book/18_6.png",
+				"dragonsurvival_guide_book:textures/gui/sprites/book/18_7.png"
+			],
+			"text": "■ $(#610b27)Сокровищницы разных драконов. Больших и малых.$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:crafting",
+			"recipe": "dragonsurvival:copper_dragon_treasure",
+			"text": "■ Сокровища дают регенерацию, если отдыхать достаточно долго днём или пропустить ночь.$(br)$(br)■ Если в одном месте накопить более 240 сокровищ, эффект будет иметь максимальную силу."
+		}
+	],
+	"read_by_default": true
+}
