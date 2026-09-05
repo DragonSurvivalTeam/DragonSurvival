@@ -1,0 +1,41 @@
+{
+	"name": "3. Верховая Езда",
+	"category": "dragonsurvival:2_features",
+	"icon": "minecraft:saddle",
+	"pages": [
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/8_1.png",
+				"dragonsurvival_guide_book:textures/gui/sprites/book/8_0.png"
+			],
+			"text": "■ $(#610b27)Верховая езда$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:text",
+			"text": "■ Если ваш друг-дракон стал достаточно большим, вы можете попробовать $(#610b27)прокатиться$() на нём. Следуйте за $(#610b27)подсказками$() в чате.$(br)$(br)■ Не все виды драконов в других аддонах могут поддерживать верховую езду, но у всех стандартных DS драконов она есть."
+		},
+		{
+			"type": "patchouli:text",
+			"text": "■ Что должен сделать пассажир:$(br)$(br)1. Быть $(#610b27)меньше дракона$(), на котором он собирается ездить;$(br)$(br)2. Нажать правой кнопкой с пустой рукой по $(#610b27)хитбоксу$() дракона (F3+B); "
+		},
+		{
+			"type": "patchouli:text",
+			"text": "■ Что должен сделать дракон:$(br)$(br)1. Быть $(#610b27)больше пассажира$() (например, иметь 20 сердец);$(br)$(br)2. $(#610b27)Присесть$() на shift или ctrl в зависимости от ваших настроек управления;"
+		},
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/8_2.png"
+			],
+			"text": "■ $(#610b27)Дракон оседлал Наутилуса$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:text",
+			"text": "■ По умолчанию драконы не могут садиться на лошадей, мулов, верблюдов и прочих верховых животных.$(br)$(br)■ Вы можете включить это в сервер конфигах поставив limited_riding = false или добавив нужное вам энтити в vehicle_whitelist тег."
+		}
+	],
+	"read_by_default": true
+}

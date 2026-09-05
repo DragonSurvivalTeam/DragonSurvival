@@ -1,0 +1,10 @@
+{
+	"name": "dragonsurvival.dragon_guide.book_name",
+	"landing_text": "dragonsurvival.dragon_guide.book_landing_text",
+	"subtitle": "dragonsurvival.dragon_guide.subtitle",
+	"model": "dragonsurvival:dragonsurvival_guide_book",
+	"pause_game": false,
+	"show_progress": false,
+	"creative_tab": "dragonsurvival:dragon_survival",
+	"use_resource_pack": true
+}

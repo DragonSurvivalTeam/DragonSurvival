@@ -1,0 +1,31 @@
+{
+	"name": "3. Остановка Роста",
+	"category": "dragonsurvival:2_features",
+	"icon": "dragonsurvival:star_heart",
+	"pages": [
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/9_2.png"
+			],
+			"text": "■ $(#610b27)Структура с костями древнего дракона, который погиб в далёком прошлом$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:crafting",
+			"recipe": "dragonsurvival:star_bone_craft",
+			"text": "■ Для уменьшения роста используйте Звёздные Кости.$(br)$(br)■ Их можно скрафтить или найти в специальной редкой структуре под землёй. Количество костей можно приумножить через другой рецепт."
+		},
+		{
+			"type": "patchouli:crafting",
+			"recipe": "dragonsurvival:star_bone_dupe",
+			"text": "■ Количество звёздных костей можно приумножить."
+		},
+		{
+			"type": "patchouli:crafting",
+			"recipe": "dragonsurvival:star_heart",
+			"text": "■ Если же вы хотите полностью остановить пассивный рост, используйте это."
+		}
+	],
+	"read_by_default": true
+}
