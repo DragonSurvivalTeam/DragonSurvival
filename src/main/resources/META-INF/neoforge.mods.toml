@@ -43,6 +43,13 @@ side="BOTH"
     side = "CLIENT"
 
 [[dependencies.${mod_id}]]
+    modId = "patchouli"
+    type = "optional"
+    versionRange = "[26.1-92,)"
+    ordering = "AFTER"
+    side = "BOTH"
+
+[[dependencies.${mod_id}]]
     modId = "geckoanimfix"
     type = "incompatible"
     mandatory = true
