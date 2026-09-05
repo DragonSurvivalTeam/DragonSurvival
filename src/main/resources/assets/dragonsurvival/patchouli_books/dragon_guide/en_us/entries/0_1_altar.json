@@ -1,0 +1,34 @@
+{
+	"name": "2. Алтарь",
+	"category": "dragonsurvival:0_becoming_dragon",
+	"icon": "dragonsurvival:stone_dragon_altar",
+	"pages": [
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/1_0_altar.png"
+			],
+			"text": "■ $(#610b27)Несколько видов алтарей$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:text",
+			"text": "■ Скрафтив этот $(#610b27)блок$(), вы будете иметь безлимитный доступ к редактированию своего дракона, смене вида и телосложения.$(br)$(br)■ Свою первую кость можно собрать из $(#610b27)руды$(), которая даёт опыт, или лута в сундуках."
+		},
+		{
+			"type": "patchouli:crafting",
+			"recipe": "dragonsurvival:stone_dragon_altar",
+			"text": "■ Ни один модпак сейчас не обходится без $(l:https://www.curseforge.com/minecraft/mc-mods/jei)JEI$() или $(l:https://www.curseforge.com/minecraft/mc-mods/roughly-enough-items)REI$().$(br)$(br)■ Нажимайте U или R наводясь на предмет, чтобы быстро искать рецепты С и ИЗ этого предмета."
+		},
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/1_1_altar.png",
+				"dragonsurvival_guide_book:textures/gui/sprites/book/1_2_altar.png"
+			],
+			"text": "■ Пишите $(#610b27)@dragonsurvival$() в поиске JEI$()",
+			"border": false
+		}
+	],
+	"read_by_default": true
+}
