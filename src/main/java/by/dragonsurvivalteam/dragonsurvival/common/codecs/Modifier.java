@@ -27,6 +27,8 @@ import java.util.UUID;
 import java.util.function.Supplier;
 
 public record Modifier(Holder<Attribute> attribute, Either<LevelBasedValue, PreciseLevelBasedValue> amount, AttributeOperation operation) {
+    // Setup exists so that datapacks made for 1.21.1 etc. are backwards-compatible with 1.20.1
+    // Since these attributes are registered in the 'dragonsurvival' namespace due to them not existing in 1.20.1
     private static final ResourceLocation SCALE_ID = new ResourceLocation("minecraft", "scale");
     private static final ResourceLocation GENERIC_SCALE_ID = new ResourceLocation("minecraft", "generic.scale");
     private static final ResourceLocation SAFE_FALL_DISTANCE_ID = new ResourceLocation("minecraft", "safe_fall_distance");
