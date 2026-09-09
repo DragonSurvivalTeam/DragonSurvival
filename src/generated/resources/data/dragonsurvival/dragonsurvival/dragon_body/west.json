@@ -41,7 +41,7 @@
     },
     {
       "amount": 1.0,
-      "attribute": "dragonsurvival:safe_fall_distance",
+      "attribute": "minecraft:safe_fall_distance",
       "operation": "add_value"
     },
     {
