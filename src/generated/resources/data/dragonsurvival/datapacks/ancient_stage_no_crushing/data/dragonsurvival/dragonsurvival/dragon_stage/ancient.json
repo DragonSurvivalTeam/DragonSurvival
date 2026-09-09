@@ -35,7 +35,7 @@
         "precise_amount": 0.025,
         "precise_base": 0.45
       },
-      "attribute": "minecraft:scale",
+      "attribute": "dragonsurvival:scale",
       "operation": "add_value"
     },
     {
@@ -71,7 +71,7 @@
         "base": 0.101500005,
         "per_level_above_first": 0.0015
       },
-      "attribute": "minecraft:jump_strength",
+      "attribute": "dragonsurvival:jump_strength",
       "operation": "add_value"
     },
     {
@@ -80,7 +80,7 @@
         "base": 1.015,
         "per_level_above_first": 0.015
       },
-      "attribute": "minecraft:safe_fall_distance",
+      "attribute": "dragonsurvival:safe_fall_distance",
       "operation": "add_value"
     },
     {

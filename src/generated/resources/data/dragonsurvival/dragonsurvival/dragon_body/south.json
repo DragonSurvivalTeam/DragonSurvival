@@ -35,7 +35,7 @@
     },
     {
       "amount": 0.2,
-      "attribute": "minecraft:jump_strength",
+      "attribute": "dragonsurvival:jump_strength",
       "operation": "add_value"
     },
     {
@@ -45,7 +45,7 @@
     },
     {
       "amount": 2.0,
-      "attribute": "minecraft:safe_fall_distance",
+      "attribute": "dragonsurvival:safe_fall_distance",
       "operation": "add_value"
     },
     {

@@ -2,104 +2,30 @@ package by.dragonsurvivalteam.dragonsurvival.common.codecs;
 
 import by.dragonsurvivalteam.dragonsurvival.common.PercentageAttribute;
 import by.dragonsurvivalteam.dragonsurvival.common.TimeAttribute;
-import by.dragonsurvivalteam.dragonsurvival.registry.DSAttributes;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.ForgeMod;
 
 import java.util.UUID;
 import java.util.function.Supplier;
 
 public record Modifier(Holder<Attribute> attribute, Either<LevelBasedValue, PreciseLevelBasedValue> amount, AttributeOperation operation) {
-    private static final ResourceLocation SCALE_ID = new ResourceLocation("minecraft", "scale");
-    private static final ResourceLocation GENERIC_SCALE_ID = new ResourceLocation("minecraft", "generic.scale");
-    private static final ResourceLocation SAFE_FALL_DISTANCE_ID = new ResourceLocation("minecraft", "safe_fall_distance");
-    private static final ResourceLocation GENERIC_SAFE_FALL_DISTANCE_ID = new ResourceLocation("minecraft", "generic.safe_fall_distance");
-    private static final ResourceLocation SUBMERGED_MINING_SPEED_ID = new ResourceLocation("minecraft", "submerged_mining_speed");
-    private static final ResourceLocation PLAYER_SUBMERGED_MINING_SPEED_ID = new ResourceLocation("minecraft", "player.submerged_mining_speed");
-    private static final ResourceLocation JUMP_STRENGTH_ID = new ResourceLocation("minecraft", "jump_strength");
-    private static final ResourceLocation GENERIC_JUMP_STRENGTH_ID = new ResourceLocation("minecraft", "generic.jump_strength");
-    private static final ResourceLocation GENERIC_GRAVITY_ID = new ResourceLocation("minecraft", "generic.gravity");
-    private static final ResourceLocation GENERIC_STEP_HEIGHT_ID = new ResourceLocation("minecraft", "generic.step_height");
-    private static final ResourceLocation PLAYER_BLOCK_INTERACTION_RANGE_ID = new ResourceLocation("minecraft", "player.block_interaction_range");
-    private static final ResourceLocation PLAYER_ENTITY_INTERACTION_RANGE_ID = new ResourceLocation("minecraft", "player.entity_interaction_range");
-    private static final ResourceLocation NEOFORGE_SWIM_SPEED_ID = new ResourceLocation("neoforge", "swim_speed");
-    private static final Codec<Holder<Attribute>> ATTRIBUTE_CODEC = ResourceLocation.CODEC.comapFlatMap(
-            id -> {
-                if (isScaleId(id)) {
-                    return DataResult.success(BuiltInRegistries.ATTRIBUTE.wrapAsHolder(DSAttributes.SCALE.get()));
-                }
-                if (id.equals(SAFE_FALL_DISTANCE_ID) || id.equals(GENERIC_SAFE_FALL_DISTANCE_ID)) {
-                    return DataResult.success(BuiltInRegistries.ATTRIBUTE.wrapAsHolder(DSAttributes.SAFE_FALL_DISTANCE.get()));
-                }
-                if (id.equals(SUBMERGED_MINING_SPEED_ID) || id.equals(PLAYER_SUBMERGED_MINING_SPEED_ID)) {
-                    return DataResult.success(BuiltInRegistries.ATTRIBUTE.wrapAsHolder(DSAttributes.SUBMERGED_MINING_SPEED.get()));
-                }
-                if (id.equals(JUMP_STRENGTH_ID) || id.equals(GENERIC_JUMP_STRENGTH_ID)) {
-                    return DataResult.success(BuiltInRegistries.ATTRIBUTE.wrapAsHolder(DSAttributes.JUMP_STRENGTH.get()));
-                }
-                if (id.equals(GENERIC_GRAVITY_ID)) {
-                    return DataResult.success(BuiltInRegistries.ATTRIBUTE.wrapAsHolder(ForgeMod.ENTITY_GRAVITY.get()));
-                }
-                if (id.equals(GENERIC_STEP_HEIGHT_ID)) {
-                    return DataResult.success(BuiltInRegistries.ATTRIBUTE.wrapAsHolder(ForgeMod.STEP_HEIGHT_ADDITION.get()));
-                }
-                if (id.equals(PLAYER_BLOCK_INTERACTION_RANGE_ID)) {
-                    return DataResult.success(BuiltInRegistries.ATTRIBUTE.wrapAsHolder(ForgeMod.BLOCK_REACH.get()));
-                }
-                if (id.equals(PLAYER_ENTITY_INTERACTION_RANGE_ID)) {
-                    return DataResult.success(BuiltInRegistries.ATTRIBUTE.wrapAsHolder(ForgeMod.ENTITY_REACH.get()));
-                }
-                if (id.equals(NEOFORGE_SWIM_SPEED_ID)) {
-                    return DataResult.success(BuiltInRegistries.ATTRIBUTE.wrapAsHolder(ForgeMod.SWIM_SPEED.get()));
-                }
-
-                return BuiltInRegistries.ATTRIBUTE.getHolder(ResourceKey.create(Registries.ATTRIBUTE, id))
-                        .map(DataResult::success)
-                        .orElseGet(() -> DataResult.error(() -> "Unknown attribute: " + id));
-            },
-            attribute -> {
-                if (attribute.value() == DSAttributes.SCALE.get()) {
-                    return SCALE_ID;
-                }
-                if (attribute.value() == DSAttributes.SAFE_FALL_DISTANCE.get()) {
-                    return SAFE_FALL_DISTANCE_ID;
-                }
-                if (attribute.value() == DSAttributes.SUBMERGED_MINING_SPEED.get()) {
-                    return SUBMERGED_MINING_SPEED_ID;
-                }
-                if (attribute.value() == DSAttributes.JUMP_STRENGTH.get()) {
-                    return JUMP_STRENGTH_ID;
-                }
-                return BuiltInRegistries.ATTRIBUTE.getKey(attribute.value());
-            }
-    );
-
     public static final Codec<Modifier> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            ATTRIBUTE_CODEC.fieldOf("attribute").forGetter(Modifier::attribute),
+            BuiltInRegistries.ATTRIBUTE.holderByNameCodec().fieldOf("attribute").forGetter(Modifier::attribute),
             Codec.either(LevelBasedValue.CODEC, PreciseLevelBasedValue.CODEC).fieldOf("amount").forGetter(Modifier::amount),
             AttributeOperation.CODEC.fieldOf("operation").forGetter(Modifier::operation)
     ).apply(instance, Modifier::new));
-
-    private static boolean isScaleId(final ResourceLocation id) {
-        return id.equals(SCALE_ID) || id.equals(GENERIC_SCALE_ID);
-    }
 
     public record PreciseLevelBasedValue(float base, float amount) {
         public static final Codec<PreciseLevelBasedValue> CODEC = RecordCodecBuilder.create(instance -> instance.group(
