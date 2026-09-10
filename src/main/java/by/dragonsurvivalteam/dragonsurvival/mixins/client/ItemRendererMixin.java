@@ -12,7 +12,6 @@ import net.minecraft.client.renderer.ItemModelShaper;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -92,7 +91,7 @@ public abstract class ItemRendererMixin { // FIXME :: doesn't work with sodium s
                 return;
             }
 
-            callback.setReturnValue(getItemModelShaper().getModelManager().getModel(new ModelResourceLocation(resource, "standalone")));
+            callback.setReturnValue(getItemModelShaper().getModelManager().getModel(resource));
         }
     }
 

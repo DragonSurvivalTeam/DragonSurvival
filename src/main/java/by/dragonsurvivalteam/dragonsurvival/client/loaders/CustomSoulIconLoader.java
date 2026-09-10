@@ -9,7 +9,6 @@ import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -24,7 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-@EventBusSubscriber(Dist.CLIENT)
+@EventBusSubscriber(value = Dist.CLIENT, bus = EventBusSubscriber.Bus.MOD)
 public class CustomSoulIconLoader {
     private static final Map<ResourceKey<DragonSpecies>, Map<ResourceKey<DragonStage>, ResourceLocation>> ICONS = new HashMap<>();
 
@@ -71,6 +70,7 @@ public class CustomSoulIconLoader {
 
     @SubscribeEvent
     public static void registerIcons(final ModelEvent.RegisterAdditional event) {
-        ICONS.values().forEach(maps -> maps.values().forEach(resource -> event.register(new ModelResourceLocation(resource, "standalone"))));
+        // Forge 1.20.1 loads additional models by their plain resource ID, without a model variant.
+        ICONS.values().forEach(maps -> maps.values().forEach(event::register));
     }
 }
