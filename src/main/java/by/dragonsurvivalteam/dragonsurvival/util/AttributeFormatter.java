@@ -27,7 +27,7 @@ public class AttributeFormatter {
             "Format: resource / tag;attribute_scale",
             "The resource can also be defined using regular expressions (for both namespace and path)",
     })
-    @ConfigOption(side = ConfigSide.CLIENT, category = {"ui", "percentage_attributes"}, key = "percentage_attributes")
+    @ConfigOption(side = ConfigSide.CLIENT, category = {"ui", "misc"}, key = "percentage_attributes")
     public static List<AttributeConfig> percentageAttributes = List.of(
             // NeoForge 1.21.1 comment:
             // Neo: Convert Movement Speed to percent-based for more appropriate display using IAttributeExtension. Use a scale factor of 1000 since movement speed has 0.001 units.
