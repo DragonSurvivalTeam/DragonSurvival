@@ -1,11 +1,11 @@
 package by.dragonsurvivalteam.dragonsurvival.common.codecs;
 
-
 import com.mojang.serialization.Codec;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import org.jetbrains.annotations.NotNull;
 
+/** Exists to be backwards-compatible with 1.21.1+ datapacks */
 public enum AttributeOperation implements StringRepresentable {
     ADD_VALUE("add_value", AttributeModifier.Operation.ADDITION),
     ADD_MULTIPLIED_BASE("add_multiplied_base", AttributeModifier.Operation.MULTIPLY_BASE),

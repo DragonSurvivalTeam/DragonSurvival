@@ -4,6 +4,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.PercentageAttribute;
 import by.dragonsurvivalteam.dragonsurvival.common.TimeAttribute;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAttributes;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
+import by.dragonsurvivalteam.dragonsurvival.util.AttributeFormatter;
 import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import com.mojang.datafixers.util.Either;
@@ -20,7 +21,6 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.ForgeMod;
 
 import java.util.UUID;
@@ -202,8 +202,7 @@ public record Modifier(Holder<Attribute> attribute, Either<LevelBasedValue, Prec
         if (attribute.value() instanceof TimeAttribute && operation == AttributeOperation.ADD_VALUE) {
             value = Component.translatable(LangKey.SECONDS, Functions.ticksToSeconds((int) amount));
         } else {
-            double displayValue = operation == AttributeOperation.ADD_VALUE && !(attribute.value() instanceof PercentageAttribute) ? amount : amount * 100;
-            value = Component.literal(ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(displayValue));
+            value = AttributeFormatter.toValueComponent(attribute, operation.legacy(), amount);
         }
 
         return name.append(value.withStyle(amount >= 0 ? ChatFormatting.BLUE : ChatFormatting.RED));
