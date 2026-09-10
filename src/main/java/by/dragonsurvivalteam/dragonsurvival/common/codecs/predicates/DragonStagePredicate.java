@@ -19,20 +19,23 @@ public record DragonStagePredicate(Optional<HolderSet<DragonStage>> dragonStage,
     ).apply(instance, DragonStagePredicate::new));
 
     @SuppressWarnings("RedundantIfStatement") // ignore for clarity
-    public boolean matches(final Holder<DragonStage> stage, double growth) {
+    public boolean matches(final Holder<DragonStage> stage, double growth, final HolderSet<DragonStage> stages) {
         if (stage == null) {
             return false;
         }
 
-        if (dragonStage().isPresent() && !dragonStage().get().contains(stage)) {
+        if (growth().isPresent() && !growth().get().matches(growth)) {
             return false;
+        }
+
+        if (dragonStage().isPresent() && !dragonStage().get().contains(stage)) {
+            // Consider previously completed stages when a predicate asks for the completion percentage of a stage
+            return growthPercentage().isPresent() && growthPercentage().get().matches(1.0)
+                    && stages.stream().anyMatch(candidate -> dragonStage().get().contains(candidate)
+                            && candidate.value().getProgress(growth) >= 1.0);
         }
 
         if (growthPercentage().isPresent() && !growthPercentage().get().matches(stage.value().getProgress(growth))) {
-            return false;
-        }
-
-        if (growth().isPresent() && !growth().get().matches(growth)) {
             return false;
         }
 
