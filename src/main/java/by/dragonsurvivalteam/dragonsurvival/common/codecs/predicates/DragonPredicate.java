@@ -75,7 +75,7 @@ public record DragonPredicate(
             return false;
         }
 
-        if (dragonStage.isPresent() && !dragonStage.get().matches(handler.stage(), handler.getGrowth())) {
+        if (dragonStage.isPresent() && !dragonStage.get().matches(handler.stage(), handler.getGrowth(), handler.species().value().getStages(level.registryAccess()))) {
             return false;
         }
 
