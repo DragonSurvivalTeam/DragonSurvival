@@ -156,6 +156,8 @@ public class DragonSpeciesScreen extends Screen {
             return;
         }
 
+        renderBackground(graphics);
+
         int startX = guiLeft + 23;
         int startY = guiTop - 13;
 
@@ -165,8 +167,6 @@ public class DragonSpeciesScreen extends Screen {
             component.update();
         }
 
-        this.renderBackground(graphics);
-
         // Hack to absolutely ensure the banner is rendered behind everything else
         speciesBanner.render(graphics, mouseX, mouseY, partialTick);
 
@@ -175,11 +175,6 @@ public class DragonSpeciesScreen extends Screen {
                 renderable.render(graphics, mouseX, mouseY, partialTick);
             }
         }
-    }
-
-    @Override
-    public void renderBackground(@NotNull final GuiGraphics graphics) {
-        // Don't render the vanilla background, it darkens the UI in an undesirable way
     }
 
     @Override

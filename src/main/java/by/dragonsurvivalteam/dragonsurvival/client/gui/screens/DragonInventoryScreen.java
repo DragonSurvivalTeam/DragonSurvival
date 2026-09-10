@@ -268,6 +268,7 @@ public class DragonInventoryScreen extends EffectRenderingInventoryScreen<Dragon
     @Override
     public void render(@NotNull final GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         clawMenuButtons.forEach(button -> button.visible = clawsMenu);
+        renderBackground(graphics);
         super.render(graphics, mouseX, mouseY, partialTick);
 
         if (clawsMenu) {

@@ -117,6 +117,8 @@ public class DragonAbilityScreen extends Screen {
             return;
         }
 
+        renderBackground(graphics);
+
         int startX = guiLeft + 8;
         int startY = guiTop - 28;
 
@@ -203,11 +205,6 @@ public class DragonAbilityScreen extends Screen {
 
     private void drawExperienceBar(final GuiGraphics guiGraphics, int y, int initialX, float hoverProgress) {
         guiGraphics.blit(EXP_FULL, initialX, y, 0, 0, (int) (93 * hoverProgress), 6, 93, 6);
-    }
-
-    @Override
-    public void renderBackground(@NotNull GuiGraphics pGuiGraphics) {
-        // Don't render the vanilla background, it darkens the UI in an undesirable way
     }
 
     @Override
