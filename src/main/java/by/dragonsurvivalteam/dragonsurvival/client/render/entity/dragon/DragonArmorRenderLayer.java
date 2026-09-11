@@ -87,8 +87,6 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
             return;
         }
 
-        DragonStateHandler handler = DragonStateProvider.getData(player);
-
         if (hasAnyArmorEquipped(player) || ClawInventoryData.getData(player).shouldRenderClaws || hasVisibleCurios(player)) {
             constructTrimmedDragonArmorTexture(player).ifPresent(resourceLocation -> renderArmor(poseStack, animatable, bakedModel, bufferSource, partialTick, packedLight, resourceLocation));
         }
@@ -335,6 +333,8 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
         final float dyeHue,
         final float dyeSaturation
     ) {
+        RenderStateBackup state = RenderStateBackup.capture();
+
         target.bindWrite(true);
         RenderSystem.enableBlend();
         RenderSystem.colorMask(true, true, true, true);
@@ -369,6 +369,8 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
 
         armorGenerationShader.clear();
         target.unbindWrite();
+
+        state.restore();
     }
 
     private static ResourceLocation getTrimPaletteResourceLocation(final ArmorTrim trim, final ArmorMaterial armorMaterial) {
@@ -515,7 +517,7 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
             return null;
         }
 
-        //noinspection deprecation,DataFlowIssue -> ignore deprecated / key is present
+        //noinspection deprecation -> ignore deprecated / key is present
         ResourceLocation itemResource = item.builtInRegistryHolder().unwrapKey().orElseThrow().location();
         String texture = "textures/armor/" + model.getPath() + "/" + itemResource.getNamespace() + "/" + itemResource.getPath() + ".png";
         return new ResourceLocation(model.getNamespace(), texture);
