@@ -51,7 +51,6 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL20;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
 import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
@@ -190,7 +189,6 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
         int viewportHeight = GlStateManager.Viewport.height();
         int activeTexture = GlStateManager._getActiveTexture();
         int activeTextureBinding = GL11.glGetInteger(GL11.GL_TEXTURE_BINDING_2D);
-        int shaderProgram = GL11.glGetInteger(GL20.GL_CURRENT_PROGRAM);
         int[] boundTextures = new int[3];
 
         for (int i = 0; i < boundTextures.length; i++) {
@@ -243,7 +241,6 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
 
             RenderSystem.activeTexture(activeTexture);
             RenderSystem.bindTexture(activeTextureBinding);
-            GL20.glUseProgram(shaderProgram);
         }
     }
 

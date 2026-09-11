@@ -34,7 +34,6 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL20;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -103,7 +102,6 @@ public class DragonEditorHandler {
         int currentViewportHeight = GlStateManager.Viewport.height();
         int activeTexture = GlStateManager._getActiveTexture();
         int activeTextureBinding = GL11.glGetInteger(GL11.GL_TEXTURE_BINDING_2D);
-        int shaderProgram = GL11.glGetInteger(GL20.GL_CURRENT_PROGRAM);
 
         RenderSystem.activeTexture(GlConst.GL_TEXTURE0);
         int texture0 = GL11.glGetInteger(GL11.GL_TEXTURE_BINDING_2D);
@@ -215,7 +213,6 @@ public class DragonEditorHandler {
             RenderSystem.bindTexture(texture0);
             RenderSystem.activeTexture(activeTexture);
             RenderSystem.bindTexture(activeTextureBinding);
-            GL20.glUseProgram(shaderProgram);
         }
     }
 
