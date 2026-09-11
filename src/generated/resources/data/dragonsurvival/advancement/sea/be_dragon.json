@@ -1,5 +1,5 @@
 {
-  "parent": "dragonsurvival:place_altar",
+  "parent": "dragonsurvival:sea/fish_eater",
   "criteria": {
     "be_sea_dragon": {
       "conditions": {
@@ -24,14 +24,7 @@
       "translate": "dragonsurvival.advancement.sea/be_dragon.desc"
     },
     "icon": {
-      "components": {
-        "minecraft:custom_model_data": {
-          "floats": [
-            3.0
-          ]
-        }
-      },
-      "id": "dragonsurvival:dragon_soul"
+      "id": "dragonsurvival:sea_icon"
     },
     "title": {
       "translate": "dragonsurvival.advancement.sea/be_dragon"

@@ -70,7 +70,6 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.component.CustomModelData;
 import net.minecraft.world.item.component.ResolvableProfile;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.ItemLike;
@@ -107,20 +106,12 @@ public class DSAdvancements implements AdvancementSubProvider {
         AdvancementHolder root = create(LangKey.ROOT)
                 .type(AdvancementType.GOAL)
                 .displayItem(DSItems.ELDER_DRAGON_BONE.value())
-                .background(DragonSurvival.res("textures/block/stone_dragon_door_top.png"))
+                .background(DragonSurvival.res("block/stone_dragon_door_top"))
                 .noDescription()
                 .criteria("root", PlayerTrigger.TriggerInstance.tick())
                 .build(saver);
 
         // --- Parent: root --- //
-
-        AdvancementHolder beDragon = create(LangKey.BE_DRAGON)
-                .parent(root)
-                .displayItem(DSItems.STAR_BONE.value())
-                .criteria("be_dragon", beDragon())
-                .experienceReward(12)
-                .build(saver);
-        buildBeDragonChildren(beDragon);
 
         AdvancementHolder collectDust = create(LangKey.COLLECT_DUST)
                 .parent(root)
@@ -166,14 +157,6 @@ public class DSAdvancements implements AdvancementSubProvider {
 
         // --- Parent: dark/affected_by_hunter_omen --- //
 
-        create(LangKey.DARK_STEAL_FROM_VILLAGER)
-                .parent(affectedByHunterOmen)
-                .displayItem(DSItems.PARTISAN.value())
-                .showToast()
-                .announceChat()
-                .criteria("steal_from_villager", stealFromVillager())
-                .build(saver);
-
         AdvancementHolder collectKey = create(LangKey.DARK_COLLECT_KEY)
                 .parent(affectedByHunterOmen)
                 .displayItem(DSItems.DARK_KEY.value())
@@ -205,7 +188,7 @@ public class DSAdvancements implements AdvancementSubProvider {
 
         // --- Parent: dark/get_armor_item --- //
 
-        create(LangKey.DARK_GET_ARMOR_SET)
+        AdvancementHolder getArmorSet = create(LangKey.DARK_GET_ARMOR_SET)
                 .parent(getArmorItem)
                 .displayItem(DSItems.DARK_DRAGON_HELMET.value())
                 .showToast()
@@ -214,6 +197,14 @@ public class DSAdvancements implements AdvancementSubProvider {
                 .criteria("collect_dark_armor_chestplate", InventoryChangeTrigger.TriggerInstance.hasItems(DSItems.DARK_DRAGON_CHESTPLATE.value()))
                 .criteria("collect_dark_armor_leggings", InventoryChangeTrigger.TriggerInstance.hasItems(DSItems.DARK_DRAGON_LEGGINGS.value()))
                 .criteria("collect_dark_armor_boots", InventoryChangeTrigger.TriggerInstance.hasItems(DSItems.DARK_DRAGON_BOOTS.value()))
+                .build(saver);
+
+        create(LangKey.DARK_STEAL_FROM_VILLAGER)
+                .parent(getArmorSet)
+                .displayItem(DSItems.PARTISAN.value())
+                .showToast()
+                .announceChat()
+                .criteria("steal_from_villager", stealFromVillager())
                 .build(saver);
     }
 
@@ -326,54 +317,124 @@ public class DSAdvancements implements AdvancementSubProvider {
     private void buildPlaceAltarChildren(final AdvancementHolder parent) {
         // --- Parent: place_altar --- //
 
-        ItemStackTemplate caveSoul = new ItemStackTemplate(DSItems.DRAGON_SOUL, DataComponentPatch.builder()
-                .set(DataComponents.CUSTOM_MODEL_DATA, new CustomModelData(List.of(2.0f), List.of(), List.of(), List.of()))
-                .build());
-
-        AdvancementHolder beCaveDragon = create(LangKey.CAVE_BE_DRAGON)
+        AdvancementHolder beOldCaveDragon = create(LangKey.CAVE_BE_OLD_DRAGON)
                 .parent(parent)
-                .displayItem(caveSoul)
+                .displayItem(DSItems.CAVE_FULL_ICON.value())
                 .showToast()
                 .announceChat()
-                .criteria("be_cave_dragon", beDragon(registries.holderOrThrow(BuiltInDragonSpecies.CAVE_DRAGON)))
-                .experienceReward(12)
+                .criteria("be_fully_grown_adult", beDragon(registries.holderOrThrow(BuiltInDragonSpecies.CAVE_DRAGON), registries.holderOrThrow(DragonStages.adult), 1))
+                .experienceReward(120)
                 .build(saver);
-        buildBeCaveDragonChildren(beCaveDragon);
 
-        ItemStackTemplate seaSoul = new ItemStackTemplate(DSItems.DRAGON_SOUL, DataComponentPatch.builder()
-                .set(DataComponents.CUSTOM_MODEL_DATA, new CustomModelData(List.of(3.0f), List.of(), List.of(), List.of()))
-                .build());
+        // --- Parent: cave/be_old_dragon --- //
 
-        AdvancementHolder beSeaDragon = create(LangKey.SEA_BE_DRAGON)
-                .parent(parent)
-                .displayItem(seaSoul)
+        AdvancementHolder masterCavePassives = create(LangKey.CAVE_MASTER_ALL_PASSIVES)
+                .parent(beOldCaveDragon)
+                .displayItem(DSBlocks.CAVE_SOURCE_OF_MAGIC.value())
                 .showToast()
                 .announceChat()
-                .criteria("be_sea_dragon", beDragon(registries.holderOrThrow(BuiltInDragonSpecies.SEA_DRAGON)))
-                .experienceReward(12)
+                .criteria("master_burn", upgradeAbilityMax(registries.holderOrThrow(CaveDragonAbilities.BURN)))
+                .criteria("master_cave_athletics", upgradeAbilityMax(registries.holderOrThrow(CaveDragonAbilities.CAVE_ATHLETICS)))
+                .criteria("master_contrast_shower", upgradeAbilityMax(registries.holderOrThrow(CaveDragonAbilities.CONTRAST_SHOWER)))
+                .criteria("master_cave_magic", upgradeAbilityMax(registries.holderOrThrow(CaveDragonAbilities.CAVE_MAGIC)))
+                .experienceReward(150)
                 .build(saver);
-        buildBeSeaDragonChildren(beSeaDragon);
 
-        ItemStackTemplate forestSoul = new ItemStackTemplate(DSItems.DRAGON_SOUL, DataComponentPatch.builder()
-                .set(DataComponents.CUSTOM_MODEL_DATA, new CustomModelData(List.of(1.0f), List.of(), List.of(), List.of()))
-                .build());
+        buildCaveDragonChallenges(masterCavePassives);
 
-        AdvancementHolder beForestDragon = create(LangKey.FOREST_BE_DRAGON)
+        // --- Parent: place_altar --- //
+
+        AdvancementHolder beOldSeaDragon = create(LangKey.SEA_BE_OLD_DRAGON)
                 .parent(parent)
-                .displayItem(forestSoul)
+                .displayItem(DSItems.SEA_FULL_ICON.value())
                 .showToast()
                 .announceChat()
-                .criteria("be_forest_dragon", beDragon(registries.holderOrThrow(BuiltInDragonSpecies.FOREST_DRAGON)))
-                .experienceReward(12)
+                .criteria("be_fully_grown_adult", beDragon(registries.holderOrThrow(BuiltInDragonSpecies.SEA_DRAGON), registries.holderOrThrow(DragonStages.adult), 1))
+                .experienceReward(120)
                 .build(saver);
-        buildBeForestDragonChildren(beForestDragon);
+
+        // --- Parent: sea/be_old_dragon --- //
+
+        AdvancementHolder masterSeaPassives = create(LangKey.SEA_MASTER_ALL_PASSIVES)
+                .parent(beOldSeaDragon)
+                .displayItem(DSBlocks.SEA_SOURCE_OF_MAGIC.value())
+                .showToast()
+                .announceChat()
+                .criteria("master_spectral_impact", upgradeAbilityMax(registries.holderOrThrow(SeaDragonAbilities.SPECTRAL_IMPACT)))
+                .criteria("master_sea_athletics", upgradeAbilityMax(registries.holderOrThrow(SeaDragonAbilities.SEA_ATHLETICS)))
+                .criteria("master_hydration", upgradeAbilityMax(registries.holderOrThrow(SeaDragonAbilities.HYDRATION)))
+                .criteria("master_sea_magic", upgradeAbilityMax(registries.holderOrThrow(SeaDragonAbilities.SEA_MAGIC)))
+                .experienceReward(150)
+                .build(saver);
+
+        buildSeaDragonChallenges(masterSeaPassives);
+
+        // --- Parent: place_altar --- //
+
+        AdvancementHolder beOldForestDragon = create(LangKey.FOREST_BE_OLD_DRAGON)
+                .parent(parent)
+                .displayItem(DSItems.FOREST_FULL_ICON.value())
+                .showToast()
+                .announceChat()
+                .criteria("be_fully_grown_adult", beDragon(registries.holderOrThrow(BuiltInDragonSpecies.FOREST_DRAGON), registries.holderOrThrow(DragonStages.adult), 1))
+                .experienceReward(120)
+                .build(saver);
+
+        // --- Parent: forest/be_old_dragon --- //
+
+        AdvancementHolder masterForestPassives = create(LangKey.FOREST_MASTER_ALL_PASSIVES)
+                .parent(beOldForestDragon)
+                .displayItem(DSBlocks.FOREST_SOURCE_OF_MAGIC.value())
+                .showToast()
+                .announceChat()
+                .criteria("master_cliffhanger", upgradeAbilityMax(registries.holderOrThrow(ForestDragonAbilities.CLIFFHANGER)))
+                .criteria("master_forest_athletics", upgradeAbilityMax(registries.holderOrThrow(ForestDragonAbilities.FOREST_ATHLETICS)))
+                .criteria("master_light_in_darkness", upgradeAbilityMax(registries.holderOrThrow(ForestDragonAbilities.LIGHT_IN_DARKNESS)))
+                .criteria("master_forest_magic", upgradeAbilityMax(registries.holderOrThrow(ForestDragonAbilities.FOREST_MAGIC)))
+                .experienceReward(150)
+                .build(saver);
+
+        buildForestDragonChallenges(masterForestPassives);
     }
 
-    private void buildBeCaveDragonChildren(final AdvancementHolder parent) {
-        // --- Parent: cave/be_dragon --- //
+    private void buildCaveDragonChallenges(final AdvancementHolder parent) {
+        // --- Parent: cave/master_all_passives --- //
+
+        AdvancementHolder swimInLava = create(LangKey.CAVE_SWIM_IN_LAVA)
+                .parent(parent)
+                .displayItem(Items.LAVA_BUCKET)
+                .criteria("swim_in_lava", location(Condition.dragonSpecies(registries.holderOrThrow(BuiltInDragonSpecies.CAVE_DRAGON)).located(isInFluid(FluidTags.LAVA))))
+                .experienceReward(20)
+                .build(saver);
+
+        // --- Parent: cave/swim_in_lava --- //
+
+        AdvancementHolder diamondsInLava = create(LangKey.CAVE_DIAMONDS_IN_LAVA)
+                .parent(swimInLava)
+                .displayItem(Items.DIAMOND_ORE)
+                .criteria("mine_diamond_in_lava", mineBlockInLava(Blocks.DIAMOND_ORE, Blocks.DEEPSLATE_DIAMOND_ORE))
+                .experienceReward(40)
+                .build(saver);
+
+        // --- Parent: cave/diamonds_in_lava --- //
+
+        AdvancementHolder goHome = create(LangKey.CAVE_GO_HOME)
+                .parent(diamondsInLava)
+                .displayItem(Items.NETHER_BRICK_STAIRS)
+                .showToast()
+                .announceChat()
+                .criteria("explore_nether_lava_sea", location(
+                        Condition.dragonSpecies(registries.holderOrThrow(BuiltInDragonSpecies.CAVE_DRAGON))
+                                .located(inDimension(Level.NETHER).setFluid(fluid(FluidTags.LAVA)))
+                                .effects(hasEffect(DSEffects.LAVA_VISION))
+                ))
+                .experienceReward(20)
+                .build(saver);
+
+        // --- Parent: cave/go_home --- //
 
         AdvancementHolder rockEater = create(LangKey.CAVE_ROCK_EATER)
-                .parent(parent)
+                .parent(goHome)
                 .displayItem(DSItems.CHARGED_COAL.value())
                 .criteria("consume_charged_coal", consumeItem(DSItems.CHARGED_COAL.value()))
                 .criteria("consume_charged_soup", consumeItem(DSItems.CHARGED_SOUP.value()))
@@ -387,16 +448,9 @@ public class DSAdvancements implements AdvancementSubProvider {
                 .experienceReward(60)
                 .build(saver);
 
-        AdvancementHolder swimInLava = create(LangKey.CAVE_SWIM_IN_LAVA)
-                .parent(parent)
-                .displayItem(Items.LAVA_BUCKET)
-                .criteria("swim_in_lava", location(Condition.dragonSpecies(registries.holderOrThrow(BuiltInDragonSpecies.CAVE_DRAGON)).located(isInFluid(FluidTags.LAVA))))
-                .experienceReward(20)
-                .build(saver);
-
         // --- Parent: cave/rock_eater --- //
 
-        create(LangKey.CAVE_WATER_SAFETY)
+        AdvancementHolder waterSafety = create(LangKey.CAVE_WATER_SAFETY)
                 .parent(rockEater)
                 .displayItem(DSItems.CHARGED_SOUP.value())
                 .criteria("swim_safely_in_lava", location(
@@ -407,39 +461,20 @@ public class DSAdvancements implements AdvancementSubProvider {
                 .experienceReward(40)
                 .build(saver);
 
-        // --- Parent: cave/swim_in_lava --- //
+        // --- Parent: cave/water_safety --- //
 
-        AdvancementHolder diamondsInLava = create(LangKey.CAVE_DIAMONDS_IN_LAVA)
-                .parent(swimInLava)
-                .displayItem(Items.DIAMOND_ORE)
-                .criteria("mine_diamond_in_lava", mineBlockInLava(Blocks.DIAMOND_ORE, Blocks.DEEPSLATE_DIAMOND_ORE))
-                .experienceReward(40)
-                .build(saver);
-
-        create(LangKey.CAVE_GO_HOME)
-                .parent(diamondsInLava)
-                .displayItem(Items.NETHER_BRICK_STAIRS)
+        create(LangKey.CAVE_BE_DRAGON)
+                .parent(waterSafety)
+                .displayItem(DSItems.CAVE_ICON.value())
                 .showToast()
                 .announceChat()
-                .criteria("explore_nether_lava_sea", location(
-                        Condition.dragonSpecies(registries.holderOrThrow(BuiltInDragonSpecies.CAVE_DRAGON))
-                                .located(inDimension(Level.NETHER).setFluid(fluid(FluidTags.LAVA)))
-                                .effects(hasEffect(DSEffects.LAVA_VISION))
-                ))
-                .experienceReward(20)
+                .criteria("be_cave_dragon", beDragon(registries.holderOrThrow(BuiltInDragonSpecies.CAVE_DRAGON)))
+                .experienceReward(12)
                 .build(saver);
     }
 
-    private void buildBeSeaDragonChildren(final AdvancementHolder parent) {
-        // --- Parent: sea/be_dragon --- //
-
-        AdvancementHolder lootShipwreck = create(LangKey.SEA_LOOT_SHIPWRECK)
-                .parent(parent)
-                .displayItem(Items.HEART_OF_THE_SEA)
-                .criteria("explore_shipwreck", location(Condition.dragonSpecies(registries.holderOrThrow(BuiltInDragonSpecies.SEA_DRAGON)).located(inStructure(registries.holderOrThrow(BuiltinStructures.SHIPWRECK)))))
-                .criteria("explore_beached_shipwreck", location(Condition.dragonSpecies(registries.holderOrThrow(BuiltInDragonSpecies.SEA_DRAGON)).located(inStructure(registries.holderOrThrow(BuiltinStructures.SHIPWRECK_BEACHED)))))
-                .experienceReward(20)
-                .build(saver);
+    private void buildSeaDragonChallenges(final AdvancementHolder parent) {
+        // --- Parent: sea/master_all_passives --- //
 
         AdvancementHolder rainDancing = create(LangKey.SEA_RAIN_DANCING)
                 .parent(parent)
@@ -449,20 +484,6 @@ public class DSAdvancements implements AdvancementSubProvider {
                         WeatherCheck.weather().setRaining(true).setThundering(true).build()
                 )))
                 .experienceReward(30)
-                .build(saver);
-
-        // --- Parent: sea/loot_shipwreck --- //
-
-        create(LangKey.SEA_FISH_EATER)
-                .parent(lootShipwreck)
-                .displayItem(DSItems.SEASONED_FISH.value())
-                .criteria("consume_kelp", consumeItem(Items.KELP))
-                .criteria("consume_seasoned_fish", consumeItem(DSItems.SEASONED_FISH.value()))
-                .criteria("consume_golden_coral_pufferfish", consumeItem(DSItems.GOLDEN_CORAL_PUFFERFISH.value()))
-                .criteria("consume_frozen_raw_fish", consumeItem(DSItems.FROZEN_RAW_FISH.value()))
-                .criteria("consume_golden_turtle_egg", consumeItem(DSItems.GOLDEN_TURTLE_EGG.value()))
-                .criteria("consume_sea_dragon_treat", consumeItem(DSItems.SEA_DRAGON_TREAT.value()))
-                .experienceReward(80)
                 .build(saver);
 
         // --- Parent: sea/rain_dancing --- //
@@ -478,7 +499,7 @@ public class DSAdvancements implements AdvancementSubProvider {
 
         // --- Parent: sea/place_snow_in_nether --- //
 
-        create(LangKey.SEA_PEACE_IN_NETHER)
+        AdvancementHolder peaceInNether = create(LangKey.SEA_PEACE_IN_NETHER)
                 .parent(placeSnowInNether)
                 .displayItem(Items.CAULDRON)
                 .criteria("be_safe_in_nether", location(
@@ -487,10 +508,45 @@ public class DSAdvancements implements AdvancementSubProvider {
                                 .located(inDimension(Level.NETHER))
                 ))
                 .build(saver);
+
+        // --- Parent: sea/peace_in_nether --- //
+
+        AdvancementHolder lootShipwreck = create(LangKey.SEA_LOOT_SHIPWRECK)
+                .parent(peaceInNether)
+                .displayItem(Items.HEART_OF_THE_SEA)
+                .criteria("explore_shipwreck", location(Condition.dragonSpecies(registries.holderOrThrow(BuiltInDragonSpecies.SEA_DRAGON)).located(inStructure(registries.holderOrThrow(BuiltinStructures.SHIPWRECK)))))
+                .criteria("explore_beached_shipwreck", location(Condition.dragonSpecies(registries.holderOrThrow(BuiltInDragonSpecies.SEA_DRAGON)).located(inStructure(registries.holderOrThrow(BuiltinStructures.SHIPWRECK_BEACHED)))))
+                .experienceReward(20)
+                .build(saver);
+
+        // --- Parent: sea/loot_shipwreck --- //
+
+        AdvancementHolder fishEater = create(LangKey.SEA_FISH_EATER)
+                .parent(lootShipwreck)
+                .displayItem(DSItems.SEASONED_FISH.value())
+                .criteria("consume_kelp", consumeItem(Items.KELP))
+                .criteria("consume_seasoned_fish", consumeItem(DSItems.SEASONED_FISH.value()))
+                .criteria("consume_golden_coral_pufferfish", consumeItem(DSItems.GOLDEN_CORAL_PUFFERFISH.value()))
+                .criteria("consume_frozen_raw_fish", consumeItem(DSItems.FROZEN_RAW_FISH.value()))
+                .criteria("consume_golden_turtle_egg", consumeItem(DSItems.GOLDEN_TURTLE_EGG.value()))
+                .criteria("consume_sea_dragon_treat", consumeItem(DSItems.SEA_DRAGON_TREAT.value()))
+                .experienceReward(80)
+                .build(saver);
+
+        // --- Parent: sea/fish_eater --- //
+
+        create(LangKey.SEA_BE_DRAGON)
+                .parent(fishEater)
+                .displayItem(DSItems.SEA_ICON.value())
+                .showToast()
+                .announceChat()
+                .criteria("be_sea_dragon", beDragon(registries.holderOrThrow(BuiltInDragonSpecies.SEA_DRAGON)))
+                .experienceReward(12)
+                .build(saver);
     }
 
-    private void buildBeForestDragonChildren(final AdvancementHolder parent) {
-        // --- Parent: forest/be_dragon --- //
+    private void buildForestDragonChallenges(final AdvancementHolder parent) {
+        // --- Parent: forest/master_all_passives --- //
 
         AdvancementHolder standOnSweetBerries = create(LangKey.FOREST_STAND_ON_SWEET_BERRIES)
                 .parent(parent)
@@ -499,16 +555,9 @@ public class DSAdvancements implements AdvancementSubProvider {
                 .experienceReward(30)
                 .build(saver);
 
-        AdvancementHolder poisonousPotato = create(LangKey.FOREST_POISONOUS_POTATO)
-                .parent(parent)
-                .displayItem(Items.POISONOUS_POTATO)
-                .criteria("convert_potato", convertPotato(Condition.dragonSpecies(registries.holderOrThrow(BuiltInDragonSpecies.FOREST_DRAGON))))
-                .experienceReward(16)
-                .build(saver);
-
         // --- Parent: forest/stand_on_sweet_berries --- //
 
-        create(LangKey.FOREST_PREVENT_DARKNESS_PENALTY)
+        AdvancementHolder preventDarknessPenalty = create(LangKey.FOREST_PREVENT_DARKNESS_PENALTY)
                 .parent(standOnSweetBerries)
                 .displayItem(DSItems.LUMINOUS_OINTMENT.value())
                 .criteria("be_safe_in_darkness", location(
@@ -517,6 +566,15 @@ public class DSAdvancements implements AdvancementSubProvider {
                                 .effects(MobEffectsPredicate.Builder.effects().and(DSEffects.MAGIC))
                 ))
                 .experienceReward(40)
+                .build(saver);
+
+        // --- Parent: forest/prevent_darkness_penalty --- //
+
+        AdvancementHolder poisonousPotato = create(LangKey.FOREST_POISONOUS_POTATO)
+                .parent(preventDarknessPenalty)
+                .displayItem(Items.POISONOUS_POTATO)
+                .criteria("convert_potato", convertPotato(Condition.dragonSpecies(registries.holderOrThrow(BuiltInDragonSpecies.FOREST_DRAGON))))
+                .experienceReward(16)
                 .build(saver);
 
         // --- Parent: forest/poisonous_potato --- //
@@ -536,7 +594,7 @@ public class DSAdvancements implements AdvancementSubProvider {
 
         // --- Parent: forest/meat_eater --- //
 
-        create(LangKey.FOREST_TRANSPLANT_CHORUS_FRUIT)
+        AdvancementHolder transplantChorusFruit = create(LangKey.FOREST_TRANSPLANT_CHORUS_FRUIT)
                 .parent(meatEater)
                 .displayItem(DSItems.DIAMOND_CHORUS.value())
                 .criteria("place_chorus_fruit", placeBlockAsDragon(
@@ -544,10 +602,21 @@ public class DSAdvancements implements AdvancementSubProvider {
                 ))
                 .experienceReward(90)
                 .build(saver);
+
+        // --- Parent: forest/transplant_chorus_fruit --- //
+
+        create(LangKey.FOREST_BE_DRAGON)
+                .parent(transplantChorusFruit)
+                .displayItem(DSItems.FOREST_ICON.value())
+                .showToast()
+                .announceChat()
+                .criteria("be_forest_dragon", beDragon(registries.holderOrThrow(BuiltInDragonSpecies.FOREST_DRAGON)))
+                .experienceReward(12)
+                .build(saver);
     }
 
-    private void buildBeDragonChildren(final AdvancementHolder parent) {
-        // --- Parent: be_dragon --- //
+    private void buildCollectHeartChildren(final AdvancementHolder parent) {
+        // --- Parent: collect_heart_from_monster --- //
 
         AdvancementHolder stopNaturalGrowth = create(LangKey.STOP_NATURAL_GROWTH)
                 .parent(parent)
@@ -675,7 +744,7 @@ public class DSAdvancements implements AdvancementSubProvider {
 
         create(LangKey.GET_ALL_BEACONS)
                 .parent(changeBeacon)
-                .displayItem(DSItems.ELDER_DRAGON_DUST.value())
+                .displayItem(DSItems.ACTIVATED_DRAGON_BEACON.value())
                 .showToast()
                 .announceChat()
                 .criteria("affected_by_peace", effectWithMinDuration(DSEffects.PEACE, Functions.secondsToTicks(20)))
@@ -729,76 +798,7 @@ public class DSAdvancements implements AdvancementSubProvider {
                 .experienceReward(6)
                 .build(saver);
 
-        // --- Parent: collect_heart_from_monster --- //
-
-        AdvancementHolder beOldCaveDragon = create(LangKey.CAVE_BE_OLD_DRAGON)
-                .parent(collectHeartFromMonster)
-                .displayItem(DSItems.CAVE_BEACON.value())
-                .showToast()
-                .announceChat()
-                .criteria("be_fully_grown_adult", beDragon(registries.holderOrThrow(BuiltInDragonSpecies.CAVE_DRAGON), registries.holderOrThrow(DragonStages.adult), 1))
-                .experienceReward(120)
-                .build(saver);
-
-        // --- Parent: cave/be_old_dragon --- //
-
-        create(LangKey.CAVE_MASTER_ALL_PASSIVES)
-                .parent(beOldCaveDragon)
-                .displayItem(DSBlocks.CAVE_SOURCE_OF_MAGIC.value())
-                .showToast()
-                .announceChat()
-                .criteria("master_burn", upgradeAbilityMax(registries.holderOrThrow(CaveDragonAbilities.BURN)))
-                .criteria("master_cave_athletics", upgradeAbilityMax(registries.holderOrThrow(CaveDragonAbilities.CAVE_ATHLETICS)))
-                .criteria("master_contrast_shower", upgradeAbilityMax(registries.holderOrThrow(CaveDragonAbilities.CONTRAST_SHOWER)))
-                .criteria("master_cave_magic", upgradeAbilityMax(registries.holderOrThrow(CaveDragonAbilities.CAVE_MAGIC)))
-                .experienceReward(150)
-                .build(saver);
-
-        AdvancementHolder beOldSeaDragon = create(LangKey.SEA_BE_OLD_DRAGON)
-                .parent(collectHeartFromMonster)
-                .displayItem(DSItems.SEA_BEACON.value())
-                .showToast()
-                .announceChat()
-                .criteria("be_fully_grown_adult", beDragon(registries.holderOrThrow(BuiltInDragonSpecies.SEA_DRAGON), registries.holderOrThrow(DragonStages.adult), 1))
-                .experienceReward(120)
-                .build(saver);
-
-        // --- Parent: sea/be_old_dragon --- //
-
-        create(LangKey.SEA_MASTER_ALL_PASSIVES)
-                .parent(beOldSeaDragon)
-                .displayItem(DSBlocks.SEA_SOURCE_OF_MAGIC.value())
-                .showToast()
-                .announceChat()
-                .criteria("master_spectral_impact", upgradeAbilityMax(registries.holderOrThrow(SeaDragonAbilities.SPECTRAL_IMPACT)))
-                .criteria("master_sea_athletics", upgradeAbilityMax(registries.holderOrThrow(SeaDragonAbilities.SEA_ATHLETICS)))
-                .criteria("master_hydration", upgradeAbilityMax(registries.holderOrThrow(SeaDragonAbilities.HYDRATION)))
-                .criteria("master_sea_magic", upgradeAbilityMax(registries.holderOrThrow(SeaDragonAbilities.SEA_MAGIC)))
-                .experienceReward(150)
-                .build(saver);
-
-        AdvancementHolder beOldForestDragon = create(LangKey.FOREST_BE_OLD_DRAGON)
-                .parent(collectHeartFromMonster)
-                .displayItem(DSItems.FOREST_BEACON.value())
-                .showToast()
-                .announceChat()
-                .criteria("be_fully_grown_adult", beDragon(registries.holderOrThrow(BuiltInDragonSpecies.FOREST_DRAGON), registries.holderOrThrow(DragonStages.adult), 1))
-                .experienceReward(120)
-                .build(saver);
-
-        // --- Parent: forest/be_old_dragon --- //
-
-        create(LangKey.FOREST_MASTER_ALL_PASSIVES)
-                .parent(beOldForestDragon)
-                .displayItem(DSBlocks.FOREST_SOURCE_OF_MAGIC.value())
-                .showToast()
-                .announceChat()
-                .criteria("master_cliffhanger", upgradeAbilityMax(registries.holderOrThrow(ForestDragonAbilities.CLIFFHANGER)))
-                .criteria("master_forest_athletics", upgradeAbilityMax(registries.holderOrThrow(ForestDragonAbilities.FOREST_ATHLETICS)))
-                .criteria("master_light_in_darkness", upgradeAbilityMax(registries.holderOrThrow(ForestDragonAbilities.LIGHT_IN_DARKNESS)))
-                .criteria("master_forest_magic", upgradeAbilityMax(registries.holderOrThrow(ForestDragonAbilities.FOREST_MAGIC)))
-                .experienceReward(150)
-                .build(saver);
+        buildCollectHeartChildren(collectHeartFromMonster);
     }
 
     private Builder create(final String path) {

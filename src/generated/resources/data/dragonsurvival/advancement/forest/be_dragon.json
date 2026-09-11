@@ -1,5 +1,5 @@
 {
-  "parent": "dragonsurvival:place_altar",
+  "parent": "dragonsurvival:forest/transplant_chorus_fruit",
   "criteria": {
     "be_forest_dragon": {
       "conditions": {
@@ -24,14 +24,7 @@
       "translate": "dragonsurvival.advancement.forest/be_dragon.desc"
     },
     "icon": {
-      "components": {
-        "minecraft:custom_model_data": {
-          "floats": [
-            1.0
-          ]
-        }
-      },
-      "id": "dragonsurvival:dragon_soul"
+      "id": "dragonsurvival:forest_icon"
     },
     "title": {
       "translate": "dragonsurvival.advancement.forest/be_dragon"

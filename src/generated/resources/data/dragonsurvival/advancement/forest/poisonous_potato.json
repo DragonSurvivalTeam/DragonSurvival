@@ -1,5 +1,5 @@
 {
-  "parent": "dragonsurvival:forest/be_dragon",
+  "parent": "dragonsurvival:forest/prevent_darkness_penalty",
   "criteria": {
     "convert_potato": {
       "conditions": {

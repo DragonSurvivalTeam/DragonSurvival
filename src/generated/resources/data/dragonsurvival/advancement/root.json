@@ -6,7 +6,7 @@
   },
   "display": {
     "announce_to_chat": false,
-    "background": "dragonsurvival:textures/block/stone_dragon_door_top.png",
+    "background": "dragonsurvival:block/stone_dragon_door_top",
     "description": "",
     "frame": "goal",
     "icon": {

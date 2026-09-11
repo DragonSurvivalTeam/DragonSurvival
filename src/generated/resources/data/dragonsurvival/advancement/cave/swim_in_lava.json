@@ -1,5 +1,5 @@
 {
-  "parent": "dragonsurvival:cave/be_dragon",
+  "parent": "dragonsurvival:cave/master_all_passives",
   "criteria": {
     "swim_in_lava": {
       "conditions": {

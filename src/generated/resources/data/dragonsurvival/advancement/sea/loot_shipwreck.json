@@ -1,5 +1,5 @@
 {
-  "parent": "dragonsurvival:sea/be_dragon",
+  "parent": "dragonsurvival:sea/peace_in_nether",
   "criteria": {
     "explore_beached_shipwreck": {
       "conditions": {

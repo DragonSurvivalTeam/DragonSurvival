@@ -1,5 +1,5 @@
 {
-  "parent": "dragonsurvival:dark/affected_by_hunter_omen",
+  "parent": "dragonsurvival:dark/get_armor_set",
   "criteria": {
     "steal_from_villager": {
       "trigger": "dragonsurvival:steal_from_villager"

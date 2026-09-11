@@ -1,5 +1,5 @@
 {
-  "parent": "dragonsurvival:place_altar",
+  "parent": "dragonsurvival:cave/water_safety",
   "criteria": {
     "be_cave_dragon": {
       "conditions": {
@@ -24,14 +24,7 @@
       "translate": "dragonsurvival.advancement.cave/be_dragon.desc"
     },
     "icon": {
-      "components": {
-        "minecraft:custom_model_data": {
-          "floats": [
-            2.0
-          ]
-        }
-      },
-      "id": "dragonsurvival:dragon_soul"
+      "id": "dragonsurvival:cave_icon"
     },
     "title": {
       "translate": "dragonsurvival.advancement.cave/be_dragon"

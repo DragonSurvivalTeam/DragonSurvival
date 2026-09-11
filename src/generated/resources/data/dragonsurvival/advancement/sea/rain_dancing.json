@@ -1,5 +1,5 @@
 {
-  "parent": "dragonsurvival:sea/be_dragon",
+  "parent": "dragonsurvival:sea/master_all_passives",
   "criteria": {
     "experience_rain_and_thunder": {
       "conditions": {
