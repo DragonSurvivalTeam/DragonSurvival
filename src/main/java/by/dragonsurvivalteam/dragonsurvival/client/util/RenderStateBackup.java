@@ -1,6 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.client.util;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.renderer.ShaderInstance;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL14;
 import org.lwjgl.system.MemoryStack;
@@ -24,6 +25,8 @@ public final class RenderStateBackup {
     private final boolean colorMaskGreen;
     private final boolean colorMaskBlue;
     private final boolean colorMaskAlpha;
+
+    private final ShaderInstance lastAppliedShader;
 
     private RenderStateBackup() {
         RenderSystem.assertOnRenderThread();
@@ -49,6 +52,8 @@ public final class RenderStateBackup {
             colorMaskBlue = colorMask.get(2) != 0;
             colorMaskAlpha = colorMask.get(3) != 0;
         }
+
+        lastAppliedShader = RenderSystem.getShader();
     }
 
     public static RenderStateBackup capture() {
@@ -57,6 +62,10 @@ public final class RenderStateBackup {
 
     public void restore() {
         RenderSystem.assertOnRenderThread();
+
+        if (lastAppliedShader != null) {
+            lastAppliedShader.apply();
+        }
 
         RenderSystem.blendFuncSeparate(blendSrcRgb, blendDestRgb, blendSrcAlpha, blendDestAlpha);
         if (blendEnabled) {
