@@ -1,5 +1,5 @@
 {
-  "parent": "dragonsurvival:forest/be_dragon",
+  "parent": "dragonsurvival:forest/master_all_passives",
   "criteria": {
     "stand_on_sweet_berries": {
       "conditions": {

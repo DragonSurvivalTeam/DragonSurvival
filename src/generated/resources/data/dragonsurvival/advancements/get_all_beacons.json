@@ -46,7 +46,7 @@
     "frame": "task",
     "hidden": false,
     "icon": {
-      "item": "dragonsurvival:elder_dragon_dust"
+      "item": "dragonsurvival:activated_dragon_beacon"
     },
     "show_toast": true,
     "title": {

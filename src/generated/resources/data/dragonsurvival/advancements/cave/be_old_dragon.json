@@ -1,5 +1,5 @@
 {
-  "parent": "dragonsurvival:collect_heart_from_monster",
+  "parent": "dragonsurvival:place_altar",
   "criteria": {
     "be_fully_grown_adult": {
       "conditions": {
@@ -24,7 +24,7 @@
     "frame": "task",
     "hidden": false,
     "icon": {
-      "item": "dragonsurvival:cave_beacon"
+      "item": "dragonsurvival:cave_full_icon"
     },
     "show_toast": true,
     "title": {

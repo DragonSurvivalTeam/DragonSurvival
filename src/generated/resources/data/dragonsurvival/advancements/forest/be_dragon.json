@@ -1,5 +1,5 @@
 {
-  "parent": "dragonsurvival:place_altar",
+  "parent": "dragonsurvival:forest/transplant_chorus_fruit",
   "criteria": {
     "criterion_0": {
       "conditions": {
@@ -18,8 +18,7 @@
     "frame": "task",
     "hidden": false,
     "icon": {
-      "item": "dragonsurvival:dragon_soul",
-      "nbt": "{CustomModelData:1}"
+      "item": "dragonsurvival:forest_icon"
     },
     "show_toast": true,
     "title": {

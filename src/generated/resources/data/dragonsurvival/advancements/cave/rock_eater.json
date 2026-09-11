@@ -1,5 +1,5 @@
 {
-  "parent": "dragonsurvival:cave/be_dragon",
+  "parent": "dragonsurvival:cave/go_home",
   "criteria": {
     "consume_cave_dragon_treat": {
       "conditions": {

@@ -1,5 +1,5 @@
 {
-  "parent": "dragonsurvival:place_altar",
+  "parent": "dragonsurvival:cave/water_safety",
   "criteria": {
     "be_cave_dragon": {
       "conditions": {
@@ -18,8 +18,7 @@
     "frame": "task",
     "hidden": false,
     "icon": {
-      "item": "dragonsurvival:dragon_soul",
-      "nbt": "{CustomModelData:2}"
+      "item": "dragonsurvival:cave_icon"
     },
     "show_toast": true,
     "title": {

@@ -1,5 +1,5 @@
 {
-  "parent": "dragonsurvival:be_dragon",
+  "parent": "dragonsurvival:collect_heart_from_monster",
   "criteria": {
     "stop_natural_growth": {
       "trigger": "dragonsurvival:stop_natural_growth"
