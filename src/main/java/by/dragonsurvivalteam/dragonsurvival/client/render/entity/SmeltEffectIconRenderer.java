@@ -71,7 +71,8 @@ public class SmeltEffectIconRenderer {
         pose.pushPose();
         pose.translate(0, entity.getBbHeight() + 0.5, 0);
         pose.mulPose(Minecraft.getInstance().getEntityRenderDispatcher().cameraOrientation());
-        pose.scale(scale, -scale, scale);
+        // Match name-tag billboards: both axes must be flipped so the quad faces the camera.
+        pose.scale(-scale, -scale, scale);
 
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
