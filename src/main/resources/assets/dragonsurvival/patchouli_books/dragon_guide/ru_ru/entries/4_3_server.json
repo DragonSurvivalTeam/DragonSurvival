@@ -1,0 +1,12 @@
+{
+	"name": "4. Мультиплеер",
+	"category": "dragonsurvival:4_settings",
+	"icon": "minecraft:painting",
+	"pages": [
+		{
+			"type": "patchouli:text",
+			"text": "■ Dragon Survival полностью совместим с мультиплеером через выделенный сервер (dedicated server) или любым хостинг-сайтом.$(br)$(br)■ Если вы играете по локальной сети (Lan), то у вас могут быть некоторые баги. Если вы увидите такие - обязательно сообщите нам в дискорде или на гитхабе."
+		}
+	],
+	"read_by_default": true
+}

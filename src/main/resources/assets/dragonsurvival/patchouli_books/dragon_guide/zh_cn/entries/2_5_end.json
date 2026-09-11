@@ -1,0 +1,45 @@
+{
+	"name": "5. 末影龙",
+	"category": "dragonsurvival:2_features",
+	"icon": "minecraft:dragon_head",
+	"pages": [
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/12_0.png"
+			],
+			"text": "■ $(#610b27)森林龙的生成平台$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:spotlight",
+			"item": "dragonsurvival:primordial_anchor",
+			"text": "■ 当龙来到$(#610b27)末地$()后，可以使用由末影龙以自身能量供给的$(#610b27)原初锚$()，传送到遥远的外岛。$(br)$(br)■ 在那里可以找到一座拥有$(#610b27)三头龙$()和通往主世界的传送门的结构。这是一种无需击杀末影龙即可以龙的身份通关游戏的替代方式。"
+		},
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/12_1.png"
+			],
+			"text": "■ $(#610b27)充能后的原初锚$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:text",
+			"text": "■ 使用原初锚后，需要使用$(#610b27)末影珍珠$()为其充能。$(br)$(br)■ 充能完成后，它会再次亮起绿色，这时你就可以再次进行传送$(br)$(br)■ 在非常早期的版本中，龙可以安全地跳入虚空，但现在已经没有这个功能了！请务必小心。"
+		},
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/12_2.png"
+			],
+			"text": "■ $(#610b27)染血的原初锚$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:text",
+			"text": "■ 如果你被贪欲蒙蔽双眼，不愿放过$(#610b27)末影龙$()，你就会受到诅咒。$(br)$(br)■ 你将无法使用部分$(#610b27)龙类技能$()，也无法通过原初锚进行传送。$(br)$(br)■ $(#610b27)复活末影龙$()，即可纠正你的错误。"
+		}
+	],
+	"read_by_default": true
+}

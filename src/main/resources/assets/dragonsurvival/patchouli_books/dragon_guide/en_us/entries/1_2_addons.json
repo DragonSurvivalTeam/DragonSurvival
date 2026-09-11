@@ -15,7 +15,7 @@
 		},
 		{
 			"type": "patchouli:text",
-			"text": "■ Трёх драконов для вас недостаточно, вам нужно отредактировать существующего или вы хотите $(#610b27)сделать своего собственного$()? Dragon Survival позволяет создавать любых кастомных существ с помощью системы $(l:https://minecraft.wiki/w/Tutorial:Creating_a_data_pack)датапаков$()$().$(br)$(br)■ Посмотреть все сделанные другими игроками дополнения (Addons) можно $(l:https://www.curseforge.com/minecraft/mc-mods/dragons-survival/relations/dependents?page=1&pageSize=20&type=RequiredDependency&sortBy=downloads&sortOrder=Desc)тут$()$().$(br)$(br)■ Чтобы появиться в этом списке автор должен указать свой мод как $(#610b27)Required Dependency$()."
+			"text": "■ Трёх драконов для вас недостаточно, вам нужно отредактировать существующего или вы хотите $(#610b27)сделать своего собственного$()? Dragon Survival позволяет создавать любых кастомных существ с помощью системы $(l:https://minecraft.wiki/w/Tutorial:Creating_a_data_pack)датапаков$()$().$(br)$(br)■ Посмотреть все сделанные другими игроками дополнения (Addons) можно $(l:https://www.curseforge.com/minecraft/mc-mods/dragons-survival/relations/dependents?page=1&pageSize=20&type=RequiredDependency&sortBy=downloads&sortOrder=Desc)тут$()$().$(br)$(br)■ Чтобы появиться в этом списке автор должен указать Dragon Survival в своём моде как $(#610b27)Required Dependency$()."
 		},
 		{
 			"type": "patchouli:image",

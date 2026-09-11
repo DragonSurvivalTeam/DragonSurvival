@@ -1,0 +1,20 @@
+{
+	"name": "5. 前置条件",
+	"category": "dragonsurvival:0_becoming_dragon",
+	"icon": "minecraft:chain_command_block",
+	"pages": [
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/4_1_alt.png"
+			],
+			"text": "■ $(#610b27)与$(l:https://www.curseforge.com/minecraft/mc-mods/dragon-survival-griffin-addon)狮鹫$()$(#610b27)附属联动时的前置条件$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:text",
+			"text": "■ 原版龙之生存中，变成龙并没有任何前置条件。你只需要选择自己喜欢的龙种，就可以变成对应的龙。$(br)$(br)■ $(l:https://minecraft.wiki/w/Tutorial)数据包$()和配置文件可以添加$(#610b27)前置条件$()。在附属、服务器和整合包中，这类要求相当常见，而且形式多种多样。如果你也想为自己制作类似的内容，不妨大胆尝试，并随时提出问题。"
+		}
+	],
+	"read_by_default": true
+}

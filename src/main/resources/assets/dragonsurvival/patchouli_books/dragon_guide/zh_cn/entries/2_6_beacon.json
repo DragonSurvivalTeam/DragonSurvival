@@ -1,0 +1,31 @@
+{
+	"name": "6. 龙之信标",
+	"category": "dragonsurvival:2_features",
+	"icon": "dragonsurvival:dragon_beacon",
+	"pages": [
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/13_0.png"
+			],
+			"text": "■ $(#610b27)完全激活并由龙之记忆强化的龙之信标$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:crafting",
+			"recipe": "dragonsurvival:dragon_beacon",
+			"text": "■ 为了克服自身的弱点，龙会使用$(#610b27)龙之信标$()。$(br)$(br)■ 你可以消耗经验值来购买$(#610b27)无限制使用龙魂$()、$(#610b27)暂时克服种族缺陷$()以及其他实用增益。"
+		},
+		{
+			"type": "patchouli:crafting",
+			"recipe": "dragonsurvival:beacon_activator",
+			"text": "■ 要让空白的龙之信标生效，需要由龙使用$(#610b27)本源之匙$()将其激活。$(br)$(br)■ 手持本源之匙，对龙之信标$(#610b27)右键$()即可。"
+		},
+		{
+			"type": "patchouli:crafting",
+			"recipe": "dragonsurvival:dragon_memory_block",
+			"text": "■ 如果在龙之信标下方放置$(#610b27)龙之记忆$()，其效果就会向周围区域扩散。$(br)$(br)■ 不同的龙会提供不同的增益，因此最好在基地中设置多个由不同龙激活的龙之信标。"
+		}
+	],
+	"read_by_default": true
+}

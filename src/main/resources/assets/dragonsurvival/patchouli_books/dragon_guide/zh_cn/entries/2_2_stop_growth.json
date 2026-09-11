@@ -1,0 +1,31 @@
+{
+	"name": "3. 停止成长",
+	"category": "dragonsurvival:2_features",
+	"icon": "dragonsurvival:star_heart",
+	"pages": [
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/9_2.png"
+			],
+			"text": "■ $(#610b27)一座埋藏着远古巨龙遗骸的结构$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:crafting",
+			"recipe": "dragonsurvival:star_bone_craft",
+			"text": "■ 若想减少成长值，请使用扭曲星骨。$(br)$(br)■ 扭曲星骨可以通过合成获得，也可以在地下的一种特殊稀有结构中找到。还可以通过另一种配方增加扭曲星骨的数量。"
+		},
+		{
+			"type": "patchouli:crafting",
+			"recipe": "dragonsurvival:star_bone_dupe",
+			"text": "■ 可以通过配方增加扭曲星骨的数量。"
+		},
+		{
+			"type": "patchouli:crafting",
+			"recipe": "dragonsurvival:star_heart",
+			"text": "■ 如果你想彻底停止被动成长，请使用这个物品。"
+		}
+	],
+	"read_by_default": true
+}

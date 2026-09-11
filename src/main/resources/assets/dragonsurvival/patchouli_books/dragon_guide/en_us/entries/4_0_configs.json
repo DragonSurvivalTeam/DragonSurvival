@@ -1,0 +1,46 @@
+{
+	"name": "1. Конфиги",
+	"category": "dragonsurvival:4_settings",
+	"icon": "minecraft:book",
+	"pages": [
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/19_0.png",
+				"dragonsurvival_guide_book:textures/gui/sprites/book/19_1.png"
+			],
+			"text": "■ $(#610b27)Конфиги в инвентаре дракона$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:text",
+			"text": "■ Самые популярные запросы пользователей на изменение мода реализованы в виде файлов с настройками ($(#610b27)конфигов$()).$(br)$(br)■ Именно они позволяют каждому игроку сделать $(#610b27)Dragon Survival$() таким, каким он хочет его видеть.$(br)$(br)■ Рендер предметов во рту, отключение штрафов, потеря прогресса при смене вида - всё это доступно в $(#610b27)конфигах$()."
+		},
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/19_4.png",
+				"dragonsurvival_guide_book:textures/gui/sprites/book/19_2.png"
+			],
+			"text": "■ $(#610b27)Открытие папки игры$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:text",
+			"text": "■ В разных лаунчерах расположение папки игры может отличаться. В лаунчере $(#610b27)CurseForge$() она находится внутри настроек модпака.$(br)$(br)■ Внутри самих файлов нажмите $(#610b27)Ctrl+F$(), чтобы открыть поисковую строку. Эта функция есть во множестве других программ, а не только в Блокноте, поэтому не стесняйтесь ею пользоваться."
+		},
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/19_3.png"
+			],
+			"text": "■ $(#610b27)Конфиги в текстовом файле$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:text",
+			"text": "■ Лучше всего менять настройки, предварительно закрыв игру, и редактировать файлы напрямую.$(br)$(br)■ Используйте поиск Windows по файлам, чтобы найти файлы с названиями $(#610b27)dragonsurvival-client$() и $(#610b27)dragonsurvival-server$().$(br)$(br)■ В зависимости от версии игры они могут находиться в разных местах.$(br)$(br)■ Вы можете открыть любой из этих текстовых файлов с помощью обычного $(#610b27)Блокнота$() или $(#610b27)Notepad++$()."
+		}
+	],
+	"read_by_default": true
+}

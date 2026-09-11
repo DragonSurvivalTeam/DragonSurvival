@@ -1,0 +1,32 @@
+{
+	"name": "1. 外观编辑器",
+	"category": "dragonsurvival:1_customization",
+	"icon": "minecraft:raw_copper_block",
+	"pages": [
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/5_0.png"
+			],
+			"text": "■ $(#610b27)更改新生海洋龙的外观$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:text",
+			"text": "■ 模组内置了非常详细的$(#610b27)外观编辑器$()，你可以修改颜色、将外观复制到所有成长阶段、保存预设，以及进行更多操作。$(br)$(br)■ 只需将鼠标悬停在界面的不同元素上，并按照出现的$(#610b27)提示$()进行操作即可。$(br)$(br)■ 每种龙都有自己独特的自定义细节。例如，海洋龙的$(#610b27)双眼可以拥有不同颜色$()。"
+		},
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/5_1.png"
+			],
+			"text": "■ $(#610b27)快速访问外观编辑器$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:text",
+			"text": "■ 你可以通过$(#610b27)龙之祭坛$()，或通过龙类物品栏中的$(#610b27)皮肤$()选项卡进入编辑菜单。$(br)$(br)■ 外观修改不受任何$(#610b27)限制$()，也$(#610b27)不会$()像更改体型或龙种那样导致成长或技能丢失。"
+		}
+	],
+	"read_by_default": true
+}

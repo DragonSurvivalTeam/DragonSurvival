@@ -1,0 +1,43 @@
+{
+	"name": "2. 成长阶段",
+	"category": "dragonsurvival:2_features",
+	"icon": "dragonsurvival:elder_dragon_heart",
+	"pages": [
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/9_0.png",
+				"dragonsurvival_guide_book:textures/gui/sprites/book/9_3.png"
+			],
+			"text": "■ $(#610b27)成长物品与碾压破坏设置说明$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:text",
+			"text": "■ 默认情况下，龙会随着时间成长，也可以使用特殊物品来$(#610b27)加速成长$()。$(br)$(br)■ 当龙达到$(#610b27)120大小$()后，就可以碾碎方块，并在踩踏动物时将其碾压。$(br)$(br)■ 你可以在$(#610b27)按键设置$()中控制这一功能，并通过快捷键将其开启或关闭。"
+		},
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/9_1.png"
+			],
+			"text": "■ $(#610b27)成长阶段信息$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:text",
+			"text": "■ 不同的成长阶段拥有不同的加成，你可以在$(#610b27)龙类物品栏$()中将鼠标悬停在提示信息上查看。$(br)$(br)■ 虽然不太明显，但你还可以在一些较大的提示框中使用$(#610b27)鼠标滚轮$()向下滚动，以查看后续属性。"
+		},
+		{
+			"type": "patchouli:crafting",
+			"recipe": "dragonsurvival:dragon_heart_shard",
+			"recipe2": "dragonsurvival:weak_dragon_heart"
+		},
+		{
+			"type": "patchouli:crafting",
+			"recipe": "dragonsurvival:elder_dragon_heart",
+			"text": "■ 所有这些物品都可以被龙用来$(#610b27)加速成长$()。$(br)$(br)■ 它们可以从$(#610b27)产出经验的矿石$()以及强大的怪物身上获得。"
+		}
+	],
+	"read_by_default": true
+}

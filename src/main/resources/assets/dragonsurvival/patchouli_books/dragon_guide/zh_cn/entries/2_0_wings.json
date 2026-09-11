@@ -1,0 +1,47 @@
+{
+	"name": "1. 飞行与翅膀",
+	"category": "dragonsurvival:2_features",
+	"icon": "dragonsurvival:wing_grant",
+	"pages": [
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/10_0.png"
+			],
+			"text": "■ $(#610b27)两种龙的飞行$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:text",
+			"text": "■ 默认情况下，龙可以飞行，并使用$(#610b27)悬浮魔法$()来实现这一点。$(br)$(br)■ 因此，即使是没有翅膀的龙也能够飞行，并能让物品悬浮在空中，这样就不用把物品叼在嘴里沾满唾液了。$(br)$(br)■ 创建世界时，你可以移除一个$(#610b27)从游戏开始就启用飞行$()的数据包，从而提高游戏难度。"
+		},
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/10_1.png"
+			],
+			"text": "■ $(#610b27)飞行加速$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:text",
+			"text": "■ 飞行有两种模式：$(br)$(br) 1. $(#610b27)慢速$() - 你只是飞起并逐渐下降。这会消耗大量食物。$(br)$(br) 2. $(#610b27)快速$() - 按下加速键（Ctrl 或 Shift）即可快速俯冲并加速。如果撞上障碍物，飞行将会中断。$(br)$(br)■ 按下 G（默认按键）即可进入飞行模式。"
+		},
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/10_2.png",
+				"dragonsurvival_guide_book:textures/gui/sprites/book/10_3.png",
+				"dragonsurvival_guide_book:textures/gui/sprites/book/9_3.png"
+			],
+			"text": "■ $(#610b27)末地中的传承之所$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:spotlight",
+			"item": "dragonsurvival:wing_grant,dragonsurvival:spin_grant",
+			"text": "■ 使用$(#610b27)旋冲赋能$()后，龙可以在水中、熔岩中以及空中进行旋冲。这会对敌人造成伤害，并且可以通过附魔得到强化。例如，火焰附加可以使敌人着火。请检查按键设置以设置旋冲按键。$(br)$(br)■ $(#610b27)飞行赋能$()用于以其他方式获得翅膀。在默认设置下，它没有实际用途。"
+		}
+	],
+	"read_by_default": true
+}

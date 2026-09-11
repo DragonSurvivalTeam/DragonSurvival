@@ -1,0 +1,5 @@
+{
+	"dragonsurvival.dragon_guide.book_name": "龙之生存",
+	"dragonsurvival.dragon_guide.subtitle": "元素生物指南",
+	"dragonsurvival.dragon_guide.book_landing_text": "■ $(#610b27)$(playername)$()，当你翻动这本书时，古老龙族的$(#610b27)记忆$()会进入你的灵魂，帮助你熟悉$(l:https://www.curseforge.com/minecraft/mc-mods/dragons-survival)龙之生存$()模组。$(br)$(br)■ 访问我们的$(l:https://github.com/DragonSurvivalTeam/DragonSurvival/wiki)GitHub Wiki$()了解更多信息。受书籍格式本身的限制，要在这里写下详细的内容相当困难。"
+}

@@ -1,0 +1,34 @@
+{
+	"name": "2. 龙之祭坛",
+	"category": "dragonsurvival:0_becoming_dragon",
+	"icon": "dragonsurvival:stone_dragon_altar",
+	"pages": [
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/1_0_altar.png"
+			],
+			"text": "■ $(#610b27)几种不同的龙之祭坛$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:text",
+			"text": "■ 合成这个$(#610b27)方块$()后，你就可以无限制地编辑自己的龙、并更改龙种和体型。$(br)$(br)■ 你可以通过开采会掉落经验的矿石或搜刮箱子里的战利品来获得自己的第一块龙骨。"
+		},
+		{
+			"type": "patchouli:crafting",
+			"recipe": "dragonsurvival:stone_dragon_altar",
+			"text": "■ 如今几乎所有整合包都会安装$(l:https://www.curseforge.com/minecraft/mc-mods/jei)JEI$()或$(l:https://www.curseforge.com/minecraft/mc-mods/roughly-enough-items)REI$()。$(br)$(br)■ 将鼠标悬停在物品上时按 U 或 R，可以快速查看使用该物品的配方，以及以该物品为产物的配方。"
+		},
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/1_1_altar.png",
+				"dragonsurvival_guide_book:textures/gui/sprites/book/1_2_altar.png"
+			],
+			"text": "■ 在 JEI 的搜索栏中输入 $(#610b27)@dragonsurvival$()",
+			"border": false
+		}
+	],
+	"read_by_default": true
+}

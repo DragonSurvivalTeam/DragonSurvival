@@ -1,0 +1,35 @@
+{
+	"name": "2. 自定义皮肤",
+	"category": "dragonsurvival:1_customization",
+	"icon": "minecraft:raw_gold_block",
+	"pages": [
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/6_4.png"
+			],
+			"text": "■ $(#610b27)Blockbench 界面$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:text",
+			"text": "■ 如果你希望充分发挥自己的创造力，可以将你为龙制作的自定义纹理上传到我们的 GitHub。$(br)$(br)■ 与Minecraft官方以及许多其他模组的皮肤系统不同，我们的皮肤系统即使在$(#610b27)离线模式$()下也能正常工作，其他玩家也可以正常看到你的皮肤。"
+		},
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/6_0.png",
+				"dragonsurvival_guide_book:textures/gui/sprites/book/6_1.png",
+				"dragonsurvival_guide_book:textures/gui/sprites/book/6_2.png",
+				"dragonsurvival_guide_book:textures/gui/sprites/book/6_3.png"
+			],
+			"text": "■ $(#610b27)一些由 Black Aures 绘制的自定义皮肤$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:text",
+			"text": "■ 在这本小书里写下详细的皮肤制作指南并不现实，因此关于如何创建、上传和使用皮肤的详细信息，请参阅$(l:https://github.com/DragonSurvivalTeam/DragonSurvival/wiki/3.-Customization)GitHub$()。"
+		}
+	],
+	"read_by_default": true
+}

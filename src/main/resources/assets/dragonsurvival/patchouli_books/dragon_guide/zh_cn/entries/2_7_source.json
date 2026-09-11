@@ -1,0 +1,58 @@
+{
+	"name": "7. 魔源",
+	"category": "dragonsurvival:2_features",
+	"icon": "dragonsurvival:forest_source_of_magic",
+	"pages": [
+		{
+			"type": "patchouli:crafting",
+			"recipe": "dragonsurvival:source_of_magic_sea",
+			"recipe2": "dragonsurvival:source_of_magic_cave"
+		},
+		{
+			"type": "patchouli:crafting",
+			"recipe": "dragonsurvival:source_of_magic_forest",
+			"text": "■ 龙使用技能时会消耗$(#610b27)魔力$()；当魔力耗尽后，则会消耗$(#610b27)经验值$()。$(br)$(br)■ 每种龙都有自己的$(#610b27)魔源$()，可以从中汲取无限的魔力。"
+		},
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/17_4.png"
+			],
+			"text": "■ $(#610b27)魔力值为小数，并显示在右下角$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/17_0.png"
+			],
+			"text": "■ $(#610b27)1. 将魔源放置在地面上$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/17_1.png"
+			],
+			"text": "■ $(#610b27)2. 将任意远古龙的材料丢到魔源上，或放入界面的槽位中$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/17_2.png"
+			],
+			"text": "■ $(#610b27)3. 靠近魔源，你就会在它旁边坐下$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/17_2.png"
+			],
+			"text": "■ $(#610b27)4. 在魔源旁停留一段时间，即可获得效果$()",
+			"border": false
+		}
+	],
+	"read_by_default": true
+}

@@ -1,0 +1,59 @@
+{
+	"name": "2. 圣辉之路",
+	"category": "dragonsurvival:3_hunters_and_treasures",
+	"icon": "dragonsurvival:light_key",
+	"pages": [
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/16_1.png"
+			],
+			"text": "■ $(#610b27)龙具匠师职业的村民$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:crafting",
+			"recipe": "dragonsurvival:dragon_rider_workbench",
+			"text": "■ 在无业村民旁边放置$(#610b27)龙具匠台$()，即可让其成为龙具匠师，并可以从他那里购买$(#610b27)圣辉之钥$()和龙类附魔书。$(br)$(br)■ 遗憾的是，龙具匠师并不会骑龙飞行，尽管过去曾计划加入这一功能。"
+		},
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/16_2.png"
+			],
+			"text": "■ $(#610b27)15种圣辉宝库中的一种$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:spotlight",
+			"item": "dragonsurvival:light_key",
+			"text": "■ 从龙具匠师处购买钥匙后，在第一人称视角下直视地平线，并沿着钥匙末端所指示的方向前进。$(br)$(br)■ 在龙雕像附近可以找到珍贵的战利品，以及用于升级下界合金盔甲的模板。将其与$(#610b27)远古龙心$()一同在锻造台上使用。"
+		},
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/16_0.png"
+			],
+			"text": "■ $(#610b27)身着圣辉龙铠的龙$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:spotlight",
+			"item": "dragonsurvival:light_upgrade",
+			"text": "■ 穿戴完整的$(#610b27)圣辉龙铠$()后，你将无法伤害村民和猎龙者。再也不用担心误伤了！$(br)$(br)■ 如果使用圣辉系附魔书升级盔甲，可以将相同的附魔叠加，从而获得2级附魔；这是为其他盔甲附魔时无法做到的。"
+		},
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/16_3.png"
+			],
+			"text": "■ $(#610b27)龙具匠师的交易与附魔书$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:text",
+			"text": "■ $(#610b27)驭风精通·圣辉$() - 降低飞行时的食物消耗和飞行速度。$(br)$(br)■ $(#610b27)圣疗灵光·圣辉$() - 受到伤害时，有20%的概率获得生命恢复效果。$(br)$(br)■ $(#610b27)不屈之魂·圣辉$() - 使你受到的所有负面效果等级降低1级。$(br)$(br)■ $(#610b27)圣耀龙鳞·圣辉$() - 有20%的概率大幅降低受到的伤害。"
+		}
+	],
+	"read_by_default": true
+}

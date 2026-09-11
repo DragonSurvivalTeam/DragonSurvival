@@ -1,0 +1,28 @@
+{
+	"name": "8. 财宝堆",
+	"category": "dragonsurvival:2_features",
+	"icon": "dragonsurvival:gold_dragon_treasure",
+	"pages": [
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/18_2.png",
+				"dragonsurvival_guide_book:textures/gui/sprites/book/18_1.png",
+				"dragonsurvival_guide_book:textures/gui/sprites/book/18_0.png",
+				"dragonsurvival_guide_book:textures/gui/sprites/book/18_3.png",
+				"dragonsurvival_guide_book:textures/gui/sprites/book/18_4.png",
+				"dragonsurvival_guide_book:textures/gui/sprites/book/18_5.png",
+				"dragonsurvival_guide_book:textures/gui/sprites/book/18_6.png",
+				"dragonsurvival_guide_book:textures/gui/sprites/book/18_7.png"
+			],
+			"text": "■ $(#610b27)不同龙种的财宝堆，大型与小型$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:crafting",
+			"recipe": "dragonsurvival:copper_dragon_treasure",
+			"text": "■ 只要在白天休息足够长的时间，或者直接睡觉跳过夜晚，财宝堆就会提供$(#610b27)生命恢复$()效果。$(br)$(br)■ 如果在同一处聚集超过 240 个财宝堆，该效果就会达到最大强度。"
+		}
+	],
+	"read_by_default": true
+}

@@ -1,0 +1,21 @@
+{
+	"name": "3. Ресурспаки",
+	"category": "dragonsurvival:4_settings",
+	"icon": "minecraft:painting",
+	"pages": [
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/20_3.png",
+				"dragonsurvival_guide_book:textures/gui/sprites/book/20_2.png"
+			],
+			"text": "■ $(#610b27)Встроенные ресурспаки Dragon Survival$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:text",
+			"text": "■ Наиболее простыми в создании являются ресурспаки (или текстурпаки).$(br)$(br)■ С их помощью можно менять любую графическую составляющую мода - модели, текстуры, анимации, добавлять кастомизацию, звуки и прочее.$(br)$(br)■ По умолчанию в моде есть 2 ресурспака: тёмное гуи и изменённая текстура ванильной брони (иконки)."
+		}
+	],
+	"read_by_default": true
+}

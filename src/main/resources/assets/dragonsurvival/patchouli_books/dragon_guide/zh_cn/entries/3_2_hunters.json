@@ -1,0 +1,108 @@
+{
+	"name": "3. 猎龙者",
+	"category": "dragonsurvival:3_hunters_and_treasures",
+	"icon": "dragonsurvival:hunter_key",
+	"pages": [
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/14_8.png"
+			],
+			"text": "■ $(#610b27)猎龙城堡$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:text",
+			"text": "■ 在主世界的地表上，你可以找到一个不怎么欢迎龙的地方。这里有骑士、刃枪兵和商人。$(br)$(br)■ 这座结构中有装着战利品的箱子，还有一些秘密。$(br)$(br)■ 如果你没能自己找到这里，可以从制图师那里购买前往此处的地图。"
+		},
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/14_0.png"
+			],
+			"text": "■ $(#610b27)骑在马上的猎人骑士$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:text",
+			"text": "■ 猎龙者中的主要战士与猎手，拥有大量生命值和极高的速度。他会攻击掠夺者和部分敌对生物。$(br)$(br)■ 能够禁用一定范围内龙的魔法。$(br)$(br)■ 其他猎龙者会跟随在他身后。$(br)$(br)■ 死亡后会掉落一把可以指引你前往下界秘密宝库的钥匙。"
+		},
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/14_1.png",
+				"dragonsurvival_guide_book:textures/gui/sprites/book/14_2.png"
+			],
+			"text": "■ $(#610b27)猎人首领$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:spotlight",
+			"item": "dragonsurvival:hunter_key",
+			"text": "■ 猎龙城堡的财务与账目负责人。他不参与战斗，但这并不妨碍他指挥其他人——至少在纸面上是这样。$(br)$(br)■ 会从友善的玩家手中购买远古龙制品。$(br)$(br)■ 会出售通往主世界猎人宝库的钥匙，以及用于猎龙的武器。"
+		},
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/14_7.png"
+			],
+			"text": "■ $(#610b27)猎人宝库$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:spotlight",
+			"item": "dragonsurvival:hunter_vault",
+			"text": "■ 购买钥匙后，手持它并在第一人称视角下跟随它所指示的方向前进。到达指定地点后，你可以在地下深处找到一座特殊结构，其中有骨骸、刷怪笼以及一座可以使用这把钥匙开启的宝库。$(br)$(br)■ 每名玩家只能使用一把钥匙开启一座宝库。想找到其他宝库，就继续踏上旅途吧。"
+		},
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/14_3.png"
+			],
+			"text": "■ $(#610b27)出现在猎龙城堡中的刃枪兵。结构中设有刷怪笼。$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:crafting",
+			"recipe": "dragonsurvival:spearman_promotion",
+			"text": "■ 他没有什么好的护甲，但攻击范围很远，弥补了这一点。$(br)$(br)■ 对他使用$(#610b27)刃枪晋升令$()，即可将其晋升为首领。"
+		},
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/14_4.png"
+			],
+			"text": "■ $(#610b27)携带狮鹫与弩的猎人$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:text",
+			"text": "■ 他会偶尔出现在世界中，寻找那些被悬赏通缉的玩家，不会主动骚扰和平玩家。$(br)$(br)■ 如果你靠得太近，他会放出狮鹫，并呼叫其他猎龙者。$(br)$(br)■ 他会用弩发射网，并且能够将龙击落。"
+		},
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/14_5.png"
+			],
+			"text": "■ $(#610b27)猎人狮鹫$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:text",
+			"text": "■ 攻击时会抓伤敌人的眼睛，使其无法看见任何东西。$(br)$(br)■ 生命值较低，但想要将它击落却相当困难。$(br)$(br)■ CurseForge 上有一个可以让玩家游玩狮鹫的附属。"
+		},
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/14_6.png"
+			],
+			"text": "■ $(#610b27)拥有强大下颚的特殊狼种。$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:text",
+			"text": "■ 猎犬在咬伤猎物时会使其减速。$(br)$(br)■ 无法驯服。$(br)$(br)■ 在猎龙城堡中生成的猎犬可能会拥有特殊的名字。这些名字来自 Patreon 支持者在一次投票中提供的提案。"
+		}
+	],
+	"read_by_default": true
+}

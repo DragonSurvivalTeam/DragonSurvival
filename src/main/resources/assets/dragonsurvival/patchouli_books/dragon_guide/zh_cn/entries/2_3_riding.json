@@ -1,0 +1,41 @@
+{
+	"name": "3. 骑乘",
+	"category": "dragonsurvival:2_features",
+	"icon": "minecraft:saddle",
+	"pages": [
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/8_1.png",
+				"dragonsurvival_guide_book:textures/gui/sprites/book/8_0.png"
+			],
+			"text": "■ $(#610b27)骑乘$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:text",
+			"text": "■ 如果你的龙朋友已经长得足够大，你就可以尝试$(#610b27)骑乘$()它。按照聊天栏中的$(#610b27)提示$()操作即可。$(br)$(br)■ 其他附属中的龙种不一定支持骑乘，但龙之生存原版的所有龙都支持骑乘。"
+		},
+		{
+			"type": "patchouli:text",
+			"text": "■ 乘客需要做到：$(br)$(br)1. $(#610b27)体型小于龙$()，也就是准备骑乘的那条龙；$(br)$(br)2. 空手右键点击龙的$(#610b27)碰撞箱$()（F3+B）；"
+		},
+		{
+			"type": "patchouli:text",
+			"text": "■ 龙需要做到：$(br)$(br)1. $(#610b27)体型大于乘客$()（例如拥有20颗心）；$(br)$(br)2. 根据你的按键设置，按 Shift 或 Ctrl $(#610b27)蹲下$()；"
+		},
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/8_2.png"
+			],
+			"text": "■ $(#610b27)龙骑上鹦鹉螺$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:text",
+			"text": "■ 默认情况下，龙无法骑乘马、骆驼以及其他可骑乘生物。$(br)$(br)■ 你可以在服务器配置中将 limited_riding = false，或者将需要的实体添加到 vehicle_whitelist 标签中，以启用这一功能。"
+		}
+	],
+	"read_by_default": true
+}

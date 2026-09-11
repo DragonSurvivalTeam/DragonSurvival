@@ -1,0 +1,70 @@
+{
+	"name": "1. 黯影之路",
+	"category": "dragonsurvival:3_hunters_and_treasures",
+	"icon": "dragonsurvival:dark_key",
+	"pages": [
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/15_0.png"
+			],
+			"text": "■ $(#610b27)身着黯影龙铠的龙$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:text",
+			"text": "■ 玩家会因杀害村民、伤害村民以及穿戴黯影龙铠而获得$(#610b27)悬赏追猎$()效果。$(br)$(br)■ 拥有该效果后，所有猎人与铁傀儡都会对你发起攻击，村民会受到惊吓并逃跑，同时龙也可以进行偷窃。$(br)$(br)■ 只有等待时间流逝，或成为$(#610b27)村庄英雄$()，才能摆脱该效果。死亡和牛奶都无法帮你解除它。"
+		},
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/15_1.png"
+			],
+			"text": "■ $(#610b27)受到惊吓、可以被偷窃的村民与普通村民$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:text",
+			"text": "■ 村民会拒绝与邪恶玩家交易，但你可以偷走他们的物品。$(br)$(br)■ 追上头顶带有$(#610b27)惊慌图标$()的村民，并对其右键即可进行偷窃。$(br)$(br)■ 村民会掉落一个自己曾经交易过的物品（也可能什么都没有）。过一段时间后，你可以再次偷窃。"
+		},
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/15_2.png",
+				"dragonsurvival_guide_book:textures/gui/sprites/book/15_3.png"
+			],
+			"text": "■ $(#610b27)钥匙会为你指引通往宝藏的道路$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:text",
+			"text": "■ 击杀骑士后，你可以获得$(#610b27)黯影之钥$()。传送到$(#610b27)下界$()，并在第一人称视角下手持钥匙，跟随它所指示的方向前进。$(br)$(br)■ 在道路尽头，你会找到一座$(#610b27)龙类结构$()，其中有一个特殊方块，可以插入这把钥匙。"
+		},
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/15_5.png"
+			],
+			"text": "■ $(#610b27)在锻造台上升级下界合金盔甲$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:spotlight",
+			"item": "dragonsurvival:dark_upgrade",
+			"text": "■ 从$(#610b27)黯影宝库$()中可以获得用于制作独特龙铠的$(#610b27)黯影模板$()。它会赋予你永久的$(#610b27)悬赏追猎$()效果。$(br)$(br)■ 在该结构的箱子中可以找到$(#610b27)黯影附魔书$()。"
+		},
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/15_4.png"
+			],
+			"text": "■ $(#610b27)所有龙铠都可以添加装饰纹饰$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:text",
+			"text": "■ $(#610b27)嗜血掠夺·黯影$()——黯影套装的附魔。攻击时有30%的几率获得短暂的生命汲取效果。效果持续期间，你会恢复所造成伤害的2%至3%作为生命值。$(br)$(br)■ $(#610b27)猎杀诡谋·黯影$()——对生命值全满的目标造成的伤害提高至1.4倍。$(br)$(br)■ $(#610b27)威压之力·黯影$()——你施加的负面效果等级提高1级。$(br)$(br)■ $(#610b27)龙威浩荡·黯影$()——你造成的所有伤害提高至1.2倍。"
+		}
+	],
+	"read_by_default": true
+}

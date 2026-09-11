@@ -1,0 +1,21 @@
+{
+	"name": "3. 命令",
+	"category": "dragonsurvival:0_becoming_dragon",
+	"icon": "minecraft:command_block",
+	"pages": [
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/2_1_commands.png",
+				"dragonsurvival_guide_book:textures/gui/sprites/book/2_2_commands.png"
+			],
+			"text": "■ $(#610b27)Dragon Survival 的命令$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:text",
+			"text": "■ 你可以使用 $(#610b27)/dragon$() 命令，并根据聊天栏中的提示，将自己或你的朋友变成龙。$(br)$(br)■ 如果在命令中不指定年龄，更换龙种后，龙将$(#610b27)保持原有成长$()。$(br)$(br)■ 在单人游戏中，你可以通过 $(#610b27)对局域网开放 -> 允许作弊 -> 开始$() 菜单开启作弊，也可以在世界设置中启用作弊。"
+		}
+	],
+	"read_by_default": true
+}

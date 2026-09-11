@@ -1,0 +1,21 @@
+{
+	"name": "2. Датапаки",
+	"category": "dragonsurvival:4_settings",
+	"icon": "minecraft:writable_book",
+	"pages": [
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/20_0.png",
+				"dragonsurvival_guide_book:textures/gui/sprites/book/20_1.png"
+			],
+			"text": "■ $(#610b27)Датапаки при создании мира$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:text",
+			"text": "■ Если вы хотите сделать ребаланс навыков, типов тел или вообще создать нового дракона - вам потребуются датапаки.$(br)$(br)■ Прочитать официальный полный гайд можно $(l:https://github.com/DragonSurvivalTeam/DragonSurvival/wiki/RU-%E2%80%90-1.21.1-Create-your-own-Addons-for-Dragon-Survival)тут$()$(), на $(l:https://minecraft.wiki/w/Tutorial:Creating_a_data_pack)fandom wiki$()$() по майнкрафту или просто проверьте ютуб.$(br)$(br)■ По умолчанию есть 4 встроенных датапака, которые можно включать и выключать по желанию."
+		}
+	],
+	"read_by_default": true
+}

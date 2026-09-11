@@ -1,0 +1,44 @@
+{
+	"name": "1. 开始菜单",
+	"category": "dragonsurvival:0_becoming_dragon",
+	"icon": "minecraft:book",
+	"pages": [
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/0_menu_on_start.png"
+			],
+			"text": "■ $(#610b27)龙种选择菜单$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:text",
+			"text": "■ 加载完成几秒后，玩家将会看到当前可用的龙种$(#610b27)列表$()。$(br)$(br)■ 如果你希望继续作为$(#610b27)人类$()，请选择最右侧的图标。此后再次进入世界时，这个菜单将不再出现。$(br)$(br)■ 你可以在之后通过龙之祭坛更改选择，但你的$(#610b27)进度将会丢失$()。"
+		},
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/0_1_menu_on_start.png"
+			],
+			"text": "■ $(#610b27)dragonsurvival-server.toml$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:text",
+			"text": "■ 你可以在$(#610b27)配置文件$()中禁用此菜单以及进行更多设置。找到$(#610b27)start_with_dragon_choice$()选项，并将 true 改为 false。$(br)$(br)■ 在记事本或其他任意文本编辑器中使用$(#610b27)Ctrl+F$()可以快速搜索。"
+		},
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/0_2_menu_on_start.png"
+			],
+			"text": "■ $(#610b27)生存模式中的重新选择图标$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:text",
+			"text": "■ 不小心关闭了选择菜单？不用担心——你仍然可以在$(#610b27)物品栏$()中找到选择选项。完成选择后，这个按钮将不再可用。"
+		}
+	],
+	"read_by_default": true
+}

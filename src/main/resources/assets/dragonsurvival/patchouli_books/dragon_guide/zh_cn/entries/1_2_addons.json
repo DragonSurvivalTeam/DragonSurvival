@@ -1,0 +1,47 @@
+{
+	"name": "3. 自定义龙",
+	"category": "dragonsurvival:1_customization",
+	"icon": "minecraft:diamond_block",
+	"pages": [
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/7_0.png",
+				"dragonsurvival_guide_book:textures/gui/sprites/book/7_1.png",
+				"dragonsurvival_guide_book:textures/gui/sprites/book/7_5.png"
+			],
+			"text": "■ $(#610b27)晶咒龙、Megarrian Typhus 和星界龙附属$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:text",
+			"text": "■ 只有三种龙还不够？想修改现有的龙，或者想$(#610b27)创造属于自己的龙$()？龙之生存可以通过$(l:https://minecraft.wiki/w/Tutorial)数据包$()系统来创建各种自定义生物。$(br)$(br)■ 你可以$(l:https://www.curseforge.com/minecraft/mc-mods/dragons-survival/relations/dependents?page=1&pageSize=20&type=RequiredDependency&sortBy=downloads&sortOrder=Desc)在这里$()查看其他玩家制作的所有附属。$(br)$(br)■ 想要出现在这个列表中，作者必须将自己的模组设置为 $(#610b27)Required Dependency$()。"
+		},
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/7_2.png",
+				"dragonsurvival_guide_book:textures/gui/sprites/book/7_3.png"
+			],
+			"text": "■ $(#610b27)蜂后和Dragon Spider Queen附属中的自定义技能$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:text",
+			"text": "■ 如果你也想亲自尝试制作类似的内容，可以$(l:https://github.com/DragonSurvivalTeam/DragonSurvival/wiki/RU-%E2%80%90-1.21.1-Create-your-own-Addons-for-Dragon-Survival)在这里$()查看创建附属的详细信息。$(br)$(br)■ 如果你在附属制作过程中遇到问题，我们会一直在$(l:https://discord.gg/rMgFyHrUmj)Discord 服务器$()上帮助作者。$(br)$(br)■ 有问题尽管问，但别忘了在提问时附上$(#610b27)日志$()以及你的数据包。"
+		},
+		{
+			"type": "patchouli:text",
+			"text": "■ 如果你想支持这个项目，同时又希望直接获得制作好的成果，也可以$(l:https://forms.gle/UiFtbHqFRC9sDRbK9)向 Black Aures 或其他创作者订购附属$()。$(br)$(br)■ 我们并不反对你作为创作者接取定制委托并以此获得收入。$(br)$(br)■ 但最重要的是，不要主动私信其他用户推销这些服务，否则可能会被视为$(#610b27)垃圾信息$()。遗憾的是，Discord 上已经有太多类似的诈骗者了 :("
+		},
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/7_4.png"
+			],
+			"text": "■ $(#610b27)请记住——提出想法和将其真正实现，并不是一回事 :)$()",
+			"border": false
+		}
+	],
+	"read_by_default": true
+}

@@ -1,0 +1,35 @@
+{
+	"name": "4. 龙魂",
+	"category": "dragonsurvival:2_features",
+	"icon": "dragonsurvival:dragon_soul",
+	"pages": [
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/11_0.png",
+				"dragonsurvival_guide_book:textures/gui/sprites/book/11_1.png",
+				"dragonsurvival_guide_book:textures/gui/sprites/book/11_2.png"
+			],
+			"text": "■ $(#610b27)末地中存放空龙魂并通往主世界的结构$()。",
+			"border": false
+		},
+		{
+			"type": "patchouli:spotlight",
+			"item": "dragonsurvival:dragon_soul",
+			"text": "■ 这是一件非常珍贵的物品，可以将你的全部$(#610b27)龙进度$()（技能、龙种、外观、成长值）储存其中，并将其交给其他玩家。$(br)$(br)■ 其他龙可以使用$(#610b27)龙魂$()，与其中储存的数据进行交换。"
+		},
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/11_3.png"
+			],
+			"text": "■ $(#610b27)作为装饰的夺脑龙龙魂塑像$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:text",
+			"text": "■ 潜行并对地面$(#610b27)右键$()，即可将已填充的龙魂以雕像的形式放置在世界中。雕像会拥有与龙魂中储存的龙相同的大小和颜色。$(br)$(br)■ $(#610b27)右键点击雕像$()即可了解它的其他有趣用法。$(br)$(br)■ 放置后，你可以$(#610b27)安全地将龙魂重新取回$()，也可以防止其他玩家偷走它。"
+		}
+	],
+	"read_by_default": true
+}
