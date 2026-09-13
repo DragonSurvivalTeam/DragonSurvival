@@ -75,7 +75,7 @@ public class DragonPenalties {
 
     @Translation(type = Translation.Type.PENALTY_DESCRIPTION, comments = {
             "■ Dragons are §dscary§r§7  creatures. Animals will try to §cavoid§r them.\n",
-            "■ Build the §2«Beacon»§7 to become more attractive.",
+            "■ Forest dragons can build the §2«Beacon»§7 to become more attractive.",
     })
     @Translation(type = Translation.Type.PENALTY, comments = "Fear")
     public static final ResourceKey<DragonPenalty> FEAR = DragonPenalties.key("fear");

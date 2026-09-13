@@ -403,7 +403,7 @@
   "dragon_penalty.dragonsurvival.cold_weakness": "Cold Weakness",
   "dragon_penalty.dragonsurvival.cold_weakness.desc": "■ Cave dragons slowly take §cdamage§r while in snow or rain due to their fiery nature.\n\n■ The skill §2«Contrast Shower»§r §7could make your life easier.\n",
   "dragon_penalty.dragonsurvival.fear": "Fear",
-  "dragon_penalty.dragonsurvival.fear.desc": "■ Dragons are §dscary§r§7  creatures. Animals will try to §cavoid§r them.\n\n■ Build the §2«Beacon»§7 to become more attractive.",
+  "dragon_penalty.dragonsurvival.fear.desc": "■ Dragons are §dscary§r§7  creatures. Animals will try to §cavoid§r them.\n\n■ Forest dragons can build the §2«Beacon»§7 to become more attractive.",
   "dragon_penalty.dragonsurvival.fear_of_darkness": "Fear of Darkness",
   "dragon_penalty.dragonsurvival.fear_of_darkness.desc": "■ The predatory plants in your body dislike §dDarkness§r. If the light level around you is lower than 4, you may receive the §c«Stress»§r effect, rapidly draining your food gauge.\n\n■ The skill §2«Light the Dark» §7and effect §2«Forest Magic» §7could make your life easier.",
   "dragon_penalty.dragonsurvival.item_blacklist": "Item Blacklist",
