@@ -1,0 +1,21 @@
+{
+	"name": "2. 数据包",
+	"category": "dragonsurvival:4_settings",
+	"icon": "minecraft:writable_book",
+	"pages": [
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/20_0.png",
+				"dragonsurvival_guide_book:textures/gui/sprites/book/20_1.png"
+			],
+			"text": "■ $(#610b27)创建世界时的数据包$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:text",
+			"text": "■ 如果你想重新平衡技能、体型，甚至创建一条全新的龙，就需要使用数据包。$(br)$(br)■ 你可以$(l:https://github.com/DragonSurvivalTeam/DragonSurvival/wiki/RU-%E2%80%90-1.21.1-Create-your-own-Addons-for-Dragon-Survival)在这里$(/l)阅读官方完整指南，也可以在$(l:https://minecraft.wiki/w/Tutorial:Creating_a_data_pack)Minecraft Wiki$(/l)上查看相关教程，或者直接在 YouTube 上搜索。$(br)$(br)■ 默认情况下，模组内置了 4 个数据包，可以根据需要自行启用或禁用。"
+		}
+	],
+	"read_by_default": true
+}

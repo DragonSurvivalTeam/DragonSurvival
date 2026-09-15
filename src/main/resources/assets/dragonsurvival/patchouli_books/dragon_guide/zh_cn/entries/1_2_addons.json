@@ -15,7 +15,7 @@
 		},
 		{
 			"type": "patchouli:text",
-			"text": "■ 只有三种龙还不够？想修改现有的龙，或者想$(#610b27)创造属于自己的龙$()？龙之生存可以通过$(l:https://minecraft.wiki/w/Tutorial)数据包$()系统来创建各种自定义生物。$(br)$(br)■ 你可以$(l:https://www.curseforge.com/minecraft/mc-mods/dragons-survival/relations/dependents?page=1&pageSize=20&type=RequiredDependency&sortBy=downloads&sortOrder=Desc)在这里$()查看其他玩家制作的所有附属。$(br)$(br)■ 想要出现在这个列表中，作者必须将自己的模组设置为 $(#610b27)Required Dependency$()。"
+			"text": "■ 三种龙还不能满足你？想修改现有的龙，或者想$(#610b27)创造属于自己的龙$()？龙之生存可以通过$(l:https://minecraft.wiki/w/Tutorial:Creating_a_data_pack)数据包$()系统来创建各种自定义生物。$(br)$(br)■ 你可以$(l:https://www.curseforge.com/minecraft/mc-mods/dragons-survival/relations/dependents?page=1&pageSize=20&type=RequiredDependency&sortBy=downloads&sortOrder=Desc)在这里$()查看其他玩家制作的所有附属。$(br)$(br)■ 想要出现在这个列表中，作者必须在自己的模组中将龙之生存指定为 $(#610b27)Required Dependency$()。"
 		},
 		{
 			"type": "patchouli:image",
@@ -23,7 +23,7 @@
 				"dragonsurvival_guide_book:textures/gui/sprites/book/7_2.png",
 				"dragonsurvival_guide_book:textures/gui/sprites/book/7_3.png"
 			],
-			"text": "■ $(#610b27)蜂后和Dragon Spider Queen附属中的自定义技能$()",
+			"text": "■ $(#610b27)Be Bee Queen 和 Dragon Spider Queen 附属中的自定义技能$()",
 			"border": false
 		},
 		{

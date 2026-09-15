@@ -1,0 +1,21 @@
+{
+	"name": "3. 资源包",
+	"category": "dragonsurvival:4_settings",
+	"icon": "minecraft:painting",
+	"pages": [
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/20_3.png",
+				"dragonsurvival_guide_book:textures/gui/sprites/book/20_2.png"
+			],
+			"text": "■ $(#610b27)龙之生存内置资源包$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:text",
+			"text": "■ 资源包（或纹理包）是最容易制作的内容之一。$(br)$(br)■ 通过资源包，你可以修改模组中的各种资源——模型、纹理、动画，添加自定义内容、声音等等。$(br)$(br)■ 模组默认提供 2 个资源包：深色 GUI，以及修改后的原版盔甲纹理（图标）。"
+		}
+	],
+	"read_by_default": true
+}

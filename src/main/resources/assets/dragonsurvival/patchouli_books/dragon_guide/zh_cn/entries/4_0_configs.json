@@ -1,0 +1,46 @@
+{
+	"name": "1. 配置",
+	"category": "dragonsurvival:4_settings",
+	"icon": "minecraft:book",
+	"pages": [
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/19_0.png",
+				"dragonsurvival_guide_book:textures/gui/sprites/book/19_1.png"
+			],
+			"text": "■ $(#610b27)龙的物品栏中的配置$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:text",
+			"text": "■ 用户最常提出的模组修改需求，大多都已经通过配置文件（$(#610b27)配置$()）实现。$(br)$(br)■ 正是这些配置让每位玩家都能按照自己的喜好调整 $(#610b27)Dragon Survival$()。$(br)$(br)■ 嘴里显示物品、关闭惩罚、改变种类时是否损失进度——这些内容都可以通过$(#610b27)配置$()进行调整。"
+		},
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/19_4.png",
+				"dragonsurvival_guide_book:textures/gui/sprites/book/19_2.png"
+			],
+			"text": "■ $(#610b27)打开游戏文件夹$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:text",
+			"text": "■ 不同启动器中的游戏文件夹位置可能有所不同。在 $(#610b27)CurseForge$() 启动器中，它位于整合包的设置中。$(br)$(br)■ 在文件本身中，按下 $(#610b27)Ctrl+F$() 即可打开搜索栏。许多其他程序同样支持这一功能，而不仅仅是记事本，所以不要害怕使用它。"
+		},
+		{
+			"type": "patchouli:image",
+			"images": [
+				"dragonsurvival_guide_book:textures/gui/sprites/book/19_3.png"
+			],
+			"text": "■ $(#610b27)文本文件中的配置$()",
+			"border": false
+		},
+		{
+			"type": "patchouli:text",
+			"text": "■ 最好先关闭游戏，再直接编辑配置文件来修改设置。$(br)$(br)■ 使用 Windows 的文件搜索功能，查找名为 $(#610b27)dragonsurvival-client$() 和 $(#610b27)dragonsurvival-server$() 的文件。$(br)$(br)■ 根据游戏版本的不同，它们可能位于不同的位置。$(br)$(br)■ 你可以使用普通的$(#610b27)记事本$()或$(#610b27)Notepad++$()打开这些文本文件。"
+		}
+	],
+	"read_by_default": true
+}

@@ -1,0 +1,12 @@
+{
+	"name": "4. 多人游戏",
+	"category": "dragonsurvival:4_settings",
+	"icon": "minecraft:painting",
+	"pages": [
+		{
+			"type": "patchouli:text",
+			"text": "■ 龙之生存完全兼容通过专用服务器（Dedicated Server）或各种服务器托管网站进行的多人游戏。$(br)$(br)■ 如果你通过局域网（LAN）进行游戏时遇到问题，请务必在 Discord 或 GitHub 上向我们反馈。"
+		}
+	],
+	"read_by_default": true
+}
