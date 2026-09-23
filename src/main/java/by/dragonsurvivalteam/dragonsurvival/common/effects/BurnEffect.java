@@ -15,6 +15,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.common.NeoForgeMod;
 import org.jetbrains.annotations.NotNull;
 
@@ -48,6 +49,13 @@ public class BurnEffect extends ModifiableMobEffect {
             }
         }
 
+        Entity effectApplier = ((AdditionalEffectData) entity.getEffect(DSEffects.BURN)).dragonSurvival$getApplier(level);
+
+        if (effectApplier instanceof Player player && entity instanceof Player otherPlayer && !player.canHarmPlayer(otherPlayer)) {
+            // Will cause the effect to be removed
+            return false;
+        }
+
         double distance = entity.distanceToSqr(data.lastPos);
         float damage = (amplifier + 1) * Mth.clamp((float) distance, 0, 10);
 
@@ -57,14 +65,11 @@ public class BurnEffect extends ModifiableMobEffect {
                 entity.setRemainingFireTicks(1);
             }
 
-            Entity effectApplier = null;
+            boolean wasHurt = entity.hurt(new DamageSource(DSDamageTypes.get(entity.level(), DSDamageTypes.BURN), effectApplier), damage);
 
-            if (entity.level() instanceof ServerLevel serverLevel) {
-                //noinspection DataFlowIssue -> effect cannot be null here
-                effectApplier = ((AdditionalEffectData) entity.getEffect(DSEffects.BURN)).dragonSurvival$getApplier(serverLevel);
+            if (wasHurt && effectApplier instanceof LivingEntity livingApplier) {
+                entity.setLastHurtByMob(livingApplier);
             }
-
-            entity.hurt(new DamageSource(DSDamageTypes.get(entity.level(), DSDamageTypes.BURN), effectApplier), damage);
         }
 
         data.lastPos = entity.position();
