@@ -13,6 +13,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec2;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -116,6 +117,7 @@ public class DragonDestructionHandler {
 
     private static void checkAndDamageCrushedEntities(DragonStateHandler data, ServerPlayer player, AABB boundingBox) {
         MiscCodecs.DestructionData destructionData = data.stage().value().destructionData().orElse(null);
+
         if (destructionData == null || !destructionData.isCrushingAllowed(data.getGrowth())) {
             return;
         }
@@ -133,8 +135,17 @@ public class DragonDestructionHandler {
                 continue;
             }
 
+            if (entity instanceof Player otherPlayer && !player.canHarmPlayer(otherPlayer)) {
+                continue;
+            }
+
             if (destructionData.entityPredicate().matches(player, entity)) {
-                entity.hurt(new DamageSource(DSDamageTypes.get(player.level(), DSDamageTypes.CRUSHED), player), (float) (data.getGrowth() * destructionData.crushingDamageScalar()));
+                boolean wasHurt = entity.hurt(new DamageSource(DSDamageTypes.get(player.level(), DSDamageTypes.CRUSHED), player), (float) (data.getGrowth() * destructionData.crushingDamageScalar()));
+
+                if (wasHurt) {
+                    entity.setLastHurtMob(player);
+                }
+
                 crushTickCounter = ServerConfig.crushingTickDelay;
             }
         }

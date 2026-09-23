@@ -16,6 +16,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
 
 public class DrainEffect extends ModifiableMobEffect {
@@ -50,7 +51,16 @@ public class DrainEffect extends ModifiableMobEffect {
             effectApplier = ((AdditionalEffectData) entity.getEffect(DSEffects.DRAIN)).dragonSurvival$getApplier(serverLevel);
         }
 
-        entity.hurt(new DamageSource(DSDamageTypes.get(entity.level(), DSDamageTypes.DRAIN), effectApplier), damage);
+        if (effectApplier instanceof Player player && entity instanceof Player otherPlayer && !player.canHarmPlayer(otherPlayer)) {
+            // Will cause the effect to be removed
+            return false;
+        }
+
+        boolean wasHurt = entity.hurt(new DamageSource(DSDamageTypes.get(entity.level(), DSDamageTypes.DRAIN), effectApplier), damage);
+
+        if (wasHurt && effectApplier instanceof LivingEntity livingApplier) {
+            entity.setLastHurtByMob(livingApplier);
+        }
 
         return super.applyEffectTick(entity, amplifier);
     }
