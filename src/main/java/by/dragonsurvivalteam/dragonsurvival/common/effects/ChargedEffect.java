@@ -28,6 +28,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.monster.Creeper;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.entity.living.MobEffectEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -130,7 +131,16 @@ public class ChargedEffect extends ModifiableMobEffect {
                 effectApplier = ((AdditionalEffectData) source.getEffect(DSEffects.CHARGED.get())).dragonSurvival$getApplier(serverLevel);
             }
 
-            target.hurt(new DamageSource(DSDamageTypes.get(target.level(), DSDamageTypes.ELECTRIC), effectApplier), damage);
+            if (effectApplier instanceof Player player && target instanceof Player otherPlayer && !player.canHarmPlayer(otherPlayer)) {
+                continue;
+            }
+
+            boolean wasHurt = target.hurt(new DamageSource(DSDamageTypes.get(target.level(), DSDamageTypes.ELECTRIC), effectApplier), damage);
+
+            if (wasHurt && effectApplier instanceof LivingEntity livingApplier) {
+                target.setLastHurtByMob(livingApplier);
+            }
+
             drawParticleLine(source, target);
 
             if (target.level().isClientSide()) {

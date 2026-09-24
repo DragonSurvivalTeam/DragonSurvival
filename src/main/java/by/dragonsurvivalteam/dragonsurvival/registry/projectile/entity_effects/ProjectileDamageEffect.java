@@ -34,28 +34,34 @@ public record ProjectileDamageEffect(Holder<DamageType> damageType, LevelBasedVa
     public void apply(final Projectile projectile, final Entity target, final int level) {
         LivingEntity owner = projectile.getOwner() instanceof LivingEntity entity ? entity : null;
 
+        if (owner instanceof Player player && target instanceof Player otherPlayer && !player.canHarmPlayer(otherPlayer)) {
+            return;
+        }
+
         float damageAmount = amount().calculate(level);
-        if (owner != null) {
+
+        if (owner instanceof Player) {
+            // Attribute is only applied to players and will cause an exception if not present
             damageAmount *= (float) owner.getAttributeValue(DSAttributes.DRAGON_ABILITY_DAMAGE.get());
         }
 
-        target.hurt(new DamageSource(damageType, projectile, owner), damageAmount);
+        boolean wasHurt = target.hurt(new DamageSource(damageType, projectile, owner), damageAmount);
 
-        if (owner != null) {
+        if (wasHurt && owner != null) {
             // Used by 'OwnerHurtTargetGoal'
             owner.setLastHurtMob(target);
         }
-
     }
 
     @Override
     public List<MutableComponent> getDescription(final Player dragon, final int level) {
-        //noinspection DataFlowIssue -> key is present
         MutableComponent translation = Component.translatable(Translation.Type.DAMAGE_TYPE.wrap(damageType.unwrapKey().orElseThrow().location()));
+
         float damage = amount.calculate(level);
         MutableComponent abilityDamage = Component.translatable(ABILITY_PROJECTILE_DAMAGE, DSColors.withColor(translation, DSColors.GOLD), DSColors.dynamicValue(damage));
 
         float additionalDamage = damage * (float) dragon.getAttributeValue(DSAttributes.DRAGON_ABILITY_DAMAGE.get()) - damage;
+
         if (additionalDamage != 0) {
             abilityDamage.append(Component.translatable(LangKey.ABILITY_ADDITIONAL_DAMAGE, DSColors.dynamicValue(additionalDamage)));
         }
