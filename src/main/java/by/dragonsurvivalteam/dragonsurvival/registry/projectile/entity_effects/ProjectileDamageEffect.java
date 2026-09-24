@@ -39,7 +39,8 @@ public record ProjectileDamageEffect(Holder<DamageType> damageType, LevelBasedVa
 
         float damageAmount = amount().calculate(level);
 
-        if (owner != null) {
+        if (owner instanceof Player) {
+            // Attribute is only applied to players and will cause an exception if not present
             damageAmount *= (float) owner.getAttributeValue(DSAttributes.DRAGON_ABILITY_DAMAGE);
         }
 
