@@ -105,6 +105,8 @@ public class DragonStateHandler extends EntityStateHandler {
     /** Last timestamp the server synchronized the player */
     public int lastSync;
 
+    public int foldWingsTimer = 0;
+
     private final Map<ResourceKey<DragonSpecies>, Double> savedGrowth = new HashMap<>();
     private final Map<ResourceKey<DragonSpecies>, Double> savedDesiredGrowth = new HashMap<>();
     private SkinData skinData = new SkinData();
@@ -661,6 +663,7 @@ public class DragonStateHandler extends EntityStateHandler {
             tag.putBoolean(MARKED_BY_ENDER_DRAGON, markedByEnderDragon);
             tag.putBoolean(WINGS_WAS_GRANTED, flightWasGranted);
             tag.putBoolean(SPIN_WAS_GRANTED, spinWasGranted);
+            tag.putInt(FOLD_WINGS_TIMER, foldWingsTimer);
         }
 
         // TODO :: these probably shouldn't be applied to other players (dragon soul)?
@@ -757,6 +760,7 @@ public class DragonStateHandler extends EntityStateHandler {
             markedByEnderDragon = tag.getBoolean(MARKED_BY_ENDER_DRAGON);
             flightWasGranted = tag.getBoolean(WINGS_WAS_GRANTED);
             spinWasGranted = tag.getBoolean(SPIN_WAS_GRANTED);
+            foldWingsTimer = tag.getInt(FOLD_WINGS_TIMER);
         }
 
         if (isDragonSoul) {
