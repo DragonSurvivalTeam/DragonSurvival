@@ -27,6 +27,7 @@
     "ItemMixin",
     "ItemStackFoodMixin",
     "ItemStackMixin",
+    "LevelBasedValueMixin",
     "LevelMixin",
     "LightningBoltMixin",
     "LivingEntityMixin",
