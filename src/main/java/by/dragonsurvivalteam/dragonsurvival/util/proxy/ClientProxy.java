@@ -48,6 +48,8 @@ import java.util.Set;
 public class ClientProxy implements Proxy {
     private final Map<ResourceLocation, TickableSoundInstance> soundInstances = new HashMap<>();
 
+    private boolean shouldGuardLevelBasedLookup;
+
     @Override
     public @Nullable Player getLocalPlayer() {
         return Minecraft.getInstance().player;
@@ -235,6 +237,16 @@ public class ClientProxy implements Proxy {
         }
 
         return false;
+    }
+
+    @Override
+    public void setShouldGuardLevelBasedLookup(final boolean shouldGuard) {
+        shouldGuardLevelBasedLookup = shouldGuard;
+    }
+
+    @Override
+    public boolean shouldGuardLevelBasedLookup() {
+        return shouldGuardLevelBasedLookup;
     }
 
     @Override

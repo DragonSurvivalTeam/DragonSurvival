@@ -35,6 +35,7 @@
     "ItemEntityMixin",
     "ItemPredicateMixin",
     "ItemStackMixin",
+    "LevelBasedValueMixin",
     "LevelMixin",
     "LightningBoltMixin",
     "LivingEntityMixin",
