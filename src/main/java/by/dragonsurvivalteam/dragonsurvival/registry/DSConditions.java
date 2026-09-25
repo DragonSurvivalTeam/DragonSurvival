@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.registry;
 
+import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.data_maps.RegisteredCondition;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.BuiltInDragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
@@ -47,7 +48,13 @@ public final class DSConditions {
             final String path,
             final IConditionSerializer<T> serializer
     ) {
-        CraftingHelper.register(new AliasSerializer<>(new ResourceLocation("neoforge", path), serializer));
+        ResourceLocation location = new ResourceLocation("neoforge", path);
+
+        try {
+            CraftingHelper.register(new AliasSerializer<>(location, serializer));
+        } catch (Exception exception) {
+            DragonSurvival.LOGGER.error("Condition {} could not be registered", location.toString(), exception);
+        }
     }
 
     private record AliasSerializer<T extends ICondition>(
