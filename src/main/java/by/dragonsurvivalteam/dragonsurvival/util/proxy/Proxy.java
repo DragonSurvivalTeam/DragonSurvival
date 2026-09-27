@@ -88,12 +88,6 @@ public interface Proxy {
         return false;
     }
 
-    default void setShouldGuardLevelBasedLookup(final boolean shouldGuard) { /* Nothing to do */ }
-
-    default boolean shouldGuardLevelBasedLookup() {
-        return false;
-    }
-
     default MutableComponent translateKeyMapping(final String key) {
         return Component.translatable(key);
     }

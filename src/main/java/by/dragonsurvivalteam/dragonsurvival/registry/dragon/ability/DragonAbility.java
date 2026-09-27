@@ -100,7 +100,6 @@ public record DragonAbility(
     }
 
     public List<Component> getInfo(final Player dragon, final DragonAbilityInstance instance) {
-        DragonSurvival.PROXY.setShouldGuardLevelBasedLookup(true);
         List<Component> info = new ArrayList<>();
 
         if (activation instanceof PassiveActivation passive) {
@@ -139,7 +138,6 @@ public record DragonAbility(
             }
         }
 
-        DragonSurvival.PROXY.setShouldGuardLevelBasedLookup(false);
         return info;
     }
 
