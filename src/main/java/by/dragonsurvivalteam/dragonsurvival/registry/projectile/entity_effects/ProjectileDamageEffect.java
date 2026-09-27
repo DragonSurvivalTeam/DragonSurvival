@@ -9,6 +9,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.Entity;
@@ -31,6 +32,10 @@ public record ProjectileDamageEffect(Holder<DamageType> damageType, LevelBasedVa
 
     @Override
     public void apply(final Projectile projectile, final Entity target, final int level) {
+        if (!(target.level() instanceof ServerLevel serverLevel)) {
+            return;
+        }
+
         LivingEntity owner = projectile.getOwner() instanceof LivingEntity entity ? entity : null;
 
         if (owner instanceof Player player && target instanceof Player otherPlayer && !player.canHarmPlayer(otherPlayer)) {
@@ -44,7 +49,7 @@ public record ProjectileDamageEffect(Holder<DamageType> damageType, LevelBasedVa
             damageAmount *= (float) owner.getAttributeValue(DSAttributes.DRAGON_ABILITY_DAMAGE);
         }
 
-        boolean wasHurt = target.hurt(new DamageSource(damageType, projectile, owner), damageAmount);
+        boolean wasHurt = target.hurtServer(serverLevel, new DamageSource(damageType, projectile, owner), damageAmount);
 
         if (wasHurt && owner != null) {
             // Used by 'OwnerHurtTargetGoal'

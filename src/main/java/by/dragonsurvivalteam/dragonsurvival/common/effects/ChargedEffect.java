@@ -124,7 +124,7 @@ public class ChargedEffect extends ModifiableMobEffect {
                 continue;
             }
 
-            boolean wasHurt = target.hurt(new DamageSource(DSDamageTypes.get(target.level(), DSDamageTypes.ELECTRIC), effectApplier), damage);
+            boolean wasHurt = target.hurtServer(serverLevel, new DamageSource(DSDamageTypes.get(target.level(), DSDamageTypes.ELECTRIC), effectApplier), damage);
 
             if (wasHurt && effectApplier instanceof LivingEntity livingApplier) {
                 target.setLastHurtByMob(livingApplier);

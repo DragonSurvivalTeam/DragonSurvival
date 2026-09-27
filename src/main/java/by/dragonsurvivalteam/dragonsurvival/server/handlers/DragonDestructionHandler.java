@@ -144,7 +144,7 @@ public class DragonDestructionHandler {
             }
 
             if (destructionData.entityPredicate().matches(player, entity)) {
-                boolean wasHurt = entity.hurt(new DamageSource(DSDamageTypes.get(player.level(), DSDamageTypes.CRUSHED), player), (float) (data.getGrowth() * destructionData.crushingDamageScalar()));
+                boolean wasHurt = entity.hurtServer((ServerLevel) player.level(), new DamageSource(DSDamageTypes.get(player.level(), DSDamageTypes.CRUSHED), player), (float) (data.getGrowth() * destructionData.crushingDamageScalar()));
 
                 if (wasHurt) {
                     entity.setLastHurtByMob(player);

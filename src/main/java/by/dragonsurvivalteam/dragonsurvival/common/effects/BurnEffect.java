@@ -65,7 +65,7 @@ public class BurnEffect extends ModifiableMobEffect {
                 entity.setRemainingFireTicks(1);
             }
 
-            boolean wasHurt = entity.hurt(new DamageSource(DSDamageTypes.get(entity.level(), DSDamageTypes.BURN), effectApplier), damage);
+            boolean wasHurt = entity.hurtServer(level, new DamageSource(DSDamageTypes.get(entity.level(), DSDamageTypes.BURN), effectApplier), damage);
 
             if (wasHurt && effectApplier instanceof LivingEntity livingApplier) {
                 entity.setLastHurtByMob(livingApplier);

@@ -51,7 +51,7 @@ public class DrainEffect extends ModifiableMobEffect {
             return false;
         }
 
-        boolean wasHurt = entity.hurt(new DamageSource(DSDamageTypes.get(entity.level(), DSDamageTypes.DRAIN), effectApplier), damage);
+        boolean wasHurt = entity.hurtServer(level, new DamageSource(DSDamageTypes.get(entity.level(), DSDamageTypes.DRAIN), effectApplier), damage);
 
         if (wasHurt && effectApplier instanceof LivingEntity livingApplier) {
             entity.setLastHurtByMob(livingApplier);
