@@ -1,43 +1,209 @@
+# Dragon Survival License
 
-                            Dragon Survival License
-                           Version 1.1, October 2023
+## Version 1.2, September 2026
 
-   TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
+### TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
 
-   Allowed uses: personal use, creating public commercial servers with Dragon Survival,
-      creating and share modpacks what posted on Curseforge, selling and painting skins,
-      creating and share java addons for Dragon Survival, creating public forks of this Dragon Survival
-      repository to work on improving Dragon Survival or for personal private use.
+This license applies to Dragon Survival and to the creative works included in or distributed with Dragon Survival that are owned or controlled by the Licensor.
 
-   Any other uses not described or questionable may be permitted only by the project owner - Black Aures.
+For the purposes of this License:
 
-    This License does not grant permission to use Dragon Survival content
-      in other projects, reupload Dragon Survival to other sites without the
-      express permitted of the owner of Dragon Survival, publicly publish
-      porting to other versions, porting to bedrock and other platforms,
-      create and trade names, trademarks, service marks, or product names
-      of the Licensor, except as required for fair use.
+"Dragon Survival" or "the Work" means the Dragon Survival Minecraft mod, including its code, files, documentation, and other materials, except for third-party materials that are subject to separate licenses.
+"Dragon Survival Assets" means the creative assets included in Dragon Survival, including but not limited to models, textures, animations, sounds, particles, icons, artwork, renders, GUI elements, and other visual or audio assets.
+"Addon" means a Minecraft mod that lists Dragon Survival as a Required Dependency on CurseForge and that cannot launch, function, or provide its intended functionality without Dragon Survival being present in the user's installed mod list. Does not means Bedrock add-ons.
+"Licensor" means BlackAures1 (Github), BlackAuresArt (Curseforge), Виктория Ершова.
 
-    Disclaimer of Warranty. Unless required by applicable law or
-      agreed to in writing, Licensor provides the Work (and each
-      Contributor provides its Contributions) on an "AS IS" BASIS,
-      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
-      implied, including, without limitation, any warranties or conditions
-      of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A
-      PARTICULAR PURPOSE. You are solely responsible for determining the
-      appropriateness of using or redistributing the Work and assume any
-      risks associated with Your exercise of permissions under this License.
+---
 
-    Limitation of Liability. In no event and under no legal theory,
-      whether in tort (including negligence), contract, or otherwise,
-      unless required by applicable law (such as deliberate and grossly
-      negligent acts) or agreed to in writing, shall any Contributor be
-      liable to You for damages, including any direct, indirect, special,
-      incidental, or consequential damages of any character arising as a
-      result of this License or out of the use or inability to use the
-      Work (including but not limited to damages for loss of goodwill,
-      work stoppage, computer failure or malfunction, or any and all
-      other commercial damages or losses), even if such Contributor
-      has been advised of the possibility of such damages.
+## 1. PERMITTED USES
 
-   Copyright 2020-2024 BlackAures1 (Виктория Ершова)
+Subject to the terms and restrictions of this License, you are permitted to:
+
+1. Use Dragon Survival for personal, non-commercial purposes.
+2. Create and operate public commercial Minecraft servers that use Dragon Survival.
+3. Create, publish, and share modpacks containing Dragon Survival, provided that the modpack is distributed through CurseForge API or another distribution method expressly permitted by the Licensor.
+4. Create, use, and sell custom skins for use with Dragon Survival, provided that such skins are your own original work.
+5. Create and distribute Java-based addons for Dragon Survival, provided that such addons comply with this License and do not redistribute Dragon Survival Assets independently of Dragon Survival.
+6. Create public forks of the Dragon Survival repository for the purpose of improving, maintaining, modifying, debugging, or otherwise developing Dragon Survival.
+7. Create private forks or modified copies of Dragon Survival for personal, private use.
+8. Record, display, stream, photograph, or otherwise create screenshots, videos, and other media depicting Dragon Survival in use, including for monetized or commercial content, provided that such media does not constitute redistribution of Dragon Survival Assets or the Work itself.
+
+Except for the permissions expressly granted by this License, all rights are reserved by the Licensor.
+Any use not expressly permitted by this License requires prior written permission from the Licensor.
+The Licensor reserves the right to prohibit any specific person, user, organization, or entity from using, reproducing, modifying, or distributing Dragon Survival or any Dragon Survival Assets. Such prohibition may be issued by the Licensor in oral or written form, including through direct messages, comments, emails, or other text-based communication. Upon receiving such prohibition, the affected person, user, organization, or entity must immediately cease the use, reproduction, modification, and distribution of Dragon Survival and Dragon Survival Assets.
+
+---
+
+## 2. DRAGON ASSET AND PLAYABLE CHARACTER RESTRICTIONS
+
+All dragon character assets included in Dragon Survival are created and licensed exclusively for use as playable, player-controlled characters.
+You may not use any Dragon Survival Asset, in whole or in part, to create, represent, implement, or support any:
+
+* non-player-controlled character;
+* NPC;
+* mob;
+* creature;
+* enemy;
+* boss;
+* pet;
+* companion;
+* summon;
+* mount that is not directly controlled by the player;
+* or any other non-playable entity.
+
+This restriction applies regardless of whether the Dragon Survival Asset is used in its original form or has been modified, recolored, retextured, remodeled, re-rigged, re-animated, converted, combined with other assets, or otherwise altered.
+The fact that a Dragon Survival Asset has been significantly modified does not grant permission to use it for a non-player-controlled character or other prohibited entity.
+This restriction does not prohibit the creation, use, or distribution of other Minecraft mods that independently create or add non-player-controlled dragon characters, provided that such characters are created using assets that are not Dragon Survival Assets and do not incorporate or derive from Dragon Survival Assets.
+Such independent mods may interact with Dragon Survival, including through compatibility features, gameplay mechanics, quests, events, dialogue, trading, combat, cooperation, shared progression, or other forms of interaction and combined gameplay.
+
+---
+
+## 3. ASSET REUSE AND DERIVATIVE ASSETS
+
+Use of Dragon Survival Assets in any third-party project, Minecraft mod, addon, plugin, resource pack, datapack, software project, animation project, commercial product, or other work requires prior personal permission from the Licensor, unless such use is expressly permitted by this License.
+The use of Dragon Survival Assets for the creation and distribution of Addons is permitted without additional permission, provided that the Addon meets the definition of an Addon under this License and lists Dragon Survival as a Required Dependency on CurseForge.
+A Minecraft mod that does not list Dragon Survival as a Required Dependency on CurseForge is considered a third-party project for the purposes of this section and may not use Dragon Survival Assets without prior personal permission from the Licensor.
+This restriction applies regardless of whether the Dragon Survival Assets are used in their original form or are modified, recolored, retextured, remodeled, re-rigged, re-animated, converted, combined with other assets, or otherwise altered.
+
+---
+
+## 4. ADDONS AND MODPACKS
+
+Java addons and modpacks may depend on Dragon Survival and may add, modify, or interact with Dragon Survival functionality.
+
+However, addons and modpacks may not:
+
+* redistribute extracted copies of Dragon Survival Assets independently of Dragon Survival;
+* package Dragon Survival Assets for use in unrelated projects;
+* bypass or remove the restrictions of this License;
+* present Dragon Survival Assets as original assets created by the addon or modpack author.
+
+A modpack must use the official or otherwise authorized distribution of Dragon Survival rather than replacing it with an unauthorized reupload.
+
+---
+
+## 5. FORKS AND MODIFIED VERSIONS
+
+Public forks are permitted only for the purpose of improving, maintaining, modifying, debugging, or developing Dragon Survival.
+A fork may not merely mirror, rehost, or republish Dragon Survival.
+Forks and modified versions must not be presented as official releases of Dragon Survival or as being endorsed, maintained, or published by the Licensor unless the Licensor has provided explicit written permission.
+You may not remove this License or copyright notices from a redistributed fork or modified version where they accompany the original Work.
+
+---
+
+## 6. REDISTRIBUTION AND REUPLOADING
+
+This License does not grant permission to upload, mirror, rehost, repackage, or redistribute Dragon Survival to third-party websites, repositories, launchers, Patreon, Boosty, file hosts, mod platforms, or other distribution services without the explicit written permission of the Licensor.
+
+Dragon Survival may be included in modpacks only if the modpack itself is freely available for download to any user. A modpack may contain advertisements, sponsorships, donations, in-game purchases, optional paid features, or other forms of monetization, provided that payment is not required to download or obtain the modpack itself.
+
+You may not distribute or make Dragon Survival available through a modpack that requires payment, a subscription, membership, purchase, or any other form of mandatory financial compensation in order to download or access the modpack.
+
+Dragon Survival may only be downloaded and distributed through the official CurseForge distribution system and the CurseForge API. Third-party launchers and other software are permitted to download and install Dragon Survival when they use the official CurseForge API or another distribution method expressly authorized by the Licensor.
+
+Directly uploading, hosting, mirroring, or serving Dragon Survival files outside the CurseForge API or another distribution method expressly authorized by the Licensor is prohibited.
+
+---
+
+## 7. PORTING AND PLATFORM RESTRICTIONS
+
+This License does not grant permission to publicly publish or distribute ports of Dragon Survival to:
+
+* other Minecraft versions;
+* Minecraft Bedrock Edition;
+* other game editions;
+* other platforms;
+* or other software environments.
+
+Private experimentation, development, or modification for personal use is permitted unless otherwise prohibited by this License.
+
+Public distribution of a port requires prior written permission from the Licensor.
+
+---
+
+## 8. NAMES, TRADEMARKS, AND BRANDING
+
+The use of the name "Dragon Survival", the name "Black Aures", associated logos, visual identity, recognizable elements, and other branding of the Licensor is permitted for Addons for the purposes of identifying compatibility, dependency, integration, or association with Dragon Survival.
+Addons may use the name "Dragon Survival Addon" and other recognizable elements of Dragon Survival in their names, descriptions, logos, promotional materials, documentation, and other materials related to the Addon, provided that such use accurately indicates that the Addon is designed to work with, extend, or interact with Dragon Survival.
+Such use does not require additional permission from the Licensor when the work qualifies as an Addon under this License.
+The use of the name, logos, branding, or recognizable elements of Dragon Survival must not falsely state or imply that an Addon or other third-party work is officially created, published, maintained, sponsored, endorsed, or directly affiliated with the Licensor unless such relationship has been explicitly authorized by the Licensor.
+Nothing in this License grants permission to register or claim the names, trademarks, logos, or other branding of the Licensor as your own trademarks or intellectual property.
+
+---
+
+## 9. COPYRIGHT AND ATTRIBUTION
+
+Copyright notices, license notices, and author attribution contained in the Work must not be intentionally removed, obscured, or altered in redistributed copies where such notices accompany the original Work.
+Nothing in this License transfers ownership of Dragon Survival or Dragon Survival Assets to you.
+All rights not expressly granted by this License remain with the Licensor or the respective third-party rights holders.
+
+---
+
+## 10. MACHINE LEARNING AND GENERATIVE AI
+
+Dragon Survival Assets may not be used, in whole or in part, without explicit written permission from the Licensor for the purpose of:
+
+* training or fine-tuning machine learning or generative AI models;
+* creating or expanding datasets intended for machine learning or generative AI training;
+* validating or benchmarking such models where the assets form part of the training or evaluation dataset;
+* or otherwise developing a machine learning or generative AI system using Dragon Survival Assets as training material.
+
+This restriction applies to original and modified versions of Dragon Survival and Dragon Survival Assets.
+
+---
+
+## 11. THIRD-PARTY MATERIALS
+
+This License applies only to the parts of Dragon Survival that are owned or controlled by the Licensor.
+Third-party libraries, code, assets, trademarks, and other materials included in or distributed with Dragon Survival remain subject to their respective licenses and terms.
+You are responsible for complying with all applicable third-party licenses.
+
+---
+
+## 12. VIOLATION AND TERMINATION
+
+The Licensor reserves the right to restrict, revoke, or prohibit the use of Dragon Survival or any Dragon Survival Assets by any specific person, user, organization, or other entity at any time, with or without cause and without any obligation to provide an explanation or justification.
+Such restriction, revocation, or prohibition may be communicated by the Licensor in oral or written form, including through direct messages, comments, email, or other text-based communication.
+Upon receiving such restriction, revocation, or prohibition, the affected person, user, organization, or entity must cease the use, reproduction, distribution, modification, or other activities involving Dragon Survival or Dragon Survival Assets covered by the restriction.
+The Licensor may, at their discretion, restore any previously restricted, revoked, or prohibited permissions at any time.
+
+---
+
+## 13. DISCLAIMER OF WARRANTY
+
+Unless required by applicable law or agreed to in writing, the Licensor provides the Work and each Contributor provides their Contributions on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied, including, without limitation, any warranties or conditions of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A PARTICULAR PURPOSE.
+You are solely responsible for determining the appropriateness of using or redistributing the Work and assume any risks associated with your exercise of permissions under this License.
+
+---
+
+## 14. LIMITATION OF LIABILITY
+
+In no event and under no legal theory, whether in tort (including negligence), contract, or otherwise, unless required by applicable law or agreed to in writing, shall the Licensor or any Contributor be liable to You for damages, including any direct, indirect, special, incidental, or consequential damages of any character arising as a result of this License or out of the use or inability to use the Work, including but not limited to damages for loss of goodwill, work stoppage, computer failure or malfunction, or any other commercial damages or losses, even if such party has been advised of the possibility of such damages.
+
+Nothing in this License excludes or limits liability that cannot lawfully be excluded or limited under applicable law.
+
+---
+
+## 15. RESERVATION OF RIGHTS
+
+Except for the specific permissions expressly granted by this License, no rights are granted to you under copyright, trademark, or any other intellectual property right.
+All rights, title, and interest in the Work and Dragon Survival Assets remain with the Licensor or their respective rights holders.
+
+---
+
+## 16. LICENSE VERSION
+
+This License applies to all versions and releases of Dragon Survival, including versions and releases distributed before the publication of License update.
+This License supersedes all previous versions of the Dragon Survival License. Continued use, reproduction, modification, or distribution of Dragon Survival after the publication of this License constitutes acceptance of and is subject to the terms of this License.
+The Licensor may publish future versions of this License. Unless otherwise stated, a future version may also apply to all versions and releases of Dragon Survival, including versions and releases distributed before the publication of that future version.
+
+---
+
+## 17. WRITTEN PERMISSION
+
+Where this License requires explicit written permission from the Licensor, such permission must be granted directly by the Licensor or by a person expressly authorized by the Licensor.
+Permission may be granted for a specific use, project, asset, version, platform, or period and does not automatically grant permission for other uses.
+
+---
+
+Copyright 2019-2026 BlackAures1 (Github), BlackAuresArt (Curseforge), Виктория Ершова.
