@@ -1165,6 +1165,8 @@
   "dragonsurvival.gui.general.automatically_disabled": "§4因能力条件禁用§r",
   "dragonsurvival.gui.general.cancel": "取消",
   "dragonsurvival.gui.general.confirm": "确认",
+  "dragonsurvival.gui.general.ctrl_disable": "按住Ctrl并左键可禁用技能",
+  "dragonsurvival.gui.general.ctrl_enable": "按住Ctrl并左键可启用技能",
   "dragonsurvival.gui.general.disabled_by_effects": "§4因效果禁用§r",
   "dragonsurvival.gui.general.discord": "■ 加入我们的§6Discord 服务器§r！§7提问前请先阅读规则、常见问题与Wiki。",
   "dragonsurvival.gui.general.dragon_editor": "龙之编辑",
