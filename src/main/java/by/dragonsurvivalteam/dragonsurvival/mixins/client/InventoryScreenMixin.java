@@ -58,13 +58,13 @@ public abstract class InventoryScreenMixin extends EffectRenderingInventoryScree
             double headYaw = movement.headYaw;
             double headPitch = movement.headPitch;
             Vec3 deltaMovement = movement.deltaMovement;
-            Vec3 deltaMovementLastFrame = movement.deltaMovementLastFrame;
+            Vec3 deltaMovementLastTick = movement.deltaMovementLastTick;
 
             movement.bodyYaw = entityToRender.yBodyRot;
             movement.headYaw = -Math.toDegrees(dragon_survival$storedXAngle);
             movement.headPitch = -Math.toDegrees(dragon_survival$storedYAngle);
             movement.deltaMovement = Vec3.ZERO;
-            movement.deltaMovementLastFrame = Vec3.ZERO;
+            movement.deltaMovementLastTick = Vec3.ZERO;
 
             if (dragon != null) {
                 dragon.isInInventory = true;
@@ -83,7 +83,7 @@ public abstract class InventoryScreenMixin extends EffectRenderingInventoryScree
             movement.headYaw = headYaw;
             movement.headPitch = headPitch;
             movement.deltaMovement = deltaMovement;
-            movement.deltaMovementLastFrame = deltaMovementLastFrame;
+            movement.deltaMovementLastTick = deltaMovementLastTick;
         } else {
             original.call(runnable);
         }

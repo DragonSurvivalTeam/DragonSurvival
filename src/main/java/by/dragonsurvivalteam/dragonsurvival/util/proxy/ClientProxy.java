@@ -109,11 +109,7 @@ public class ClientProxy implements Proxy {
 
     @Override
     public void beginPlayingEmote(final Player player, final DragonEmote emote) {
-        DragonEntity dragon = ClientDragonRenderer.getDragon(player);
-
-        if (dragon == null) {
-            return;
-        }
+        DragonEntity dragon = ClientDragonRenderer.getOrCreateDragon(player);
 
         dragon.beginPlayingEmote(emote);
     }

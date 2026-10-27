@@ -37,7 +37,7 @@ public record SyncDragonMovement(int playerId, boolean isFirstPerson, boolean bi
 
     public static void handleServer(final SyncDragonMovement packet, final IPayloadContext context) {
         context.enqueueWork(() -> handle(packet, context.player()))
-                .thenRun(() -> PacketDistributor.sendToPlayersTrackingEntity(context.player(), packet));
+                .thenRun(() -> PacketDistributor.sendToPlayersTrackingEntityAndSelf(context.player(), packet));
     }
 
     private static void handle(final SyncDragonMovement packet, final Player player) {

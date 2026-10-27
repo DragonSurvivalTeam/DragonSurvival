@@ -1,6 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.client.models;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.client.render.util.DragonAnimationState;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.DragonEditorHandler;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.DragonStageCustomization;
 import by.dragonsurvivalteam.dragonsurvival.client.skins.DragonSkins;
@@ -16,14 +17,11 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import by.dragonsurvivalteam.dragonsurvival.server.handlers.DragonRidingHandler;
-import by.dragonsurvivalteam.dragonsurvival.util.AnimationUtils;
-import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Mth;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import software.bernie.geckolib.animation.AnimationState;
@@ -35,12 +33,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class DragonModel extends GeoModel<DragonEntity> {
-    /** Factor to multiply the delta yaw and pitch by, needed for scaling for the animations */
-    private static final double DELTA_YAW_PITCH_FACTOR = 0.2;
-
-    /** Factor to multiply the delta movement by, needed for scaling for the animations */
-    private static final double DELTA_MOVEMENT_FACTOR = 10;
-
     // FIXME 'dragon_dragon'?
     private final ResourceLocation defaultTexture = DragonSurvival.res("textures/dragon_dragon/newborn.png");
 
@@ -59,16 +51,11 @@ public class DragonModel extends GeoModel<DragonEntity> {
         }
 
         MovementData movement = MovementData.getData(player);
-        float deltaTick = Minecraft.getInstance().getTimer().getRealtimeDeltaTicks();
-        float partialDeltaTick = Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(false);
-
-        if (dragon.neckLocked) {
-            MathParser.setVariable("query.head_yaw", () -> 0);
-            MathParser.setVariable("query.head_pitch", () -> 0);
-        } else {
-            MathParser.setVariable("query.head_yaw", () -> movement.headYaw);
-            MathParser.setVariable("query.head_pitch", () -> movement.headPitch);
-        }
+        DragonAnimationState.Pose pose = dragon.isInInventory ? null : dragon.animationState.sample(animationState.getPartialTick());
+        double headYaw = pose != null ? pose.headYaw() : movement.headYaw;
+        double headPitch = pose != null ? pose.headPitch() : movement.headPitch;
+        MathParser.setVariable("query.head_yaw", () -> dragon.neckLocked ? 0 : headYaw);
+        MathParser.setVariable("query.head_pitch", () -> dragon.neckLocked ? 0 : headPitch);
 
         double gravity = player.getAttributeValue(Attributes.GRAVITY);
         MathParser.setVariable("query.gravity", () -> gravity);
@@ -76,106 +63,10 @@ public class DragonModel extends GeoModel<DragonEntity> {
         double growth = DragonStateProvider.getData(player).getGrowth();
         MathParser.setVariable("query.ds_growth", () -> growth);
 
-        double bodyYawAvg;
-        double headYawAvg;
-        double headPitchAvg;
-        double verticalVelocityAvg;
-
-        if (!dragon.isInInventory) {
-            double bodyYawChange = Functions.angleDifference(movement.bodyYaw, movement.bodyYawLastFrame) / deltaTick * DELTA_YAW_PITCH_FACTOR;
-            double headYawChange = Functions.angleDifference(movement.headYaw, movement.headYawLastFrame) / deltaTick * DELTA_YAW_PITCH_FACTOR;
-            double headPitchChange = Functions.angleDifference(movement.headPitch, movement.headPitchLastFrame) / deltaTick * DELTA_YAW_PITCH_FACTOR;
-
-            double verticalVelocity = Mth.lerp(partialDeltaTick, movement.deltaMovementLastFrame.y, movement.deltaMovement.y) * DELTA_MOVEMENT_FACTOR;
-            // Factor in the vertical angle of the dragon so that the vertical velocity is scaled down when the dragon is looking up or down
-            // Ideally, we would just use more precise data (factor in the full rotation of the player in our animations)
-            // but this works pretty well in most situations the player will encounter
-            verticalVelocity *= 1 - Mth.abs(Mth.clampedMap(movement.prevXRot, -90, 90, -1, 1));
-
-            float deltaTickFor60FPS = AnimationUtils.getDeltaTickFor60FPS();
-            int removeSize = (int) (10 / deltaTickFor60FPS);
-
-            // Handle the clear case (see DragonEntity.java)
-            if (dragon.clearVerticalVelocity) {
-                dragon.verticalVelocityHistory.clear();
-
-                while (dragon.verticalVelocityHistory.size() < removeSize) {
-                    dragon.verticalVelocityHistory.add(0d);
-                }
-            }
-
-            while (true) {
-                boolean removedElement = false;
-
-                if (dragon.bodyYawHistory.size() > removeSize) {
-                    dragon.bodyYawHistory.removeFirst();
-                    removedElement = true;
-                }
-
-                if (dragon.headYawHistory.size() > removeSize) {
-                    dragon.headYawHistory.removeFirst();
-                    removedElement = true;
-                }
-
-                if (dragon.headPitchHistory.size() > removeSize) {
-                    dragon.headPitchHistory.removeFirst();
-                    removedElement = true;
-                }
-
-                if (dragon.verticalVelocityHistory.size() > removeSize) {
-                    dragon.verticalVelocityHistory.removeFirst();
-                    removedElement = true;
-                }
-
-                if (!removedElement) {
-                    break;
-                }
-            }
-
-            dragon.bodyYawHistory.add(bodyYawChange);
-            dragon.headYawHistory.add(headYawChange);
-            dragon.headPitchHistory.add(headPitchChange);
-            dragon.verticalVelocityHistory.add(verticalVelocity);
-
-            bodyYawAvg = dragon.bodyYawHistory.stream().mapToDouble(Double::doubleValue).average().orElse(0);
-            headYawAvg = dragon.headYawHistory.stream().mapToDouble(Double::doubleValue).average().orElse(0);
-            headPitchAvg = dragon.headPitchHistory.stream().mapToDouble(Double::doubleValue).average().orElse(0);
-            verticalVelocityAvg = dragon.verticalVelocityHistory.stream().mapToDouble(Double::doubleValue).average().orElse(0);
-        } else {
-            bodyYawAvg = 0;
-            headYawAvg = 0;
-            headPitchAvg = 0;
-            verticalVelocityAvg = 0;
-        }
-
-        // Clear out any NaNs that may have been caused by the average calculation (I think this happens if we try to load data before the game logic has actually begun?
-        bodyYawAvg = Double.isNaN(bodyYawAvg) ? 0 : bodyYawAvg;
-        headYawAvg = Double.isNaN(headYawAvg) ? 0 : headYawAvg;
-        headPitchAvg = Double.isNaN(headPitchAvg) ? 0 : headPitchAvg;
-        verticalVelocityAvg = Double.isNaN(verticalVelocityAvg) ? 0 : verticalVelocityAvg;
-
-        double lerpRate = Math.min(1, deltaTick);
-        dragon.currentBodyYawChange = Mth.lerp(lerpRate, dragon.currentBodyYawChange, bodyYawAvg);
-        dragon.currentHeadYawChange = Mth.lerp(lerpRate, dragon.currentHeadYawChange, headYawAvg);
-        dragon.currentHeadPitchChange = Mth.lerp(lerpRate, dragon.currentHeadPitchChange, headPitchAvg);
-
-        if (dragon.clearVerticalVelocity) {
-            dragon.currentTailMotionUp = 0;
-            dragon.clearVerticalVelocity = false;
-        } else {
-            dragon.currentTailMotionUp = Mth.lerp(lerpRate, dragon.currentTailMotionUp, -verticalVelocityAvg);
-        }
-
-        if (dragon.tailLocked) {
-            MathParser.setVariable("query.tail_motion_up", () -> 0);
-            MathParser.setVariable("query.body_yaw_change", () -> 0);
-        } else {
-            MathParser.setVariable("query.body_yaw_change", () -> dragon.currentBodyYawChange);
-            MathParser.setVariable("query.tail_motion_up", () -> dragon.currentTailMotionUp);
-        }
-
-        MathParser.setVariable("query.head_yaw_change", () -> dragon.currentHeadYawChange);
-        MathParser.setVariable("query.head_pitch_change", () -> dragon.currentHeadPitchChange);
+        MathParser.setVariable("query.body_yaw_change", () -> dragon.tailLocked || pose == null ? 0 : pose.bodyYawChange());
+        MathParser.setVariable("query.tail_motion_up", () -> dragon.tailLocked || dragon.clearVerticalVelocity || pose == null ? 0 : pose.tailMotionUp());
+        MathParser.setVariable("query.head_yaw_change", () -> pose == null ? 0 : pose.headYawChange());
+        MathParser.setVariable("query.head_pitch_change", () -> pose == null ? 0 : pose.headPitchChange());
     }
 
     @Override

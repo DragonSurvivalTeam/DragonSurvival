@@ -3,6 +3,8 @@ package by.dragonsurvivalteam.dragonsurvival.common.entity;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.render.ClientDragonRenderer;
 import by.dragonsurvivalteam.dragonsurvival.client.render.util.AnimationTickTimer;
+import by.dragonsurvivalteam.dragonsurvival.client.render.util.DragonAnimationState;
+import by.dragonsurvivalteam.dragonsurvival.client.util.FakeClientPlayer;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.AbilityAnimation;
@@ -21,6 +23,7 @@ import by.dragonsurvivalteam.dragonsurvival.server.handlers.ServerFlightHandler;
 import by.dragonsurvivalteam.dragonsurvival.util.AnimationUtils;
 import by.dragonsurvivalteam.dragonsurvival.util.DragonAnimations;
 import com.mojang.datafixers.util.Pair;
+import net.minecraft.client.Minecraft;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
@@ -48,7 +51,6 @@ import software.bernie.geckolib.animation.PlayState;
 import software.bernie.geckolib.animation.RawAnimation;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -79,17 +81,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
 
     private static double globalTickCount;
 
-    public final ArrayList<Double> headYawHistory = new ArrayList<>();
-    public double currentHeadYawChange;
-
-    public final ArrayList<Double> bodyYawHistory = new ArrayList<>();
-    public double currentBodyYawChange;
-
-    public final ArrayList<Double> headPitchHistory = new ArrayList<>();
-    public double currentHeadPitchChange;
-
-    public final ArrayList<Double> verticalVelocityHistory = new ArrayList<>();
-    public double currentTailMotionUp;
+    public final DragonAnimationState animationState = new DragonAnimationState();
 
     public AnimationController<DragonEntity> mainAnimationController;
 
@@ -118,7 +110,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
 
     private final DragonEmote[] currentlyPlayingEmotes = new DragonEmote[MAX_EMOTES];
     private final boolean[] soundForEmoteHasAlreadyPlayedThisTick = new boolean[MAX_EMOTES];
-    private final AnimationTickTimer animationTickTimer = new AnimationTickTimer();
+    private final AnimationTickTimer animationTickTimer = new AnimationTickTimer(() -> getTick(this) + Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(false));
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
     private @Nullable Pair<AbilityAnimation, AnimationType> currentAbilityAnimation;
@@ -627,7 +619,6 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
 
         boolean animationWasNullBeforePredicate = animationController.getCurrentAnimation() == null;
 
-        // TODO: The transition length of animations doesn't work correctly when the framerate varies too much from 60 FPS
         if (!movement.isMovingHorizontally() && handler.isOnMagicSource) {
             // TODO :: does this need to be synchronized to other players?
             return state.setAndContinue(DragonAnimations.SIT_ON_MAGIC_SOURCE.getAnimation());
@@ -826,9 +817,14 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
     }
 
     @Override
-    public double getTick(Object obj) { // using 'getPlayer' breaks animations even though it returns the same entity...?
-        // Prevent being on a negative tick (will cause t-posing!) by adding 200 here
-        return (playerId != null ? level().getEntity(playerId).tickCount : globalTickCount) + 200;
+    public double getTick(Object obj) {
+        Player player = getPlayer();
+
+        // GeckoLib adds partialTick under the hood here, so we don't need to account for it
+        return (player != null && !(player instanceof FakeClientPlayer) ?
+                player.tickCount
+                // Prevent being on a negative tick (will cause t-posing!) by adding 200 here for the UI case (FakeClientPlayer)
+                : globalTickCount - Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(false)) + 200;
     }
 
     @Override
@@ -849,8 +845,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
 
     @Override
     public boolean shouldPlayAnimsWhileGamePaused() {
-        // Important to play animations inside menus (e.g. for fake player / dragons)
-        return true;
+        return isInInventory || playerId == null || getPlayer() instanceof FakeClientPlayer;
     }
 
     @Override

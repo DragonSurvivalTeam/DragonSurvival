@@ -21,14 +21,14 @@ public record StopAllEmotes(int playerId) implements CustomPacketPayload {
     public static void handleServer(final StopAllEmotes packet, final IPayloadContext context) {
         context.enqueueWork(() -> {
             if (context.player().level().getEntity(packet.playerId()) instanceof Player player) {
-                PacketDistributor.sendToPlayersTrackingEntity(player, packet);
+                PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, packet);
             }
         });
     }
 
     public static void handleClient(final StopAllEmotes packet, final IPayloadContext context) {
         context.enqueueWork(() -> {
-            if (context.player().level().getEntity(packet.playerId()) instanceof Player player) {
+            if (context.player().level().getEntity(packet.playerId()) instanceof Player player && player != DragonSurvival.PROXY.getLocalPlayer()) {
                 DragonSurvival.PROXY.stopAllEmotes(player);
             }
         });

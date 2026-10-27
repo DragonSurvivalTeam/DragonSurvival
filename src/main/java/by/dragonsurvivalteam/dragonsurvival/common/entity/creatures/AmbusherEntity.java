@@ -12,6 +12,7 @@ import by.dragonsurvivalteam.dragonsurvival.util.AnimationUtils;
 import by.dragonsurvivalteam.dragonsurvival.util.DragonUtils;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import by.dragonsurvivalteam.dragonsurvival.util.SpawningUtils;
+import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -153,7 +154,7 @@ public class AmbusherEntity extends Hunter implements RangedAttackMob {
     private boolean isFirstClientTick = true;
     private float nextArrowVelocity = 0.0f;
     private RawAnimation currentIdleAnim;
-    private final AnimationTickTimer ambusherTickTimer = new AnimationTickTimer();
+    private final AnimationTickTimer ambusherTickTimer = new AnimationTickTimer(() -> tickCount + Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(false));
 
     public AmbusherEntity(EntityType<? extends PathfinderMob> entityType, Level world) {
         super(entityType, world);

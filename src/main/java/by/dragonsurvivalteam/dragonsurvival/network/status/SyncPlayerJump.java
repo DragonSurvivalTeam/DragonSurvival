@@ -22,7 +22,7 @@ public record SyncPlayerJump(int playerId, boolean state) implements CustomPacke
 
     public static void handleClient(final SyncPlayerJump packet, final IPayloadContext context) {
         context.enqueueWork(() -> {
-            if (context.player().level().getEntity(packet.playerId()) instanceof Player) {
+            if (context.player().level().getEntity(packet.playerId()) instanceof Player player && player != DragonSurvival.PROXY.getLocalPlayer()) {
                 DragonEntity.DRAGONS_JUMPING.put(packet.playerId(), packet.state());
             }
         });

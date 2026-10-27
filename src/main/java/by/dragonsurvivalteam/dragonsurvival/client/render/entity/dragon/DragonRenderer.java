@@ -313,17 +313,12 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
                 }
 
                 Vector3d worldPosition = bone.getWorldPosition();
+                // GeckoLib adds getRenderOffset(animatable, 1) to world position. Cancel that offset here.
                 Vec3 position = new Vec3(worldPosition.x(), worldPosition.y(), worldPosition.z()).subtract(getModelOffset(animatable, 1));
                 positions.put(bone.getName(), position);
                 offsets.put(bone.getName(), position.subtract(animatable.position()));
                 updateTicks.put(bone.getName(), animatable.level().getGameTime());
 
-                Quaternionf rotation = calculateBoneTilt(bone.getWorldSpaceMatrix());
-                if (rotation == null) {
-                    rotations.remove(name);
-                } else {
-                    rotations.put(bone.getName(), rotation);
-                }
             }, () -> {
                 positions.remove(name);
                 offsets.remove(name);
@@ -382,6 +377,7 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
             Matrix4f poseState = new Matrix4f(poseStack.last().pose());
             Matrix4f localMatrix = RenderUtil.invertAndMultiplyMatrices(poseState, entityRenderTranslations);
 
+            updateBoneRotation(animatable, bone, localMatrix);
             bone.setModelSpaceMatrix(RenderUtil.invertAndMultiplyMatrices(poseState, modelRenderTranslations));
             bone.setLocalSpaceMatrix(RenderUtil.translateMatrix(localMatrix, getRenderOffset(animatable, 1).toVector3f()));
             bone.setWorldSpaceMatrix(RenderUtil.translateMatrix(new Matrix4f(localMatrix), animatable.position().toVector3f()));
@@ -393,6 +389,32 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
         poseStack.popPose();
     }
 
+    @Override
+    public void renderCubesOfBone(final PoseStack poseStack, final GeoBone bone, final VertexConsumer buffer, int packedLight, int packedOverlay, int color) {
+        if (bone.isTrackingMatrices() && !animatable.isInInventory) {
+            // GeckoLib's translateMatrix adds an identity matrix, changing the cached world matrix.
+            // Use the actual bone pose relative to the entity render origin for rotation instead.
+            Matrix4f boneTransform = RenderUtil.invertAndMultiplyMatrices(new Matrix4f(poseStack.last().pose()), entityRenderTranslations);
+            updateBoneRotation(animatable, bone, boneTransform);
+        }
+
+        super.renderCubesOfBone(poseStack, bone, buffer, packedLight, packedOverlay, color);
+    }
+
+    private static void updateBoneRotation(final DragonEntity dragon, final GeoBone bone, final Matrix4fc boneTransform) {
+        if (dragon.isInInventory) {
+            return;
+        }
+
+        Map<String, Quaternionf> rotations = BONE_ROTATIONS.computeIfAbsent(dragon.getId(), key -> new HashMap<>());
+        Quaternionf rotation = calculateBoneTilt(boneTransform);
+        if (rotation == null) {
+            rotations.remove(bone.getName());
+        } else {
+            rotations.put(bone.getName(), rotation);
+        }
+    }
+
     private void setupRender(final DragonEntity dragon, final Player player, final PoseStack pose, final float partialTick) {
         MovementData movement = MovementData.getData(player);
         boolean doABarrelRollActive = DoABarrelRollCompat.isActive(player);
@@ -401,15 +423,22 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
         Vec3 offset = getRenderOffset(dragon, partialTick);
         pose.translate(-offset.x(), -offset.y(), -offset.z());
 
-        float bodyYaw = doABarrelRollActive ? player.getViewYRot(partialTick) : (float) movement.bodyYaw;
+        var animationPose = dragon.isInInventory ? null : dragon.animationState.sample(partialTick);
+        float bodyYaw = doABarrelRollActive ? player.getViewYRot(partialTick) : (float) (animationPose != null ? animationPose.bodyYaw() : movement.bodyYaw);
         pose.mulPose(Axis.YN.rotationDegrees(bodyYaw));
 
-        if (ServerFlightHandler.isGliding(player) || dragon.prevXRot != 0 || dragon.prevZRot != 0) {
+        float flightPitch = animationPose != null ? animationPose.flightPitch() : dragon.prevXRot;
+        float flightRoll = animationPose != null ? animationPose.flightRoll() : dragon.prevZRot;
+        // PlayerRendererMixin already aligns riders with the mounting bone, including the mount's flight tilt.
+        // Applying flight pitch/roll again here would tilt the rider away from the mount's back.
+        boolean ridingRenderedDragon = player.getVehicle() instanceof Player mount && DragonStateProvider.isDragon(mount)
+                && !DragonStateProvider.getData(mount).body().value().noDragonModelRendering();
+        if (!ridingRenderedDragon && (ServerFlightHandler.isGliding(player) || flightPitch != 0 || flightRoll != 0)) {
             // Responsible for the pitch (rotating entity downward / upward)
-            float pitch = doABarrelRollActive ? -player.getViewXRot(partialTick) : dragon.prevXRot;
+            float pitch = doABarrelRollActive ? -player.getViewXRot(partialTick) : flightPitch;
             pose.mulPose(Axis.XN.rotationDegrees(pitch));
             // Responsible for the roll (rotating entity to the side)
-            float roll = doABarrelRollActive ? DoABarrelRollCompat.getRollRadians(player, partialTick) : dragon.prevZRot;
+            float roll = doABarrelRollActive ? DoABarrelRollCompat.getRollRadians(player, partialTick) : flightRoll;
             pose.mulPose(Axis.ZP.rotation(roll));
         }
 
@@ -450,7 +479,9 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
             return Vec3.ZERO;
         }
 
-        float angle = -(float) MovementData.getData(player).bodyYaw * ((float) Math.PI / 180);
+        var animationPose = dragon.isInInventory ? null : dragon.animationState.sample(partialTicks);
+        float bodyYaw = (float) (animationPose != null ? animationPose.bodyYaw() : MovementData.getData(player).bodyYaw);
+        float angle = -bodyYaw * ((float) Math.PI / 180);
         float x = Mth.sin(angle);
         float z = Mth.cos(angle);
 

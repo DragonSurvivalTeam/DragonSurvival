@@ -15,7 +15,6 @@ import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.ChanneledActivation;
-import by.dragonsurvivalteam.dragonsurvival.util.AnimationUtils;
 import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import com.mojang.blaze3d.platform.Window;
@@ -105,17 +104,19 @@ public class MagicHUD {
 
     public static class OutlineColorData {
         private Color color;
+        private Color previousColor;
         private double delay;
         private boolean pastDelay;
 
         public OutlineColorData(Color color, double delay, boolean pastDelay) {
             this.color = color;
+            this.previousColor = color;
             this.delay = delay;
             this.pastDelay = pastDelay;
         }
     }
 
-    private static boolean initializedDisabledAbilitiesColor = false;
+    private static Player colorPlayer;
     private static final OutlineColorData[] colors = new OutlineColorData[MagicData.HOTBAR_SLOTS];
 
     public static boolean renderExperienceBar(GuiGraphics guiGraphics, int screenWidth) {
@@ -182,6 +183,10 @@ public class MagicHUD {
 
     @SubscribeEvent
     public static void tickDownError(ClientTickEvent.Pre event) {
+        if (Minecraft.getInstance().isPaused()) {
+            return;
+        }
+
         errorTicks--;
 
         if (errorTicks <= 0) {
@@ -189,11 +194,9 @@ public class MagicHUD {
         }
     }
 
-    private static float deltaCounter;
-    private static boolean reverseCounter;
 
     private static void lerpToColor(int slot, Color color) {
-        colors[slot].delay -= AnimationUtils.getDeltaSeconds();
+        colors[slot].delay -= 1.0 / 20;
 
         if (colors[slot].delay <= 0) {
             colors[slot].pastDelay = true;
@@ -204,12 +207,66 @@ public class MagicHUD {
         }
 
         Color currentColor = colors[slot].color;
-        float lerpSpeed = (float) markDisabledAbilitiesRedLerpSpeed;
+        float lerpSpeed = 1 - (float) Math.pow(1 - markDisabledAbilitiesRedLerpSpeed, 3);
         float red = Mth.lerp(lerpSpeed, currentColor.getRedFloat(), color.getRedFloat());
         float green = Mth.lerp(lerpSpeed, currentColor.getGreenFloat(), color.getGreenFloat());
         float blue = Mth.lerp(lerpSpeed, currentColor.getBlueFloat(), color.getBlueFloat());
         float alpha = Mth.lerp(lerpSpeed, currentColor.getAlphaFloat(), color.getAlphaFloat());
         colors[slot].color = Color.ofRGBA(red, green, blue, alpha);
+    }
+
+    private static void initializeColors(Player player) {
+        if (colorPlayer == player) {
+            return;
+        }
+
+        for (int i = 0; i < MagicData.HOTBAR_SLOTS; i++) {
+            colors[i] = new OutlineColorData(Color.WHITE, disabledColorDelay, false);
+        }
+
+        colorPlayer = player;
+    }
+
+    @SubscribeEvent
+    public static void tickOutlineColors(ClientTickEvent.Post event) {
+        Minecraft minecraft = Minecraft.getInstance();
+        Player player = minecraft.player;
+        if (player == null) {
+            colorPlayer = null;
+            return;
+        }
+
+        if (minecraft.isPaused() || !DragonStateProvider.isDragon(player)) {
+            return;
+        }
+
+        initializeColors(player);
+        MagicData magic = MagicData.getData(player);
+        for (int slot = 0; slot < MagicData.HOTBAR_SLOTS; slot++) {
+            colors[slot].previousColor = colors[slot].color;
+            DragonAbilityInstance ability = magic.fromSlot(slot);
+            if (ability == null) {
+                continue;
+            }
+            if (!ability.isEnabled()) {
+                lerpToColor(slot, Color.RED);
+            } else if (!ability.hasEnoughMana(player)) {
+                lerpToColor(slot, Color.YELLOW);
+            } else {
+                colors[slot].pastDelay = true;
+                colors[slot].delay = 0;
+                lerpToColor(slot, Color.WHITE);
+            }
+        }
+    }
+
+    private static Color interpolatedColor(int slot, float partialTick) {
+        Color previous = colors[slot].previousColor;
+        Color current = colors[slot].color;
+        return Color.ofRGBA(Mth.lerp(partialTick, previous.getRedFloat(), current.getRedFloat()),
+                Mth.lerp(partialTick, previous.getGreenFloat(), current.getGreenFloat()),
+                Mth.lerp(partialTick, previous.getBlueFloat(), current.getBlueFloat()),
+                Mth.lerp(partialTick, previous.getAlphaFloat(), current.getAlphaFloat()));
     }
 
     public static void render(@NotNull final GuiGraphics graphics, @NotNull final DeltaTracker tracker) {
@@ -233,25 +290,10 @@ public class MagicHUD {
             return;
         }
 
-        if (!initializedDisabledAbilitiesColor) {
-            for (int i = 0; i < MagicData.HOTBAR_SLOTS; i++) {
-                colors[i] = new OutlineColorData(Color.ofRGBA(1f, 1f, 1f, 1f), disabledColorDelay, false);
-            }
-
-            initializedDisabledAbilitiesColor = true;
-        }
-
-        // Blinking speed
-        float delta = tracker.getGameTimeDeltaPartialTick(true) / 30;
-        deltaCounter += reverseCounter ? -delta : delta;
-
-        if (deltaCounter > 1) {
-            reverseCounter = true;
-            deltaCounter = 1;
-        } else if (deltaCounter < 0) {
-            reverseCounter = false;
-            deltaCounter = 0;
-        }
+        initializeColors(player);
+        // Two-second blink interval
+        float blinkPhase = ((player.tickCount % 40) + tracker.getGameTimeDeltaPartialTick(false)) / 20;
+        float deltaCounter = blinkPhase <= 1 ? blinkPhase : 2 - blinkPhase;
 
         int sizeX = 20;
         int sizeY = 20;
@@ -271,23 +313,7 @@ public class MagicHUD {
                     DragonAbilityInstance ability = magic.fromSlot(x);
 
                     if (ability != null) {
-                        if (!ability.isEnabled()) {
-                            // TODO :: what color is this and what is this check for?
-                            if (colors[x].pastDelay && colors[x].color.equals(Color.ofOpaque(-2314))) {
-                                colors[x].delay = disabledColorDelay;
-                                colors[x].pastDelay = false;
-                            }
-
-                            lerpToColor(x, Color.RED);
-                        } else if (!ability.hasEnoughMana(player)) {
-                            lerpToColor(x, Color.YELLOW);
-                        } else {
-                            colors[x].pastDelay = true;
-                            colors[x].delay = 0;
-                            lerpToColor(x, Color.WHITE);
-                        }
-
-                        Color outlineColor = colors[x].color;
+                        Color outlineColor = interpolatedColor(x, tracker.getGameTimeDeltaPartialTick(false));
                         graphics.setColor(outlineColor.getRedFloat(), outlineColor.getGreenFloat(), outlineColor.getBlueFloat(), outlineColor.getAlphaFloat());
 
                         int uOffset;
@@ -330,7 +356,7 @@ public class MagicHUD {
                 }
 
                 if (magic.getSelectedAbility() != null) {
-                    Color outlineColor = colors[magic.getSelectedAbilitySlot()].color;
+                    Color outlineColor = interpolatedColor(magic.getSelectedAbilitySlot(), tracker.getGameTimeDeltaPartialTick(false));
                     graphics.setColor(outlineColor.getRedFloat(), outlineColor.getGreenFloat(), outlineColor.getBlueFloat(), outlineColor.getAlphaFloat());
                 }
 

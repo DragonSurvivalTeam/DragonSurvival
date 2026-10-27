@@ -133,18 +133,18 @@ public abstract class EntityMixin implements IBoundingBoxOffset {
         MovementData vehicleMovement = MovementData.getData(vehicle);
         if (DragonStateProvider.isDragon(passenger)) {
             MovementData passengerMovement = MovementData.getData(passenger);
-            float facing = (float) Mth.wrapDegrees(passenger.getYRot() - vehicleMovement.bodyYawLastFrame);
+            float facing = (float) Mth.wrapDegrees(passenger.getYRot() - vehicleMovement.bodyYawLastTick);
             float facingClamped = Mth.clamp(facing, -150.0F, 150.0F);
             passenger.yRotO += facingClamped - facing + vehicle.yRotO;
-            passengerMovement.bodyYaw = vehicleMovement.bodyYawLastFrame;
+            passengerMovement.bodyYaw = vehicleMovement.bodyYawLastTick;
             passengerMovement.headYaw = -facing;
-            passenger.setYRot((float) (passenger.getYRot() + facingClamped - facing + (vehicleMovement.bodyYawLastFrame - vehicleMovement.bodyYaw)));
+            passenger.setYRot((float) (passenger.getYRot() + facingClamped - facing + (vehicleMovement.bodyYawLastTick - vehicleMovement.bodyYaw)));
         } else {
-            float facing = (float) Mth.wrapDegrees(passenger.getYRot() - vehicleMovement.bodyYawLastFrame);
+            float facing = (float) Mth.wrapDegrees(passenger.getYRot() - vehicleMovement.bodyYawLastTick);
             float facingClamped = Mth.clamp(facing, -120.0F, 120.0F);
             passenger.yRotO += facingClamped - facing + vehicle.yRotO;
-            passenger.setYBodyRot((float) (passenger.getYRot() + facingClamped - facing + (vehicleMovement.bodyYawLastFrame - vehicleMovement.bodyYaw)));
-            passenger.setYRot((float) (passenger.getYRot() + facingClamped - facing + (vehicleMovement.bodyYawLastFrame - vehicleMovement.bodyYaw)));
+            passenger.setYBodyRot((float) (passenger.getYRot() + facingClamped - facing + (vehicleMovement.bodyYawLastTick - vehicleMovement.bodyYaw)));
+            passenger.setYRot((float) (passenger.getYRot() + facingClamped - facing + (vehicleMovement.bodyYawLastTick - vehicleMovement.bodyYaw)));
             passenger.setYHeadRot(passenger.getYRot());
         }
     }

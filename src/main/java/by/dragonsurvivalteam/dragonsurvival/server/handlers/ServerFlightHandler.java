@@ -119,7 +119,7 @@ public class ServerFlightHandler {
         }
 
         if (player instanceof ServerPlayer serverPlayer) {
-            PacketDistributor.sendToPlayersTrackingEntity(serverPlayer, new SyncPlayerJump(player.getId(), false));
+            PacketDistributor.sendToPlayersTrackingEntityAndSelf(serverPlayer, new SyncPlayerJump(player.getId(), false));
         } else {
             DragonEntity.DRAGONS_JUMPING.put(player.getId(), false);
         }
@@ -185,7 +185,7 @@ public class ServerFlightHandler {
         }
 
         if (!player.level().isClientSide() && handler.isDragon()) {
-            PacketDistributor.sendToPlayersTrackingEntity(player, new SyncFlyingPlayerAbility(player.getId(), player.getAbilities().flying));
+            PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new SyncFlyingPlayerAbility(player.getId(), player.getAbilities().flying));
         }
     }
 
