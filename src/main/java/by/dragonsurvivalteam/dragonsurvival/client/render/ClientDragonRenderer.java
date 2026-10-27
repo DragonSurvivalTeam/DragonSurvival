@@ -32,7 +32,6 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.Di
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.DragonBreathTarget;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.LookingAtTarget;
 import by.dragonsurvivalteam.dragonsurvival.server.handlers.ServerFlightHandler;
-import by.dragonsurvivalteam.dragonsurvival.util.AnimationUtils;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -147,6 +146,7 @@ public class ClientDragonRenderer {
     @SubscribeEvent
     public static void removeEntry(final EntityLeaveLevelEvent event) {
         if (event.getEntity() instanceof Player player) {
+            DragonEntity.DRAGONS_JUMPING.remove(player.getId());
             DragonEntity dragon = PLAYER_DRAGON_MAP.remove(player.getId());
 
             if (dragon != null) {
@@ -158,6 +158,7 @@ public class ClientDragonRenderer {
     @SubscribeEvent
     public static void clearEntries(final LevelEvent.Unload event) {
         PLAYER_DRAGON_MAP.clear();
+        DragonEntity.DRAGONS_JUMPING.clear();
         DragonRenderer.clearBoneData();
     }
 
@@ -310,8 +311,6 @@ public class ClientDragonRenderer {
         }
 
         if (player != Minecraft.getInstance().player || !Minecraft.getInstance().options.getCameraType().isFirstPerson() || !ServerFlightHandler.isGliding(player) || renderFirstPersonFlight) {
-            prepareDragonRenderState(player, dragon, partialTick);
-
             Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(dragon).render(dragon, player.getViewYRot(partialTick), partialTick, event.getPoseStack(), event.getMultiBufferSource(), event.getPackedLight());
         }
     }
@@ -325,26 +324,39 @@ public class ClientDragonRenderer {
 
         DragonEntity dragon = getOrCreateDragon(player);
         float partialTick = Minecraft.getInstance().getFrameTime();
-        prepareDragonRenderState(player, dragon, partialTick);
 
         if (Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(dragon) instanceof DragonRenderer renderer) {
             renderer.calculateBoneTransforms(dragon, partialTick);
         }
     }
 
-    private static void prepareDragonRenderState(final Player player, final DragonEntity dragon, float partialTick) {
-        if (!dragon.isInInventory) {
-            setDragonMovementData(player, AnimationUtils.getRealtimeDeltaTicks());
+    @SubscribeEvent
+    public static void tickDragonAnimations(final TickEvent.PlayerTickEvent event) {
+        Player player = event.player;
+        if (event.phase != TickEvent.Phase.END || !player.level().isClientSide() || !DragonStateProvider.isDragon(player)) {
+            return;
         }
 
+        DragonEntity dragon = getOrCreateDragon(player);
+
+        // Tick the animations even if the dragon is off screen
+        setDragonMovementData(player);
         MovementData movement = MovementData.getData(player);
-        handleFlightMovement(player, dragon, movement, partialTick);
+        handleFlightMovement(player, dragon, movement);
+
+        dragon.animationState.tick(movement.bodyYaw, movement.headYaw, movement.headPitch, movement.deltaMovement.y,
+                dragon.prevXRot, dragon.prevZRot, dragon.clearVerticalVelocity);
+
+        dragon.clearVerticalVelocity = false;
     }
 
-    private static void handleFlightMovement(final Player player, final DragonEntity dragon, final MovementData movement, final float partialTick) {
+    private static void handleFlightMovement(final Player player, final DragonEntity dragon, final MovementData movement) {
         boolean isPlayerGliding = ServerFlightHandler.isGliding(player);
         Entity playerVehicle = player.getVehicle();
-        float flightTiltLerpFactor = Mth.clamp(FLIGHT_TILT_LERP_FACTOR * AnimationUtils.getDeltaTickFor60FPS(), 0, 1);
+        // This is to account for the legacy code, which would use "getDeltaTickFor60FPS" and multiply it into these constants
+        //
+        // One game tick would be 3 frames at 60 FPS, so this mimics that code running 3 times.
+        float flightTiltLerpFactor = 1 - (float) Math.pow(1 - FLIGHT_TILT_LERP_FACTOR, 3);
 
         if (isPlayerGliding || (player.isPassenger() && DragonStateProvider.isDragon(playerVehicle) && ServerFlightHandler.isGliding((Player) playerVehicle))) {
             float upRot;
@@ -372,10 +384,10 @@ public class ClientDragonRenderer {
             Vec3 deltaVel;
 
             if (isPlayerGliding) {
-                yRot = player.getViewYRot(partialTick);
+                yRot = player.getViewYRot(1);
                 deltaVel = player.getDeltaMovement();
             } else {
-                yRot = playerVehicle.getViewYRot(partialTick);
+                yRot = playerVehicle.getViewYRot(1);
                 deltaVel = playerVehicle.getDeltaMovement();
             }
 
@@ -443,7 +455,9 @@ public class ClientDragonRenderer {
     }
 
     public static Vector3f getModelShadowOffset(final Player player, float partialRenderTick) {
-        float angle = -(float) MovementData.getData(player).bodyYaw * ((float) Math.PI / 180);
+        DragonEntity dragon = getDragon(player);
+        var pose = dragon != null && !dragon.isInInventory ? dragon.animationState.sample(partialRenderTick) : null;
+        float angle = -(float) (pose != null ? pose.bodyYaw() : MovementData.getData(player).bodyYaw) * ((float) Math.PI / 180);
         float x = Mth.sin(angle);
         float z = Mth.cos(angle);
 
@@ -453,7 +467,8 @@ public class ClientDragonRenderer {
         return new Vector3f(x * scale, 0, z * scale);
     }
 
-    public static void setDragonMovementData(Player player, float realtimeDeltaTick) {
+    // Advance movement smoothing by one game tick.
+    public static void setDragonMovementData(Player player) {
         if (player == null) {
             return;
         }
@@ -469,7 +484,7 @@ public class ClientDragonRenderer {
             }
 
             // Get new body yaw & head angles
-            BodyAngles newAngles = BodyAngles.calculateNext(player, movement, realtimeDeltaTick);
+            BodyAngles newAngles = BodyAngles.calculateNext(player, movement);
             movement.set(newAngles.bodyYaw, newAngles.headYaw, newAngles.headPitch, moveVector);
         }
     }
@@ -600,20 +615,20 @@ public class ClientDragonRenderer {
         /// Head yaw pitch factor
         static final double HEAD_PITCH_FACTOR = 0.3D;
 
-        public static BodyAngles calculateNext(Player player, MovementData movement, float realtimeDeltaTick) {
+        public static BodyAngles calculateNext(Player player, MovementData movement) {
             // Handle headYaw
-            float viewYRot = player.getViewYRot(realtimeDeltaTick);
-            float viewXRot = player.getViewXRot(realtimeDeltaTick);
+            float viewYRot = player.getViewYRot(1);
+            float viewXRot = player.getViewXRot(1);
 
             // Head yaw is relative to body
-            // Get pos delta since last tick - not scaled by realtimeDeltaTick
+            // Get pos delta since last game tick
             Vec3 posDelta = new Vec3(player.getX() - player.xo, player.getY() - player.yo, player.getZ() - player.zo);
 
-            Tuple<Double, Double> headAngles = calculateNextHeadAngles(realtimeDeltaTick, movement, viewXRot, viewYRot);
-            return new BodyAngles(calculateNextBodyYaw(realtimeDeltaTick, player, movement, posDelta, viewYRot), headAngles.getA(), headAngles.getB());
+            Tuple<Double, Double> headAngles = calculateNextHeadAngles(movement, viewXRot, viewYRot);
+            return new BodyAngles(calculateNextBodyYaw(player, movement, posDelta, viewYRot), headAngles.getA(), headAngles.getB());
         }
 
-        private static double calculateNextBodyYaw(float realtimeDeltaTick, Player player, MovementData movement, Vec3 posDelta, float viewYRot) {
+        private static double calculateNextBodyYaw(Player player, MovementData movement, Vec3 posDelta, float viewYRot) {
             // Handle bodyYaw
             double bodyYaw = movement.bodyYaw;
             boolean isFreeLook = movement.isFreeLook;
@@ -643,9 +658,9 @@ public class ClientDragonRenderer {
                 // This prevents issues with the body yaw and angle limit fighting, never letting the body
                 // pass through the area in front of the player when that's the shorter path for the body yaw
                 if (isFirstPerson) {
-                    bodyYaw = Functions.lerpAngleAwayFrom(realtimeDeltaTick * factor, bodyYaw, targetAngle, viewYRot + 180);
+                    bodyYaw = Functions.lerpAngleAwayFrom(factor, bodyYaw, targetAngle, viewYRot + 180);
                 } else {
-                    bodyYaw = Functions.rotLerp(realtimeDeltaTick * factor, bodyYaw, targetAngle);
+                    bodyYaw = Functions.rotLerp(factor, bodyYaw, targetAngle);
                 }
             } else if (hasPosDelta && !player.onGround()) {
                 // When moving without input and in the air, slowly align to the move vector
@@ -658,7 +673,7 @@ public class ClientDragonRenderer {
                 double deltaMagFactor = Math.min(1, (posDelta.horizontalDistance() - MOVE_DELTA_EPSILON) / MOVE_DELTA_FULL_EFFECT_MIN_MAG);
                 factor *= deltaMagFactor;
 
-                bodyYaw = Functions.rotLerp(realtimeDeltaTick * factor, bodyYaw, posDeltaAngle);
+                bodyYaw = Functions.rotLerp(factor, bodyYaw, posDeltaAngle);
             }
 
             // Limit body angle based on view direction and PoV
@@ -692,16 +707,16 @@ public class ClientDragonRenderer {
                 factor *= airMul;
             }
 
-            return Functions.limitAngleDeltaSoft(bodyYaw, viewYRot, angleLimit, realtimeDeltaTick * factor);
+            return Functions.limitAngleDeltaSoft(bodyYaw, viewYRot, angleLimit, factor);
         }
 
-        private static Tuple<Double, Double> calculateNextHeadAngles(float realtimeDeltaTick, MovementData movement, float viewXRot, float viewYRot) {
+        private static Tuple<Double, Double> calculateNextHeadAngles(MovementData movement, float viewXRot, float viewYRot) {
             // Yaw is relative to the body
             double headYawTarget = Functions.angleDifference(viewYRot, movement.bodyYaw);
-            double headYaw = Functions.lerpAngleAwayFrom(realtimeDeltaTick * HEAD_YAW_FACTOR, movement.headYaw, headYawTarget, 180);
+            double headYaw = Functions.lerpAngleAwayFrom(HEAD_YAW_FACTOR, movement.headYaw, headYawTarget, 180);
 
             // Pitch is also technically relative, since the body doesn't have pitch
-            double headPitch = Mth.lerp(realtimeDeltaTick * HEAD_PITCH_FACTOR, movement.headPitch, viewXRot);
+            double headPitch = Mth.lerp(HEAD_PITCH_FACTOR, movement.headPitch, viewXRot);
             return new Tuple<>(headPitch, headYaw);
         }
     }

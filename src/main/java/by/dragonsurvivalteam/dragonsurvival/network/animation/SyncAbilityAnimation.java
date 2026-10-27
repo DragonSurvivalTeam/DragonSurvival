@@ -38,11 +38,7 @@ public record SyncAbilityAnimation(int playerId, AnimationType animationType, Ei
                 return;
             }
 
-            DragonEntity dragon = ClientDragonRenderer.getDragon(player);
-
-            if (dragon == null) {
-                return;
-            }
+            DragonEntity dragon = ClientDragonRenderer.getOrCreateDragon(player);
 
             AbilityAnimation abilityAnimation = packet.animation().map(
                     simple -> simple,
