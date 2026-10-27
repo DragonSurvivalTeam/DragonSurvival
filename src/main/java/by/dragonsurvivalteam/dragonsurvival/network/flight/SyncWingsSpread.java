@@ -33,7 +33,7 @@ public record SyncWingsSpread(int playerId, boolean areWingsSpread) implements C
             if (context.player().level().getEntity(packet.playerId()) instanceof Player player) {
                 FlightData.getData(player).areWingsSpread = packet.areWingsSpread();
             }
-        }).thenRun(() -> PacketDistributor.sendToPlayersTrackingEntity(context.player(), packet));
+        }).thenRun(() -> PacketDistributor.sendToPlayersTrackingEntityAndSelf(context.player(), packet));
     }
 
     @Override

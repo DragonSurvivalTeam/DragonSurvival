@@ -17,6 +17,7 @@ import com.geckolib.animation.AnimationController;
 import com.geckolib.animation.RawAnimation;
 import com.geckolib.animation.object.PlayState;
 import com.geckolib.animation.state.AnimationTest;
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -154,7 +155,7 @@ public class AmbusherEntity extends Hunter implements RangedAttackMob {
     private boolean isFirstClientTick = true;
     private float nextArrowVelocity = 0.0f;
     private RawAnimation currentIdleAnim;
-    private final AnimationTickTimer ambusherTickTimer = new AnimationTickTimer();
+    private final AnimationTickTimer ambusherTickTimer = new AnimationTickTimer(() -> tickCount + Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(false));
 
     public AmbusherEntity(EntityType<? extends PathfinderMob> entityType, Level world) {
         super(entityType, world);

@@ -37,7 +37,7 @@ public record SyncDeltaMovement(int playerId, Vec3 movement) implements CustomPa
             }
         }).thenRun(() -> {
             // Update whoever is tracking this entity
-            PacketDistributor.sendToPlayersTrackingEntity(context.player(), new SyncDeltaMovement(context.player().getId(), packet.movement()));
+            PacketDistributor.sendToPlayersTrackingEntityAndSelf(context.player(), new SyncDeltaMovement(context.player().getId(), packet.movement()));
         });
     }
 

@@ -3,6 +3,8 @@ package by.dragonsurvivalteam.dragonsurvival.common.entity;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.render.ClientDragonRenderer;
 import by.dragonsurvivalteam.dragonsurvival.client.render.util.AnimationTickTimer;
+import by.dragonsurvivalteam.dragonsurvival.client.render.util.DragonAnimationState;
+import by.dragonsurvivalteam.dragonsurvival.client.util.FakeClientPlayer;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.AbilityAnimation;
@@ -32,6 +34,7 @@ import com.geckolib.animation.object.PlayState;
 import com.geckolib.animation.state.AnimationTest;
 import com.geckolib.util.GeckoLibUtil;
 import com.mojang.datafixers.util.Pair;
+import net.minecraft.client.Minecraft;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
@@ -80,6 +83,8 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
     /** Durations of jumps */
     public static final ConcurrentHashMap<Integer, Boolean> DRAGONS_JUMPING = new ConcurrentHashMap<>();
 
+    public final DragonAnimationState animationState = new DragonAnimationState();
+
     public AnimationController<DragonEntity> mainAnimationController;
 
     /** This reference must be updated whenever player is remade, for example, when changing dimensions */
@@ -98,7 +103,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
     private final DragonEmote[] currentlyPlayingEmotes = new DragonEmote[MAX_EMOTES];
     private final boolean[] soundForEmoteHasAlreadyPlayedThisTick = new boolean[MAX_EMOTES];
     private final EnumSet<AnimationLayer> drainingAnimationLayers = EnumSet.noneOf(AnimationLayer.class);
-    private final AnimationTickTimer animationTickTimer = new AnimationTickTimer();
+    private final AnimationTickTimer animationTickTimer = new AnimationTickTimer(this::getAnimationTick);
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
     private @Nullable Pair<AbilityAnimation, AnimationType> currentAbilityAnimation;
@@ -651,7 +656,6 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
 
         boolean animationWasNullBeforePredicate = animationController.getCurrentRawAnimation() == null;
 
-        // TODO: The transition length of animations doesn't work correctly when the framerate varies too much from 60 FPS
         if (!movement.isMovingHorizontally() && handler.isOnMagicSource) {
             // TODO :: does this need to be synchronized to other players?
             return state.setAndContinue(DragonAnimations.SIT_ON_MAGIC_SOURCE.getAnimation());
@@ -855,6 +859,16 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
         }
 
         return PlayState.CONTINUE;
+    }
+
+    private double getAnimationTick() {
+        Player player = getPlayer();
+        if (player != null && !(player instanceof FakeClientPlayer)) {
+            return player.tickCount + Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(false) + 200;
+        }
+
+        // UI previews use a continuous clock, matching the renderer's UI animation timing.
+        return System.nanoTime() / 50_000_000.0D;
     }
 
     @Override

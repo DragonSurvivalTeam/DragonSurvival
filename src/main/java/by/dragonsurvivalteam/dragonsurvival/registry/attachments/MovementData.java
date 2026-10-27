@@ -25,10 +25,11 @@ public class MovementData implements ValueIOSerializable {
     public double bodyYaw = 0;
     public Vec3 deltaMovement = Vec3.ZERO;
 
-    public double headYawLastFrame = 0;
-    public double headPitchLastFrame = 0;
-    public double bodyYawLastFrame = 0;
-    public Vec3 deltaMovementLastFrame = Vec3.ZERO;
+    /** Previous client game tick. */
+    public double headYawLastTick = 0;
+    public double headPitchLastTick = 0;
+    public double bodyYawLastTick = 0;
+    public Vec3 deltaMovementLastTick = Vec3.ZERO;
 
     public float prevXRot = 0;
     public float prevZRot = 0;
@@ -71,10 +72,10 @@ public class MovementData implements ValueIOSerializable {
     }
 
     public void set(double bodyYaw, double headYaw, double headPitch, Vec3 deltaMovement) {
-        headYawLastFrame = this.headYaw;
-        bodyYawLastFrame = this.bodyYaw;
-        headPitchLastFrame = this.headPitch;
-        deltaMovementLastFrame = this.deltaMovement;
+        headYawLastTick = this.headYaw;
+        bodyYawLastTick = this.bodyYaw;
+        headPitchLastTick = this.headPitch;
+        deltaMovementLastTick = this.deltaMovement;
 
         this.bodyYaw = bodyYaw;
         this.headYaw = headYaw;

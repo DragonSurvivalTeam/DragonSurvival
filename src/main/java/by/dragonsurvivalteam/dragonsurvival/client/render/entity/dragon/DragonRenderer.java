@@ -3,7 +3,6 @@ package by.dragonsurvivalteam.dragonsurvival.client.render.entity.dragon;
 import by.dragonsurvivalteam.dragonsurvival.client.DragonSurvivalClient;
 import by.dragonsurvivalteam.dragonsurvival.client.render.ClientDragonRenderer;
 import by.dragonsurvivalteam.dragonsurvival.client.util.FakeClientPlayer;
-import by.dragonsurvivalteam.dragonsurvival.client.util.FakeClientPlayerUtils;
 import by.dragonsurvivalteam.dragonsurvival.client.util.RenderingUtils;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
@@ -25,7 +24,6 @@ import by.dragonsurvivalteam.dragonsurvival.server.handlers.ServerFlightHandler;
 import by.dragonsurvivalteam.dragonsurvival.util.AnimationUtils;
 import by.dragonsurvivalteam.dragonsurvival.util.CeilingClimbDimensions;
 import by.dragonsurvivalteam.dragonsurvival.util.DragonAnimations;
-import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import com.geckolib.animatable.manager.AnimatableManager;
 import com.geckolib.animation.AnimationController;
 import com.geckolib.animation.RawAnimation;
@@ -62,9 +60,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
-import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.client.event.RenderFrameEvent;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Matrix4fc;
 import org.joml.Quaternionf;
@@ -88,7 +84,6 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
     private static final Map<Integer, Map<String, Long>> BONE_UPDATE_TICKS = new HashMap<>();
     public static final String BREATH_SOURCE = "BreathSource";
     private static final List<String> BONES = List.of(BREATH_SOURCE, DragonRidingHandler.MOUNTING_BONE);
-    private static final Map<Integer, DragonAnimationState> ANIMATION_STATES = new HashMap<>();
     private static final Map<Long, Map<String, BonePose>> LAST_RENDERED_BONE_POSES = new HashMap<>();
     private static final Map<Long, InterruptedTransitionBlend> INTERRUPTED_TRANSITION_BLENDS = new HashMap<>();
     private static final Map<Long, Double> UI_RENDER_START_TICKS = new HashMap<>();
@@ -140,12 +135,6 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
             return this;
         }
     };
-
-    /** Factor to multiply the delta yaw and pitch by, needed for scaling for the animations */
-    private static final double DELTA_YAW_PITCH_FACTOR = 0.2;
-
-    /** Factor to multiply the delta movement by, needed for scaling for the animations */
-    private static final double DELTA_MOVEMENT_FACTOR = 10;
 
     // Data tickets
     public static final DataTicket<DragonRenderData> DRAGON_RENDER_DATA = DataTicket.create("dragonRenderData", DragonRenderData.class);
@@ -221,7 +210,6 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
             final Identifier modelResource,
             final boolean hasWings,
             final List<String> bonesToHideForToggle,
-            final DragonAnimationState animationState,
             final float partialTick
         ) {
             DragonRenderData renderData = fallback(dragon);
@@ -236,18 +224,19 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
             renderData.hasWings = hasWings;
             renderData.bonesToHideForToggle = bonesToHideForToggle;
             MovementData movement = MovementData.getData(player);
+            var animationPose = dragon.animationState.sample(partialTick);
             boolean doABarrelRollActive = DoABarrelRollCompat.isActive(player);
-            renderData.prevXRot = doABarrelRollActive ? -player.getViewXRot(partialTick) : dragon.prevXRot;
-            renderData.prevZRot = doABarrelRollActive ? DoABarrelRollCompat.getRollRadians(player, partialTick) : dragon.prevZRot;
-            renderData.bodyYaw = doABarrelRollActive ? player.getViewYRot(partialTick) : movement.bodyYaw;
-            renderData.headYaw = movement.headYaw;
-            renderData.headPitch = movement.headPitch;
+            renderData.prevXRot = doABarrelRollActive ? -player.getViewXRot(partialTick) : (animationPose != null ? animationPose.flightPitch() : dragon.prevXRot);
+            renderData.prevZRot = doABarrelRollActive ? DoABarrelRollCompat.getRollRadians(player, partialTick) : (animationPose != null ? animationPose.flightRoll() : dragon.prevZRot);
+            renderData.bodyYaw = doABarrelRollActive ? player.getViewYRot(partialTick) : (animationPose != null ? animationPose.bodyYaw() : movement.bodyYaw);
+            renderData.headYaw = animationPose != null ? animationPose.headYaw() : movement.headYaw;
+            renderData.headPitch = animationPose != null ? animationPose.headPitch() : movement.headPitch;
             renderData.gravity = player.getAttributeValue(Attributes.GRAVITY);
             renderData.growth = handler.getGrowth();
-            renderData.currentBodyYawChange = animationState.currentBodyYawChange;
-            renderData.currentHeadYawChange = animationState.currentHeadYawChange;
-            renderData.currentHeadPitchChange = animationState.currentHeadPitchChange;
-            renderData.currentTailMotionUp = animationState.currentTailMotionUp;
+            renderData.currentBodyYawChange = animationPose != null ? animationPose.bodyYawChange() : 0;
+            renderData.currentHeadYawChange = animationPose != null ? animationPose.headYawChange() : 0;
+            renderData.currentHeadPitchChange = animationPose != null ? animationPose.headPitchChange() : 0;
+            renderData.currentTailMotionUp = animationPose != null ? animationPose.tailMotionUp() : 0;
             renderData.visualScale = handler.getVisualScale(player, partialTick);
             renderData.bodyScaleMultiplier = handler.body() == null ? 1.0F : (float) handler.body().value().scalingProportions().scaleMultiplier();
             return renderData;
@@ -349,17 +338,6 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
         public double currentTailMotionUp() { return currentTailMotionUp; }
         public double visualScale() { return visualScale; }
         public float bodyScaleMultiplier() { return bodyScaleMultiplier; }
-    }
-
-    private static final class DragonAnimationState {
-        private final List<Double> headYawHistory = new java.util.ArrayList<>();
-        private double currentHeadYawChange;
-        private final List<Double> bodyYawHistory = new java.util.ArrayList<>();
-        private double currentBodyYawChange;
-        private final List<Double> headPitchHistory = new java.util.ArrayList<>();
-        private double currentHeadPitchChange;
-        private final List<Double> verticalVelocityHistory = new java.util.ArrayList<>();
-        private double currentTailMotionUp;
     }
 
     private record InterruptedTransitionBlend(double startAge, int transitionTicks, Map<String, BonePose> startPoses) { }
@@ -613,12 +591,6 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
         return uiRenderCacheId(animatable.getId());
     }
 
-    @SubscribeEvent
-    public static void updateAnimationStatesOncePerFrame(final RenderFrameEvent.Pre event) {
-        ClientDragonRenderer.process(DragonRenderer::updateAnimationState);
-        FakeClientPlayerUtils.processDragons(DragonRenderer::updateAnimationState);
-    }
-
     private DragonRenderData captureRenderData(final DragonEntity dragon, final float partialTick) {
         Player player = dragon.getPlayer();
 
@@ -627,7 +599,6 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
         }
 
         DragonStateHandler handler = DragonStateProvider.getData(player);
-        DragonAnimationState animationState = ANIMATION_STATES.computeIfAbsent(dragon.getId(), key -> new DragonAnimationState());
 
         Identifier modelResource = handler.getModel();
         boolean hasWings = handler.body() == null || !handler.body().value().canHideWings() || handler.getCurrentStageCustomization().wings;
@@ -641,7 +612,6 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
             modelResource,
             hasWings,
             bonesToHideForToggle,
-            animationState,
             partialTick
         );
 
@@ -674,7 +644,6 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
     }
 
     public static void clearAnimationState(final int dragonId) {
-        ANIMATION_STATES.remove(dragonId);
         LAST_RENDERED_BONE_POSES.remove(Integer.toUnsignedLong(dragonId));
         LAST_RENDERED_BONE_POSES.remove(uiRenderCacheId(dragonId));
         INTERRUPTED_TRANSITION_BLENDS.remove(Integer.toUnsignedLong(dragonId));
@@ -683,84 +652,9 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
     }
 
     public static void clearAnimationStates() {
-        ANIMATION_STATES.clear();
         LAST_RENDERED_BONE_POSES.clear();
         INTERRUPTED_TRANSITION_BLENDS.clear();
         UI_RENDER_START_TICKS.clear();
-    }
-
-    private static void updateAnimationState(final DragonEntity dragon) {
-        Player player = dragon.getPlayer();
-
-        if (player == null) {
-            return;
-        }
-
-        DragonAnimationState animationState = ANIMATION_STATES.computeIfAbsent(dragon.getId(), key -> new DragonAnimationState());
-        MovementData movement = MovementData.getData(player);
-        float deltaTick = Minecraft.getInstance().getDeltaTracker().getRealtimeDeltaTicks();
-        float partialDeltaTick = Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(false);
-
-        double bodyYawChange = Functions.angleDifference(movement.bodyYaw, movement.bodyYawLastFrame) / deltaTick * DELTA_YAW_PITCH_FACTOR;
-        double headYawChange = Functions.angleDifference(movement.headYaw, movement.headYawLastFrame) / deltaTick * DELTA_YAW_PITCH_FACTOR;
-        double headPitchChange = Functions.angleDifference(movement.headPitch, movement.headPitchLastFrame) / deltaTick * DELTA_YAW_PITCH_FACTOR;
-
-        double verticalVelocity = Mth.lerp(partialDeltaTick, movement.deltaMovementLastFrame.y, movement.deltaMovement.y) * DELTA_MOVEMENT_FACTOR;
-        verticalVelocity *= 1 - Mth.abs(Mth.clampedMap(movement.prevXRot, -90, 90, -1, 1));
-
-        float deltaTickFor60FPS = AnimationUtils.getDeltaTickFor60FPS();
-        int removeSize = (int) (10 / deltaTickFor60FPS);
-
-        if (dragon.clearVerticalVelocity) {
-            animationState.verticalVelocityHistory.clear();
-
-            while (animationState.verticalVelocityHistory.size() < removeSize) {
-                animationState.verticalVelocityHistory.add(0d);
-            }
-        }
-
-        trimHistory(animationState.bodyYawHistory, removeSize);
-        trimHistory(animationState.headYawHistory, removeSize);
-        trimHistory(animationState.headPitchHistory, removeSize);
-        trimHistory(animationState.verticalVelocityHistory, removeSize);
-
-        animationState.bodyYawHistory.add(bodyYawChange);
-        animationState.headYawHistory.add(headYawChange);
-        animationState.headPitchHistory.add(headPitchChange);
-        animationState.verticalVelocityHistory.add(verticalVelocity);
-
-        double bodyYawAvg;
-        double headYawAvg;
-        double headPitchAvg;
-        double verticalVelocityAvg;
-
-        bodyYawAvg = animationState.bodyYawHistory.stream().mapToDouble(Double::doubleValue).average().orElse(0);
-        headYawAvg = animationState.headYawHistory.stream().mapToDouble(Double::doubleValue).average().orElse(0);
-        headPitchAvg = animationState.headPitchHistory.stream().mapToDouble(Double::doubleValue).average().orElse(0);
-        verticalVelocityAvg = animationState.verticalVelocityHistory.stream().mapToDouble(Double::doubleValue).average().orElse(0);
-
-        bodyYawAvg = Double.isNaN(bodyYawAvg) ? 0 : bodyYawAvg;
-        headYawAvg = Double.isNaN(headYawAvg) ? 0 : headYawAvg;
-        headPitchAvg = Double.isNaN(headPitchAvg) ? 0 : headPitchAvg;
-        verticalVelocityAvg = Double.isNaN(verticalVelocityAvg) ? 0 : verticalVelocityAvg;
-
-        double lerpRate = Math.min(1, deltaTick);
-        animationState.currentBodyYawChange = Mth.lerp(lerpRate, animationState.currentBodyYawChange, bodyYawAvg);
-        animationState.currentHeadYawChange = Mth.lerp(lerpRate, animationState.currentHeadYawChange, headYawAvg);
-        animationState.currentHeadPitchChange = Mth.lerp(lerpRate, animationState.currentHeadPitchChange, headPitchAvg);
-
-        if (dragon.clearVerticalVelocity) {
-            animationState.currentTailMotionUp = 0;
-            dragon.clearVerticalVelocity = false;
-        } else {
-            animationState.currentTailMotionUp = Mth.lerp(lerpRate, animationState.currentTailMotionUp, -verticalVelocityAvg);
-        }
-    }
-
-    private static void trimHistory(final List<Double> history, final int removeSize) {
-        while (history.size() > removeSize) {
-            history.removeFirst();
-        }
     }
 
     public static EntityRenderState createUIRenderState(final LivingEntity entity, final float partialTick, final double bodyYaw, final double headYaw, final double headPitch) {
@@ -1243,8 +1137,7 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
             return Vec3.ZERO;
         }
 
-        MovementData movement = MovementData.getData(renderData.player());
-        float angle = -(float)movement.bodyYaw * ((float)Math.PI / 180.0F);
+        float angle = -(float)renderData.bodyYaw() * ((float)Math.PI / 180.0F);
         float x = Mth.sin(angle);
         float z = Mth.cos(angle);
         float scale = (float) renderData.visualScale() * renderData.bodyScaleMultiplier();
@@ -1284,7 +1177,9 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
 
         Player player = renderData.player();
 
-        if (player != null && (ServerFlightHandler.isGliding(player) || renderData.prevXRot() != 0 || renderData.prevZRot() != 0)) {
+        boolean ridingRenderedDragon = player != null && player.getVehicle() instanceof Player mount && DragonStateProvider.isDragon(mount)
+                && !DragonStateProvider.getData(mount).body().value().noDragonModelRendering();
+        if (player != null && !ridingRenderedDragon && (ServerFlightHandler.isGliding(player) || renderData.prevXRot() != 0 || renderData.prevZRot() != 0)) {
             // Responsible for the pitch (rotating entity downward / upward)
             pose.mulPose(Axis.XN.rotationDegrees(renderData.prevXRot()));
             // Responsible for the roll (rotating entity to the side)
