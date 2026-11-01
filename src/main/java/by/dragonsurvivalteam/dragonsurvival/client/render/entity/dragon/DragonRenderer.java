@@ -535,6 +535,13 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
             return entity;
         }
 
+        // For rendering the inventory, we do pass in a real player.
+        // In this case, the animations need to match up with whatever
+        // that player is actually doing, so return that player's data here.
+        if (!(player instanceof FakeClientPlayer)) {
+            return ClientDragonRenderer.getOrCreateDragon(player);
+        }
+
         UIRenderDragonEntity uiDragon = getOrCreateUIRenderDragon(player);
         syncUIRenderDragon(player, uiDragon);
         return uiDragon;
@@ -584,7 +591,7 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
 
     @Override
     public long getInstanceId(final DragonEntity animatable, final @Nullable Void relatedObject) {
-        if (UI_RENDER_CONTEXT.get() == null) {
+        if (UI_RENDER_CONTEXT.get() == null || !(animatable instanceof UIRenderDragonEntity)) {
             return super.getInstanceId(animatable, relatedObject);
         }
 
@@ -970,7 +977,8 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
     }
 
     private static double getRenderTick(final DragonRenderData renderData, final Player player, final float partialTick) {
-        if (!renderData.inUI() && !(player instanceof FakeClientPlayer)) {
+        // A live dragon shares its animation clock between world and inventory renders.
+        if (!(player instanceof FakeClientPlayer)) {
             return player.tickCount + partialTick + 200;
         }
 
