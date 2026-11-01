@@ -682,7 +682,11 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
         try {
             LivingEntity renderEntity = getEntityForUIRender(entity);
             EntityRenderer<? super LivingEntity, ?> renderer = entityRenderDispatcher.getRenderer(renderEntity);
-            EntityRenderState renderState = renderer.createRenderState(renderEntity, partialTick);
+            // Some inventory callers pass 1.0F; extract the UI pose at the actual render fraction.
+            float renderPartialTick = renderEntity instanceof DragonEntity
+                    ? Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(false)
+                    : partialTick;
+            EntityRenderState renderState = renderer.createRenderState(renderEntity, renderPartialTick);
             renderState.shadowPieces.clear();
             renderState.outlineColor = 0;
 
