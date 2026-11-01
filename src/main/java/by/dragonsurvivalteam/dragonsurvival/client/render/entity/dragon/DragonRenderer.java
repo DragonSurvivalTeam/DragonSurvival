@@ -308,6 +308,13 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
 
     @Override
     public void actuallyRender(final PoseStack poseStack, final DragonEntity animatable, final BakedGeoModel model, final RenderType renderType, final MultiBufferSource bufferSource, final VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+        if (animatable.isInInventory) {
+            // InventoryScreen (vanilla code) passes 1.0F for partial tick,
+            // but we need the real partial tick here.
+            // So just override it.
+            partialTick = Minecraft.getInstance().getFrameTime();
+        }
+
         Player player = animatable.getPlayer();
 
         //noinspection DataFlowIssue -> player is present
