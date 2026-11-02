@@ -2,6 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.mixins;
 
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
+import by.dragonsurvivalteam.dragonsurvival.common.handlers.DragonFoodHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.DragonSizeHandler;
 import by.dragonsurvivalteam.dragonsurvival.compat.Compat;
 import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
@@ -18,10 +19,13 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.food.FoodProperties;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(Player.class)
@@ -57,6 +61,17 @@ public abstract class PlayerMixin extends LivingEntity {
                 callback.setReturnValue(true);
             }
         }
+    }
+    /** Apply dragon diet food properties to 'Player#eat'.Also removes a marker that was set for a placed-food-block interaction but not consumed.*/
+    @ModifyVariable(method = "eat(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/food/FoodProperties;)Lnet/minecraft/world/item/ItemStack;", at = @At("HEAD"), argsOnly = true)
+    private FoodProperties dragonSurvival$modifyDragonFoodProperties(final FoodProperties foodProperties, final @Local(argsOnly = true) ItemStack food) {
+        DragonFoodHandler.clearBlockFood(((Player) (Object) this).getFoodData());
+
+        if (DragonFoodHandler.dragonFoodHandlingIsDisabled() || !DragonStateProvider.isDragon(this)) {
+            return foodProperties;
+        }
+
+        return DragonFoodHandler.getDragonFoodProperties(DragonStateProvider.getData((Player) (Object) this).species(), food, foodProperties);
     }
 
     /** Allow treasure blocks to trigger sleep logic */
