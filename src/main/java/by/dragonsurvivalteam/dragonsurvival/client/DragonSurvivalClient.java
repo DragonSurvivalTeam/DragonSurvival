@@ -154,22 +154,6 @@ public class DragonSurvivalClient {
         event.register(TimeComponent.class, ClientTimeComponent::new);
     }
 
-    private void preventThirdPersonWhenSuffocating(final ClientTickEvent event) {
-        if (event.phase != TickEvent.Phase.END) {
-            return;
-        }
-
-        Player player = DragonSurvival.PROXY.getLocalPlayer();
-
-        if (!DragonStateProvider.isDragon(player)) {
-            return;
-        }
-
-        if (((LocalPlayerAccessor) player).dragonSurvival$suffocatesAt(BlockPos.containing(player.position()))) {
-            Minecraft.getInstance().options.setCameraType(CameraType.FIRST_PERSON);
-        }
-    }
-
     public static IClientItemExtensions createArmorExtension(final ArmorItem.Type type) {
         return new IClientItemExtensions() {
             @Override
