@@ -86,6 +86,7 @@
     "client.ForgeGuiMixin",
     "client.FrustumAccess",
     "client.GameRendererMixin",
+    "client.GeoModelMixin",
     "client.GuiGraphicsAccess",
     "client.GuiMixin",
     "client.HumanoidArmorLayerMixin",

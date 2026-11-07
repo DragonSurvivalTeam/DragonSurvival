@@ -62,6 +62,7 @@ public class DragonSoulRenderer implements BlockEntityRenderer<DragonSoulBlockEn
         DragonEntity dragon = FakeClientPlayerUtils.getFakeDragon(soul.fakePlayerIndex, handler);
 
         FakeClientPlayer player = FakeClientPlayerUtils.getFakePlayer(soul.fakePlayerIndex, handler);
+        player.pauseAnimationsWithGame = true;
         player.useVisualScale = true;
         player.scale = soul.getScale();
 
