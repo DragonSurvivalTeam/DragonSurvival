@@ -68,8 +68,6 @@ public abstract class InventoryScreenMixin extends EffectRenderingInventoryScree
 
             if (dragon != null) {
                 dragon.isInInventory = true;
-                // GeckoLib otherwise reuses the world-render pose for this second render of the same entity and frame.
-                dragon.getAnimatableInstanceCache().getManagerForId(dragon.getId()).updatedAt(Double.NaN);
             }
 
             RenderSystem.runAsFancy(runnable);
