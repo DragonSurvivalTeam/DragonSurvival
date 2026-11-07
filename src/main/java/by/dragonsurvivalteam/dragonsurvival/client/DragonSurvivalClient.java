@@ -98,7 +98,6 @@ public class DragonSurvivalClient {
         bus.addListener(this::registerItemExtensions);
 
         NeoForge.EVENT_BUS.addListener(this::incrementTimer);
-        NeoForge.EVENT_BUS.addListener(this::preventThirdPersonWhenSuffocating);
 
         if (ModID.CURIOS.isLoaded()) {
             NeoForge.EVENT_BUS.addListener(CuriosButtonHandler::handleCurios);
