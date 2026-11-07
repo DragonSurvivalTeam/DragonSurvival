@@ -11,6 +11,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.StageResources;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
+import by.dragonsurvivalteam.dragonsurvival.mixins.client.GeoModelAccessor;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.HunterData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MovementData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
@@ -38,6 +39,25 @@ public class DragonModel extends GeoModel<DragonEntity> {
 
     private ResourceLocation overrideTexture;
     private final Set<ResourceLocation> validatedMountingBoneModels = new HashSet<>();
+
+    @Override
+    public void handleAnimations(final DragonEntity dragon, long instanceId, final AnimationState<DragonEntity> animationState, float partialTick) {
+        if (!dragon.isInInventory) {
+            super.handleAnimations(dragon, instanceId, animationState, partialTick);
+            return;
+        }
+
+        // GeckoLib has an optimization to prevent handling animations multiple times for the same entity that has the exact
+        // same game tick (which happens on the inventory screen). But for the inventory screen render, we want it to account
+        // for the cursor position so that the dragon's head can move.
+        GeoModelAccessor accessor = (GeoModelAccessor) this;
+        accessor.dragonSurvival$setLastRenderedInstance(Long.MIN_VALUE);
+        try {
+            super.handleAnimations(dragon, instanceId, animationState, partialTick);
+        } finally {
+            accessor.dragonSurvival$setLastRenderedInstance(Long.MIN_VALUE);
+        }
+    }
 
     @Override
     public void applyMolangQueries(final AnimationState<DragonEntity> animationState, double currentTick) {

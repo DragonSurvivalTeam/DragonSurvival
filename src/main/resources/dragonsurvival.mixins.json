@@ -73,6 +73,7 @@
     "client.EntityRendererMixin",
     "client.FrustumAccess",
     "client.GameRendererMixin",
+    "client.GeoModelAccessor",
     "client.GuiAccessor",
     "client.GuiGraphicsAccess",
     "client.GuiMixin",
