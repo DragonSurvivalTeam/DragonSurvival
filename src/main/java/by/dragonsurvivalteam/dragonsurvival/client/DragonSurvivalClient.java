@@ -155,18 +155,6 @@ public class DragonSurvivalClient {
         event.register(TimeComponent.class, ClientTimeComponent::new);
     }
 
-    private void preventThirdPersonWhenSuffocating(final ClientTickEvent.Post event) {
-        Player player = DragonSurvival.PROXY.getLocalPlayer();
-
-        if (!DragonStateProvider.isDragon(player)) {
-            return;
-        }
-
-        if (((LocalPlayerAccessor) player).dragonSurvival$suffocatesAt(BlockPos.containing(player.position()))) {
-            Minecraft.getInstance().options.setCameraType(CameraType.FIRST_PERSON);
-        }
-    }
-
     private void registerItemExtensions(RegisterClientExtensionsEvent event) {
         event.registerItem(new ShakeWhenUsedExtension(), DSItems.DRAGON_SOUL.value());
 
