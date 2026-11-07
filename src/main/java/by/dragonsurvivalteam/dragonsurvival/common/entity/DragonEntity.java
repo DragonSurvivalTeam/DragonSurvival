@@ -863,6 +863,12 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
 
     private double getAnimationTick() {
         Player player = getPlayer();
+
+        // Dragon souls are objects placed in the world, so they should paused when the game is paused even though they are FakeClientPlayers.
+        if (player instanceof FakeClientPlayer fakePlayer && fakePlayer.pauseAnimationsWithGame) {
+            return player.level().getGameTime() + Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(false) + 200;
+        }
+
         if (player != null && !(player instanceof FakeClientPlayer)) {
             return player.tickCount + Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(false) + 200;
         }

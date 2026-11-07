@@ -977,6 +977,11 @@ public class DragonRenderer<R extends LivingEntityRenderState & GeoRenderState> 
     }
 
     private static double getRenderTick(final DragonRenderData renderData, final Player player, final float partialTick) {
+        // Dragon souls are objects placed in the world, so they should paused when the game is paused even though they are FakeClientPlayers.
+        if (player instanceof FakeClientPlayer fakePlayer && fakePlayer.pauseAnimationsWithGame) {
+            return player.level().getGameTime() + partialTick + 200;
+        }
+
         // A live dragon shares its animation clock between world and inventory renders.
         if (!(player instanceof FakeClientPlayer)) {
             return player.tickCount + partialTick + 200;

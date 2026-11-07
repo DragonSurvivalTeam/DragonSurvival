@@ -79,6 +79,7 @@ public class DragonSoulRenderer<T extends DragonSoulBlockEntity> implements Bloc
             : DragonSoulBlockEntity.DEFAULT_ANIMATION;
 
         player.useVisualScale = true;
+        player.pauseAnimationsWithGame = true;
         player.scale = soul.getScale();
         player.animationSupplier = () -> animation;
 
