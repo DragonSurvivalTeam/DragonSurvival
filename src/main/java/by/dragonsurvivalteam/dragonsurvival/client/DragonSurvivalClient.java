@@ -87,7 +87,6 @@ public class DragonSurvivalClient {
         bus.addListener(this::registerTooltips);
 
         MinecraftForge.EVENT_BUS.addListener(this::incrementTimer);
-        MinecraftForge.EVENT_BUS.addListener(this::preventThirdPersonWhenSuffocating);
 
         if (ModID.CURIOS.isLoaded()) {
             MinecraftForge.EVENT_BUS.addListener(CuriosButtonHandler::handleCurios);
