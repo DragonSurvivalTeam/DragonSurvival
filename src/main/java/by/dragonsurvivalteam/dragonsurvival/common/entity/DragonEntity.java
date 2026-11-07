@@ -820,6 +820,12 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
     public double getTick(Object obj) {
         Player player = getPlayer();
 
+        // The fake player used for the Dragon Soul statue actually should pause animations
+        // when the game is paused, even though it is technically a FakeClientPlayer
+        if (player instanceof FakeClientPlayer fakePlayer && fakePlayer.pauseAnimationsWithGame) {
+            return player.level().getGameTime() + 200;
+        }
+
         // GeckoLib adds partialTick under the hood here, so we don't need to account for it
         return (player != null && !(player instanceof FakeClientPlayer) ?
                 player.tickCount
@@ -845,7 +851,13 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
 
     @Override
     public boolean shouldPlayAnimsWhileGamePaused() {
-        return isInInventory || playerId == null || getPlayer() instanceof FakeClientPlayer;
+        Player player = getPlayer();
+
+        if (player instanceof FakeClientPlayer fakePlayer) {
+            return !fakePlayer.pauseAnimationsWithGame;
+        }
+
+        return isInInventory || playerId == null;
     }
 
     @Override

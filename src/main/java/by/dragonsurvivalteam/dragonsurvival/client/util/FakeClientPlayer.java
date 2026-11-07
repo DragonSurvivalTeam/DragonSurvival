@@ -23,6 +23,7 @@ import java.util.function.Supplier;
 public class FakeClientPlayer extends AbstractClientPlayer {
     public final int number;
     public boolean useVisualScale;
+    public boolean pauseAnimationsWithGame;
 
     public double scale = -1;
 
