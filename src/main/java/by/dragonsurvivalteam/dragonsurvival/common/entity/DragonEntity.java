@@ -816,9 +816,9 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
         }
 
         // If the animation was null, that means we were T-Posing before this animation was triggered.
-        // GeckoLib still needs a non-zero transition here so the first valid pose can blend in.
+        // So instantly transition to prevent the player from seeing a T-Pose -> animation transition
         // This usually happens when changing dimensions, or new clientside dragons are initialized in the UI
-        if(animationWasNullBeforePredicate) {
+        if (animationWasNullBeforePredicate) {
             transitionTicks = 0;
         }
 
