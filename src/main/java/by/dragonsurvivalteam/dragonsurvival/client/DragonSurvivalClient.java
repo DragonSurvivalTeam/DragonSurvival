@@ -117,7 +117,6 @@ public class DragonSurvivalClient {
         bus.addListener(BlockVisionShaderSimple::registerRenderPipelines);
         bus.addListener((RegisterRenderPipelinesEvent event) -> DragonArmorRenderLayer.registerRenderPipelines(event));
         NeoForge.EVENT_BUS.addListener(this::incrementTimer);
-        NeoForge.EVENT_BUS.addListener(this::preventThirdPersonWhenSuffocating);
 
         if (ModID.CURIOS.isLoaded()) {
             NeoForge.EVENT_BUS.addListener(CuriosButtonHandler::handleCurios);
