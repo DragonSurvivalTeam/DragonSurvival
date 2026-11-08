@@ -115,6 +115,8 @@ public class DragonEditorHandler {
         RenderTarget glowTarget = null;
 
         try {
+            // Make sure scissor is actually disabled for skin generation, it will break things
+            RenderSystem.disableScissor();
             normalTarget = new TextureTarget(textureSize.width(), textureSize.height(), false, Minecraft.ON_OSX);
             glowTarget = new TextureTarget(textureSize.width(), textureSize.height(), false, Minecraft.ON_OSX);
             normalTarget.setClearColor(0.0F, 0.0F, 0.0F, 0.0F);
