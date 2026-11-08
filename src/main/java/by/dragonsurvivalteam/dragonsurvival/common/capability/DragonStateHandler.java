@@ -54,6 +54,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.TagValueOutput;
 import net.minecraft.world.level.storage.ValueInput;
@@ -516,7 +517,10 @@ public class DragonStateHandler extends EntityStateHandler {
             return HarvestBonuses.canHarvest(player, state, player.getMainHandItem());
         }
 
-        return HarvestBonuses.canHarvest(player, state, ClawInventoryData.getData(player).getTool(state));
+        // Make sure to factor in any potential claw tools too
+        ItemStack tool = ClawInventoryData.getData(player).getTool(state);
+
+        return tool.isCorrectToolForDrops(state) || HarvestBonuses.canHarvest(player, state, tool);
     }
 
     public void setPassengerId(int passengerId) {
