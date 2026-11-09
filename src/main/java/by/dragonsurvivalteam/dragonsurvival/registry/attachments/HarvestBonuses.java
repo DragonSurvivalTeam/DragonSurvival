@@ -73,7 +73,7 @@ public class HarvestBonuses extends Storage<HarvestBonus.Instance> {
 
         if (bonus == 0) {
             // Only early-exit on no change - still consider negative "bonus"
-            return false;
+            return tool.isCorrectToolForDrops(state);
         }
 
         if (ToolUtils.isCorrectTool(tool, state)) {

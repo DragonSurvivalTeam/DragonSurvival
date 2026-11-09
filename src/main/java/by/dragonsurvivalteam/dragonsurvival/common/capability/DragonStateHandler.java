@@ -504,10 +504,7 @@ public class DragonStateHandler extends EntityStateHandler {
             return HarvestBonuses.canHarvest(player, state, player.getMainHandItem());
         }
 
-        // Make sure to factor in any potential claw tools too
-        ItemStack tool = ClawInventoryData.getData(player).getTool(state);
-
-        return tool.isCorrectToolForDrops(state) || HarvestBonuses.canHarvest(player, state, tool);
+        return HarvestBonuses.canHarvest(player, state, ClawInventoryData.getData(player).getTool(state));
     }
 
     public void setPassengerId(int passengerId) {
