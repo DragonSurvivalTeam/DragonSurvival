@@ -52,7 +52,7 @@ public record ProjectileExplosionEffect(
                 projectile.position().x(), projectile.position().y(), projectile.position().z(),
                 explosionPower.calculate(level),
                 fire,
-                breakBlocks ? Level.ExplosionInteraction.BLOCK : Level.ExplosionInteraction.NONE);
+                breakBlocks ? Level.ExplosionInteraction.MOB : Level.ExplosionInteraction.NONE);
     }
 
     @Override
