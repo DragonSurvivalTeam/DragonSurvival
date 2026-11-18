@@ -15,6 +15,8 @@ import by.dragonsurvivalteam.dragonsurvival.registry.DSEmoteKeybindings;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.emotes.DragonEmote;
+import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
+import by.dragonsurvivalteam.dragonsurvival.util.PlayerMessageUtil;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -53,6 +55,9 @@ public class DragonEmoteScreen extends Screen {
 
     @Translation(comments = "Stop all emotes")
     private static final String STOP_ALL_EMOTES = Translation.Type.GUI.wrap("emote_screen.stop_all_emotes");
+
+    @Translation(comments = "The emote %s is not available for your current species body")
+    private static final String EMOTE_UNAVAILABLE = Translation.Type.GUI.wrap("emote_screen.emote_unavailable");
 
     @Translation(comments = {
             "■ This is the emotes menu.",
@@ -213,15 +218,16 @@ public class DragonEmoteScreen extends Screen {
             DragonStateHandler handler = DragonStateProvider.getData(Minecraft.getInstance().player);
             List<DragonEmote> emotes = handler.body().value().emotes().value().emotes();
             int emoteIndex = PER_PAGE * emotePage + i;
+
             if (emoteIndex >= emotes.size()) {
                 break;
             }
 
-            emoteComponents.add(new EmoteComponent(this, guiLeft + 10, guiTop + 30 + i * 12, emotes.get(PER_PAGE * emotePage + i)));
+            emoteComponents.add(new EmoteComponent(this, guiLeft + 10, guiTop + 30 + i * 12, emotes.get(emoteIndex)));
         }
     }
 
-    public static void addEmote(String key) {
+    public static void playEmote(String key) {
         //noinspection DataFlowIssue -> player is present
         DragonEntity dragon = ClientDragonRenderer.getDragon(Minecraft.getInstance().player);
 
@@ -231,6 +237,13 @@ public class DragonEmoteScreen extends Screen {
 
         DragonStateHandler handler = DragonStateProvider.getData(Minecraft.getInstance().player);
         DragonEmote emote = handler.body().value().emotes().value().getEmote(key);
+
+        if (emote == null) {
+            // Keybinds are global and not per species or body - meaning a bound emote may not be available
+            PlayerMessageUtil.sendSystemMessage(Minecraft.getInstance().player, Component.translatable(EMOTE_UNAVAILABLE, DSColors.withColor(key, DSColors.GOLD)), true);
+            return;
+        }
+
         dragon.beginPlayingEmote(emote);
         ClientPacketDistributor.sendToServer(new SyncEmote(Minecraft.getInstance().player.getId(), emote, false));
     }
@@ -293,7 +306,7 @@ public class DragonEmoteScreen extends Screen {
             String emote = DSEmoteKeybindings.EMOTE_KEYBINDS.get(keyCode);
 
             if (emote != null) {
-                addEmote(emote);
+                playEmote(emote);
             }
         }
     }

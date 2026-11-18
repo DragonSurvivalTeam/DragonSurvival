@@ -1142,6 +1142,7 @@
   "dragonsurvival.gui.effect_modification.reduced": "reduced by %s",
   "dragonsurvival.gui.effect_modification.unmodified": "is unmodified",
   "dragonsurvival.gui.emote_screen.currently_binding": "Currently binding emote.",
+  "dragonsurvival.gui.emote_screen.emote_unavailable": "The emote %s is not available for your current species body",
   "dragonsurvival.gui.emote_screen.info": "■ This is the emotes menu.\n- The icon on the right will allow you to §6keybind§r§f and play the emote without entering this menu.\n- Some emotions can be combined with each other. For example, §6Blend§r§f.\n- Flip pages - §6mouse wheel§r§f.",
   "dragonsurvival.gui.emote_screen.press_escape_to_cancel": "Press escape to cancel.",
   "dragonsurvival.gui.emote_screen.reset_all_keybinds": "Reset all emote keybinds",
