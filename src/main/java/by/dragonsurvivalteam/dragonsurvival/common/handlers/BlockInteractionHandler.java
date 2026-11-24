@@ -33,6 +33,7 @@ public class BlockInteractionHandler {
             Map.entry(Blocks.NETHER_BRICKS, DSBlocks.NETHER_BRICK_DRAGON_ALTAR.get()),
             Map.entry(Blocks.BLACKSTONE, DSBlocks.BLACKSTONE_DRAGON_ALTAR.get()),
             Map.entry(Blocks.BONE_BLOCK, DSBlocks.BONE_DRAGON_ALTAR.get()),
+            Map.entry(Blocks.PALE_OAK_PLANKS, DSBlocks.PALE_OAK_DRAGON_ALTAR.get()),
             Map.entry(Blocks.PACKED_ICE, DSBlocks.ICE_DRAGON_ALTAR.get()),
             Map.entry(Blocks.QUARTZ_BLOCK, DSBlocks.QUARTZ_DRAGON_ALTAR.get()),
             Map.entry(Blocks.OBSIDIAN, DSBlocks.OBSIDIAN_DRAGON_ALTAR.get()),

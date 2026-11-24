@@ -412,6 +412,13 @@ public class DSRecipes extends RecipeProvider {
                 .save(output);
 
         this
+                .shapeless(RecipeCategory.MISC, DSBlocks.PALE_OAK_DRAGON_ALTAR.value())
+                .requires(Items.PALE_OAK_PLANKS)
+                .requires(DSItems.ELDER_DRAGON_BONE.value())
+                .unlockedBy(getHasName(DSItems.ELDER_DRAGON_BONE.value()), has(DSItems.ELDER_DRAGON_BONE.value()))
+                .save(output);
+
+        this
                 .shapeless(RecipeCategory.MISC, DSBlocks.BONE_DRAGON_ALTAR.value())
                 .requires(Items.BONE_BLOCK)
                 .requires(DSItems.ELDER_DRAGON_BONE.value())

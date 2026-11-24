@@ -555,7 +555,7 @@ public class DSBlocks {
             () -> Block.Properties.ofFullCopy(Blocks.BLACKSTONE)
     );
 
-    @Translation(type = Translation.Type.BLOCK, comments = "Pale Oak Dragon Altar") // TODO :: unused
+    @Translation(type = Translation.Type.BLOCK, comments = "Pale Oak Dragon Altar")
     public static final DeferredHolder<Block, Block> PALE_OAK_DRAGON_ALTAR = registerWithItem(
             "pale_oak_dragon_altar",
             DragonAltarBlock::new,
