@@ -26,6 +26,7 @@ import net.minecraft.network.chat.contents.PlainTextContents;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2ic;
 import software.bernie.geckolib.util.Color;
 
@@ -35,6 +36,12 @@ import java.util.List;
 public class AbilityAndPenaltyTooltipRenderer {
     @Translation(comments = "Hold 'Shift' for info")
     private static final String INFO_SHIFT = Translation.Type.GUI.wrap("general.info_shift");
+
+    @Translation(comments = "Hold Ctrl + Left-click to disable the ability")
+    private static final String CTRL_DISABLE = Translation.Type.GUI.wrap("general.ctrl_disable");
+
+    @Translation(comments = "Hold Ctrl + Left-click to enable the ability")
+    private static final String CTRL_ENABLE = Translation.Type.GUI.wrap("general.ctrl_enable");
 
     @Translation(comments = "§4Disabled by effects§r")
     private static final String DISABLED_BY_EFFECTS = Translation.Type.GUI.wrap("general.disabled_by_effects");
@@ -61,6 +68,7 @@ public class AbilityAndPenaltyTooltipRenderer {
             int y,
             final List<Component> shiftInfo,
             final FormattedText rawDescription,
+            @Nullable final Component extraHint,
             int colorXPos,
             int colorYPos,
             final String headerTranslationKey,
@@ -88,6 +96,8 @@ public class AbilityAndPenaltyTooltipRenderer {
             bottomInfoLines = new ArrayList<>();
         }
 
+        List<FormattedCharSequence> extraHintLines;
+
         // The effect header is meant to separate multiple effects from each other
         // Currently we append this header at a point in time where we don't know the actual order of the effects
         // That's why we use this check to skip the first header line
@@ -108,7 +118,8 @@ public class AbilityAndPenaltyTooltipRenderer {
         // But at that point it's just a problem of the description content
         while (true) {
             description = Minecraft.getInstance().font.split(rawDescription, backgroundWidth - 7);
-            backgroundHeight = offset + (description.size() + bottomInfoLines.size()) * 9;
+            extraHintLines = extraHint == null ? List.of() : Minecraft.getInstance().font.split(extraHint, backgroundWidth - 7);
+            backgroundHeight = offset + (description.size() + bottomInfoLines.size() + extraHintLines.size()) * 9;
 
             if (backgroundHeight <= maxHeight) {
                 break;
@@ -198,6 +209,16 @@ public class AbilityAndPenaltyTooltipRenderer {
             }
         }
 
+        if (!extraHintLines.isEmpty()) {
+            // The bottom info occupies the (usually empty) last description line; place this below it
+            int startLine = description.size() - 1 + Math.max(1, bottomInfoLines.size());
+
+            for (int i = 0; i < extraHintLines.size(); i++) {
+                FormattedCharSequence line = extraHintLines.get(i);
+                graphics.drawCenteredString(Minecraft.getInstance().font, line, trueX + backgroundWidth / 2, trueY + 47 + (startLine + i) * 9, 0);
+            }
+        }
+
         graphics.blitSprite(icon, trueX + 5, trueY + 5, 16, 16);
     }
 
@@ -233,7 +254,7 @@ public class AbilityAndPenaltyTooltipRenderer {
         return textContents;
     }
 
-    public static void drawAbilityTooltip(@NotNull final GuiGraphics guiGraphics, int x, int y, final DragonAbilityInstance ability, int scrollAmount) {
+    public static void drawAbilityTooltip(@NotNull final GuiGraphics guiGraphics, int x, int y, final DragonAbilityInstance ability, int scrollAmount, boolean showCtrlHint) {
         int colorXPos = 0;
         int colorYPos = !ability.isPassive() ? 20 : 0;
 
@@ -269,8 +290,16 @@ public class AbilityAndPenaltyTooltipRenderer {
             rawDescription = FormattedText.composite(rawDescription, Component.empty().append("\n\n"));
         }
 
+        Component extraHint = null;
+
+        if (showCtrlHint && ability.value().canBeManuallyDisabled()) {
+            boolean isManuallyDisabled = ability.isDisabled(true);
+            extraHint = Component.translatable(isManuallyDisabled ? CTRL_ENABLE : CTRL_DISABLE)
+                    .withStyle(isManuallyDisabled ? ChatFormatting.GREEN : ChatFormatting.RED);
+        }
+
         Color color = ability.isPassive() ? new Color(DSColors.withAlpha(DSColors.PASSIVE_BACKGROUND, 1f)) : new Color(DSColors.withAlpha(DSColors.ACTIVE_BACKGROUND, 1f));
-        drawTooltip(guiGraphics, x, y, info, rawDescription, colorXPos, colorYPos, ability.isPassive() ? LangKey.PASSIVE_ABILITY : LangKey.ACTIVE_ABILITY, ability.getName(), color, ability.getMaxLevel(), ability.level(), ability.getIcon(), scrollAmount);
+        drawTooltip(guiGraphics, x, y, info, rawDescription, extraHint, colorXPos, colorYPos, ability.isPassive() ? LangKey.PASSIVE_ABILITY : LangKey.ACTIVE_ABILITY, ability.getName(), color, ability.getMaxLevel(), ability.level(), ability.getIcon(), scrollAmount);
     }
 
     public static void drawPenaltyTooltip(@NotNull final GuiGraphics guiGraphics, int x, int y, final Holder<DragonPenalty> penalty) {
@@ -295,6 +324,6 @@ public class AbilityAndPenaltyTooltipRenderer {
 
         Component name = Component.translatable(Translation.Type.PENALTY.wrap(penalty.getKey().location()));
         ResourceLocation icon = penalty.value().icon().orElse(MissingTextureAtlasSprite.getLocation());
-        drawTooltip(guiGraphics, x, y, components, description, colorXPos, colorYPos, LangKey.PENALTY, name, Color.ofRGB(145, 46, 46), -1, -1, icon, 0);
+        drawTooltip(guiGraphics, x, y, components, description, null, colorXPos, colorYPos, LangKey.PENALTY, name, Color.ofRGB(145, 46, 46), -1, -1, icon, 0);
     }
 }

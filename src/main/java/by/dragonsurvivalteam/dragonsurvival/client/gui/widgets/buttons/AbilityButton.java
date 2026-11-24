@@ -272,7 +272,7 @@ public class AbilityButton extends ExtendedButton {
             graphics.pose().pushPose();
             // Render above the other UI elements
             graphics.pose().translate(0, 0, 150);
-            AbilityAndPenaltyTooltipRenderer.drawAbilityTooltip(graphics, mouseX, mouseY, ability, scrollAmount);
+            AbilityAndPenaltyTooltipRenderer.drawAbilityTooltip(graphics, mouseX, mouseY, ability, scrollAmount, !isHotbar);
             graphics.pose().popPose();
         }
 
